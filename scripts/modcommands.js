@@ -503,10 +503,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                     data.push("Idle for: " + getTimeString(parseInt(sys.time(), 10) - realTime));
                     data.push("Channels: " + channels.join(", "));
                     data.push("Names during current session: " + (online && SESSION.users(tar).namehistory ? SESSION.users(tar).namehistory.map(function(e){return e[0];}).join(", ") : name));
-                    var version = sys.version(tar) + "";
+                    var version = sys.version(tar);
                     if (sys.os(tar) === "windows" || sys.os(tar) === "mac" || sys.os(tar) === "linux") {
-                        var temp = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(3) + (version.charAt(4) !== 0 ? version.charAt(4) : "") + ")";
-                        version = temp;
+                        version = version + ""; //convert to string for charAt
+                        version = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(2) + (version.charAt(3) !== 0 ? version.charAt(3) : "") + ")";
                     } else if (sys.os(tar) === "android") {
                         //could be redone better probably
                         var verArr = ["6.2","6.1","6.0","5.2","5.1","5.0","4.4"];
