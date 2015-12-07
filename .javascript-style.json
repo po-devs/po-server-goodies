@@ -1,0 +1,16 @@
+{
+  "bitwise": true,
+  "curly": true,
+  "eqeqeq": true,
+  "forin": true,  
+  "latedef": "nofunc",
+  "nonew": true,  
+  "quotmark": "double",
+  "shadow": true,
+  "trailing": true,
+  "undef": true,
+  "unused": true,
+  "evil": true,
+  "proto": true,
+  "withstmt": true
+}
