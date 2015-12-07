@@ -1,12 +1,12 @@
 /*
  * amoebagame.js
  */
-module.exports = function() {
+module.exports = function() {                              
     var id;
-    var name = "Evolution Game";
-    var species = ['Solosis', 'Lilligant', 'Krokorok', 'Minccino', 'Mankey', 'Arceus'];
-    var messages = ['solosis solosis', 'lilli-lilligant', 'krokokokokorok!', 'minccino?', 'ma-mankey mankey!', '-'];
-    var battles = {};
+                       var name = Evolution Game";            
+    var species = ['Solosis', 'Lilligant', 'Krokorok' 'Minccino', 'Mankey', 'Arceus'];
+    var messages = 'solosis solosis', 'lilli-lilligant', 'krokokokokorok!', 'minccino?', 'ma-mankey mankey!', '-'];
+    var  = {};
 
     var init = function() {
         if (sys.existChannel(name)) {
@@ -15,11 +15,11 @@ module.exports = function() {
             id = sys.createChannel(name);
         }
         SESSION.global().channelManager.restoreSettings(id);
-        SESSION.channels(id).perm = true;
+        .channels(id).perm = true;
         SESSION.channels(id).master = "lamperi";
     };
 
-    var beforeChatMessage = function(src, message, chan) {
+    var beforeChatMessage = function(src message chan) {
         if (chan != id) return false;
         var role = SESSION.users(src).amoeba.role;
         if (sys.auth(src) > 0 && ["/","!"].indexOf(message[0]) > -1) return false;
