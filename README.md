@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/po-devs/po-server-goodies.png)](https://travis-ci.org/po-devs/po-server-goodies)
-
+# Hound
 This repository contains scripts.js and tiers.xml used in Pokemon Online Server.
 
 *** Installation instructions ***
