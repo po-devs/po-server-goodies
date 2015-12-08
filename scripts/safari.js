@@ -7425,7 +7425,8 @@ function Safari() {
                 preparationPhase = 0;
                 preparationThrows = {};
                 preparationFirst = null;
-
+                baitCooldown = sys.rand(4,7);
+                
                 var player, winner, playerId, amt;
                 for (e in contestantsCount) {
                     player = getAvatarOff(e);
