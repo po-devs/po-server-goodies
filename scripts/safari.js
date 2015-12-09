@@ -1241,10 +1241,10 @@ function Safari() {
         
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
-            currentRules = this.pickRules(null);
+            currentRules = this.pickRules(currentTheme);
         } else if (commandData.toLowerCase() in contestThemes) {
             currentTheme = commandData.toLowerCase();
-            currentRules = this.pickRules(null);
+            currentRules = this.pickRules(currentTheme);
         } else if (nextTheme) {
             if (Array.isArray(nextTheme)) {
                 nextTheme = nextTheme[sys.rand(0, nextTheme.length)];
@@ -1257,7 +1257,7 @@ function Safari() {
         } else {
             var themeList = Object.keys(contestThemes);
             currentTheme = Math.random() < 0.4 ? null : themeList[sys.rand(0, themeList.length)];
-            currentRules = this.pickRules(null);
+            currentRules = this.pickRules(currentTheme);
         }
         
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
