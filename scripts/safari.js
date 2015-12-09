@@ -519,6 +519,77 @@ function Safari() {
     
     var currentTheme;
     var nextTheme;
+    var currentRules;
+    var nextRules;
+    var defaultRules = {
+        "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
+            "chance": 0,
+            "sets": [
+                ["Water", "Fire", "Grass"],
+                ["Dark", "Fighting", "Psychic"]
+            ]
+        },
+        "excludeTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
+            "Normal" : 0.05,
+            "Fighting" : 0.05,
+            "Flying" : 0.05,
+            "Poison" : 0.05,
+            "Ground" : 0.05,
+            "Rock" : 0.05,
+            "Bug" : 0.05,
+            "Ghost" : 0.05,
+            "Steel" : 0.05,
+            "Fire" : 0.05,
+            "Water" : 0.05,
+            "Grass" : 0.05,
+            "Electric" : 0.05,
+            "Psychic" : 0.05,
+            "Ice" : 0.05,
+            "Dragon" : 0.05,
+            "Dark" : 0.05,
+            "Fairy" : 0.05
+        },
+        "excludeBalls": {
+            "safari": 0.03,
+            "great": 0.06,
+            "ultra": 0.10,
+            "master": 0.15,
+            "myth": 0.15,
+            "luxury": 0.15,
+            "quick": 0.15,
+            "heavy": 0.15,
+            "spy": 0.15,
+            "clone": 0.15,
+            "premier": 0.15
+        },
+        "bst": { //Both min and max are optional. It's possible to have only one of them in this object
+            "minChance": 0.05,
+            "min": [230, 400],
+            "maxChance": 0.2,
+            "max": [400, 520]
+        },
+        "noLegendaries": {
+            "chance": 0.07
+        },
+        "inver": {
+            "chance": 0.12
+        },
+        "rewards": {
+            "sets": {
+                "defaultSet": {
+                    "gacha": 10
+                },
+                "extra": {
+                    "gacha": 15,
+                    "silver": 2
+                }
+            },
+            "chance": {
+                "defaultSet": 0.9,
+                "extra": 0.1
+            }
+        }
+    };
     /* Theme Syntax:
     forest: {
         types: ["Grass", "Bug"], //Types that will be included. Pokémon only needs to match one of these types
@@ -734,6 +805,9 @@ function Safari() {
         v=n%100;
         return n+(s[(v-20)%10]||s[v]||s[0]);
     }
+    function chance(value) {
+        return Math.random() < value;
+    }
     function randomSample(hash) {
         var cum = 0;
         var val = Math.random();
@@ -910,7 +984,10 @@ function Safari() {
                 }
             }), "or");
         }
-        return contestThemes[obj].name;
+        if (obj in contestThemes) {
+            return contestThemes[obj].name;
+        }
+        return "Default";
     }
     function loadLastId () {
         try {
@@ -1156,20 +1233,28 @@ function Safari() {
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
+        
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
+            currentRules = this.pickRules(null);
         } else if (commandData.toLowerCase() in contestThemes) {
             currentTheme = commandData.toLowerCase();
+            currentRules = this.pickRules(null);
         } else if (nextTheme) {
             if (Array.isArray(nextTheme)) {
                 nextTheme = nextTheme[sys.rand(0, nextTheme.length)];
             }
             currentTheme = nextTheme == "none" ? null : nextTheme;
+            if (nextRules && nextTheme in nextRules) {
+                currentRules = nextRules[nextTheme];
+            }
             nextTheme = null;
         } else {
             var themeList = Object.keys(contestThemes);
             currentTheme = Math.random() < 0.4 ? null : themeList[sys.rand(0, themeList.length)];
+            currentRules = this.pickRules(null);
         }
+        
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         if (icon) {
             sys.sendHtmlAll("<font color='magenta'><timestamp/> *** **********************************************************</font> " + icon, safchan);
@@ -1177,6 +1262,9 @@ function Safari() {
             sys.sendAll("*** ************************************************************ ***", safchan);
         }
         safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
+        if (currentRules && Object.keys(currentRules).length > 0) {
+            safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules), safchan);
+        }
         sys.sendAll("*** ************************************************************ ***", safchan);
 
         if (contestBroadcast) {
@@ -1191,7 +1279,142 @@ function Safari() {
         contestantsCount = {};
         contestantsWild = [];
         wildEvent = false;
+        nextRules = null;
         safari.createWild();
+    };
+    this.pickRules = function(theme) {
+        var out = {}, e, list, exclude;
+        var rules = theme in contestThemes ? contestThemes[theme].rules : null;
+        
+        if (!rules) {
+            rules = defaultRules;
+        }
+        
+        if ("onlyTypes" in rules && chance(rules.onlyTypes.chance)) {
+            list = rules.onlyTypes.sets.random();
+            exclude = [];
+            for (e in effectiveness) {
+                if (!list.contains(e)) {
+                    exclude.push(e);
+                }
+            }
+            out.excludeTypes = exclude;
+        } else if ("excludeTypes" in rules) {
+            exclude = [];
+            for (e in rules.excludeTypes) {
+                if (chance(rules.excludeTypes[e])) {
+                    exclude.push(e);
+                }
+            }
+            out.excludeTypes = exclude;
+        }
+        if ("onlyBalls" in rules && chance(rules.onlyBalls.chance)) {
+            list = rules.onlyBalls.sets.random();
+            exclude = [];
+            for (e = 0; e < allBalls.length; e++) {
+                if (!list.contains(allBalls[e])) {
+                    exclude.push(e);
+                }
+            }
+            out.excludeBalls = exclude;
+        } else if ("excludeBalls" in rules) {
+            exclude = [];
+            for (e in rules.excludeBalls) {
+                if (chance(rules.excludeBalls[e])) {
+                    exclude.push(e);
+                }
+            }
+            out.excludeBalls = exclude;
+        }
+        if ("bst" in rules) {
+            var bst = rules.bst;
+            if ("min" in bst && "minChance" in bst && chance(bst.minChance)) {
+                out.minBST = sys.rand(bst.min[0], bst.min[1]);
+            }
+            if ("max" in bst && "maxChance" in bst && chance(bst.maxChance)) {
+                out.maxBST = sys.rand(bst.max[0], bst.max[1]);
+            }
+        }
+        if ("inver" in rules && chance(rules.inver.chance)) {
+            out.inver = true;
+        }
+        if ("noLegendaries" in rules && chance(rules.noLegendaries.chance)) {
+            out.noLegendaries = true;
+        }
+        if ("rewards" in rules) {
+            var rew = rules.rewards;
+            var set = randomSample(rew.chance);
+            if (set in rew.sets) {
+                out.rewards = rew.sets[set];
+            }
+        }
+        
+        return out;
+    };
+    this.translateRules = function(rules) {
+        var out = [], list, e;
+        
+        if (!rules) {
+            return "No special rules";
+        }
+        
+        if ("excludeTypes" in rules && rules.excludeTypes.length > 0) {
+            if (rules.excludeTypes.length > Object.keys(effectiveness).length / 2) {
+                list = [];
+                for (e in effectiveness) {
+                    if (!rules.excludeTypes.contains(e)) {
+                        list.push(e);
+                    }
+                }
+                out.push("Allowed Types: " + readable(list, "and"));
+            } else {
+                out.push("Forbidden Types: " + readable(rules.excludeTypes, "and"));
+            }
+        }
+        if (rules.noLegendaries) {
+            out.push("Legendaries Forbidden");
+        }
+        if (rules.inver) {
+            out.push("Inverted Type Effectiveness");
+        }
+        if ("minBST" in rules && "maxBST" in rules) {
+            out.push("Allowed BST: " + rules.minBST + "~" + rules.maxBST);
+        } else {
+            if ("minBST" in rules) {
+                out.push("Minimum BST: " + rules.minBST);
+            }
+            if ("maxBST" in rules) {
+                out.push("Maximum BST: " + rules.maxBST);
+            }
+        }
+        if ("excludeBalls" in rules && rules.excludeBalls.length > 0) {
+            if (rules.excludeBalls.length > allBalls.length / 2) {
+                list = [];
+                for (e = 0; e < allBalls.length; e++) {
+                    if (!rules.excludeBalls.contains(allBalls[e])) {
+                        list.push(e);
+                    }
+                }
+                out.push("Allowed Balls: " + readable(list.map(finishName), "and"));
+            } else {
+                out.push("Forbidden Balls: " + readable(rules.excludeBalls.map(finishName), "and"));
+            }
+        }
+        if ("rewards" in rules) {
+            list = [];
+            for (var e in rules.rewards) {
+                list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+            }
+            if (list.length > 1 || list[0] !== "10 Gachapon Tickets") {
+                out.push("Reward: " + readable(list, "and"));
+            }
+        }
+        
+        if (out.length === 0) {
+            return "No special rules";
+        }
+        
+        return out.join(" | ");
     };
     this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player) {
         var num,
@@ -1397,6 +1620,10 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use Master Ball!", safchan);
             return;
         }
+        if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball)) {
+            safaribot.sendMessage(src, "The use of " + itemAlias(ball, true, true) + " is forbidden during this contest!", safchan);
+            return;
+        }
 
         var name = sys.name(src);
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
@@ -1440,7 +1667,7 @@ function Safari() {
             ballBonus = itemData[ball].bonusRate;
         }
         var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
-        if (player.costume === "inver") {
+        if (player.costume === "inver" || (currentRules && currentRules.inver)) {
             if (typeBonus === 0) {
                 typeBonus = 0.25;
             }
@@ -1458,8 +1685,9 @@ function Safari() {
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) ? dailyBoost.bonus : 1;
+        var rulesMod = !currentRules || this.validForRules(leader, currentRules) ? 1 : 0.02;
         
-        var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus;
+        var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod;
         if (finalChance <= 0) {
             finalChance = 0.01;
         }
@@ -1583,6 +1811,25 @@ function Safari() {
         }
 
         return result;
+    };
+    this.validForRules = function(pokeId, rules) {
+        var type1 = sys.type(sys.pokeType1(pokeId)),
+            type2 = sys.type(sys.pokeType2(pokeId)),
+            bst = getBST(pokeId);
+            
+        if ("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) {
+            return false;
+        }
+        if ("minBST" in rules && bst < rules.minBST) {
+            return false;
+        }
+        if ("maxBST" in rules && bst > rules.maxBST) {
+            return false;
+        }
+        if (rules.noLegendaries && isLegendary(pokeId)) {
+            return false;
+        }
+        return true;
     };
     this.throwBait = function (src, commandData) {
         if (!validPlayers("self", src)) {
@@ -4231,7 +4478,7 @@ function Safari() {
             }
         }
         if (minBid >= startingOffer / 2) {
-            safaribot.sendMessage(src, "Minimum bid raise cannot be higher than " + Math.floor(startingOffer/2) + "!", safchan);
+            safaribot.sendMessage(src, "Minimum bid raise must be at most half the starting offer ($" + Math.floor(startingOffer/2) + ")!", safchan);
             return;
         }
         if (contestCooldown <= 200 || contestCount > 0) {
@@ -5563,7 +5810,11 @@ function Safari() {
         this.members.push(sys.name(src).toLowerCase());
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "You joined " + this.hostName + "'s auction for a " + this.productName + ". Type <a href='po:setmsg//bid " + (this.currentOffer + this.minBid) + "'>/bid [value]</a> to make your offer, or <a href='po:send//leave'>/leave</a> to quit the auction.", safchan);
-        safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
+        if (this.currentBidder) {
+            safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
+        } else {
+            safaribot.sendMessage(src, "No offer has been made yet, so you can bid the starting offer ($" + addComma(this.currentOffer + this.minBid) + "). Further offers must at least $" + addComma(this.minBid) + " higher than the current one.", safchan);
+        }
         sys.sendMessage(src, "", safchan);
     };
     Auction.prototype.leave = function(src) {
@@ -6585,6 +6836,9 @@ function Safari() {
                 var min = Math.floor(contestCount/60);
                 var sec = contestCount%60;
                 safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? contestThemes[currentTheme].name : "Default") + ".", safchan);
+                if (currentRules) {
+                    safaribot.sendMessage(src, "Contest's Rules: " + this.translateRules(currentRules), safchan);
+                }
                 safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
             } else {
                 var min = Math.floor(contestCooldown/60);
@@ -6592,6 +6846,16 @@ function Safari() {
                 safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
                 if (nextTheme) {
                     safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
+                    
+                    /* if (Array.isArray(nextTheme) && nextRules) { //Disabled for now
+                        var t, n;
+                        for (n = 0; n < nextTheme.length; n++) {
+                            t = nextTheme[n];
+                            if (nextRules && t in nextRules) {
+                                safaribot.sendMessage(src, "Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
+                            }
+                        }
+                    } */
                 }
             }
             safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
@@ -7323,8 +7587,24 @@ function Safari() {
             nextTheme = ["none"];
             nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle().slice(0, 3));
             
+            nextRules = {};
+            var rulesDesc = [];
+            for (var n = 0; n < nextTheme.length; n++) {
+                var t = nextTheme[n];
+                if (t == "none") {
+                    nextRules[t] = safari.pickRules(null);
+                } else {
+                    nextRules[t] = safari.pickRules(t);
+                }
+                rulesDesc.push("Rules for " + themeName(t) + " --- " + safari.translateRules(nextRules[t]));
+            }
+            
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
+            /* sys.sendAll("*** ************************************************************ ***", safchan);
+            for (n = 0; n < rulesDesc.length; n++) {
+                safaribot.sendAll(rulesDesc[n], safchan); //Disabled for now
+            } */
             sys.sendAll("*** ************************************************************ ***", safchan);
 
             sys.sendAll("*** ************************************************************ ***", 0);
@@ -7417,16 +7697,7 @@ function Safari() {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
                 }
                 sys.sendAll("*** ************************************************************ ***", safchan);
-                currentPokemon = null;
-                currentTheme = null;
-                wildEvent = false;
-                
-                //Clear throwers if the contest ends with a Wild Pokemon uncaught
-                preparationPhase = 0;
-                preparationThrows = {};
-                preparationFirst = null;
-                baitCooldown = sys.rand(4,7);
-                
+
                 var player, winner, playerId, amt;
                 for (e in contestantsCount) {
                     player = getAvatarOff(e);
@@ -7443,22 +7714,46 @@ function Safari() {
                         }
                     }
                 }
-                contestCatchers = {};
+                var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
                 if (winners.length > 0) {
+                    var r, rewardName, amt;
                     for (e in winners) {
                         winner = winners[e];
                         player = getAvatarOff(winner);
                         if (player) {
-                            player.balls.gacha += 10;
+                            rewardName = [];
+                            for (r in reward) {
+                                amt = reward[r];
+                                if (amt > 0) {
+                                    player.balls[r] += amt;
+                                    if (player.balls[r] > itemCap) {
+                                        player.balls[r] = itemCap;
+                                    }
+                                    rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
+                                }
+                            }
                             player.records.contestsWon += 1;
                             safari.saveGame(player);
                             playerId = sys.id(winner);
                             if (playerId) {
-                                safaribot.sendMessage(playerId, "You received 10 Gachapon Tickets for winning the contest!", safchan);
+                                safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
                             }
                         }
                     }
                 }
+                
+                currentPokemon = null;
+                currentTheme = null;
+                wildEvent = false;
+                currentRules = null;
+                contestCatchers = {};
+                
+                //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                preparationPhase = 0;
+                preparationThrows = {};
+                preparationFirst = null;
+                baitCooldown = sys.rand(4,7);
+                
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
                 var onChannel = sys.playersOfChannel(safchan),
                     today = getDay(now());
