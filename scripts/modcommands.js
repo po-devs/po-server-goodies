@@ -620,7 +620,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         querybot.sendMessage(src, prefix + smessage, channel);
         return;
     }
-   if (command == "tempban") {
+    if (command === "showip") {        
+        var name = commandData;
+        var ip;
+        if (sys.dbIp(name) !== undefined) {
+            ip = sys.dbIp(name);
+        }
+        if (!ip) {
+            querybot.sendMessage(src, "This user does not have a valid IP.", channel);
+            return;
+        }
+        querybot.sendMessage(src, "User: " + name + " | IP: " + ip + ".", channel);
+        return;        
+    }
+    if (command === "tempban") {
         var tmp = commandData.split(":");
         if (tmp.length === 0) {
             normalbot.sendMessage(src, "Usage /tempban name:minutes.", channel);
