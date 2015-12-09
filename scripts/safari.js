@@ -549,7 +549,7 @@ function Safari() {
             "Dark" : 0.05,
             "Fairy" : 0.05
         },
-        "bonusTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
+        "bonusTypes": { //Excluded types have priority over bonus types. If a type is picked by both, it will only count for exclude.
             "Normal" : 0.05,
             "Fighting" : 0.05,
             "Flying" : 0.05,
