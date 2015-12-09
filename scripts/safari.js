@@ -1286,6 +1286,10 @@ function Safari() {
         var out = {}, e, list, exclude;
         var rules = theme in contestThemes ? contestThemes[theme].rules : null;
         
+        if (sys.rand(0, 100) < 25) {
+            return {};
+        }
+        
         if (!rules) {
             rules = defaultRules;
         }
@@ -1542,8 +1546,8 @@ function Safari() {
         }
         lastWild = now();
     };
-    this.validForTheme = function(pokeId, themeName) {
-        var theme = contestThemes[themeName];
+    this.validForTheme = function(pokeId, name) {
+        var theme = contestThemes[name];
         var pokeNum = parseInt(pokeId, 10);
 
         if (theme.exclude.indexOf(pokeNum) !== -1) {
@@ -6847,15 +6851,16 @@ function Safari() {
                 if (nextTheme) {
                     safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
                     
-                    /* if (Array.isArray(nextTheme) && nextRules) { //Disabled for now
+                    if (Array.isArray(nextTheme) && nextRules) { //Disabled for now
                         var t, n;
+                        
                         for (n = 0; n < nextTheme.length; n++) {
                             t = nextTheme[n];
                             if (nextRules && t in nextRules) {
-                                safaribot.sendMessage(src, "Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
+                                safaribot.sendMessage(src, "--- Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
                             }
                         }
-                    } */
+                    }
                 }
             }
             safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
@@ -7601,10 +7606,9 @@ function Safari() {
             
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
-            /* sys.sendAll("*** ************************************************************ ***", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
-                safaribot.sendAll(rulesDesc[n], safchan); //Disabled for now
-            } */
+                safaribot.sendAll(" --- " + rulesDesc[n], safchan);
+            }
             sys.sendAll("*** ************************************************************ ***", safchan);
 
             sys.sendAll("*** ************************************************************ ***", 0);
