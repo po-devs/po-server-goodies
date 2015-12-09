@@ -549,24 +549,44 @@ function Safari() {
             "Dark" : 0.05,
             "Fairy" : 0.05
         },
+        "bonusTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
+            "Normal" : 0.05,
+            "Fighting" : 0.05,
+            "Flying" : 0.05,
+            "Poison" : 0.05,
+            "Ground" : 0.05,
+            "Rock" : 0.05,
+            "Bug" : 0.05,
+            "Ghost" : 0.05,
+            "Steel" : 0.05,
+            "Fire" : 0.05,
+            "Water" : 0.05,
+            "Grass" : 0.05,
+            "Electric" : 0.05,
+            "Psychic" : 0.05,
+            "Ice" : 0.05,
+            "Dragon" : 0.05,
+            "Dark" : 0.05,
+            "Fairy" : 0.05
+        },
         "excludeBalls": {
-            "safari": 0.03,
-            "great": 0.06,
-            "ultra": 0.10,
-            "master": 0.15,
-            "myth": 0.15,
-            "luxury": 0.15,
+            "safari": 0,
+            "great": 0.02,
+            "ultra": 0.08,
+            "master": 0.10,
+            "myth": 0.125,
+            "luxury": 0.125,
             "quick": 0.15,
-            "heavy": 0.15,
-            "spy": 0.15,
-            "clone": 0.15,
-            "premier": 0.15
+            "heavy": 0.125,
+            "spy": 0.125,
+            "clone": 0.125,
+            "premier": 0.125
         },
         "bst": { //Both min and max are optional. It's possible to have only one of them in this object
-            "minChance": 0.05,
+            "minChance": 0,
             "min": [230, 400],
-            "maxChance": 0.2,
-            "max": [400, 520]
+            "maxChance": 0.18,
+            "max": [420, 520]
         },
         "noLegendaries": {
             "chance": 0.07
@@ -1225,7 +1245,7 @@ function Safari() {
         var ret = "", hasBalls = false;
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
-            if (player.balls[e] > 0) {
+            if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e))) {
                 ret += "«<a href='po:send//catch " + itemData[e].name +"'>" + cap(itemData[e].name) + "</a>» ";
                 hasBalls = true;
             }
@@ -1291,11 +1311,10 @@ function Safari() {
         var out = {}, e, list, exclude;
         var rules = theme in contestThemes ? contestThemes[theme].rules : null;
         
-        if (sys.rand(0, 100) < 25) {
-            return {};
-        }
-        
         if (!rules) {
+            if (sys.rand(0, 100) < 25) {
+                return {};
+            }
             rules = defaultRules;
         }
         
@@ -1313,16 +1332,31 @@ function Safari() {
             for (e in rules.excludeTypes) {
                 if (chance(rules.excludeTypes[e])) {
                     exclude.push(e);
+                    if (exclude.length >= 3) {
+                        break;
+                    }
                 }
             }
             out.excludeTypes = exclude;
+        }
+        if ("bonusTypes" in rules) {
+            list = [];
+            for (e in rules.bonusTypes) {
+                if ((!out.excludeTypes || !out.excludeTypes.contains(e) ) && chance(rules.bonusTypes[e])) {
+                    list.push(e);
+                    if (list.length >= 2) {
+                        break;
+                    }
+                }
+            }
+            out.bonusTypes = list;
         }
         if ("onlyBalls" in rules && chance(rules.onlyBalls.chance)) {
             list = rules.onlyBalls.sets.random();
             exclude = [];
             for (e = 0; e < allBalls.length; e++) {
                 if (!list.contains(allBalls[e])) {
-                    exclude.push(e);
+                    exclude.push(allBalls[e]);
                 }
             }
             out.excludeBalls = exclude;
@@ -1375,6 +1409,9 @@ function Safari() {
             return "No special rules";
         }
         
+        if ("bonusTypes" in rules && rules.bonusTypes.length > 0) {
+            out.push("Buffed Types: " + readable(rules.bonusTypes, "and"));
+        }
         if ("excludeTypes" in rules && rules.excludeTypes.length > 0) {
             if (rules.excludeTypes.length > Object.keys(effectiveness).length / 2) {
                 list = [];
@@ -1383,9 +1420,9 @@ function Safari() {
                         list.push(e);
                     }
                 }
-                out.push("Allowed Types: " + readable(list, "and"));
+                out.push("Recommended Types: " + readable(list, "and"));
             } else {
-                out.push("Forbidden Types: " + readable(rules.excludeTypes, "and"));
+                out.push("Nerfed Types: " + readable(rules.excludeTypes, "and"));
             }
         }
         if (rules.noLegendaries) {
@@ -1395,13 +1432,13 @@ function Safari() {
             out.push("Inverted Type Effectiveness");
         }
         if ("minBST" in rules && "maxBST" in rules) {
-            out.push("Allowed BST: " + rules.minBST + "~" + rules.maxBST);
+            out.push("Recommended BST: " + rules.minBST + "~" + rules.maxBST);
         } else {
             if ("minBST" in rules) {
-                out.push("Minimum BST: " + rules.minBST);
+                out.push("Recommended BST: " + rules.minBST + " or more");
             }
             if ("maxBST" in rules) {
-                out.push("Maximum BST: " + rules.maxBST);
+                out.push("Recommended BST: " + rules.maxBST + " or less");
             }
         }
         if ("excludeBalls" in rules && rules.excludeBalls.length > 0) {
@@ -1409,7 +1446,7 @@ function Safari() {
                 list = [];
                 for (e = 0; e < allBalls.length; e++) {
                     if (!rules.excludeBalls.contains(allBalls[e])) {
-                        list.push(e);
+                        list.push(allBalls[e]);
                     }
                 }
                 out.push("Allowed Balls: " + readable(list.map(finishName), "and"));
@@ -1702,7 +1739,7 @@ function Safari() {
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) ? dailyBoost.bonus : 1;
-        var rulesMod = !currentRules || this.validForRules(leader, currentRules) ? 1 : 0.02;
+        var rulesMod = !currentRules ? this.getRulesMod(leader, currentRules) : 1;
         
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod;
         if (finalChance <= 0) {
@@ -1829,24 +1866,29 @@ function Safari() {
 
         return result;
     };
-    this.validForRules = function(pokeId, rules) {
+    this.getRulesMod = function(pokeId, rules) {
+        var NERF = 0.25;
+        var BUFF = 1.30;
         var type1 = sys.type(sys.pokeType1(pokeId)),
             type2 = sys.type(sys.pokeType2(pokeId)),
             bst = getBST(pokeId);
             
         if ("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) {
-            return false;
+            return NERF;
         }
         if ("minBST" in rules && bst < rules.minBST) {
-            return false;
+            return NERF;
         }
         if ("maxBST" in rules && bst > rules.maxBST) {
-            return false;
+            return NERF;
         }
         if (rules.noLegendaries && isLegendary(pokeId)) {
-            return false;
+            return NERF;
         }
-        return true;
+        if ("bonusTypes" in rules && (rules.bonusTypes.contains(type1) || rules.bonusTypes.contains(type2))) {
+            return BUFF;
+        }
+        return 1;
     };
     this.throwBait = function (src, commandData) {
         if (!validPlayers("self", src)) {
@@ -4150,6 +4192,10 @@ function Safari() {
             safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
             return;
         }
+        if (info[0].toLowerCase() == userName || sys.ip(targetId) === sys.ip(src)) {
+            safaribot.sendMessage(src, "You cannot trade with yourself!", safchan);
+            return;
+        }
 
         var offer = info[1].replace(/flabebe/gi, "flabébé").toLowerCase();
         var request = info[2].replace(/flabebe/gi, "flabébé").toLowerCase();
@@ -4256,16 +4302,18 @@ function Safari() {
                 sys.appendToFile(tradeLog, now() + "|||" + sys.name(src) + "::" + offerName + "|||" + sys.name(targetId) + "::" + requestName + "\n");
             }
             else {
-                safaribot.sendMessage(src, "Trade cancelled because you and " + sys.name(targetId) + " didn't come to an agreement!" , safchan);
-                safaribot.sendMessage(targetId, "Trade cancelled because you and " + sys.name(src) + " didn't come to an agreement!" , safchan);
+                var acceptCommand = "/trade " + sys.name(src) + ":" + reqInput + ":" + offerInput;
+                safaribot.sendMessage(src, "You sent a counter-offer to " + sys.name(targetId) + "!" , safchan);
+                safaribot.sendHtmlMessage(targetId, sys.name(src) + " sent you a counter-offer. To accept it, type <a href=\"po:setmsg/" + acceptCommand + "\">" + acceptCommand + "</a>.", safchan);
                 sys.sendMessage(src, "" , safchan);
                 sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
+                tradeRequests[userName] = { target: targetName, offer: offerInput, request: reqInput };
             }
         }
         else {
             var acceptCommand = "/trade " + sys.name(src) + ":" + reqInput + ":" + offerInput;
-            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href=\"po:send/" + acceptCommand + "\">" + acceptCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(targetId, "To accept the trade, type <a href=\"po:setmsg/" + acceptCommand + "\">" + acceptCommand + "</a>.", safchan);
             sys.sendMessage(src, "" , safchan);
             sys.sendMessage(targetId, "" , safchan);
             tradeRequests[userName] = { target: targetName, offer: offerInput, request: reqInput };
