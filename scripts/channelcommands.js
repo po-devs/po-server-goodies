@@ -235,23 +235,31 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmute") {
-        var tmp = commandData.split(":",3);
-        var tarname = tmp[0];
-        var time = 0;
-        var reason = "";
-        if (tmp.length >= 2) {
-            reason = tmp[1];
-            if (tmp.length >= 3) {
-                time = getSeconds(tmp[2]);
-                if (isNaN(time)) {
-                    time = 0;
-                }
-            }
-        }
+        var i = commandData.indexOf(":"),
+            j = commandData.lastIndexOf(":"),
+            time = 0,
+            reason = "",
+            tarname = "";
+        if (i !== -1) {
+            tarname = commandData.substring(0, i);
+            var timeString = commandData.substring(j + 1, commandData.length);
+            if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
+                time = getSeconds(timeString);
+            } else {
+                time = 0;
+                reason = commandData.slice(i + 1);
+                j = i;
+            } 
+            if (i !== j) {
+                reason = commandData.substring(i + 1, j);
+            };
+        } else {
+            tarname = commandData;
+        };
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        }
+        };
         poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
@@ -259,22 +267,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         poChannel.unmute(src, commandData);
         return;
     }
-    if (command == "cmutes") {
-        var cmutelist = poChannel.getReadableList("mutelist");
+    if (command === "cmutes") {
+        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src));
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
-    if (command == "cbans") {
-        var cbanlist = poChannel.getReadableList("banlist");
+    if (command === "cbans") {
+        var cbanlist = poChannel.getReadableList("banlist", sys.os(src));
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
         return;
@@ -327,23 +333,31 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cban") {
-        var tmp = commandData.split(":",3);
-        var tarname = tmp[0];
-        var time = 0;
-        var reason = "";
-        if (tmp.length >= 2) {
-            reason = tmp[1];
-            if (tmp.length >= 3) {
-                time = getSeconds(tmp[2]);
-                if (isNaN(time)) {
-                    time = 0;
-                }
-            }
-        }
+        var i = commandData.indexOf(":"),
+            j = commandData.lastIndexOf(":"),
+            time = 0,
+            reason = "",
+            tarname = "";
+        if (i !== -1) {
+            tarname = commandData.substring(0, i);
+            var timeString = commandData.substring(j + 1, commandData.length);
+            if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
+                time = getSeconds(timeString);
+            } else {
+                time = 0;
+                reason = commandData.slice(i + 1);
+                j = i;
+            } 
+            if (i !== j) {
+                reason = commandData.substring(i + 1, j);
+            };
+        } else {
+            tarname = commandData;
+        };
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        }
+        };
         poChannel.ban(src, tarname, {'time': time, 'reason': reason});
         return;
     }
@@ -391,7 +405,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
         if (returnVal) {    
-            channelbot.sendMessage(src, returnVal);
+            channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
          }
@@ -403,6 +417,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You removed a rule", channel);
+        }
+        return;
+    }
+    if (command == "editrule") {
+        commandData = commandData.split(":");
+        if (commandData.length !== 3) {
+            channelbot.sendMessage(src, "Use /editrule index:name:description", channel);
+            return;
+        }
+        var returnVal = poChannel.editRule(commandData[0], commandData[1], commandData[2]);
+        if (returnVal) {    
+            channelbot.sendMessage(src, returnVal, channel);
+        } else {
+            channelbot.sendMessage(src, "You edited a rule", channel);
         }
         return;
     }
@@ -463,6 +491,7 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/deowner: Removes channel owner status from a user.", channel);
         sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules.", channel);
         sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
+        sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edit rule [number].", channel);
     }
     if (SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
