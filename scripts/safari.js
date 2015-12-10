@@ -1922,21 +1922,22 @@ function Safari() {
             safaribot.sendMessage(src, "You just threw some bait not too long ago. Let others have a turn!", safchan);
             return;
         }
-        if (baitCooldown > 0) {
-            safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
-            return;
-        }
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "Contest rules forbid the use of Bait. Please wait until the Contest is over.", safchan);
+        
+        var item = "bait";
+        if (!(item in player.balls) || player.balls[item] <= 0) {
+            safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
             return;
         }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
             safaribot.sendMessage(src, "You can't catch any new Pokémon because all your boxes are full! Please buy a new box with /buy.", safchan);
             return;
         }
-        var item = "bait";
-        if (!(item in player.balls) || player.balls[item] <= 0) {
-            safaribot.sendMessage(src, "You have no " + cap(item) + "!", safchan);
+        if (contestCount > 0) {
+            safaribot.sendMessage(src, "Contest rules forbid the use of Bait. Please wait until the Contest is over.", safchan);
+            return;
+        }
+        if (baitCooldown > 0) {
+            safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
             return;
         }
         var ballUsed = isBall(commandData.toLowerCase()) ? commandData.toLowerCase() : "safari";
