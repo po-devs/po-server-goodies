@@ -3792,6 +3792,9 @@ function Safari() {
             player.pokemon.push(input.id);
         }
         else if (input.type == "item") {
+            if (!fromNPC && input.id == "battery") {
+                this.dailyReward(src, getDay(now()));
+            }
             player.balls[input.id] += amount;
         }
         if (isSilver) {
@@ -3822,6 +3825,9 @@ function Safari() {
             if (input.type == "poke") {
                 this.removePokemon(sellerId, input.id);
             } else if (input.type == "item") {
+                if (input.id == "battery") {
+                    this.dailyReward(sellerId, getDay(now()));
+                }
                 seller.balls[input.id] -= amount;
                 this.updateShop(sellerName, input.id);
             }
@@ -4265,6 +4271,11 @@ function Safari() {
                     case "item":
                         obj = itemAlias(offer.substr(offer.indexOf("@") + 1), true);
                         val = parseInt(offer.substr(0, offer.indexOf("@")), 10) || 1;
+                        
+                        if (obj == "battery") {
+                            this.dailyReward(src, getDay(now()));
+                            this.dailyReward(targetId, getDay(now()));
+                        }
                         player.balls[obj] -= val;
                         target.balls[obj] += val;
                         this.updateShop(sys.name(src), obj);
@@ -4285,6 +4296,10 @@ function Safari() {
                     case "item":
                         obj = itemAlias(request.substr(request.indexOf("@") + 1), true);
                         val = parseInt(request.substr(0, request.indexOf("@")), 10) || 1;
+                        if (obj == "battery") {
+                            this.dailyReward(src, getDay(now()));
+                            this.dailyReward(targetId, getDay(now()));
+                        }
                         player.balls[obj] += val;
                         target.balls[obj] -= val;
                         this.updateShop(sys.name(targetId), obj);
