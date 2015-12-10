@@ -1749,7 +1749,7 @@ function Safari() {
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) ? dailyBoost.bonus : 1;
-        var rulesMod = !currentRules ? this.getRulesMod(leader, currentRules) : 1;
+        var rulesMod = currentRules ? this.getRulesMod(leader, currentRules) : 1;
         
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod;
         if (finalChance <= 0) {
