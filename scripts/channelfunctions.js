@@ -598,75 +598,74 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
     }
 };
 
-POChannel.prototype.getReadableList = function(type)
-{
+POChannel.prototype.getReadableList = function (type, os) {
     try {
-        var name = "";
-        var mh = {};
+        var entries = {}, name = "";
         if (type == "mutelist") {
-            mh = this.muted;
+            entries = this.muted;
             name = "Channel Muted";
-        }
-        else if (type == "banlist") {
-            mh = this.banned;
+        } else if (type == "banlist") {
+            entries = this.banned;
             name = "Channel Banned";
-        }
-        else {
+        } else {
             return "";
         }
-        var width=4;
-        var max_message_length = 30000;
-        var tmp = [];
-        var t = parseInt(sys.time(), 10);
-        var toDelete = [];
-        for (var x in mh) {
-            if (mh.hasOwnProperty(x)) {
-            if (!mh[x].hasOwnProperty("expiry")) {
+        if (os === undefined) {
+            os = "windows";
+        }
+        var width = 4, maxMessageLength = 30000, tmp = [];
+        for (var x in entries) {
+            if (entries.hasOwnProperty(x)) {
+            if (!entries[x].hasOwnProperty("expiry")) {
                 continue;
             }
             var playername = utilities.html_escape(x);
-            var expirytime = isNaN(mh[x].expiry) ? "never" : mh[x].expiry-parseInt(sys.time(),10);
+            var expirytime = isNaN(entries[x].expiry) ? "never" : entries[x].expiry-parseInt(sys.time(),10);
             if (expirytime <= 0) {
                 continue;
             }
-            var issuetime = getTimeString(parseInt(sys.time(),10)-mh[x].issuetime);
-            var auth = utilities.html_escape(mh[x].auth);
-            var reason = utilities.html_escape(mh[x].reason);
-            tmp.push([playername, auth, issuetime, isNaN(mh[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
+            var issuetime = getTimeString(parseInt(sys.time(),10)-entries[x].issuetime);
+            var auth = utilities.html_escape(entries[x].auth);
+            var reason = utilities.html_escape(entries[x].reason);
+            tmp.push([playername, auth, issuetime, isNaN(entries[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
             }
         }
         tmp.sort(function(a,b) { return a[2] - b[2];});
-
-        // generate HTML
-        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>';
-        var table_footer = '</table>';
-        var table = table_header;
-        var line;
-        var send_rows = 0;
-        while(tmp.length > 0) {
-            line = '<tr><td>'+tmp[0].join('</td><td>')+'</td></tr>';
-            tmp.splice(0,1);
-            if (table.length + line.length + table_footer.length > max_message_length) {
-                if (send_rows === 0) continue; // Can't send this line!
-                table += table_footer;
-                // Really need to return multiple tables from this function... return a list??
-                // Or give a callback
-                // sendChanHtmlMessage(src, table, this.id);
-                table = table_header;
-                send_rows = 0;
+        if (os === "android") {
+            if (tmp.length === 0) {
+                return "";
             }
-            table += line;
-            ++send_rows;
+            var x, html = "<b>*** " + utilities.html_escape(name) + " ***</b><br />";
+            for (x = 0; x < tmp.length; x++) {
+                html += "<b>" + utilities.html_escape(tmp[x][0]) + "</b> ~ by: " + utilities.html_escape(tmp[x][1]) + " ~ issued: " + tmp[x][2] + " ~ expires in: " + tmp[x][3] + " ~ reason: " + utilities.html_escape(tmp[x][4]) + "<br />";
+            }
+            return html;
+        } else {
+            var tableHeader = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="' + width + '"><center><strong>' + utilities.html_escape(name) + '</strong></center></td></tr><tr><th>Name</th><th>By</th><th>Issued ago</th><th>Expires in</th><th>Reason</th>',
+                tableFooter = '</table>',
+                table = tableHeader,
+                line,
+                sendRows = 0;
+            while (tmp.length > 0) {
+                line = '<tr><td>' + tmp[0].join('</td><td>') + '</td></tr>';
+                tmp.splice(0, 1);
+                if (table.length + line.length + tableFooter.length > maxMessageLength) {
+                    if (sendRows === 0) continue;
+                    table += tableFooter;
+                    table = tableHeader;
+                    sendRows = 0;
+                }
+                table += line;
+                ++sendRows;
+            }
+            table += tableFooter;
+            if (sendRows > 0) {
+                return table;
+            } else {
+                return "";
+            }
         }
-        table += table_footer;
-        if (send_rows > 0) {
-            return table;
-        }
-        else {
-            return "";
-        }
-    }
-    catch (e) {
+    } catch (error) {
         return "";
     }
 };

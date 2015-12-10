@@ -267,22 +267,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         poChannel.unmute(src, commandData);
         return;
     }
-    if (command == "cmutes") {
-        var cmutelist = poChannel.getReadableList("mutelist");
+    if (command === "cmutes") {
+        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src));
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
-    if (command == "cbans") {
-        var cbanlist = poChannel.getReadableList("banlist");
+    if (command === "cbans") {
+        var cbanlist = poChannel.getReadableList("banlist", sys.os(src));
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
         return;
