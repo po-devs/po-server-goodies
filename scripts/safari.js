@@ -602,11 +602,21 @@ function Safari() {
                 "extra": {
                     "gacha": 15,
                     "silver": 2
+                },
+                "gem": {
+                    "gacha": 10,
+                    "gem": 1
+                },
+                "nuggets": {
+                    "gacha": 10,
+                    "nugget": 3
                 }
             },
             "chance": {
-                "defaultSet": 0.9,
-                "extra": 0.1
+                "defaultSet": 0.85,
+                "extra": 0.05,
+                "gem": 0.05,
+                "nugget": 0.05
             }
         }
     };
@@ -7148,6 +7158,15 @@ function Safari() {
                 contestCount = 1;
             } else {
                 safari.startContest(commandData);
+            }
+            return true;
+        }
+        if (command === "precontest") {
+            if (contestCount > 0) {
+                safaribot.sendMessage(src, "You can't use this command during a contest!", safchan);
+            } else {
+                contestCooldown = 181;
+                safaribot.sendMessage(src, "Entering the pre-contest preparation phase!", safchan);
             }
             return true;
         }
