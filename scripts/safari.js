@@ -585,8 +585,8 @@ function Safari() {
         "bst": { //Both min and max are optional. It's possible to have only one of them in this object
             "minChance": 0,
             "min": [230, 400],
-            "maxChance": 0.18,
-            "max": [420, 520]
+            "maxChance": 0.11,
+            "max": [430, 531]
         },
         "noLegendaries": {
             "chance": 0.07
