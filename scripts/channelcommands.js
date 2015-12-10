@@ -252,14 +252,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             } 
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
-            };
+            }
         } else {
             tarname = commandData;
-        };
+        }
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        };
+        }
         poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
@@ -350,14 +350,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             } 
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
-            };
+            }
         } else {
             tarname = commandData;
-        };
+        }
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        };
+        }
         poChannel.ban(src, tarname, {'time': time, 'reason': reason});
         return;
     }
