@@ -1585,7 +1585,7 @@ function Safari() {
         pokeId = poke(num + (shiny ? "" : 0));
         currentPokemon = shiny ? "" + num : num;
         currentPokemonCount = amount;
-        currentThrows = Math.floor(maxThrows + ((amount - 1) / 2));
+        currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
         if (amount > 1) {
             var ret = [];
             ret += "<hr><center>A horde of wild " + pokeId + " appeared! <i>(BST: " + getBST(num) + ")</i><br/>";
