@@ -6549,7 +6549,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "*** Item Help ***", safchan);
             sys.sendMessage(src, help, safchan);
-            if (!help2) {
+            if (help2) {
                 sys.sendMessage(src, help2, safchan);
             }
             sys.sendMessage(src, "", safchan);
