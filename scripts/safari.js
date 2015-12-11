@@ -872,6 +872,34 @@ function Safari() {
             }
         }
     }
+    function getRange(input) {
+        var range = input.split("-"), lower, upper;
+        
+        if (range.length > 1) {
+            lower = parseInt(range[0], 10);
+            upper = parseInt(range[1], 10);
+        } else {
+            lower = 0;
+            upper = parseInt(range[0], 10);
+        }
+        
+        if (isNaN(lower) || isNaN(upper)) {
+            return null;
+        }
+        if (lower === 0) {
+            lower = 1;
+        }
+        return { lower: lower, upper: upper};
+    }
+    function getArrayRange(arr, lower, upper) {
+        var result = arr.concat();
+
+        if (lower >= 0) {
+            return result.slice(Math.max(lower-1, 0), upper);
+        } else {
+            return result.slice(-upper, -lower);
+        }
+    }
     function addComma(num) {
         if (typeof num !== "number") {
             return num;
@@ -6114,6 +6142,9 @@ function Safari() {
                         player.value = "records" in data ? (data.records[i] || 0 ): 0;
                     break;
                 }
+                if (player.value === 0) {
+                    continue;
+                }
                 leaderboards[i].push(player);
             }
         }
@@ -6240,33 +6271,25 @@ function Safari() {
     this.saveShop = function() {
         permObj.add("npcShop", JSON.stringify(npcShop));
     };
+    
     this.showLog = function(src, commandData, file, name, parser) {
         var log = sys.getFileContent(file);
 
         if (log) {
-            log = log.split("\n");
             var info = commandData.split(":"),
+                range = getRange(info[0]),
                 term = info.length > 1 ? info[1] : "",
-                e, lower = 0, upper = 10;
-
-            var range = info[0].split("-");
-            if (range.length > 1) {
-                lower = parseInt(range[0], 10);
-                upper = parseInt(range[1], 10);
-            } else {
-                lower = 0;
-                upper = parseInt(range[0], 10);
+                e;
+                
+            log = log.split("\n");
+            if (log.indexOf("") !== -1) {
+                log.splice(log.indexOf(""), 1);
             }
-            lower = isNaN(lower) ? 0 : lower;
-            upper = isNaN(upper) ? 10 : upper;
-
-            if (lower <= 0) {
-                log = log.slice(-(upper+1));
-            } else {
-                var len = log.length;
-                log = log.slice(Math.max(len - upper - 1, 0), len - lower);
+            if (!range) {
+                range = { lower: 0, upper: 10 };
             }
-
+            log = getArrayRange(log.reverse(), range.lower, range.upper).reverse();
+            
             if (term) {
                 var exp = new RegExp(term, "gi");
                 for (e = log.length - 1; e >= 0; e--) {
@@ -6275,14 +6298,11 @@ function Safari() {
                     }
                 }
             }
-            if (log.indexOf("") !== -1) {
-                log.splice(log.indexOf(""), 1);
-            }
             if (log.length <= 0) {
                 safaribot.sendMessage(src, "No " + name + " log found for this query!", safchan);
             } else {
                 sys.sendMessage(src, "", safchan);
-                sys.sendMessage(src, cap(name) + " Log (last " + (lower > 0 ? lower + "~" : "") + upper + " entries" + (term ? ", only including entries with the term " + term : "") + "):", safchan);
+                sys.sendMessage(src, cap(name) + " Log (last " + (range.lower > 1 ? range.lower + "~" : "") + range.upper + " entries" + (term ? ", only including entries with the term " + term : "") + "):", safchan);
                 for (e in log) {
                     if (!log[e]) {
                         continue;
@@ -6882,7 +6902,7 @@ function Safari() {
         if (command === "leaderboard" || command == "lb") {
             var rec = commandData.toLowerCase(), e;
 
-            if (commandData.toLowerCase() === "list") {
+            if (rec === "list") {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
                 for (e in leaderboardTypes) {
@@ -6891,6 +6911,9 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
+            
+            var info = rec.split(":");
+            rec = info[0];
 
             var lbKeys = Object.keys(leaderboardTypes);
             var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
@@ -6909,33 +6932,41 @@ function Safari() {
                     rec = "totalPokes";
                 }
             }
-
-            var cut = 10;
-            var list = leaderboards[rec].slice(0, cut);
+            
+            var range = info.length > 1 ? getRange(info[1]) : { lower: 1, upper: 10 };
+            var self = sys.name(src).toLowerCase();
+            if (!range && info.length > 1) {
+                self = info[1].toLowerCase();
+            }
+            var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
             var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
             var sign = (leaderboardTypes[rec].isMoney ? "$" : "");
             for (e = 0; e < list.length; e++) {
-                out.push("<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
-                if (list[e].name == sys.name(src).toLowerCase()) {
+                out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
+                if (list[e].name == self) {
                     selfFound = true;
                 }
             }
             if (!selfFound) {
                 list = leaderboards[rec];
                 for (e = 0; e < list.length; e++) {
-                    if (list[e].name == sys.name(src).toLowerCase()) {
-                        out.push("<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
+                    if (list[e].name == self) {
+                        var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
+                        if (e < range.lower) {
+                            out.splice(2, 0, entry);
+                        } else {
+                            out.push(entry);
+                        }
                         selfFound = true;
                         break;
                     }
                 }
                 if (!selfFound) {
-                    out.push("You are not ranked in this leaderboard!");
+                    out.push((self == sys.name(src).toLowerCase() ? "You are" : self.toCorrectCase() + " is" ) + " not ranked in this leaderboard!");
                 }
             }
             out.push("");
             sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
-
             return true;
         }
         if (command === "flashme") {
