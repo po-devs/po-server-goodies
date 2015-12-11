@@ -7154,7 +7154,7 @@ function Safari() {
             }
 
             var duration;
-            if (duration !== -1) {
+            if (duration != -1) {
                 duration = utilities.getSeconds(info[1]);
             }
             var player = getAvatarOff(name);
@@ -7169,7 +7169,7 @@ function Safari() {
                 safari.saveGame(player);
             } else {
                 var length;
-                if (duration === -1) {
+                if (duration == -1) {
                     length = "permanently.";
                     player.tradeban = 2147483000000;
                 } else {
