@@ -5495,9 +5495,9 @@ function Safari() {
             }
             gained.push(safariGained + "x Safari Ball" + (safariGained > 1 ? "s" : ""));
 
-            var milestone = logins % 30;
+            var milestone = logins % 32;
             var milestoneRewards = {
-                "30": { reward: "master", amount: 1 },
+                "31": { reward: "master", amount: 1 },
                 "27": { reward: "gacha", amount: 30 },
                 "24": { reward: "clone", amount: 5 },
                 "21": { reward: "luxury", amount: 5 },
