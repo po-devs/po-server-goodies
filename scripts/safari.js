@@ -1,5 +1,5 @@
 /*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
-/*global sys, module, SESSION, script, safaribot, require */
+/*global sys, module, SESSION, script, safaribot, require, staffchannel */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var utilities = require('utilities.js');
@@ -7101,6 +7101,165 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelAdmin(src)) {
             return false;
         }
+        if (command === "track") {
+            var target = getAvatarOff(commandData);
+
+            if (!target) {
+                safaribot.sendMessage(src, "No such player!", safchan);
+                return true;
+            }
+            var name = sys.name(src).toLowerCase();
+            if (target.trackers.contains(name)) {
+                target.trackers.splice(target.trackers.indexOf(name), 1);
+                safari.saveGame(target);
+                safaribot.sendMessage(src, "No longer tracking " + commandData.toCorrectCase() + "!", safchan);
+            } else {
+                target.trackers.push(name);
+                safari.saveGame(target);
+                safaribot.sendMessage(src, "Now tracking " + commandData.toCorrectCase() + "!", safchan);
+            }
+            return true;
+        }
+        if (command === "trick") {
+            var info = commandData.split(":");
+            var targetId = sys.id(info[0]);
+            if (!targetId || !sys.isInChannel(targetId, safchan)) {
+                safaribot.sendMessage(src, "No such person in the channel!", safchan);
+                return true;
+            }
+            var input;
+            if (info.length > 1) {
+                input = getInputPokemon(info[1]);
+            }
+            if (!input || !input.num) {
+                input = getInputPokemon(sys.rand(1, 722) + "");
+            }
+
+            safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+            sys.sendHtmlMessage(targetId, "<hr><center>" + (input.shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + input.name + " appeared! <i>(BST: " + getBST(input.num) + ")</i>" + (input.shiny ? "</font>" : "") + "<br/>" + pokeInfo.sprite(input.id) + "</center><hr>", safchan);
+            ballMacro(targetId);
+            if (info.length > 2) {
+                sys.sendMessage(targetId, info.slice(2).join(":"), safchan);
+            }
+            lastWild = now();
+
+            return true;
+        }
+        if (command === "tradeban") {
+            var info = commandData.split(":");
+            var name = info[0];
+            if (info.length < 2) {
+                safaribot.sendMessage(src, "Please set a duration!", safchan);
+                return true;
+            }
+
+            var duration;
+            if (duration !== -1) {
+                duration = utilities.getSeconds(info[1]);
+            }
+            var player = getAvatarOff(name);
+            if (!player) {
+                safaribot.sendMessage(src, "No such player!", safchan);
+                return true;
+            }
+            if (duration === 0) {
+                player.tradeban = 0;
+                safaribot.sendAll(name + " has been unbanned from trading and shopping!", safchan);
+                safaribot.sendAll(name + " has been unbanned from trading and shopping!", staffchannel);
+                safari.saveGame(player);
+            } else {
+                var length;
+                if (duration === -1) {
+                    length = "permanently.";
+                    player.tradeban = 2147483000000;
+                } else {
+                    length = "for " + utilities.getTimeString(duration);
+                    player.tradeban = now() + duration * 1000;
+                }
+                player.shop = {};
+                safari.saveGame(player);
+                safaribot.sendAll(name + " has been banned from trading and shopping " + length + "!", safchan);
+                safaribot.sendAll(name + " has been banned from trading and shopping " + length + "!", staffchannel);
+            }
+            return true;
+        }
+        if (command === "analyze") {
+            var info = commandData.split(":");
+            var target = sys.id(info[0]);
+            var player = getAvatarOff(info[0]);
+            if (!player) {
+                safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
+                return true;
+            }
+            var prop = (info.length < 2) ? [] : info[1].split(".");
+            var attr = player[prop[0]];
+            var propName = ["safari"];
+            if (prop.length == 1 && prop[0] === "") {
+                attr = player;
+            } else {
+                if (!attr) {
+                    attr = player;
+                }
+                propName.push(prop[0]);
+                for (var e = 1; e < prop.length; e++) {
+                    propName.push(prop[e]);
+                    if (prop[e] in attr) {
+                        attr = attr[prop[e]];
+                    } else {
+                        safaribot.sendMessage(src, "This player does not have a '" + propName.join(".") + "' property!", safchan);
+                        return true;
+                    }
+                }
+            }
+
+            safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
+            return true;
+        }
+        if (command === "tradelog") {
+            safari.showLog(src, commandData, tradeLog, "trade", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1 = info[1].split("::")[0];
+                var p1offer = info[1].split("::")[1];
+                var p2 = info[2].split("::")[0];
+                var p2offer = info[2].split("::")[1];
+
+                return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")";
+            });
+            return true;
+        }
+        if (command === "shoplog") {
+            safari.showLog(src, commandData, shopLog, "shop", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1Info = info[1].split("::");
+                var p1 = p1Info[0];
+                var amount = parseInt(p1Info[1], 10);
+                var item = p1Info[2];
+                var price = parseInt(p1Info[3], 10);
+                var cost = parseInt(p1Info[4], 10);
+                var p2 = info[2].split("::")[0];
+
+                return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")";
+            });
+            return true;
+        }
+        if (command === "auctionlog") {
+            safari.showLog(src, commandData, auctionLog, "auction", function(x) {
+                var info = x.split("|||");
+                var time = new Date(parseInt(info[0], 10)).toUTCString();
+                var p1Info = info[1].split("::");
+                var p1 = p1Info[0];
+                var amount = parseInt(p1Info[1], 10);
+                var item = p1Info[2];
+                var price = parseInt(p1Info[3], 10);
+                var p2 = info[2].split("::")[0];
+
+                return p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")";
+            });
+            return true;
+        }
+        
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
@@ -7235,75 +7394,6 @@ function Safari() {
 
             safari.saveGame(info);
             safaribot.sendMessage(src, "Created save with the name " + name + "!", safchan);
-            return true;
-        }
-        if (command === "track") {
-            var target = getAvatarOff(commandData);
-
-            if (!target) {
-                safaribot.sendMessage(src, "No such player!", safchan);
-                return true;
-            }
-            var name = sys.name(src).toLowerCase();
-            if (target.trackers.contains(name)) {
-                target.trackers.splice(target.trackers.indexOf(name), 1);
-                safari.saveGame(target);
-                safaribot.sendMessage(src, "No longer tracking " + commandData.toCorrectCase() + "!", safchan);
-            } else {
-                target.trackers.push(name);
-                safari.saveGame(target);
-                safaribot.sendMessage(src, "Now tracking " + commandData.toCorrectCase() + "!", safchan);
-            }
-            return true;
-        }
-        if (command === "trick") {
-            var info = commandData.split(":");
-            var targetId = sys.id(info[0]);
-            if (!targetId || !sys.isInChannel(targetId, safchan)) {
-                safaribot.sendMessage(src, "No such person in the channel!", safchan);
-                return true;
-            }
-            var input;
-            if (info.length > 1) {
-                input = getInputPokemon(info[1]);
-            }
-            if (!input || !input.num) {
-                input = getInputPokemon(sys.rand(1, 722) + "");
-            }
-
-            safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
-            sys.sendHtmlMessage(targetId, "<hr><center>" + (input.shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + input.name + " appeared! <i>(BST: " + getBST(input.num) + ")</i>" + (input.shiny ? "</font>" : "") + "<br/>" + pokeInfo.sprite(input.id) + "</center><hr>", safchan);
-            ballMacro(targetId);
-            if (info.length > 2) {
-                sys.sendMessage(targetId, info.slice(2).join(":"), safchan);
-            }
-            lastWild = now();
-
-            return true;
-        }
-        if (command === "tradeban") {
-            var info = commandData.split(":");
-            var name = info[0];
-            if (info.length < 2) {
-                safaribot.sendMessage(src, "Please set a duration!", safchan);
-                return true;
-            }
-
-            var duration = utilities.getSeconds(info[1]);
-            var player = getAvatarOff(name);
-            if (!player) {
-                safaribot.sendMessage(src, "No such player!", safchan);
-                return true;
-            }
-            if (duration === 0) {
-                player.tradeban = 0;
-                safaribot.sendAll(name + " has been unbanned from trading and shopping!", safchan);
-            } else {
-                player.tradeban = now() + duration * 1000;
-                player.shop = {};
-                safari.saveGame(player);
-                safaribot.sendAll(name + " has been banned from trading and shopping for " + utilities.getTimeString(duration) + "!", safchan);
-            }
             return true;
         }
         if (command === "forgerecord") {
@@ -7449,8 +7539,6 @@ function Safari() {
             }
             return true;
         }
-
-        //Needs some validation, but good for testing right now
         if (command === "bestow") {
             var cmd = commandData.split(":");
             if (cmd.length < 2) {
@@ -7475,82 +7563,6 @@ function Safari() {
             }
             player.pokemon.push(info.id);
             this.saveGame(player);
-            return true;
-        }
-        if (command === "analyze") {
-            var info = commandData.split(":");
-            var target = sys.id(info[0]);
-            var player = getAvatarOff(info[0]);
-            if (!player) {
-                safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
-                return true;
-            }
-            var prop = (info.length < 2) ? [] : info[1].split(".");
-            var attr = player[prop[0]];
-            var propName = ["safari"];
-            if (prop.length == 1 && prop[0] === "") {
-                attr = player;
-            } else {
-                if (!attr) {
-                    attr = player;
-                }
-                propName.push(prop[0]);
-                for (var e = 1; e < prop.length; e++) {
-                    propName.push(prop[e]);
-                    if (prop[e] in attr) {
-                        attr = attr[prop[e]];
-                    } else {
-                        safaribot.sendMessage(src, "This player does not have a '" + propName.join(".") + "' property!", safchan);
-                        return true;
-                    }
-                }
-            }
-
-            safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
-            return true;
-        }
-        if (command === "tradelog") {
-            safari.showLog(src, commandData, tradeLog, "trade", function(x) {
-                var info = x.split("|||");
-                var time = new Date(parseInt(info[0], 10)).toUTCString();
-                var p1 = info[1].split("::")[0];
-                var p1offer = info[1].split("::")[1];
-                var p2 = info[2].split("::")[0];
-                var p2offer = info[2].split("::")[1];
-
-                return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")";
-            });
-            return true;
-        }
-        if (command === "shoplog") {
-            safari.showLog(src, commandData, shopLog, "shop", function(x) {
-                var info = x.split("|||");
-                var time = new Date(parseInt(info[0], 10)).toUTCString();
-                var p1Info = info[1].split("::");
-                var p1 = p1Info[0];
-                var amount = parseInt(p1Info[1], 10);
-                var item = p1Info[2];
-                var price = parseInt(p1Info[3], 10);
-                var cost = parseInt(p1Info[4], 10);
-                var p2 = info[2].split("::")[0];
-
-                return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")";
-            });
-            return true;
-        }
-        if (command === "auctionlog") {
-            safari.showLog(src, commandData, auctionLog, "auction", function(x) {
-                var info = x.split("|||");
-                var time = new Date(parseInt(info[0], 10)).toUTCString();
-                var p1Info = info[1].split("::");
-                var p1 = p1Info[0];
-                var amount = parseInt(p1Info[1], 10);
-                var item = p1Info[2];
-                var price = parseInt(p1Info[3], 10);
-                var p2 = info[2].split("::")[0];
-
-                return p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")";
-            });
             return true;
         }
         if (command === "clearjackpot") {
