@@ -5610,6 +5610,12 @@ function Safari() {
 
         this.turn = -1;
         this.duration = Math.min(this.team1.length, this.team2.length);
+        if (this.team1.length > this.duration) {
+            this.team1 = this.team1.slice(0, this.duration);
+        }
+        if (this.team2.length > this.duration) {
+            this.team2 = this.team2.slice(0, this.duration);
+        }
 
         this.p1Score = 0;
         this.p2Score = 0;
