@@ -3260,7 +3260,7 @@ function Safari() {
         var opponents = {
             pink: {
                 name: "Trainer Pink",
-                party: ["36",80,196,222,700,594,706,591,65838,472,205,719,423,308,620,368],
+                party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
                 power: [60, 130],
                 postBattle: postBattle,
                 postArgs: {
@@ -3270,7 +3270,7 @@ function Safari() {
             },
             teal: {
                 name: "Trainer Teal",
-                party: [282,330,272,579,248,"178",186,598,384,652,286,389,437,66011,623],
+                party: [282,330,248,"178",186,598,652,437,623,475,65790,384,272,550,66086],
                 power: [90, 170],
                 postBattle: postBattle,
                 postArgs: {
@@ -3280,7 +3280,7 @@ function Safari() {
             },
             mustard: {
                 name: "Trainer Mustard",
-                party: [65,131743,38,203,"26",560,297,563,145,192,71,479,65964,15,28],
+                party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
                 power: [110, 200],
                 postBattle: postBattle,
                 postArgs: {
@@ -3290,7 +3290,7 @@ function Safari() {
             },
             cyan: {
                 name: "Trainer Cyan",
-                party: [409,448,202,465,539,476,635,144,593,604,230,376,260,"171",9,65666,65959],
+                party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
                 power: [150, 300],
                 postBattle: postBattle,
                 postArgs: {
@@ -3300,7 +3300,7 @@ function Safari() {
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,"663",697,212,342,213,47,224,553,392,538,257,99,721,380,149],
+                party: [131078,101,625,"663",212,342,47,553,538,721,149,45,197087,168,571,213],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
