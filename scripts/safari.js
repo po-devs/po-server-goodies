@@ -1825,6 +1825,7 @@ function Safari() {
                 player.money += earnings;
                 player.records.luxuryEarnings += earnings;
             }
+            this.fullBoxWarning(src);
 
             var costumeBonus = (player.costume === "ace" ? costumeData.ace.bonusRate : 0);
             var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate) - costumeBonus;
@@ -1878,8 +1879,16 @@ function Safari() {
         }
 
         if (flee) {
+            var runmsgs = [
+                "The wild {0} got spooked and ran away!",
+                "The wild {0} got hungry and went somewhere else to find food!",
+                "The wild {0} went back home to take their medicine!",
+                "The wild {0} hid in a hole and disappeared!",
+                "The wild {0} pointed to the sky. While everyone was looking at the clouds, the {0} ran away!"
+            ];
+            
             sys.sendAll("", safchan);
-            safaribot.sendAll("The wild " + pokeName + " got spooked and ran away!", safchan);
+            safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
             sys.sendAll("", safchan);
             currentPokemon = null;
             currentPokemonCount = 1;
@@ -3417,7 +3426,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
-            safaribot.sendMessage(src, "Wonder Trade Operator: The available BST ranges are 180~249 ($50 fee), 250~319 ($100), 320~389 ($150), 390~459 ($300), 460~529 ($500) and 530~599 ($750).", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are <a href='po:send//find bst 180 249'>180~249</a> ($50 fee), <a href='po:send//find bst 250 319'>250~319</a> ($100), <a href='po:send//find bst 320 389'>320~389</a> ($150), <a href='po:send//find bst 390 459'>390~459</a> ($300), <a href='po:send//find bst 460 529'>460~529</a> ($500) and <a href='po:send//find bst 530 599'>530~599</a> ($750).", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -6211,6 +6220,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't pass your save data while one of the players is in a battle!", safchan);
             return true;
         }
+        if (player.tradeban > 0) {
+            safaribot.sendMessage(src, "You can't pass your save data while you are tradebanned!", safchan);
+            return true;
+        }
         if (this.isInAuction(sys.name(src)) || this.isInAuction(data)) {
             safaribot.sendMessage(src, "You can't pass your save data while one of the players is participating in an auction!", safchan);
             return;
@@ -6219,6 +6232,10 @@ function Safari() {
         var target = getAvatar(targetId);
 
         if (target) {
+            if (target.tradeban > 0) {
+                safaribot.sendMessage(src, "You can't pass your save data to a tradebanned save!!", safchan);
+                return true;
+            }
             target.id = player.id;
             player.id = sys.name(targetId).toLowerCase();
 
@@ -6438,6 +6455,12 @@ function Safari() {
             if (player && player.flashme) {
                 sys.sendHtmlMessage(players[pid], "<ping/>", safchan);
             }
+        }
+    };
+    this.fullBoxWarning = function(src) {
+        var player = getAvatar(src);
+        if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate - 5) {
+            safaribot.sendMessage(src, "Your box is almost full! You can still catch " + (player.balls.box * itemData.box.bonusRate - player.pokemon.length) + " more Pokémon!", safchan);
         }
     };
     this.assignIdNumber = function(player, force) {
@@ -7793,6 +7816,13 @@ function Safari() {
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Poké Balls you need!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             safari.flashPlayers();
+            var players = sys.playersOfChannel(safchan);
+            for (var pid in players) {
+                var player = getAvatar(players[pid]);
+                if (player) {
+                    safari.fullBoxWarning(players[pid]);
+                }
+            }
         }
         if (contestCooldown === 0) {
             safari.startContest("*");
