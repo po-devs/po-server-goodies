@@ -6672,7 +6672,7 @@ function Safari() {
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
             "/auction: To start an auction.",
             // "/buycostume: To buy a new costume.",
-            "/party: To add or remove a Pokémon from your party, or to set your party's leader*. Type /party for more details.",
+            "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/quest: To view available quests.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
@@ -6702,28 +6702,35 @@ function Safari() {
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
         var help = userHelp;
+        var adminHelp = [
+            "*** Safari Warden Commands ***",
+            "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
+            "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
+            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. USe -1 for length to denote permanent, 0 for length to unban.",
+            "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
+            "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
+            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokemon. Pokemon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
+        ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
-            "/wild[s/event]: Spawns a random wild Pokemon with no restrictions. Use a valid dex number for a specific spawn. Use /wilds for a shiny, use /wildevent for a spawn that cannot be caught with Master Balls.",
+            "/wild[event] [pokemon (optional)]: Spawns a random or designated wild Pokemon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls.",
             "/horde: Spawns a group of random wild Pokemon with no restrictions. Use a valid dex number to spawn a specific Pokemon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
-            "/safaripay [player]:[amount]: Awards a player with the specified amount of money.",
-            "/safarigift [player/player names]:[item]:[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
-            "/bestow: Gifts a player a specific Pokemon. Use /bestow [player]:[pokemon].",
-            "/forgerecord: Alters a specific record of a player. Use /forgerecord [player]:[record]:[amount].",
-            "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
+            "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
+            "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
+            "/bestow [player]։[pokemon]: Gifts a player a specific Pokemon.",
+            "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
-            "/analyze [player]:[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code. ",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
-            "/tradelog [amount]:[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs.",
-            "/shoplog [amount]:[lookup]: /tradelog but with shops.",
-            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length].",
-            "/npc[add/remove] [item/pokemon]:[price]:[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock."
+            "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock."
         ];
-        if (sys.auth(src) > 2) {
+        if (SESSION.channels(safchan).isChannelAdmin(src)) {
+            help.push.apply(help, adminHelp);
+        }
+        if (SESSION.channels(safchan).isChannelOwner(src)) {
             help.push.apply(help, ownerHelp);
         }
         for (var x = 0; x < help.length; x++) {
