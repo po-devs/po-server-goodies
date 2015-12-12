@@ -252,14 +252,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             } 
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
-            };
+            }
         } else {
             tarname = commandData;
-        };
+        }
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        };
+        }
         poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
@@ -267,22 +267,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         poChannel.unmute(src, commandData);
         return;
     }
-    if (command == "cmutes") {
-        var cmutelist = poChannel.getReadableList("mutelist");
+    if (command === "cmutes") {
+        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src));
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
-    if (command == "cbans") {
-        var cbanlist = poChannel.getReadableList("banlist");
+    if (command === "cbans") {
+        var cbanlist = poChannel.getReadableList("banlist", sys.os(src));
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
-        }
-        else {
+        } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
         return;
@@ -352,14 +350,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             } 
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
-            };
+            }
         } else {
             tarname = commandData;
-        };
+        }
         if (sys.dbIp(tarname) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
-        };
+        }
         poChannel.ban(src, tarname, {'time': time, 'reason': reason});
         return;
     }
