@@ -6965,8 +6965,11 @@ function Safari() {
             
             var range = info.length > 1 ? getRange(info[1]) : { lower: 1, upper: 10 };
             var self = sys.name(src).toLowerCase();
-            if (!range && info.length > 1) {
-                self = info[1].toLowerCase();
+            if (!range) {
+                range = { lower: 1, upper: 10 };
+                if (info.length > 1) {
+                    self = info[1].toLowerCase();
+                }
             }
             var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
             var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
