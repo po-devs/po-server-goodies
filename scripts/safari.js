@@ -7341,7 +7341,7 @@ function Safari() {
         if (!SESSION.channels(safchan).isChannelOwner(src)) {
             return false;
         }
-        shopCommands = ["npcadd", "addnpc", "npcremove", "removenpc", "closenpc", "npcclose", "npcclean", "cleannpc", "silveradd", "addsilver"];
+        var shopCommands = ["npcadd", "addnpc", "npcremove", "removenpc", "closenpc", "npcclose", "npcclean", "cleannpc", "silveradd", "addsilver"];
         if (shopCommands.contains(command)) {
             var action = "remove";
             var isSilver = false;
