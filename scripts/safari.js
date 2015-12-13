@@ -7680,20 +7680,25 @@ function Safari() {
             safaribot.sendAll("Safari has been completely reset!", safchan);
             return true;
         }
-        if (command === "csilence" || command === "update") {
-            if (command === "update" || commandData === "*") {
-                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</font> Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
-                //SESSION.channels(safchan).muteall = true;
-                safariUpdating = true;
+        if (command === "update") {
+            if (contestCount > 0 || contestCooldown < 181) {
+                safaribot.sendMessage(src, "You shouldn't update during or right before a contest!", safchan);
+            } else if (currentPokemon) {
+                safaribot.sendMessage(src, "You shouldn't update while a Wild Pokemon is out!", safchan);
             } else {
-               script.silence(src, commandData, sys.channel(safchan));
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                safariUpdating = true;
             }
             return true;
         }
         if (command === "cancelupdate") {
-            safariUpdating = false;
-            sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</font> Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
-            return;
+            if (safariUpdating) {
+                safariUpdating = false;
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
+            } else {
+                safaribot.sendMessage(src, "Safari was not in an updating state.", safchan);
+            }
+            return true;
         }
         return false;
     };
@@ -7726,7 +7731,7 @@ function Safari() {
         }
         lastIdAssigned = loadLastId();
         this.updateLeaderboards();
-        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</font> Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
     };
     this.afterChannelJoin = function (src, channel) {
         if (channel == safchan) {
