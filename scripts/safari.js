@@ -8,6 +8,7 @@ var Bot = require('bot.js').Bot;
 
 function Safari() {
     var safari = this;
+    var safariUpdating = false;
     var safchan;
     var defaultChannel = "Safari";
     var saveFiles = "scriptdata/safarisaves.txt";
@@ -6757,6 +6758,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can't play Safari while the channel is silenced.", safchan);
             return true;
         }
+        if (safariUpdating) {
+            safaribot.sendMessage(src, "You can't play Safari while it is updating.", safchan);
+            return true;
+        }
         if (command === "help") {
             safari.showHelp(src);
             return true;
@@ -7672,14 +7677,20 @@ function Safari() {
             safaribot.sendAll("Safari has been completely reset!", safchan);
             return true;
         }
-        if (command === "csilence") {
-            if (commandData === "*") {
+        if (command === "csilence" || command === "update") {
+            if (command === "update" || commandData === "*") {
                 sys.sendAll("±PA: Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!", safchan);
-                SESSION.channels(safchan).muteall = true;
+                //SESSION.channels(safchan).muteall = true;
+                safariUpdating = true;
             } else {
                script.silence(src, commandData, sys.channel(safchan));
             }
             return true;
+        }
+        if (command === "cancelupdate") {
+            safariUpdating = false;
+            sys.sendAll("±Attendant: Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!", safchan);
+            return;
         }
         return false;
     };
@@ -7712,6 +7723,7 @@ function Safari() {
         }
         lastIdAssigned = loadLastId();
         this.updateLeaderboards();
+        sys.sendAll("±Attendant: Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!", safchan);
     };
     this.afterChannelJoin = function (src, channel) {
         if (channel == safchan) {
