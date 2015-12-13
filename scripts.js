@@ -1501,26 +1501,35 @@ afterChangeTeam : function(src)
 
 
 silence: function(src, minutes, chanName) {
-    var delay = parseInt(minutes * 60, 10);
-    if (isNaN(delay) || delay <= 0) {
-        channelbot.sendMessage(src, "Sorry, I couldn't read your minutes.", channel);
-    }
     if (!chanName) {
         bot.sendMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name", channel);
-    } else {
-        var cid = sys.channelId(chanName);
-        if (cid !== undefined) {
-            channelbot.sendAll("" + sys.name(src) + " called for " + minutes + " Minutes Of Silence in "+chanName+"!", cid);
-            SESSION.channels(cid).muteall = true;
+        return;
+    }
+    var duration = minutes
+    var doCall;
+    if (duration !== "permanent") {
+        var delay = parseInt(minutes * 60, 10);
+        if (isNaN(delay) || delay <= 0) {
+            channelbot.sendMessage(src, "Your minutes are not a valid number. The channel will be permanently silenced.", channel);
+        } else {
+            duration += " minutes of";
+            doCall = true;
+        }
+    }
+    var cid = sys.channelId(chanName);
+    if (cid !== undefined) {
+        channelbot.sendAll(sys.name(src) + " called for " + duration + " silence in "+chanName+"!", cid);
+        SESSION.channels(cid).muteall = true;
+        if (doCall) {
             sys.delayedCall(function() {
                 if (!SESSION.channels(cid).muteall)
                     return;
                 SESSION.channels(cid).muteall = false;
                 normalbot.sendAll("Silence is over in "+chanName+".",cid);
             }, delay);
-        } else {
-            channelbot.sendMessage(src, "Sorry, I couldn't find a channel with that name.", channel);
         }
+    } else {
+        channelbot.sendMessage(src, "Sorry, I couldn't find a channel with that name.", channel);
     }
 },
 

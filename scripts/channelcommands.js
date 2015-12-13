@@ -223,15 +223,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.meoff(src, sys.channel(channel));
         return;
     }
-    if (command == "csilence") {
-        if (typeof(commandData) == "undefined") {
-            return;
+    if (command == "csilence" || command === "csilenceoff") {
+        if (command === "csilenceoff" || commandData === "off") {        
+            script.silenceoff(src, sys.channel(channel));
+        } else {
+            if (typeof(commandData) == "undefined") {
+                commandData = "permanent";
+            }
+            script.silence(src, commandData, sys.channel(channel));
         }
-        script.silence(src, commandData, sys.channel(channel));
-        return;
-    }
-    if (command == "csilenceoff") {
-        script.silenceoff(src, sys.channel(channel));
         return;
     }
     if (command == "cmute") {
