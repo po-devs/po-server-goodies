@@ -6758,386 +6758,393 @@ function Safari() {
             safaribot.sendMessage(src, "You can't play Safari while the channel is silenced.", safchan);
             return true;
         }
-        if (safariUpdating) {
-            safaribot.sendMessage(src, "You can't play Safari while it is updating.", safchan);
-            return true;
-        }
-        if (command === "help") {
-            safari.showHelp(src);
-            return true;
-        }
-        if (command === "itemhelp") {
-            safari.showItemHelp(src, commandData);
-            return true;
-        }
-        if (command === "start") {
-            safari.startGame(src, commandData);
-            return true;
-        }
-        if (command === "catch" || command === "throw") {
-            safari.throwBall(src, commandData);
-            return true;
-        }
-        if (command === "sell") {
-            safari.sellPokemon(src, commandData);
-            return true;
-        }
-        if (command === "buy") {
-            safari.buyFromShop(src, ":" + commandData, command, true);
-            return true;
-        }
-        if (command === "buycostume") {
-            safari.buyCostumes(src, commandData);
-            return true;
-        }
-        if (command === "shop") {
-            safari.buyFromShop(src, commandData, command);
-            return true;
-        }
-        var shopCommands = ["shopadd", "addshop", "shopremove", "removeshop", "closeshop", "shopclose", "cleanshop", "shopclean"];
-        if (shopCommands.contains(command)) {
-            var action = "remove";
-            switch (command) {
-                case "shopadd":
-                case "addshop":
-                    action = "add";
-                    break;
-                case "shopclose":
-                case "closeshop":
-                    action = "close";
-                    break;
-                case "shopclean":
-                case "cleanshop":
-                    action = "clean";
-                    break;
-                case "shopremove":
-                case "removeshop":
-                    action = "remove";
-                    break;
-            }
-            safari.editShop(src, action + ":" + commandData);
-            return true;
-        }
-        if (command === "pawn") {
-            safari.sellItems(src, commandData);
-            return true;
-        }
-        if (command === "trade") {
-            safari.tradePokemon(src, commandData);
-            return true;
-        }
-        if (command === "auction") {
-            safari.createAuction(src, commandData);
-            return true;
-        }
-        if (command === "join") {
-            safari.joinAuction(src, commandData);
-            return true;
-        }
-        if (command === "bid") {
-            safari.bidAuction(src, commandData);
-            return true;
-        }
-        if (command === "leave") {
-            safari.quitAuction(src, commandData);
-            return true;
-        }
-        if (command === "party") {
-            safari.manageParty(src, commandData);
-            return true;
-        }
-        if (command === "add") {
-            safari.manageParty(src, "add:" + commandData);
-            return true;
-        }
-        if (command === "remove") {
-            safari.manageParty(src, "remove:" + commandData);
-            return true;
-        }
-        if (command === "active") {
-            safari.manageParty(src, "active:" + commandData);
-            return true;
-        }
-        if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
-            if (command !== "view" || commandData === "*") {
-                safari.viewOwnInfo(src, (command === "viewt" || command === "mydatat"));
-            } else {
-                safari.viewPlayer(src, commandData);
-            }
-            return true;
-        }
-        if (command === "bag" || command === "bagt") {
-            safari.viewItems(src, command === "bagt");
-            return true;
-        }
-        if (command === "box" || command === "boxt") {
-            safari.viewBox(src, commandData, command === "boxt");
-            return true;
-        }
-        /*if (command === "costumes") {
-            safari.viewCostumes(src);
-            return true;
-        }
-        if (command === "dressup" || command === "changecostume") {
-            safari.changeCostume(src, commandData);
-            return true;
-        }*/
-        if (command === "changealt") {
-            safari.changeAlt(src, commandData);
-            return true;
-        }
-        if (command === "bait") {
-            safari.throwBait(src, commandData);
-            return true;
-        }
-        if (command === "rock" || command === "snowball" || command === "snow") {
-            safari.throwRock(src, commandData);
-            return true;
-        }
-        if (command === "stick") {
-            safari.useStick(src, commandData);
-            return true;
-        }
-        if (command === "gacha") {
-            safari.gachapon(src, commandData);
-            return true;
-        }
-        if (command === "rare" || command === "rarecandy") {
-            safari.useRareCandy(src, commandData);
-            return true;
-        }
-        if (command === "mega" || command === "megastone") {
-            safari.useMegaStone(src, commandData);
-            return true;
-        }
-        if (command === "challenge") {
-            safari.challengePlayer(src, commandData);
-            return true;
-        }
-        if (command === "watch") {
-            safari.watchBattle(src, commandData);
-            return true;
-        }
-        if (command === "quest") {
-            safari.questNPC(src, commandData);
-            return true;
-        }
-        if (command === "sort") {
-            safari.sortBox(src, commandData);
-            return true;
-        }
-        if (command === "find") {
-            safari.findPokemon(src, commandData);
-            return true;
-        }
-        if (command === "findt") {
-            safari.findPokemon(src, commandData, true);
-            return true;
-        }
-        if (command === "leaderboard" || command == "lb") {
-            var rec = commandData.toLowerCase(), e;
-
-            if (rec === "list") {
-                sys.sendMessage(src, "", safchan);
-                safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
-                for (e in leaderboardTypes) {
-                    safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + leaderboardTypes[e].alias + "'>" + cap(leaderboardTypes[e].alias) + "</a> : Leaderboard " + leaderboardTypes[e].desc, safchan);
-                }
-                sys.sendMessage(src, "", safchan);
+        
+        //User commands
+        if (!safariUpdating || SESSION.channels(safchan).isChannelOwner(src)) {
+            if (command === "help") {
+                safari.showHelp(src);
                 return true;
             }
-            
-            var info = rec.split(":");
-            rec = info[0];
-
-            var lbKeys = Object.keys(leaderboardTypes);
-            var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
-            if (lowCaseKeys.indexOf(rec) !== -1) {
-                rec = lbKeys[lowCaseKeys.indexOf(rec)];
-            } else {
-                var found = false;
-                for (e in leaderboardTypes) {
-                    if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
-                        rec = e;
-                        found = true;
+            if (command === "itemhelp") {
+                safari.showItemHelp(src, commandData);
+                return true;
+            }
+            if (command === "start") {
+                safari.startGame(src, commandData);
+                return true;
+            }
+            if (command === "catch" || command === "throw") {
+                safari.throwBall(src, commandData);
+                return true;
+            }
+            if (command === "sell") {
+                safari.sellPokemon(src, commandData);
+                return true;
+            }
+            if (command === "buy") {
+                safari.buyFromShop(src, ":" + commandData, command, true);
+                return true;
+            }
+            if (command === "buycostume") {
+                safari.buyCostumes(src, commandData);
+                return true;
+            }
+            if (command === "shop") {
+                safari.buyFromShop(src, commandData, command);
+                return true;
+            }
+            var shopCommands = ["shopadd", "addshop", "shopremove", "removeshop", "closeshop", "shopclose", "cleanshop", "shopclean"];
+            if (shopCommands.contains(command)) {
+                var action = "remove";
+                switch (command) {
+                    case "shopadd":
+                    case "addshop":
+                        action = "add";
                         break;
+                    case "shopclose":
+                    case "closeshop":
+                        action = "close";
+                        break;
+                    case "shopclean":
+                    case "cleanshop":
+                        action = "clean";
+                        break;
+                    case "shopremove":
+                    case "removeshop":
+                        action = "remove";
+                        break;
+                }
+                safari.editShop(src, action + ":" + commandData);
+                return true;
+            }
+            if (command === "pawn") {
+                safari.sellItems(src, commandData);
+                return true;
+            }
+            if (command === "trade") {
+                safari.tradePokemon(src, commandData);
+                return true;
+            }
+            if (command === "auction") {
+                safari.createAuction(src, commandData);
+                return true;
+            }
+            if (command === "join") {
+                safari.joinAuction(src, commandData);
+                return true;
+            }
+            if (command === "bid") {
+                safari.bidAuction(src, commandData);
+                return true;
+            }
+            if (command === "leave") {
+                safari.quitAuction(src, commandData);
+                return true;
+            }
+            if (command === "party") {
+                safari.manageParty(src, commandData);
+                return true;
+            }
+            if (command === "add") {
+                safari.manageParty(src, "add:" + commandData);
+                return true;
+            }
+            if (command === "remove") {
+                safari.manageParty(src, "remove:" + commandData);
+                return true;
+            }
+            if (command === "active") {
+                safari.manageParty(src, "active:" + commandData);
+                return true;
+            }
+            if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
+                if (command !== "view" || commandData === "*") {
+                    safari.viewOwnInfo(src, (command === "viewt" || command === "mydatat"));
+                } else {
+                    safari.viewPlayer(src, commandData);
+                }
+                return true;
+            }
+            if (command === "bag" || command === "bagt") {
+                safari.viewItems(src, command === "bagt");
+                return true;
+            }
+            if (command === "box" || command === "boxt") {
+                safari.viewBox(src, commandData, command === "boxt");
+                return true;
+            }
+            /*if (command === "costumes") {
+                safari.viewCostumes(src);
+                return true;
+            }
+            if (command === "dressup" || command === "changecostume") {
+                safari.changeCostume(src, commandData);
+                return true;
+            }*/
+            if (command === "changealt") {
+                safari.changeAlt(src, commandData);
+                return true;
+            }
+            if (command === "bait") {
+                safari.throwBait(src, commandData);
+                return true;
+            }
+            if (command === "rock" || command === "snowball" || command === "snow") {
+                safari.throwRock(src, commandData);
+                return true;
+            }
+            if (command === "stick") {
+                safari.useStick(src, commandData);
+                return true;
+            }
+            if (command === "gacha") {
+                safari.gachapon(src, commandData);
+                return true;
+            }
+            if (command === "rare" || command === "rarecandy") {
+                safari.useRareCandy(src, commandData);
+                return true;
+            }
+            if (command === "mega" || command === "megastone") {
+                safari.useMegaStone(src, commandData);
+                return true;
+            }
+            if (command === "challenge") {
+                safari.challengePlayer(src, commandData);
+                return true;
+            }
+            if (command === "watch") {
+                safari.watchBattle(src, commandData);
+                return true;
+            }
+            if (command === "quest") {
+                safari.questNPC(src, commandData);
+                return true;
+            }
+            if (command === "sort") {
+                safari.sortBox(src, commandData);
+                return true;
+            }
+            if (command === "find") {
+                safari.findPokemon(src, commandData);
+                return true;
+            }
+            if (command === "findt") {
+                safari.findPokemon(src, commandData, true);
+                return true;
+            }
+            if (command === "leaderboard" || command == "lb") {
+                var rec = commandData.toLowerCase(), e;
+
+                if (rec === "list") {
+                    sys.sendMessage(src, "", safchan);
+                    safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
+                    for (e in leaderboardTypes) {
+                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + leaderboardTypes[e].alias + "'>" + cap(leaderboardTypes[e].alias) + "</a> : Leaderboard " + leaderboardTypes[e].desc, safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                    return true;
+                }
+                
+                var info = rec.split(":");
+                rec = info[0];
+
+                var lbKeys = Object.keys(leaderboardTypes);
+                var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
+                if (lowCaseKeys.indexOf(rec) !== -1) {
+                    rec = lbKeys[lowCaseKeys.indexOf(rec)];
+                } else {
+                    var found = false;
+                    for (e in leaderboardTypes) {
+                        if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
+                            rec = e;
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        rec = "totalPokes";
                     }
                 }
-                if (!found) {
-                    rec = "totalPokes";
+                
+                var range = info.length > 1 ? getRange(info[1]) : { lower: 1, upper: 10 };
+                var self = sys.name(src).toLowerCase();
+                if (!range) {
+                    range = { lower: 1, upper: 10 };
+                    if (info.length > 1) {
+                        self = info[1].toLowerCase();
+                    }
                 }
-            }
-            
-            var range = info.length > 1 ? getRange(info[1]) : { lower: 1, upper: 10 };
-            var self = sys.name(src).toLowerCase();
-            if (!range) {
-                range = { lower: 1, upper: 10 };
-                if (info.length > 1) {
-                    self = info[1].toLowerCase();
-                }
-            }
-            var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
-            var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
-            var sign = (leaderboardTypes[rec].isMoney ? "$" : "");
-            for (e = 0; e < list.length; e++) {
-                out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
-                if (list[e].name == self) {
-                    selfFound = true;
-                }
-            }
-            if (!selfFound) {
-                list = leaderboards[rec];
+                var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
+                var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
+                var sign = (leaderboardTypes[rec].isMoney ? "$" : "");
                 for (e = 0; e < list.length; e++) {
+                    out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
                     if (list[e].name == self) {
-                        var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
-                        if (e < range.lower) {
-                            out.splice(2, 0, entry);
-                        } else {
-                            out.push(entry);
-                        }
                         selfFound = true;
-                        break;
                     }
                 }
                 if (!selfFound) {
-                    out.push((self == sys.name(src).toLowerCase() ? "You are" : self.toCorrectCase() + " is" ) + " not ranked in this leaderboard!");
+                    list = leaderboards[rec];
+                    for (e = 0; e < list.length; e++) {
+                        if (list[e].name == self) {
+                            var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
+                            if (e < range.lower) {
+                                out.splice(2, 0, entry);
+                            } else {
+                                out.push(entry);
+                            }
+                            selfFound = true;
+                            break;
+                        }
+                    }
+                    if (!selfFound) {
+                        out.push((self == sys.name(src).toLowerCase() ? "You are" : self.toCorrectCase() + " is" ) + " not ranked in this leaderboard!");
+                    }
                 }
+                out.push("");
+                sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
+                return true;
             }
-            out.push("");
-            sys.sendHtmlMessage(src, out.join("<br/>"),safchan);
-            return true;
-        }
-        if (command === "flashme") {
-            if (!validPlayers("self", src)) {
-                return;
-            }
-            var player = getAvatar(src);
-            if (!player.flashme) {
-                player.flashme = true;
-                safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
-            }
-            else {
-                delete player.flashme;
-                safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
-            }
-            safari.saveGame(player);
-            return true;
-        }
-        if (command === "safarirules") {
-            script.beforeChatMessage(src, "/crules", safchan);
-            return true;
-        }
-        if (command === "info") {
-            var time = new Date(now()).toUTCString();
-            sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
-            safaribot.sendMessage(src, "Current Time: " + time, safchan);
-            if (contestCount > 0) {
-                var min = Math.floor(contestCount/60);
-                var sec = contestCount%60;
-                safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? contestThemes[currentTheme].name : "Default") + ".", safchan);
-                if (currentRules) {
-                    safaribot.sendMessage(src, "Contest's Rules: " + this.translateRules(currentRules), safchan);
+            if (command === "flashme") {
+                if (!validPlayers("self", src)) {
+                    return;
                 }
-                safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
-            } else {
-                var min = Math.floor(contestCooldown/60);
-                var sec = contestCooldown%60;
-                safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
-                if (nextTheme) {
-                    safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
+                var player = getAvatar(src);
+                if (!player.flashme) {
+                    player.flashme = true;
+                    safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
+                }
+                else {
+                    delete player.flashme;
+                    safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
+                }
+                safari.saveGame(player);
+                return true;
+            }
+            if (command === "safarirules") {
+                script.beforeChatMessage(src, "/crules", safchan);
+                return true;
+            }
+            if (command === "info") {
+                var time = new Date(now()).toUTCString();
+                sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
+                safaribot.sendMessage(src, "Current Time: " + time, safchan);
+                if (contestCount > 0) {
+                    var min = Math.floor(contestCount/60);
+                    var sec = contestCount%60;
+                    safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? contestThemes[currentTheme].name : "Default") + ".", safchan);
+                    if (currentRules) {
+                        safaribot.sendMessage(src, "Contest's Rules: " + this.translateRules(currentRules), safchan);
+                    }
+                    safaribot.sendMessage(src, "Time until the Contest ends: " + min + " minutes, " + sec + " seconds.", safchan);
+                } else {
+                    var min = Math.floor(contestCooldown/60);
+                    var sec = contestCooldown%60;
+                    safaribot.sendMessage(src, "Time until next Contest: " + min + " minutes, " + sec + " seconds.", safchan);
+                    if (nextTheme) {
+                        safaribot.sendMessage(src, "Next Contest's theme: " + (nextTheme !== "none" ? themeName(nextTheme) : "Default") + ".", safchan);
 
-                    if (Array.isArray(nextTheme) && nextRules) { //Disabled for now
-                        var t, n;
+                        if (Array.isArray(nextTheme) && nextRules) { //Disabled for now
+                            var t, n;
 
-                        for (n = 0; n < nextTheme.length; n++) {
-                            t = nextTheme[n];
-                            if (nextRules && t in nextRules) {
-                                safaribot.sendMessage(src, "--- Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
+                            for (n = 0; n < nextTheme.length; n++) {
+                                t = nextTheme[n];
+                                if (nextRules && t in nextRules) {
+                                    safaribot.sendMessage(src, "--- Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
+                                }
                             }
                         }
                     }
                 }
-            }
-            safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
-            safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
-            sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
-            return true;
-        }
-        if (command === "bst") {
-            var info = getInputPokemon(commandData);
-
-            if (!info.num) {
-                safaribot.sendMessage(src, "Invalid Pokémon.", safchan);
+                safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
+                safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
+                sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
                 return true;
             }
+            if (command === "bst") {
+                var info = getInputPokemon(commandData);
 
-            sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, info.name + "'s BST is " + getBST(info.num) + ".", safchan);
-            var player = getAvatar(src);
-            if (player) {
-                if (isMega(info.num)) {
-                    safaribot.sendMessage(src, info.name + " cannot be sold.", safchan);
-                } else {
-                    var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
-                    var price = getPrice(info.num, info.shiny, perkBonus);
-                    safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(getPrice(info.num, true, perkBonus))  + ". " : ""), safchan);
+                if (!info.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon.", safchan);
+                    return true;
                 }
-            }
-            var species = pokeInfo.species(info.num);
-            if (species in evolutions) {
-                var evoData = evolutions[species];
-                var candiesRequired = evoData.candies || 2;
-                var evo = evoData.evo;
-                safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Cand" + (candiesRequired == 1 ? "y" : "ies") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
-            }
-            if (!isMega(info.num) && species in megaEvolutions) {
-                safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
-            }
-            if (isLegendary(info.num)) {
-                var themes = [];
-                for (var e in contestThemes) {
-                    if (this.validForTheme(info.num, e)) {
-                        themes.push(contestThemes[e].name);
+
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendMessage(src, info.name + "'s BST is " + getBST(info.num) + ".", safchan);
+                var player = getAvatar(src);
+                if (player) {
+                    if (isMega(info.num)) {
+                        safaribot.sendMessage(src, info.name + " cannot be sold.", safchan);
+                    } else {
+                        var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
+                        var price = getPrice(info.num, info.shiny, perkBonus);
+                        safaribot.sendMessage(src, "You can sell a " + info.name + " for $" + addComma(price) + ". " + (!info.shiny ? "If it's Shiny, you can sell it for $" + addComma(getPrice(info.num, true, perkBonus))  + ". " : ""), safchan);
                     }
                 }
-                if (themes.length > 0) {
-                    safaribot.sendMessage(src, info.name + " can be found in the following theme: " + readable(themes, "and") + ".", safchan);
-                } else {
-                    safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
+                var species = pokeInfo.species(info.num);
+                if (species in evolutions) {
+                    var evoData = evolutions[species];
+                    var candiesRequired = evoData.candies || 2;
+                    var evo = evoData.evo;
+                    safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Rare Cand" + (candiesRequired == 1 ? "y" : "ies") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
                 }
+                if (!isMega(info.num) && species in megaEvolutions) {
+                    safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
+                }
+                if (isLegendary(info.num)) {
+                    var themes = [];
+                    for (var e in contestThemes) {
+                        if (this.validForTheme(info.num, e)) {
+                            themes.push(contestThemes[e].name);
+                        }
+                    }
+                    if (themes.length > 0) {
+                        safaribot.sendMessage(src, info.name + " can be found in the following theme: " + readable(themes, "and") + ".", safchan);
+                    } else {
+                        safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
+                    }
+                }
+                sys.sendMessage(src, "", safchan);
+                return true;
             }
-            sys.sendMessage(src, "", safchan);
-            return true;
-        }
-        if (command === "release") {
-            safari.releasePokemon(src, commandData);
-            return true;
-        }
-        if (command === "records") {
-            safari.showRecords(src);
-            return true;
-        }
-        if (command === "itemfinder" || command === "finder") {
-            safari.findItem(src);
-            return true;
-        }
-        if (command === "use") {
-            safari.useItem(src, commandData);
-            return true;
-        }
-        if (command === "themes") {
-            var ret = [];
-            var contests = Object.keys(contestThemes);
-            for (var e in contests) {
-                ret.push(contestThemes[contests[e]].name);
+            if (command === "release") {
+                safari.releasePokemon(src, commandData);
+                return true;
             }
-            ret.sort();
-            safaribot.sendMessage(src, "Available Contest Themes: " + readable(ret, "and") + ".", safchan);
+            if (command === "records") {
+                safari.showRecords(src);
+                return true;
+            }
+            if (command === "itemfinder" || command === "finder") {
+                safari.findItem(src);
+                return true;
+            }
+            if (command === "use") {
+                safari.useItem(src, commandData);
+                return true;
+            }
+            if (command === "themes") {
+                var ret = [];
+                var contests = Object.keys(contestThemes);
+                for (var e in contests) {
+                    ret.push(contestThemes[contests[e]].name);
+                }
+                ret.sort();
+                safaribot.sendMessage(src, "Available Contest Themes: " + readable(ret, "and") + ".", safchan);
+                return true;
+            }
+        } else {
+            safaribot.sendMessage(src, "You can't play Safari while it is updating.", safchan);
             return true;
         }
 
         //Staff Commands
         if (!SESSION.channels(safchan).isChannelOperator(src)) {
+            return false;
+        }
+        
+        if (!SESSION.channels(safchan).isChannelAdmin(src)) {
             return false;
         }
         if (command === "sanitize") {
@@ -7171,10 +7178,6 @@ function Safari() {
             }
             safaribot.sendAll("All safaris have been sanitized!", safchan);
             return true;
-        }
-
-        if (!SESSION.channels(safchan).isChannelAdmin(src)) {
-            return false;
         }
         if (command === "track") {
             var target = getAvatarOff(commandData);
