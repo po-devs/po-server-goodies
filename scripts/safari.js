@@ -7682,7 +7682,7 @@ function Safari() {
         }
         if (command === "csilence" || command === "update") {
             if (command === "update" || commandData === "*") {
-                sys.sendAll("±PA: Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!", safchan);
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</font> Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 //SESSION.channels(safchan).muteall = true;
                 safariUpdating = true;
             } else {
@@ -7692,7 +7692,7 @@ function Safari() {
         }
         if (command === "cancelupdate") {
             safariUpdating = false;
-            sys.sendAll("±Attendant: Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!", safchan);
+            sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</font> Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
             return;
         }
         return false;
@@ -7726,7 +7726,7 @@ function Safari() {
         }
         lastIdAssigned = loadLastId();
         this.updateLeaderboards();
-        sys.sendAll("±Attendant: Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!", safchan);
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</font> Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
     };
     this.afterChannelJoin = function (src, channel) {
         if (channel == safchan) {
