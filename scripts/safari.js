@@ -5158,8 +5158,7 @@ function Safari() {
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
-    this.removePokemon2 = function(name, pokeNum) {
-        var player = getAvatarOff(name);
+    this.removePokemon2 = function(player, pokeNum) {
         if (player.pokemon.contains(pokeNum)) {
             player.pokemon.splice(player.pokemon.lastIndexOf(pokeNum), 1);
         }
