@@ -201,10 +201,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         poChannel.issueAuth(src, commandData, "member");
         return;
     }
-    if (command == "deinvite" || command == "demember") {
+    if (command == "uninvite" || command == "demember") {
         poChannel.takeAuth(src, commandData, "member");
         if (tar !== undefined) {
-            if (sys.isInChannel(tar, channel) && command == "deinvite") {
+            if (sys.isInChannel(tar, channel) && command == "uninvite") {
                 sys.kick(tar, channel);
                 channelbot.sendAll("And "+commandData+" was gone!", channel);
             }
@@ -457,7 +457,7 @@ exports.help = function(src, channel) {
         sys.sendMessage(src, "/member: Makes the user a member.", channel);
         sys.sendMessage(src, "/demember: Removes membership from a user.", channel);
         sys.sendMessage(src, "/invite: Makes the user a member and sends them a link to the channel.", channel);
-        sys.sendMessage(src, "/deinvite: Kicks the user from the channel and removes their membership.", channel);
+        sys.sendMessage(src, "/uninvite: Kicks the user from the channel and removes their membership.", channel);
         sys.sendMessage(src, "/cmeon: Turns on /me for the channel.", channel);
         sys.sendMessage(src, "/cmeoff: Turns off /me for the channel.", channel);
         sys.sendMessage(src, "/csilence: Prevents authless users from talking in current channel specified time.", channel);
