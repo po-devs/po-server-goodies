@@ -43,6 +43,8 @@ function Safari() {
     var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var leaderboards = {};
+    var monthlyLeaderboards = {};
+    var lastLeaderboards;
     var lastLeaderboardUpdate;
 
     var contestCooldownLength = 1800; //1 contest every 30 minutes
@@ -751,6 +753,11 @@ function Safari() {
         collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke"], alias: "collector" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" }
     };
+    var monthlyLeaderboardTypes = {
+        pokesCaught: { desc: "by successful catches during this month", alts: ["caught monthly"], alias: "caught monthly", lastAlias: "caught last", file: "scriptdata/safari/monthlyPokesCaught.txt", lastDesc: "by successful catches during the last month"  },
+        contestsWon: { desc: "by contests won during this month", alts: ["contest monthly", "contests monthly"], alias: "contest monthly", lastAlias: "contest last", file: "scriptdata/safari/monthlyContestsWon.txt", lastDesc: "by contests won during the last month" },
+        collectorEarnings: { desc: "by money received from the Collector during this month", alts: ["collector monthly", "collector money monthly", "collectormoney monthly", "collector $ monthly"], alias: "collector monthly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/monthlyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last month" }
+    };
 
     function getAvatar(src) {
         if (SESSION.users(src)) {
@@ -1379,7 +1386,7 @@ function Safari() {
             for (e in rules.excludeTypes) {
                 if (chance(rules.excludeTypes[e])) {
                     exclude.push(e);
-                    if (exclude.length >= 3) {
+                    if (exclude.length >= 2) {
                         break;
                     }
                 }
@@ -1412,6 +1419,9 @@ function Safari() {
             for (e in rules.excludeBalls) {
                 if (chance(rules.excludeBalls[e])) {
                     exclude.push(e);
+                    if (exclude.length >= 2) {
+                        break;
+                    }
                 }
             }
             out.excludeBalls = exclude;
@@ -1818,6 +1828,7 @@ function Safari() {
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
             player.records.pokesCaught += 1;
+            this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
             if (ball == "clone") {
                 safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + name + " received another " + pokeName + "!", safchan);
@@ -3118,6 +3129,7 @@ function Safari() {
                 this.logLostCommand(sys.name(src), "quest collector:" + data.join(":"), "gave " + readable(quest.requests.map(poke), "and"));
                 player.records.collectorEarnings += quest.reward;
                 player.records.collectorGiven += quest.requests.length;
+                this.addToMonthlyLeaderboards(player.id, "collectorEarnings", quest.reward);
                 quest.reward = 0;
                 quest.requests = [];
                 quest.cooldown = now() + 3 * 60 * 60 * 1000;
@@ -5162,7 +5174,6 @@ function Safari() {
         if (player.pokemon.contains(pokeNum)) {
             player.pokemon.splice(player.pokemon.lastIndexOf(pokeNum), 1);
         }
-
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
@@ -5632,6 +5643,14 @@ function Safari() {
         }
         return false;
     };
+    this.isHostingAuction = function(name) {
+        for (var b in currentAuctions) {
+            if (currentAuctions[b].host == name.toLowerCase()) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     function Battle(p1, p2) {
         var player1 = getAvatar(p1);
@@ -5954,7 +5973,6 @@ function Safari() {
             safari.removePokemon2(host, input.id);
             winner.pokemon.push(input.id);
         }
-
         safari.saveGame(host);
         safari.saveGame(winner);
 
@@ -6140,6 +6158,9 @@ function Safari() {
         for (e in leaderboardTypes) {
             leaderboards[e] = [];
         }
+        for (e in monthlyLeaderboardTypes) {
+            leaderboards[e + "Monthly"] = [];
+        }
         for (e in rawPlayers.hash) {
             data = JSON.parse(rawPlayers.hash[e]);
             for (i in leaderboardTypes) {
@@ -6169,6 +6190,17 @@ function Safari() {
                 }
                 leaderboards[i].push(player);
             }
+            for (i in monthlyLeaderboardTypes) {
+                player = {
+                    name: e,
+                    value: 0
+                };
+                player.value = monthlyLeaderboards[i].get(e) || 0;
+                if (player.value === 0 || player.value == "0") {
+                    continue;
+                }
+                leaderboards[i + "Monthly"].push(player);
+            }
         }
         var byHigherValue = function(a, b) {
             return b.value - a.value;
@@ -6176,7 +6208,36 @@ function Safari() {
         for (e in leaderboards) {
             leaderboards[e].sort(byHigherValue);
         }
+        for (e in monthlyLeaderboardTypes) {
+            leaderboards[e + "Last"] = lastLeaderboards ? lastLeaderboards[e + "Last"] : [];
+        }
         lastLeaderboardUpdate = new Date().toUTCString();
+    };
+    this.addToMonthlyLeaderboards = function(name, record, value) {
+        name = name.toLowerCase();
+        var val = monthlyLeaderboards[record].get(name) || 0;
+        if (typeof val != "number") {
+            val = parseInt(val, 10);
+            if (isNaN(val)) {
+                val = 0;
+            }
+        }
+        monthlyLeaderboards[record].add(name, val + value);
+    };
+    this.checkNewMonth = function() {
+        var date = new Date().getUTCMonth();
+        if (date != permObj.get("currentMonth")) {
+            var old = {};
+            for (var e in monthlyLeaderboards) {
+                old[e + "Last"] = JSON.parse(JSON.stringify(leaderboards[e + "Monthly"]));
+                monthlyLeaderboards[e].clear();
+            }
+            lastLeaderboards = old;
+            permObj.add("lastLeaderboards", JSON.stringify(lastLeaderboards));
+            permObj.add("currentMonth", date);
+            permObj.save();
+            this.updateLeaderboards();
+        }
     };
     this.changeDailyBoost = function(data) {
         var randomNum, bst;
@@ -6271,6 +6332,18 @@ function Safari() {
                 safaribot.sendMessage(user, "You can't pass save data while one of the players is participating in an auction!", safchan);
                 return;
             }
+            for (var e in monthlyLeaderboards) {
+                if (monthlyLeaderboards[e].get(player.id)) {
+                    var val = monthlyLeaderboards[e].get(player.id) || 0;
+                    monthlyLeaderboards[e].add(player.id, monthlyLeaderboards[e].get(target.id) || 0);
+                    monthlyLeaderboards[e].add(target.id, val);
+                }
+                else if (monthlyLeaderboards[e].get(target.id)) {
+                    var val = monthlyLeaderboards[e].get(target.id) || 0;
+                    monthlyLeaderboards[e].add(target.id, monthlyLeaderboards[e].get(player.id) || 0);
+                    monthlyLeaderboards[e].add(player.id, val);
+                }
+            }
             var tId = target.id;
             target.id = player.id;
             player.id = tId;
@@ -6305,7 +6378,12 @@ function Safari() {
             if (targetId) {
                 SESSION.users(targetId).safari = player;
             }
-            
+            for (var e in monthlyLeaderboards) {
+                if (monthlyLeaderboards[e].get(player.id)) {
+                    monthlyLeaderboards[e].add(name2.toLowerCase(), monthlyLeaderboards[e].get(player.id));
+                    monthlyLeaderboards[e].remove(player.id);
+                }
+            }
             player.id = name2.toLowerCase();
             if (player.altlog.indexOf(player.id) === -1) {
                 player.altlog.push(player.id);
@@ -6777,11 +6855,13 @@ function Safari() {
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
             "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
-            "/bestow [player]։[pokemon]: Gifts a player a specific Pokemon.",
+            "/bestow [player]։[pokemon]: Gifts a player a specific Pokemon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
             "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
-            "/loadsafari [JSON]: Creates a safari save with the specified JSON code. ",
+            "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
+            "/updatelb: Manually updates the leaderboards.",
+            "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
             "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock."
         ];
@@ -6999,6 +7079,12 @@ function Safari() {
                     for (e in leaderboardTypes) {
                         safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + leaderboardTypes[e].alias + "'>" + cap(leaderboardTypes[e].alias) + "</a> : Leaderboard " + leaderboardTypes[e].desc, safchan);
                     }
+                    for (e in monthlyLeaderboardTypes) {
+                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + monthlyLeaderboardTypes[e].alias + "'>" + cap(monthlyLeaderboardTypes[e].alias) + "</a> : Leaderboard " + monthlyLeaderboardTypes[e].desc, safchan);
+                    }
+                    for (e in monthlyLeaderboardTypes) {
+                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + monthlyLeaderboardTypes[e].lastAlias + "'>" + cap(monthlyLeaderboardTypes[e].lastAlias) + "</a> : Leaderboard " + monthlyLeaderboardTypes[e].lastDesc, safchan);
+                    }
                     sys.sendMessage(src, "", safchan);
                     return true;
                 }
@@ -7006,21 +7092,44 @@ function Safari() {
                 var info = rec.split(":");
                 rec = info[0];
 
-                var lbKeys = Object.keys(leaderboardTypes);
+                var lbKeys = Object.keys(leaderboards);
+                var lbData = leaderboardTypes;
+                var recName = rec, desc;
                 var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
                 if (lowCaseKeys.indexOf(rec) !== -1) {
                     rec = lbKeys[lowCaseKeys.indexOf(rec)];
+                    desc = lbData[rec].desc;
                 } else {
                     var found = false;
-                    for (e in leaderboardTypes) {
-                        if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
-                            rec = e;
+                    for (e in leaderboards) {
+                        if (e.indexOf("Monthly") >= 0) {
+                            recName = e.substr(0, e.indexOf("Monthly"));
+                            if (recName in monthlyLeaderboardTypes && monthlyLeaderboardTypes[recName].alts.indexOf(rec) !== -1) {
+                                rec = e;
+                                found = true;
+                                lbData = monthlyLeaderboardTypes;
+                                desc = lbData[recName].desc;
+                                break;
+                            }
+                        } else if (e.indexOf("Last") >= 0) {
+                            recName = e.substr(0, e.indexOf("Last"));
+                            if (recName in monthlyLeaderboardTypes && monthlyLeaderboardTypes[recName].lastAlias == rec.toLowerCase()) {
+                                rec = e;
+                                found = true;
+                                lbData = monthlyLeaderboardTypes;
+                                desc = lbData[recName].lastDesc;
+                                break;
+                            }
+                        } else if (leaderboardTypes[e].alts.indexOf(rec) !== -1) {
+                            rec = recName = e;
                             found = true;
+                            desc = lbData[rec].desc;
                             break;
                         }
                     }
                     if (!found) {
-                        rec = "totalPokes";
+                        rec = recName = "totalPokes";
+                        desc = lbData[rec].desc;
                     }
                 }
                 
@@ -7033,8 +7142,8 @@ function Safari() {
                     }
                 }
                 var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
-                var out = ["", "<b>Safari Leaderboards " + leaderboardTypes[rec].desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
-                var sign = (leaderboardTypes[rec].isMoney ? "$" : "");
+                var out = ["", "<b>Safari Leaderboards " + desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
+                var sign = (lbData[recName].isMoney ? "$" : "");
                 for (e = 0; e < list.length; e++) {
                     out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
                     if (list[e].name == self) {
@@ -7196,7 +7305,7 @@ function Safari() {
             return true;
         }
 
-        //Staff Commands        
+        //Staff Commands
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             if (command === "sanitize") {
                 var playerId = sys.id(commandData);
@@ -7736,15 +7845,43 @@ function Safari() {
                     return true;
                 }
                 var info = getInputPokemon(cmd[1]);
+                var remove = cmd.length > 2 && ["remove", "confiscate", "-1"].contains(cmd[2].toLowerCase());
                 if (!info.num) {
                     safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
                     return true;
                 }
-                safaribot.sendMessage(src, "You gave a " + info.name + " to " + target.toCorrectCase() + "!", safchan);
-                if (playerId) {
-                    safaribot.sendMessage(playerId, "You received a " + info.name + "!", safchan);
+                if (remove) {
+                    if (!player.pokemon.contains(info.id)) {
+                        safaribot.sendMessage(src, target.toCorrectCase() + " doesn't have a " + info.name + "!", safchan);
+                        return true;
+                    }
+                    if (info.id == player.starter && countRepeated(player.pokemon, info.id) <= 1) {
+                        safaribot.sendMessage(src, "You can't remove " + target.toCorrectCase() + "'s starter Pokémon!", safchan);
+                        return true;
+                    }
+                    if (safari.isHostingAuction(player.id)) {
+                        safaribot.sendMessage(src, "You can't remove a Pokémon from " + target.toCorrectCase() + " while they are hosting an auction!", safchan);
+                        return true;
+                    }
+                    safari.removePokemon2(player, info.id);
+                    if (player.party.length === 0) {
+                        player.party = [player.starter];
+                    }
+                    if (player.shop && player.shop.hasOwnProperty(info.input) && player.shop[info.input].limit > countRepeated(player.pokemon, info.id)) {
+                        delete player.shop[info.input];
+                    }
+                    safari.logLostCommand(sys.name(src), "bestow " + target.toCorrectCase() + ":" + info.input + ":" + cmd[2]);
+                    safaribot.sendMessage(src, "You took away a " + info.name + " from " + target.toCorrectCase() + "!", safchan);
+                    if (playerId) {
+                        safaribot.sendMessage(playerId, "A Safari Warden confiscated a " + info.name + " from you!", safchan);
+                    }
+                } else {
+                    safaribot.sendMessage(src, "You gave a " + info.name + " to " + target.toCorrectCase() + "!", safchan);
+                    if (playerId) {
+                        safaribot.sendMessage(playerId, "You received a " + info.name + "!", safchan);
+                    }
+                    player.pokemon.push(info.id);
                 }
-                player.pokemon.push(info.id);
                 this.saveGame(player);
                 return true;
             }
@@ -7805,6 +7942,16 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "updatelb") {
+                safari.updateLeaderboards();
+                safaribot.sendMessage(src, "Leaderboards updated!", safchan);
+                return true;
+            }
+            if (command === "newmonth") {
+                safaribot.sendMessage(src, "Checking if current month changed!", safchan);
+                safari.checkNewMonth();
+                return true;
+            }
         }
         
         if (sys.auth(src) > 2) {
@@ -7847,6 +7994,15 @@ function Safari() {
             scientistQuest = JSON.parse(permObj.get("scientistQuest"));
         } catch (err) {
             this.changeScientistQuest();
+        }
+        try {
+            lastLeaderboards = JSON.parse(permObj.get("lastLeaderboards"));
+        } catch (err) {
+            lastLeaderboards = null;
+        }
+        monthlyLeaderboards = {};
+        for (var e in monthlyLeaderboardTypes) {
+            monthlyLeaderboards[e] = new MemoryHash(monthlyLeaderboardTypes[e].file);
         }
         lastIdAssigned = loadLastId();
         this.updateLeaderboards();
@@ -8094,6 +8250,7 @@ function Safari() {
                                 }
                             }
                             player.records.contestsWon += 1;
+                            safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
                             if (playerId) {
@@ -8130,6 +8287,7 @@ function Safari() {
                 }
                 if (today >= getDay(dailyBoost.expires)) {
                     safari.changeDailyBoost();
+                    safari.checkNewMonth();
                 }
             } else {
                 if (!currentPokemon && Math.random() < 0.089743) {
