@@ -577,6 +577,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "aliases") {
         var max_message_length = 30000;
+        var noDates = false;
+        if (commandData[0] == "~") {
+            commandData = commandData.substring(1);
+            noDates = true;
+        }
         var uid = sys.id(commandData);
         var ip = commandData;
         if (uid !== undefined) {
@@ -610,7 +615,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 return;
             }
             var status = (sys.id(alias) !== undefined) ? "online" : "Last Login: " + last_login;
-            smessage = smessage + alias + " ("+status+"), ";
+            smessage = smessage + alias + (noDates ? "" : " ("+status+")") + ", ";
             if (smessage.length > max_message_length) {
                 querybot.sendMessage(src, prefix + smessage + " ...", channel);
                 prefix = "... ";
