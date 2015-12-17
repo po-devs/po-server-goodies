@@ -20,12 +20,15 @@ function Safari() {
     var lostLog = "scriptdata/safaricommands.txt";
     var tradebansFile = "scriptdata/safaribans.txt";
     var permFile = "scriptdata/safariobjects.txt";
+    var rafflePlayersFile = "scriptdata/safari/raffleplayers.txt";
     var permObj;
     var tradeBans;
     var rawPlayers;
     var cookedPlayers;
+    var rafflePlayers;
     var npcShop;
     var lastIdAssigned;
+    var rafflePrizeObj = null;
 
     var safaribot = new Bot("Tauros");
 
@@ -40,7 +43,7 @@ function Safari() {
     var challengeRequests = {};
     var currentBattles = [];
     var currentAuctions = [];
-    var gachaJackpotAmount = 100; //Jackpot for gacha tickets. Number gets divided by 10 later.
+    var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var leaderboards = {};
     var monthlyLeaderboards = {};
@@ -3705,7 +3708,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Here, take these " + bonusAmt + " Premier Balls for your patronage!", safchan);
             } else if (product === "gacha") {
                 bonus = "gacha";
-                bonusAmt *= 2;
+                //bonusAmt *= 2;
                 safaribot.sendMessage(src, "Here, take these " + bonusAmt + " extra Gachapon Tickets for your patronage!", safchan);
             }
 
@@ -3722,6 +3725,10 @@ function Safari() {
                 }
             }
             player.balls[bonus] += bonusAmt;
+        }
+        if (product === "entry") {
+            rafflePlayers.add(player.id, player.balls.entry);
+            rafflePlayers.save();
         }
     };
     this.updateShop = function(name, item) {
@@ -3856,6 +3863,20 @@ function Safari() {
         }
         if (!this.isBelowCap(src, input.id, amount, input.type)) {
             return;
+        }
+        if (fromNPC) {
+            if (player.balls.entry > 0) {
+                var check = rafflePlayers.get(sys.name(src).toLowerCase());
+                if (!check) {
+                    safaribot.sendMessage(src, "You seem to have some raffle entries from a previous drawing. I'll dispose of them so you don't get confused!", safchan);
+                    player.balls.entry = 0;
+                }
+            }
+            
+            if (input.id === "entry" && !rafflePrizeObj) {
+                safaribot.sendMessage(src, "There is no raffle going on right now so we cannot legally sell you an entry! Sorry!", safchan);
+                return;
+            }
         }
 
         var isSilver = shop[input.input].silver || false;
@@ -6367,6 +6388,8 @@ function Safari() {
             }
             this.saveGame(player);
             this.saveGame(target);
+            rafflePlayers.add(player.id, player.balls.entry);
+            rafflePlayers.add(target.id, target.balls.entry);
 
             sys.appendToFile(altLog, now() + "|||" + name1 + " <--> " + name2 + "|||" + sys.name(user) + "\n");
         } else {
@@ -6396,6 +6419,8 @@ function Safari() {
                 this.clearPlayer(targetId);
             }
             this.saveGame(player);
+            rafflePlayers.add(player.id, player.balls.entry);
+            rafflePlayers.remove(targetId);
             
             if (src) {
                 safaribot.sendMessage(src, "You passed your Safari data to " + name2.toCorrectCase() + "!", safchan);
@@ -6863,7 +6888,10 @@ function Safari() {
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
-            "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock."
+            "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
+            "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokemon.",
+            "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
+            "/drawraffle confirm: Draws the current raffle."
         ];
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             help.push.apply(help, adminHelp);
@@ -7225,6 +7253,13 @@ function Safari() {
                 }
                 safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
+                if (rafflePrizeObj) {
+                    var total = 0;
+                    for (var e in rafflePlayers.hash) {
+                        total += parseInt(rafflePlayers.hash[e], 10);
+                    }
+                    safaribot.sendMessage(src, "Current Raffle Prize: " + rafflePrizeObj.name + " with " + total + " entries sold!", safchan);
+                }
                 sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
                 return true;
             }
@@ -7708,7 +7743,6 @@ function Safari() {
                 }
                 player.records[record] = recValue;
                 this.sanitize(player);
-                this.saveGame(player);
                 safaribot.sendAll(target.toCorrectCase() + "'s \"" + record + "\" record has been changed to " + recValue + " by " + sys.name(src) + "!", safchan);
                 return true;
             }
@@ -7743,7 +7777,6 @@ function Safari() {
                 }
                 player.money += moneyGained;
                 this.sanitize(player);
-                this.saveGame(player);
                 safaribot.sendAll(target.toCorrectCase() + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
                 return true;
             }
@@ -7780,7 +7813,6 @@ function Safari() {
                     safaribot.sendMessage(src, "No such item!", safchan);
                     return true;
                 }
-                //I'm lazy...
                 if (item === "entry") {
                     safaribot.sendMessage(src, "You can't gift raffle entries!", safchan);
                     return true;
@@ -7798,7 +7830,6 @@ function Safari() {
                     player.balls[item] += itemQty;
                     this.updateShop(player.id, item);
                     this.sanitize(player);
-                    this.saveGame(player);
                 }
                 safaribot.sendAll(readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and") + " has been awarded with " + itemQty + " " + finishName(item) + " by " + sys.name(src) + "!", safchan);
                 if (invalidPlayers.length > 0) {
@@ -7886,7 +7917,7 @@ function Safari() {
                 return true;
             }
             if (command === "clearjackpot") {
-                gachaJackpot = 100;
+                gachaJackpot = 200;
                 safaribot.sendAll("Gachapon Jackpot was reset!", safchan);
                 return true;
             }
@@ -7952,6 +7983,118 @@ function Safari() {
                 safari.checkNewMonth();
                 return true;
             }
+            if (command === "addraffle") {
+                var poke = getInputPokemon(commandData);
+                if (!poke.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                    return true;
+                }
+                sys.sendAll("", safchan);
+                if (!rafflePrizeObj) {
+                    safaribot.sendAll("A new raffle has started! Buy your tickets for a chance to win a " + poke.name + "!", safchan);
+                } else {
+                    safaribot.sendAll("The current raffle prize has been changed to " + poke.name + ".", safchan);
+                }
+                sys.sendAll("", safchan);
+                permObj.add("rafflePrize", JSON.stringify(poke));
+                rafflePrizeObj = poke;
+                return true;
+            }
+            if (command === "cancelraffle") {
+                var info = commandData.split(":");
+                if (info[0] === "clearfile") {
+                    var refund = 0;
+                    if (info.length === 2) {
+                        refund = parseInt(info[1], 10);
+                        if (isNaN(refund) || refund < 0) {
+                            safaribot.sendMessage(src, "Invalid refund amount!", safchan);
+                            return true;
+                        }
+                    }
+                    sys.sendAll("", safchan);
+                    safaribot.sendAll("The current raffle has been cancelled." + (refund > 0 ? " Tickets have been refunded at $" + refund + " each." : ""), safchan);
+                    sys.sendAll("", safchan);
+                    
+                    rafflePlayers.save();
+                    var player, totalRefund, excess;
+                    for (var e in rafflePlayers.hash) {
+                        player = getAvatarOff(e);
+                        if (player) {
+                            totalRefund = player.balls.entry * refund;
+                            player.money += totalRefund;
+                            player.balls.entry = 0;
+                            if (player.money >= moneyCap) {
+                                excess = player.money - moneyCap;
+                                safaribot.sendMessage(src, "You received $" + addComma(totalRefund) + " for your refunded raffle entries but you could only hold $" + addComma(totalRefund - excess) + ". You now have $" + addComma(Math.min(moneyCap, player.money)) + ".", safchan);
+                            } else {
+                                safaribot.sendMessage(src, "You received $" + addComma(totalRefund) + " for your refunded raffle entries. You now have $" + addComma(player.money) + ".", safchan);
+                            }
+                            this.sanitize(player);
+                        }
+                    }
+                    rafflePlayers.clear();
+                    rafflePrizeObj = null;
+                } else if (rafflePrizeObj) {
+                    rafflePrizeObj = null;
+                    sys.sendAll("", safchan);
+                    safaribot.sendAll("The current raffle prize has been cleared.", safchan);
+                    sys.sendAll("", safchan);
+                }
+                return true;
+            }
+            if (command === "drawraffle") {
+                if (commandData !== "confirm") {
+                    safaribot.sendMessage(src, "This will conclude the current raffle and immediately pick a winner. If you wish to proceed type /drawraffle confirm.", safchan);
+                    return true;
+                }
+                if (!rafflePrizeObj) {
+                    safaribot.sendMessage(src, "No prize is defined! Use /addraffle to create a prize before trying to draw!", safchan);
+                    return true;
+                }
+                
+                //Clean out duplicates
+                rafflePlayers.save();
+                
+                var obj = {};
+                for (var e in rafflePlayers.hash) {
+                    obj[e] = parseInt(rafflePlayers.get(e), 10);
+                }
+                if (Object.keys(obj).length === 0) {
+                    safaribot.sendMessage(src, "No one has entered this raffle meaning you can't draw a winner!", safchan);
+                    return true;
+                }
+                
+                var winner = randomSample(obj);
+                var player = getAvatarOff(winner);
+                do {
+                    winner = randomSample(obj);
+                    player = getAvatarOff(winner);
+                } while (!player);
+                
+                sys.sendAll("", safchan);
+                sys.sendHtmlAll("<b><span style='font-size:15px;'>The winner of the raffle for the " + rafflePrizeObj.name + " is: " + html_escape(winner.toCorrectCase()) + "!</span></b>", safchan);
+                
+                player.pokemon.push(rafflePrizeObj.id);
+                this.saveGame(player);
+                var playerId = sys.id(winner);
+                if (playerId) {
+                    safaribot.sendMessage(playerId, "You received a " + rafflePrizeObj.name + "!", safchan);
+                }
+                sys.sendAll("", safchan);
+                
+                var currentPlayer;
+                for (var e in obj) {
+                    currentPlayer = getAvatarOff(e);
+                    if (currentPlayer) {
+                        currentPlayer.balls.entry = 0;
+                        this.saveGame(currentPlayer);
+                    }
+                }
+                rafflePrizeObj = null;
+                rafflePlayers.clear();
+                return true;
+            }
+            //TODO: Command to DQ someone from raffle
         }
         
         if (sys.auth(src) > 2) {
@@ -7980,6 +8123,7 @@ function Safari() {
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
         cookedPlayers = new MemoryHash(deletedSaveFiles);
+        rafflePlayers = new MemoryHash(rafflePlayersFile);
         tradeBans = new MemoryHash(tradebansFile);
         permObj = new MemoryHash(permFile);
         try {
@@ -8001,6 +8145,11 @@ function Safari() {
             lastLeaderboards = JSON.parse(permObj.get("lastLeaderboards"));
         } catch (err) {
             lastLeaderboards = null;
+        }
+        try {
+            rafflePrizeObj = JSON.parse(permObj.get("rafflePrize"));
+        } catch (err) {
+            rafflePrizeObj = null;
         }
         monthlyLeaderboards = {};
         for (var e in monthlyLeaderboardTypes) {
@@ -8284,6 +8433,7 @@ function Safari() {
                 safari.updateLeaderboards();
                 rawPlayers.save();
                 cookedPlayers.save();
+                rafflePlayers.save();
                 if (now() > scientistQuest.expires) {
                     safari.changeScientistQuest();
                 }
