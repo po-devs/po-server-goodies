@@ -21,7 +21,7 @@ function Mafia(mafiachan) {
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
-    this.warningLog = {}
+    this.warningLog = {};
     this.defaultWarningPoints = {
         	"afk": 1,
         	"slay abuse": 2,
@@ -29,7 +29,7 @@ function Mafia(mafiachan) {
         	"botquote": 3,
         	"deadtalk": 6,
         	"trolling": 6
-        }
+        };
 
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
@@ -52,7 +52,7 @@ function Mafia(mafiachan) {
         npcutoff = 13,
         timesBeforeNonPeak = 3, //number of dead games before enabling non-peak
         numPlayersBeforeDead = 10; //number of players before game is counted as not dead
-        timeForWarningErase = (1000 * 60 * 60 * 24 * 7) //1 week
+        timeForWarningErase = (1000 * 60 * 60 * 24 * 7); //1 week
 
     var savePlayedGames = function (entry) {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -108,10 +108,10 @@ function Mafia(mafiachan) {
         if (id === undefined) {
             return false;
         }
-        botName = "Game"
+        botName = "Game";
         if (("theme" in mafia) && (mafia.theme !== undefined)) {
 			if ("botName" in mafia.theme) {
-				botName = mafia.theme.botName
+				botName = mafia.theme.botName;
 			}
 		}
         if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
@@ -127,10 +127,10 @@ function Mafia(mafiachan) {
         if (mess === undefined || mess.length === 0) {
             return false;
         }
-        botName = "Game"
+        botName = "Game";
         if (("theme" in mafia) && (mafia.theme !== undefined)) {
 			if ("botName" in mafia.theme) {
-				botName = mafia.theme.botName
+				botName = mafia.theme.botName;
 			}
 		}
         if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
@@ -157,11 +157,6 @@ function Mafia(mafiachan) {
         sendChanAll(mess, mafiachan);
         sendChanAll(mess, sachannel);
         return true;
-    }
-    /* stolen from here: http://snippets.dzone.com/posts/show/849 */
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
     }
     /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
     function cap(string) {
@@ -1299,6 +1294,19 @@ function Mafia(mafiachan) {
         div.push(p1); div.push(p2);
         return div;
     };
+    this.slashSplit = function (string) {
+    	var div = [];
+        var pos = string.indexOf('/');    	
+        if (pos != -1) {
+            p1 = string.substring(0, pos);
+            p2 = string.substr(pos + 1);
+        } else {
+            p1 = string;
+            p2 = '*'
+        }
+        div.push(p1); div.push(p2);
+        return div;
+    };
     this.saveStalkLog = function () {
         if (this.state == "standby") {
             this.compilePhaseStalk("STANDBY " + mafia.time.days);
@@ -2254,35 +2262,61 @@ function Mafia(mafiachan) {
         this.actionBeforeDeath(player);
         this.removePlayer(player);
     };
-    this.removeTargets = function (player, checkIgnore) {
+    this.removeTargets = function (player, checkIgnore, onlyUser) {
         var removed = false;
         for (var action in player.role.actions.night) {
-            if (this.removeTarget(player, action, checkIgnore)) {
+            if (this.removeTarget(player, action, checkIgnore, onlyUser)) {
                 removed = true;
             }
         }
         return removed;
     };
-    this.removeTarget = function (player, action, checkIgnore) {
+    this.removeTarget = function (player, action, checkIgnore, onlyUser) {
         var targetMode = player.role.actions.night[action].common;
         if (checkIgnore === true && player.role.actions.night[action].ignoreDistract === true) {
             return false;
         }
         if (targetMode == 'Self') {
-            player.targets[action] = [];
+            player.targetsData[action] = [];
             return true;
         } else if (targetMode == 'Team') {
-            if (!(player.role.side in this.teamTargets)) {
-                this.teamTargets[player.role.side] = {};
+            if (!(player.role.side in this.teamTargetsData)) {
+                this.teamTargetsData[player.role.side] = {};
             }
-            this.teamTargets[player.role.side][action] = [];
-            return true;
+        	keepTargets = [];
+        	blocked = false;
+        	if (onlyUser === true) {
+        	for (tar in this.teamTargetsData[player.role.side][action]) {
+        		tarData = this.slashSplit( this.teamTargetsData[player.role.side][action][tar] )
+        		userInputAction = tarData[1]
+        		if (userInputAction !== player.name) {
+        			keepTargets[tar] = this.teamTargetsData[player.role.side][action][tar];
+        			continue;
+        			}
+        		blocked = true;
+        		}
+            }
+            this.teamTargetsData[player.role.side][action] = keepTargets;
+        	return (blocked);
         } else if (targetMode == 'Role') {
-            if (!(player.role.role in this.roleTargets)) {
-                this.roleTargets[player.role.role] = {};
+            if (!(player.role.role in this.roleTargetsData)) {
+                this.roleTargetsData[player.role.role] = {};
             }
-            this.roleTargets[player.role.role][action] = [];
-            return true;
+        	keepTargets = [];
+        	blocked = false;
+        	if (onlyUser === true) {
+        	for (tar in this.roleTargetsData[player.role.role][action]) {
+        		tarData = this.slashSplit( this.roleTargetsData[player.role.role][action][tar] )
+        		userInputAction = tarData[1]
+        		if (userInputAction !== player.name) {
+        			keepTargets[tar] = this.roleTargetsData[player.role.role][action][tar];
+        			continue;
+        			}
+        		blocked = true;
+        		}
+        	}
+            this.roleTargetsData[player.role.role][action] = keepTargets;
+        	return (blocked);
         }
     };
     this.setRechargeFor = function (player, phase, action, count) {
@@ -2449,7 +2483,7 @@ function Mafia(mafiachan) {
                 this.roleTargetsData[player.role.role][action] = [];
             }
             list = this.roleTargets[player.role.role][action];
-            targetsDataList = this.roleTargets[player.role.role][action];
+            targetsDataList = this.roleTargetsData[player.role.role][action];
         }
         if ("cancel" in player.role.actions.night[action]) {
             var cancelList = player.role.actions.night[action].cancel;
@@ -2461,8 +2495,9 @@ function Mafia(mafiachan) {
         }
         if (list.indexOf(target.name) == -1) {
             list.push(target.name);
-            targetsData = target.name.concat(":",extra);
-            targetsData = targetsData.concat("@",redirect);
+            targetsData = target.name.concat(":",extra); //This data is saved for pinpoint
+            targetsData = targetsData.concat("@",redirect); //This is for redirect
+            targetsData = targetsData.concat("/",player.name); //keeps track of who input the action (for userOnly on distract)
             targetsDataList.push(targetsData);
             if (list.length > limit) {
                 list.splice(0, 1);
@@ -2476,17 +2511,17 @@ function Mafia(mafiachan) {
     	newTar = {}; newTar2 = {}; newTar3 = {}; 
     	for (action in target.targetsData) {
     		act = this.colonSplit(target.targetsData[action]);
-    		newData = (redirectTarget + ":" + act[1] + "@*" );
+    		newData = (redirectTarget + ":" + act[1] + "@*" + "/" + target.name );
     		newTar[action] = [newData];
     	}
     	for (action in this.teamTargetsData[target.role.side]) {
     		act = this.colonSplit(this.teamTargetsData[target.role.side][action]);
-    		newData = (redirectTarget + ":" + act[1] + "@*" );
+    		newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
     		newTar2[action] = [newData];
     	}
     	for (action in this.roleTargetsData[target.role.role]) {
     		act = this.colonSplit(this.roleTargetsData[target.role.role][action]);
-    		newData = (redirectTarget + ":" + act[1] + "@*" );
+    		newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
     		newTar3[action] = [newData];
     	}
     	target.targetsData = newTar;
@@ -3237,6 +3272,9 @@ function Mafia(mafiachan) {
                         var targetName = targets[t];
                     	pos = targetName.indexOf(':');
                     	pos2 = targetName.indexOf('@');
+                    	pos3 = targetName.indexOf('/');
+                    	userInputAction = targetName.substring(pos3); //keeps track of who input the action
+                    	targetName = targetName.substring(0, pos3);
                     	if (pos === -1) {
 							targetData = "*"
 							targetRedirect = targetName.substring(pos2 + 1);
@@ -3572,7 +3610,8 @@ function Mafia(mafiachan) {
                             if (command == "distract") {
                                 tarmsg = "distractmsg" in Action ? Action.distractmsg : "The ~Distracter~ came to you last night! You were too busy being distracted!";
                                 gamemsg(target.name, formatArgs(tarmsg, nightargs));
-                                if (mafia.removeTargets(target, true)) {
+                                onlyUser = "onlyUser" in Action ? Action.onlyUser : false; //if true, only blocks actions input by the target (not teammates)
+                                if (mafia.removeTargets(target, true, onlyUser)) {
                                     /* warn role / teammates... No args because messes up very easily */
                                     var teamMsg = "teammsg" in Action ? Action.teammsg : "Your teammate was too busy with the ~Distracter~ during the night, you decided not to ~Action~ anyone during the night!";
                                     if ("night" in target.role.actions) {

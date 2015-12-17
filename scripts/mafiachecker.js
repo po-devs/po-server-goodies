@@ -336,7 +336,7 @@ function mafiaChecker() {
                             if (commandList.indexOf("inspect") !== -1)
                                 commonOptional = commonOptional.concat(["Sight", "inspectMsg"]);
                             if (commandList.indexOf("distract") !== -1)
-                                commonOptional = commonOptional.concat(["distractmsg", "teammsg"]);
+                                commonOptional = commonOptional.concat(["distractmsg", "teammsg", "onlyUser"]);
                             if (commandList.indexOf("protect") !== -1)
                                 commonOptional = commonOptional.concat(["protectmsg"]);
                             if (commandList.indexOf("safeguard") !== -1)
