@@ -911,7 +911,7 @@ function initTours() {
         var parseData = JSON.parse(history);
         tours.history = parseData.tours;
         tours.activehistory = parseData.staff;
-        tours.eventhistory = parseData.eventhistory;
+        tours.eventhistory = parseData.eventtours;
     }
     catch (err) {
         sendChanAll("No tour history detected.", tourschan);
