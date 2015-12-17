@@ -7955,12 +7955,14 @@ function Safari() {
         }
         
         if (sys.auth(src) > 2) {
-            if (command === "updateplugin" && commandData.toLowerCase() === "safari.js") {
+            if (command === "updateplugin" && commandData === "safari.js") {
                 if (contestCount > 0 || contestCooldown < 181) {
                     safaribot.sendMessage(src, "You shouldn't update during or right before a contest...", safchan);
                     return true;
+                } else if (currentPokemon) {
+                    safaribot.sendMessage(src, "You shouldn't update while a Wild Pokemon is out!", safchan);
+                    return true;
                 }
-                commandData = commandData.toLowerCase();
                 //Then fall through to the actual command to update plugin
             }
         }
