@@ -7984,20 +7984,20 @@ function Safari() {
                 return true;
             }
             if (command === "addraffle") {
-                var poke = getInputPokemon(commandData);
-                if (!poke.num) {
+                var input = getInputPokemon(commandData);
+                if (!input.num) {
                     safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
                     return true;
                 }
                 sys.sendAll("", safchan);
                 if (!rafflePrizeObj) {
-                    safaribot.sendAll("A new raffle has started! Buy your tickets for a chance to win a " + poke.name + "!", safchan);
+                    safaribot.sendAll("A new raffle has started! Buy your tickets for a chance to win a " + input.name + "!", safchan);
                 } else {
-                    safaribot.sendAll("The current raffle prize has been changed to " + poke.name + ".", safchan);
+                    safaribot.sendAll("The current raffle prize has been changed to " + input.name + ".", safchan);
                 }
                 sys.sendAll("", safchan);
-                permObj.add("rafflePrize", JSON.stringify(poke));
-                rafflePrizeObj = poke;
+                permObj.add("rafflePrize", JSON.stringify(input));
+                rafflePrizeObj = input;
                 return true;
             }
             if (command === "cancelraffle") {
