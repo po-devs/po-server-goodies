@@ -30,7 +30,7 @@ if (typeof tours !== "object") {
     }
     catch (e) {
         sendChanAll("Creating new tournament object", tourschan);
-        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
+        tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "eventhistory": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
     }
     var refresh = true;
     for (var x in tours.tour) {
@@ -534,7 +534,7 @@ function saveTourKeys() {
 }
 
 function saveTourHistory() {
-    var history = {'tours': tours.history, 'staff': tours.activehistory};
+    var history = {'tours': tours.history, 'staff': tours.activehistory, 'eventtours': tours.eventhistory};
     sys.writeToFile(dataDir+"tourhistory.json", JSON.stringify(history));
     return;
 }
@@ -840,7 +840,7 @@ function initTours() {
         }
         catch (e) {
             sendChanAll("Creating new tournament object", tourschan);
-            tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
+            tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "eventhistory": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": true};
         }
         var refresh = true;
         for (var x in tours.tour) {
@@ -859,6 +859,7 @@ function initTours() {
         if (!tours.hasOwnProperty('keys')) tours.keys = [];
         if (!tours.hasOwnProperty('tour')) tours.tour = {};
         if (!tours.hasOwnProperty('history')) tours.history = [];
+        if (!tours.hasOwnProperty('eventhistory')) tours.eventhistory = [];
         if (!tours.hasOwnProperty('touradmins')) tours.touradmins = {};
         if (!tours.hasOwnProperty('subscriptions')) tours.subscriptions = {};
         if (!tours.hasOwnProperty('activetas')) tours.activetas = [];
@@ -910,6 +911,7 @@ function initTours() {
         var parseData = JSON.parse(history);
         tours.history = parseData.tours;
         tours.activehistory = parseData.staff;
+        tours.eventhistory = parseData.eventhistory;
     }
     catch (err) {
         sendChanAll("No tour history detected.", tourschan);
@@ -1381,7 +1383,7 @@ function tourCommand(src, command, commandData, channel) {
                 return true;
             }
             if (command == "resettours") {
-                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
+                tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "eventhistory": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
                 refreshTicks(true);
                 sendBotAll(sys.name(src)+" reset the tour system!",tourschan,false);
                 return true;
@@ -2995,6 +2997,13 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
+        if (command === "eventhistory") {
+            sys.sendMessage(src, "*** RECENTLY PLAYED EVENTS ***",tourschan);
+            for (var x in tours.eventhistory) {
+                sys.sendMessage(src, tours.eventhistory[x],tourschan);
+            }
+            return true;
+        }
 
         if (command == "tourrules") {
             sys.sendMessage(src, border,tourschan);
@@ -4056,6 +4065,7 @@ function tourprintbracket(key) {
                     rankstring.push("#" + (r+1) + ": " + toCorrectCase(rankingorder[r]));
                 }
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
+                tours.eventhistory.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
             }
             if (tours.history.length > 25) {
                 tours.history.pop();
