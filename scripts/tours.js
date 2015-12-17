@@ -3047,7 +3047,7 @@ function tourCommand(src, command, commandData, channel) {
         }
     }
     catch (err) {
-        sendChanAll("Error in Tournament Command '"+command+"': "+err, tourserrchan);
+        sendChanAll("Error in Tournament Command '"+command+"': "+err + " on line " + (err.lineNumber ? " on line " + err.lineNumber : ""), tourserrchan);
     }
     return false;
 }
