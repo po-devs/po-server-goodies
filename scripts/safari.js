@@ -6738,7 +6738,7 @@ function Safari() {
             gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! Due to strict gambling regulations, there is a " + itemData.gacha.cooldown/1000 + " second delay between using the tickets.",
             //Seasonal change
             rock: "A small snowball that can be thrown to potentially freeze another player for a short period with /snowball. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
-            rare: "Can be smashed and transformed into around " + itemData.rare.charges + " Candy Dusts. To use, type \"/use gem\". Found with Itemfinder.",
+            rare: "Can be smashed and transformed into around " + itemData.rare.charges + " Candy Dusts. To use, type \"/use rare\". Found with Itemfinder.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. (To use, type /evolve [Pokémon]).",
             mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
