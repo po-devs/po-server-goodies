@@ -269,7 +269,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var tier = utilities.find_tier(stuff[1]);
         var rank = sys.ranking(name, tier);
         if (!tier) {
-            rankbot.sendMessage(stuff[1] + " is not a tier", channel);
+            rankingbot.sendMessage(stuff[1] + " is not a tier", channel);
             return;
         }
         if (rank === undefined) {
