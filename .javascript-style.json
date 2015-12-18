@@ -12,5 +12,6 @@
   "unused": true,
   "evil": true,
   "proto": true,
-  "withstmt": true
+  "withstmt": true,
+  "maxlen": 10000
 }
