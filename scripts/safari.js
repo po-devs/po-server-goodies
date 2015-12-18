@@ -8374,17 +8374,20 @@ function Safari() {
         if (contestCount > 0) {
             contestCount--;
             if (contestCount === 0) {
-                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0;
+                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player;
                 for (var e in contestCatchers) {
                     if (contestCatchers.hasOwnProperty(e)) {
                         if (contestCatchers[e].length >= maxCaught) {
-                            if (contestCatchers[e].length > maxCaught) {
-                                winners = [];
-                                pokeWinners = [];
-                                maxCaught = contestCatchers[e].length;
+                            player = getAvatarOff(e);
+                            if (player) {
+                                if (contestCatchers[e].length > maxCaught) {
+                                    winners = [];
+                                    pokeWinners = [];
+                                    maxCaught = contestCatchers[e].length;
+                                }
+                                winners.push(e);
+                                pokeWinners.push(poke(player.party[0]));
                             }
-                            winners.push(e);
-                            pokeWinners.push(poke(getAvatarOff(e).party[0]));
                         }
                     }
                 }
@@ -8406,13 +8409,16 @@ function Safari() {
                         bst = catchersBST[name];
 
                         if (bst >= maxBST) {
-                            if (bst > maxBST) {
-                                tieBreaker = [];
-                                pokeWinners = [];
-                                maxBST = bst;
+                            player = getAvatarOff(e);
+                            if (player) {
+                                if (bst > maxBST) {
+                                    tieBreaker = [];
+                                    pokeWinners = [];
+                                    maxBST = bst;
+                                }
+                                tieBreaker.push(name);
+                                pokeWinners.push(poke(player.party[0]));
                             }
-                            tieBreaker.push(name);
-                            pokeWinners.push(poke(getAvatarOff(name).party[0]));
                         }
                     }
                     winners = tieBreaker;
@@ -8450,7 +8456,7 @@ function Safari() {
                 }
                 sys.sendAll("*** ************************************************************ ***", safchan);
 
-                var player, winner, playerId, amt;
+                var winner, playerId, amt;
                 for (e in contestantsCount) {
                     if (contestantsCount.hasOwnProperty(e)) {
                         player = getAvatarOff(e);
