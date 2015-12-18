@@ -8409,7 +8409,7 @@ function Safari() {
                         bst = catchersBST[name];
 
                         if (bst >= maxBST) {
-                            player = getAvatarOff(e);
+                            player = getAvatarOff(name);
                             if (player) {
                                 if (bst > maxBST) {
                                     tieBreaker = [];
