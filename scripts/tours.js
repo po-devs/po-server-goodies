@@ -4070,6 +4070,9 @@ function tourprintbracket(key) {
             if (tours.history.length > 25) {
                 tours.history.pop();
             }
+            if (tours.eventhistory.length > 25) {
+                tours.eventhistory.pop();
+            }
             saveTourHistory();
             try {
                 var garray = tourstats.general;
