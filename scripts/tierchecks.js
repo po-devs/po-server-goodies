@@ -291,7 +291,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     beasts[sys.pokeNum('Beldum')] = ['Hold Back'].map(sys.moveNum);
     beasts[sys.pokeNum('Metang')] = ['Hold Back'].map(sys.moveNum);
     beasts[sys.pokeNum('Metagross')] = ['Hold Back'].map(sys.moveNum);
-    beasts[sys.pokeNum('Jirachi')] = ['Moonblast', 'Hold Hands'].map(sys.moveNum);
+    beasts[sys.pokeNum('Jirachi')] = ['Moonblast', 'Happy Hour'].map(sys.moveNum);
  
     for (var beast in beasts)
         for (var slot=0; slot<6; slot++)
