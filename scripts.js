@@ -1894,7 +1894,11 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-
+    //Nothing good can come from these.
+    if (sys.auth(src) === 0 && message.indexOf(".onion") != -1) {
+        SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 7200, "Onion Link", true);
+        kickbot.sendAll(sys.name(src) + " was smuted for 2 hours because they tried to send an Onion Link in the channel " + sys.channel(channel) + " [Message content: " + message + "]!",staffchannel);
+    }
 
     // Secret mute
     if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
