@@ -3611,16 +3611,16 @@ function Safari() {
                             amt = 1;
                         } else {
                             rew = "silver";
-                            amt = loop;
+                            amt = 1;
                         }
                     break;
                     case 1:
-                        rew = "dust";
-                        amt = loop * 12;
-                    break;
-                    case 2:
                         rew = "bait";
                         amt = Math.floor(loop * 1.5);
+                    break;
+                    case 2:
+                        rew = "dust";
+                        amt = loop * 10;
                     break;
                     case 3:
                         rew = "money";
