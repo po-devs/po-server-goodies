@@ -631,13 +631,18 @@ function Safari() {
                 "nugget": {
                     "gacha": 10,
                     "nugget": 1
+                },
+                "dust": {
+                    "gacha": 10,
+                    "dust": 40
                 }
             },
             "chance": {
-                "defaultSet": 0.85,
+                "defaultSet": 0.8,
                 "extra": 0.05,
                 "gem": 0.05,
-                "nugget": 0.05
+                "nugget": 0.05,
+                "dust": 0.05
             }
         }
     };
@@ -1383,7 +1388,7 @@ function Safari() {
         var rules = theme in contestThemes ? contestThemes[theme].rules : null;
 
         if (!rules) {
-            if (sys.rand(0, 100) < 24) {
+            if (sys.rand(0, 100) < 22) {
                 return {};
             }
             rules = defaultRules;
@@ -2950,7 +2955,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest scientist'>Scientist</a> " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest arena'>Arena</a> " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest wonder'>Wonder</a> " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -3578,7 +3583,7 @@ function Safari() {
             }
             return out;
         };
-        var postBattle = function(name, isWinner, playerScore, npcScore, args) {
+        var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
@@ -3635,16 +3640,26 @@ function Safari() {
                 }
                 npc.postArgs.reward[rew] += amt;
                 
-                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + args.count + " trainers so far! Now for the next battle!", safchan);
+                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + args.count + " trainer" + (args.count == 1 ? "" : "s") + " so far! Now for the next battle!", safchan);
+                for (var e = 0; e < viewers.length; e++) {
+                    if (viewers[e] !== name.toLowerCase()) {
+                        safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + args.count + " trainers so far!", safchan);
+                    }
+                }
                 
                 var battle = new Battle(src, npc);
+                for (e = 0; e < viewers.length; e++) {
+                    if (!battle.viewers.contains(viewers[e])) {
+                        battle.viewers.push(viewers[e]);
+                    }
+                }
                 currentBattles.push(battle);
             } else {
                 var count = args.count - 1, updatelb = false;
                 if (count > player.records.towerHighest) {
                     player.records.towerHighest = count;
                     if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
-                        safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + count + " trainers at the Battle Tower and set a new record!</b>", safchan);
+                        safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + count + " trainer" + (args.count == 1 ? "" : "s") + " at the Battle Tower and set a new record!</b>", safchan);
                         updatelb = true;
                     }
                 }
@@ -3677,9 +3692,22 @@ function Safari() {
                     }
                 }
                 if (id) {
-                    safaribot.sendMessage(id, "Tower Clerk: Game over, " + sys.name(id) + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!", safchan);
+                    if (count === 0) {
+                        safaribot.sendMessage(id, "Tower Clerk: Too bad, " + name + "! You couldn't defeat any trainer!", safchan);
+                    } else if (count < 5) {
+                        safaribot.sendMessage(id, "Tower Clerk: Game over, " + name + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!", safchan);
+                    } else if (count < 20) {
+                        safaribot.sendMessage(id, "Tower Clerk: Good job, " + name + "! You defeated " + count + " trainers!", safchan);
+                    } else {
+                        safaribot.sendMessage(id, "Tower Clerk: Amazing, " + name + "! You defeated " + count + " trainers! Congratulations!", safchan);
+                    }
                     if (rewardText.length > 0) {
                         safaribot.sendMessage(id, "Tower Clerk: For your performance in the Battle Tower challenge, we reward you with " + readable(rewardText, "and") + "!", safchan);
+                    }
+                }
+                for (var e = 0; e < viewers.length; e++) {
+                    if (viewers[e] !== name.toLowerCase()) {
+                        safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + count + " trainers!", safchan);
                     }
                 }
                 safari.saveGame(player);
@@ -6103,7 +6131,7 @@ function Safari() {
             this.sendToViewers("<b>The battle between " + this.name1 + " and " + this.name2 + " ended in a draw!</b>", true);
         }
         if (this.npcBattle && this.postBattle) {
-            this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs);
+            this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs, this.viewers);
         }
         this.finished = true;
     };
@@ -7190,6 +7218,8 @@ function Safari() {
             "/findsaves: Lists all saves the Safari Game currently has data on.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
+            "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari).",
+            "/clearcd [player]։[type]: To clear a player's cooldown on a quest/ball throw/auction.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
             "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
             "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokemon.",
@@ -8148,6 +8178,48 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "clearcd") {
+                var cmd = commandData.split(":");
+                if (cmd.length < 2) {
+                    safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, auction, collector, scientist, arena, tower or wonder!", safchan);
+                    return true;
+                }
+                var target = cmd[0];
+                var player = getAvatarOff(target);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+                var type = cmd[1].toLowerCase();
+                switch (type) {
+                    case "collector":
+                        player.quests.collector.cooldown = 0;
+                    break;
+                    case "scientist":
+                        player.quests.scientist.cooldown = 0;
+                    break;
+                    case "arena":
+                        player.quests.arena.cooldown = 0;
+                    break;
+                    case "tower":
+                        player.quests.tower.cooldown = 0;
+                    break;
+                    case "wonder":
+                        player.quests.wonder.cooldown = 0;
+                    break;
+                    case "auction":
+                        player.cooldowns.auction = 0;
+                    break;
+                    case "ball":
+                        player.cooldowns.ball = 0;
+                    break;
+                }
+                
+                this.saveGame(player);
+                safaribot.sendMessage(src, target.toCorrectCase() + "'s cooldown for " + type + " was reset!", safchan);
+                return true;
+            }
             if (command === "changeboost") {
                 safari.changeDailyBoost(commandData);
                 return true;
@@ -8409,6 +8481,30 @@ function Safari() {
                 }
                 rafflePrizeObj = null;
                 rafflePlayers.clear();
+                return true;
+            }
+            if (command === "ongoing") {
+                var out = [], e, nothingFound = true;
+                for (e = 0; e < currentBattles.length; e++) {
+                    if (currentBattles[e].npcBattle) {
+                        out.push(currentBattles[e].name1 + " x " + currentBattles[e].name2);
+                    }
+                }
+                if (out.length > 0) {
+                    nothingFound = false;
+                    safaribot.sendMessage(src, "Ongoing NPC Battles: " + out.join(" | "), safchan);
+                }
+                out = [];
+                for (e = 0; e < currentAuctions.length; e++) {
+                    out.push(currentAuctions[e].hostName + "'s " + currentAuctions[e].productName);
+                }
+                if (out.length > 0) {
+                    nothingFound = false;
+                    safaribot.sendMessage(src, "Ongoing Auctions: " + out.join(" | "), safchan);
+                }
+                if (nothingFound) {
+                    safaribot.sendMessage(src, "No ongoing NPC Battles or Auctions!", safchan);
+                }
                 return true;
             }
             //TODO: Command to DQ someone from raffle
