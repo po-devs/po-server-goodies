@@ -3646,14 +3646,21 @@ function Safari() {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + args.count + " trainers so far!", safchan);
                     }
                 }
-                
-                var battle = new Battle(src, npc);
-                for (e = 0; e < viewers.length; e++) {
-                    if (!battle.viewers.contains(viewers[e])) {
-                        battle.viewers.push(viewers[e]);
+                if (id) {
+                    var battle = new Battle(id, npc);
+                    for (e = 0; e < viewers.length; e++) {
+                        if (!battle.viewers.contains(viewers[e])) {
+                            battle.viewers.push(viewers[e]);
+                        }
+                    }
+                    currentBattles.push(battle);
+                } else {
+                    player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
+                    safari.saveGame(player);
+                    for (e = 0; e < viewers.length; e++) {
+                        safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
                     }
                 }
-                currentBattles.push(battle);
             } else {
                 var count = args.count - 1, updatelb = false;
                 if (count > player.records.towerHighest) {
