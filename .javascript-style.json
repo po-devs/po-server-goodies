@@ -3,7 +3,7 @@
   "browser": false,
   "camelcase": false,
   "curly": true,
-  "eqeqeq": true,
+  "eqeqeq": false,
   "forin": true,
   "freeze": true,
   "funcscope": false,
