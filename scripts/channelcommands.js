@@ -17,7 +17,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (typeof SESSION.channels(channel).members !== "object") {
             SESSION.channels(channel).members = [];
         }
-         if (commandData === "~") {
+        if (commandData === "~") {
             var ret = {};
             ret.members = SESSION.channels(channel).members;
             ret.operators = SESSION.channels(channel).operators;
@@ -62,6 +62,54 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (SESSION.channels(channel).inviteonly >= 1 || SESSION.channels(channel).members.length >= 1) {
             channelbot.sendHtmlMessage(src, "Members: " + membersArr.join(", "), channel);
         }
+        return;
+    }
+    if (command === "register") {
+        if (!sys.dbRegistered(sys.name(src))) {
+            channelbot.sendMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!", channel);
+            return;
+        }
+        if (sys.auth(src) < 1 && script.isOfficialChan(channel)) {
+            channelbot.sendMessage(src, "You don't have sufficient authority to register this channel!", channel);
+            return;
+        }
+        if (poChannel.masters.length === 0) {
+            if (poChannel.admins.length > 0) {
+                if (poChannel.admins.contains(sys.name(src).toLowerCase())) {
+                    poChannel.register(sys.name(src));
+                    channelbot.sendAll(sys.name(src) + " has taken the empty owner position by admin.", channel);
+                    return;
+                }
+            } else {
+                if (poChannel.operators.length > 0) {
+                    if (poChannel.operators.contains(sys.name(src).toLowerCase())) {
+                        poChannel.register(sys.name(src));
+                        channelbot.sendAll(sys.name(src) + " has taken the empty owner position by moderator.", channel);
+                        return;
+                    }
+                } else {
+                    if (poChannel.members.length > 0) {
+                        if (poChannel.members.contains(sys.name(src).toLowerCase())) {
+                            poChannel.register(sys.name(src));
+                            channelbot.sendAll(sys.name(src) + " has taken the empty owner position by member.", channel);
+                            return;
+                        }
+                    } else {
+                        poChannel.register(sys.name(src));
+                        channelbot.sendMessage(src, "You registered this channel successfully. Take a look of /commands channel", channel);
+                        channelbot.sendAll(sys.name(src) + " has registered the channel.", channel);
+                        return;
+                    }
+                    channelbot.sendMessage(src, "Only a channel member can register.", channel);
+                    return;
+                }
+                channelbot.sendMessage(src, "Only a channel operator can register.", channel);
+                return;
+            }
+            channelbot.sendMessage(src, "Only a channel admin can register.", channel);
+            return;
+        }
+        channelbot.sendMessage(src, "This channel is already registered.", channel);
         return;
     }
     if (command === "crules" || command === "channelrules") { 
@@ -148,13 +196,61 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return "no command";
     }
     
-    if (command == "lt" || command == "lovetap") {
+    if (command === "topic") {
+        SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
+    if (command === "topicadd") {
+        if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
+            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+            return;
+        }
+        channelbot.sendMessage(src, "Please enter a topic to add after.", channel);
+        return;
+    }
+    if (command === "removepart") {
+        if (isNaN(commandData) || commandData === undefined) {
+            channelbot.sendMessage(src, "Please enter the topic part number to remove.", channel);
+            return;
+        }
+        var topic = SESSION.channels(channel).topic;
+        topic = topic.split(Config.topic_delimiter);
+        if (isNaN(commandData) || commandData > topic.length) {
+            return;
+        }
+        var part = commandData;
+        if (part > 0) {
+            part = part - 1;
+        }
+        topic.splice(part, 1);
+        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
+        return;
+    }
+    if (command === "updatepart") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please enter the topic number spaced with the text to change.", channel);
+            return;
+        }
+        var topic = SESSION.channels(channel).topic;
+        topic = topic.split(Config.topic_delimiter);
+        var pos = commandData.indexOf(" ");
+        if (pos === -1) {
+            return;
+        }
+        if (isNaN(commandData.substring(0, pos)) || commandData.substring(0, pos) - 1 < 0 || commandData.substring(0, pos) - 1 > topic.length - 1) {
+            return;
+        }
+        topic[commandData.substring(0, pos) - 1] = commandData.substr(pos + 1);
+        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
+        return;
+    }
+    if (command === "lt" || command === "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
             return;
         }
         var colour = script.getColor(src);
-        sendChanHtmlAll("<font color='"+colour+"'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
         sys.kick(tar, channel);
         return;
     }
@@ -369,11 +465,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (!poChannel.isChannelOwner(src) && sys.auth(src) < 2) {
         return "no command";
     }
-    if (command == "deregister") {
+    if (command === "deregister") {
         if (commandData === undefined) {
             poChannel.takeAuth(src, sys.name(src), "owner");
-        }
-        else {
+        } else {
             poChannel.takeAuth(src, commandData, "owner");
         }
         return;
