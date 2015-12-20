@@ -379,48 +379,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command === "topic") {
-        SESSION.channels(channel).setTopic(src, commandData);
-        return;
-    }
-    if (command === "topicadd") {
-        if (commandData) {
-            if (SESSION.channels(channel).topic.length > 0) {
-                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
-            } else {
-                SESSION.channels(channel).setTopic(src, commandData);
-            }
-        }
-        return;
-    }
-    if (command === "removepart") {
-        var topic = SESSION.channels(channel).topic;
-        topic = topic.split(Config.topic_delimiter);
-        if (isNaN(commandData) || commandData > topic.length) {
-            return;
-        }
-        var part = commandData;
-        if (part > 0) {
-            part = part - 1;
-        }
-        topic.splice(part, 1);
-        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
-        return;
-    }
-    if (command === "updatepart") {
-        var topic = SESSION.channels(channel).topic;
-        topic = topic.split(Config.topic_delimiter);
-        var pos = commandData.indexOf(" ");
-        if (pos === -1) {
-            return;
-        }
-        if (isNaN(commandData.substring(0, pos)) || commandData.substring(0, pos) - 1 < 0 || commandData.substring(0, pos) - 1 > topic.length - 1) {
-            return;
-        }
-        topic[commandData.substring(0, pos) - 1] = commandData.substr(pos + 1);
-        SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
-        return;
-    }
     if (command === "uptime") {
         if (typeof (script.startUpTime()) !== "string") {
             countbot.sendMessage(src, "Somehow the server uptime is messed up...", channel);
@@ -491,22 +449,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "You are already in #" + commandData, channel);
         } else {
             sys.putInChannel(src, chan);
-        }
-        return;
-    }
-    if (command === "register") {
-        if (!sys.dbRegistered(sys.name(src))) {
-            channelbot.sendMessage(src, "You need to register on the server before registering a channel to yourself for security reasons!", channel);
-            return;
-        }
-        if (sys.auth(src) < 1 && script.isOfficialChan(channel)) {
-            channelbot.sendMessage(src, "You don't have sufficient authority to register this channel!", channel);
-            return;
-        }
-        if (SESSION.channels(channel).register(sys.name(src))) {
-            channelbot.sendMessage(src, "You registered this channel successfully. Take a look of /commands channel", channel);
-        } else {
-            channelbot.sendMessage(src, "This channel is already registered!", channel);
         }
         return;
     }
