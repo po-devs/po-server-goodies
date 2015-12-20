@@ -2459,7 +2459,7 @@ function Safari() {
         }
 
         var species = pokeInfo.species(num);
-        if (!(species in evolutions)) {
+        if (!(species in evolutions) || sys.pokemon(info.id) === "Floette-EF") {
             safaribot.sendMessage(src, "This Pokémon cannot evolve!", safchan);
             return;
         }
@@ -3640,12 +3640,12 @@ function Safari() {
                 var battle = new Battle(src, npc);
                 currentBattles.push(battle);
             } else {
-                var count = args.count - 1;
+                var count = args.count - 1, updatelb = false;
                 if (count > player.records.towerHighest) {
                     player.records.towerHighest = count;
                     if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
                         safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + count + " trainers at the Battle Tower and set a new record!</b>", safchan);
-                        safari.updateLeaderboards();
+                        updatelb = true;
                     }
                 }
                 if (count === 0) {
@@ -3683,6 +3683,9 @@ function Safari() {
                     }
                 }
                 safari.saveGame(player);
+                if (updatelb) {
+                    safari.updateLeaderboards();
+                }
             }
         };
         var npc = {
