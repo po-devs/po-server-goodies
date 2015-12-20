@@ -478,6 +478,7 @@ function Safari() {
             arenaWon: 0,
             arenaLost: 0,
             arenaPoints:0,
+            towerHighest: 0,
             consecutiveLogins: 0
         },
         costumes: {
@@ -510,7 +511,8 @@ function Safari() {
             itemfinder: 0,
             stick: 0,
             costume: 0,
-            auction: 0
+            auction: 0,
+            shopEdit: 0
         },
         shop: {},
         quests: {
@@ -525,6 +527,9 @@ function Safari() {
                 pokemon: 0
             },
             arena: {
+                cooldown: 0
+            },
+            tower: {
                 cooldown: 0
             },
             wonder: {
@@ -546,44 +551,44 @@ function Safari() {
             ]
         },
         "excludeTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
-            "Normal" : 0.05,
-            "Fighting" : 0.05,
-            "Flying" : 0.05,
-            "Poison" : 0.05,
-            "Ground" : 0.05,
-            "Rock" : 0.05,
-            "Bug" : 0.05,
-            "Ghost" : 0.05,
-            "Steel" : 0.05,
-            "Fire" : 0.05,
-            "Water" : 0.05,
-            "Grass" : 0.05,
-            "Electric" : 0.05,
-            "Psychic" : 0.05,
-            "Ice" : 0.05,
-            "Dragon" : 0.05,
-            "Dark" : 0.05,
-            "Fairy" : 0.05
+            "Normal" : 0.06,
+            "Fighting" : 0.06,
+            "Flying" : 0.06,
+            "Poison" : 0.06,
+            "Ground" : 0.06,
+            "Rock" : 0.06,
+            "Bug" : 0.06,
+            "Ghost" : 0.06,
+            "Steel" : 0.06,
+            "Fire" : 0.06,
+            "Water" : 0.06,
+            "Grass" : 0.06,
+            "Electric" : 0.06,
+            "Psychic" : 0.06,
+            "Ice" : 0.06,
+            "Dragon" : 0.06,
+            "Dark" : 0.06,
+            "Fairy" : 0.06
         },
         "bonusTypes": { //Excluded types have priority over bonus types. If a type is picked by both, it will only count for exclude.
-            "Normal" : 0.05,
-            "Fighting" : 0.05,
-            "Flying" : 0.05,
-            "Poison" : 0.05,
-            "Ground" : 0.05,
-            "Rock" : 0.05,
-            "Bug" : 0.05,
-            "Ghost" : 0.05,
-            "Steel" : 0.05,
-            "Fire" : 0.05,
-            "Water" : 0.05,
-            "Grass" : 0.05,
-            "Electric" : 0.05,
-            "Psychic" : 0.05,
-            "Ice" : 0.05,
-            "Dragon" : 0.05,
-            "Dark" : 0.05,
-            "Fairy" : 0.05
+            "Normal" : 0.06,
+            "Fighting" : 0.06,
+            "Flying" : 0.06,
+            "Poison" : 0.06,
+            "Ground" : 0.06,
+            "Rock" : 0.06,
+            "Bug" : 0.06,
+            "Ghost" : 0.06,
+            "Steel" : 0.06,
+            "Fire" : 0.06,
+            "Water" : 0.06,
+            "Grass" : 0.06,
+            "Electric" : 0.06,
+            "Psychic" : 0.06,
+            "Ice" : 0.06,
+            "Dragon" : 0.06,
+            "Dark" : 0.06,
+            "Fairy" : 0.06
         },
         "excludeBalls": {
             "safari": 0,
@@ -756,6 +761,7 @@ function Safari() {
         itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
         collectorEarnings: { desc: "by money received from the Collector", alts: ["collector money", "collectormoney", "collector $"], alias: "collector money", isMoney: true },
         collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke"], alias: "collector" },
+        towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower"], alias: "tower" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" }
     };
     var monthlyLeaderboardTypes = {
@@ -1377,7 +1383,7 @@ function Safari() {
         var rules = theme in contestThemes ? contestThemes[theme].rules : null;
 
         if (!rules) {
-            if (sys.rand(0, 100) < 23) {
+            if (sys.rand(0, 100) < 24) {
                 return {};
             }
             rules = defaultRules;
@@ -1807,7 +1813,7 @@ function Safari() {
         }
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
-        var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) ? dailyBoost.bonus : 1;
+        var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && sys.pokemon(leader) !== "Floette-EF" ? dailyBoost.bonus : 1;
         var rulesMod = currentRules ? this.getRulesMod(leader, currentRules) : 1;
 
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod;
@@ -2937,12 +2943,14 @@ function Safari() {
             return;
         }
         if (data == "*") {
+            var n = now(), quest = getAvatar(src).quests;
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Quests available:", safchan);
-            safaribot.sendMessage(src, "-Collector", safchan);
-            safaribot.sendMessage(src, "-Scientist", safchan);
-            safaribot.sendMessage(src, "-Arena", safchan);
-            safaribot.sendMessage(src, "-Wonder", safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest collector'>Collector</a> " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")), safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest scientist'>Scientist</a> " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest arena'>Arena</a> " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest wonder'>Wonder</a> " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : ""), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -2973,6 +2981,11 @@ function Safari() {
             case "wondertrade":
             case "wonder trade":
                 this.wonderTrade(src, args);
+            break;
+            case "tower":
+            case "battletower":
+            case "battle tower":
+                this.fightTower(src, args);
             break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
@@ -3472,6 +3485,223 @@ function Safari() {
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
     };
+    this.fightTower = function(src, data) {
+        var player = getAvatar(src);
+
+        if (data.length === 0) {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: Welcome to the Battle Tower, a place where you can face successive battles until you lose! Type /quest tower:help for more information!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: To enter the Tower, you must pay $500 and have a party of 6 Pokémon, then type /quest tower:start! Be careful though, you may miss a contest during this challenge!", safchan);
+            if (player.quests.tower.cooldown >= now()) {
+                safaribot.sendMessage(src, "Tower Clerk: Our trainers are still restoring their Pokémon from the last challenge, so please wait " + timeLeftString(player.quests.tower.cooldown) + " to try again!", safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        var opt = data[0].toLowerCase();
+        if (opt === "help") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: In this challenge, you must battle successive trainers in a row with no time to change your party between each round, until you are defeated!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: You receive prizes such as Balls, Candy Dusts, Silver Coins and others according to your progress! Try to win lots of rounds for better rewards!", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: Be careful though, once you start the challenge you can't stop until you lose, so you may miss contests or important spawns!", safchan);
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start.", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        if (this.isBattling(sys.name(src))) {
+            safaribot.sendMessage(src, "You are already in a battle!", safchan);
+            return;
+        }
+        if (contestCooldown <= 180 || contestCount > 0) {
+            safaribot.sendMessage(src, "You cannot start this challenge during a contest or when one is about to start!", safchan);
+            return;
+        }
+        if (currentPokemon) {
+            safaribot.sendMessage(src, "You cannot start a battle while a wild Pokémon is around!", safchan);
+            return;
+        }
+        if (player.quests.tower.cooldown >= now()) {
+            safaribot.sendMessage(src, "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
+            return;
+        }
+        if (opt !== "start") {
+            safaribot.sendMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start. If you need more information, type /quest tower:help.", safchan);
+            return;
+        }
+
+        var cost = 500;
+        if (player.money < cost) {
+            safaribot.sendMessage(src, "You need to pay $" + addComma(cost) + " to enter the Tower, but you only have $" + addComma(player.money) + "!", safchan);
+            return;
+        }
+        if (player.party.length < 6) {
+            safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
+            return;
+        }
+        
+        player.money -= cost;
+        this.saveGame(player);
+        
+        var generateName = function() {
+            var part1 = sys.rand(1, 722), part2;
+            do {
+                part2 = sys.rand(1, 722);
+            } while (part2 == part1);
+            
+            part1 = sys.pokemon(part1);
+            part2 = sys.pokemon(part2);
+            
+            return part1.substr(0, Math.floor(part1.length/2)) + part2.substr(Math.floor(part2.length/2));
+        };
+        var generateTeam = function(useType) {
+            var out = [], p, legendCount = 0;
+            
+            while (out.length < 6) {
+                p = sys.rand(1, 722);
+                
+                if (useType && out.length < 3) {
+                    if (!hasType(p, useType)) {
+                        continue;
+                    }
+                }
+                if (out.contains(p)) {
+                    continue;
+                }
+                if (isLegendary(p)) {
+                    if (legendCount > 0) {
+                        continue;
+                    }
+                    legendCount++;
+                }
+                out.push(p);
+            }
+            return out;
+        };
+        var postBattle = function(name, isWinner, playerScore, npcScore, args) {
+            var player = getAvatarOff(name);
+            var id = sys.id(name);
+            sys.sendMessage(id, "", safchan);
+            if (isWinner) {
+                var npc = {
+                    name: "Trainer " + generateName(),
+                    party: generateTeam((Math.random() < Math.min(0.02 * args.count, 0.42) ? Object.keys(effectiveness).random() : null)),
+                    power: [10 + Math.floor(args.count/2), 100 + args.count],
+                    postBattle: postBattle,
+                    postArgs: {
+                        count: args.count + 1,
+                        reward: args.reward
+                    }
+                };
+                var mod = args.count % 6, loop = Math.floor(args.count / 6) + 1, rew, amt,
+                    specialPrizes = {
+                        "4": "gem",
+                        "8": "rare",
+                        "15": "master"
+                    };
+                switch (mod) {
+                    case 0:
+                        if ((loop % 16) in specialPrizes) {
+                            rew = specialPrizes[loop%16];
+                            amt = 1;
+                        } else {
+                            rew = "silver";
+                            amt = loop;
+                        }
+                    break;
+                    case 1:
+                        rew = "dust";
+                        amt = loop * 12;
+                    break;
+                    case 2:
+                        rew = "bait";
+                        amt = Math.floor(loop * 1.5);
+                    break;
+                    case 3:
+                        rew = "money";
+                        amt = loop * 30;
+                    break;
+                    case 4:
+                        rew = "gacha";
+                        amt = Math.floor(loop * 1.5);
+                    break;
+                    case 5:
+                        rew = ["myth", "luxury", "quick", "heavy", "clone"].random();
+                        amt = Math.floor(loop * 1.25);
+                    break;
+                }
+                if (!npc.postArgs.reward.hasOwnProperty(rew)) {
+                    npc.postArgs.reward[rew] = 0;
+                }
+                npc.postArgs.reward[rew] += amt;
+                
+                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + args.count + " trainers so far! Now for the next battle!", safchan);
+                
+                var battle = new Battle(src, npc);
+                currentBattles.push(battle);
+            } else {
+                var count = args.count - 1;
+                if (count > player.records.towerHighest) {
+                    player.records.towerHighest = count;
+                    if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
+                        safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + count + " trainers at the Battle Tower and set a new record!</b>", safchan);
+                        safari.updateLeaderboards();
+                    }
+                }
+                if (count === 0) {
+                    player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
+                } else if (count <= 3) {
+                    player.quests.tower.cooldown = now() + 1 * 60 * 60 * 1000;
+                } else if (count <= 6) {
+                    player.quests.tower.cooldown = now() + 1.5 * 60 * 60 * 1000;
+                } else if (count <= 10) {
+                    player.quests.tower.cooldown = now() + 2 * 60 * 60 * 1000;
+                } else {
+                    player.quests.tower.cooldown = now() + 3 * 60 * 60 * 1000;
+                }
+                
+                var rewardText = [];
+                for (var r in args.reward) {
+                    if (r == "money") {
+                        player.money += args.reward[r];
+                        if (player.money > moneyCap) {
+                            player.money = moneyCap;
+                        }
+                        rewardText.push("$" + args.reward[r]);
+                    } else {
+                        player.balls[r] += args.reward[r];
+                        if (player.balls[r] > itemCap) {
+                            player.balls[r] = itemCap;
+                        }
+                        rewardText.push(args.reward[r] + "x " + itemAlias(r, true, true));
+                    }
+                }
+                if (id) {
+                    safaribot.sendMessage(id, "Tower Clerk: Game over, " + sys.name(id) + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!", safchan);
+                    if (rewardText.length > 0) {
+                        safaribot.sendMessage(id, "Tower Clerk: For your performance in the Battle Tower challenge, we reward you with " + readable(rewardText, "and") + "!", safchan);
+                    }
+                }
+                safari.saveGame(player);
+            }
+        };
+        var npc = {
+            name: "Trainer " + generateName(),
+            party: generateTeam(),
+            power: [10, 100],
+            postBattle: postBattle,
+            postArgs: {
+                count: 1,
+                reward: {}
+            }
+        };
+
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendMessage(src, "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " Entry Fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
+        
+        var battle = new Battle(src, npc);
+        currentBattles.push(battle);
+    };
     this.wonderTrade = function(src, data) {
         var player = getAvatar(src);
         var quest = player.quests.wonder;
@@ -3911,6 +4141,12 @@ function Safari() {
                 safaribot.sendMessage(src, "There is no raffle going on right now so we cannot legally sell you an entry! Sorry!", safchan);
                 return;
             }
+        } else {
+            //Eventually enable this when there's a way to confirm you want to buy it. As it is, no one will be able to buy from this shop until the 15 seconds pass.
+            /* if (now() < seller.cooldowns.shopEdit + 15 * 1000) {
+                safaribot.sendMessage(src, "This shop was modified in the last 15 seconds. Please verify if the price for the product you wish to buy didn't change!", safchan);
+                return;
+            } */
         }
 
         var isSilver = shop[input.input].silver || false;
@@ -4112,6 +4348,7 @@ function Safari() {
                 this.saveShop();
             } else {
                 player.shop[input.input] = { price: price, limit: limit };
+                player.cooldowns.shopEdit = now();
                 this.saveGame(player);
             }
         }
@@ -6915,6 +7152,7 @@ function Safari() {
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
             "/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
+            "/records: To view your records.",
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/flashme: Toggle whether or not you get flashed when a contest starts.",
             "/themes: View available contest themes.",
