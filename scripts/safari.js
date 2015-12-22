@@ -3295,7 +3295,7 @@ function Safari() {
 
 
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + quest.reward + plural(quest.reward, "Silver Coin") + "!", safchan);
+            safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "Silver Coin") + "!", safchan);
             safaribot.sendMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type /quest scientist:finish.", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -3326,7 +3326,7 @@ function Safari() {
             this.removePokemon(src, id);
 
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Scientist: Oh, you brought the " + poke(id) + "! Here, have your " + plural(" Silver Coin", quest.reward) + "!", safchan);
+            safaribot.sendMessage(src, "Scientist: Oh, you brought the " + poke(id) + "! Here, have your " + plural(quest.reward, "Silver Coin") + "!", safchan);
             safaribot.sendMessage(src, "You gave your " + poke(id) + " to the Scientist and received " + plural(quest.reward, "Silver Coin") + "!", safchan);
             sys.sendMessage(src, "", safchan);
 
