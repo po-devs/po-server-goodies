@@ -1,4 +1,4 @@
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 /*global sys, module, SESSION, script, safaribot, require, staffchannel */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
@@ -808,6 +808,17 @@ function Safari() {
     }
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function plural(qty, string, altplural) {
+        qty = parseInt(qty, 10);
+        if (qty > 1) {
+            if (altplural) {
+                return qty + " " + altplural;
+            } else {
+                return qty + " " + string + "s";
+            }
+        }
+        return qty + " " + string;
     }
     function readable(arr, last_delim) {
         if (!Array.isArray(arr))
@@ -2483,7 +2494,7 @@ function Safari() {
             var candiesRequired = evoData.candies || 300;
             var evo = evoData.evo;
             
-            safaribot.sendMessage(src, info.name + " requires " + Math.floor(candiesRequired * (info.shiny ? 1.15 : 1)) + " Candy Dust" + (candiesRequired == 1 ? "" : "s") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
+            safaribot.sendMessage(src, info.name + " requires " + plural(Math.floor(candiesRequired * (info.shiny ? 1.15 : 1)), "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
             safaribot.sendHtmlMessage(src, "If you really wish to evove " + info.name + ", type <a href='po:send//evolve " + info.input + ":confirm'>/evolve " + info.input + ":confirm</a>.", safchan);
             return;
         }
@@ -2547,7 +2558,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Due to your expertise in raising Pokémon, your " + info.name + " evolved without needing to eat any Candy Dust!", safchan);
             }
         } else {
-            safaribot.sendMessage(src, "Your " + info.name + " ate " + candiesRequired + " Candy Dust" + (candiesRequired > 1 ? "s" : "") + " and evolved into " + poke(evolvedId) + "!", safchan);
+            safaribot.sendMessage(src, "Your " + info.name + " ate " + plural(candiesRequired, "Candy Dust") + " and evolved into " + poke(evolvedId) + "!", safchan);
         }
     };
     this.useMegaStone = function(src, commandData) {
@@ -3284,7 +3295,7 @@ function Safari() {
 
 
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + quest.reward + " Silver Coin" + (quest.reward == 1 ? "" : "s") + "!", safchan);
+            safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + quest.reward + plural(quest.reward, "Silver Coin") + "!", safchan);
             safaribot.sendMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type /quest scientist:finish.", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -3315,8 +3326,8 @@ function Safari() {
             this.removePokemon(src, id);
 
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Scientist: Oh, you brought the " + poke(id) + "! Here, have your Silver Coin" + (quest.reward == 1 ? "" : "s") + "!", safchan);
-            safaribot.sendMessage(src, "You gave your " + poke(id) + " to the Scientist and received " + quest.reward + " Silver Coin" + (quest.reward == 1 ? "" : "s") + "!", safchan);
+            safaribot.sendMessage(src, "Scientist: Oh, you brought the " + poke(id) + "! Here, have your " + plural(" Silver Coin", quest.reward) + "!", safchan);
+            safaribot.sendMessage(src, "You gave your " + poke(id) + " to the Scientist and received " + plural(quest.reward, "Silver Coin") + "!", safchan);
             sys.sendMessage(src, "", safchan);
 
             player.records.scientistEarnings += quest.reward;
@@ -3449,7 +3460,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Arena Clerk: Challenge our trainers for a chance to receive some Silver Coins! The trainers available are: ", safchan);
             for (var n in opponents) {
                 var opp = opponents[n];
-                safaribot.sendHtmlMessage(src, "-<b>" + cap(n) + "</b>: Entry Fee: $" + addComma(price[n])  + ". Reward: " + opp.postArgs.reward + " Silver Coin" + (opp.postArgs.reward === 1 ? "" : "s") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "-<b>" + cap(n) + "</b>: Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "Silver Coin") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
@@ -5895,7 +5906,7 @@ function Safari() {
             if (player.balls.safari > getCap("safari")) {
                 player.balls.safari = getCap("safar");
             }
-            gained.push(safariGained + "x Safari Ball" + (safariGained > 1 ? "s" : ""));
+            gained.push( plural(safariGained, "x Safari Ball"));
 
             var milestone = logins % 32;
             var milestoneRewards = {
@@ -7639,7 +7650,7 @@ function Safari() {
                     var evoData = evolutions[species];
                     var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.15 : 1));
                     var evo = evoData.evo;
-                    safaribot.sendMessage(src, info.name + " requires " + candiesRequired + " Candy Dust" + (candiesRequired == 1 ? "" : "s") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (!info.shiny ? " (" + Math.floor(candiesRequired *  1.15) + " if shiny)" : "") + ". ", safchan);
+                    safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (!info.shiny ? " (" + Math.floor(candiesRequired *  1.15) + " if shiny)" : "") + ". ", safchan);
                 }
                 if (!isMega(info.num) && species in megaEvolutions) {
                     safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
@@ -8234,6 +8245,54 @@ function Safari() {
                 
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s cooldown for " + type + " was reset!", safchan);
+                return true;
+            }
+            if (command === "tourgift") {
+                var cmd = commandData.split(":");
+                var target = cmd[0];
+                var player = getAvatarOff(target);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+                
+                var prizeLevel = parseInt(cmd[1], 10) || 1;
+                if (prizeLevel > 4) {
+                    safaribot.sendMessage(src, "There are only 4 event tours a day. A player cannot win more than that!", safchan);
+                    return true;  
+                }
+                var mega = 0, gem = 0, dust = 0;
+                switch (prizeLevel) {
+                    case 4:
+                        dust += 50;
+                        gem += 1;
+                        /* falls through */
+                    case 3:
+                        dust += 25;
+                        gem += 1;
+                        /* falls through */
+                    case 2:
+                        dust += 10;
+                        gem += 1;
+                        /* falls through */
+                    default:
+                        mega += 1;
+                }
+                
+                var prizeArray = [];
+                player.balls.mega += mega;
+                prizeArray.push("1 Mega Stone");
+                if (gem > 0) {
+                    player.balls.gem += gem;
+                    prizeArray.push(plural(gem, "Ampere Gem"));
+                }
+                if (dust > 0) {
+                    player.balls.dust += dust;
+                    prizeArray.push(plural(dust, "Candy Dust"));
+                }
+                this.sanitize(player);                
+                
+                safaribot.sendAll(target.toCorrectCase() + " received " + readable(prizeArray, "and") + " for placing well in an Event Tour " + plural(prizeLevel, "time") + "!", safchan);
                 return true;
             }
             if (command === "changeboost") {
