@@ -4990,7 +4990,17 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if ((command === "redirect") || (("command" in player.role.actions.night[command]) && ((player.role.actions.night[command].command === typeof "string" ? (player.role.actions.night[command].command === "redirect" ) : "redirect" in player.role.actions.night[command].command) ))) {
+        var redi = false;
+        if (command === "redirect") {
+        	redi = true;
+        }
+        if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "redirect")) {
+        	redi = true;
+        } 
+		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.contains("redirect"))) {
+			redi = true;
+		}
+		if (redi === true) {
             var redirectTarget = player.role.actions.night[command].redirectTarget;
             redirectData = this.correctCase(redirectData);
             if ((redirectData !== commandData) && (redirectTarget=== "OnlyTarget")) {
