@@ -4997,7 +4997,7 @@ function Mafia(mafiachan) {
         if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "redirect")) {
         	redi = true;
         } 
-		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command === "string")) && (player.role.actions.night[command].command.contains("redirect"))) {
+		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.contains("redirect"))) {
 			redi = true;
 		}
 		if (redi === true) {
