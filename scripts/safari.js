@@ -2974,7 +2974,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest scientist'>Scientist</a> " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest arena'>Arena</a> " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
             safaribot.sendHtmlMessage(src, "-<a href='po:send//quest wonder'>Wonder</a> " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
+            //safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -3009,8 +3009,8 @@ function Safari() {
             case "tower":
             case "battletower":
             case "battle tower":
-                this.fightTower(src, args);
-            break;
+                //this.fightTower(src, args);
+            //break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
         }
