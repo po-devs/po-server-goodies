@@ -155,10 +155,6 @@ function Mafia(mafiachan) {
         sendChanAll(mess, sachannel);
         return true;
     }
-    function shuffle(o) {
-        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
-        return o;
-    }
     /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -2945,8 +2941,8 @@ function Mafia(mafiachan) {
                 ++i;
             }
             var srcArray = mafia.theme["roles" + i].slice(0, mafia.signups.length);
-            srcArray = shuffle(srcArray);
-            mafia.signups = shuffle(mafia.signups);
+            srcArray.shuffle();
+            mafia.signups = mafia.signups.shuffle();
 
             var spawnPacks = mafia.theme.spawnPacks,
                 packs = {},
@@ -4994,17 +4990,7 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        var redi = false;
-        if (command === "redirect") {
-        	redi = true;
-        }
-        if (("command" in player.role.actions.night[command]) && (typeof (player.role.actions.night[command].command === "string" )) && (player.role.actions.night[command].command === "redirect")) {
-        	redi = true;
-        } 
-		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command === "string")) && (player.role.actions.night[command].command.contains("redirect"))) {
-			redi = true;
-		}
-		if (redi === true) {
+        if ((command === "redirect") || (("command" in player.role.actions.night[command]) && ((player.role.actions.night[command].command === typeof "string" ? (player.role.actions.night[command].command === "redirect" ) : "redirect" in player.role.actions.night[command].command) ))) {
             var redirectTarget = player.role.actions.night[command].redirectTarget;
             redirectData = this.correctCase(redirectData);
             if ((redirectData !== commandData) && (redirectTarget=== "OnlyTarget")) {
