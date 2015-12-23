@@ -316,7 +316,7 @@ function Safari() {
         //Other Items
         //Seasonal change. Rock icon is 206
         rock: {name: "rock", fullName: "Snowball", type: "usable", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 15, successCD: 85, aliases:["bait"], tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 85, aliases:["bait"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
@@ -1783,7 +1783,7 @@ function Safari() {
 
         if (preparationPhase > 0) {
             safaribot.sendMessage(src, "You are preparing to throw your " + cap(ball) + " Ball!", safchan);
-            preparationThrows[sys.name(src)] = ball;
+            preparationThrows[sys.name(src).toLowerCase()] = ball;
             return;
         }
 
@@ -1835,7 +1835,8 @@ function Safari() {
         }
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
-        var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && sys.pokemon(leader) !== "Floette-EF" ? dailyBoost.bonus : 1;
+        var noDailyBonusForms = ["Floette-EF", "Rotom-W", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmatanian-D"];
+        var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(sys.pokemon(leader)) ? dailyBoost.bonus : 1;
         var rulesMod = currentRules ? this.getRulesMod(leader, currentRules) : 1;
 
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod;
@@ -2101,7 +2102,7 @@ function Safari() {
             preparationFirst = sys.name(src).toLowerCase();
             lastBaitersDecay = lastBaitersDecayTime;
         } else {
-            player.cooldowns.bait = now() + (itemData.bait.failCD + sys.rand(0,5)) * 1000;
+            player.cooldowns.bait = now() + (itemData.bait.failCD + sys.rand(0,4)) * 1000;
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out... but nothing showed up.", safchan);
             player.records.baitNothing += 1;
             if (player.costume === "chef") {
@@ -3405,7 +3406,8 @@ function Safari() {
                 postArgs: {
                     reward: 1,
                     cooldown: 1
-                }
+                },
+                desc: "Arena NPC"
             },
             teal: {
                 name: "Trainer Teal",
@@ -3415,7 +3417,8 @@ function Safari() {
                 postArgs: {
                     reward: 2,
                     cooldown: 1.75
-                }
+                },
+                desc: "Arena NPC"
             },
             mustard: {
                 name: "Trainer Mustard",
@@ -3425,7 +3428,8 @@ function Safari() {
                 postArgs: {
                     reward: 3,
                     cooldown: 2.5
-                }
+                },
+                desc: "Arena NPC"
             },
             cyan: {
                 name: "Trainer Cyan",
@@ -3435,17 +3439,19 @@ function Safari() {
                 postArgs: {
                     reward: 6,
                     cooldown: 3.25
-                }
+                },
+                desc: "Arena NPC"
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,"663",212,342,47,553,538,721,149,45,197087,168,571,213],
+                party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
                     reward: 10,
                     cooldown: 4
-                }
+                },
+                desc: "Arena NPC"
             }
         };
         var price = {
@@ -3617,7 +3623,8 @@ function Safari() {
                     postArgs: {
                         count: args.count + 1,
                         reward: args.reward
-                    }
+                    },
+                    desc: "Tower Lvl. " + (args.count + 1)
                 };
                 var mod = args.count % 6, loop = Math.floor(args.count / 6) + 1, rew, amt,
                     specialPrizes = {
@@ -3754,7 +3761,8 @@ function Safari() {
             postArgs: {
                 count: 1,
                 reward: {}
-            }
+            },
+            desc: "Tower Lvl. 1"
         };
 
         sys.sendMessage(src, "", safchan);
@@ -5899,7 +5907,7 @@ function Safari() {
             }
             player.balls.safari += safariGained;
             if (player.balls.safari > getCap("safari")) {
-                player.balls.safari = getCap("safar");
+                player.balls.safari = getCap("safari");
             }
             gained.push( plural(safariGained, "x Safari Ball"));
 
@@ -6010,6 +6018,7 @@ function Safari() {
 
         var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
+        var npcDesc = null;
         if (isNPC) {
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
@@ -6020,6 +6029,7 @@ function Safari() {
             this.powerMax = player2.power[1];
             this.postBattle = player2.postBattle;
             this.postArgs = player2.postArgs;
+            npcDesc = player2.desc || null;
         } else {
             this.name2 = sys.name(p2);
             this.viewers.push(this.name2.toLowerCase());
@@ -6042,7 +6052,7 @@ function Safari() {
         this.scoreOrder = [];
         this.finished = false;
 
-        safaribot.sendHtmlAll("A battle between " + this.name1 + " and " + this.name2 + (isNPC ? " (NPC)" : "") + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
+        safaribot.sendHtmlAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! [<a href='po:send//watch " + this.name1 + "'>Watch</a>]", safchan);
     }
     Battle.prototype.nextTurn = function() {
         if (this.turn < 0) {
@@ -6104,6 +6114,10 @@ function Safari() {
                 this.team2.push(this.team2.random());
                 this.sendToViewers("No winner after the regular rounds! An extra tiebreaker round will be held!", true);
             } else {
+                this.finishBattle();
+            }
+        } else {
+            if (this.p1Score > this.duration / 2 || this.p2Score > this.duration / 2) {
                 this.finishBattle();
             }
         }
