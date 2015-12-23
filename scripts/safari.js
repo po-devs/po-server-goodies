@@ -317,7 +317,7 @@ function Safari() {
         //Other Items
         //Seasonal change. Rock icon is 206
         rock: {name: "rock", fullName: "Snowball", type: "usable", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 85, aliases:["bait"], tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 75, aliases:["bait"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
@@ -329,7 +329,7 @@ function Safari() {
         entry: {name: "entry", fullName: "Raffle Entry", type: "usable", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
 
         //Consumables (for useItem)
-        rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 220, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
+        rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
 
         //Perks
@@ -514,7 +514,8 @@ function Safari() {
             stick: 0,
             costume: 0,
             auction: 0,
-            shopEdit: 0
+            shopEdit: 0,
+            lastBaits: []
         },
         shop: {},
         quests: {
@@ -1996,7 +1997,7 @@ function Safari() {
         return result;
     };
     this.getRulesMod = function(pokeId, rules) {
-        var NERF = 0.25;
+        var NERF = 0.20;
         var BUFF = 1.30;
         var type1 = sys.type(sys.pokeType1(pokeId)),
             type2 = sys.type(sys.pokeType2(pokeId)),
@@ -2066,12 +2067,30 @@ function Safari() {
             return;
         }
         if (baitCooldown > 0) {
-            if (baitCooldown <= 2 && Math.random() < (3 - baitCooldown) * 0.125) {
-                player.cooldowns.bait = now() + sys.rand(1, 3) * 1000;
-                safaribot.sendMessage(src, "The bait you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeft(player.cooldowns.bait) + " seconds to throw a bait!", safchan);
-            } else {
-                safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
+            player.cooldowns.lastBaits.push(now());
+            if (player.cooldowns.lastBaits.length > 5) {
+                player.cooldowns.lastBaits.shift();
             }
+            if (baitCooldown <= 5) {
+                var list = player.cooldowns.lastBaits;
+                var l = list.length - 1;
+                var slip = 0;
+                if (list.length >= 2 && list[l] - list[l-1] < 1000) {
+                    slip = 1;
+                } else if (list.length >= 3 && list[l] - list[l-2] < 1850) {
+                    slip = 2;
+                } else if (list.length >= 4 && list[l] - list[l-3] < 2900) {
+                    slip = 3;
+                } else if (list.length >= 5 && list[l] - list[l-4] < 4200) {
+                    slip = 4;
+                }
+                if (slip) {
+                    player.cooldowns.bait = now() + sys.rand(2, 3 + slip) * 1000;
+                    safaribot.sendMessage(src, "The bait you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeft(player.cooldowns.bait) + " seconds to throw a bait!", safchan);
+                    return;
+                }
+            }
+            safaribot.sendMessage(src, "Please wait " + baitCooldown + " seconds before trying to attract another Pokémon with bait!", safchan);
             return;
         }
         var ballUsed = isBall(commandData.toLowerCase()) ? commandData.toLowerCase() : "safari";
@@ -2090,7 +2109,7 @@ function Safari() {
 
         if (rng < (itemData.bait.successRate + perkBonus + costumeBonus)) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
-            baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,10);
+            baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,9);
             player.records.baitAttracted += 1;
 
             if (lastBaiters.length >= lastBaitersAmount) {
@@ -3571,6 +3590,29 @@ function Safari() {
         if (player.party.length < 6) {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
+        }
+        if (player.shop) {
+            var isInShop = [];
+            for (var e = 0; e < player.party.length; e++) {
+                var id = player.party[e];
+                id += typeof id === "string" ? "*" : "";
+                
+                var input = getInputPokemon(id);
+                id = input.input;
+                var count = countRepeated(player.pokemon, input.id);
+                if (player.shop.hasOwnProperty(id)) {
+                    var lim = player.shop[id].limit;
+                    if (lim > 0 && count - lim < countRepeated(player.party, input.id)) {
+                        if (!isInShop.contains(input.name)) {
+                            isInShop.push(input.name);
+                        }
+                    }
+                }
+            }
+            if (isInShop.length > 0) {
+                safaribot.sendMessage(src, "You need to remove " + readable(isInShop, "and") + " from your shop before you start this challenge!", safchan);
+                return;
+            }
         }
         
         player.money -= cost;
@@ -6118,7 +6160,7 @@ function Safari() {
                 this.finishBattle();
             }
         } else {
-            if (this.p1Score > this.duration / 2 || this.p2Score > this.duration / 2) {
+            if (Math.abs(this.p1Score - this.p2Score) > this.duration - this.turn) {
                 this.finishBattle();
             }
         }
@@ -7043,7 +7085,7 @@ function Safari() {
             gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! Due to strict gambling regulations, there is a " + itemData.gacha.cooldown/1000 + " second delay between using the tickets.",
             //Seasonal change
             rock: "A small snowball that can be thrown to potentially freeze another player for a short period with /snowball. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
-            rare: "Can be smashed and transformed into around " + itemData.rare.charges + " Candy Dusts. To use, type \"/use rare\". Found with Itemfinder.",
+            rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. To use, type \"/use rare\". Found with Itemfinder.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. (To use, type /evolve [Pokémon]).",
             mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
