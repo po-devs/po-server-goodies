@@ -3,7 +3,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
-    if (command == "togglerainbow") {
+    /*if (command == "togglerainbow") {
         if (commandData === "off") {
             SESSION.global().allowRainbow = false;
             normalbot.sendMessage(src, "You turned rainbow off!", channel);
@@ -11,6 +11,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         SESSION.global().allowRainbow = true;
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
+        return;
+    }*/
+    if (command === "toggleweblinks") {
+        if (commandData === "off") {
+            SESSION.global().blockWebLinks = true;
+            normalbot.sendMessage(src, "Webclient users will not send clickable hyperlinks now.", channel);
+            return;
+        }
+        SESSION.global().blockWebLinks = false;
+        normalbot.sendMessage(src, "Webclient users can send clickable hyperlinks again.", channel);
         return;
     }
     if (command === "indigoinvite") {
@@ -415,7 +425,7 @@ exports.help =
     [
         "/ban: Bans a user.",
         "/unban: Unbans a user.",
-        "/togglerainbow [on/off]: Turns /rainbow or on off in the server",
+        "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
         "/memorydump: Shows the state of the memory.",
         "/nameban: Adds a regexp ban on usernames.",
         "/nameunban: Removes a regexp ban on usernames.",
