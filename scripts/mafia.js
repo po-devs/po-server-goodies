@@ -4408,7 +4408,7 @@ function Mafia(mafiachan) {
                     check = mafia.theme.closedSetup;
                 }
 
-                if (!check) {
+                if (!check && mafia.theme.closedSetup != "full") {
                     gamemsg(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
             }
@@ -5036,7 +5036,7 @@ function Mafia(mafiachan) {
         }
 
         var inputmsg = "inputmsg" in player.role.actions.night[command] ? player.role.actions.night[command].inputmsg : "You have chosen to ~Action~ ~Target~!";
-        gamemsg(name, inputmsg.replace(/~Action~/g, command).replace(/~Self~/g, name).replace(/~Target~/g, commandData));
+        gamemsg(name, inputmsg.replace(/~Action~/g, command).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~GuessedRole~/g, afterCommandData));
 
         this.setTarget(player, target, command, afterCommandData, redirectData);
         var team;
