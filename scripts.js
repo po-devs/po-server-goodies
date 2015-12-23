@@ -1956,9 +1956,10 @@ beforeChatMessage: function(src, message, chan) {
     
     if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
         if (message.toLowerCase().indexOf("http") != -1) {
-            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient. [Message content: " + message + "]!", staffchannel);            
-            message = message.replace("http", "ht\u200btp");
-            sys.sendAll(sys.name(src) + ": " + message, channel);
+            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [MIGHT BE NSFW. CLICK AT OWN RISK! Message content: " + message + "]!", staffchannel);            
+            //message = message.replace("http", "ht\u200btp");
+            //sys.sendAll(sys.name(src) + ": " + message, channel);
+            sys.sendMessage(id,  sys.name(src)+": "+message, channel);
             sys.stopEvent();
             this.afterChatMessage(src, message, channel);
             return;
