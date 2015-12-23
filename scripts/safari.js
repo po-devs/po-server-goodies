@@ -1835,7 +1835,7 @@ function Safari() {
         }
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
-        var noDailyBonusForms = ["Floette-EF", "Rotom-W", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmatanian-D"];
+        var noDailyBonusForms = ["Floette-EF", "Rotom-W", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmanitan-D"];
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(sys.pokemon(leader)) ? dailyBoost.bonus : 1;
         var rulesMod = currentRules ? this.getRulesMod(leader, currentRules) : 1;
 
