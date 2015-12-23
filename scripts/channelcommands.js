@@ -192,14 +192,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     
+     if (command === "topic") {
+        SESSION.channels(channel).setTopic(src, commandData);
+        return;
+    }
+    
     if (!poChannel.isChannelOperator(src)) {
         return "no command";
     }
     
-    if (command === "topic") {
-        SESSION.channels(channel).setTopic(src, commandData);
-        return;
-    }
     if (command === "topicadd") {
         if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
             SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
