@@ -261,7 +261,7 @@ function Safari() {
         return ret;
     };
     pokeInfo.icon = function(p, shinyBG) {
-        //Unown Icon hack. Remove after client update
+        /*Unown Icon hack. Remove after client update
         var p2 = p;
         var pcheck = p2%65536;
         if (pcheck == 201) {
@@ -276,13 +276,14 @@ function Safari() {
                 p2 = 1179849;
             }
         }
-        //End of unown hack
+        //End of unown hack*/
        return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
     };
     pokeInfo.sprite = function(poke) {
         var ret = [];
         ret += "<img src='pokemon:num=";
-        ret += pokeInfo.readableNum(poke);
+        //ret += pokeInfo.readableNum(poke);
+        ret += poke;
         if (pokeInfo.shiny(poke)) {
             ret += "&shiny=true";
         }
