@@ -11,7 +11,7 @@ touradmins.json, tastats.json, tourseeds.json, tourhistory.json, tours_cache.jso
 This code will only work on servers updated to 6th Gen!
 */
 
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
 var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings, tourconfig;
 
@@ -3724,6 +3724,12 @@ function tourstart(tier, starter, key, parameters) {
         if ((sys.getClauses(tier)%256 >= 128 && !parameters.wifi) || (sys.getClauses(tier)%256 < 128 && parameters.wifi)) {
             wifiuse = parameters.wifi ? "Preview Mode" : "No Preview Mode";
         }
+        
+        //Broadcast to Safari when an event tour is starting
+        if (parameters.event) {
+            channels.push(sys.channelId("Safari"));
+        }
+        
         for (var x in channels) {
             sendChanAll("", channels[x]);
             if (!parameters.event) {
@@ -4756,7 +4762,7 @@ module.exports = {
         else {
             command = message.substr(0).toLowerCase();
         }
-        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff", "megausers", "mus"];
+        var globalcommands = ["towner", "tourowner", "stowner", "stourowner", "tourowneroff", "towneroff", "stourowneroff", "stowneroff",  "megauser",  "megauseroff", "smegauser", "smegauseroff", "megausers", "mus", "eventhistory", "showevents", "tourrules"];
         if ((channel === tourschan && !SESSION.channels(tourschan).isBanned(source)) || globalcommands.indexOf(command) > -1) {
             return tourCommand(source, command, commandData, channel);
         }
