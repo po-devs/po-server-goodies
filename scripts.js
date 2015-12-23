@@ -1899,12 +1899,6 @@ beforeChatMessage: function(src, message, chan) {
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 7200, "Onion Link", true);
         kickbot.sendAll(sys.name(src) + " was smuted for 2 hours because they tried to send an Onion Link in the channel " + sys.channel(channel) + " [Message content: " + message + "]!", staffchannel);
     }
-    if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
-        if (message.toLowerCase().indexOf("http") != -1) {
-            message = message.replace("http", "ht\u200btp");
-            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient. [Message content: " + message + "]!", staffchannel);
-        }
-    }
 
     // Secret mute
     if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
@@ -1959,6 +1953,18 @@ beforeChatMessage: function(src, message, chan) {
         this.afterChatMessage(src, message, channel);
         return;
     }
+    
+    if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
+        if (message.toLowerCase().indexOf("http") != -1) {
+            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient. [Message content: " + message + "]!", staffchannel);            
+            message = message.replace("http", "ht\u200btp");
+            sys.sendAll(sys.name(src) + ": " + message, channel);
+            sys.stopEvent();
+            this.afterChatMessage(src, message, channel);
+            return;
+        }
+    }
+    
     //Special donator
     /*if (name == "fear") {
         sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>±Fear: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"),  channel);
