@@ -3591,6 +3591,29 @@ function Safari() {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
+        if (player.shop) {
+            var isInShop = [];
+            for (var e = 0; e < player.party.length; e++) {
+                var id = player.party[e];
+                id += typeof id === "string" ? "*" : "";
+                
+                var input = getInputPokemon(id);
+                id = input.input;
+                var count = countRepeated(player.pokemon, input.id);
+                if (player.shop.hasOwnProperty(id)) {
+                    var lim = player.shop[id].limit;
+                    if (lim > 0 && count - lim < countRepeated(player.party, input.id)) {
+                        if (!isInShop.contains(input.name)) {
+                            isInShop.push(input.name);
+                        }
+                    }
+                }
+            }
+            if (isInShop.length > 0) {
+                safaribot.sendMessage(src, "You need to remove " + readable(isInShop, "and") + " from your shop before you start this challenge!", safchan);
+                return;
+            }
+        }
         
         player.money -= cost;
         this.saveGame(player);
