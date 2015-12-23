@@ -1899,7 +1899,7 @@ beforeChatMessage: function(src, message, chan) {
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 7200, "Onion Link", true);
         kickbot.sendAll(sys.name(src) + " was smuted for 2 hours because they tried to send an Onion Link in the channel " + sys.channel(channel) + " [Message content: " + message + "]!", staffchannel);
     }
-    if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os() === "webclient") {
+    if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
         if (message.toLowerCase().indexOf("http") != -1) {
             message = message.replace("http", "ht\u200btp");
             kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient. [Message content: " + message + "]!", staffchannel);
