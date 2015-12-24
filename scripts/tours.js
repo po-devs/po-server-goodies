@@ -3008,9 +3008,9 @@ function tourCommand(src, command, commandData, channel) {
             return true;
         }
         if (command === "eventhistory") {
-            sys.sendMessage(src, "*** RECENTLY PLAYED EVENTS ***",tourschan);
+            sys.sendMessage(src, "*** RECENTLY PLAYED EVENTS ***",channel);
             for (var x in tours.eventhistory) {
-                sys.sendMessage(src, tours.eventhistory[x],tourschan);
+                sys.sendMessage(src, tours.eventhistory[x],channel);
             }
             return true;
         }
