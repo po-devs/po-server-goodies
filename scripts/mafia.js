@@ -2455,19 +2455,23 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if (list.indexOf(target.name) == -1) {
-            list.push(target.name);
-            var targetsData = target.name.concat(":",extra); //This data is saved for pinpoint
-            targetsData = targetsData.concat("@",redirect); //This is for redirect
-            targetsData = targetsData.concat("/",player.name); //keeps track of who input the action (for userOnly on distract)
-            targetsDataList.push(targetsData);
-            if (list.length > limit) {
-                list.splice(0, 1);
-                targetsDataList.splice(0, 1);
+		var targetsData = target.name.concat(":",extra); //This data is saved for pinpoint
+		targetsData = targetsData.concat("@",redirect); //This is for redirect
+		targetsData = targetsData.concat("/",player.name); //keeps track of who input the action (for userOnly on distract)
+		if (targetsDataList.indexOf(targetsData) === -1) {
+        	if (list.indexOf(target.name) !== -1) {
+        		targetsDataList.splice(list.indexOf(target.name),1);
+        		list.splice(list.indexOf(target.name),1);
+        	}
+    		list.push(target.name);
+    		targetsDataList.push(targetsData);
+    		if (list.length > limit) {
+        		list.splice(0, 1);
+            	targetsDataList.splice(0, 1);
             }
         }
         if (this.ticks > 0 && limit > 1)
-            gamemsg(player.name, "Your target(s) are " + list.join(', ') + "!");
+        	gamemsg(player.name, "Your target(s) are " + list.join(', ') + "!");
     };
     this.changeTargets = function (target, redirectTarget) {
         var newTar = {}, newTar2 = {}, newTar3 = {}, act, newData;
@@ -3363,6 +3367,7 @@ function Mafia(mafiachan) {
                                     '~User~': player.role.translation,
                                     '~Self~': target.name,
                                     '~Target~': player.name,
+                                    '~TargetRole~': target.role.translation,
                                     '~Role~': mafia.theme.trrole(player.role.role),
                                     '~Action~': o.action,
                                     '~GuessedRole~': targetData
@@ -4156,7 +4161,7 @@ function Mafia(mafiachan) {
                 if (role.actions && role.actions.noVote !== true) {
                     playersWithVote++;
                 }
-                if ((!check) || (check !== "full") || (check !== "team")) {
+                if ((!check) && (check !== "full") && (check !== "team")) {
                     gamemsg(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
 
@@ -4409,7 +4414,7 @@ function Mafia(mafiachan) {
                 }
 
                 if (!check) {
-                	if (mafia.theme.closedSetup != "full") {
+                	if (mafia.theme.closedSetup !== "full") {
                   		gamemsg(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                   	}
                 }
@@ -4999,7 +5004,7 @@ function Mafia(mafiachan) {
         if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "redirect")) {
         	redi = true;
         } 
-		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.contains("redirect"))) {
+		if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.indexOf("redirect") != -1)) {
 			redi = true;
 		}
 		if (redi === true) {
