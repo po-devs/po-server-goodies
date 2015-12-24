@@ -3631,7 +3631,7 @@ function Safari() {
                 part2 = sys.rand(1, 722);
                 name2 = sys.pokemon(part2);
                 
-                out = name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2))
+                out = name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2));
             } while (part2 == part1 || (/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)));
             
             return out;
