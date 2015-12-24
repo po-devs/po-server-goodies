@@ -155,6 +155,10 @@ function Mafia(mafiachan) {
         sendChanAll(mess, sachannel);
         return true;
     }
+    function shuffle(o) {
+        for (var j, x, i = o.length; i; j = parseInt(Math.random() * i, 10), x = o[--i], o[i] = o[j], o[j] = x);
+        return o;
+    }
     /* stolen from here: http://stackoverflow.com/questions/1026069/capitalize-first-letter-of-string-in-javascript */
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -2945,8 +2949,8 @@ function Mafia(mafiachan) {
                 ++i;
             }
             var srcArray = mafia.theme["roles" + i].slice(0, mafia.signups.length);
-            srcArray.shuffle();
-            mafia.signups = mafia.signups.shuffle();
+            srcArray = shuffle(srcArray);
+            mafia.signups = shuffle(mafia.signups);
 
             var spawnPacks = mafia.theme.spawnPacks,
                 packs = {},
@@ -6819,6 +6823,17 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         if (command === "mafiaadmin" || command === "mafiasadmin" || command === "mafiasuperadmin" || command === "smafiaadmin" || command === "smafiasadmin" || command === "smafiasuperadmin") {
+			if (sys.dbIp(commandData) === undefined) {
+				msg(src, "This user doesn't exist.");
+				return;
+				}
+			if (!sys.dbRegistered(commandData)) {
+				msg(src, "They aren't registered so you can't give them authority.");
+				if (sys.id(commandData) !== undefined) {
+					msg(sys.id(commandData), "Please register ASAP, before getting mafia authority.");
+					}
+				return;
+			}
             var ma = commandData.toLowerCase();
             var sMA = false;
             var silent = false;
@@ -7031,7 +7046,9 @@ function Mafia(mafiachan) {
                         gamemsg(sys.name(src), sys.name(src) + ": [Dead] " + message);
                     } else {
                         for (var x in mafia.dead) {
-                            gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+    						if (sys.isInChannel(sys.id(mafia.dead[x]), mafiachan)) {
+                            	gamemsg(mafia.dead[x], sys.name(src) + ": [Dead] " + message);
+                            }
                         }
                     }
                     return true;
@@ -7137,6 +7154,9 @@ function Mafia(mafiachan) {
             dualBroadcast("error occurred: " + err);
         }
     };
+	this.isChannelAdmin = function (src) {
+		return mafia.isMafiaAdmin(src) ? true : mafia.isMafiaSuperAdmin(src);
+	};
     this.init = function () {
         this.themeManager.loadThemes();
         mafiachan = sys.channelId(MAFIA_CHANNEL);
