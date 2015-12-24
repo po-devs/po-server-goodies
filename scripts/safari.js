@@ -2518,7 +2518,7 @@ function Safari() {
             var evo = evoData.evo;
             
             safaribot.sendMessage(src, info.name + " requires " + plural(Math.floor(candiesRequired * (info.shiny ? 1.15 : 1)), "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
-            safaribot.sendHtmlMessage(src, "If you really wish to evove " + info.name + ", type <a href='po:send//evolve " + info.input + ":confirm'>/evolve " + info.input + ":confirm</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "If you really wish to evolve " + info.name + ", type <a href='po:send//evolve " + info.input + ":confirm'>/evolve " + info.input + ":confirm</a>.", safchan);
             return;
         }
         
@@ -2856,6 +2856,11 @@ function Safari() {
 
         if (player.balls[item] < 1) {
             safaribot.sendMessage(src, "You have no " + finishName(item) + "!", safchan);
+            return;
+        }
+        var input = "@" + item;
+        if (input in player.shop && player.shop[input].limit >= player.balls[item]) {
+            safaribot.sendMessage(src, "You need to remove that item from your shop before using it!", safchan);
             return;
         }
 
@@ -3619,15 +3624,17 @@ function Safari() {
         this.saveGame(player);
         
         var generateName = function() {
-            var part1 = sys.rand(1, 722), part2;
+            var part1 = sys.rand(1, 722), part2, name2, out,
+                name1 = sys.pokemon(part1);
+            
             do {
                 part2 = sys.rand(1, 722);
-            } while (part2 == part1);
+                name2 = sys.pokemon(part2);
+                
+                out = name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2))
+            } while (part2 == part1 || (/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)));
             
-            part1 = sys.pokemon(part1);
-            part2 = sys.pokemon(part2);
-            
-            return part1.substr(0, Math.floor(part1.length/2)) + part2.substr(Math.floor(part2.length/2));
+            return out;
         };
         var generateTeam = function(useType) {
             var out = [], p, legendCount = 0;
