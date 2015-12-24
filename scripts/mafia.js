@@ -7,7 +7,7 @@
 
 // Global variables inherited from scripts.js
 /*global mafiabot, getTimeString, updateModule, script, sys, SESSION, sendChanAll, require, Config, module, sachannel, staffchannel, sendChanHtmlAll*/
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true,eqnull:true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true,eqnull:true*/
 var MAFIA_CHANNEL = "Mafia";
 
 var is_command = require("utilities.js").is_command;
@@ -98,7 +98,10 @@ function Mafia(mafiachan) {
         mafiabot.sendAll(mess, channel);
         return true;
     }
-    function getBotName() {
+    function getBotName(name) {
+        if (name) {
+            return name;
+        }
         var botName = "Game";
         if (("theme" in mafia) && (mafia.theme !== undefined)) {
 			if ("botName" in mafia.theme) {
@@ -118,7 +121,7 @@ function Mafia(mafiachan) {
             return false;
         }
         if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
-            mess = "±" + getBotName() + ": " + mess;
+            mess = "±" + getBotName(botName) + ": " + mess;
         }
         if (channel === undefined) {
             channel = mafiachan;
@@ -131,7 +134,7 @@ function Mafia(mafiachan) {
             return false;
         }
         if (mess.indexOf("***") === -1 && mess.indexOf("±") === -1 && mess.lastIndexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") === -1) {
-            mess = "±" + getBotName() + ": " + mess;
+            mess = "±" + getBotName(botName) + ": " + mess;
         }
         if (channel === undefined) {
             channel = mafiachan;
@@ -2455,19 +2458,24 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        if (list.indexOf(target.name) == -1) {
+        var targetsData = target.name.concat(":",extra); //This data is saved for pinpoint
+        targetsData = targetsData.concat("@",redirect); //This is for redirect
+        targetsData = targetsData.concat("/",player.name); //keeps track of who input the action (for userOnly on distract)
+        if (targetsDataList.indexOf(targetsData) === -1) {
+            if (list.indexOf(target.name) !== -1) {
+                targetsDataList.splice(list.indexOf(target.name),1);
+                list.splice(list.indexOf(target.name),1);
+            }
             list.push(target.name);
-            var targetsData = target.name.concat(":",extra); //This data is saved for pinpoint
-            targetsData = targetsData.concat("@",redirect); //This is for redirect
-            targetsData = targetsData.concat("/",player.name); //keeps track of who input the action (for userOnly on distract)
             targetsDataList.push(targetsData);
             if (list.length > limit) {
                 list.splice(0, 1);
                 targetsDataList.splice(0, 1);
             }
         }
-        if (this.ticks > 0 && limit > 1)
+        if (this.ticks > 0 && limit > 1) {
             gamemsg(player.name, "Your target(s) are " + list.join(', ') + "!");
+        }
     };
     this.changeTargets = function (target, redirectTarget) {
         var newTar = {}, newTar2 = {}, newTar3 = {}, act, newData;
@@ -4156,7 +4164,7 @@ function Mafia(mafiachan) {
                 if (role.actions && role.actions.noVote !== true) {
                     playersWithVote++;
                 }
-                if ((!check) || (check !== "full") || (check !== "team")) {
+                if (!check && check !== "full" && check !== "team") {
                     gamemsg(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
 
@@ -4408,7 +4416,7 @@ function Mafia(mafiachan) {
                     check = mafia.theme.closedSetup;
                 }
 
-                if (!check && mafia.theme.closedSetup != "full") {
+                if (!check && mafia.theme.closedSetup !== "full") {
                     gamemsg(player.name, "±Current Team: " + mafia.getRolesForTeamS(side));
                 }
             }
@@ -4994,7 +5002,7 @@ function Mafia(mafiachan) {
         if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "redirect")) {
             redi = true;
         }
-        if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.contains("redirect"))) {
+        if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.indexOf("redirect") !== -1)) {
             redi = true;
         }
         
@@ -7159,6 +7167,9 @@ function Mafia(mafiachan) {
                 });
             }
         }
+    };
+    this.isChannelAdmin = function (src) {
+        return mafia.isMafiaAdmin(src) ? true : mafia.isMafiaSuperAdmin(src);
     };
     this["help-string"] = ["mafia: To know the mafia commands"];
 }
