@@ -29,6 +29,7 @@ function Safari() {
     var npcShop;
     var lastIdAssigned;
     var rafflePrizeObj = null;
+    var rafflesSold;
 
     var safaribot = new Bot("Tauros");
 
@@ -4108,6 +4109,9 @@ function Safari() {
         if (product === "entry") {
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.save();
+            rafflesSold += amount;
+            permObj.add("rafflesSold", rafflesSold);
+            permObj.save();
         }
     };
     this.updateShop = function(name, item) {
@@ -7696,13 +7700,13 @@ function Safari() {
                 safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
                 if (rafflePrizeObj) {
-                    var total = 0;
+                    /*var total = 0;
                     for (var e in rafflePlayers.hash) {
                         if (rafflePlayers.hash.hasOwnProperty(e)) {
                             total += parseInt(rafflePlayers.hash[e], 10);
                         }
-                    }
-                    safaribot.sendMessage(src, "Current Raffle Prize: " + rafflePrizeObj.name + " with " + total + " entries sold!", safchan);
+                    }*/
+                    safaribot.sendMessage(src, "Current Raffle Prize: " + rafflePrizeObj.name + " with " + rafflesSold + " entries sold!", safchan);
                 }
                 sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
                 return true;
@@ -8728,6 +8732,11 @@ function Safari() {
             rafflePrizeObj = JSON.parse(permObj.get("rafflePrize"));
         } catch (err) {
             rafflePrizeObj = null;
+        }
+        try {
+            rafflesSold = parseInt(permObj.get("rafflesSold"), 10);
+        } catch (err) {
+            rafflesSold = 0;
         }
         monthlyLeaderboards = {};
         for (var e in monthlyLeaderboardTypes) {
