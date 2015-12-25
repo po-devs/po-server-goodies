@@ -216,7 +216,7 @@ module.exports = new function() {
                 var voter = poll.voters[i];
                 if (verbose)
                     normalbot.sendChanMessage(src, "" + voter.name+" ("+(voter.ip ? voter.ip : "unknown ip")+") voted for "+voter.answer+" with rating " + voter.rating + ". Approved: " + voter.whitelisted);
-                if (voter.whitelisted === false && !countAll) continue;
+                if (!voter.whitelisted && !countAll) continue;
                 var x = voter.rating;
 //                if (x>1700) x = 1700;
                 var votes;

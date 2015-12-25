@@ -436,7 +436,7 @@ init : function() {
         }
         if (num === undefined)
             sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
-        else if (script.hapokemons[num] === true)
+        else if (script.hapokemons[num])
             sys.sendAll("Script Check:  hapokemons contains '" +halist[dwpok]+"' multiple times.", announceChan);
         else {
             script.hapokemons[num] = true;
@@ -1129,7 +1129,7 @@ afterChannelJoin : function(player, chan) {
 }, /* end of afterChannelJoin */
 
 beforeChannelDestroyed : function(channel) {
-    if (channel == tourchannel || (SESSION.channels(channel).perm === true) ) {
+    if (channel == tourchannel || (SESSION.channels(channel).perm) ) {
         sys.stopEvent();
         return;
     }
@@ -1475,10 +1475,10 @@ afterChangeTeam : function(src)
 
     POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) && sys.dbRegistered(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
-    if (authChangingTeam === false) {
+    if (!authChangingTeam) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to Auth" + "\n");
-    } else if (authChangingTeam === true) {
+    } else if (authChangingTeam) {
         if (!(sys.auth(src) > 0 && sys.auth(src) <= 3))
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from Auth" + "\n");
     }
@@ -1595,7 +1595,7 @@ beforeNewPM: function(src){
     var pmlimit = 20;
     if (user.pmcount > pmlimit){
         sys.stopEvent();
-        if (user.pmwarned === false) {
+        if (!user.pmwarned) {
             normalbot.sendAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
             user.pmwarned = true;
         }
@@ -1857,7 +1857,7 @@ beforeChatMessage: function(src, message, chan) {
     }
 
     //Swear check
-    if (SESSION.channels(channel).allowSwear === false) {
+    if (!SESSION.channels(channel).allowSwear) {
         if(/f[uo]ck|\bass|\bcum|\bdick|\bsex|pussy|bitch|porn|\bfck|nigga|\bcock|\bgay|\bhoe\b|slut|\bshit\b|whore|cunt|clitoris|\bfag/i.test(message)) {
              sys.stopEvent();
              return;
@@ -1938,7 +1938,7 @@ beforeChatMessage: function(src, message, chan) {
        }
     }
 
-    if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW === true) {
+    if (typeof CAPSLOCKDAYALLOW != 'undefined' && CAPSLOCKDAYALLOW) {
     var date = new Date();
     if ((date.getDate() == 22 && date.getMonth() == 9) || (date.getDate() == 28 && date.getMonth() == 5)) { // October 22nd & June 28th
         sys.sendAll(sys.name(src)+": " + message.toUpperCase(), channel);
@@ -1947,7 +1947,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     }
-    if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo === true) {
+    if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo) {
         sys.sendAll(sys.name(src) + ": " + message.split("").reverse().join(""), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
@@ -2230,7 +2230,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTie
         return;
     }
 
-    if (SESSION.users(dest).sametier === true && (destTier != sys.tier(src,team))) {
+    if (SESSION.users(dest).sametier && (destTier != sys.tier(src,team))) {
         battlebot.sendMessage(src, "That guy only wants to fight his/her own tier.");
         sys.stopEvent();
         return;

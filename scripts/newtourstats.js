@@ -974,7 +974,7 @@ function getEventWinners(name) {
 }
 
 function clearRankings(month) {
-    if (month === false) {
+    if (!month) {
         return false;
     }
     if (month == "all") {
@@ -1022,7 +1022,7 @@ function clearRankings(month) {
 }
 
 function clearEventRankings(month) {
-    if (month === false) {
+    if (!month) {
         return false;
     }
     if (month == "all") {

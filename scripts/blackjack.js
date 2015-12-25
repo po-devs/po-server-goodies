@@ -367,19 +367,19 @@ function checkGame() {
     var over = true;
     for (var x in blackJack.players) {
         if (blackJack.players.hasOwnProperty(x) && x !== "dealer") {
-            if (blackJack.players[x].out === false) {
+            if (!blackJack.players[x].out) {
                 over = false;
             }
         }
     }
-    if (over === true) {
+    if (over) {
         dealerTurn();
     }
 }
 
 function dealerTurn() {
     var dealer = blackJack.players.dealer;
-    if (dealer.out === true) {
+    if (dealer.out) {
         endRound();
         return;
     }

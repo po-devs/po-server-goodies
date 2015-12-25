@@ -637,7 +637,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "Usage: /disablepack [pack]", channel);
         } else if (!bfHash.hasOwnProperty(tier)) {
             bfbot.sendMessage(src, "Please specify a valid team pack to disable.", channel);
-        } else if (bfHash[tier].active === false) {
+        } else if (!bfHash[tier].active) {
             bfbot.sendMessage(src, "This pack is already disabled!", channel);
         } else {
             bfHash[tier].active = false;
@@ -650,7 +650,7 @@ function factoryCommand(src, command, commandData, channel) {
             bfbot.sendMessage(src, "Usage: /enablepack [pack]", channel);
         } else if (!bfHash.hasOwnProperty(tier)) {
             bfbot.sendMessage(src, "Please specify a valid team pack to enable.", channel);
-        } else if (bfHash[tier].active === true) {
+        } else if (bfHash[tier].active) {
             bfbot.sendMessage(src, "This pack is already enabled!", channel);
         } else {
             bfHash[tier].active = true;

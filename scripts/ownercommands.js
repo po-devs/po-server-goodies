@@ -417,7 +417,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         } else {
             normalbot.sendMessage(src, "You have " + SESSION.users(src).callcount + " calls running.");
         }
-        if (SESSION.users(src).endcalls !== true) {
+        if (!SESSION.users(src).endcalls) {
             SESSION.users(src).endcalls = true;
             normalbot.sendMessage(src, "Next periodic call called will end.");
         } else {

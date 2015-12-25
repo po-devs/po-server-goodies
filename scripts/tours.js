@@ -295,7 +295,7 @@ function getFullTourName(key) {
     if (tours.tour[key].parameters.gen != "default") {
         ret = getSubgen(tours.tour[key].parameters.gen,true) + " " + ret;
     }
-    if ((sys.getClauses(type)%256 >= 128 && wifi === false) || (sys.getClauses(type)%256 < 128 && wifi === true)) {
+    if ((sys.getClauses(type)%256 >= 128 && !wifi) || (sys.getClauses(type)%256 < 128 && wifi)) {
         ret = ret + " " + (wifi ? "Preview" : "No Preview");
     }
     if (mode != modeOfTier(type)) {
@@ -566,10 +566,10 @@ function clauseCheck(key, issuedClauses) {
     var tier = tours.tour[key].tourtype;
     // force Self-KO clause every time
     var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256;
-    if (tours.tour[key].parameters.wifi === true && requiredClauses%256 < 128) {
+    if (tours.tour[key].parameters.wifi && requiredClauses%256 < 128) {
         requiredClauses += 128;
     }
-    else if (tours.tour[key].parameters.wifi === false && requiredClauses%256 >= 128) {
+    else if (!tours.tour[key].parameters.wifi&& requiredClauses%256 >= 128) {
         requiredClauses -= 128;
     }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
@@ -970,7 +970,7 @@ function getEventTour(datestring) {
                     }
                     else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
                         var newgen = getSubgen(parametervalue, false);
-                        if (newgen !== false) {
+                        if (newgen) {
                             parameters.gen = newgen;
                         }
                         else {
@@ -1479,7 +1479,7 @@ function tourCommand(src, command, commandData, channel) {
                 if (mindex > -1) {
                     month = mindex;
                 }
-                if (month === false) {
+                if (!month) {
                     var date = new Date();
                     var mindex = date.getMonth();
                 }
@@ -2106,7 +2106,7 @@ function tourCommand(src, command, commandData, channel) {
                 var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1"];
                 var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup"];
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
-                if (data[1] !== false) {
+                if (data[1]) {
                     var parameterdata = data[1].split(":");
                     for (var p in parameterdata) {
                         var parameterinfo = parameterdata[p].split("=",2);
@@ -2130,7 +2130,7 @@ function tourCommand(src, command, commandData, channel) {
                         }
                         else if (cmp(parameterset, "gen") && allgentiers.indexOf(tourtier) != -1) { // only allgentours can change gen
                             var newgen = getSubgen(parametervalue, false);
-                            if (newgen !== false) {
+                            if (newgen) {
                                 parameters.gen = newgen;
                             }
                             else {
@@ -2215,7 +2215,7 @@ function tourCommand(src, command, commandData, channel) {
                         sendBotMessage(src, "A tournament is already in signups!", tourschan, false);
                         return true;
                     }
-                    if (tours.tour[x].event === true && !isTourOwner(src)) {
+                    if (tours.tour[x].event && !isTourOwner(src)) {
                         sendBotMessage(src, "An event tournament is running, so you can't force start the next tournament!", tourschan, false);
                         return true;
                     }
@@ -2337,7 +2337,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (command == "dq") {
                 var key = isInTour(commandData);
-                if (key === false) {
+                if (!key) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false);
                     return true;
                 }
@@ -2357,7 +2357,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (command == "cancelbattle") {
                 var key = isInTour(commandData);
-                if (key === false) {
+                if (!key) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false);
                     return true;
                 }
@@ -2396,11 +2396,11 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotMessage(src,"It's not a good idea to sub a player in who isn't on the server at the moment!",tourschan,false);
                     return true;
                 }
-                if (key === false) {
+                if (!key) {
                     sendBotMessage(src,"Your target doesn't exist in a tournament!",tourschan,false);
                     return true;
                 }
-                if (isInTour(newname) !== false) {
+                if (isInTour(newname)) {
                     sendBotMessage(src,"Your target is already in a tournament!",tourschan,false);
                     return true;
                 }
@@ -2472,7 +2472,7 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 tours.tourmutes[ip] = {'expiry': parseInt(sys.time(), 10) + time, 'reason': reason, 'auth': sys.name(src), 'name': tar.toLowerCase(), 'issued' : parseInt(sys.time(), 10)};
                 var key = isInTour(tar);
-                if (key !== false) {
+                if (key) {
                     if (tours.tour[key].state == "signups") {
                         var index = tours.tour[key].players.indexOf(tar.toLowerCase());
                         tours.tour[key].players.splice(index, 1);
@@ -2599,7 +2599,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             /* Is already in another tour */
             var isStillInTour = isInTour(sys.name(src));
-            if (isStillInTour !== false) {
+            if (isStillInTour) {
                 if (tours.tour[isStillInTour].state == "subround" || tours.tour[isStillInTour].state == "signups") {
                     sendBotMessage(src, "You can't join twice!",tourschan,false);
                 }
@@ -3030,7 +3030,7 @@ function tourCommand(src, command, commandData, channel) {
             if (mindex > -1) {
                 month = mindex;
             }
-            if (month === false) {
+            if (!month) {
                 var date = new Date();
                 var mindex = date.getMonth();
             }
@@ -3272,7 +3272,7 @@ function disqualify(player, key, silent, hard) {
                 tours.tour[key].losers.push(player);
             }
         }
-        else if (winnerindex != -1 && opponent != "~Bye~" && opponent != "~DQ~" && (isInTour(opponent) === false || isInTour(opponent) === key)) { /* This is just so the winners list stays the same length */
+        else if (winnerindex != -1 && opponent != "~Bye~" && opponent != "~DQ~" && (!isInTour(opponent) || isInTour(opponent) === key)) { /* This is just so the winners list stays the same length */
             tours.tour[key].winners.splice(winnerindex,1,opponent);
             tours.tour[key].losers.splice(tours.tour[key].losers.indexOf(opponent),1,player);
             if (!silent) {
@@ -3664,7 +3664,7 @@ function tourstart(tier, starter, key, parameters) {
     }
     else if (tours.queue.length === 0) { // NOTIFY VICTORY ROAD THAT /QUEUE IS EMPTY
         for (var x in tourAdminsObj) {
-            if (sys.loggedIn(sys.id(x)) === true) {
+            if (sys.loggedIn(sys.id(x))) {
                 activeAuthCount++;
                 sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
             }
@@ -3776,7 +3776,7 @@ function tourstart(tier, starter, key, parameters) {
         for (var x=0; x < playerson.length; ++x) {
             var id = playerson[x];
             var poUser = SESSION.users(id);
-            if (sys.loggedIn(id) && poUser && poUser.tiers && poUser.tiers.indexOf(tier) != -1 && isInTour(sys.name(id)) === false) {
+            if (sys.loggedIn(id) && poUser && poUser.tiers && poUser.tiers.indexOf(tier) != -1 && !isInTour(sys.name(id))) {
                 if (sys.isInChannel(id, tourschan)) {
                     sys.sendHtmlMessage(playerson[x], "<font color=red>You are currently alerted when " + (startsWithVowel(tier) ? "an " : "a ") +tier+" tournament is started!</font><ping/>",tourschan);
                     continue;
@@ -4366,10 +4366,10 @@ function toTourName(name) {
     else if (isSub(name)) {
         return "<span title='This player is a sub!'><font color=#777777>"+name+"</font></span>";
     }
-    else if (tourid === false) {
+    else if (!tourid) {
         return "<span title='This player is out of the tournament!'><s>"+name+"</s></span>";
     }
-    else if (sys.isInChannel(playerid, tourschan) && tourid !== false) {
+    else if (sys.isInChannel(playerid, tourschan) && tourid) {
         var hasReqTier = sys.hasTier(playerid, tours.tour[tourid].tourtype);
         var htmlname = isNaN(name) ? html_escape(toCorrectCase(name)) : html_escape(name);
         if (hasReqTier) {
@@ -4520,7 +4520,7 @@ function markActive(src, reason) {
     }
     var name = sys.name(src).toLowerCase();
     var key = isInTour(name);
-    if (key !== false) {
+    if (key) {
         if (tours.tour[key].active.hasOwnProperty(name)) {
             if (tours.tour[key].active[name] === "Battle" && reason == "post") {
                 return;
@@ -4674,7 +4674,7 @@ function sendWelcomeMessage(src, chan) {
     sys.sendMessage(src,"*** Use /commands tournament to view the commands; and use /rules to view the tournament rules! ***",chan);
     sys.sendMessage(src,border,chan);
     var key = isInTour(sys.name(src));
-    if (key !== false) {
+    if (key) {
         var battlers = tours.tour[key].battlers;
         var winners = tours.tour[key].winners;
         var players = tours.tour[key].players;
@@ -4720,7 +4720,7 @@ function dumpVars(src) {
         sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan);
         for (var b in tours.tour[x].battlers) {
             var battleString = b;
-            if (tours.tour[x].battlers[b].noSpecs === true) {
+            if (tours.tour[x].battlers[b].noSpecs) {
                 battleString = battleString + " (No Specs)";
             }
             if (typeof tours.tour[x].battlers[b].time == "number") {
@@ -4826,7 +4826,7 @@ module.exports = {
     },
     beforeBattleMatchup : function(source, dest) {
         var ret = false;
-        ret |= (isInTour(sys.name(source)) !== false || isInTour(sys.name(dest)) !== false);
+        ret |= (isInTour(sys.name(source)) || isInTour(sys.name(dest)));
         return ret;
     },
     beforeChatMessage : function(src, message, channel) {
@@ -4851,7 +4851,7 @@ module.exports = {
         var srctour = isInTour(sys.name(src));
         var p1tour = isInTour(sys.name(p1));
         var p2tour = isInTour(sys.name(p2));
-        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
+        if (!p1tour || !p2tour || src === p1 || src === p2) {
             return false;
         }
         if (SESSION.channels(tourschan).isBanned(src) || isTourMuted(src)) {
@@ -4859,7 +4859,7 @@ module.exports = {
             return true;
         }
         var proxy = false;
-        if (srctour === false) {
+        if (!srctour) {
             var srcip = sys.ip(src);
             var playerlist = tours.tour[p1tour].players;
             for (var x in playerlist) {
@@ -4884,7 +4884,7 @@ module.exports = {
         var srctour = isInTour(sys.name(src));
         var p1tour = isInTour(sys.name(p1));
         var p2tour = isInTour(sys.name(p2));
-        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
+        if (!p1tour || !p2tour || src === p1 || src === p2) {
             return false;
         }
         if (isMegaUser(src)) {

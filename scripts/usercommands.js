@@ -88,7 +88,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if ((command === "me" || command === "rainbow") && !SESSION.channels(channel).muteall) {
-        if (SESSION.channels(channel).meoff === true) {
+        if (SESSION.channels(channel).meoff) {
             normalbot.sendMessage(src, "/me was turned off.", channel);
             return;
         }
@@ -117,13 +117,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).beforeMessage(src, "/me " + commandData);
         commandData = utilities.html_escape(commandData);
         var messagetosend = commandData;
-        if (typeof CAPSLOCKDAYALLOW !== "undefined" && CAPSLOCKDAYALLOW === true) {
+        if (typeof CAPSLOCKDAYALLOW !== "undefined" && CAPSLOCKDAYALLOW) {
             var date = new Date();
             if ((date.getDate() === 22 && date.getMonth() === 9) || (date.getDate() === 28 && date.getMonth() === 5)) { // October 22nd & June 28th
                 messagetosend = messagetosend.toUpperCase();
             }
         }
-        if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo === true) {
+        if (channel === sys.channelId("Tohjo Falls") && script.reverseTohjo) {
             messagetosend = messagetosend.split("").reverse().join("");
         }
         if (command === "me") {
@@ -594,7 +594,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var pokeName = sys.pokemon(poke);
-        if (pokedex.dwCheck(poke) === false) {
+        if (!pokedex.dwCheck(poke)) {
             normalbot.sendMessage(src, pokeName + ": has no DW ability!", channel);
             return;
         }

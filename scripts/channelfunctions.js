@@ -549,7 +549,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
         return;
     }
     if (parameter == "allowcaps") {
-        if (value === true) {
+        if (value) {
             this.ignorecaps = true;
         }
         else {
@@ -559,7 +559,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
         return;
     }
     if (parameter == "allowflood") {
-        if (value === true) {
+        if (value) {
             this.ignoreflood = true;
         }
         else {
@@ -569,7 +569,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
         return;
     }
     if (parameter == "allowswear") {
-        if (value === true) {
+        if (value) {
             this.allowSwear = true;
         }
         else {

@@ -15,7 +15,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
     var complaints = [];
     for (var i = 0; i < this.checkers.length; ++i) {
-        var valid_tier = (this.checkers[i].exclusive === true
+        var valid_tier = (this.checkers[i].exclusive
             ? this.checkers[i].tiers.indexOf(tier) == -1
             : this.checkers[i].tiers.indexOf(tier) != -1);
         if (valid_tier) {
@@ -130,7 +130,7 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     if (sys.gen(src, team) === 5) {
         for (var i = 0; i < 6; i++) {
             var x = sys.teamPoke(src, team, i);
-            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && sys.compatibleAsDreamWorldEvent(src, team, i) !== true))) {
+            if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && !sys.compatibleAsDreamWorldEvent(src, team, i)))) {
                 if (!(x in dwpokemons)) {
                     ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier.");
                 } else {

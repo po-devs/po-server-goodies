@@ -5429,7 +5429,7 @@ function Safari() {
         }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
-            var name = sys.pokemon(member[0]) + (member[1] === true ? "*" : "");
+            var name = sys.pokemon(member[0]) + (member[1] ? "*" : "");
             out += "<td align=center>#" + pokeInfo.readableNum(member[0]) + " " + name;
             if (ownParty && sys.os(id) !== "android") {
                 out += "<p>"; //puts a little too much space between lines

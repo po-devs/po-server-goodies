@@ -147,7 +147,7 @@ function showTrivia(src, channel, what) {
 }
 
 function runUpdate() {
-    if (Trivia.needsUpdating !== true) return;
+    if (!Trivia.needsUpdating) return;
     var POglobal = SESSION.global();
     var index, source;
     for (var i = 0; i < POglobal.plugins.length; ++i) {
@@ -209,7 +209,7 @@ function hasReviewAccess(name) {
     var contribs = id !== undefined ? SESSION.users(id).contributions !== undefined : false;
     var cauth = false;
     if (id !== undefined) cauth = (SESSION.channels(revchan).canJoin(id) == "allowed" || SESSION.channels(staffchannel).canJoin(id) == "allowed");
-    return cauth === true || contribs === true;
+    return cauth || contribs;
 }
 
 function getSpecialQuestion(category) {
@@ -282,7 +282,7 @@ function time() {
 }
 
 function trivia_onMute(src) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         return;
     }
     if (Trivia.playerPlaying(src)) {
@@ -333,10 +333,10 @@ TriviaGame.prototype.sendAll = function (message, channel) {
 };
 
 TriviaGame.prototype.startGame = function (data, name) {
-    if (this.started === true) return;
-    if (this.startoff === true) return;
+    if (this.started) return;
+    if (this.startoff) return;
     if (triviaq.questionAmount() < 1) return;
-//    if (name === "" && this.autostart === false) return;
+//    if (name === "" && !this.autostart) return;
     Trivia.suggestion = {};
     data = data.split("*");
     this.maxPoints = data[0];
@@ -452,11 +452,11 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
 };
 
 TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = points / categories
-    if (this.started === true) {
+    if (this.started) {
         this.sendPM(src, "A trivia game has already started!", triviachan);
         return;
     }
-    if (this.startoff === true) {
+    if (this.startoff) {
         this.sendPM(src, "/start is off. Most likely because Trivia is being updated.", triviachan);
         return;
     }
@@ -516,7 +516,7 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
                 match = true;
             }
         }
-        if (match === false) {
+        if (!match) {
             this.sendPM(src, "Category " + data[i] + " was removed because it isn't an existing category.", triviachan);
             data.splice(i, 1);
             i--;
@@ -528,11 +528,11 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
 };
 
 TriviaGame.prototype.startTriviaRound = function () {
-    if (this.started === false)
+    if (!this.started)
         return;
     var totalPlayers = 0;
     for (var id in this.triviaPlayers) {
-        if (this.triviaPlayers[id].playing === true) {
+        if (this.triviaPlayers[id].playing) {
            totalPlayers++;
         }
     }
@@ -607,9 +607,9 @@ TriviaGame.prototype.startTriviaRound = function () {
 };
 
 TriviaGame.prototype.finalizeAnswers = function () {
-    if (this.started === false)
+    if (!this.started)
         return;
-    if (Trivia.suggestion.asked === true) {
+    if (Trivia.suggestion.asked) {
         Trivia.suggestion = {};
     }
     var answer, id, equivalentAns = [], answers = [];
@@ -681,7 +681,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var totalPlayers = 0;
     
     for (var id in this.triviaPlayers) {
-        if (this.triviaPlayers[id].playing === true) {
+        if (this.triviaPlayers[id].playing) {
             totalPlayers++;
         }
     }
@@ -696,7 +696,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                         found = true;
                     }
                 }
-                if (found === true || !this.triviaPlayers[id].playing) {
+                if (found || !this.triviaPlayers[id].playing) {
                     continue;
                 }
                 allCorrect = false;
@@ -756,7 +756,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var displayboard = [];
     var winners = [];
     for (id in this.triviaPlayers) {
-        if (this.triviaPlayers[id].playing === true) {
+        if (this.triviaPlayers[id].playing) {
             var regname = this.triviaPlayers[id].name;
             var numPoints = this.triviaPlayers[id].points;
             var nohtmlname = utilities.html_escape(regname);
@@ -853,7 +853,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.phase = "voting";
             this.ticks = 5;
         }
-/*        if (this.autostart === true) {
+/*        if (this.autostart) {
             this.phase = "autostart";
             this.ticks = sys.rand(30, 44);
             Trivia.sendAll("A new trivia game will be started in " + this.ticks + " seconds!", triviachan);
@@ -974,7 +974,7 @@ TriviaGame.prototype.randomId = function () {
 };
 
 TriviaGame.prototype.unjoin = function (src) {
-    if (this.started === false) {
+    if (!this.started) {
         this.sendPM(src, "A game hasn't started!", triviachan);
         return;
     }
@@ -1008,7 +1008,7 @@ TriviaGame.prototype.unjoin = function (src) {
 };
 
 TriviaGame.prototype.endTrivia = function (src) {
-    if (this.started === false) {
+    if (!this.started) {
         this.sendPM(src, "A game hasn't started.", triviachan);
         return;
     }
@@ -1626,7 +1626,7 @@ addUserCommand(["flashme"], function (src, commandData, channel) {
 }, "Whether or not to flash you when a game starts");
 
 addUserCommand(["goal"], function (src, commandData, channel) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
         return;
     }
@@ -1671,7 +1671,7 @@ addUserCommand(["submitq"], function (src, commandData, channel) {
 }, "Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
 
 addUserCommand(["join"], function (src, commandData, channel) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         Trivia.sendPM(src, "A game hasn't started!", channel);
         return;
     }
@@ -1809,7 +1809,7 @@ addUserCommand(["lastcat"], function (src, commandData, channel) {
 }, "Allows you to check when the last Category Game occurred.");
 
 addAdminCommand(["changegoal"], function (src, commandData, channel) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
         return;
     }
@@ -1851,7 +1851,7 @@ addAdminCommand(["end"], function (src) {
 }, "Allows you to end a current trivia game.");
 
 addAdminCommand(["suggest"], function (src, commandData, channel) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         Trivia.sendPM(src, "A game hasn't started!", channel);
         return;
     }
@@ -2060,7 +2060,7 @@ addAdminCommand(["checkq"], function (src, commandData, channel) {
 }, "Allows you to check the current question in review");
 
 addAdminCommand(["changea"], function (src, commandData) {
-    if (trivreview.editingMode === true) {
+    if (trivreview.editingMode) {
         trivreview.editingAnswer = commandData.split(",");
         triviabot.sendAll("The answer for the question in edit was changed to " + trivreview.editingAnswer + " by " + sys.name(src), revchan);
         trivreview.checkq();
@@ -2081,7 +2081,7 @@ addAdminCommand(["changea"], function (src, commandData) {
 }, "Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand(["changeq"], function (src, commandData) {
-    if (trivreview.editingMode === true) {
+    if (trivreview.editingMode) {
         trivreview.editingQuestion = commandData;
         triviabot.sendAll("The question for the question in edit was changed to " + trivreview.editingQuestion + " by " + sys.name(src), revchan);
         trivreview.checkq();
@@ -2102,7 +2102,7 @@ addAdminCommand(["changeq"], function (src, commandData) {
 }, "Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand(["changec"], function (src, commandData) {
-    if (trivreview.editingMode === true) {
+    if (trivreview.editingMode) {
         trivreview.editingCategory = commandData;
         triviabot.sendAll("The category for the question in edit was changed to " + trivreview.editingCategory + " by " + sys.name(src), revchan);
         trivreview.checkq();
@@ -2123,7 +2123,7 @@ addAdminCommand(["changec"], function (src, commandData) {
 }, "Allows you to change the category to a question in review, format /changec newcategory");
 
 addAdminCommand(["changenotes"], function (src, commandData) {
-    if (trivreview.editingMode === true) {
+    if (trivreview.editingMode) {
         trivreview.editingNotes = commandData + " - " + sys.name(src);
         triviabot.sendAll("The notes for the question in edit were changed to " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
@@ -2144,7 +2144,7 @@ addAdminCommand(["changenotes"], function (src, commandData) {
 }, "Allows you to change the notes to a question in review, format /changenotes notes");
 
 addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
-    if (trivreview.editingMode === true) {
+    if (trivreview.editingMode) {
         trivreview.editingNotes = commandData + " - " + nonFlashing(sys.name(src));
         triviabot.sendAll("The following notes regarding the question in edit were added: " + trivreview.editingNotes + " by " + sys.name(src), revchan);
         trivreview.checkq();
@@ -2295,7 +2295,7 @@ addAdminCommand(["editq"], function (src, commandData, channel) {
 }, "Allows you to edit an already submitted question");
 
 addAdminCommand(["markq"], function (src, commandData, channel) {
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         Trivia.sendPM(src, "A game hasn't started!", channel);
         return;
     }
@@ -2678,7 +2678,7 @@ addOwnerCommand(["updateafter"], function (src, commandData, channel) {
     triviabot.sendMessage(src, "Trivia will update after the game", channel);
 //    Trivia.autostart = false;
     Trivia.needsUpdating = true;
-    if (Trivia.started === false) {
+    if (!Trivia.started) {
         runUpdate();
     }
     return;
@@ -3041,7 +3041,7 @@ module.exports = {
     },
 
     beforeChannelLeave: function trivia_beforeChannelLeave(src, channel) {
-        if (Trivia.started === true && channel === triviachan) {
+        if (Trivia.started && channel === triviachan) {
             Trivia.unjoin(src);
         }
     },
@@ -3060,13 +3060,13 @@ module.exports = {
 
         /* Trivia checks */
         var joined = Trivia.playerPlaying(src);
-        if (Trivia.started === true) {
-            if (joined === false && Trivia.phase === "answer") {
+        if (Trivia.started) {
+            if (!joined && Trivia.phase === "answer") {
                 Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer. Type /join to join.", channel);
                 return true;
             }
         }
-        if (joined === true && Trivia.started === true && Trivia.phase === "answer") {
+        if (joined && Trivia.started && Trivia.phase === "answer") {
             if (message.length > 60) {
                 Trivia.sendPM(src, "Sorry! Your answer is too long.", channel);
                 return true;
