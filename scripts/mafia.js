@@ -4973,18 +4973,18 @@ function Mafia(mafiachan) {
         }
 
         var pinpoint = "pinpoint" in player.role.actions.night[command] ? player.role.actions.night[command].pinpoint : false;
-        if (pinpoint === true) {
+        if (pinpoint) {
             var isRoleInTheme = false;
             if (afterCommandData !== "*") {
                 for (var roleName in mafia.theme.roles) {
-                    if (mafia.theme.roles[roleName].translation.toLowerCase() === afterCommandData) {
+                    if (mafia.theme.roles[roleName].translation.toLowerCase() === afterCommandData.toLowerCase()) {
                         isRoleInTheme = true;
                         afterCommandData = mafia.theme.roles[roleName].translation;
                         break;
                         }
                     }
                 }
-            if (isRoleInTheme === false) {
+            if (!(isRoleInTheme)) {
                 gamemsg(name, "Please supply a valid role name! The format is /" + command + ' [name]:[role name].' );
                 return;
             }
