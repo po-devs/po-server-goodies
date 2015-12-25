@@ -56,7 +56,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
-        if(sys.existChannel(ch) !== true) {
+        if(!sys.existChannel(ch)) {
             normalbot.sendMessage(src, "No channel exists by this name!", channel);
             return;
         }
