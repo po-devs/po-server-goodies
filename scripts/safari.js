@@ -3052,7 +3052,7 @@ function Safari() {
         if (ongoing && now() > quest.deadline) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Collector: I'm sorry, but since you took too long to fulfill my request I decided to buy from someone else!", safchan);
-            safaribot.sendMessage(src, "Collector: If you still wish to help me, type /quest collector:start for a new request!", safchan);
+            safaribot.sendHtmlMessage(src, "Collector: If you still wish to help me, type <a href='po:send//quest collector:start'>/quest collector:start</a> for a new request!", safchan);
             sys.sendMessage(src, "", safchan);
 
             quest.reward = 0;
@@ -3067,11 +3067,11 @@ function Safari() {
             if (ongoing) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "Collector: Hello, did you bring the " + readable(quest.requests.map(poke), "and") + " that I asked?", safchan);
-                safaribot.sendMessage(src, "Collector: If you did, type /quest collector:finish and I will pay you $" + addComma(quest.reward) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ". ", safchan);
-                safaribot.sendMessage(src, "Collector: You can also type /quest collector:abort if you no longer wish to help me.", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: If you did, type <a href='po:send//quest collector:finish'>/quest collector:finish</a> and I will pay you $" + addComma(quest.reward) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: You can also type <a href='po:send//quest collector:abort'>/quest collector:abort</a> if you no longer wish to help me.", safchan);
                 sys.sendMessage(src, "", safchan);
             } else {
-                safaribot.sendMessage(src, "Collector: Hello, I'm The Collector! I am always willing to pay well for some interesting Pokémon. If you wish to help me, type /quest collector:help.", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: Hello, I'm The Collector! I am always willing to pay well for some interesting Pokémon. If you wish to help me, type <a href='po:send//quest collector:help'>/quest collector:help</a>.", safchan);
                 if (quest.cooldown >= now()) {
                     safaribot.sendMessage(src, "Collector: I'm currently organizing my collection, so I won't be making any new request now. Please come back in " + timeLeftString(quest.cooldown) + "!", safchan);
                 }
@@ -3088,9 +3088,10 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
                     safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
-                    safaribot.sendMessage(src, "Collector: Once you have them, type /quest collector:finish, and I will pay about from 2.4x to 4.8x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
-                    safaribot.sendMessage(src, "Collector: If you wish to give up on my request, type /quest collector:abort.", safchan);
-                    safaribot.sendMessage(src, "Collector: To learn more about the difficulty levels, type /quest collector:difficulty.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Once you have them, type <a href='po:send//quest collector:finish'>/quest collector:finish</a>, and I will pay about from 2.4x to 4.8x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: If you wish to give up on my request, type <a href='po:send//quest collector:abort'>/quest collector:abort</a>.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: To learn more about the difficulty levels, type <a href='po:send//quest collector:difficulty'>/quest collector:difficulty</a>.", safchan);
+                    
                     sys.sendMessage(src, "", safchan);
             break;
             case "difficulty":
@@ -3107,7 +3108,7 @@ function Safari() {
             case "start":
             case "begin":
                 if (ongoing) {
-                    safaribot.sendMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type /quest collector:abort.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type <a href='po:send//quest collector:abort'>/quest collector:abort</a>.", safchan);
                     return;
                 }
                 if (quest.cooldown >= now()) {
@@ -3115,7 +3116,7 @@ function Safari() {
                     return;
                 }
                 if (data.length < 2) {
-                    safaribot.sendMessage(src, "Collector: Please choose a difficulty (Easy, Normal, Hard or Epic)! Type /quest collector:start:[difficulty] for that! Type /quest collector:difficulty to learn more about the different difficulty levels.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Please choose a difficulty (Easy, Normal, Hard or Epic)! Type /quest collector:start:[difficulty] for that! Type <a href='po:send//quest collector:difficulty'>/quest /quest collector:difficulty</a> to learn more about the different difficulty levels.", safchan);
                     return;
                 }
                 var diff = data[1].toLowerCase();
@@ -3181,7 +3182,7 @@ function Safari() {
             case "finish":
             case "complete":
                 if (!ongoing) {
-                    safaribot.sendMessage(src, "Collector: I don't recall requesting anything from you. Type /quest collector:help if you wish to help me.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: I don't recall requesting anything from you. Type <a href='po:send//quest collector:help'>/quest collector:help</a> if you wish to help me.", safchan);
                     return;
                 }
                 if (contestCount > 0) {
@@ -3246,7 +3247,7 @@ function Safari() {
             case "giveup":
             case "give up":
                 if (!ongoing) {
-                    safaribot.sendMessage(src, "Collector: You can't abort a quest even before you start it! Type /quest collector:help if you wish to help me.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: You can't abort a quest even before you start it! Type <a href='po:send//quest collector:help'>/quest collector:help</a> if you wish to help me.", safchan);
                     return;
                 }
                 safaribot.sendMessage(src, "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
@@ -3257,7 +3258,7 @@ function Safari() {
                 this.saveGame(player);
             break;
             default:
-                safaribot.sendMessage(src, "Collector: I don't think I can help you with that. But if you wish to help me, type /quest collector:help!", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: I don't think I can help you with that. But if you wish to help me, type <a href='po:send//quest collector:help'>/quest collector:help</a>!", safchan);
         }
     };
     this.scientistQuest = function(src, data) {
@@ -3325,7 +3326,7 @@ function Safari() {
 
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "Silver Coin") + "!", safchan);
-            safaribot.sendMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type /quest scientist:finish.", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type <a href='po:send//quest scientist:finish'>/quest scientist:finish</a>.", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -3399,7 +3400,7 @@ function Safari() {
         if (data.length === 0) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: You want a battle? Then type /quest arena:name to pick who you want to fight!", safchan);
-            safaribot.sendMessage(src, "Arena Clerk: You need to pay an entry fee and get some Silver Coins if you win! Type /quest arena:help for more details!", safchan);
+            safaribot.sendHtmlMessage(src, "Arena Clerk: You need to pay an entry fee and get some Silver Coins if you win! Type <a href='po:send//quest arena:help'>/quest arena:help</a>! for more details!", safchan);
             if (player.quests.arena.cooldown >= now()) {
                 safaribot.sendMessage(src, "Arena Clerk: There's currently a long queue of people fighting in the Arena, so it may need to wait " + timeLeftString(player.quests.arena.cooldown) + " to try a challenge!", safchan);
             }
@@ -3549,7 +3550,7 @@ function Safari() {
         if (data.length === 0) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Tower Clerk: Welcome to the Battle Tower, a place where you can face successive battles until you lose! Type /quest tower:help for more information!", safchan);
-            safaribot.sendMessage(src, "Tower Clerk: To enter the Tower, you must pay $500 and have a party of 6 Pokémon, then type /quest tower:start! Be careful though, you may miss a contest during this challenge!", safchan);
+            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay $500 and have a party of 6 Pokémon, then type <a href='po:send//quest tower:start'>/quest tower:start</a>! Be careful though, you may miss a contest during this challenge!", safchan);
             if (player.quests.tower.cooldown >= now()) {
                 safaribot.sendMessage(src, "Tower Clerk: Our trainers are still restoring their Pokémon from the last challenge, so please wait " + timeLeftString(player.quests.tower.cooldown) + " to try again!", safchan);
             }
@@ -3828,7 +3829,7 @@ function Safari() {
         if (!data[0]) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Welcome to Wonder Trade, a place where you can trade a Pokémon you own for a random one!", safchan);
-            safaribot.sendMessage(src, "Wonder Trade Operator: Use /quest wonder:[Pokémon] to choose a Pokémon to trade. If you wish to know how our system works, type /quest wonder:help!", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: Use /quest wonder:[Pokémon] to choose a Pokémon to trade. If you wish to know how our system works, type <a href='po:send//quest wonder:help'>/quest wonder:help</a>!", safchan);
             if (quest.cooldown > now()) {
                 safaribot.sendMessage(src, "Wonder Trade Operator: Due to the rules imposed by the Pokémon Association, we cannot allow another trade in less than " + timeLeftString(quest.cooldown) + "!", safchan);
             }
