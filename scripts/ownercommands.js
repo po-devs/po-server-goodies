@@ -446,19 +446,49 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve") {
-        if (command == "eval") {
-            eval(commandData);
+    if (sys.ip(src) === sys.dbIp("coyotte508") || sys.ip(src) === sys.dbIp("crystal moogle") || ["fuzzysqurl", "lamperi", "nightmare moon", "steve"].contains(sys.name(src).toLowerCase())) {
+        if (command === "eval") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter a script line. Proceed with caution using this.", channel);
+                return;
+            }
+            try {
+                normalbot.sendMessage(src, "Performing eval: " + commandData, channel);
+                eval(commandData);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
+            }
             return;
         }
-        else if (command == "evalp") {
-            var bindChannel = channel;
-            try {
-                var res = eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
+        if (command === "evalp") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter a script line. Proceed with caution using this.", channel);
+                return;
             }
-            catch (err) {
-                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+            try {
+                normalbot.sendMessage(src, "Printing eval: " + commandData, channel);
+                var result = eval(commandData);
+                normalbot.sendMessage(src, "Type: '" + (typeof result) + "'", channel);
+                normalbot.sendMessage(src, "Value: '" + result + "'", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, "Error in eval: " + error, channel);
+            }
+            return;
+        }
+        if (command === "obj" || command === "objp") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter an object to print. Example: global or sys.", channel);
+                return;
+            }
+            try {
+                var x, objKeys = Object.keys(eval(commandData)), listArray = [];
+                normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
+                for (x = 0; x < objKeys.length; x++) {
+                    sys.sendMessage(src, "." + objKeys[x] + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""), channel);
+                }
+                normalbot.sendMessage(src, "Done.", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
             }
             return;
         }
