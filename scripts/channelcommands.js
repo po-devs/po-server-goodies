@@ -196,11 +196,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, commandData);
         return;
     }
-    
-    if (!poChannel.isChannelOperator(src)) {
-        return "no command";
-    }
-    
     if (command === "topicadd") {
         if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
             SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
@@ -245,6 +240,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
+    
+    if (!poChannel.isChannelOperator(src)) {
+        return "no command";
+    }
+    
     if (command === "lt" || command === "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
