@@ -29,7 +29,6 @@ function Safari() {
     var npcShop;
     var lastIdAssigned;
     var rafflePrizeObj = null;
-    var rafflesSold;
 
     var safaribot = new Bot("Tauros");
 
@@ -484,18 +483,7 @@ function Safari() {
             towerHighest: 0,
             consecutiveLogins: 0
         },
-        costumes: {
-            inver: 0,
-            ranger: 0,
-            breeder: 0,
-            scientist: 0,
-            ace: 0,
-            tech: 0,
-            aroma: 0,
-            chef: 0,
-            explorer: 0,
-            fisher: 0
-        },
+        costumes: [],
         savedParties: [],
         megaTimers: [],
         starter: null,
@@ -4111,13 +4099,6 @@ function Safari() {
             }
             player.balls[bonus] += bonusAmt;
         }
-        if (product === "entry") {
-            rafflePlayers.add(player.id, player.balls.entry);
-            rafflePlayers.save();
-            rafflesSold += amount;
-            permObj.add("rafflesSold", rafflesSold);
-            permObj.save();
-        }
     };
     this.updateShop = function(name, item) {
         var player = getAvatarOff(name);
@@ -6835,6 +6816,7 @@ function Safari() {
             this.saveGame(target);
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.add(target.id, target.balls.entry);
+            rafflePlayers.save();
 
             sys.appendToFile(altLog, now() + "|||" + name1 + " <--> " + name2 + "|||" + sys.name(user) + "\n");
         } else {
@@ -6865,7 +6847,8 @@ function Safari() {
             }
             this.saveGame(player);
             rafflePlayers.add(player.id, player.balls.entry);
-            rafflePlayers.remove(targetId);
+            rafflePlayers.remove(name1.toLowerCase());
+            rafflePlayers.save();
 
             if (src) {
                 safaribot.sendMessage(src, "You passed your Safari data to " + name2.toCorrectCase() + "!", safchan);
@@ -6980,6 +6963,10 @@ function Safari() {
                 removeInvalid(player, i, playerTemplate);
             }
 
+            if (!Array.isArray(player.costumes)) {
+               player.costumes = [];
+            }
+            
             for (i = 0; i < allItems.length; i++) {
                 clean = allItems[i];
                 if (typeof player.balls[clean] !== "number") {
@@ -7011,19 +6998,6 @@ function Safari() {
             }
             if (player.altlog.length === 0) {
                 player.altlog.push(player.id);
-            }
-
-            for (i = 0; i < allCostumes.length; i++) {
-                clean = allCostumes[i];
-                if (typeof player.costumes[clean] !== "number") {
-                    player.costumes[clean] = 0;
-                }
-                if (player.costumes[clean] === undefined || isNaN(player.costumes[clean]) || player.costumes[clean] === null || player.costumes[clean] < 0) {
-                    player.costumes[clean] = 0;
-                }
-                if (player.costumes[clean] > 1) {
-                    player.costumes[clean] = 1;
-                }
             }
             for (i in player.shop) {
                 if (!player.shop[i].price) {
@@ -7707,13 +7681,13 @@ function Safari() {
                 safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
                 if (rafflePrizeObj) {
-                    /*var total = 0;
+                    var total = 0;
                     for (var e in rafflePlayers.hash) {
                         if (rafflePlayers.hash.hasOwnProperty(e)) {
                             total += parseInt(rafflePlayers.hash[e], 10);
                         }
-                    }*/
-                    safaribot.sendMessage(src, "Current Raffle Prize: " + rafflePrizeObj.name + " with " + rafflesSold + " entries sold!", safchan);
+                    }
+                    safaribot.sendMessage(src, "Current Raffle Prize: " + rafflePrizeObj.name + " with " + total + " entries sold!", safchan);
                 }
                 sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
                 return true;
@@ -8772,11 +8746,6 @@ function Safari() {
             rafflePrizeObj = JSON.parse(permObj.get("rafflePrize"));
         } catch (err) {
             rafflePrizeObj = null;
-        }
-        try {
-            rafflesSold = parseInt(permObj.get("rafflesSold"), 10);
-        } catch (err) {
-            rafflesSold = 0;
         }
         monthlyLeaderboards = {};
         for (var e in monthlyLeaderboardTypes) {
