@@ -192,12 +192,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     
-     if (command === "topic") {
-        SESSION.channels(channel).setTopic(src, commandData);
+    if (command === "topic") {
+        //Mods shouldn't be able to change topic of private channels
+        if (poChannel.isChannelOperator(src) || (sys.auth(src) === 1 && script.isPOChannel(channel))) {
+            SESSION.channels(channel).setTopic(src, commandData);
+        } else {
+            SESSION.channels(channel).setTopic(src);
+        }
         return;
     }
     
-    if (!poChannel.isChannelOperator(src)) {
+    //Mods shouldn't be able to change topic of private channels
+    if (!poChannel.isChannelOperator(src) || (sys.auth(src) < 1 && !script.isPOChannel(channel))) {
         return "no command";
     }
     
@@ -245,6 +251,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
+    
+    if (!poChannel.isChannelOperator(src)) {
+        return "no command";
+    }
+    
     if (command === "lt" || command === "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);

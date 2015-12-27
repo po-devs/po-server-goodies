@@ -98,7 +98,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, mafiarev, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons,breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan;
+var channel, contributors, mutes, mbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -416,7 +416,7 @@ init : function() {
     watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
     triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
     revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
-    mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
+    //mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
     hangmanchan = SESSION.global().channelManager.createPermChannel("Hangman", "Type /help to see how to play!");
     blackjackchan = SESSION.global().channelManager.createPermChannel("Blackjack", "Play Blackjack here!");
     safarichan = SESSION.global().channelManager.createPermChannel("Safari", "Type /help to see how to play!");
@@ -1012,6 +1012,15 @@ isOfficialChan : function (chanid) {
     else
         return false;
 },
+
+isPOChannel : function (chanid) {
+    var pochans = [0, tourchannel, mafiachan, triviachan, hangmanchan, safarichan, staffchannel, revchan, sachannel, watchchannel, blackjackchan, sys.channelId("Developer's Den"), sys.channelId("Evolution Game"), sys.channelId("BF Review")];
+    if (pochans.indexOf(chanid) > -1)
+        return true;
+    else
+        return false;
+},
+
 
 kickAll : function(ip) {
     var players = sys.playerIds();
@@ -1993,7 +2002,7 @@ afterChatMessage : function(src, message, chan)
    // }
 
     // hardcoded
-    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch"), mafiarev];
+    var ignoreChans = [staffchannel, sachannel, sys.channelId("trivreview"), sys.channelId("Watch")];
     var userMayGetPunished = sys.auth(src) < 2 && ignoreChans.indexOf(channel) == -1 && !poChannel.isChannelOperator(src);
     var officialChan = this.isOfficialChan(chan);
     var capsday = false;
