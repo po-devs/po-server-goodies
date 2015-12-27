@@ -4733,7 +4733,7 @@ function Mafia(mafiachan) {
         var expirationTime = ((new Date()).getTime() + (timeForWarningErase * pts) );
         mafia.warningLog[name][expirationTime] = [warner,rule,comments];
         gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", sachannel);
+        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", false, sachannel);
         if ((shove === "shove") || (shove === "true")) {
             this.shoveUser(src,name);
         }
