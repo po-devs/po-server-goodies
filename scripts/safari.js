@@ -957,7 +957,11 @@ function Safari() {
         }
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-
+    function link(string, string2, setmsg) {
+        string2 = string2 || string;
+        return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\">" + html_escape(string2) + "</a>"; 
+    }
+    
     /*
         Use this function for every time you need information about a Pokémon typed by a player (don't use for pokémon picked from player.pokemon).
         Returns an object with the following properties:
@@ -1342,7 +1346,7 @@ function Safari() {
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e))) {
-                ret += "«<a href='po:send//catch " + itemData[e].name +"'>" + cap(itemData[e].name) + "</a>» ";
+                ret += "«" + link("/catch " + itemData[e].name, cap(itemData[e].name)) + "» ";
                 hasBalls = true;
             }
         }
@@ -2519,7 +2523,7 @@ function Safari() {
             var evo = evoData.evo;
 
             safaribot.sendMessage(src, info.name + " requires " + plural(Math.floor(candiesRequired * (info.shiny ? 1.15 : 1)), "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". ", safchan);
-            safaribot.sendHtmlMessage(src, "If you really wish to evolve " + info.name + ", type <a href='po:send//evolve " + info.input + ":confirm'>/evolve " + info.input + ":confirm</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "If you really wish to evolve " + info.name + ", type " + link("/evolve " + info.input + ":confirm") + ".", safchan);
             return;
         }
 
@@ -2909,7 +2913,7 @@ function Safari() {
 
         if (name in challengeRequests) {
             var commandLink = "/challenge cancel";
-            safaribot.sendHtmlMessage(src, "You already have a pending challenge! To cancel it, type <a href=\"po:send/" + commandLink + "\">" + commandLink + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "You already have a pending challenge! To cancel it, type " + link(commandLink) + ".", safchan);
             return;
         }
 
@@ -2959,11 +2963,11 @@ function Safari() {
         } else {
             challengeRequests[name] = tName;
             var commandLink = "/challenge cancel";
-            safaribot.sendHtmlMessage(src, "You are challenging " + sys.name(targetId) + " to a battle! Wait for them to accept, or cancel the challenge with <a href=\"po:send/" + commandLink + "\">" + commandLink + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "You are challenging " + sys.name(targetId) + " to a battle! Wait for them to accept, or cancel the challenge with " + link(commandLink) + ".", safchan);
 
             commandLink = "/challenge " + sys.name(src);
             sys.sendMessage(targetId, "", safchan);
-            safaribot.sendHtmlMessage(targetId, sys.name(src) + " is challenging you for a battle! To accept, type <a href=\"po:send/" + commandLink + "\">" + commandLink + "</a>", safchan);
+            safaribot.sendHtmlMessage(targetId, sys.name(src) + " is challenging you for a battle! To accept, type " + link(commandLink) + ".", safchan);
             sys.sendMessage(targetId, "", safchan);
         }
     };
@@ -2999,11 +3003,11 @@ function Safari() {
             var n = now(), quest = getAvatar(src).quests;
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Quests available:", safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest collector'>Collector</a> " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest scientist'>Scientist</a> " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest arena'>Arena</a> " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest wonder'>Wonder</a> " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-<a href='po:send//quest tower'>Tower</a> " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Wonder Trade") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -3052,7 +3056,7 @@ function Safari() {
         if (ongoing && now() > quest.deadline) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Collector: I'm sorry, but since you took too long to fulfill my request I decided to buy from someone else!", safchan);
-            safaribot.sendHtmlMessage(src, "Collector: If you still wish to help me, type <a href='po:send//quest collector:start'>/quest collector:start</a> for a new request!", safchan);
+            safaribot.sendHtmlMessage(src, "Collector: If you still wish to help me, type " + link("/quest collector:start") + " for a new request!", safchan);
             sys.sendMessage(src, "", safchan);
 
             quest.reward = 0;
@@ -3067,11 +3071,11 @@ function Safari() {
             if (ongoing) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "Collector: Hello, did you bring the " + readable(quest.requests.map(poke), "and") + " that I asked?", safchan);
-                safaribot.sendHtmlMessage(src, "Collector: If you did, type <a href='po:send//quest collector:finish'>/quest collector:finish</a> and I will pay you $" + addComma(quest.reward) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ".", safchan);
-                safaribot.sendHtmlMessage(src, "Collector: You can also type <a href='po:send//quest collector:abort'>/quest collector:abort</a> if you no longer wish to help me.", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: If you did, type " + link("/quest collector:finish") + " and I will pay you $" + addComma(quest.reward) + " for those Pokémon, but please bring them in less than " + timeLeftString(quest.deadline) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: You can also type " + link("/quest collector:abort") + " if you no longer wish to help me.", safchan);
                 sys.sendMessage(src, "", safchan);
             } else {
-                safaribot.sendHtmlMessage(src, "Collector: Hello, I'm The Collector! I am always willing to pay well for some interesting Pokémon. If you wish to help me, type <a href='po:send//quest collector:help'>/quest collector:help</a>.", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: Hello, I'm The Collector! I am always willing to pay well for some interesting Pokémon. If you wish to help me, type " + link("/quest collector:help") + ".", safchan);
                 if (quest.cooldown >= now()) {
                     safaribot.sendMessage(src, "Collector: I'm currently organizing my collection, so I won't be making any new request now. Please come back in " + timeLeftString(quest.cooldown) + "!", safchan);
                 }
@@ -3088,9 +3092,9 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
                     safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: Once you have them, type <a href='po:send//quest collector:finish'>/quest collector:finish</a>, and I will pay about from 2.4x to 4.8x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: If you wish to give up on my request, type <a href='po:send//quest collector:abort'>/quest collector:abort</a>.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: To learn more about the difficulty levels, type <a href='po:send//quest collector:difficulty'>/quest collector:difficulty</a>.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Once you have them, type " + link("/quest collector:finish") + ", and I will pay about from 2.4x to 4.8x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: If you wish to give up on my request, type " + link("/quest collector:abort") + ".", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: To learn more about the difficulty levels, type " + link("/quest collector:difficulty") + ".", safchan);
                     
                     sys.sendMessage(src, "", safchan);
             break;
@@ -3108,7 +3112,7 @@ function Safari() {
             case "start":
             case "begin":
                 if (ongoing) {
-                    safaribot.sendHtmlMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type <a href='po:send//quest collector:abort'>/quest collector:abort</a>.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type " + link("/quest collector:abort") + ".", safchan);
                     return;
                 }
                 if (quest.cooldown >= now()) {
@@ -3116,7 +3120,7 @@ function Safari() {
                     return;
                 }
                 if (data.length < 2) {
-                    safaribot.sendHtmlMessage(src, "Collector: Please choose a difficulty (Easy, Normal, Hard or Epic)! Type /quest collector:start:[difficulty] for that! Type <a href='po:send//quest collector:difficulty'>/quest /quest collector:difficulty</a> to learn more about the different difficulty levels.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", or " + link("/quest collector:start:epic", "Epic") + ") using /quest collector:start:[difficulty]! Type " + link("/quest collector:difficulty") + " to learn more about the different difficulty levels.", safchan);
                     return;
                 }
                 var diff = data[1].toLowerCase();
@@ -3141,7 +3145,7 @@ function Safari() {
                         level = 3;
                     break;
                     default:
-                        safaribot.sendMessage(src, "Collector: Please choose a difficulty (Easy, Normal or Hard)! Type /quest collector:start:[difficulty] for that!", safchan);
+                        safaribot.sendHtmlMessage(src, "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", or " + link("/quest collector:start:epic", "Epic") + ") using /quest collector:start:[difficulty]!", safchan);
                         return;
                 }
 
@@ -3182,7 +3186,7 @@ function Safari() {
             case "finish":
             case "complete":
                 if (!ongoing) {
-                    safaribot.sendHtmlMessage(src, "Collector: I don't recall requesting anything from you. Type <a href='po:send//quest collector:help'>/quest collector:help</a> if you wish to help me.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: I don't recall requesting anything from you. Type " + link("/quest collector:help") + " if you wish to help me.", safchan);
                     return;
                 }
                 if (contestCount > 0) {
@@ -3247,7 +3251,7 @@ function Safari() {
             case "giveup":
             case "give up":
                 if (!ongoing) {
-                    safaribot.sendHtmlMessage(src, "Collector: You can't abort a quest even before you start it! Type <a href='po:send//quest collector:help'>/quest collector:help</a> if you wish to help me.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: You can't abort a quest even before you start it! Type " + link("/quest collector:help") + " if you wish to help me.", safchan);
                     return;
                 }
                 safaribot.sendMessage(src, "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
@@ -3829,7 +3833,7 @@ function Safari() {
         if (!data[0]) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Welcome to Wonder Trade, a place where you can trade a Pokémon you own for a random one!", safchan);
-            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: Use /quest wonder:[Pokémon] to choose a Pokémon to trade. If you wish to know how our system works, type <a href='po:send//quest wonder:help'>/quest wonder:help</a>!", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: Use /quest wonder:[Pokémon] to choose a Pokémon to trade. If you wish to know how our system works, type " + link("/quest wonder:help") + "!", safchan);
             if (quest.cooldown > now()) {
                 safaribot.sendMessage(src, "Wonder Trade Operator: Due to the rules imposed by the Pokémon Association, we cannot allow another trade in less than " + timeLeftString(quest.cooldown) + "!", safchan);
             }
@@ -3842,7 +3846,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
-            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are <a href='po:send//find bst 180 249'>180~249</a> ($50 fee), <a href='po:send//find bst 250 319'>250~319</a> ($100), <a href='po:send//find bst 320 389'>320~389</a> ($150), <a href='po:send//find bst 390 459'>390~459</a> ($300), <a href='po:send//find bst 460 529'>460~529</a> ($500) and <a href='po:send//find bst 530 599'>530~599</a> ($750).", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are " + link("/find bst 180 249", "180~249") + " ($50 fee), " + link("/find bst 250 319", "250~319") + " ($100), " + link("/find bst 320 389", "320~389") + " ($150), " + link("/find bst 390 459", "390~459") + " ($300), " + link("/find bst 460 529", "460~529") + " ($500) and " + link("/find bst 530 599", "530~599") + " ($750).", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -3857,7 +3861,7 @@ function Safari() {
             return;
         }
         if (data.length < 1) {
-            safaribot.sendMessage(src, "Wonder Trade Operator: Please use /quest wonder:[Pokémon] to choose the Pokémon you wish to trade. You can also type /quest wonder:help for more information.", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: Please use /quest wonder:[Pokémon] to choose the Pokémon you wish to trade. You can also type " + link("/quest wonder:help") + " for more information.", safchan);
             return;
         }
 
@@ -3891,7 +3895,7 @@ function Safari() {
         if (data.length < 2 || data[1].toLowerCase() !== "confirm") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: " + input.name + "'s BST is in the " + bstRange.join("~") + " range, so your fee will be $" + addComma(fee) + "!", safchan);
-            safaribot.sendMessage(src, "Wonder Trade Operator: If you are sure you want to proceed, type /quest wonder:" + input.input + ":confirm and you will receive a Pokémon in the same range!", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: If you are sure you want to proceed, type " + link("/quest wonder:" + input.input + ":confirm") + " and you will receive a Pokémon in the same range!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -5194,7 +5198,7 @@ function Safari() {
             return;
         }
 
-        if (target != player && target.visible === false && !SESSION.channels(safchan).isChannelAdmin(src)) {
+        if (target != player && !target.visible && !SESSION.channels(safchan).isChannelAdmin(src)) {
             safaribot.sendMessage(src, "You cannot view this person's party!", safchan);
             return;
         }
@@ -6306,7 +6310,7 @@ function Safari() {
 
         var joinCommand = "/join " + this.hostName;
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is a " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type <a href='po:send/" + joinCommand + "'>" + joinCommand + "</a> to join the auction!", safchan);
+        safaribot.sendHtmlAll(this.hostName + " is starting an auction! The product is a " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", safchan);
         safaribot.sendMessage(src, "You started an auction! The auction ends when the current bid is not matched after 3 turns or if no one makes a bid for the first 40 seconds!", safchan);
         sys.sendAll("", safchan);
     }
@@ -7326,6 +7330,7 @@ function Safari() {
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
+            "/checksave [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
             "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari).",
@@ -7335,7 +7340,8 @@ function Safari() {
             "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokemon.",
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
-            "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund)."
+            "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
+            "/tourgift [tier]։[1st]*[2nd]*[3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!"
         ];
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             help.push.apply(help, adminHelp);
@@ -8336,51 +8342,84 @@ function Safari() {
                 return true;
             }
             if (command === "tourgift") {
-                var cmd = commandData.split(":");
-                var target = cmd[0];
-                var player = getAvatarOff(target);
-                if (!player) {
-                    safaribot.sendMessage(src, "No such player!", safchan);
+                var temp = commandData.split(":");
+                var tier = utilities.find_tier(temp[0]);
+                if (!tier) {
+                    safaribot.sendMessage(src, temp + " is not a valid tier!", safchan);
                     return true;
                 }
-
-                var prizeLevel = parseInt(cmd[1], 10) || 1;
-                if (prizeLevel > 4) {
-                    safaribot.sendMessage(src, "There are only 4 event tours a day. A player cannot win more than that!", safchan);
+                var targets = temp[1].split("*");
+                var prizeLevel = 1, placing = 1;
+                var player, invalidPlayers = [], out = [], prizeArray;
+                for (var i in targets) {
+                    i = targets[i];
+                    player = getAvatarOff(i);
+                    if (!player) {
+                        invalidPlayers.push(i.toCorrectCase());
+                        placing++;
+                        continue;
+                    }
+                    prizeArray = [];
+                    switch (prizeLevel) {
+                        case 1:
+                            player.balls.mega += 1;
+                            prizeArray.push("a Mega Stone");
+                            /* falls through */
+                        case 2:
+                            player.balls.rare += 1;
+                            prizeArray.push("a Rare Candy");
+                            /* falls through */
+                        default:
+                            player.balls.gem += 1;
+                            prizeArray.push("an Ampere Gem");
+                    }
+                    prizeLevel++;
+                    this.sanitize(player);
+                    out.push("<b>" + getOrdinal(placing) + "</b>: " + html_escape(i.toCorrectCase()) + " received " + readable(prizeArray, "and"));
+                    placing++;
+                }
+                if (out.length === 0) {
+                    safaribot.sendMessage(src, "No names supplied match existing Safari Accounts.", safchan);
                     return true;
                 }
-                var mega = 0, gem = 0, dust = 0;
-                switch (prizeLevel) {
-                    case 4:
-                        dust += 50;
-                        gem += 1;
-                        /* falls through */
-                    case 3:
-                        dust += 25;
-                        gem += 1;
-                        /* falls through */
-                    case 2:
-                        dust += 10;
-                        gem += 1;
-                        /* falls through */
-                    default:
-                        mega += 1;
+                safaribot.sendHtmlAll("<b>" + tier + " Event Prizes:</b> " + out.join(" | "), safchan);
+                if (invalidPlayers.length > 0) {
+                    safaribot.sendMessage(src, "The following players did not match any save: " + invalidPlayers.join(", "), safchan);
                 }
-
-                var prizeArray = [];
-                player.balls.mega += mega;
-                prizeArray.push("1 Mega Stone");
-                if (gem > 0) {
-                    player.balls.gem += gem;
-                    prizeArray.push(plural(gem, "Ampere Gem"));
+                return true;
+            }
+            if (command === "checksave") {
+                var temp, multi, checks = [];
+                if (commandData.indexOf(", ") !== -1) {
+                    temp = commandData.split(", ");
+                    multi = true;
+                } else if (commandData.indexOf(",") !== -1) {                    
+                    temp = commandData.split(",");
+                    multi = true;
+                } else {
+                    checks.push(commandData);
                 }
-                if (dust > 0) {
-                    player.balls.dust += dust;
-                    prizeArray.push(plural(dust, "Candy Dust"));
+                if (multi) {
+                    for (var i = 0; i < temp.length; i++) {
+                        checks.push(temp[i]);
+                    }
                 }
-                this.sanitize(player);
-
-                safaribot.sendAll(target.toCorrectCase() + " received " + readable(prizeArray, "and") + " for placing well in an Event Tour " + plural(prizeLevel, "time") + "!", safchan);
+                
+                var has = [], hasNot = [], player;
+                for (var j = 0; j < checks.length; j++) {
+                    player = getAvatarOff(checks[j]);
+                    if (!player) {
+                        hasNot.push(checks[j]);
+                    } else {
+                        has.push(link("/analyze " + html_escape(checks[j]), checks[j]));
+                    }
+                }
+                if (has.length > 0) {
+                    safaribot.sendHtmlMessage(src, "The following have a save: " + has.join(", "), safchan);
+                }
+                if (hasNot.length > 0) {
+                    safaribot.sendMessage(src, "The following do not have a save: " + hasNot.join(", "), safchan);
+                }
                 return true;
             }
             if (command === "changeboost") {
