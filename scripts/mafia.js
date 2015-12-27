@@ -4711,18 +4711,24 @@ function Mafia(mafiachan) {
         var cmd = commandData.split(":");
         var name = cmd[0].toLowerCase();
         var rule = cmd[1];
-        if (rule === "*") {
+        if (commandData === "*") {
+            gamemsg(src, "Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.");
+            return;
+        } else if (sys.dbIp(name) === undefined) {
+            gamemsg(src, "That user does not exist!");
+            return;
+        } else if (rule === undefined) {
             gamemsg(src,"Please specify a rule that has been violated.");
             return;
         }
         var pts = cmd[2];
         var comments = cmd[3];
         var shove = cmd[4];
-        if ((pts === "*") && (rule.toLowerCase() in this.defaultWarningPoints)) {
+        if ((pts === undefined) && (rule.toLowerCase() in this.defaultWarningPoints)) {
             pts = this.defaultWarningPoints[rule];
             rule = cap(rule);
         }
-        if (pts === "*") {
+        if (isNaN(pts)) {
             gamemsg(src,"Please specify an amount of warning points.");
             return;
         }
@@ -4731,9 +4737,12 @@ function Mafia(mafiachan) {
         }
 		this.clearOldWarnings( name );
         var expirationTime = ((new Date()).getTime() + (timeForWarningErase * pts) );
+        if (typeof mafia.warningLog[name] !== "object") {
+            mafia.warningLog[name] = {};
+        };
         mafia.warningLog[name][expirationTime] = [warner,rule,comments];
         gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", sachannel);
+        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", false, sachannel);
         if ((shove === "shove") || (shove === "true")) {
             this.shoveUser(src,name);
         }
@@ -4753,17 +4762,20 @@ function Mafia(mafiachan) {
         //var warner = typeof src == "string" ? src : sys.name(src);
         commandData = commandData.toLowerCase();
         this.clearOldWarnings( commandData );
+        gamemsg(src, "*** Warnings for " + commandData + ":"); // otherwise messages are the same as an actual warn
         var hasWarns;
         for (var v in mafia.warningLog[commandData]) {
             var inst = mafia.warningLog[commandData][v];
             msg = (commandData + " was warned by " + inst[0] + " for " + inst[1] + ".");
-            if (inst[2] !== "*") {
-                msg = msg + " (Comments: " + inst[2] + ")";
+            if (inst[2] !== undefined) {
+                msg += " (Comments: " + inst[2] + ")";
             }
-            gamemsg(src,msg);
+            gamemsg(src, msg);
             hasWarns = true;
         }
-        if (!hasWarns) gamemsg(src,commandData + " has no standing rule violations.");
+        if (!hasWarns) {
+            gamemsg(src, commandData + " has no standing rule violations.");
+        };
     };
     this.myWarns = function (src ) {
         var name = typeof src == "string" ? src : sys.name(src);
