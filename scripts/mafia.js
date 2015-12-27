@@ -4728,7 +4728,7 @@ function Mafia(mafiachan) {
             pts = this.defaultWarningPoints[rule];
             rule = cap(rule);
         }
-        if (pts === "*" || pts === undefined) {
+        if (isNaN(pts)) {
             gamemsg(src,"Please specify an amount of warning points.");
             return;
         }
