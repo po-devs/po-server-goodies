@@ -7304,7 +7304,7 @@ function Safari() {
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
-            "/checksave [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
+            "/checksaves [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
             "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari).",
@@ -8362,7 +8362,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "checksave") {
+            if (command === "checksave" || command === "checksaves") {
                 var temp, multi, checks = [];
                 if (commandData.indexOf(", ") !== -1) {
                     temp = commandData.split(", ");
