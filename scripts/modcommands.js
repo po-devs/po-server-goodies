@@ -126,20 +126,33 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.silenceoff(src, chanName);
         return;
     }
-    if (command == "k") {
+    if (command === "k") {
         if (tar === undefined) {
-            normalbot.sendMessage(src, "No such user", channel);
+            normalbot.sendMessage(src, "No such user.", channel);
             return;
         }
-        normalbot.sendAll("" + commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+        if (!isSuperAdmin(src)) {
+            if (sys.auth(tar) >= sys.auth(src) && sys.auth(src) < 3) {
+                normalbot.sendMessage(src, "Let's not kick another auth and give us a bad reputation now. :)", channel);
+                return;
+            }
+        }
+        normalbot.sendAll(commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
         sys.kick(tar);
-        var authname = sys.name(src).toLowerCase();
-        script.authStats[authname] =  script.authStats[authname] || {};
-        script.authStats[authname].latestKick = [commandData, parseInt(sys.time(), 10)];
+        var authName = sys.name(src).toLowerCase();
+        script.authStats[authName] =  script.authStats[authName] || {};
+        script.authStats[authName].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
 
-    if (command == "mute") {
+    if (command === "mute") {
+        var tarId = sys.id(commandData.split(":")[0]);
+        if (!isSuperAdmin(src)) {
+            if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
+                normalbot.sendMessage(src, "Let's not mute another auth and give us a bad reputation now. :)", channel);
+                return;
+            }
+        }
         script.issueBan("mute", src, tar, commandData);
         return;
     }
@@ -644,25 +657,30 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Usage /tempban name:minutes.", channel);
             return;
         }
-        
-        var target_name = tmp[0];
+        var tarId = sys.id(commandData.split(":")[0]);
+        if (!isSuperAdmin(src)) {
+            if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
+                normalbot.sendMessage(src, "Let's not ban another auth and give us a bad reputation now. :)", channel);
+                return;
+            }
+        }
+        var targetName = tmp[0];
         if (tmp[1] === undefined || isNaN(tmp[1][0])) {
             var minutes = 86400;
         } else {
             var minutes = getSeconds(tmp[1]);
         }
-        tar = sys.id(target_name);
         var minutes = parseInt(minutes, 10);
         if (sys.auth(src) < 2 && minutes > 86400) {
             normalbot.sendMessage(src, "Cannot ban for longer than a day!", channel);
             return;
         }
-        var ip = sys.dbIp(target_name);
+        var ip = sys.dbIp(targetName);
         if (ip === undefined) {
             normalbot.sendMessage(src, "No such user!", channel);
             return;
         }
-        if (sys.maxAuth(ip)>=sys.auth(src)) {
+        if (sys.maxAuth(ip) >= sys.auth(src)) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
@@ -670,13 +688,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "He/she's already banned!", channel);
             return;
         }
-        normalbot.sendAll("Target: " + target_name + ", IP: " + ip, staffchannel);
-        sys.sendHtmlAll('<b><font color=red>' + target_name + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');
-        sys.tempBan(target_name, parseInt(minutes/60, 10));
+        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);
+        sys.sendHtmlAll('<b><font color=red>' + targetName + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');
+        sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
-        var authname = sys.name(src);
-        script.authStats[authname] = script.authStats[authname] || {};
-        script.authStats[authname].latestTempBan = [target_name, parseInt(sys.time(), 10)];
+        var authName = sys.name(src);
+        script.authStats[authName] = script.authStats[authName] || {};
+        script.authStats[authName].latestTempBan = [targetName, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "tempunban") {
