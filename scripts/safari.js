@@ -4555,7 +4555,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, notReceived[x], safchan);
             }
             if (received.length > 0) {
-                safaribot.sendHtmlMessage(src, "<b>Received the following " + plural(received.length, "costume") + ":</b> " + readable(received, ", and") + ".", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Received the following " + plural(received.length, "costume") + ":</b> " + readable(received, "and") + ".", safchan);
             }
         }
         this.saveGame(player);
