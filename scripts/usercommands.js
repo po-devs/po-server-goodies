@@ -294,7 +294,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                     sys.sendMessage(src, name, channel);
                 }
             } else {
-                sys.sendHtmlMessage(src, "<timestamp/><font color = " + sys.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
+                sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
             }
         };
         var authListArray = sys.dbAuths().sort();
