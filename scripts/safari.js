@@ -4111,10 +4111,10 @@ function Safari() {
                 }
             }
             player.balls[bonus] += bonusAmt;
-            if (product === "entry") {
-                rafflePlayers.add(player.id, player.balls.entry);
-                rafflePlayers.save();
-           }
+        }
+        if (product === "entry") {
+            rafflePlayers.add(player.id, player.balls.entry);
+            rafflePlayers.save();
         }
     };
     this.updateShop = function(name, item) {
