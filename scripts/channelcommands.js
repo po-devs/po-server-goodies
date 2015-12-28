@@ -1,4 +1,6 @@
-﻿exports.handleCommand = function (src, command, commandData, tar, channel) {
+/*global exports, require, SESSION, sys, script, channelbot, Config, normalbot, sendChanHtmlAll, utilities, staffchannel, sachannel, watchchannel, revchan, getSeconds*/
+
+exports.handleCommand = function (src, command, commandData, tar, channel) {
     var html_escape = require("utilities.js").html_escape;
     var poChannel = SESSION.channels(channel);
     if (poChannel.operators === undefined) {
@@ -120,7 +122,7 @@
         }
         sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
         for (x = 0; x < rules.length; x++) {
-            rule = rules[x].split("\n");
+            var rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
             if (rule[1].length > 0) {
                 sys.sendMessage(src, rule[1], channel);
