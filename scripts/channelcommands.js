@@ -203,7 +203,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
     
     
-    var isOp = poChannel.isChannelOperator(src0;
+    var isOp = poChannel.isChannelOperator(src);
     var isMod = sys.auth(src) === 1;
     var isPOChan = script.isPOChannel(channel);    
     if (!isOp || (!isPOChan && isMod && !isOp) || !(isPOChan && isMod)) {    
