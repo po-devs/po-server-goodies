@@ -249,21 +249,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }   
-	if (command === "topicparts") {
-		var topic = SESSION.channels(channel).topic;
-		if (typeof topic == "string" && topic !== "") {
-			var i = 0;
-			topic = topic.split(" | ").map(function(part) { 
-				return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
-			}).join(" | ");
-			// HTML isn't necessary, but it makes the number more obvious
-			sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
-			return;
-		} else {
-			channelbot.sendMessage(src, "No topic set for this channel.", channel);
-			return;
-		}
-	}
+    if (command === "topicparts") {
+        var topic = SESSION.channels(channel).topic;
+        if (typeof topic == "string" && topic !== "") {
+            var i = 0;
+            topic = topic.split(" | ").map(function(part) { 
+                return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
+            }).join(" | ");
+            // HTML isn't necessary, but it makes the number more obvious
+            sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
+            return;
+        } else {
+            channelbot.sendMessage(src, "No topic set for this channel.", channel);
+            return;
+        }
+    }
     if (command === "updatepart") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please enter the topic number spaced with the text to change.", channel);
