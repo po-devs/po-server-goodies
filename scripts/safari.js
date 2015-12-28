@@ -739,20 +739,20 @@ function Safari() {
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
     var leaderboardTypes = {
         totalPokes: { desc: "by Pokémon owned", alts: [], alias: "owned" },
-        pokesCaught: { desc: "by successful catches", alts: ["caught"], alias: "caught" },
-        pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved"], alias: "evolved" },
+        pokesCaught: { desc: "by successful catches", alts: ["caught", "pokescaught"], alias: "caught" },
+        pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
         bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
-        contestsWon: { desc: "by contests won", alts: ["contest", "contests"], alias: "contest" },
+        contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
         money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
-        pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell"], alias: "sold", isMoney: true },
-        luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball"], alias: "luxury", isMoney: true },
-        consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins"], alias: "login" },
-        pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball"], alias: "cloned" },
-        gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha"], alias: "gacha" },
+        pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
+        luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
+        consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins", "consecutivelogins"], alias: "login" },
+        pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball", "pokescloned"], alias: "cloned" },
+        gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha", "gachasused"], alias: "gacha" },
         itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
-        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector money", "collectormoney", "collector $"], alias: "collector money", isMoney: true },
+        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector money", isMoney: true },
         collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke"], alias: "collector" },
-        towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower"], alias: "tower" },
+        towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" }
     };
     var monthlyLeaderboardTypes = {
@@ -5532,7 +5532,7 @@ function Safari() {
                 return;
             }
             if (player.cooldowns.costume > currentTime) {
-                safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeft(player.cooldowns.costume) + " seconds!", safchan);
+                safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeftString(player.cooldowns.costume) + " seconds!", safchan);
                 return;
             }
         }
