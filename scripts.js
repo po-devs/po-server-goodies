@@ -1016,7 +1016,7 @@ isOfficialChan : function (chanid) {
 },
 
 isPOChannel : function (chanid) {
-    var pochans = [0, tourchannel, mafiachan, triviachan, hangmanchan, safarichan, staffchannel, revchan, sachannel, watchchannel, blackjackchan, sys.channelId("Developer's Den"), sys.channelId("Evolution Game"), sys.channelId("BF Review")];
+    var pochans = [0, tourchannel, mafiachan, triviachan, hangmanchan, safarichan, staffchannel, revchan, sachannel, watchchannel, blackjackchan];
     if (pochans.indexOf(chanid) > -1)
         return true;
     else

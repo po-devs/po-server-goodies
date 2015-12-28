@@ -202,14 +202,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     
-    
-    var isOp = poChannel.isChannelOperator(src);
-    var isMod = sys.auth(src) === 1;
-    var isPOChan = script.isPOChannel(channel);    
-    if (!isOp || (!isPOChan && isMod && !isOp) || !(isPOChan && isMod)) {    
-        return "no command";
-    }
-    
     if (command === "topicadd") {
         if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
             SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);

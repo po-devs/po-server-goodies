@@ -90,7 +90,7 @@ POChannel.prototype.isChannelOperator = function(id)
     if (!sys.dbRegistered(sys.name(id))) {
         return false;
     }
-    if ((sys.auth(id) >= 1 && this.id === 0) || this.isChannelAdmin(id)) {
+    if ((sys.auth(id) >= 1 && script.isPOChannel(this.id)) || this.isChannelAdmin(id)) {
         return true;
     }
     if (typeof this.operators != "object") {
