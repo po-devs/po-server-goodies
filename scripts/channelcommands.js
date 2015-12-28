@@ -203,7 +203,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
     
     //Mods shouldn't be able to change topic of private channels
-    if (!poChannel.isChannelOperator(src) || (sys.auth(src) < 1 && !script.isPOChannel(channel))) {
+    if (!poChannel.isChannelOperator(src) || (sys.auth(src) === 1 && !script.isPOChannel(channel))) {
         return "no command";
     }
     
