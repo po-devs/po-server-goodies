@@ -500,8 +500,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "updatenotice") {
-        updateNotice();
+    if (command == "updatenotice" || command === "updatenoticesilent") {
+        var silent = command === "updatenoticesilent";
+        updateNotice(silent);
         normalbot.sendMessage(src, "Notice updated!");
         return;
     }
@@ -817,7 +818,7 @@ exports.help =
         "/addplugin: Add a plugin from the web.",
         "/removeplugin: Removes a plugin.",
         "/updateplugin: Updates plugin from the web.",
-        "/updatenotice: Updates notice from the web.",
+        "/updatenotice[silent]: Updates notice from the web. Silent updates but doesn't force it to rebroadcast.",
         "/updatescripts: Updates scripts from the web.",
         "/variablereset: Resets scripts variables.",
         "/updatebansites: To update ban sites.",

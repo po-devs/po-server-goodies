@@ -242,11 +242,13 @@ function sendChanHtmlAll(message, chan_id) {
     }
 }
 
-function updateNotice() {
+function updateNotice(silent) {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
         sys.writeToFile(Config.dataDir + "notice.html", resp);
-        sendNotice();
+        if (silent) {
+            sendNotice();
+        }
     });
 }
 
