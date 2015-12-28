@@ -219,7 +219,7 @@
         if (!commandData) {
             channelbot.sendMessage(src, "Correct usage is /" + command + " [number]. Separate multiple part numbers with a space.", channel);
             return;
-        };
+        }
         var parts = commandData.indexOf(":") !== -1 ? commandData.split(":") : commandData.split(" ");
         var topic = SESSION.channels(channel).topic, duplicates = [];
         topic = topic.split(Config.topic_delimiter);
@@ -230,14 +230,14 @@
                 parts.splice(i, 1, pospart);
                 duplicates.push(pospart);
                 continue;
-            };
+            }
             if (isNaN(part) || part > topic.length || pospart < 0) {
                 channelbot.sendMessage(src, "Parts must be a number from 1 to " + topic.length + "!", channel);
                 return;
             } else if (duplicates.indexOf(part) !== -1) {
                 channelbot.sendMessage(src, "You can't remove part " + part + " twice!", channel);
                 return;
-            };
+            }
             duplicates.push(part);
         }
         // Sort by largest numbers first to avoid interfering with earlier parts after removal
@@ -252,7 +252,7 @@
 		if (typeof topic == "string" && topic !== "") {
 			var i = 0;
 			topic = topic.split(" | ").map(function(part) { 
-				return "<font color='blue'><b>[" + ++i + "]</b></font> " + part 
+				return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
 			}).join(" | ");
 			// HTML isn't necessary, but it makes the number more obvious
 			sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
@@ -260,7 +260,7 @@
 		} else {
 			channelbot.sendMessage(src, "No topic set for this channel.", channel);
 			return;
-		};
+		}
 	}
     if (command === "updatepart") {
         if (commandData === undefined) {
