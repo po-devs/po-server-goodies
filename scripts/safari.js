@@ -747,6 +747,7 @@ function Safari() {
     var leaderboardTypes = {
         totalPokes: { desc: "by Pokémon owned", alts: [], alias: "owned" },
         pokesCaught: { desc: "by successful catches", alts: ["caught"], alias: "caught" },
+        pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved"], alias: "evolved" },
         bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
         contestsWon: { desc: "by contests won", alts: ["contest", "contests"], alias: "contest" },
         money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
@@ -4431,7 +4432,7 @@ function Safari() {
                     return true;
                 }
             }
-            var price = parseInt(info[2], 10);
+            var price = parseInt(info[2].replace(",", ""), 10);
             if (isNaN(price) || price < 1 || price > moneyCap) {
                 safaribot.sendMessage(src, "Please type a valid price!", safchan);
                 return true;
@@ -4827,7 +4828,7 @@ function Safari() {
     };
     this.translateTradeOffer = function(asset) {
         if (asset[0] == "$") {
-            return "$" + addComma(parseInt(asset.substr(asset.indexOf("$") + 1), 10));
+            return "$" + addComma(parseInt(asset.substr(asset.indexOf("$") + 1).replace(",", ""), 10));
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
@@ -4840,7 +4841,7 @@ function Safari() {
     };
     this.tradeOfferInput = function(asset) {
         if (asset[0] == "$") {
-            return "$" + parseInt(asset.substr(asset.indexOf("$") + 1), 10);
+            return "$" + parseInt(asset.substr(asset.indexOf("$") + 1).replace(",", ""), 10);
         }
         else if (asset.indexOf("@") !== -1) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
@@ -4853,7 +4854,7 @@ function Safari() {
     };
     this.isValidTrade = function(src, asset, action, traded) {
         if (asset[0] == "$") {
-            var val = parseInt(asset.substr(1), 10);
+            var val = parseInt(asset.substr(1).replace(",", ""), 10);
             if (isNaN(val) || val <= 0) {
                 safaribot.sendMessage(src, "Please " + action + " a valid amount of money!", safchan);
                 return false;
@@ -4902,9 +4903,9 @@ function Safari() {
     this.canTrade = function(src, asset) {
         var player = getAvatar(src);
         if (asset[0] == "$") {
-            var val = parseInt(asset.substr(1), 10);
+            var val = parseInt(asset.substr(1).replace(",", ""), 10);
             if (player.money < val) {
-                safaribot.sendMessage(src, "You don't have enough $" + val + " to trade!", safchan);
+                safaribot.sendMessage(src, "You don't have enough money ($" + val + ") to trade!", safchan);
                 return false;
             }
         }
@@ -4930,7 +4931,7 @@ function Safari() {
     this.canReceiveTrade = function(src, receiverId, asset, offer) {
         var receiver = getAvatar(receiverId);
         if (asset[0] == "$") {
-            var val = parseInt(asset.substr(1), 10);
+            var val = parseInt(asset.substr(1).replace(",", ""), 10);
             if (receiver.money + val > moneyCap) {
                 safaribot.sendMessage(receiverId, "Trade cancelled because you can't hold more than $" + moneyCap + " (you currently have $" + receiver.money + ", so you can receive at most $" + (moneyCap - receiver.money) + ")!", safchan);
                 safaribot.sendMessage(src, "Trade cancelled because " + sys.name(receiverId) + " can't hold more than $" + moneyCap + "!", safchan);
