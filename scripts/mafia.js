@@ -2726,23 +2726,23 @@ function Mafia(mafiachan) {
         var checkPlayer = commandArray[0];
         var checkDay = commandArray[1];
         var pastDay = false;
-        var voteData;
-        if ((checkDay === "*") || (checkDay === mafia.time.nights)) {
+        var voteData = {};
+        if (checkDay === "*" || +checkDay === mafia.time.nights) {
             voteData = this.votedBy;
             gamemsg(sentName, "*** Votecount ***");
         } else {
             if ((checkDay > mafia.time.nights) || (checkDay <= 0)) {
                 gamemsg(sentName, "Please enter a valid day to search for!", "Vote");
                 return;
-                }
+            }
             if (checkDay < mafia.time.nights) {
                 pastDay = true;
             }
-            gamemsg(sentName, "*** Votecount for day " + checkDay + " ***");
+            gamemsg(sentName, "*** Votecount for Day " + checkDay + " ***");
             voteData = this.votedByArchive[checkDay];
         }
-		checkPlayer = this.correctCase(checkPlayer);
-        if (checkPlayer === noPlayer) {
+		checkPlayer = mafia.isInGame(checkPlayer) ? this.correctCase(checkPlayer) : checkPlayer;
+        if (checkPlayer === noPlayer || checkPlayer === "") {
             if (pastDay) {
                 gamemsg(sentName, this.lynchees[checkDay-1] + " was voted off!", "Vote");
             }
@@ -2761,7 +2761,7 @@ function Mafia(mafiachan) {
             for (var s in sortable) {
                 votedUser = sortable[s][0];
                 gamemsg(sentName,votedUser + (pastDay ? " was " : " has been ") + "voted by " + readable( voteData[votedUser], "and" ) + ".","Vote");
-                }
+            }
             return;
         }
         if (!(checkPlayer in voteData)) {
