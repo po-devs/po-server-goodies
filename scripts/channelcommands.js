@@ -1,3 +1,5 @@
+/*global exports, require, SESSION, sys, script, channelbot, Config, normalbot, sendChanHtmlAll, utilities, staffchannel, sachannel, watchchannel, revchan, getSeconds*/
+
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     var html_escape = require("utilities.js").html_escape;
     var poChannel = SESSION.channels(channel);
@@ -120,7 +122,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
         for (x = 0; x < rules.length; x++) {
-            rule = rules[x].split("\n");
+            var rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
             if (rule[1].length > 0) {
                 sys.sendMessage(src, rule[1], channel);
@@ -210,23 +212,52 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         channelbot.sendMessage(src, "Please enter a topic to add after.", channel);
         return;
     }
-    if (command === "removepart") {
-        if (isNaN(commandData) || commandData === undefined) {
-            channelbot.sendMessage(src, "Please enter the topic part number to remove.", channel);
+    if (command === "removepart" || command === "removeparts") {
+        if (!commandData) {
+            channelbot.sendMessage(src, "Correct usage is /" + command + " [number]. Separate multiple part numbers with a space.", channel);
             return;
         }
-        var topic = SESSION.channels(channel).topic;
+        var parts = commandData.indexOf(":") !== -1 ? commandData.split(":") : commandData.split(" ");
+        var topic = SESSION.channels(channel).topic, duplicates = [];
         topic = topic.split(Config.topic_delimiter);
-        if (isNaN(commandData) || commandData > topic.length) {
-            return;
+        for (var i = 0; i < parts.length; i++) {
+            var part = parseInt(parts[i], 10), 
+                pospart = topic.length + part + 1;
+            if (part < 0 && pospart > 0) {
+                parts.splice(i, 1, pospart);
+                duplicates.push(pospart);
+                continue;
+            }
+            if (isNaN(part) || part > topic.length || pospart < 0) {
+                channelbot.sendMessage(src, "Parts must be a number from 1 to " + topic.length + "!", channel);
+                return;
+            } else if (duplicates.indexOf(part) !== -1) {
+                channelbot.sendMessage(src, "You can't remove part " + part + " twice!", channel);
+                return;
+            }
+            duplicates.push(part);
         }
-        var part = commandData;
-        if (part > 0) {
-            part = part - 1;
-        }
-        topic.splice(part, 1);
+        // Sort by largest numbers first to avoid interfering with earlier parts after removal
+        parts.sort(function(a, b) { return b - a; }).forEach(function(part) {
+            topic.splice(part - 1, 1);
+        });
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
+    }   
+    if (command === "topicparts") {
+        var topic = SESSION.channels(channel).topic;
+        if (typeof topic == "string" && topic !== "") {
+            var i = 0;
+            topic = topic.split(" | ").map(function(part) { 
+                return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
+            }).join(" | ");
+            // HTML isn't necessary, but it makes the number more obvious
+            sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
+            return;
+        } else {
+            channelbot.sendMessage(src, "No topic set for this channel.", channel);
+            return;
+        }
     }
     if (command === "updatepart") {
         if (commandData === undefined) {
