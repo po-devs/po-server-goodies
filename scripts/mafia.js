@@ -6829,6 +6829,17 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         if (command === "mafiaadmin" || command === "mafiasadmin" || command === "mafiasuperadmin" || command === "smafiaadmin" || command === "smafiasadmin" || command === "smafiasuperadmin") {
+            if (sys.dbIp(commandData) === undefined) {		
+                msg(src, "This user doesn't exist.");		
+                return;		
+            }		
+            if (!sys.dbRegistered(commandData)) {		
+                msg(src, "They aren't registered so you can't give them authority.");		
+                if (sys.id(commandData) !== undefined) {		
+                    msg(sys.id(commandData), "Please register ASAP, before getting mafia authority.");		
+                }		
+                return;		
+            }
             var ma = commandData.toLowerCase();
             var sMA = false;
             var silent = false;
