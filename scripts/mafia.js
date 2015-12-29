@@ -4741,8 +4741,7 @@ function Mafia(mafiachan) {
             mafia.warningLog[name] = {};
         };
         mafia.warningLog[name][expirationTime] = [warner,rule,comments];
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", false, sachannel);
+        dualBroadcast("±" + mafiabot.name + ": " + name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
         if ((shove === "shove") || (shove === "true")) {
             this.shoveUser(src,name);
         }
@@ -4835,6 +4834,7 @@ function Mafia(mafiachan) {
         }
         if (npThemes.length) {
             dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(name) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").");
+            peak = !enable;
             deadTime = (enable ? timesBeforeNonPeak : 0);
         } else {
             if (src) {
