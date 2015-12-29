@@ -2726,23 +2726,23 @@ function Mafia(mafiachan) {
         var checkPlayer = commandArray[0];
         var checkDay = commandArray[1];
         var pastDay = false;
-        var voteData;
-        if ((checkDay === "*") || (checkDay === mafia.time.nights)) {
+        var voteData = {};
+        if (checkDay === "*" || +checkDay === mafia.time.nights) {
             voteData = this.votedBy;
             gamemsg(sentName, "*** Votecount ***");
         } else {
             if ((checkDay > mafia.time.nights) || (checkDay <= 0)) {
                 gamemsg(sentName, "Please enter a valid day to search for!", "Vote");
                 return;
-                }
+            }
             if (checkDay < mafia.time.nights) {
                 pastDay = true;
             }
-            gamemsg(sentName, "*** Votecount for day " + checkDay + " ***");
+            gamemsg(sentName, "*** Votecount for Day " + checkDay + " ***");
             voteData = this.votedByArchive[checkDay];
         }
-		checkPlayer = this.correctCase(checkPlayer);
-        if (checkPlayer === noPlayer) {
+		checkPlayer = mafia.isInGame(checkPlayer) ? this.correctCase(checkPlayer) : checkPlayer;
+        if (checkPlayer === noPlayer || checkPlayer === "") {
             if (pastDay) {
                 gamemsg(sentName, this.lynchees[checkDay-1] + " was voted off!", "Vote");
             }
@@ -2761,7 +2761,7 @@ function Mafia(mafiachan) {
             for (var s in sortable) {
                 votedUser = sortable[s][0];
                 gamemsg(sentName,votedUser + (pastDay ? " was " : " has been ") + "voted by " + readable( voteData[votedUser], "and" ) + ".","Vote");
-                }
+            }
             return;
         }
         if (!(checkPlayer in voteData)) {
@@ -4741,8 +4741,7 @@ function Mafia(mafiachan) {
             mafia.warningLog[name] = {};
         };
         mafia.warningLog[name][expirationTime] = [warner,rule,comments];
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
-        gamemsgAll(name + " was warned for " + rule + " by " + nonFlashing(warner) + ".", false, sachannel);
+        dualBroadcast("±" + mafiabot.name + ": " + name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
         if ((shove === "shove") || (shove === "true")) {
             this.shoveUser(src,name);
         }
@@ -4835,6 +4834,7 @@ function Mafia(mafiachan) {
         }
         if (npThemes.length) {
             dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(name) + (enable ? " enabled " : " disabled ") + "non-peak themes (" + npThemes.join(", ") + ").");
+            peak = !enable;
             deadTime = (enable ? timesBeforeNonPeak : 0);
         } else {
             if (src) {
@@ -6829,6 +6829,17 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         if (command === "mafiaadmin" || command === "mafiasadmin" || command === "mafiasuperadmin" || command === "smafiaadmin" || command === "smafiasadmin" || command === "smafiasuperadmin") {
+            if (sys.dbIp(commandData) === undefined) {		
+                msg(src, "This user doesn't exist.");		
+                return;		
+            }		
+            if (!sys.dbRegistered(commandData)) {		
+                msg(src, "They aren't registered so you can't give them authority.");		
+                if (sys.id(commandData) !== undefined) {		
+                    msg(sys.id(commandData), "Please register ASAP, before getting mafia authority.");		
+                }		
+                return;		
+            }
             var ma = commandData.toLowerCase();
             var sMA = false;
             var silent = false;
