@@ -338,7 +338,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "uninvite" || command === "demember" || command === "deinvite" || command === "dismember") {
         poChannel.takeAuth(src, commandData, "member");
         if (tar !== undefined) {
-            if (sys.isInChannel(tar, channel) && (command === "uninvite" || command === "deinvite") {
+            if (sys.isInChannel(tar, channel) && (command === "uninvite" || command === "deinvite")) {
                 sys.kick(tar, channel);
                 channelbot.sendAll("And "+commandData+" was gone!", channel);
             }
