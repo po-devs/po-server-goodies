@@ -282,7 +282,7 @@ function Mafia(mafiachan) {
     }
     
     function runUpdate() {
-        if (!mafia.needsUpdating) {return};
+        if (!mafia.needsUpdating) {return;}
         var POglobal = SESSION.global();
         var index, source;
         mafia.mafiaStats.update();
