@@ -24,7 +24,7 @@ function Mafia(mafiachan) {
 	this.nextEventTime = new Date.getTime() + 1 * 60 * 60 * 1000;
 	this.eventQueue = ["default"];
 	this.eventThemePool = ["default"];
-	if (!this.warningLog) this.warningLog = {};
+	if (!this.warningLog) {this.warningLog = {};}
     this.isEvent = false;
     this.warningLog = {};
     this.defaultWarningPoints = {
@@ -282,7 +282,7 @@ function Mafia(mafiachan) {
     }
     
     function runUpdate() {
-        if (!mafia.needsUpdating) return;
+        if (!mafia.needsUpdating) {return};
         var POglobal = SESSION.global();
         var index, source;
         mafia.mafiaStats.update();
@@ -1442,8 +1442,9 @@ function Mafia(mafiachan) {
     		return;
     	}
     	this.startEvent();
+    }
 	this.startEvent = function (forced) { //can be force started by sMA
-		if this.state !== "blank" {
+		if (this.state !== "blank") {
 			return;
 		}
 		if (forced) {
