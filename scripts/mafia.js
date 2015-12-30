@@ -2477,19 +2477,22 @@ function Mafia(mafiachan) {
             gamemsg(player.name, "Your target(s) are " + list.join(', ') + "!");
         }
     };
-    this.changeTargets = function (target, redirectTarget) {
+    this.changeTargets = function (target, redirectTarget, redirectActions) {
         var newTar = {}, newTar2 = {}, newTar3 = {}, act, newData;
         for (var action in target.targetsData) {
+        	if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
             act = delimSplit(":", target.targetsData[action]);
             newData = (redirectTarget + ":" + act[1] + "@*" + "/" + target.name );
             newTar[action] = [newData];
         }
         for (var action in this.teamTargetsData[target.role.side]) {
+        	if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
             act = delimSplit(":", this.teamTargetsData[target.role.side][action]);
             newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
             newTar2[action] = [newData];
         }
         for (var action in this.roleTargetsData[target.role.role]) {
+        	if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
             act = delimSplit(":", this.roleTargetsData[target.role.role][action]);
             newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
             newTar3[action] = [newData];
@@ -6947,7 +6950,7 @@ function Mafia(mafiachan) {
                 msg(src, "You cleared the current Featured Theme.");
                 featuredTheme = undefined;
             } else if (!mafia.themeManager.themes.hasOwnProperty(featuredTheme)) {
-                msg(src, featuredTheme + "is not a valid Mafia theme.");
+                msg(src, featuredTheme + " is not a valid Mafia theme.");
                 featuredTheme = undefined;
             } else if (mafia.themeManager.themes.hasOwnProperty(featuredTheme) && !mafia.themeManager.themes[featuredTheme].enabled) {
                 msg(src, featuredTheme + " is currently disabled and cannot be featured.");
