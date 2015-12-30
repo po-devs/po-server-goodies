@@ -384,7 +384,7 @@ function mafiaChecker() {
                             }
                             if (commandList.indexOf("redirect") !== -1) {
                                 commonMandatory = commonMandatory.concat(["redirectTarget"]);
-                                commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg"]);
+                                commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg", "redirectActions"]);
                             }
                             if (commandList.indexOf("dummy") !== -1) {
                                 commonOptional = commonOptional.concat(["dummyusermsg", "dummytargetmsg", "dummybroadcastmsg", "dummyPierce"]);
