@@ -21,6 +21,11 @@ function Mafia(mafiachan) {
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
+	this.nextEventTime = new Date.getTime() + 1 * 60 * 60 * 1000;
+	this.eventQueue = ["default"];
+	this.eventThemePool = ["default"];
+	if (!this.warningLog) this.warningLog = {};
+    this.isEvent = false;
     this.warningLog = {};
     this.defaultWarningPoints = {
         "afk": 1,
@@ -1424,6 +1429,122 @@ function Mafia(mafiachan) {
             }
         }
     };
+    this.eventTimeBoost = function () {
+    	if (this.isEvent) this.ticks = Math.floor(this.ticks * 1.5);
+    }
+    this.getRandom = function (arr) {
+    	if (!Array.isArray(arr)) return arr;
+    	indx = Math.floor(arr.length() * Math.random());
+    	return arr[indx];
+    }
+    this.tryEventTheme = function () { //checked at end of a game and during blank every 2 hours.
+    	if (this.nextEventTime > new Date().getTime()) {
+    		return;
+    	}
+    	this.startEvent();
+	this.startEvent = function (forced) { //can be force started by sMA
+		if this.state !== "blank" {
+			return;
+		}
+		if (forced) {
+			this.nextEventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
+		}
+		else {
+			while (this.nextEventTime < new Date().getTime()) {
+				this.nextEventTime += 2 * 60 * 60 * 1000;
+			}
+		}
+    	if (!(this.eventQueue)) {
+    		this.eventQueue = ["default"];
+    		}
+    	var etheme = this.eventQueue[0];
+    	this.startGame("Event", etheme);
+        sendChanAll(GREEN_BORDER, mafiachan);
+		if (this.theme.name == "default") {
+			sendChanAll("An Event Mafia game is starting!");
+		} else {
+			sendChanAll("An Event " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "-themed Mafia game is starting!");
+		}
+    	this.eventQueue.splice(0,1);
+    	if (this.eventQueue.length() < 3) {
+    		this.eventQuene.push(this.getRandom(this.eventThemePool));
+    	}
+        sendChanAll(GREEN_BORDER, mafiachan);
+		this.isEvent = true;
+	};
+    this.addEventTheme = function (src,theme,place) {
+        var srcname = sys.name(src);
+    	var theme = this.getThemeName(theme);
+    	if (!(theme in this.themeManager.themes)) {
+    		 gamemsg(srcname, "That isn't a theme...");
+    	}
+    	if (place === "first") {
+    		this.eventQueue.reverse();
+    		this.eventQueue.push(theme);
+    		this.eventQueue.reverse();
+    	}
+    	else {
+    		this.eventQueue.push(theme);
+    	}
+    	gamemsg(srcname, "Theme " + theme + " added to the Event Queue.");
+    	this.showEventQueue(src);
+    };
+    this.removeEventTheme = function (src,theme,place) {
+        var srcname = sys.name(src);
+    	var theme = this.getThemeName(theme);
+    	var indx = this.eventQueue.indexOf(theme);
+    	if (indx === -1) {
+    		 gamemsg(srcname, "That theme isn't in the queue!");
+    		 return;
+    	}
+    	if (place === "last") {
+    		this.eventQueue.reverse();
+    		indx = this.eventQueue.indexOf(theme);
+    		this.eventQueue.splice(indx,1);
+    		this.eventQueue.reverse();
+    	}
+    	else {
+    		this.eventQueue.splice(indx,1);
+    	}
+    	gamemsg(srcname, "Theme " + theme + " removed from the Event Queue.");
+    	this.showEventQueue(src);
+    };
+    this.shuffleEventQueue = function(src) {
+        var srcname = sys.name(src);
+        this.eventQueue.shuffle();
+    	gamemsg(srcname, "Event Queue shuffled!");
+    	this.showEventQueue(src);
+    };
+    this.showEventQueue = function(src) {
+        var srcname = sys.name(src);
+    	gamemsg(srcname, "Event Queue is " + this.readable(this.eventQueue,"and") + ".");
+    };
+    this.addToEventPool = function(src,theme) {
+        var srcname = sys.name(src);
+    	var theme = this.getThemeName(theme);
+    	if (!(theme in this.themeManager.themes)) {
+    		 gamemsg(srcname, "That isn't a theme...");
+    	}
+    	this.eventThemePool.push(theme);
+    	gamemsg(srcname, "Theme " + theme + " added to Event Pool.");
+    	this.showEventPool(src);
+    };
+    this.removeFromEventPool = function (src,theme) {
+        var srcname = sys.name(src);
+    	var theme = this.getThemeName(theme);
+    	var indx = this.eventThemePool.indexOf(theme);
+    	if (indx === -1) {
+    		 gamemsg(srcname, "That theme isn't in the queue!");
+    		 return;
+    	}
+    	this.eventThemePool.splice(indx,1);
+    	gamemsg(srcname, "Theme " + theme + " removed from Event Pool.");
+    	this.showEventPool(src);
+    };
+    this.showEventPool = function(src) {
+        var srcname = sys.name(src);
+    	gamemsg(srcname, "Themes in Event Pool are " + this.readable(this.eventThemePool,"and") + ".");
+    };
     this.userVote = function (src, commandData) {
         var srcname = sys.name(src);
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
@@ -1557,6 +1678,7 @@ function Mafia(mafiachan) {
         for (var x in themes) {
             if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
                 data = themes[x].name.toLowerCase();
+                break;
             }
         }
         return data;
@@ -1602,7 +1724,7 @@ function Mafia(mafiachan) {
         // Prevent a single player from dominating the theme selections.
         // We exclude mafia admins from this.
         var i;
-        if (src) {
+        if ((src) && (src !== "Event")) {
             if (this.invalidName(src))
                 return;
 
@@ -1633,13 +1755,18 @@ function Mafia(mafiachan) {
                 return;
             }
         } else {
-            this.theme = this.themeManager.themes[themeName];
+        	if (themeName in this.themeManager.themes) {
+            	this.theme = this.themeManager.themes[themeName];
+            }
+            else {
+            	this.theme = this.themeManager.themes["default"];
+            }
         }
 
         border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
         CurrentGame = { who: src !== null ? sys.name(src) : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0 };
 
-        if (src !== null) {
+        if ((src !== null) && (src !== "Event")) {
             sendChanAll("", mafiachan);
             sendChanAll(border, mafiachan);
             if (this.theme.name == "default") {
@@ -1689,10 +1816,15 @@ function Mafia(mafiachan) {
         this.clearVariables();
         mafia.state = "entry";
 
-        mafia.ticks = 60;
+		if (src === "Event") {
+			mafia.ticks = 150
+			}
+		else {
+        	mafia.ticks = 60;
+        }
 
         if (src !== null) {
-            if (!this.canJoin(src)) {
+            if (this.canJoin(src) !== true) {
                 return;
             }
             var name = sys.name(src);
@@ -1741,8 +1873,14 @@ function Mafia(mafiachan) {
         mafia.usersToShove = [];
         runUpdate();
         this.advertiseFeaturedTheme();
+        this.isEvent = false;
+        this.tryEventTheme();
     };
     this.tickDown = function () { /* called every second */
+    	if (this.state == "blank") {
+    		this.tryEventTheme();
+    		return;
+    	}
         if (this.ticks <= 0) {
             return;
         }
@@ -2844,6 +2982,8 @@ function Mafia(mafiachan) {
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.advertiseFeaturedTheme();
+            this.isEvent = false;
+            this.tryEventTheme();
         };
         outer:
             for (var p in mafia.players) {
@@ -3089,6 +3229,7 @@ function Mafia(mafiachan) {
             } else {
                 mafia.ticks = mafia.theme.ticks.night1 || mafia.theme.ticks.night + 10;
             }
+            this.eventTimeBoost();
             mafia.time.nights++;
             mafia.state = "night";
             gamemsgAll("±Time: Night " + mafia.time.nights);
@@ -4092,6 +4233,7 @@ function Mafia(mafiachan) {
                     mafia.ticks = 1;
                 }
             }
+            this.eventTimeBoost();
             sendChanAll(border, mafiachan);
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
@@ -4129,7 +4271,8 @@ function Mafia(mafiachan) {
         },
         standby: function () {
             mafia.ticks = 30;
-
+            this.eventTimeBoost();
+            
             mafia.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
 
             if (Object.keys(mafia.usersToSlay).length !== 0) {
@@ -4200,7 +4343,7 @@ function Mafia(mafiachan) {
                 } else {
                     mafia.ticks = mafia.theme.ticks.night;
                 }
-
+            	this.eventTimeBoost();
                 mafia.time.nights++;
                 mafia.state = "night";
 
@@ -4429,7 +4572,8 @@ function Mafia(mafiachan) {
             } else {
                 mafia.ticks = mafia.theme.ticks.night;
             }
-
+            this.eventTimeBoost();
+            
 			this.votedByArchive[mafia.time.days] = this.votedBy;
 
             mafia.time.nights++;
@@ -6488,6 +6632,17 @@ function Mafia(mafiachan) {
             gamemsg(srcname, "You can't join now!");
             return;
         }
+        if (command === "nextevent") {
+        	var timer =  this.nextEventTime - new Date.getTime();
+        	if (timer <= 0) {
+            	sys.sendHtmlMessage(src, "<font color=#39B7CD><timestamp/> <b>±" + mafiabot.name + ": </b></font> Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
+            	return;
+        	}
+        	var sec = ((timer/1000)%60);
+        	var mins = ((timer/1000)/60)
+            sys.sendHtmlMessage(src, "<font color=#39B7CD><timestamp/> <b>±" + mafiabot.name + ": </b></font> Next Mafia Event begins in " + mins + " minute(s) and " + sec + " second(s)</b>!", mafiachan);
+            return;
+        }
         if (command === "featured") {
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             if (featuredTheme) {
@@ -6937,6 +7092,49 @@ function Mafia(mafiachan) {
             if (name in this.usersToShove) {
                 delete this.usersToShove[name];
             }
+            return;
+        }
+        if (command === "event") {
+        	if ((commandData === "*") || (commandData === "show")) {
+        		this.showEventQueue(src);
+                msg(src, "Use /event add:[theme] to add to queue, /event remove:[theme] to remove, /event jump:[theme] to add a theme to the front of the queue, /event trim:[theme] to cut the last, or /event shuffle to shuffle the queue.");
+                msg(src, "Edit the themes added to the event queue by default with /event addpool:[theme] and /event removepool:[theme].");
+                msg(src, "Use /event forcestart to set the event time to now.");
+        		return;
+        	}
+        	var data = commandData.split(":");
+        	if (data[0] = "add") {
+        		this.addEventTheme(src,data[1],"");
+        		return;
+        	}
+        	if (data[0] = "jump") {
+        		this.addEventTheme(src,data[1],"first");
+        		return;
+        	}
+        	if (data[0] = "remove") {
+        		this.removeEventTheme(src,data[1],"");
+        		return;
+        	}
+        	if (data[0] = "trim") {
+        		this.removeEventTheme(src,data[1],"last");
+        		return;
+        	}
+        	if (data[0] = "shuffle") {
+        		this.shuffleEventQueue(src);
+        		return;
+        	}
+        	if (data[0] = "addpool") {
+        		this.addToEventPool(src,data[1]);
+        		return;
+        	}
+        	if (data[0] = "removepool") {
+        		this.removeFromEventPool(src,data[1]);
+        		return;
+        	}
+        	if (data[0] = "forcestart") {
+        		this.startEvent(true);
+        		return;
+        	}
             return;
         }
         if (command === "updatestats") {
