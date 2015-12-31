@@ -3402,6 +3402,8 @@ function Mafia(mafiachan) {
                             targetData = targetName.substring(pos + 1);
                             targetName = targetName.substring(0, pos);
                         }
+                        
+                        if (!(targetName in mafia.players)) {continue;}
 
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
                             var shieldmsg = (mafia.players[targetName].shieldmsg);
