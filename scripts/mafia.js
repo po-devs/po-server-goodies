@@ -15,12 +15,12 @@ var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
 function Mafia(mafiachan) {
-    this.version = "2012-12-15";
-    var mafia = this;
+	this.version = "2012-12-15";
+	var mafia = this;
 
-    this.mafiaStats = require("mafiastats.js");
-    this.mafiaChecker = require("mafiachecker.js");
-    sys.makeDir(Config.dataDir + "mafiathemes/");
+	this.mafiaStats = require("mafiastats.js");
+	this.mafiaChecker = require("mafiachecker.js");
+	sys.makeDir(Config.dataDir + "mafiathemes/");
 	this.nextEventTime = new Date.getTime() + 1 * 60 * 60 * 1000;
 	this.eventQueue = ["default"];
 	this.eventThemePool = ["default"];
@@ -1518,7 +1518,7 @@ function Mafia(mafiachan) {
     };
     this.showEventQueue = function(src) {
         var srcname = sys.name(src);
-    	gamemsg(srcname, "Event Queue is " + this.readable(this.eventQueue,"and") + ".");
+    	gamemsg(srcname, "Event Queue is " + readable(this.eventQueue,"and") + ".");
     };
     this.addToEventPool = function(src,theme) {
         var srcname = sys.name(src);
@@ -1544,7 +1544,7 @@ function Mafia(mafiachan) {
     };
     this.showEventPool = function(src) {
         var srcname = sys.name(src);
-    	gamemsg(srcname, "Themes in Event Pool are " + this.readable(this.eventThemePool,"and") + ".");
+    	gamemsg(srcname, "Themes in Event Pool are " + readable(this.eventThemePool,"and") + ".");
     };
     this.userVote = function (src, commandData) {
         var srcname = sys.name(src);
