@@ -21,7 +21,7 @@ function Mafia(mafiachan) {
 	this.mafiaStats = require("mafiastats.js");
 	this.mafiaChecker = require("mafiachecker.js");
 	sys.makeDir(Config.dataDir + "mafiathemes/");
-	this.nextEventTime = new Date.getTime() + 1 * 60 * 60 * 1000;
+	this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
 	this.eventQueue = ["default"];
 	this.eventThemePool = ["default"];
 	if (!this.warningLog) {this.warningLog = {};}
