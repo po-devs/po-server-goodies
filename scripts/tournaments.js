@@ -744,9 +744,10 @@ function Tournament(channel)
     }
 
     function isBattling(name) {
-        var indx = self.battlers.indexOf(name.toLowerCase());
-        if (indx == -1) return false;
-        return self.battlesStarted[Math.floor(indx/2)];
+        if (name === undefined) name = "~Unknown~";
+        var index = self.battlers.indexOf(toString(name.toLowerCase()));
+        if (index === -1) return false;
+        return self.battlesStarted[Math.floor(index / 2)];
     }
 
     function pingAuth() {
