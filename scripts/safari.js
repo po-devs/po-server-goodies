@@ -237,7 +237,7 @@ function Safari() {
         pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.1, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder.", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
-        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.1, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in Battle Tower.", noAcq: "Accumulate {0} more Arena Points"},
+        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.1, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 500, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon ≤500 BST"}
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
@@ -6291,6 +6291,7 @@ function Safari() {
                             amt = 1;
                         }
                     break;
+                    //If rewards change, please also update ninja boy costume at the end of this function
                     case 1:
                         rew = "bait";
                         amt = Math.floor(loop * 1.5);
@@ -6435,6 +6436,7 @@ function Safari() {
         if (player.costume === "ninja") {
             npc.postArgs.count = costumeData.ninja.rate;
             npc.desc = "Tower Lvl. " + costumeData.ninja.rate;
+            npc.reward = {"bait": 1, "dust": 10}; //If rewards change, these need to be changed too
             safaribot.sendMessage(src, "You carefully time your movements to stay cloaked in shadow and avoid being seen by a group of Trainers. Unfortunately for you, you trip as you dash up a flight of stairs and someone spots you! You made it to Floor " + costumeData.ninja.rate + " before being caught and forced to battle!", safchan);
         }
 
@@ -7312,7 +7314,7 @@ function Safari() {
             "/checksaves [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
-            "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari).",
+            "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari). Use /stopongoing to cancel all ongoing Battles and Auctions.",
             "/clearcd [player]։[type]: To clear a player's cooldown on a quest/ball throw/auction.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
             "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
@@ -8691,6 +8693,12 @@ function Safari() {
                 if (nothingFound) {
                     safaribot.sendMessage(src, "No ongoing NPC Battles or Auctions!", safchan);
                 }
+                return true;
+            }
+            if (command === "stopongoing") {
+                currentBattles = [];
+                currentAuctions = [];
+                safaribot.sendAll("All ongoing battles and auctions have been stopped.", safchan);
                 return true;
             }
             if (command === "dqraffle") {
