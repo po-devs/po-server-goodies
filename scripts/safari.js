@@ -237,10 +237,11 @@ function Safari() {
         pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.1, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder.", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
-        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 0.9, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful defensive techniques, an opponent's attack seems to have less effect in Battle Tower.", noAcq: "Accumulate {0} more Arena Points"}
-        
+        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.1, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in Battle Tower.", noAcq: "Accumulate {0} more Arena Points"},
+        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 500, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon ≤500 BST"}
+
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
-        //inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], acReq: -1, record: null, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa."}
+        //inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "TBD"}
     };
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
@@ -1920,12 +1921,12 @@ function Safari() {
         if (finalChance <= 0) {
             finalChance = 0.01;
         }
-        
+
         //TODO: Use higher of premier or type bonus
         if (ball === "premier" && hasType(player.party[0], "Normal") && hasType(player.party[0], "???") && player.costume !== "inver") {
             ballBonus = itemData.premier.bonusRate;
         }
-        
+
         finalChance = finalChance * ballBonus * (wildEvent ? 0.4 : 1);
         if (ball == "clone" && finalChance > itemData[ball].bonusRate) {
             finalChance = itemData[ball].bonusRate;
@@ -2474,13 +2475,13 @@ function Safari() {
 
         if (!isNaN(page)) {
             if (page > 1) {
-                out += "[<a href='po:send//box" + (textOnly? "t" : "" ) + " " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>]";
+                out += "[<a href='po:send//box" + (shopLink ? "s" : (textOnly? "t" : "" )) + " " + (page - 1) + "'>" + utilities.html_escape("< Box " + (page - 1)) + "</a>]";
             }
             if (page < maxPages) {
                 if (page > 1) {
                     out += " ";
                 }
-                out += "[<a href='po:send//box" + (textOnly? "t" : "" ) + " " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
+                out += "[<a href='po:send//box" + (shopLink ? "s" : (textOnly? "t" : "" )) + " " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
             }
         }
         return out;
@@ -2603,6 +2604,8 @@ function Safari() {
                         } else {
                             notReceived.push(((e.noAcq || "It is not currently known how") + " to obtain the <b>" + e.fullName + "</b> costume!").format(e.acqReq - rec[e.record]));
                         }
+                    } else if (e.specialAcq) {
+                        notReceived.push(e.noAcq + " to obtain the <b>" + e.fullName + "</b> costume!");
                     }
                 }
             }
@@ -3811,7 +3814,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, "sell an item", ["wild", "contest", "auction", "battle"])) {
+        if (cantBecause(src, "sell items", ["wild", "contest", "auction", "battle"])) {
             return;
         }
 
@@ -4627,7 +4630,12 @@ function Safari() {
         var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
         var npcDesc = null;
+
         if (isNPC) {
+            var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 1;
+            this.selfPowerMin = 10 * costumeBonus;
+            this.selfPowerMax = 100 * costumeBonus;
+
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
             if (!player2.power || player2.length < 2) {
@@ -4677,7 +4685,7 @@ function Safari() {
         var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
         var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
 
-        var p1Move = sys.rand(10, 100);
+        var p1Move = sys.rand(this.npcBattle ? this.selfPowerMin : 10, this.npcBattle ? this.selfPowerMax : 100);
         var p2Move = sys.rand(this.npcBattle ? this.powerMin : 10, this.npcBattle ? this.powerMax : 100);
 
         var statName = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
@@ -6256,11 +6264,10 @@ function Safari() {
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
-                var costumeBonus = player.costume === "battle" ? costumeData.battle.rate : 1;
                 var npc = {
                     name: "Trainer " + generateName(),
                     party: generateTeam((Math.random() < Math.min(0.02 * args.count, 0.42) ? Object.keys(effectiveness).random() : null)),
-                    power: [(10 + Math.floor(args.count/2)) * costumeBonus, (100 + args.count) * costumeBonus],
+                    power: [10 + Math.floor(args.count/2), 100 + args.count],
                     postBattle: postBattle,
                     postArgs: {
                         count: args.count + 1,
@@ -6389,6 +6396,21 @@ function Safari() {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + count + " trainers!", safchan);
                     }
                 }
+
+                if (!player.costumes.contains("ninja")) {
+                    var noAcq;
+                    for (var i = 0; i < 5, i++;) {
+                        if (getBST(player.party[1]) > costumeData.ninja.thresh) {
+                            noAcq = true;
+                            break;
+                        }
+                    }
+                    if (!noAcq) {
+                        player.costumes.push("ninja");
+                        safaribot.sendHtmlMessage(src, "<b>Received the following costume:</b> " + costumeData.ninja.fullName + ".", safchan);
+                    }
+                }
+
                 safari.saveGame(player);
                 if (updatelb) {
                     safari.updateLeaderboards();
@@ -6409,6 +6431,12 @@ function Safari() {
 
         sys.sendMessage(src, "", safchan);
         safaribot.sendMessage(src, "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " Entry Fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
+
+        if (player.costume === "ninja") {
+            npc.postArgs.count = costumeData.ninja.rate;
+            npc.desc = "Tower Lvl. " + costumeData.ninja.rate;
+            safaribot.sendMessage(src, "You carefully time your movements to stay cloaked in shadow and avoid being seen by a group of Trainers. Unfortunately for you, you trip as you dash up a flight of stairs and someone spots you! You made it to Floor " + costumeData.ninja.rate + " before being caught and forced to battle!", safchan);
+        }
 
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
