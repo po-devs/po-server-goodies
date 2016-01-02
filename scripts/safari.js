@@ -6399,8 +6399,8 @@ function Safari() {
 
                 if (!player.costumes.contains("ninja")) {
                     var noAcq;
-                    for (var i = 0; i < 5, i++;) {
-                        if (getBST(player.party[1]) > costumeData.ninja.thresh) {
+                    for (var i = 0; i < player.party.length(), i++;) {
+                        if (getBST(player.party[i]) > costumeData.ninja.thresh) {
                             noAcq = true;
                             break;
                         }
