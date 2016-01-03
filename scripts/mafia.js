@@ -2988,8 +2988,8 @@ function Mafia(mafiachan) {
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.advertiseFeaturedTheme();
-            this.isEvent = false;
-            this.tryEventTheme();
+            mafia.isEvent = true
+            mafia.tryEventTheme();
         };
         outer:
             for (var p in mafia.players) {
