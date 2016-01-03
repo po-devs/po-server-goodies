@@ -281,7 +281,7 @@ function Mafia(mafiachan) {
         div.push(p1); div.push(p2);
         return div;
     }
-    
+
     function runUpdate() {
         if (!mafia.needsUpdating) {return;}
         var POglobal = SESSION.global();
@@ -1445,7 +1445,7 @@ function Mafia(mafiachan) {
     	}
     	this.startEvent();
     };
-    this.enableEvent = function (src, enable) { 
+    this.enableEvent = function (src, enable) {
         var srcname = sys.name(src);
     	if (this.eventsEnabled === enable) {
 	    	gamemsg(srcname, "Event themes are already " + (this.eventsEnabled ? "en" : "dis") + "abled!");
@@ -1768,11 +1768,10 @@ function Mafia(mafiachan) {
                 return;
             }
         } else {
-        	if (themeName in this.themeManager.themes) {
-            	this.theme = this.themeManager.themes[themeName];
-            }
-            else {
-            	this.theme = this.themeManager.themes["default"];
+            if (themeName in this.themeManager.themes) {
+                this.theme = this.themeManager.themes[themeName];
+            } else {
+                this.theme = this.themeManager.themes["default"];
             }
         }
 
@@ -1828,13 +1827,7 @@ function Mafia(mafiachan) {
         }
         this.clearVariables();
         mafia.state = "entry";
-
-		if (src === "Event") {
-			mafia.ticks = 150;
-			}
-		else {
-        	mafia.ticks = 60;
-        }
+        mafia.ticks = src === "Event" ? 150 : 60;
 
         if (src !== null) {
             if (!this.canJoin(src)) {
@@ -3414,7 +3407,7 @@ function Mafia(mafiachan) {
                             targetData = targetName.substring(pos + 1);
                             targetName = targetName.substring(0, pos);
                         }
-                        
+
                         if (!(targetName in mafia.players)) {continue;}
 
                         if (mafia.isInGame(targetName) && mafia.players[targetName].redirectTo !== undefined && (mafia.players[targetName].redirectActions === "*" || mafia.players[targetName].redirectActions.indexOf(o.action) !== -1)) {
@@ -4287,7 +4280,7 @@ function Mafia(mafiachan) {
         standby: function () {
             mafia.ticks = 30;
             this.eventTimeBoost();
-            
+
             mafia.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
 
             if (Object.keys(mafia.usersToSlay).length !== 0) {
@@ -4588,7 +4581,7 @@ function Mafia(mafiachan) {
                 mafia.ticks = mafia.theme.ticks.night;
             }
             this.eventTimeBoost();
-            
+
 			this.votedByArchive[mafia.time.days] = this.votedBy;
 
             mafia.time.nights++;
@@ -5178,7 +5171,7 @@ function Mafia(mafiachan) {
         if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.indexOf("redirect") !== -1)) {
             redi = true;
         }
-        
+
         if (redi) {
             var redirectTarget = player.role.actions.night[command].redirectTarget;
             redirectData = this.correctCase(redirectData);
@@ -7002,16 +6995,16 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         if (command === "mafiaadmin" || command === "mafiasadmin" || command === "mafiasuperadmin" || command === "smafiaadmin" || command === "smafiasadmin" || command === "smafiasuperadmin") {
-            if (sys.dbIp(commandData) === undefined) {		
-                msg(src, "This user doesn't exist.");		
-                return;		
-            }		
-            if (!sys.dbRegistered(commandData)) {		
-                msg(src, "They aren't registered so you can't give them authority.");		
-                if (sys.id(commandData) !== undefined) {		
-                    msg(sys.id(commandData), "Please register ASAP, before getting mafia authority.");		
-                }		
-                return;		
+            if (sys.dbIp(commandData) === undefined) {
+                msg(src, "This user doesn't exist.");
+                return;
+            }
+            if (!sys.dbRegistered(commandData)) {
+                msg(src, "They aren't registered so you can't give them authority.");
+                if (sys.id(commandData) !== undefined) {
+                    msg(sys.id(commandData), "Please register ASAP, before getting mafia authority.");
+                }
+                return;
             }
             var ma = commandData.toLowerCase();
             var sMA = false;
@@ -7119,27 +7112,27 @@ function Mafia(mafiachan) {
         	}
         	var data = commandData.split(":");
         	if (data[0] === "enable") {
-        		this.enableEvents(src,true);
+        		this.enableEvent(src, true);
         		return;
         	}
         	if (data[0] === "disable") {
-        		this.enableEvents(src,false);
+        		this.enableEvent(src, false);
         		return;
         	}
         	if (data[0] === "add") {
-        		this.addEventTheme(src,data[1],"");
+        		this.addEventTheme(src, data[1], "");
         		return;
         	}
         	if (data[0] === "jump") {
-        		this.addEventTheme(src,data[1],"first");
+        		this.addEventTheme(src, data[1], "first");
         		return;
         	}
         	if (data[0] === "remove") {
-        		this.removeEventTheme(src,data[1],"");
+        		this.removeEventTheme(src, data[1], "");
         		return;
         	}
         	if (data[0] === "trim") {
-        		this.removeEventTheme(src,data[1],"last");
+        		this.removeEventTheme(src, data[1], "last");
         		return;
         	}
         	if (data[0] === "shuffle") {
