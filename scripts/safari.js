@@ -1794,7 +1794,9 @@ function Safari() {
         var player = getAvatar(src);
         if (!suppress && !bypass) {
             for (var t = 0; t < player.trackers.length; t++) {
-                safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)", safchan);
+                if (sys.id(player.trackers[t] !== undefined) {
+                    safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)", safchan);
+                }
             }
         }
         if (!currentPokemon) {
@@ -7873,13 +7875,12 @@ function Safari() {
                     for (var x in player.trackers) {
                         var trackerName = player.trackers[x];
                         var trackerId = sys.id(trackerName);
-                        if (trackerId === undefined) {
-                            continue;
-                        }
-                        if (trackerId === src) {
-                            safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
-                        } else if (trackerId) {
-                            safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                        if (trackerId !== undefined) {
+                            if (trackerId === src) {
+                                safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                            } else if (trackerId) {
+                                safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                            }
                         }
                     }
                 } else {
