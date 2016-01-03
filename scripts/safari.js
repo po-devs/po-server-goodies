@@ -1,5 +1,5 @@
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
-/*global sys, module, SESSION, script, safaribot, require, staffchannel */
+/*global sys, module, SESSION, script, safaribot, require, staffchannel, sachannel */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var utilities = require('utilities.js');
@@ -3412,7 +3412,7 @@ function Safari() {
             case "amulet":
             case "soothe":
             case "scarf":
-            case "cell": {
+            case "battery": {
                 amount = 1;
                 safaribot.sendHtmlAll("<b>Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!</b>", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
@@ -4045,9 +4045,6 @@ function Safari() {
             safaribot.sendMessage(src, "You can only enter this shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
             return;
         }
-        if (cantBecause(src, "buy items", ["wild", "contest", "auction", "battle"])) {
-            return;
-        }
 
 
         var info = data.split(":"),
@@ -4091,6 +4088,10 @@ function Safari() {
         }
         if (!fromNPC && (sellerName.toLowerCase() == sys.name(src).toLowerCase() || sys.ip(sellerId) === sys.ip(src))) {
             safaribot.sendMessage(src, "You cannot buy things from your own Shop!", safchan);
+            return;
+        }
+
+        if (cantBecause(src, "buy items", ["wild", "contest", "auction", "battle"])) {
             return;
         }
 
@@ -4791,7 +4792,7 @@ function Safari() {
     };
     Battle.prototype.sendMessage = function(name, msg) {
         var id = sys.id(name);
-        if (id) {
+        if (id && sys.isInChannel(id, safchan)) {
             if (msg === "") {
                 sys.sendHtmlMessage(id, msg, safchan);
             } else {
@@ -7292,8 +7293,8 @@ function Safari() {
             "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
             "/altlog [amount]։[lookup]: Returns a list Safari save transfers. Amount and Lookup works the same as /tradelog.",
-            "/tradeban: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. USe -1 for length to denote permanent, 0 for length to unban.",
-            "/tradebans: To view players currently tradebanned.",
+            "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
+            "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
             "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokemon. Pokemon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
@@ -7345,7 +7346,7 @@ function Safari() {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== safchan && [].indexOf(command) === -1) {
+        if (channel !== safchan && ["safariban", "safariunban"].indexOf(command) === -1) {
             return false;
         }
         if (SESSION.channels(safchan).muteall && !SESSION.channels(safchan).isChannelOwner(src)) {
@@ -7849,7 +7850,20 @@ function Safari() {
                     input = getInputPokemon(sys.rand(1, 722) + "");
                 }
 
-                safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                var player = getAvatar(targetId);
+                if (player) {
+                    for (var x in player.trackers) {
+                        var trackerName = player.trackers[x];
+                        var trackerId = sys.id(trackerName);
+                        if (trackerId === src) {
+                            safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                        } else if (trackerId) {
+                            safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                        }
+                    }
+                } else {
+                    safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                }
                 sys.sendHtmlMessage(targetId, "<hr><center>" + (input.shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + input.name + " appeared! <i>(BST: " + getBST(input.num) + ")</i>" + (input.shiny ? "</font>" : "") + "<br/>" + pokeInfo.sprite(input.id) + "</center><hr>", safchan);
                 ballMacro(targetId);
                 if (info.length > 2) {
@@ -7876,10 +7890,14 @@ function Safari() {
                     safaribot.sendMessage(src, "No such player!", safchan);
                     return true;
                 }
+
+                var chans = [safchan, staffchannel, sachannel];
+                var self = utilities.non_flashing(sys.name(src).toCorrectCase());
                 if (duration === 0) {
                     player.tradeban = 0;
-                    safaribot.sendAll(name + " has been unbanned from trading and shopping!", safchan);
-                    safaribot.sendAll(name + " has been unbanned from trading and shopping!", staffchannel);
+                    for (var x in chans) {
+                        safaribot.sendAll(name + " has been unbanned from trading and shopping by " + self + "!", chans[x]);
+                    }
                     safari.saveGame(player);
                     tradeBans.remove(player.id);
                 } else {
@@ -7893,13 +7911,13 @@ function Safari() {
                     }
                     player.shop = {};
                     safari.saveGame(player);
-                    safaribot.sendAll(name + " has been banned from trading and shopping " + length + "!", safchan);
-                    safaribot.sendAll(name + " has been banned from trading and shopping " + length + "!", staffchannel);
+                    for (var x in chans) {
+                        safaribot.sendAll(name + " has been banned from trading and shopping " + length + " by " + self + "!", chans[x]);
+                    }
                     var id = sys.id(name);
                     if (id) {
                         for (var b in currentAuctions) {
                             currentAuctions[b].removePlayer(id);
-                            break;
                         }
                     }
                     tradeBans.add(player.id, player.tradeban);
@@ -7936,6 +7954,21 @@ function Safari() {
                 } else {
                     safaribot.sendMessage(src, "Trade Bans file not found!", safchan);
                 }
+                return true;
+            }
+            if (command === "safariban") {
+                if (commandData === undefined) {
+                    safaribot.sendMessage(src, "Please specify a valid user to safari ban!", channel);
+                    return true;
+                }
+                var tar = sys.id(commandData);
+                //No upper limit on time because you have to be admin to use this command anyway!
+                script.issueBan("safban", src, tar, commandData);
+                return true;
+            }
+            if (command === "safariunban") {
+                var tar = sys.id(commandData);
+                script.unban("safban", src, tar, commandData);
                 return true;
             }
             if (command === "analyze") {
@@ -8843,6 +8876,18 @@ function Safari() {
             }
         }
         return false;
+    };
+    this.onSafban = function (src) {
+        if (this.isInAuction(sys.name(src))) {
+            for (var b in currentAuctions) {
+                currentAuctions[b].removePlayer(src);
+            }
+        }
+        //TODO: Make them lose their battle too
+        if (sys.isInChannel(src, safchan)) {
+            sys.kick(src, safchan);
+        }
+
     };
     this.stepEvent = function () {
         contestCooldown--;
