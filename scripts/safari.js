@@ -187,7 +187,7 @@ function Safari() {
         ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
         master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
-        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 3, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
+        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
         quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1.1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
@@ -238,6 +238,7 @@ function Safari() {
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder.", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
         battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.1, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
+        scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 7, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 3, bonusChance: 0.08, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 500, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon ≤500 BST"}
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
@@ -251,8 +252,8 @@ function Safari() {
     entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg=="
     };
     var gachaItems = {
-        safari: 80, great: 50, ultra: 30, luxury: 35, myth: 20, quick: 7, heavy: 20, clone: 20,
-        bait: 95, rock: 200, gem: 9,
+        safari: 100, great: 50, ultra: 30, luxury: 35, myth: 10, quick: 10, heavy: 20, clone: 25,
+        bait: 95, rock: 180, gem: 9,
         wild: 60, horde: 8,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
@@ -1533,7 +1534,7 @@ function Safari() {
             nextTheme = null;
         } else {
             var themeList = Object.keys(contestThemes);
-            currentTheme = Math.random() < 0.4 ? null : themeList[sys.rand(0, themeList.length)];
+            currentTheme = chance(0.4) ? null : themeList[sys.rand(0, themeList.length)];
             currentRules = this.pickRules(currentTheme);
         }
 
@@ -1856,9 +1857,11 @@ function Safari() {
         player.balls[ball] -= 1;
         this.updateShop(sys.name(src), ball);
         var pokeName = poke(currentPokemon);
-        var wild = typeof currentPokemon == "string" ? parseInt(currentPokemon, 10) : currentPokemon;
-        var shinyChance = typeof currentPokemon == "string" ? 0.30 : 1;
-        var legendaryChance = isLegendary(currentPokemon) ? 0.50 : 1;
+        var isShiny = typeof currentPokemon == "string";
+        var wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
+        var shinyChance = isShiny ? 0.30 : 1;
+        var isLegend = isLegendary(wild);
+        var legendaryChance = isLegend ? 0.50 : 1;
 
         var userStats = getBST(player.party[0]);
         if (userStats <= itemData.eviolite.threshold) {
@@ -1870,7 +1873,7 @@ function Safari() {
         if (ball === "myth") {
             shinyChance = 1;
             legendaryChance = 1;
-            if (isLegendary(wild)){
+            if (isLegend){
                 ballBonus = itemData[ball].bonusRate;
             }
         }
@@ -1915,8 +1918,6 @@ function Safari() {
             }
         }
 
-
-
         var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod;
         if (finalChance <= 0) {
             finalChance = 0.01;
@@ -1928,11 +1929,9 @@ function Safari() {
         }
 
         finalChance = finalChance * ballBonus * (wildEvent ? 0.4 : 1);
-        if (ball == "clone" && finalChance > itemData[ball].bonusRate) {
-            finalChance = itemData[ball].bonusRate;
-            /*if (player.costume === "scientist") {
-                finalChance += costumeData.scientist.bonusRate;
-            }*/
+        if (ball == "clone") {
+            var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0);
+            finalChance = Math.min(finalChance, maxCloneRate);
         }
 
         var rng = Math.random();
@@ -1954,10 +1953,28 @@ function Safari() {
             player.records.pokesCaught += 1;
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
-            if (ball == "clone") {
-                safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + name + " received another " + pokeName + "!", safchan);
-                player.pokemon.push(currentPokemon);
-                player.records.pokesCloned += 1;
+            var clonedAmount = 0;
+            if (ball === "clone") {
+                var costumed = player.costume === "scientist";
+                if (costumed && chance(costumeData.scientist.bonusChance) && !isLegend && !isShiny) {
+                    //TWO CLONES
+                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + name + " received another " + pokeName + "!", safchan);
+                    safaribot.sendHtmlAll("<b>Hold on!</b> The " + pokeName + " was actually cloned TWICE by the Clone Ball! " + html_escape(name) + " received yet another " + pokeName + "!", safchan);
+                    clonedAmount = 2;
+                } else if (!costumed && (isLegend || isShiny)) {
+                    //NO CLONE
+                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball.. or so " + name + " thought! Unfortunately, due to the complex genetic sequence of " + pokeName + ", the cloning process failed!", safchan);
+                } else {
+                    // ONE CLONE
+                    safaribot.sendAll("But wait! The " + pokeName + " was cloned by the Clone Ball! " + name + " received another " + pokeName + "!", safchan);
+                    clonedAmount = 1;
+                }
+                if (clonedAmount > 0) {
+                    for (var i = 0; i < clonedAmount; i++) {
+                        player.pokemon.push(currentPokemon);
+                    }
+                    player.records.pokesCloned += clonedAmount;
+                }
             }
 
             if (ball == "luxury") {
@@ -1969,7 +1986,6 @@ function Safari() {
             }
             this.fullBoxWarning(src);
 
-            //var costumeBonus = (player.costume === "ace" ? costumeData.ace.bonusRate : 0);
             var penalty = 2 - Math.min(itemData.soothe.bonusRate * player.balls.soothe, itemData.soothe.maxRate);
             cooldown *= penalty;
             if (contestCount > 0) {
@@ -1979,7 +1995,9 @@ function Safari() {
                 }
                 contestCatchers[nameLower].push(currentPokemon);
                 if (ball == "clone") {
-                    contestCatchers[nameLower].push(currentPokemon);
+                    for (var i = 0; i < clonedAmount; i++) {
+                        contestCatchers[nameLower].push(currentPokemon);
+                    }
                 }
             }
             if (amt < 1) {
@@ -1995,21 +2013,20 @@ function Safari() {
         } else {
             var keep = false;
             /*if (player.costume === "fisher") {
-                var rng2 = Math.random();
-                if (rng2 < costumeData.fisher.keepRate) {
+                if (rng2 < chance(costumeData.fisher.rate)) {
                     keep = true;
                     player.balls[ball] += 1;
                 }
             }*/
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
-                safaribot.sendMessage(src, "Gah! It was so close, too! ", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
             } else if (rng < finalChance + 0.2) {
-                safaribot.sendMessage(src, "Aargh! Almost had it! ", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Aargh! Almost had it!</b>", safchan);
             } else if (rng < finalChance + 0.3) {
-                safaribot.sendMessage(src, "Aww! It appeared to be caught! ", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Aww! It appeared to be caught!</b>", safchan);
             } else {
-                safaribot.sendMessage(src, "Oh no! The " + pokeName + " broke free! ", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Oh no! The " + pokeName + " broke free!</b>", safchan);
             }
             safaribot.sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + cap(ball) + " Ball!", safchan);
             player.records.pokesNotCaught += 1;
@@ -2547,13 +2564,14 @@ function Safari() {
             return;
         }
 
+        data = data.toLowerCase();
         var cos = costumeAlias(data, true);
         var currentTime = now();
         var costumeName = costumeAlias(data, false, true);
 
         if (cos !== "none") {
             if (player.costume === cos) {
-                safaribot.sendMessage(src, "You are already wearing the " + cos + " costume!", safchan);
+                safaribot.sendMessage(src, "You are already wearing the " + costumeName + " costume!", safchan);
                 return;
             }
             if (allCostumes.indexOf(cos) === -1){
@@ -2596,13 +2614,23 @@ function Safari() {
         for (var e in costumeData) {
             if (costumeData.hasOwnProperty(e)) {
                 e = costumeData[e];
+                var giveCostume = false;
                 if (!c.contains(e.name)) {
                     if (e.acqReq > 0 && e.record in rec) {
                         if (rec[e.record] >= e.acqReq) {
+                            if (e.acqReq2 > 0 && e.record2 in rec) {
+                                if (rec[e.record2] >= e.acqReq2) {
+                                    giveCostume = true;
+                                }
+                            } else {
+                                giveCostume = true;
+                            }
+                        }
+                        if (giveCostume) {
                             c.push(e.name);
                             received.push(e.fullName);
                         } else {
-                            notReceived.push(((e.noAcq || "It is not currently known how") + " to obtain the <b>" + e.fullName + "</b> costume!").format(e.acqReq - rec[e.record]));
+                            notReceived.push(((e.noAcq || "It is not currently known how") + " to obtain the <b>" + e.fullName + "</b> costume!").format(Math.max(e.acqReq - rec[e.record], 0), Math.max(e.acqReq2 - rec[e.record2], 0)));
                         }
                     } else if (e.specialAcq) {
                         notReceived.push(e.noAcq + " to obtain the <b>" + e.fullName + "</b> costume!");
@@ -3105,10 +3133,8 @@ function Safari() {
         player.balls.bait -= 1;
         player.records.baitUsed += 1;
 
-        var rng = Math.random();
         var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
-
-        if (rng < (itemData.bait.successRate + perkBonus)) {
+        if (chance(itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,9);
             player.records.baitAttracted += 1;
@@ -3313,12 +3339,6 @@ function Safari() {
         player.records.gachasUsed += 1;
         var reward = randomSample(gachaItems);
         safaribot.sendMessage(src, "Gacha-PON! The Gachapon Machine has dispensed an item capsule. [Remaining Tickets: " + player.balls.gacha + "]", safchan);
-        /*if (player.costume === "tech" && reward === "safari") {
-            var rng = Math.random();
-            if (rng < costumeData.tech.retryRate) {
-                reward = randomSample(gachaItems);
-            }
-        }*/
 
         //Variable for higher quantity rewards later. Make better later maybe?
         var amount = 1;
@@ -3370,12 +3390,11 @@ function Safari() {
                     amount = 1;
                     safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
                 } else {
-                    var mod = Math.random();
                     var spawn = true;
                     var spawnHorde = (reward === "horde");
                     safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured a " + finishName(reward) + "!", safchan);
 
-                    if (mod < 0.13 || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
+                    if (chance(0.1) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
                         spawn = false;
                     }
@@ -3427,7 +3446,7 @@ function Safari() {
             }
             case "gem": {
                 amount = 1;
-                safaribot.sendAll("The Gachapon machine emits a bright flash of light as " + sys.name(src) + "  reaches for their prize. Despite being temporarily blinded, " + sys.name(src) + " knows they just won a " + finishName(reward) + " due to a very faint baaing sound!", safchan);
+                safaribot.sendMessage(src, "The Gachapon machine emits a bright flash of light as you reach for your prize. Despite being temporarily blinded, you know you just won a " + finishName(reward) + " due to a very faint baaing sound!", safchan);
                 safaribot.sendMessage(src, "You received an " + finishName(reward) + ".", safchan);
                 break;
             }
@@ -3652,8 +3671,7 @@ function Safari() {
 
         var reward = randomSample(finderItems);
         if (player.costume === "explorer" && reward === "nothing") {
-            var rng = Math.random();
-            if (rng < costumeData.explorer.rate) {
+            if (chance(costumeData.explorer.rate)) {
                 reward = randomSample(finderItems);
             }
         }
@@ -6267,7 +6285,7 @@ function Safari() {
             if (isWinner) {
                 var npc = {
                     name: "Trainer " + generateName(),
-                    party: generateTeam((Math.random() < Math.min(0.02 * args.count, 0.42) ? Object.keys(effectiveness).random() : null)),
+                    party: generateTeam(chance(Math.min(0.02 * args.count, 0.42)) ? Object.keys(effectiveness).random() : null),
                     power: [10 + Math.floor(args.count/2), 100 + args.count],
                     postBattle: postBattle,
                     postArgs: {
@@ -9159,8 +9177,8 @@ function Safari() {
                     safari.checkNewMonth();
                 }
             } else {
-                if (!currentPokemon && Math.random() < 0.089743) {
-                    var amt = Math.random() < 0.05919 ? 3 : 1;
+                if (!currentPokemon && chance(0.089743)) {
+                    var amt = chance(0.05919) ? 3 : 1;
                     safari.createWild(null, null, amt);
                 }
             }
