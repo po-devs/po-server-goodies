@@ -7956,7 +7956,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "safariban") {
+            /* if (command === "safariban") {
                 if (commandData === undefined) {
                     safaribot.sendMessage(src, "Please specify a valid user to safari ban!", channel);
                     return true;
@@ -7970,7 +7970,7 @@ function Safari() {
                 var tar = sys.id(commandData);
                 script.unban("safban", src, tar, commandData);
                 return true;
-            }
+            } */
             if (command === "analyze") {
                 var info = commandData.split(":");
                 var target = sys.id(info[0]);
