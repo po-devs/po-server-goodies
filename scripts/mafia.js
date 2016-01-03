@@ -1717,7 +1717,7 @@ function Mafia(mafiachan) {
             return;
         }
         var now = (new Date()).getTime();
-        if (src !== null) {
+        if (src !== null && src !== "Event") {
             if (SESSION.users(src).mafia_start !== undefined && SESSION.users(src).mafia_start + 5000 > now && !this.isMafiaSuperAdmin(src)) {
                 gamemsg(srcname, "Wait a moment before trying to start again!");
                 return;
@@ -6648,7 +6648,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "nextevent") {
-        	var timer =  this.nextEventTime - new Date.getTime();
+        	var timer =  this.nextEventTime - new Date().getTime();
         	if (timer <= 0) {
             	sys.sendHtmlMessage(src, "<font color=#39B7CD><timestamp/> <b>±" + mafiabot.name + ": </b></font> Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
             	return;
