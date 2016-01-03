@@ -131,7 +131,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
          return;
     }
     if (command == "passcauth") {
-        if (!commandData) {
+        if (commandData === undefined) {
             channelbot.sendMessage(src, "Use /passcauth [name]", channel);
             return;
         }
@@ -213,7 +213,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "removepart" || command === "removeparts") {
-        if (!commandData) {
+        if (commandData === undefined) {
             channelbot.sendMessage(src, "Correct usage is /" + command + " [number]. Separate multiple part numbers with a space.", channel);
             return;
         }
@@ -332,10 +332,16 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "member") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to make a member!", channel);
+        }
         poChannel.issueAuth(src, commandData, "member");
         return;
     }
     if (command === "uninvite" || command === "demember" || command === "deinvite" || command === "dismember") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to remove membership from!", channel);
+        }
         poChannel.takeAuth(src, commandData, "member");
         if (tar !== undefined) {
             if (sys.isInChannel(tar, channel) && (command === "uninvite" || command === "deinvite")) {
@@ -369,6 +375,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cmute") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to mute in the channel!", channel);
+        }
         var i = commandData.indexOf(":"),
             j = commandData.lastIndexOf(":"),
             time = 0,
@@ -398,6 +407,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cunmute") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to unmute in the channel!", channel);
+        }
         poChannel.unmute(src, commandData);
         return;
     }
@@ -425,10 +437,16 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
 
     if (command == "op") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to give channel operator permissions!", channel);
+        }
         poChannel.issueAuth(src, commandData, "mod");
         return;
     }
     if (command == "deop") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to remove channel operator permissions!", channel);
+        }
         poChannel.takeAuth(src, commandData, "mod");
         return;
     }
@@ -467,6 +485,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cban") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to ban from the channel!", channel);
+        }
         var i = commandData.indexOf(":"),
             j = commandData.lastIndexOf(":"),
             time = 0,
@@ -496,6 +517,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "cunban") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to unban from the channel!", channel);
+        }
         poChannel.unban(src, commandData);
         return;
     }
@@ -515,25 +539,40 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return "no command";
     }
     if (command == "admin") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to give channel admin permissions!", channel);
+        }
         poChannel.issueAuth(src, commandData, "admin");
         return;
     }
     if (command == "deadmin") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to remove channel admin permissions!", channel);
+        }
         poChannel.takeAuth(src, commandData, "admin");
         return;
     }
     if (command == "owner") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to give channel owner permissions!", channel);
+        }
         poChannel.issueAuth(src, commandData, "owner");
         return;
     }
     if (command == "deowner") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Please specify a valid target to remove channel owner permissions!", channel);
+        }
         poChannel.takeAuth(src, commandData, "owner");
         return;
     }
     if (command == "addrule") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Use /addrule name:description.", channel);
+        }
         commandData = commandData.split(":");
         if (commandData.length !== 2) {
-            channelbot.sendMessage(src, "Use /addrule name:description", channel);
+            channelbot.sendMessage(src, "Use /addrule name:description.", channel);
             return;
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
