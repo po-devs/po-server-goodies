@@ -7873,6 +7873,9 @@ function Safari() {
                     for (var x in player.trackers) {
                         var trackerName = player.trackers[x];
                         var trackerId = sys.id(trackerName);
+                        if (trackerId === undefined) {
+                            continue;
+                        }
                         if (trackerId === src) {
                             safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                         } else if (trackerId) {
