@@ -1114,6 +1114,7 @@ function tourStep() {
             var tourtier = details[0];
             sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",tourschan,true);
             sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",0,true);
+            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",sys.channelId("Safari"),true);
             tours.queue.unshift({'tier': tourtier, 'starter': "~Pokemon Online~", 'parameters': details[1]});
             tours.globaltime = parseInt(sys.time(), 10)+300;
             tours.eventticks = -1;
@@ -4033,6 +4034,9 @@ function tourprintbracket(key) {
             var channels = [0, tourschan];
             var winner = toCorrectCase(tours.tour[key].players[0]);
             var isevent = tours.tour[key].event;
+            if (isevent) {
+                channels.push(sys.channelId("Safari");
+            }
             var rankingorder;
             if (winner !== "~Bye~") {
                 for (var x in channels) {
