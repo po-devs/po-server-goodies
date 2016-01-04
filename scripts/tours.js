@@ -4855,7 +4855,7 @@ module.exports = {
         var srctour = isInTour(sys.name(src));
         var p1tour = isInTour(sys.name(p1));
         var p2tour = isInTour(sys.name(p2));
-        if (p1tour !== false || p2tour !== false || src === p1 || src === p2) {
+        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
         if (SESSION.channels(tourschan).isBanned(src) || isTourMuted(src)) {
