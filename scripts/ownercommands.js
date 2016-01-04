@@ -473,6 +473,23 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
             return;
         }
+        if (command === "evalobj" || command === "evalobjp") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Enter an object to print. Example: global or sys.", channel);
+                return;
+            }
+            try {
+                var x, objKeys = Object.keys(eval(commandData)), listArray = [];
+                normalbot.sendMessage(src, "Printing " + commandData + ".keys", channel);
+                for (x = 0; x < objKeys.length; x++) {
+                    sys.sendMessage(src, "." + objKeys[x] + (command === "objp" ? ": " + eval(commandData)[objKeys[x]] : ""), channel);
+                }
+                normalbot.sendMessage(src, "Done.", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
+            }
+            return;
+        }
     }
     if (command == "clearladder" || command == "resetladder") {
         var tier = utilities.find_tier(commandData);
