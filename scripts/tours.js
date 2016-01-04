@@ -4035,7 +4035,7 @@ function tourprintbracket(key) {
             var winner = toCorrectCase(tours.tour[key].players[0]);
             var isevent = tours.tour[key].event;
             if (isevent) {
-                channels.push(sys.channelId("Safari");
+                channels.push(sys.channelId("Safari"));
             }
             var rankingorder;
             if (winner !== "~Bye~") {
