@@ -447,18 +447,29 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve" || sys.name(src).toLowerCase() === "fuzzysqurl") {
-        if (command == "eval") {
-            eval(commandData);
+        if (command === "eval") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
+                return;
+            }
+            try {
+                eval(commandData);
+            } catch (error) {
+                normalbot.sendMessage(src, error, channel);
+            }
             return;
         }
-        else if (command == "evalp") {
-            var bindChannel = channel;
-            try {
-                var res = eval(commandData);
-                sys.sendMessage(src, "Got from eval: " + res, bindChannel);
+        if (command === "evalp") {
+            if (commandData === undefined) {
+                normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
+                return;
             }
-            catch (err) {
-                sys.sendMessage(src, "Error in eval: " + err, bindChannel);
+            try {
+                var result = eval(commandData);
+                normalbot.sendMessage(src, "Type: '" + (typeof result) + "'", channel);
+                normalbot.sendMessage(src, "Got from eval: '" + result + "'", channel);
+            } catch (error) {
+                normalbot.sendMessage(src, "Error in eval: " + error, channel);
             }
             return;
         }
