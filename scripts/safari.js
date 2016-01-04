@@ -1794,7 +1794,7 @@ function Safari() {
         var player = getAvatar(src);
         if (!suppress && !bypass) {
             for (var t = 0; t < player.trackers.length; t++) {
-                if (sys.id(player.trackers[t] !== undefined) {
+                if (sys.id(player.trackers[t]) !== undefined) {
                     safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)", safchan);
                 }
             }
