@@ -1,5 +1,5 @@
 exports.handleCommand = function(src, command, commandData, tar, channel) {
-    if (command == "memorydump") {
+    if (command === "memorydump") {
         sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
@@ -32,13 +32,20 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Your target is not online.", channel);
             return;
         }
-        SESSION.channels(channel).issueAuth(src, commandData, "member");
-        normalbot.sendAll(sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
-        sys.putInChannel(tar, channel);
-        normalbot.sendMessage(tar, "" + sys.name(src) + " made you join this channel!", channel);
+        
+        if (!sys.isInChannel(tar, channel)) {
+            if (!SESSION.channels(channel).isChannelMember(src)) {
+                SESSION.channels(channel).issueAuth(src, commandData, "member");
+            }
+            normalbot.sendAll(sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
+            sys.putInChannel(tar, channel);
+            normalbot.sendMessage(tar, sys.name(src) + " made you join this channel!", channel);
+        } else {
+            normalbot.sendMessage(src, sys.name(tar) + " is already in this channel!", channel);
+        }
         return;
     }
-    if (command == "indigodeinvite") {
+    if (command === "indigodeinvite") {
         var count = 0;
         var players = sys.playerIds();
         var players_length = players.length;
@@ -53,10 +60,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll("" + count + " unwanted visitors were kicked...", staffchannel);
         return;
     }
-    if (command == "destroychan") {
+    if (command === "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
-        if(!sys.existChannel(ch)) {
+        if (!sys.existChannel(ch)) {
             normalbot.sendMessage(src, "No channel exists by this name!", channel);
             return;
         }
@@ -74,18 +81,18 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
-    if (command == "ban") {
+    if (command === "ban") {
         if(sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
-        if (sys.maxAuth(sys.ip(tar))>=sys.auth(src)) {
+        if (sys.maxAuth(sys.ip(tar)) >= sys.auth(src)) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
 
         var ip = sys.dbIp(commandData);
-        if(sys.maxAuth(ip)>=sys.auth(src)) {
+        if(sys.maxAuth(ip) >= sys.auth(src)) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
@@ -93,21 +100,28 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "He/she's already banned!", channel);
             return;
         }
+        var tarId = sys.id(commandData.split(":")[0]);
+        if (!isSuperAdmin(src)) {
+            if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
+                normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
+                return;
+            }
+        }
         
         if (script.isTempBanned(ip)) {
             sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
         }
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
-        sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
+        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>",-1);
         sys.ban(commandData);
         script.kickAll(ip);
-        sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
-        var authname = sys.name(src).toLowerCase();
-        script.authStats[authname] =  script.authStats[authname] || {};
-        script.authStats[authname].latestBan = [commandData, parseInt(sys.time(), 10)];
+        sys.appendToFile("bans.txt", sys.name(src) + " banned " + commandData + "\n");
+        var authName = sys.name(src).toLowerCase();
+        script.authStats[authName] =  script.authStats[authName] || {};
+        script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
         return;
     }
-    if (command == "unban") {
+    if (command === "unban") {
         if(sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
@@ -125,7 +139,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
 
-    if (command == "nameban") {
+    if (command === "nameban") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Sorry, can't name ban empty names.", channel);
             return;
@@ -145,7 +159,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
         return;
     }
-    if (command == "nameunban") {
+    if (command === "nameunban") {
         var unban = false;
         nameBans = nameBans.filter(function(name) {
             if (name.toString() == commandData) {
@@ -167,7 +181,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "channameban" || command == "channelnameban") {
+    if (command === "channameban" || command === "channelnameban") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Sorry, can't name ban empty names.", channel);
             return;
@@ -187,7 +201,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
         return;
     }
-    if (command == "channameunban" || command == "channelnameunban") {
+    if (command === "channameunban" || command === "channelnameunban") {
         var unban = false;
         script.chanNameBans = script.chanNameBans.filter(function(name) {
             if (name.toString() == commandData) {
@@ -209,7 +223,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "namewarn") {
+    if (command === "namewarn") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Sorry, can't set warning for empty names.", channel);
             return;
@@ -229,7 +243,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You set a warning for: " + regex.toString(), channel);
         return;
     }
-    if (command == "nameunwarn") {
+    if (command === "nameunwarn") {
         var unwarn = false;
         nameWarns = nameWarns.filter(function(name) {
             if (name.toString() == commandData) {
@@ -246,7 +260,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir+"nameWarns.json", JSON.stringify(nameWarns));
         return;
     }
-    if (command == "watchlog") {
+    if (command === "watchlog") {
         var log = sys.getFileContent(Config.dataDir+"watchNamesLog.txt");
         
         if (log) {
@@ -350,7 +364,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     
-    if (command == "whobanned") {
+    if (command === "whobanned") {
         if (!commandData) {
             normalbot.sendMessage(src, "No name entered", channel);
             return;
