@@ -1,3 +1,6 @@
+/*global normalbot, SESSION, sys*/
+/*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
+/*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "memorydump") {
         sys.sendMessage(src, sys.memoryDump(), channel);
@@ -56,7 +59,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
-        if(!sys.existChannel(ch)) {
+        if (!sys.existChannel(ch)) {
             normalbot.sendMessage(src, "No channel exists by this name!", channel);
             return;
         }
@@ -74,18 +77,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
-    if (command == "ban") {
+    if (command === "ban") {
         if(sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
-        if (sys.maxAuth(sys.ip(tar))>=sys.auth(src)) {
+        if (sys.maxAuth(sys.ip(tar)) >= sys.auth(src)) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
-
         var ip = sys.dbIp(commandData);
-        if(sys.maxAuth(ip)>=sys.auth(src)) {
+        if(sys.maxAuth(ip) >= sys.auth(src)) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
@@ -93,18 +95,24 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "He/she's already banned!", channel);
             return;
         }
-        
+        var tarId = sys.id(commandData.split(":")[0]);
+        if (!isSuperAdmin(src)) {
+            if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
+                normalbot.sendMessage(src, "Let's not ban another auth and give us a bad reputation now. :)", channel);
+                return;
+            }
+        }
         if (script.isTempBanned(ip)) {
             sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
         }
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip, staffchannel);
-        sendChanHtmlAll('<b><font color=red>' + commandData + ' was banned by ' + nonFlashing(sys.name(src)) + '!</font></b>',-1);
+        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>", -1);
         sys.ban(commandData);
         script.kickAll(ip);
-        sys.appendToFile('bans.txt', sys.name(src) + ' banned ' + commandData + "\n");
-        var authname = sys.name(src).toLowerCase();
-        script.authStats[authname] =  script.authStats[authname] || {};
-        script.authStats[authname].latestBan = [commandData, parseInt(sys.time(), 10)];
+        sys.appendToFile("bans.txt", sys.name(src) + " banned " + commandData + "\n");
+        var authName = sys.name(src).toLowerCase();
+        script.authStats[authName] =  script.authStats[authName] || {};
+        script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
         return;
     }
     if (command == "unban") {
