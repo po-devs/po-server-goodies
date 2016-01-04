@@ -295,7 +295,7 @@ function getFullTourName(key) {
     if (tours.tour[key].parameters.gen != "default") {
         ret = getSubgen(tours.tour[key].parameters.gen,true) + " " + ret;
     }
-    if ((sys.getClauses(type)%256 >= 128 && !wifi) || (sys.getClauses(type)%256 < 128 && wifi)) {
+    if ((sys.getClauses(type)%256 >= 128 && wifi === false) || (sys.getClauses(type)%256 < 128 && wifi === true)) {
         ret = ret + " " + (wifi ? "Preview" : "No Preview");
     }
     if (mode != modeOfTier(type)) {
@@ -566,10 +566,10 @@ function clauseCheck(key, issuedClauses) {
     var tier = tours.tour[key].tourtype;
     // force Self-KO clause every time
     var requiredClauses = sys.getClauses(tier) > 255 ? sys.getClauses(tier) : sys.getClauses(tier)+256;
-    if (tours.tour[key].parameters.wifi && requiredClauses%256 < 128) {
+    if (tours.tour[key].parameters.wifi === true && requiredClauses%256 < 128) {
         requiredClauses += 128;
     }
-    else if (!tours.tour[key].parameters.wifi&& requiredClauses%256 >= 128) {
+    else if (tours.tour[key].parameters.wifi === false && requiredClauses%256 >= 128) {
         requiredClauses -= 128;
     }
     var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
@@ -2216,7 +2216,7 @@ function tourCommand(src, command, commandData, channel) {
                         sendBotMessage(src, "A tournament is already in signups!", tourschan, false);
                         return true;
                     }
-                    if (tours.tour[x].event && !isTourOwner(src)) {
+                    if (tours.tour[x].event === true && !isTourOwner(src)) {
                         sendBotMessage(src, "An event tournament is running, so you can't force start the next tournament!", tourschan, false);
                         return true;
                     }
@@ -3031,7 +3031,7 @@ function tourCommand(src, command, commandData, channel) {
             if (mindex > -1) {
                 month = mindex;
             }
-            if (!month) {
+            if (month === false) {
                 var date = new Date();
                 var mindex = date.getMonth();
             }
@@ -3665,7 +3665,7 @@ function tourstart(tier, starter, key, parameters) {
     }
     else if (tours.queue.length === 0) { // NOTIFY VICTORY ROAD THAT /QUEUE IS EMPTY
         for (var x in tourAdminsObj) {
-            if (sys.loggedIn(sys.id(x))) {
+            if (sys.loggedIn(sys.id(x)) === true) {
                 activeAuthCount++;
                 sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
             }
@@ -4724,7 +4724,7 @@ function dumpVars(src) {
         sys.sendMessage(src, "Players: "+tours.tour[x].players, tourschan);
         for (var b in tours.tour[x].battlers) {
             var battleString = b;
-            if (tours.tour[x].battlers[b].noSpecs) {
+            if (tours.tour[x].battlers[b].noSpecs === true) {
                 battleString = battleString + " (No Specs)";
             }
             if (typeof tours.tour[x].battlers[b].time == "number") {
@@ -4888,7 +4888,7 @@ module.exports = {
         var srctour = isInTour(sys.name(src));
         var p1tour = isInTour(sys.name(p1));
         var p2tour = isInTour(sys.name(p2));
-        if (p1tour !== false || p2tour !== false || src === p1 || src === p2) {
+        if (p1tour === false || p2tour === false || src === p1 || src === p2) {
             return false;
         }
         if (isMegaUser(src)) {
