@@ -4524,7 +4524,7 @@ function markActive(src, reason) {
     }
     var name = sys.name(src).toLowerCase();
     var key = isInTour(name);
-    if (key === false) {
+    if (key !== false) {
         if (tours.tour[key].active.hasOwnProperty(name)) {
             if (tours.tour[key].active[name] === "Battle" && reason == "post") {
                 return;
