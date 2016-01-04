@@ -130,8 +130,8 @@ function startBF() {
     }
 }
 
-function isInBFTier(src, teamLo, teamHi) {
-    return battleFactoryTiers.indexOf(sys.tier(src, teamLo, teamHi)) > -1;
+function isInBFTier(src, team) {
+    return battleFactoryTiers.indexOf(sys.tier(src, team)) > -1;
 }
 
 function isBFTier(tier) {
@@ -193,10 +193,10 @@ function autoSave(type, params) {
     }
 }
 
-function dumpData(tar, teamLo, teamHi) {
+function dumpData(tar, team) {
     var sets = [];
     for (var b = 0; b < 6; b++) {
-        sets.push(getPokePreview(tar, teamLo, teamHi, b));
+        sets.push(getPokePreview(tar, team, b));
     }
     var channels = sys.channelsOfPlayer(tar);
     if (sets.length > 0 && channels.length > 0) {
@@ -1341,21 +1341,21 @@ function getNature(nature) {
 
 // This gets a preview of the Pokemon for the player to view
 // In an ideal world this takes an alphanumeric code
-function getPokePreview(src, teamLo, teamHi, poke) {
+function getPokePreview(src, team, poke) {
     var evs = [];
     var dvs = [];
     for (var i = 0; i < 6; i++) {
-        evs.push(sys.teamPokeEV(src, teamLo, poke, i, teamHi));
-        dvs.push(sys.teamPokeDV(src, teamLo, poke, i, teamHi));
+        evs.push(sys.teamPokeEV(src, team, poke, i));
+        dvs.push(sys.teamPokeDV(src, team, poke, i));
     }
-    var pokeName = sys.pokemon(sys.teamPoke(src, teamLo, poke, teamHi));
-    var nature = sys.nature(sys.teamPokeNature(src, teamLo, poke, teamHi));
-    var ability = sys.ability(sys.teamPokeAbility(src, teamLo, poke, teamHi));
-    var item = sys.item(sys.teamPokeItem(src, teamLo, poke, teamHi));
-    var level = sys.teamPokeLevel(src, teamLo, poke, teamHi);
+    var pokeName = sys.pokemon(sys.teamPoke(src, team, poke));
+    var nature = sys.nature(sys.teamPokeNature(src, team, poke));
+    var ability = sys.ability(sys.teamPokeAbility(src, team, poke));
+    var item = sys.item(sys.teamPokeItem(src, team, poke));
+    var level = sys.teamPokeLevel(src, team, poke);
     var stats = ["HP", "Attack", "Defense", "Sp.Atk", "Sp.Def", "Speed"];
     var statList = [];
-    var baseStats = sys.pokeBaseStats(sys.teamPoke(src, teamLo, poke, teamHi));
+    var baseStats = sys.pokeBaseStats(sys.teamPoke(src, team, poke));
     for (var s = 0; s < 6; s++) {
         var natureBoost = getNature(nature);
         if (s === 0) { // HP Stat
@@ -1381,7 +1381,7 @@ function getPokePreview(src, teamLo, teamHi, poke) {
     }
     var moves = [];
     for (var m = 0; m < 4; m++) {
-        moves.push(sys.move(sys.teamPokeMove(src, teamLo, poke, m, teamHi)));
+        moves.push(sys.move(sys.teamPokeMove(src, team, poke, m)));
         if (moves[m] === "Hidden Power") {
             var hpType = sys.hiddenPowerType(5, dvs[0], dvs[1], dvs[2],
                                                 dvs[3], dvs[4], dvs[5]);
@@ -1467,7 +1467,7 @@ function missingNoLast(p1, p2) {
     return 0;
 }
 
-function generateTeam(src, teamLo, teamHi, tier) {
+function generateTeam(src, team, tier) {
     var megaLimit = 1, megaCount = 0;
     var hazardsLimit = 2;
     var moveCounts = {};
@@ -1526,24 +1526,24 @@ function generateTeam(src, teamLo, teamHi, tier) {
         // Everything below copies the selected Pokemon to the user's team
         for (var s = 0; s < 6; s++) {
             var pokeData = teamInfo[s];
-            sys.changePokeNum(src, teamLo, s, pokeData.pokeId, teamHi);
-            sys.changePokeName(src, teamLo, s, pokeData.poke, teamHi);
-            sys.changePokeNature(src, teamLo, s, pokeData.natureId, teamHi);
-            sys.changePokeAbility(src, teamLo, s, pokeData.abilityId, teamHi);
-            sys.changePokeItem(src, teamLo, s, pokeData.itemId, teamHi);
+            sys.changePokeNum(src, team, s, pokeData.pokeId);
+            sys.changePokeName(src, team, s, pokeData.poke);
+            sys.changePokeNature(src, team, s, pokeData.natureId);
+            sys.changePokeAbility(src, team, s, pokeData.abilityId);
+            sys.changePokeItem(src, team, s, pokeData.itemId);
             var shuffledMoves = ((pokeData.moveIds.slice()).shuffle()).sort(noMoveLast);
             for (var m = 0; m < 4; m++) {
-                sys.changePokeMove(src, teamLo, s, m, shuffledMoves[m], teamHi);
+                sys.changePokeMove(src, team, s, m, shuffledMoves[m]);
             }
             for (var i = 0; i < 6; i++) {
-                sys.changeTeamPokeEV(src, teamLo, s, i, pokeData.evs[i], teamHi);
-                sys.changeTeamPokeDV(src, teamLo, s, i, pokeData.dvs[i], teamHi);
+                sys.changeTeamPokeEV(src, team, s, i, pokeData.evs[i]);
+                sys.changeTeamPokeDV(src, team, s, i, pokeData.dvs[i]);
             }
             // maximise happiness if the poke has Return, minimise if it has frustration
             if (pokeData.moves.indexOf("Return") > -1) {
-                sys.changePokeHappiness(src, teamLo, s, 255, teamHi);
+                sys.changePokeHappiness(src, team, s, 255);
             } else {
-                sys.changePokeHappiness(src, teamLo, s, 0, teamHi);
+                sys.changePokeHappiness(src, team, s, 0);
             }
             var ladderRating = 1000;
             if (typeof sys.ladderRating(src, "Battle Factory 6v6") !== "undefined") {
@@ -1553,20 +1553,20 @@ function generateTeam(src, teamLo, teamHi, tier) {
                 ladderRating += Math.max(0, sys.ladderRating(src, "Battle Factory") - 1000);
             }
             var shineChance = Math.ceil(8192 * 1000000 / Math.pow(ladderRating, 2));
-            sys.changePokeShine(src, teamLo, s, sys.rand(0, shineChance) === 0, teamHi);
+            sys.changePokeShine(src, team, s, sys.rand(0, shineChance) === 0);
             var possibleGenders = sys.pokeGenders(pokeData.pokeId);
             if (possibleGenders.hasOwnProperty("neutral")) {
-                sys.changePokeGender(src, teamLo, s, 0, teamHi);
+                sys.changePokeGender(src, team, s, 0);
             } else if (possibleGenders.hasOwnProperty("male") && sys.rand(0, 100) <= possibleGenders.male) {
-                sys.changePokeGender(src, teamLo, s, 1, teamHi);
+                sys.changePokeGender(src, team, s, 1);
             } else {
-                sys.changePokeGender(src, teamLo, s, 2, teamHi);
+                sys.changePokeGender(src, team, s, 2);
             }
             // do not move this, it's the only thing updating stats apparently!!
             if (isLCTier(tier)) {
-                sys.changePokeLevel(src, teamLo, s, Math.min(5, pokeData.level), teamHi);
+                sys.changePokeLevel(src, team, s, Math.min(5, pokeData.level));
             } else {
-                sys.changePokeLevel(src, teamLo, s, pokeData.level, teamHi);
+                sys.changePokeLevel(src, team, s, pokeData.level);
             }
         }
         sys.updatePlayer(src);
@@ -1741,9 +1741,9 @@ module.exports = {
             return true;
         }
     },
-    beforeBattleStarted: function(src, dest, rated, mode, srcTeamLo, srcTeamHi, destTeamLo, destTeamHi) {
+    beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
         var modes = ["Singles", "Doubles", "Triples"];
-        if (isInBFTier(src, srcTeamLo, srcTeamHi) && isInBFTier(dest, destTeamLo, destTeamHi)) {
+        if (isInBFTier(src, srcteam) && isInBFTier(dest, destteam)) {
             try {
                 var allowedTypes = [];
                 var suggestedTypes = [];
@@ -1753,8 +1753,8 @@ module.exports = {
                         if (bfSets[pack].hasOwnProperty("mode") && bfSets[pack].mode === modes[mode]) {
                             suggestedTypes.push(pack);
                         } else if (bfSets[pack].hasOwnProperty("maxpokes") && bfSets[pack].maxpokes === 6
-                                   && sys.tier(src, srcTeamLo, srcTeamHi) === sys.tier(dest, destTeamLo, destTeamHi)
-                                   && sys.tier(src, srcTeamLo, srcTeamHi) === "Battle Factory 6v6") {
+                                   && sys.tier(src, srcteam) === sys.tier(dest, destteam)
+                                   && sys.tier(src, srcteam) === "Battle Factory 6v6") {
                             suggestedTypes.push(pack);
                         }
                     }
@@ -1766,24 +1766,22 @@ module.exports = {
                 if (suggestedTypes.length > 0) {
                     type = suggestedTypes[sys.rand(0, suggestedTypes.length)];
                 }
-                generateTeam(src, srcTeamLo, srcTeamHi, type);
-                generateTeam(dest, destTeamLo, destTeamHi, type);
+                generateTeam(src, srcteam, type);
+                generateTeam(dest, destteam, type);
                 /*if (find_tier(type)) {
                     var k = 0;
                     var errsrc, errdest;
-                    var srcteam = (srcteamHi << 32) + srcteamLo;
-                    var destteam = (destteamHi << 32) + destteamLo;
                     while (!tier_checker.has_legal_team_for_tier(src, srcteam, type, true) || !tier_checker.has_legal_team_for_tier(dest, destteam, type, true)) { //for complex bans like SS+Drizzle
-                        generateTeam(src, srcteamLo, srcteamHi, type);
-                        generateTeam(dest, destteamLo, destteamHi, type);
+                        generateTeam(src, srcteam, type);
+                        generateTeam(dest, destteam, type);
                         errsrc = tier_checker.has_legal_team_for_tier(src, srcteam, type, true, true);
                         errdest = tier_checker.has_legal_team_for_tier(dest, destteam, type, true, true);
                         if(++k>100) throw "Cannot generate legal teams after 100 attempts in tier: " + type + (errsrc ? "(Last error: " + errsrc + ")" : errdest ? "(Last error: " + errdest + ")" : "!");
 
                     }
                 }*/
-                dumpData(src, srcTeamLo, srcTeamHi);
-                dumpData(dest, destTeamLo, destTeamHi);
+                dumpData(src, srcteam);
+                dumpData(dest, destteam);
             } catch (err) {
                 sendStaff("Error in generating teams: " + err);
             }
@@ -1856,9 +1854,9 @@ module.exports = {
         }
         return "Invalid Type";
     },
-    generateTeam: function(src, teamLo, teamHi) {
+    generateTeam: function(src, team) {
         // generate a team for players with no Pokemon
-        generateTeam(src, teamLo, teamHi, "preset");
+        generateTeam(src, team, "preset");
         return true;
     },
     "help-string": ["battlefactory: To know the battlefactory commands"]
