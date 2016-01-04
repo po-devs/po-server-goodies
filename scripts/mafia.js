@@ -1431,7 +1431,7 @@ function Mafia(mafiachan) {
         }
     };
     this.eventTimeBoost = function () {
-    	if (this.isEvent) this.ticks = Math.floor(this.ticks * 1.5);
+    	if (mafia.isEvent) this.ticks = Math.floor(this.ticks * 1.5);
     };
     this.getRandom = function (arr) {
     	if (!Array.isArray(arr)) return arr;
@@ -1472,18 +1472,11 @@ function Mafia(mafiachan) {
     		}
     	var etheme = this.eventQueue[0];
     	this.startGame("Event", etheme);
-        sendChanAll(GREEN_BORDER, mafiachan);
-		if (this.theme.name == "default") {
-			sendChanAll("An Event Mafia game is starting!");
-		} else {
-			sendChanAll("An Event " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "-themed Mafia game is starting!");
-		}
     	this.eventQueue.splice(0,1);
     	if (this.eventQueue.length() < 3) {
     		this.eventQuene.push(this.getRandom(this.eventThemePool));
     	}
-        sendChanAll(GREEN_BORDER, mafiachan);
-		this.isEvent = true;
+        mafia.isEvent = true;
 	};
     this.addEventTheme = function (src,theme,place) {
         var srcname = sys.name(src);
@@ -1711,7 +1704,7 @@ function Mafia(mafiachan) {
         return themeName;
     };
     this.startGame = function (src, commandData) {
-        var srcname = sys.name(src);
+        var srcname = (src === "Event" ? "Event": sys.name(src));
         if (SESSION.channels(mafiachan).muteall && !SESSION.channels(mafiachan).isChannelOperator(src) && sys.auth(src) === 0) {
             gamemsg(srcname, "You can't start a game when the channel is silenced.");
             return;
@@ -1784,13 +1777,22 @@ function Mafia(mafiachan) {
             if (this.theme.name == "default") {
                 gamemsgAll(sys.name(src) + " started a game!");
             } else {
-                gamemsgAll(sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")+ "!");
+                gamemsgAll(sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "!");
             }
             gamemsgAll("Type /Join to enter the game!");
             sendChanAll(border, mafiachan);
             sendChanAll("", mafiachan);
         }
-
+        if (src == "Event") {
+            sendChanAll(GREEN_BORDER, mafiachan);
+            if (this.theme.name == "default") {
+                mafiabot.sendHtmlAll("An <b>Event</b> Mafia game is starting!", mafiachan);
+            } else {
+                mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
+            }
+            sendChanAll(GREEN_BORDER, mafiachan);
+        }
+        
         var playerson = sys.playerIds();
         for (var x = 0; x < playerson.length; ++x) {
             var id = playerson[x];
@@ -1829,7 +1831,7 @@ function Mafia(mafiachan) {
         mafia.state = "entry";
         mafia.ticks = src === "Event" ? 150 : 60;
 
-        if (src !== null) {
+        if (src !== null && src !== "Event") {
             if (!this.canJoin(src)) {
                 return;
             }
@@ -1879,13 +1881,13 @@ function Mafia(mafiachan) {
         mafia.usersToShove = [];
         runUpdate();
         this.advertiseFeaturedTheme();
-        this.isEvent = false;
-        this.tryEventTheme();
+        mafia.isEvent = false;
+        mafia.tryEventTheme();
     };
     this.tickDown = function () { /* called every second */
     	if (this.state == "blank") {
-    		this.tryEventTheme();
-    		return;
+            this.tryEventTheme();
+            return;
     	}
         if (this.ticks <= 0) {
             return;
@@ -1894,7 +1896,7 @@ function Mafia(mafiachan) {
         if (this.ticks === 0) {
             this.callHandler(this.state);
         } else {
-            if (this.ticks == 30 && this.state == "entry") {
+            if ((this.ticks == 30 || this.ticks == 90) && this.state == "entry") {
                 sendChanAll("", mafiachan);
                 gamemsgAll("Hurry up, you only have " + this.ticks + " seconds more to join!");
                 sendChanAll("", mafiachan);
@@ -2988,7 +2990,7 @@ function Mafia(mafiachan) {
             }
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.advertiseFeaturedTheme();
-            mafia.isEvent = true
+            mafia.isEvent = false;
             mafia.tryEventTheme();
         };
         outer:
@@ -6643,20 +6645,20 @@ function Mafia(mafiachan) {
         if (command === "nextevent") {
         	var timer =  this.nextEventTime - new Date().getTime();
         	if (timer <= 0) {
-            	sys.sendHtmlMessage(src, "<font color=#39B7CD><timestamp/> <b>±" + mafiabot.name + ": </b></font> Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
+            	mafiabot.sendHtmlAll("<b>Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
             	return;
         	}
-        	var sec = ((timer/1000)%60);
-        	var mins = ((timer/1000)/60);
-            sys.sendHtmlMessage(src, "<font color=#39B7CD><timestamp/> <b>±" + mafiabot.name + ": </b></font> Next Mafia Event begins in " + mins + " minute(s) and " + sec + " second(s)</b>!", mafiachan);
+        	var sec = Math.floor((timer/1000)%60);
+        	var mins = Math.floor((timer/1000)/60);
+            mafiabot.sendHtmlMessage(src, "<b>Next Mafia Event begins in " + mins + " minute(s) and " + sec + " second(s)</b>!", mafiachan);
             return;
         }
         if (command === "featured") {
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             if (featuredTheme) {
-                sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
+                mafiabot.sendHtmlMessage(src, "Looking for a theme to play? Try out the Featured Theme: <b>" + casedtheme(featuredTheme) + "</b>!", mafiachan);
             }
-            sys.sendHtmlMessage(src, "<font color=#3daa68><timestamp/> <b>±" + mafiabot.name + ": </b></font> " + (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
+            mafiabot.sendHtmlMessage(src, (featuredLink ? '<a href="' + html_escape(featuredLink) + '">' + featuredText + '</a>' : featuredText), mafiachan);
             sys.sendMessage(src, GREEN_BORDER, mafiachan);
             return;
         }
@@ -7111,46 +7113,46 @@ function Mafia(mafiachan) {
         		return;
         	}
         	var data = commandData.split(":");
-        	if (data[0] === "enable") {
-        		this.enableEvent(src, true);
-        		return;
-        	}
-        	if (data[0] === "disable") {
-        		this.enableEvent(src, false);
-        		return;
-        	}
-        	if (data[0] === "add") {
-        		this.addEventTheme(src, data[1], "");
-        		return;
-        	}
-        	if (data[0] === "jump") {
-        		this.addEventTheme(src, data[1], "first");
-        		return;
-        	}
-        	if (data[0] === "remove") {
-        		this.removeEventTheme(src, data[1], "");
-        		return;
-        	}
-        	if (data[0] === "trim") {
-        		this.removeEventTheme(src, data[1], "last");
-        		return;
-        	}
-        	if (data[0] === "shuffle") {
-        		this.shuffleEventQueue(src);
-        		return;
-        	}
-        	if (data[0] === "addpool") {
-        		this.addToEventPool(src,data[1]);
-        		return;
-        	}
-        	if (data[0] === "removepool") {
-        		this.removeFromEventPool(src,data[1]);
-        		return;
-        	}
-        	if (data[0] === "forcestart") {
-        		this.startEvent(true);
-        		return;
-        	}
+            if (data[0] === "enable") {
+                this.enableEvent(src, true);
+                return;
+            }
+            if (data[0] === "disable") {
+                this.enableEvent(src, false);
+                return;
+            }
+            if (data[0] === "add") {
+                this.addEventTheme(src, data[1], "");
+                return;
+            }
+            if (data[0] === "jump") {
+                this.addEventTheme(src, data[1], "first");
+                return;
+            }
+            if (data[0] === "remove") {
+                this.removeEventTheme(src, data[1], "");
+                return;
+            }
+            if (data[0] === "trim") {
+                this.removeEventTheme(src, data[1], "last");
+                return;
+            }
+            if (data[0] === "shuffle") {
+                this.shuffleEventQueue(src);
+                return;
+            }
+            if (data[0] === "addpool") {
+                this.addToEventPool(src, data[1]);
+                return;
+            }
+            if (data[0] === "removepool") {
+                this.removeFromEventPool(src, data[1]);
+                return;
+            }
+            if (data[0] === "forcestart") {
+                this.startEvent(true);
+                return;
+            }
             return;
         }
         if (command === "updatestats") {
