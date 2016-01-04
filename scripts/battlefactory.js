@@ -1735,22 +1735,10 @@ module.exports = {
         return false;
     },
     beforeChangeTier: function(src, team, oldtier, newtier) { // This shouldn't be needed, but it's here in case
-        if (isBFTier(oldtier) && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(newtier) == -1) {
-            sys.sendMessage(src, "Please reload your team from the menu to exit Battle Factory. (Your team is now in Challenge Cup.)");
-            // clear old teams
-            for (var x=0; x<6; x++) {
-                sys.changePokeNum(src, team, x, 0);
-            }
-            sys.changeTier(src, team, "Challenge Cup");
-            return true;
-        }
         if (isBFTier(newtier) && (!working || validPacks() === 0)) {
             sys.sendMessage(src, "Battle Factory is not working, so you can't move into that tier. Your team is now in Challenge Cup.");
             sys.changeTier(src, team, "Challenge Cup");
             return true;
-        }
-        if (isBFTier(newtier)) {
-            generateTeam(src, team, "preset");
         }
     },
     beforeBattleStarted: function(src, dest, rated, mode, srcteam, destteam) {
