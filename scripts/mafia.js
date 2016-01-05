@@ -5161,8 +5161,9 @@ function Mafia(mafiachan) {
             for (var t in prevTarget) {
                 var inputTarget = delimSplit(":", prevTarget[t]);
                 var guessedRole = inputTarget[1];
+                guessedRole = delimSplit("@", guessedRole)[0];
                 if (guessedRole === afterCommandData) {
-                    gamemsg(name, "You already used this command (" + command + ") on " + afterCommandData + " (you can only target each role once)." );
+                    gamemsg(name, "You already used this command (" + command + ") on " + afterCommandData + " (you can only target each role once!)." );
                     return;
                 }
             }
