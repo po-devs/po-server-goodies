@@ -1473,7 +1473,7 @@ function Mafia(mafiachan) {
     	var etheme = this.eventQueue[0];
     	this.startGame("Event", etheme);
     	this.eventQueue.splice(0,1);
-    	if (this.eventQueue.length() < 3) {
+    	if (this.eventQueue.length < 3) {
     		this.eventQuene.push(this.getRandom(this.eventThemePool));
     	}
         mafia.isEvent = true;
@@ -1769,7 +1769,7 @@ function Mafia(mafiachan) {
         }
 
         border = this.theme.border ? this.theme.border : DEFAULT_BORDER;
-        CurrentGame = { who: src !== null ? sys.name(src) : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0 };
+        CurrentGame = { who: src !== null ? srcname : "voted", what: themeName, when: parseInt(sys.time(), 10), playerCount: 0 };
 
         if ((src !== null) && (src !== "Event")) {
             sendChanAll("", mafiachan);
@@ -1785,11 +1785,12 @@ function Mafia(mafiachan) {
         }
         if (src == "Event") {
             sendChanAll(GREEN_BORDER, mafiachan);
-            if (this.theme.name == "default") {
+            if (this.theme.name == "Default") {
                 mafiabot.sendHtmlAll("An <b>Event</b> Mafia game is starting!", mafiachan);
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
             }
+            gamemsgAll("Type /Join to enter the game!");
             sendChanAll(GREEN_BORDER, mafiachan);
         }
         
@@ -6643,14 +6644,14 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "nextevent") {
-        	var timer =  this.nextEventTime - new Date().getTime();
-        	if (timer <= 0) {
-            	mafiabot.sendHtmlAll("<b>Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
+            var timer =  this.nextEventTime - new Date().getTime();
+            if (timer <= 0) {
+            	mafiabot.sendHtmlMessage(src, "<b>Next Mafia Event begins as soon as the next game ends</b>!", mafiachan);
             	return;
-        	}
-        	var sec = Math.floor((timer/1000)%60);
-        	var mins = Math.floor((timer/1000)/60);
-            mafiabot.sendHtmlMessage(src, "<b>Next Mafia Event begins in " + mins + " minute(s) and " + sec + " second(s)</b>!", mafiachan);
+            }
+            var sec = Math.floor((timer/1000)%60);
+            var mins = Math.floor((timer/1000)/60);
+            mafiabot.sendHtmlMessage(src, "Next Mafia Event begins in <b>" + mins + " minute(s) and " + sec + " second(s)</b>!", mafiachan);
             return;
         }
         if (command === "featured") {
