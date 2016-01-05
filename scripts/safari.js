@@ -275,6 +275,7 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
     var currentPokemonCount = 1;
+    var currentDisplay = null;
     var maxThrows = 20;
     var currentThrows;
     var preparationPhase = 0;
@@ -1490,16 +1491,21 @@ function Safari() {
         currentPokemon = shiny ? "" + num : num;
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
+        
+        currentDisplay = [132, 151, 570, 571].contains(num) ? sys.rand(1, 722) : num;
+        var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
+        var currentId = poke(currentPokemonDisplay);
+        
         if (amount > 1) {
             var ret = [];
-            ret += "<hr><center>A horde of wild " + pokeId + " appeared! <i>(BST: " + getBST(num) + ")</i><br/>";
+            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i><br/>";
             for (var i = 0; i < amount; i++) {
-                ret += pokeInfo.sprite(currentPokemon);
+                ret += pokeInfo.sprite(currentPokemonDisplay);
             }
             ret += "</center><hr>";
             sys.sendHtmlAll(ret, safchan);
         } else {
-            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + pokeId + " appeared! <i>(BST: " + getBST(num) + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
+            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", safchan);
         }
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) {
@@ -1945,10 +1951,11 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
             }
+            var revealName = currentDisplay !== currentPokemon ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
             if (ball == "spy") {
-                safaribot.sendAll("Some stealthy person caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendAll("Some stealthy person caught the " + revealName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendAll(name + " caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendAll(name + " caught the " + revealName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
             }
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
@@ -2005,6 +2012,7 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
                 currentPokemon = null;
+                currentDisplay = null;
                 wildEvent = false;
             } else {
                 currentThrows -= Math.floor(maxThrows/2 + 5); //each caught pokemon makes the horde more likely to flee by a large amount
@@ -2020,6 +2028,7 @@ function Safari() {
                     player.balls[ball] += 1;
                 }
             }*/
+            pokeName = poke(currentDisplay);
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
@@ -2040,6 +2049,7 @@ function Safari() {
         }
 
         if (flee) {
+            pokeName = poke(currentPokemon);
             var runmsgs = [
                 "The wild {0} got spooked and ran away!",
                 "The wild {0} got hungry and went somewhere else to find food!",
@@ -2052,6 +2062,7 @@ function Safari() {
             safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
             sys.sendAll("", safchan);
             currentPokemon = null;
+            currentDisplay = null;
             currentPokemonCount = 1;
         }
 
@@ -6139,7 +6150,7 @@ function Safari() {
             safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " to try another challenge!", safchan);
             return;
         }
-        if (cantBecause(src, "atart a battle", ["wild", "contest", "auction", "battle"])) {
+        if (cantBecause(src, "start a battle", ["wild", "contest", "auction", "battle"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -8495,6 +8506,7 @@ function Safari() {
                         safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentPokemon) + " away!", safchan);
                     }
                     currentPokemon = null;
+                    currentDisplay = null;
                     currentPokemonCount = 1;
                     wildEvent = false;
                 }
@@ -9151,6 +9163,7 @@ function Safari() {
                 }
 
                 currentPokemon = null;
+                currentDisplay = null;
                 currentTheme = null;
                 wildEvent = false;
                 currentRules = null;
