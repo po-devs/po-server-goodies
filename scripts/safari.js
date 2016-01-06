@@ -275,6 +275,7 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
     var currentPokemonCount = 1;
+    var currentDisplay = null;
     var maxThrows = 20;
     var currentThrows;
     var preparationPhase = 0;
@@ -328,6 +329,8 @@ function Safari() {
     var nextTheme;
     var currentRules;
     var nextRules;
+    var RULES_NERF = 0.20;
+    var RULES_BUFF = 1.30;
     var defaultRules = {
         "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
             "chance": 0,
@@ -398,8 +401,26 @@ function Safari() {
         "noLegendaries": {
             "chance": 0.07
         },
+        "shiny": {
+            "nerf": 0,
+            "buff": 0.05
+        },
+        "singleType": {
+            "nerf": 0,
+            "buff": 0.13
+        },
+        "dualType": {
+            "nerf": 0,
+            "buff": 0
+        },
         "inver": {
             "chance": 0.12
+        },
+        "invertedBST": {
+            "chance": 0.08
+        },
+        "defensive": {
+            "chance": 0.10
         },
         "rewards": {
             "sets": {
@@ -1490,16 +1511,21 @@ function Safari() {
         currentPokemon = shiny ? "" + num : num;
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
+        
+        currentDisplay = [132, 151, 570, 571].contains(num) ? sys.rand(1, 722) : num;
+        var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
+        var currentId = poke(currentPokemonDisplay);
+        
         if (amount > 1) {
             var ret = [];
-            ret += "<hr><center>A horde of wild " + pokeId + " appeared! <i>(BST: " + getBST(num) + ")</i><br/>";
+            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i><br/>";
             for (var i = 0; i < amount; i++) {
-                ret += pokeInfo.sprite(currentPokemon);
+                ret += pokeInfo.sprite(currentPokemonDisplay);
             }
             ret += "</center><hr>";
             sys.sendHtmlAll(ret, safchan);
         } else {
-            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + pokeId + " appeared! <i>(BST: " + getBST(num) + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemon) + "</center><hr>", safchan);
+            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", safchan);
         }
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) {
@@ -1659,8 +1685,38 @@ function Safari() {
         if ("inver" in rules && chance(getRule("inver").chance)) {
             out.inver = true;
         }
+        if ("invertedBST" in rules && chance(getRule("invertedBST").chance)) {
+            out.invertedBST = true;
+        }
+        if ("defensive" in rules && chance(getRule("defensive").chance)) {
+            out.defensive = true;
+        }
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
             out.noLegendaries = true;
+        }
+        if ("shiny" in rules) {
+            var obj = getRule("shiny");
+            if ("nerf" in obj && chance(obj.nerf)) {
+                out.nerfShiny = true;
+            } else if ("buff" in obj && chance(obj.buff)) {
+                out.buffShiny = true;
+            }
+        }
+        if ("singleType" in rules) {
+            var obj = getRule("singleType");
+            if ("nerf" in obj && chance(obj.nerf)) {
+                out.nerfSingle = true;
+            } else if ("buff" in obj && chance(obj.buff)) {
+                out.buffSingle = true;
+            }
+        }
+        if ("dualType" in rules) {
+            var obj = getRule("dualType");
+            if ("nerf" in obj && chance(obj.nerf)) {
+                out.nerfDual = true;
+            } else if ("buff" in obj && chance(obj.buff)) {
+                out.buffDual = true;
+            }
         }
         if ("rewards" in rules) {
             var rew = getRule("rewards");
@@ -1690,16 +1746,36 @@ function Safari() {
                         list.push(e);
                     }
                 }
-                out.push("Recommended Types: " + readable(list, "and"));
+                out.push("Enforced Types: " + readable(list, "and"));
             } else {
                 out.push("Nerfed Types: " + readable(rules.excludeTypes, "and"));
             }
         }
+        if (rules.nerfShiny) {
+            out.push("Shiny Pokémon Nerfed");
+        } else if (rules.buffShiny) {
+            out.push("Shiny Pokémon Buffed");
+        }
+        if (rules.nerfSingle) {
+            out.push("Single-type Pokémon Nerfed");
+        } else if (rules.buffSingle) {
+            out.push("Single-type Pokémon Buffed");
+        }
+        if (rules.nerfDual) {
+            out.push("Dual-type Pokémon Nerfed");
+        } else if (rules.buffDual) {
+            out.push("Dual-type Pokémon Buffed");
+        }
         if (rules.noLegendaries) {
-            out.push("Legendaries Forbidden");
+            out.push("Legendaries Nerfed");
         }
         if (rules.inver) {
-            out.push("Inverted Type Effectiveness");
+            out.push((rules.defensive ? "Defensive " : "") + "Inverted Type Effectiveness");
+        } else if (rules.defensive) {
+            out.push("Defensive Mode");
+        }
+        if (rules.invertedBST) {
+            out.push("Inverted BST Effectiveness");
         }
         if ("minBST" in rules && "maxBST" in rules) {
             out.push("Recommended BST: " + rules.minBST + "~" + rules.maxBST);
@@ -1764,26 +1840,43 @@ function Safari() {
         return false;
     };
     this.getRulesMod = function(pokeId, rules) {
-        var NERF = 0.20;
-        var BUFF = 1.30;
         var type1 = sys.type(sys.pokeType1(pokeId)),
             type2 = sys.type(sys.pokeType2(pokeId)),
+            id = parseInt(pokeId, 10),
             bst = getBST(pokeId);
 
         if ("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) {
-            return NERF;
+            return RULES_NERF;
         }
         if ("minBST" in rules && bst < rules.minBST) {
-            return NERF;
+            return RULES_NERF;
         }
         if ("maxBST" in rules && bst > rules.maxBST) {
-            return NERF;
+            return RULES_NERF;
         }
-        if (rules.noLegendaries && isLegendary(pokeId)) {
-            return NERF;
+        if (rules.noLegendaries && isLegendary(id)) {
+            return RULES_NERF;
+        }
+        if (rules.nerfShiny && typeof pokeId === "string") {
+            return RULES_NERF;
+        }
+        if (rules.nerfSingle && type2 === "???") {
+            return RULES_NERF;
+        }
+        if (rules.nerfDual && type2 !== "???") {
+            return RULES_NERF;
         }
         if ("bonusTypes" in rules && (rules.bonusTypes.contains(type1) || rules.bonusTypes.contains(type2))) {
-            return BUFF;
+            return RULES_BUFF;
+        }
+        if (rules.buffShiny && typeof pokeId === "string") {
+            return RULES_BUFF;
+        }
+        if (rules.buffSingle && type2 === "???") {
+            return RULES_BUFF;
+        }
+        if (rules.buffDual && type2 !== "???") {
+            return RULES_BUFF;
         }
         return 1;
     };
@@ -1866,12 +1959,18 @@ function Safari() {
         var legendaryChance = isLegend ? 0.50 : 1;
 
         var userStats = getBST(player.party[0]);
+        var evioBonus = 0;
         if (userStats <= itemData.eviolite.threshold) {
-            userStats += Math.min(itemData.eviolite.bonusRate * player.balls.eviolite, itemData.eviolite.maxRate);
+            evioBonus = Math.min(itemData.eviolite.bonusRate * player.balls.eviolite, itemData.eviolite.maxRate);
+            userStats += evioBonus;
         }
         var wildStats = getBST(wild);
         var statsBonus = (userStats - wildStats) / 8000;
-
+        if (currentRules && currentRules.invertedBST) {
+            userStats -= evioBonus;
+            statsBonus = (userStats - wildStats) / -8000;
+        }
+        
         if (ball === "myth") {
             shinyChance = 1;
             legendaryChance = 1;
@@ -1885,14 +1984,23 @@ function Safari() {
                 ballBonus = itemData[ball].maxBonus;
             }
         }
-        var typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
+        var typeBonus;
+        if (currentRules && currentRules.defensive) {
+            typeBonus = this.checkEffective(sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)), sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])));
+            if (typeBonus === 0) {
+                typeBonus = 0.5;
+            }
+            typeBonus = 1/typeBonus;
+        } else {
+            typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
+        }
         if (player.costume === "inver" || (currentRules && currentRules.inver)) {
             if (typeBonus === 0) {
                 typeBonus = 0.5;
             }
             typeBonus = 1/typeBonus;
         }
-
+        
         var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
         var tierChance = 0.02;
         for (var x = 0; x < tiers.length; x++) {
@@ -1905,7 +2013,7 @@ function Safari() {
         var species = pokeInfo.species(leader);
         var noDailyBonusForms = ["Floette-EF", "Rotom-W", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmanitan-D"];
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(sys.pokemon(leader)) ? dailyBoost.bonus : 1;
-        var rulesMod = currentRules ? this.getRulesMod(leader, currentRules) : 1;
+        var rulesMod = currentRules ? this.getRulesMod(player.party[0], currentRules) : 1;
         var costumeMod = 1;
         if (player.costume === "preschooler" && player.party[0] === player.starter) {
             var c = costumeData.preschooler;
@@ -1945,10 +2053,11 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
             }
+            var revealName = currentDisplay !== currentPokemon ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
             if (ball == "spy") {
-                safaribot.sendAll("Some stealthy person caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendAll("Some stealthy person caught the " + revealName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendAll(name + " caught the " + pokeName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendAll(name + " caught the " + revealName + " with a " + cap(ball) + " Ball and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
             }
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with a " + cap(ball) + " Ball! You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             player.pokemon.push(currentPokemon);
@@ -2005,6 +2114,7 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
                 currentPokemon = null;
+                currentDisplay = null;
                 wildEvent = false;
             } else {
                 currentThrows -= Math.floor(maxThrows/2 + 5); //each caught pokemon makes the horde more likely to flee by a large amount
@@ -2020,6 +2130,7 @@ function Safari() {
                     player.balls[ball] += 1;
                 }
             }*/
+            pokeName = poke(currentDisplay);
             safaribot.sendMessage(src, "You threw a  " + cap(ball) + " Ball at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You still have " + player.balls[ball] + " " + cap(ball) + " Ball(s)!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
@@ -2040,6 +2151,7 @@ function Safari() {
         }
 
         if (flee) {
+            pokeName = poke(currentPokemon);
             var runmsgs = [
                 "The wild {0} got spooked and ran away!",
                 "The wild {0} got hungry and went somewhere else to find food!",
@@ -2052,6 +2164,7 @@ function Safari() {
             safaribot.sendAll(runmsgs.random().format(pokeName), safchan);
             sys.sendAll("", safchan);
             currentPokemon = null;
+            currentDisplay = null;
             currentPokemonCount = 1;
         }
 
@@ -6139,7 +6252,7 @@ function Safari() {
             safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " to try another challenge!", safchan);
             return;
         }
-        if (cantBecause(src, "atart a battle", ["wild", "contest", "auction", "battle"])) {
+        if (cantBecause(src, "start a battle", ["wild", "contest", "auction", "battle"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -7797,6 +7910,37 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "contestrules" || command === "contestrule") {
+                var out = [
+                    "",
+                    "*** CONTEST RULES EXPLANATION *** ",
+                    "BUFF: Catch rate increased by " + (Math.round((RULES_BUFF - 1) * 100)) + "%.",
+                    "NERF: Catch rate reduced to " + (RULES_NERF * 100) + "%.",
+                    "Buffs/Nerfs do not stack. If a Pokémon is both Buffed and Nerfed, only the Nerf will count.",
+                    "",
+                    "Buffed/Nerfed Types: Pokémon with any of those types gets Buffed/Nerfed.",
+                    "Enforced Types: Pokémon with any type not in this list gets Nerfed.",
+                    "Shiny Pokémon Buffed/Nerfed: Shiny Pokémon gets Buffed/Nerfed.",
+                    "Single-type Pokémon Buffed/Nerfed: Pokémon with only one type gets Buffed/Nerfed.",
+                    "Dual-type Pokémon Buffed/Nerfed: Pokémon with only two types gets Buffed/Nerfed.",
+                    "Legendaries Nerfed: Legendaries Pokémon gets Nerfed.",
+                    "Recommended BST: Pokémon outside of this BST range gets Nerfed.",
+                    "",
+                    "Inverted BST Effectiveness: Lower BST = Better.",
+                    "Inverted Type Effectiveness: Wild Pokémon resisting your Pokémon = Better (example: Using Normal-type against a Steel-type Wild Pokémon).",
+                    "Defensive Mode: Your Pokémon resisting Wild Pokémon = Better (example: Using Bug-type against a Ground-type Wild Pokémon).",
+                    "Defensive Inverted Type Effectiveness: Wild Pokémon being super-effective on your Pokémon = Better (example: Using Ground-type against an Ice-type Wild Pokémon).",
+                    "",
+                    "Allowed/Forbidden Balls: Balls not allowed cannot be thrown.",
+                    "Reward: Different items given to the contest winner.",
+                    ""
+                ];
+                
+                for (var e = 0; e < out.length; e++) {
+                    sys.sendMessage(src, out[e], safchan);
+                }
+                return true;
+            }
         } else {
             safaribot.sendMessage(src, "You can't play Safari while it is updating.", safchan);
             return true;
@@ -8495,6 +8639,7 @@ function Safari() {
                         safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentPokemon) + " away!", safchan);
                     }
                     currentPokemon = null;
+                    currentDisplay = null;
                     currentPokemonCount = 1;
                     wildEvent = false;
                 }
@@ -9151,6 +9296,7 @@ function Safari() {
                 }
 
                 currentPokemon = null;
+                currentDisplay = null;
                 currentTheme = null;
                 wildEvent = false;
                 currentRules = null;
