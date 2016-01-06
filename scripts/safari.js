@@ -23,11 +23,13 @@ function Safari() {
     var altLog = "scriptdata/safarialtlog.txt";
     var lostLog = "scriptdata/safaricommands.txt";
     var tradebansFile = "scriptdata/safaribans.txt";
+    var saltbansFile = "scriptdata/safarisalt.txt";
     var permFile = "scriptdata/safariobjects.txt";
     var rafflePlayersFile = "scriptdata/safari/raffleplayers.txt";
 
     var permObj;
     var tradeBans;
+    var saltBans;
     var rawPlayers;
     var cookedPlayers;
     var rafflePlayers;
@@ -140,6 +142,7 @@ function Safari() {
         flashme: false,
         altlog: [],
         tradeban: 0,
+        truesalt: 0,
         trackers: [],
         cooldowns: {
             ball: 0,
@@ -2043,6 +2046,9 @@ function Safari() {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0);
             finalChance = Math.min(finalChance, maxCloneRate);
         }
+        if (player.truesalt >= now()) {
+            finalChance = 0;
+        }
 
         var rng = Math.random();
         var flee;
@@ -3249,7 +3255,7 @@ function Safari() {
         player.records.baitUsed += 1;
 
         var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
-        if (chance(itemData.bait.successRate + perkBonus)) {
+        if (player.truesalt < now() && chance(itemData.bait.successRate + perkBonus)) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some bait out. The bait attracted a wild Pokémon!", safchan);
             baitCooldown = successfulBaitCount = itemData.bait.successCD + sys.rand(0,9);
             player.records.baitAttracted += 1;
@@ -3297,7 +3303,7 @@ function Safari() {
         var targetId = sys.id(commandData);
         var target = getAvatar(targetId);
 
-        if (commandData.toLowerCase() === preparationFirst) {
+        if (commandData.toLowerCase() === preparationFirst || player.truesalt >= now()) {
             success = 0;
         }
 
@@ -3468,6 +3474,10 @@ function Safari() {
         var plural = amount > 1 ? "s" : "";
 
         var giveReward = true;
+        if (player.truesalt > now()) {
+            reward = ["rock", "wild", "horde", "rock", "rock", "rock", "rock", "wild", "horde", "safari"].random();
+            giveReward = false;
+        }
         switch (reward) {
             case "master": {
                 if (player.balls[reward] >= 1) {
@@ -3794,6 +3804,9 @@ function Safari() {
 
         var giveReward = true;
         var showMsg = true;
+        if (player.truesalt >= now()) {
+            reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
+        }
         switch (reward) {
             case "rare": {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found a " + finishName(reward) + " behind a bush!</b>", safchan);
@@ -4768,7 +4781,7 @@ function Safari() {
         if (isNPC) {
             var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 1;
             this.selfPowerMin = 10 * costumeBonus;
-            this.selfPowerMax = 100 * costumeBonus;
+            this.selfPowerMax = 100 * costumeBonus * (player1.truesalt >= now() ? 0.35 : 1);
 
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
@@ -6990,6 +7003,12 @@ function Safari() {
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.add(target.id, target.balls.entry);
             rafflePlayers.save();
+            
+            if (saltBans.hash.hasOwnProperty(player.id) || saltBans.hash.hasOwnProperty(target.id)) {
+                saltBans.add(player.id, player.truesalt);
+                saltBans.add(target.id, target.truesalt);
+                saltBans.save();
+            }
 
             sys.appendToFile(altLog, now() + "|||" + name1 + " <--> " + name2 + "|||" + sys.name(user) + "\n");
         } else {
@@ -7022,6 +7041,12 @@ function Safari() {
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.remove(name1.toLowerCase());
             rafflePlayers.save();
+            
+            if (saltBans.hash.hasOwnProperty(name1.toLowerCase())) {
+                saltBans.add(player.id, player.truesalt);
+                saltBans.remove(name1.toLowerCase());
+                saltBans.save();
+            }
 
             if (src) {
                 safaribot.sendMessage(src, "You passed your Safari data to " + name2.toCorrectCase() + "!", safchan);
@@ -7416,6 +7441,7 @@ function Safari() {
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/flashme: Toggle whether or not you get flashed when a contest starts.",
             "/themes: View available contest themes.",
+            "/contestrules: For information about contest rules.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
@@ -7427,6 +7453,7 @@ function Safari() {
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
             "/altlog [amount]։[lookup]: Returns a list Safari save transfers. Amount and Lookup works the same as /tradelog.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
+            "/salt [player]։[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
@@ -7859,7 +7886,16 @@ function Safari() {
                     var evoData = evolutions[species];
                     var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.15 : 1));
                     var evo = evoData.evo;
-                    safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (!info.shiny ? " (" + Math.floor(candiesRequired *  1.15) + " if shiny)" : "") + ". ", safchan);
+                    
+                    var conditionals = [];
+                    if (!info.shiny) {
+                        conditionals.push(Math.floor(candiesRequired *  1.15) + " if shiny");
+                    }
+                    if (player && player.costumes.contains("breeder")) {
+                        conditionals.push(Math.floor(candiesRequired * costumeData.breeder.rate) + " if using Breeder Costume");
+                    }
+                    
+                    safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "Candy Dust") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
                 }
                 if (!isMega(info.num) && species in megaEvolutions) {
                     safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
@@ -8121,6 +8157,77 @@ function Safari() {
                     }
                 } else {
                     safaribot.sendMessage(src, "Trade Bans file not found!", safchan);
+                }
+                return true;
+            }
+            if (command === "salt") {
+                var info = commandData.split(":");
+                var name = info[0];
+                if (info.length < 2) {
+                    safaribot.sendMessage(src, "Please set a duration!", safchan);
+                    return true;
+                }
+
+                var duration = info[1];
+                if (duration != -1) {
+                    duration = utilities.getSeconds(info[1]);
+                }
+                var player = getAvatarOff(name);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+
+                var self = utilities.non_flashing(sys.name(src).toCorrectCase());
+                if (duration === 0) {
+                    player.truesalt = 0;
+                    safaribot.sendMessage(src, name + " has been de-salted!", safchan);
+                    safari.saveGame(player);
+                    saltBans.remove(player.id);
+                } else {
+                    var length;
+                    if (duration == -1) {
+                        length = "permanently";
+                        player.truesalt = 2147483000000;
+                    } else {
+                        length = "for " + utilities.getTimeString(duration);
+                        player.truesalt = now() + duration * 1000;
+                    }
+                    safari.saveGame(player);
+                    safaribot.sendMessage(src, name + " has been salted " + length + "!", safchan);
+                    saltBans.add(player.id, player.truesalt);
+                }
+                saltBans.removeIf(function(obj, e) {
+                    return parseInt(obj.get(e), 10) === 0 || parseInt(obj.get(e), 10) < now();
+                });
+                saltBans.save();
+                return true;
+            }
+            if (command === "saltbans") {
+                if (saltBans) {
+                    var out = [], val, currentTime = now();
+                    for (var b in saltBans.hash) {
+                        if (saltBans.hash.hasOwnProperty(b)) {
+                            val = parseInt(saltBans.hash[b], 10);
+                            if (val > currentTime) {
+                                out.push(b.toCorrectCase() + " is salted until " + (new Date(val).toUTCString()) + ".");
+                            } else if (val == -1) {
+                                out.push(b.toCorrectCase() + " is permanently salted.");
+                            }
+                        }
+                    }
+                    if (out.length > 0) {
+                        sys.sendMessage(src, "", safchan);
+                        sys.sendMessage(src, "*** SAFARI SALT BANS ***", safchan);
+                        for (b = 0; b < out.length; b++) {
+                            safaribot.sendMessage(src, out[b], safchan);
+                        }
+                        sys.sendMessage(src, "", safchan);
+                    } else {
+                        safaribot.sendMessage(src, "No one is currently salted!", safchan);
+                    }
+                } else {
+                    safaribot.sendMessage(src, "Salt Bans file not found!", safchan);
                 }
                 return true;
             }
@@ -8976,6 +9083,7 @@ function Safari() {
         cookedPlayers = new MemoryHash(deletedSaveFiles);
         rafflePlayers = new MemoryHash(rafflePlayersFile);
         tradeBans = new MemoryHash(tradebansFile);
+        saltBans = new MemoryHash(saltbansFile);
         permObj = new MemoryHash(permFile);
         try {
             npcShop = JSON.parse(permObj.get("npcShop"));
@@ -9257,14 +9365,14 @@ function Safari() {
                         if (contestantsCount[e] > 0 && player) {
                             playerId = sys.id(e);
                             amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3.25), 1);
-                            player.balls.bait += amt;
-                            safari.saveGame(player);
                             if (playerId) {
                                 if (e in contestCatchers) {
                                     safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                                 }
                                 safaribot.sendMessage(playerId, "You received " + amt + " Bait(s) for participating in the contest!", safchan);
                             }
+                            rewardCapCheck(player, "bait", amt);
+                            safari.saveGame(player);
                         }
                     }
                 }
