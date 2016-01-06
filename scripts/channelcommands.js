@@ -411,7 +411,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.mute(src, tarName, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
+        poChannel.mute(src, tarName, {"time": time, "reason": reason}, SESSION.users(src).smute.active);
         return;
     }
     if (command === "cunmute") {
@@ -522,7 +522,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.ban(src, tarName, {'time': time, 'reason': reason});
+        poChannel.ban(src, tarName, {"time": time, "reason": reason});
         return;
     }
     if (command === "cunban") {
