@@ -1512,7 +1512,7 @@ function Safari() {
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
         
-        currentDisplay = [132, 151, 570, 571].contains(num) ? sys.rand(1, 722) : num;
+        currentDisplay = ([132, 151, 570, 571].contains(num) ? sys.rand(1, 722) : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
         var currentId = poke(currentPokemonDisplay);
         
@@ -2053,7 +2053,7 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
             }
-            var revealName = currentDisplay !== currentPokemon ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
+            var revealName = currentDisplay != currentPokemon ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
             if (ball == "spy") {
                 safaribot.sendAll("Some stealthy person caught the " + revealName + " with a " + cap(ball) + " Ball and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
@@ -6217,7 +6217,7 @@ function Safari() {
             },
             crimson: {
                 name: "Trainer Crimson",
-                party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702],
+                party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
                 power: [200, 380],
                 postBattle: postBattle,
                 postArgs: {
@@ -7841,7 +7841,9 @@ function Safari() {
                 }
 
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendMessage(src, info.name + "'s BST is " + getBST(info.num) + ".", safchan);
+                var type1 = sys.type(sys.pokeType1(info.num));
+                var type2 = sys.type(sys.pokeType2(info.num));
+                safaribot.sendMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" +(type1 + (type2 === "???" ? "" : "/" + type2))+ "]", safchan);
                 var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
