@@ -1,5 +1,7 @@
+/*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
+/*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
+/*jslint continue: true, sloppy: true, vars: true, evil: true, plusplus: true*/
 /*global exports, require, SESSION, sys, script, channelbot, Config, normalbot, sendChanHtmlAll, utilities, staffchannel, sachannel, watchchannel, revchan, getSeconds*/
-
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     var html_escape = require("utilities.js").html_escape;
     var poChannel = SESSION.channels(channel);
@@ -20,12 +22,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             SESSION.channels(channel).members = [];
         }
         if (commandData === "~") {
-            var ret = {};
-            ret.members = SESSION.channels(channel).members;
-            ret.operators = SESSION.channels(channel).operators;
-            ret.admins = SESSION.channels(channel).admins;
-            ret.owners = SESSION.channels(channel).masters;
-            sys.sendMessage(src, "+cauth: " + JSON.stringify(ret), channel);
+            var data = {
+                members: SESSION.channels(channel).members,
+                operators: SESSION.channels(channel).operators,
+                admins: SESSION.channels(channel).admins,
+                owners: SESSION.channels(channel).masters
+            };
+            sys.sendMessage(src, "+cauth: " + JSON.stringify(data), channel);
             return;
         }
         var x, ownersArr = [], adminsArr = [], modsArr = [], membersArr = [];
@@ -114,7 +117,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         channelbot.sendMessage(src, "This channel is already registered.", channel);
         return;
     }
-    if (command === "crules" || command === "channelrules") { 
+    if (command === "crules" || command === "channelrules") {
         var x, rules = poChannel.getRules();
         if (rules.length === 0) {
             channelbot.sendMessage(src, "No rules defined for this channel, server rules may apply", channel);
@@ -127,73 +130,73 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (rule[1].length > 0) {
                 sys.sendMessage(src, rule[1], channel);
             }
-         }
-         return;
+        }
+        return;
     }
-    if (command == "passcauth") {
+    if (command === "passcauth") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Use /passcauth [name]", channel);
             return;
         }
-        var oldname = sys.name(src).toLowerCase();
+        var oldName = sys.name(src).toLowerCase();
         var action = commandData.split("*"); //useless, but doesn't break comptability, can still use /passcauth name*position but position just won't do anything
-        var newname = action[0].toLowerCase();
-        if (sys.id(newname) === undefined) {
+        var newName = action[0].toLowerCase();
+        if (sys.id(newName) === undefined) {
             channelbot.sendMessage(src, "Your target is offline", channel);
             return;
         }
-        if (!sys.dbRegistered(newname)) {
+        if (!sys.dbRegistered(newName)) {
             channelbot.sendMessage(src, "That account isn't registered so you can't give it channel authority!", channel);
             return;
         }
-        if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+        if (sys.ip(sys.id(newName)) !== sys.ip(src)) {
             channelbot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
             return;
         }
         if (poChannel.isChannelOwner(src)) {
-            if (poChannel.masters.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Owner!", channel);
+            if (poChannel.masters.indexOf(newName) > -1) {
+                channelbot.sendMessage(src, newName + " is already a Channel Owner!", channel);
                 return;
             }
-            poChannel.masters.splice(poChannel.masters.indexOf(oldname),1);
-            poChannel.masters.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newname + "!", channel);
+            poChannel.masters.splice(poChannel.masters.indexOf(oldName), 1);
+            poChannel.masters.push(newName);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Owner to " + newName + "!", channel);
             return;
         }
         if (poChannel.isChannelAdmin(src)) {
-            if (poChannel.admins.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Admin!", channel);
+            if (poChannel.admins.indexOf(newName) > -1) {
+                channelbot.sendMessage(src, newName + " is already a Channel Admin!", channel);
                 return;
             }
-            poChannel.admins.splice(poChannel.admins.indexOf(oldname),1);
-            poChannel.admins.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Admin to " + newname + "!", channel);
+            poChannel.admins.splice(poChannel.admins.indexOf(oldName), 1);
+            poChannel.admins.push(newName);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Admin to " + newName + "!", channel);
             return;
         }
         if (poChannel.isChannelOperator(src)) {
-            if (poChannel.operators.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Mod!", channel);
+            if (poChannel.operators.indexOf(newName) > -1) {
+                channelbot.sendMessage(src, newName + " is already a Channel Mod!", channel);
                 return;
             }
-            poChannel.operators.splice(poChannel.operators.indexOf(oldname),1);
-            poChannel.operators.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newname + "!", channel);
+            poChannel.operators.splice(poChannel.operators.indexOf(oldName), 1);
+            poChannel.operators.push(newName);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Mod to " + newName + "!", channel);
             return;
         }
         if (poChannel.isChannelMember(src)) {
-            if (poChannel.members.indexOf(newname) > -1) {
-                channelbot.sendMessage(src, newname + " is already a Channel Member!", channel);
+            if (poChannel.members.indexOf(newName) > -1) {
+                channelbot.sendMessage(src, newName + " is already a Channel Member!", channel);
                 return;
             }
-            poChannel.members.splice(poChannel.members.indexOf(oldname),1);
-            poChannel.members.push(newname);
-            channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newname + "!", channel);
+            poChannel.members.splice(poChannel.members.indexOf(oldName), 1);
+            poChannel.members.push(newName);
+            channelbot.sendAll(sys.name(src) + " transferred their Channel Membership to " + newName + "!", channel);
             return;
         }
         channelbot.sendMessage(src, "You don't have sufficient channel auth to pass that position.", channel);
         return;
     }
-    
+
     if (command === "topic") {
         //Mods shouldn't be able to change topic of private channels
         if (poChannel.isChannelOperator(src) || (sys.auth(src) === 1 && script.isPOChannel(channel))) {
@@ -203,7 +206,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    
+
     if (command === "topicadd") {
         if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
             SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
@@ -217,11 +220,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, "Correct usage is /" + command + " [number]. Separate multiple part numbers with a space.", channel);
             return;
         }
-        var parts = commandData.indexOf(":") !== -1 ? commandData.split(":") : commandData.split(" ");
-        var topic = SESSION.channels(channel).topic, duplicates = [];
+        var i,
+            parts = commandData.indexOf(":") !== -1 ? commandData.split(":") : commandData.split(" "),
+            topic = SESSION.channels(channel).topic,
+            duplicates = [];
         topic = topic.split(Config.topic_delimiter);
-        for (var i = 0; i < parts.length; i++) {
-            var part = parseInt(parts[i], 10), 
+        for (i = 0; i < parts.length; i++) {
+            var part = parseInt(parts[i], 10),
                 pospart = topic.length + part + 1;
             if (part < 0 && pospart > 0) {
                 parts.splice(i, 1, pospart);
@@ -231,33 +236,33 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (isNaN(part) || part > topic.length || pospart < 0) {
                 channelbot.sendMessage(src, "Parts must be a number from 1 to " + topic.length + "!", channel);
                 return;
-            } else if (duplicates.indexOf(part) !== -1) {
+            }
+            if (duplicates.indexOf(part) !== -1) {
                 channelbot.sendMessage(src, "You can't remove part " + part + " twice!", channel);
                 return;
             }
             duplicates.push(part);
         }
         // Sort by largest numbers first to avoid interfering with earlier parts after removal
-        parts.sort(function(a, b) { return b - a; }).forEach(function(part) {
+        parts.sort(function (a, b) { return b - a; }).forEach(function (part) {
             topic.splice(part - 1, 1);
         });
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
-    }   
+    }
     if (command === "topicparts") {
         var topic = SESSION.channels(channel).topic;
-        if (typeof topic == "string" && topic !== "") {
+        if (typeof topic === "string" && topic !== "") {
             var i = 0;
-            topic = topic.split(" | ").map(function(part) { 
+            topic = topic.split(" | ").map(function (part) {
                 return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
             }).join(" | ");
             // HTML isn't necessary, but it makes the number more obvious
             sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
-            return;
         } else {
             channelbot.sendMessage(src, "No topic set for this channel.", channel);
-            return;
         }
+        return;
     }
     if (command === "updatepart") {
         if (commandData === undefined) {
@@ -277,11 +282,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.channels(channel).setTopic(src, topic.join(Config.topic_delimiter));
         return;
     }
-    
+
     if (!poChannel.isChannelOperator(src)) {
         return "no command";
     }
-    
+
     if (command === "lt" || command === "lovetap") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
@@ -292,25 +297,25 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.kick(tar, channel);
         return;
     }
-    if (command == "ck" || command == "chankick") {
+    if (command === "ck" || command === "chankick") {
         if (tar === undefined || !sys.isInChannel(tar, channel)) {
             normalbot.sendMessage(src, "Choose a valid target to kick", channel);
             return;
         }
-        normalbot.sendAll(sys.name(src) + " kicked "+commandData+" from the channel!", channel);
+        normalbot.sendAll(sys.name(src) + " kicked " + commandData + " from the channel!", channel);
         sys.kick(tar, channel);
         return;
     }
-    if (command == "invite") {
+    if (command === "invite") {
         if (tar === undefined) {
             channelbot.sendMessage(src, "Choose a valid target for invite!", channel);
             return;
         }
-        if (sys.isInChannel(tar, channel) && SESSION.channels(channel).canJoin(tar) == "allowed") {
+        if (sys.isInChannel(tar, channel) && SESSION.channels(channel).canJoin(tar) === "allowed") {
             channelbot.sendMessage(src, "Your target already sits here!", channel);
             return;
         }
-        if (SESSION.channels(channel).canJoin(tar) == "banned") {
+        if (SESSION.channels(channel).canJoin(tar) === "banned") {
             channelbot.sendMessage(src, "Your target is banned from this channel!", channel);
             return;
         }
@@ -320,10 +325,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         if (!sys.isInChannel(tar, channel)) {
-            channelbot.sendMessage(tar, "" + sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
+            channelbot.sendMessage(tar, sys.name(src) + " would like you to join #" + sys.channel(channel) + "!");
         }
         var guardedChans = [staffchannel, sachannel, watchchannel, revchan];
-        if ((sys.auth(tar) < SESSION.channels(channel).inviteonly || guardedChans.indexOf(channel) !== -1) && SESSION.channels(channel).canJoin(tar) != "allowed") {
+        if ((sys.auth(tar) < SESSION.channels(channel).inviteonly || guardedChans.indexOf(channel) !== -1) && SESSION.channels(channel).canJoin(tar) !== "allowed") {
             poChannel.issueAuth(src, commandData, "member");
         } else {
             channelbot.sendMessage(src, "Your target was invited.", channel);
@@ -331,9 +336,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         SESSION.users(src).inviteDelay = (new Date()).getTime() + 8000;
         return;
     }
-    if (command == "member") {
+    if (command === "member") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to make a member!", channel);
+            return;
         }
         poChannel.issueAuth(src, commandData, "member");
         return;
@@ -341,21 +347,22 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "uninvite" || command === "demember" || command === "deinvite" || command === "dismember") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to remove membership from!", channel);
+            return;
         }
         poChannel.takeAuth(src, commandData, "member");
         if (tar !== undefined) {
             if (sys.isInChannel(tar, channel) && (command === "uninvite" || command === "deinvite")) {
                 sys.kick(tar, channel);
-                channelbot.sendAll("And "+commandData+" was gone!", channel);
+                channelbot.sendAll("And " + commandData + " was gone!", channel);
             }
         }
         return;
     }
-    if (command == "cmeon") {
+    if (command === "cmeon") {
         script.meon(src, sys.channel(channel));
         return;
     }
-    if (command == "cmeoff") {
+    if (command === "cmeoff") {
         /*if (channel === 0 || channel == tourchannel) {
             normalbot.sendMessage(src, "/me can't be turned off here.", channel);
             return;
@@ -363,28 +370,29 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.meoff(src, sys.channel(channel));
         return;
     }
-    if (command == "csilence" || command === "csilenceoff") {
-        if (command === "csilenceoff" || commandData === "off") {        
+    if (command === "csilence" || command === "csilenceoff") {
+        if (command === "csilenceoff" || commandData === "off") {
             script.silenceoff(src, sys.channel(channel));
         } else {
-            if (typeof(commandData) == "undefined") {
+            if (commandData === undefined) {
                 commandData = "permanent";
             }
             script.silence(src, commandData, sys.channel(channel));
         }
         return;
     }
-    if (command == "cmute") {
+    if (command === "cmute") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to mute in the channel!", channel);
+            return;
         }
         var i = commandData.indexOf(":"),
             j = commandData.lastIndexOf(":"),
             time = 0,
             reason = "",
-            tarname = "";
+            tarName = "";
         if (i !== -1) {
-            tarname = commandData.substring(0, i);
+            tarName = commandData.substring(0, i);
             var timeString = commandData.substring(j + 1, commandData.length);
             if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
                 time = getSeconds(timeString);
@@ -392,21 +400,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 time = 0;
                 reason = commandData.slice(i + 1);
                 j = i;
-            } 
+            }
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
             }
         } else {
-            tarname = commandData;
+            tarName = commandData;
         }
-        if (sys.dbIp(tarname) === undefined) {
+        if (sys.dbIp(tarName) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.mute(src, tarname, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
+        poChannel.mute(src, tarName, {'time': time, 'reason': reason}, SESSION.users(src).smute.active);
         return;
     }
-    if (command == "cunmute") {
+    if (command === "cunmute") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to unmute in the channel!", channel);
         }
@@ -414,18 +422,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "cmutes") {
-        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src));
-        if (cmutelist !== "") {
-            sys.sendHtmlMessage(src, cmutelist, channel);
+        var cmuteList = poChannel.getReadableList("mutelist", sys.os(src));
+        if (cmuteList !== "") {
+            sys.sendHtmlMessage(src, cmuteList, channel);
         } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
     if (command === "cbans") {
-        var cbanlist = poChannel.getReadableList("banlist", sys.os(src));
-        if (cbanlist !== "") {
-            sys.sendHtmlMessage(src, cbanlist, channel);
+        var cbanList = poChannel.getReadableList("banlist", sys.os(src));
+        if (cbanList !== "") {
+            sys.sendHtmlMessage(src, cbanList, channel);
         } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
@@ -436,65 +444,66 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return "no command";
     }
 
-    if (command == "op") {
+    if (command === "op") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to give channel operator permissions!", channel);
+            return;
         }
         poChannel.issueAuth(src, commandData, "mod");
         return;
     }
-    if (command == "deop") {
+    if (command === "deop") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to remove channel operator permissions!", channel);
+            return;
         }
         poChannel.takeAuth(src, commandData, "mod");
         return;
     }
-    if (command == "inviteonly") {
+    if (command === "inviteonly") {
         if (commandData === undefined) {
-            channelbot.sendMessage(src,poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level "+poChannel.inviteonly, channel);
+            channelbot.sendMessage(src, poChannel.inviteonly === 0 ? "This channel is public!" : "This channel is invite only for users below auth level " + poChannel.inviteonly, channel);
             return;
         }
         var value = -1;
-        if (commandData == "off") {
+        if (commandData === "off") {
             value = 0;
-        }
-        else if (commandData == "on") {
+        } else if (commandData === "on") {
             value = 3;
-        }
-        else {
-            value = parseInt(commandData,10);
+        } else {
+            value = parseInt(commandData, 10);
         }
         var message = poChannel.changeParameter(src, "invitelevel", value);
         normalbot.sendAll(message, channel);
         return;
     }
-    if (command == "ctoggleflood") {
+    if (command === "ctoggleflood") {
         poChannel.ignoreflood = !poChannel.ignoreflood;
         channelbot.sendMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.", channel);
         return;
     }
-    if (command == "ctoggleswear") {
+    if (command === "ctoggleswear") {
         poChannel.allowSwear = !poChannel.allowSwear;
         channelbot.sendAll(sys.name(src) + " " + (poChannel.allowSwear ? "" : "dis") + "allowed swearing.", poChannel.id);
         return;
     }
-    if (command == "ctogglecaps") {
+    if (command === "ctogglecaps") {
         poChannel.ignorecaps = !poChannel.ignorecaps;
         channelbot.sendMessage(src, "Now " + (poChannel.ignorecaps ? "" : "dis") + "allowing excessive CAPS-usage.", channel);
         return;
     }
-    if (command == "cban") {
+    if (command === "cban") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to ban from the channel!", channel);
+            return;
         }
         var i = commandData.indexOf(":"),
             j = commandData.lastIndexOf(":"),
             time = 0,
             reason = "",
-            tarname = "";
+            tarName = "";
         if (i !== -1) {
-            tarname = commandData.substring(0, i);
+            tarName = commandData.substring(0, i);
             var timeString = commandData.substring(j + 1, commandData.length);
             if (timeString !== "" && !isNaN(timeString.replace(/s\s|m\s|h\s|d\s|w\s|s|m|h|d|w/gi, ""))) {
                 time = getSeconds(timeString);
@@ -502,31 +511,33 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 time = 0;
                 reason = commandData.slice(i + 1);
                 j = i;
-            } 
+            }
             if (i !== j) {
                 reason = commandData.substring(i + 1, j);
             }
         } else {
-            tarname = commandData;
+            tarName = commandData;
         }
-        if (sys.dbIp(tarname) === undefined) {
+        if (sys.dbIp(tarName) === undefined) {
             normalbot.sendMessage(src, "This user doesn't exist.", channel);
             return;
         }
-        poChannel.ban(src, tarname, {'time': time, 'reason': reason});
+        poChannel.ban(src, tarName, {'time': time, 'reason': reason});
         return;
     }
-    if (command == "cunban") {
+    if (command === "cunban") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to unban from the channel!", channel);
+            return;
         }
         poChannel.unban(src, commandData);
         return;
     }
-    // auth 2 can deregister channel for administration purposes
+
     if (!poChannel.isChannelOwner(src) && sys.auth(src) < 2) {
         return "no command";
     }
+
     if (command === "deregister") {
         if (commandData === undefined) {
             poChannel.takeAuth(src, sys.name(src), "owner");
@@ -535,40 +546,47 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
+
     if (!poChannel.isChannelOwner(src)) {
         return "no command";
     }
-    if (command == "admin") {
+
+    if (command === "admin") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to give channel admin permissions!", channel);
+            return;
         }
         poChannel.issueAuth(src, commandData, "admin");
         return;
     }
-    if (command == "deadmin") {
+    if (command === "deadmin") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to remove channel admin permissions!", channel);
+            return;
         }
         poChannel.takeAuth(src, commandData, "admin");
         return;
     }
-    if (command == "owner") {
+    if (command === "owner") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to give channel owner permissions!", channel);
+            return;
         }
         poChannel.issueAuth(src, commandData, "owner");
         return;
     }
-    if (command == "deowner") {
+    if (command === "deowner") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Please specify a valid target to remove channel owner permissions!", channel);
+            return;
         }
         poChannel.takeAuth(src, commandData, "owner");
         return;
     }
-    if (command == "addrule") {
+    if (command === "addrule") {
         if (commandData === undefined) {
             channelbot.sendMessage(src, "Use /addrule name:description.", channel);
+            return;
         }
         commandData = commandData.split(":");
         if (commandData.length !== 2) {
@@ -576,51 +594,60 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var returnVal = poChannel.addRule(commandData[0], commandData[1]);
-        if (returnVal) {    
+        if (returnVal) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You added a rule", channel);
-         }
+        }
         return;
     }
-    if (command == "removerule") {
+    if (command === "removerule") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "You added a rule", channel);
+            return;
+        }
         var returnVal = poChannel.removeRule(commandData);
-        if (returnVal) {    
+        if (returnVal) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You removed a rule", channel);
         }
         return;
     }
-    if (command == "editrule") {
+    if (command === "editrule") {
+        if (commandData === undefined) {
+            channelbot.sendMessage(src, "Use /editrule index:name:description", channel);
+            return;
+        }
         commandData = commandData.split(":");
         if (commandData.length !== 3) {
             channelbot.sendMessage(src, "Use /editrule index:name:description", channel);
             return;
         }
         var returnVal = poChannel.editRule(commandData[0], commandData[1], commandData[2]);
-        if (returnVal) {    
+        if (returnVal) {
             channelbot.sendMessage(src, returnVal, channel);
         } else {
             channelbot.sendMessage(src, "You edited a rule", channel);
         }
         return;
     }
-     
+
     return "no command";
 };
-exports.help = function(src, channel) {
+exports.help = function (src, channel) {
     var poChannel = SESSION.channels(channel);
     sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
-    sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
     sys.sendMessage(src, "/crules: To see a list of the current channels rules.", channel);
+    sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
+    sys.sendMessage(src, "/topic [topic]: Displays current channel topic. Changing the topic however requires channel mod or higher.", channel);
+    sys.sendMessage(src, "/topicparts: Displays topic with number highlighted parts.", channel);
     if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Member commands ***", channel);
         sys.sendMessage(src, "/passcauth [name]: Passes channel authority to a new alt. New name must be registered, online, and have the same IP as the old name. Valid positions are member, mod (or op), admin, and owner.", channel);
     }
     if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Mod commands ***", channel);
-        sys.sendMessage(src, "/topic [topic]: Sets the topic of a channel. Only works if you're the first to log on a channel or have auth there. Displays current topic instead if no new one is given.", channel);
         sys.sendMessage(src, "/topicadd [message]: Uses the topic message separator and adds your message to the end of the current channel topic.", channel);
         sys.sendMessage(src, "/removepart [number]: Removes the part in the channel topic that is identified by the number.", channel);
         sys.sendMessage(src, "/updatepart [number] [message]: Changes the part in the channel topic that is identified by the number to your message.", channel);
