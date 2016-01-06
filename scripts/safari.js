@@ -6998,6 +6998,9 @@ function Safari() {
                 this.clearPlayer(targetId);
                 safaribot.sendMessage(targetId, "You swapped Safari data with " + name1.toCorrectCase() + "!", safchan);
             }
+            if (byAuth) {
+                safaribot.sendMessage(user, "You swapped Safari between " + name1.toCorrectCase() + " and " + name2.toCorrectCase() + "!", safchan);
+            }
             this.saveGame(player);
             this.saveGame(target);
             rafflePlayers.add(player.id, player.balls.entry);
@@ -7053,6 +7056,9 @@ function Safari() {
             }
             if (targetId) {
                 safaribot.sendMessage(targetId, name1.toCorrectCase() + " passed their Safari data to you!", safchan);
+            }
+            if (byAuth) {
+                safaribot.sendMessage(user, "You passed " + name1.toCorrectCase() + "'s Safari data to " + name2.toCorrectCase() + "!", safchan);
             }
             sys.appendToFile(altLog, now() + "|||" + name1 + " --> " + name2 + "|||" + sys.name(user) + "\n");
         }
@@ -7452,6 +7458,7 @@ function Safari() {
             "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
             "/altlog [amount]։[lookup]: Returns a list Safari save transfers. Amount and Lookup works the same as /tradelog.",
+            "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
             "/salt [player]։[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
@@ -8276,6 +8283,16 @@ function Safari() {
                 }
 
                 safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
+                return true;
+            }
+            
+            if (command === "transferalt") {
+                var data = commandData.split(":");
+                if (data.length < 2) {
+                    safaribot.sendMessage(src, "You need to define 2 names! Use /transferalt Name1:Name2 for that!");
+                    return true;
+                }
+                safari.transferAlt(data[0], data[1], src);
                 return true;
             }
             if (command === "tradelog") {
