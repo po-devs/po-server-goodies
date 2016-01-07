@@ -7343,7 +7343,7 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
-            "/tourgift [tier]։[1st]*[2nd]*[3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!"
+            "/tourgift [1st]*[2nd]*[3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!"
         ];
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             help.push.apply(help, adminHelp);
@@ -8395,13 +8395,7 @@ function Safari() {
                 return true;
             }
             if (command === "tourgift") {
-                var temp = commandData.split(":");
-                var tier = utilities.find_tier(temp[0]);
-                if (!tier) {
-                    safaribot.sendMessage(src, temp + " is not a valid tier!", safchan);
-                    return true;
-                }
-                var targets = temp[1].split("*");
+                var targets = commandData.split("*");
                 var prizeLevel = 1, placing = 1;
                 var player, invalidPlayers = [], out = [], prizeArray;
                 for (var i in targets) {
@@ -8435,7 +8429,7 @@ function Safari() {
                     safaribot.sendMessage(src, "No names supplied match existing Safari Accounts.", safchan);
                     return true;
                 }
-                safaribot.sendHtmlAll("<b>" + tier + " Event Prizes:</b> " + out.join(" | "), safchan);
+                safaribot.sendHtmlAll("<b>Tour Event Prizes:</b> " + out.join(" | "), safchan);
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, "The following players did not match any save: " + invalidPlayers.join(", "), safchan);
                 }
