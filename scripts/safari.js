@@ -1504,6 +1504,9 @@ function Safari() {
         }
         if (isLegendary(num) && !dexNum) {
             amount = 1;
+            if (contestCount > 0 && contestCount % 3 === 0) {
+                wildEvent = true;
+            }
         }
 
         if (!ignoreForms && num in wildForms) {
@@ -1901,7 +1904,7 @@ function Safari() {
         }
         if (!currentPokemon) {
             if (suppress) {
-                safaribot.sendMessage(src, "Someone caught the wild Pokémon before you could throw!", safchan);
+                safaribot.sendMessage(src, "Someone caught the wild Pokémon before you could finish preparing your throw!", safchan);
             } else {
                 safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
             }
@@ -5455,9 +5458,13 @@ function Safari() {
             return;
         }
         var userName = sys.name(src).toLowerCase();
-        if (data.toLowerCase() == "cancel" && userName in tradeRequests) {
-            safaribot.sendMessage(src, "You cancelled your trade request with " + tradeRequests[userName].target + "!", safchan);
-            delete tradeRequests[userName];
+        if (data.toLowerCase() == "cancel") {
+            if (userName in tradeRequests) {
+                safaribot.sendMessage(src, "You cancelled your trade request with " + tradeRequests[userName].target.toCorrectCase() + "!", safchan);
+                delete tradeRequests[userName];
+            } else {
+                safaribot.sendMessage(src, "You have no pending trades initiated by you!", safchan);
+            }
             return;
         }
         if (cantBecause(src, "trade", ["wild", "contest", "auction", "battle"])) {
@@ -5470,15 +5477,21 @@ function Safari() {
             safaribot.sendMessage(src, "You can trade a Pokémon (type the name or number), money (type $150) or item (type @master).", safchan);
             return;
         }
+        var autoCancel;
+        var targetName = info[0].toLowerCase();
         if (userName in tradeRequests) {
-            safaribot.sendHtmlMessage(src, "You already have a pending trade! To cancel it, type '<a href='po:send//trade cancel'>/trade cancel</a>'.", safchan);
-            return;
+            if (tradeRequests[userName].target.toLowerCase() === targetName) {
+                safaribot.sendHtmlMessage(src, "You already have a pending trade with this person! To cancel it, type '<a href='po:send//trade cancel'>/trade cancel</a>'.", safchan);
+                return;
+            } else {
+                autoCancel = true;
+            }
         }
 
         if (!validPlayers("target", src, info[0].toLowerCase())) {
             return;
         }
-        var targetId = sys.id(info[0].toLowerCase());
+        var targetId = sys.id(targetName);
         var target = getAvatar(targetId);
         if (target.tradeban > now()) {
             safaribot.sendMessage(src, "This person cannot receive trade requests right now!", safchan);
@@ -5508,8 +5521,6 @@ function Safari() {
             return;
         }
 
-        var targetName = sys.name(targetId).toLowerCase();
-
         var offerName = this.translateTradeOffer(offer);
         var requestName = this.translateTradeOffer(request);
         var offerInput = this.tradeOfferInput(offer);
@@ -5522,6 +5533,12 @@ function Safari() {
 
         sys.sendMessage(src, "" , safchan);
         sys.sendMessage(targetId, "" , safchan);
+        
+        if (autoCancel) {
+            safaribot.sendHtmlMessage(src, "You cancelled your trade with " + tradeRequests[userName].target.toCorrectCase() + " to start a new trade with " + targetName.toCorrectCase() + ".", safchan);
+            delete tradeRequests[userName];
+        }
+
         safaribot.sendMessage(src, "You are offering a " + offerName + " to " + sys.name(targetId) + " for their " + requestName+ "!" , safchan);
         safaribot.sendMessage(targetId, sys.name(src) + " is offering you a " + offerName + " for your " + requestName + "!" , safchan);
 
@@ -6762,6 +6779,7 @@ function Safari() {
         this.assignIdNumber(player);
         this.saveGame(player);
         safaribot.sendMessage(src, "You received a " + poke(num) + ", 30 Safari Balls, 10 Baits, 5 Great Balls, 1 Ultra Ball and 15 Itemfinder charges!", safchan);
+        safaribot.sendHtmlMessage(src, "For Basic Help: <b><font color='DarkOrchid'>/help</font></b> | To throw a ball: <b><font color='DarkOrchid'>/catch</font></b> | To bait a Pokémon: <b><font color='DarkOrchid'>/bait</font></b> | After catching your first Pokémon use <b><font color='DarkOrchid'>/getcostumes</font></b> to receive a Preschooler costume then use <b><font color='DarkOrchid'>/dressup Preschooler</font></b> to wear the costume and get a bonus on catching Pokémon while using your starter!", safchan);
     };
     this.saveGame = function(player) {
         rawPlayers.add(player.id, JSON.stringify(player));
