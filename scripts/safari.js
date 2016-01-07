@@ -1889,10 +1889,14 @@ function Safari() {
         }
         var player = getAvatar(src);
         if (!suppress && !bypass) {
+            var mess = "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
             for (var t = 0; t < player.trackers.length; t++) {
                 if (sys.id(player.trackers[t]) !== undefined) {
-                    safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)", safchan);
+                    safaribot.sendMessage(sys.id(player.trackers[t]), mess, safchan);
                 }
+            }
+            if (sys.id("Safari Warden") !== undefined) {
+                safaribot.sendMessage(sys.id("Safari Warden"), mess, safchan);
             }
         }
         if (!currentPokemon) {
@@ -3194,9 +3198,14 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
+        var mess = "[Track] " + sys.name(src) + " is using /bait " + commandData;
         for (var t = 0; t < player.trackers.length; t++) {
-            safaribot.sendMessage(sys.id(player.trackers[t]), "[Track] " + sys.name(src) + " is using /bait " + commandData, safchan);
+            safaribot.sendMessage(sys.id(player.trackers[t]), mess, safchan);
         }
+        if (sys.id("Safari Warden") !== undefined) {
+            safaribot.sendMessage(sys.id("Safari Warden"), mess, safchan);
+        }
+
         if (cantBecause(src, "throw bait", ["wild", "contest", "auction", "battle", "item"], "bait")) {
             return;
         }
