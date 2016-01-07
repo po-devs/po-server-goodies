@@ -1,6 +1,4 @@
-/*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
-/*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
-/*jslint continue: true, sloppy: true, vars: true, evil: true, plusplus: true*/
+/*jshint laxbreak: true, shadow: true, undef: true, evil: true, trailing: true, proto: true, withstmt: true*/
 /*global exports, require, SESSION, sys, script, channelbot, Config, normalbot, sendChanHtmlAll, utilities, staffchannel, sachannel, watchchannel, revchan, getSeconds*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     var html_escape = require("utilities.js").html_escape;
@@ -603,7 +601,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
     if (command === "removerule") {
         if (commandData === undefined) {
-            channelbot.sendMessage(src, "You added a rule", channel);
+            channelbot.sendMessage(src, "Please enter a rule number to remove.", channel);
             return;
         }
         var returnVal = poChannel.removeRule(commandData);
