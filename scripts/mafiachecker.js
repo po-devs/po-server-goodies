@@ -384,7 +384,7 @@ function mafiaChecker() {
                             }
                             if (commandList.indexOf("redirect") !== -1) {
                                 commonMandatory = commonMandatory.concat(["redirectTarget"]);
-                                commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg"]);
+                                commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg", "redirectActions"]);
                             }
                             if (commandList.indexOf("dummy") !== -1) {
                                 commonOptional = commonOptional.concat(["dummyusermsg", "dummytargetmsg", "dummybroadcastmsg", "dummyPierce"]);
@@ -879,7 +879,7 @@ function mafiaChecker() {
                             
                             if (checkType(action.revealAs, ["string", "array", "number"], comm + ".revealAs")) {
                                 if (typeof action.revealAs == "string") {
-                                    if (action.revealAs !== "*") {
+                                    if ((action.revealAs.charAt(0) !== "*") && (action.revealAs !== "~Inspect~")) {
                                         checkValidRole(action.revealAs, comm + ".revealAs");
                                     }
                                 } else if (Array.isArray(action.revealAs)) {

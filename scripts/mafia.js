@@ -1435,62 +1435,63 @@ function Mafia(mafiachan) {
     };
     this.getRandom = function (arr) {
     	if (!Array.isArray(arr)) return arr;
-    	var indx = Math.floor(arr.length() * Math.random());
+    	var indx = Math.floor(arr.length * Math.random());
     	return arr[indx];
     };
     this.tryEventTheme = function () { //checked at end of a game and during blank every 2 hours.
     	if (!(this.eventsEnabled)) return;
     	if (this.nextEventTime > new Date().getTime()) {
-    		return;
+    	    return;
     	}
     	this.startEvent();
     };
     this.enableEvent = function (src, enable) {
         var srcname = sys.name(src);
     	if (this.eventsEnabled === enable) {
-	    	gamemsg(srcname, "Event themes are already " + (this.eventsEnabled ? "en" : "dis") + "abled!");
-	    	return;
+	    gamemsg(srcname, "Event themes are already " + (this.eventsEnabled ? "en" : "dis") + "abled!");
+	    return;
     	}
     	this.eventsEnabled = enable;
 	    gamemsg(srcname, "Event themes " + (this.eventsEnabled ? "en" : "dis") + "abled!");
 	    return;
     };
 	this.startEvent = function (forced) { //can be force started by sMA
-		if (this.state !== "blank") {
-			return;
+	    if (this.state !== "blank") {
+		return;
+	    }
+	    if (forced) {
+		this.nextEventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
+	    }
+	    else {
+		while (this.nextEventTime < new Date().getTime()) {
+		    this.nextEventTime += 2 * 60 * 60 * 1000;
 		}
-		if (forced) {
-			this.nextEventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
-		}
-		else {
-			while (this.nextEventTime < new Date().getTime()) {
-				this.nextEventTime += 2 * 60 * 60 * 1000;
-			}
-		}
+	    }
     	if (!(this.eventQueue)) {
-    		this.eventQueue = ["default"];
-    		}
+    	    this.eventQueue = ["default"];
+    	    }
     	var etheme = this.eventQueue[0];
     	this.startGame("Event", etheme);
     	this.eventQueue.splice(0,1);
     	if (this.eventQueue.length < 3) {
-    		this.eventQuene.push(this.getRandom(this.eventThemePool));
+    	    this.eventQuene.push(this.getRandom(this.eventThemePool));
     	}
         mafia.isEvent = true;
 	};
     this.addEventTheme = function (src,theme,place) {
         var srcname = sys.name(src);
     	var theme = this.getThemeName(theme);
-    	if (!(theme in this.themeManager.themes)) {
-    		 gamemsg(srcname, "That isn't a theme...");
+    	if (!(theme)) {
+    	    gamemsg(srcname, "That isn't a theme...");
+    	    return;
     	}
     	if (place === "first") {
-    		this.eventQueue.reverse();
-    		this.eventQueue.push(theme);
-    		this.eventQueue.reverse();
+    	    this.eventQueue.reverse();
+    	    this.eventQueue.push(theme);
+    	    this.eventQueue.reverse();
     	}
     	else {
-    		this.eventQueue.push(theme);
+    	    this.eventQueue.push(theme);
     	}
     	gamemsg(srcname, "Theme " + theme + " added to the Event Queue.");
     	this.showEventQueue(src);
@@ -1500,17 +1501,17 @@ function Mafia(mafiachan) {
     	var theme = this.getThemeName(theme);
     	var indx = this.eventQueue.indexOf(theme);
     	if (indx === -1) {
-    		 gamemsg(srcname, "That theme isn't in the queue!");
-    		 return;
+    	    gamemsg(srcname, "That theme isn't in the queue!");
+    	    return;
     	}
     	if (place === "last") {
-    		this.eventQueue.reverse();
-    		indx = this.eventQueue.indexOf(theme);
-    		this.eventQueue.splice(indx,1);
-    		this.eventQueue.reverse();
+    	    this.eventQueue.reverse();
+    	    indx = this.eventQueue.indexOf(theme);
+    	    this.eventQueue.splice(indx,1);
+    	    this.eventQueue.reverse();
     	}
     	else {
-    		this.eventQueue.splice(indx,1);
+    	    this.eventQueue.splice(indx,1);
     	}
     	gamemsg(srcname, "Theme " + theme + " removed from the Event Queue.");
     	this.showEventQueue(src);
@@ -1528,8 +1529,9 @@ function Mafia(mafiachan) {
     this.addToEventPool = function(src,theme) {
         var srcname = sys.name(src);
     	var theme = this.getThemeName(theme);
-    	if (!(theme in this.themeManager.themes)) {
-    		 gamemsg(srcname, "That isn't a theme...");
+    	if (!(theme)) {
+    	    gamemsg(srcname, "That isn't a theme...");
+    	    return;
     	}
     	this.eventThemePool.push(theme);
     	gamemsg(srcname, "Theme " + theme + " added to Event Pool.");
@@ -1682,12 +1684,12 @@ function Mafia(mafiachan) {
         var themes = mafia.themeManager.themes;
         var data = data.toLowerCase();
         for (var x in themes) {
-            if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
+            if ((themes[x].altname && themes[x].altname.toLowerCase() === data) || (themes[x].name.toLowerCase() === data)) {
                 data = themes[x].name.toLowerCase();
-                break;
+                return data;
             }
         }
-        return data;
+        return false;
     };
     this.getCurrentTheme = function(data) {
         var themeName = "default";
@@ -1792,6 +1794,7 @@ function Mafia(mafiachan) {
             }
             gamemsgAll("Type /Join to enter the game!");
             sendChanAll(GREEN_BORDER, mafiachan);
+            sendChanAll("", mafiachan);
         }
         
         var playerson = sys.playerIds();
@@ -2369,6 +2372,37 @@ function Mafia(mafiachan) {
                 }
             }
         }
+    };
+    this.revealAsRole = function (appearAs, role, inspector) {
+	if (typeof appearAs == "string") {
+	    if (appearAs.charAt(0) == "*") {
+		var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
+		var exdata, exrole, excludeRoles = appearAs.substring(1, appearAs.length);
+		while (excludeRoles.indexOf(":") !== -1) { 
+		    exdata = delimSplit(":",excludeRoles);
+		    exrole = exdata[0];
+		    while (rrole.indexOf(exrole) !== -1) {
+		    rrole.splice(rrole.indexOf(exrole),1)
+		    }
+		    if (exrole == "~Inspector~") {
+		    while (rrole.indexOf(inspector) !== -1) {
+			rrole.splice(rrole.indexOf(inspector),1)
+			}
+	    	    }
+		excludeRoles = exdata[1];
+		}
+		if (rrole.length > 0) return(mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]));
+		return (role.translation);
+		} else if (appearAs == "~Inspector~") {
+			return(mafia.theme.trrole(inspector));
+		} else {
+			return(mafia.theme.trrole(appearAs));
+		}
+	    }
+	    if (Array.isArray(inspectMode.revealAs)) {
+		return(mafia.theme.trrole(appearAs[Math.floor(Math.random() * appearAs.length)]));
+	    }
+	    return(role.translation);
     };
     this.kill = function (player, msg) {
         var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
@@ -3087,6 +3121,7 @@ function Mafia(mafiachan) {
                 mafia.usersToShove = {};
                 mafia.mafiaStats.result("dead");
                 mafia.checkDead(CurrentGame.playerCount);
+                mafia.isEvent = false;
                 return;
             }
 
@@ -3792,16 +3827,7 @@ function Mafia(mafiachan) {
                                 } else if (disguise !== undefined) {
                                     inspectedRole = disguise;
                                 } else if (targetMode.revealAs !== undefined) {
-                                    if (typeof targetMode.revealAs == "string") {
-                                        if (targetMode.revealAs == "*") {
-                                            var rrole = Object.keys(mafia.players).map(getPlayerRoleId, mafia);
-                                            inspectedRole = rrole[sys.rand(0, rrole.length)];
-                                        } else {
-                                            inspectedRole = targetMode.revealAs;
-                                        }
-                                    } else if (Array.isArray(targetMode.revealAs)) {
-                                        inspectedRole = targetMode.revealAs[sys.rand(0, targetMode.revealAs.length)];
-                                    }
+                                    inspectedRole = this.revealAsRole(targetMode.revealAs, target.role, player.role.role);
                                 }
 
                                 if (typeof inspectMode.seenSide == "string") {
@@ -3815,7 +3841,7 @@ function Mafia(mafiachan) {
                                     gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g,mafia.theme.trside(inspectedSide)), "Info");
                                 } else {
                                     inspMsg = ("inspectMsg" in Action ? Action.inspectMsg : "~Target~ is the ~Result~!!");
-                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g, mafia.theme.trrole(inspectedRole)), "Info");
+                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g, inspectedRole), "Info");
                                 }
                             }
                             else if (command == "kill") {
@@ -5161,8 +5187,9 @@ function Mafia(mafiachan) {
             for (var t in prevTarget) {
                 var inputTarget = delimSplit(":", prevTarget[t]);
                 var guessedRole = inputTarget[1];
+                guessedRole = delimSplit("@", guessedRole)[0];
                 if (guessedRole === afterCommandData) {
-                    gamemsg(name, "You already used this command (" + command + ") on " + afterCommandData + " (you can only target each role once)." );
+                    gamemsg(name, "You already used this command (" + command + ") on " + afterCommandData + " (you can only target each role once!)." );
                     return;
                 }
             }
@@ -5868,19 +5895,8 @@ function Mafia(mafiachan) {
                     if (target.disguiseRole !== undefined) {
                         revealedRole = mafia.theme.trrole(target.disguiseRole);
                     } else if (inspectMode.revealAs !== undefined) {
-                        if (typeof inspectMode.revealAs == "string") {
-                            if (inspectMode.revealAs == "*") {
-                                var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
-                                revealedRole = mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]);
-                            } else {
-                                revealedRole = mafia.theme.trrole(inspectMode.revealAs);
-                            }
-                        } else if (Array.isArray(inspectMode.revealAs)) {
-                            revealedRole = mafia.theme.trrole(inspectMode.revealAs[Math.floor(Math.random() * inspectMode.revealAs.length)]);
-                        }
-                    } else {
-                        revealedRole = target.role.translation;
-                    }
+                    	revealedRole = this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role)
+                    };
                     if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
                         revealedSide = mafia.theme.trside(inspectMode.seenSide);
                     } else {
