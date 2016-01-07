@@ -8081,6 +8081,9 @@ function Safari() {
                             }
                         }
                     }
+                    if (sys.id("Safari Warden") !== undefined) {
+                        safaribot.sendMessage(sys.id("Safari Warden"), sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
+                    }
                 } else {
                     safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                 }
