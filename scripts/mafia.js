@@ -1481,7 +1481,7 @@ function Mafia(mafiachan) {
     this.addEventTheme = function (src,theme,place) {
         var srcname = sys.name(src);
     	var theme = this.getThemeName(theme);
-    	if (this.themeManager.themes.indexOf(theme) !== -1) {
+    	if (!(theme)) {
     	    gamemsg(srcname, "That isn't a theme...");
     	    return;
     	}
@@ -1529,7 +1529,7 @@ function Mafia(mafiachan) {
     this.addToEventPool = function(src,theme) {
         var srcname = sys.name(src);
     	var theme = this.getThemeName(theme);
-    	if (this.themeManager.themes.indexOf(theme) !== -1) {
+    	if (!(theme)) {
     	    gamemsg(srcname, "That isn't a theme...");
     	    return;
     	}
@@ -1684,12 +1684,12 @@ function Mafia(mafiachan) {
         var themes = mafia.themeManager.themes;
         var data = data.toLowerCase();
         for (var x in themes) {
-            if (themes[x].altname && themes[x].altname.toLowerCase() === data) {
+            if ((themes[x].altname && themes[x].altname.toLowerCase() === data) || (themes[x].name.toLowerCase() === data)) {
                 data = themes[x].name.toLowerCase();
-                break;
+                return data;
             }
         }
-        return data;
+        return false;
     };
     this.getCurrentTheme = function(data) {
         var themeName = "default";
@@ -3121,6 +3121,7 @@ function Mafia(mafiachan) {
                 mafia.usersToShove = {};
                 mafia.mafiaStats.result("dead");
                 mafia.checkDead(CurrentGame.playerCount);
+                mafia.isEvent = false;
                 return;
             }
 
