@@ -1474,7 +1474,7 @@ function Mafia(mafiachan) {
     	this.startGame("Event", etheme);
     	this.eventQueue.splice(0,1);
     	if (this.eventQueue.length < 3) {
-    	    this.eventQuene.push(this.getRandom(this.eventThemePool));
+    	    this.eventQueue.push(this.getRandom(this.eventThemePool));
     	}
         mafia.isEvent = true;
 	};
