@@ -246,10 +246,10 @@ function updateNotice(silent) {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
         sys.writeToFile(Config.dataDir + "notice.html", resp);
-        if (!silent) {
-            sendNotice();
-        }
     });
+    if (!silent) {
+        sendNotice();
+    }
 }
 
 function sendNotice() {
