@@ -4949,7 +4949,7 @@ function Mafia(mafiachan) {
         var hasWarns;
         for (var v in mafia.warningLog[commandData]) {
             var inst = mafia.warningLog[commandData][v];
-            msg = (commandData + " was warned by " + inst[0] + " for " + inst[1] + ".");
+            var msg = (commandData + " was warned by " + inst[0] + " for " + inst[1] + ".");
             if (inst[2] !== undefined) {
                 msg += " (Comments: " + inst[2] + ")";
             }
