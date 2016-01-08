@@ -1763,7 +1763,15 @@ function Safari() {
             }
         }
         
-        var extraRules = buffNerfCount >= 4 ? (buffNerfCount >= 6 ? 0 : 1) : 2;
+        var extraRules = 2;
+        if (buffNerfCount >= 6) {
+            extraRules = 0;
+        } else if (buffNerfCount >= 4) {
+            extraRules = 1;
+        } else if (buffNerfCount <= 1) {
+            extraRules = 3;
+        }
+        
         while (removables.length > extraRules) {
             var toRemove = removables.random();
             if (toRemove == "bst") {
@@ -1834,23 +1842,26 @@ function Safari() {
             out.push("Nerfed: " + readable(nerfed, "and"));
         }
         
-        if (rules.inver) {
-            if (rules.invertedBST) {
-                out.push("Inverted BST & Type Effectiveness");
-            } else if (rules.defensive) {
-                out.push("Weakness Mode");
-            } else {
+        var inver = rules.inver;
+        var invertedBST = rules.invertedBST;
+        var defensive = rules.defensive;
+        if (inver && defensive) {
+            out.push("Weakness Mode");
+            if (invertedBST) {
+                out.push("Inverted BST");
+            }
+        } else if (inver && invertedBST) {
+            out.push("Inverted BST & Type Effectiveness");
+        } else {
+            if (inver) {
                 out.push("Inverted Type Effectiveness");
             }
-        } else if (rules.defensive) {
-            if (rules.invertedBST) {
-                out.push("Resistance Mode");
+            if (invertedBST) {
                 out.push("Inverted BST");
-            } else {
+            }
+            if (defensive) {
                 out.push("Resistance Mode");
             }
-        } else if (rules.invertedBST) {
-            out.push("Inverted BST");
         }
         
         if ("minBST" in rules && "maxBST" in rules) {
@@ -7827,7 +7838,7 @@ function Safari() {
                 var recName = rec, desc;
                 var lowCaseKeys = lbKeys.map(function(x) { return x.toLowerCase(); });
                 if (lowCaseKeys.indexOf(rec) !== -1) {
-                    rec = lbKeys[lowCaseKeys.indexOf(rec)];
+                    rec = recName = lbKeys[lowCaseKeys.indexOf(rec)];
                     desc = lbData[rec].desc;
                 } else {
                     var found = false;
@@ -9554,4 +9565,3 @@ function Safari() {
     };
 }
 module.exports = new Safari();
-
