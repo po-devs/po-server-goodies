@@ -1375,7 +1375,7 @@ function Safari() {
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e))) {
-                ret += "«" + link("/catch " + itemData[e].name, cap(itemData[e].name)) + "» ";
+                ret += "«" + link("/ccatch " + itemData[e].name, cap(itemData[e].name)) + "» ";
                 hasBalls = true;
             }
         }
@@ -1518,20 +1518,23 @@ function Safari() {
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
         
-        currentDisplay = ([132, 151, 570, 571].contains(num) ? sys.rand(1, 722) : num) + (shiny ? "" : 0);
+        var disguise = [132, 151, 570, 571].contains(num);
+        currentDisplay = (disguise ? sys.rand(1, 722) : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
         var currentId = poke(currentPokemonDisplay);
         
+        var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() : 0);
+        
         if (amount > 1) {
             var ret = [];
-            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i><br/>";
+            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + bst + ")</i><br/>";
             for (var i = 0; i < amount; i++) {
                 ret += pokeInfo.sprite(currentPokemonDisplay);
             }
             ret += "</center><hr>";
             sys.sendHtmlAll(ret, safchan);
         } else {
-            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + currentId + " appeared! <i>(BST: " + getBST(currentDisplay) + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", safchan);
+            sys.sendHtmlAll("<hr><center>" + (shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + currentId + " appeared! <i>(BST: " + bst + ")</i>" + (shiny ? "</font>" : "") + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No Master Balls allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", safchan);
         }
         var onChannel = sys.playersOfChannel(safchan);
         for (var e in onChannel) {
@@ -1611,7 +1614,8 @@ function Safari() {
         var getRule = function(name) {
             return rules[name] === "default" ? defaultRules[name] : rules[name];
         };
-
+        
+        var buffNerfCount = 0;
         if ("onlyTypes" in rules && chance(getRule("onlyTypes").chance)) {
             obj = getRule("onlyTypes");
             list = obj.sets.random();
@@ -1622,6 +1626,7 @@ function Safari() {
                 }
             }
             out.excludeTypes = exclude;
+            buffNerfCount += exclude.length;
         } else if ("excludeTypes" in rules) {
             exclude = [];
             obj = getRule("excludeTypes");
@@ -1634,6 +1639,7 @@ function Safari() {
                 }
             }
             out.excludeTypes = exclude;
+            buffNerfCount += exclude.length;
         }
         if ("bonusTypes" in rules) {
             obj = getRule("bonusTypes");
@@ -1647,7 +1653,44 @@ function Safari() {
                 }
             }
             out.bonusTypes = list;
+            buffNerfCount += list.length;
         }
+        if ("singleType" in rules) {
+            var obj = getRule("singleType");
+            if ("nerf" in obj && chance(obj.nerf)) {
+                out.nerfSingle = true;
+                buffNerfCount++;
+            } else if ("buff" in obj && chance(obj.buff)) {
+                out.buffSingle = true;
+                buffNerfCount++;
+            }
+        }
+        if ("dualType" in rules) {
+            var obj = getRule("dualType");
+            if ("nerf" in obj && chance(obj.nerf) && !out.nerfSingle) {
+                out.nerfDual = true;
+                buffNerfCount++;
+            } else if ("buff" in obj && chance(obj.buff) && !out.buffSingle) {
+                out.buffDual = true;
+                buffNerfCount++;
+            }
+        }
+        if ("shiny" in rules) {
+            var obj = getRule("shiny");
+            if ("nerf" in obj && chance(obj.nerf)) {
+                out.nerfShiny = true;
+                buffNerfCount++;
+            } else if ("buff" in obj && chance(obj.buff)) {
+                out.buffShiny = true;
+                buffNerfCount++;
+            }
+        }
+        if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
+            out.noLegendaries = true;
+                buffNerfCount++;
+        }
+        
+        var removables = [];
         if ("onlyBalls" in rules && chance(getRule("onlyBalls").chance)) {
             obj = getRule("onlyBalls");
             list = obj.sets.random();
@@ -1658,11 +1701,18 @@ function Safari() {
                 }
             }
             out.excludeBalls = exclude;
+            if (obj.chance < 1) {
+                removables.push("excludeBalls");
+            }
         } else if ("excludeBalls" in rules) {
             exclude = [];
             obj = getRule("excludeBalls");
+            var canRemove = true;
             for (e in obj) {
                 if (chance(obj[e])) {
+                    if (obj[e] === 1) {
+                        canRemove = false;
+                    }
                     exclude.push(e);
                     if (exclude.length >= 3) {
                         break;
@@ -1670,6 +1720,9 @@ function Safari() {
                 }
             }
             out.excludeBalls = exclude;
+            if (canRemove) {
+                removables.push("excludeBalls");
+            }
         }
         if ("bst" in rules) {
             var bst = getRule("bst");
@@ -1687,42 +1740,39 @@ function Safari() {
                     out.maxBST = sys.rand(bst.max[0], bst.max[1]);
                 }
             }
+            if (bst.maxChance < 1 && bst.minChance < 1) {
+                removables.push("bst");
+            }
         }
         if ("inver" in rules && chance(getRule("inver").chance)) {
             out.inver = true;
+            if (getRule("inver").chance < 1) {
+                removables.push("inver");
+            }
         }
         if ("invertedBST" in rules && chance(getRule("invertedBST").chance)) {
             out.invertedBST = true;
+            if (getRule("invertedBST").chance < 1) {
+                removables.push("invertedBST");
+            }
         }
         if ("defensive" in rules && chance(getRule("defensive").chance)) {
             out.defensive = true;
-        }
-        if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
-            out.noLegendaries = true;
-        }
-        if ("shiny" in rules) {
-            var obj = getRule("shiny");
-            if ("nerf" in obj && chance(obj.nerf)) {
-                out.nerfShiny = true;
-            } else if ("buff" in obj && chance(obj.buff)) {
-                out.buffShiny = true;
+            if (getRule("defensive").chance < 1) {
+                removables.push("defensive");
             }
         }
-        if ("singleType" in rules) {
-            var obj = getRule("singleType");
-            if ("nerf" in obj && chance(obj.nerf)) {
-                out.nerfSingle = true;
-            } else if ("buff" in obj && chance(obj.buff)) {
-                out.buffSingle = true;
+        
+        var extraRules = buffNerfCount >= 4 ? (buffNerfCount >= 6 ? 0 : 1) : 2;
+        while (removables.length > extraRules) {
+            var toRemove = removables.random();
+            if (toRemove == "bst") {
+                delete out.minBST;
+                delete out.maxBST;
+            } else {
+                delete out[toRemove];
             }
-        }
-        if ("dualType" in rules) {
-            var obj = getRule("dualType");
-            if ("nerf" in obj && chance(obj.nerf)) {
-                out.nerfDual = true;
-            } else if ("buff" in obj && chance(obj.buff)) {
-                out.buffDual = true;
-            }
+            removables.splice(removables.indexOf(toRemove), 1);
         }
         if ("rewards" in rules) {
             var rew = getRule("rewards");
@@ -1740,9 +1790,11 @@ function Safari() {
         if (!rules) {
             return "No special rules";
         }
+        var buffed = [];
+        var nerfed = [];
 
         if ("bonusTypes" in rules && rules.bonusTypes.length > 0) {
-            out.push("Buffed Types: " + readable(rules.bonusTypes, "and"));
+            buffed = buffed.concat(rules.bonusTypes);
         }
         if ("excludeTypes" in rules && rules.excludeTypes.length > 0) {
             if (rules.excludeTypes.length > Object.keys(effectiveness).length / 2) {
@@ -1754,35 +1806,53 @@ function Safari() {
                 }
                 out.push("Enforced Types: " + readable(list, "and"));
             } else {
-                out.push("Nerfed Types: " + readable(rules.excludeTypes, "and"));
+                nerfed = nerfed.concat(rules.excludeTypes);
             }
         }
-        if (rules.nerfShiny) {
-            out.push("Shiny Pokémon Nerfed");
-        } else if (rules.buffShiny) {
-            out.push("Shiny Pokémon Buffed");
-        }
         if (rules.nerfSingle) {
-            out.push("Single-type Pokémon Nerfed");
+            nerfed.push("Single-type Pokémon");
         } else if (rules.buffSingle) {
-            out.push("Single-type Pokémon Buffed");
+            buffed.push("Single-type Pokémon");
         }
         if (rules.nerfDual) {
-            out.push("Dual-type Pokémon Nerfed");
+            nerfed.push("Dual-type Pokémon");
         } else if (rules.buffDual) {
-            out.push("Dual-type Pokémon Buffed");
+            nerfed.push("Dual-type Pokémon");
         }
         if (rules.noLegendaries) {
-            out.push("Legendaries Nerfed");
+            nerfed.push("Legendaries");
         }
+        if (rules.nerfShiny) {
+            nerfed.push("Shiny Pokémon");
+        } else if (rules.buffShiny) {
+            buffed.push("Shiny Pokémon");
+        }
+        if (buffed.length > 0) {
+            out.push("Buffed: " + readable(buffed, "and"));
+        }
+        if (nerfed.length > 0) {
+            out.push("Nerfed: " + readable(nerfed, "and"));
+        }
+        
         if (rules.inver) {
-            out.push((rules.defensive ? "Defensive " : "") + "Inverted Type Effectiveness");
+            if (rules.invertedBST) {
+                out.push("Inverted BST & Type Effectiveness");
+            } else if (rules.defensive) {
+                out.push("Weakness Mode");
+            } else {
+                out.push("Inverted Type Effectiveness");
+            }
         } else if (rules.defensive) {
-            out.push("Defensive Mode");
+            if (rules.invertedBST) {
+                out.push("Resistance Mode");
+                out.push("Inverted BST");
+            } else {
+                out.push("Resistance Mode");
+            }
+        } else if (rules.invertedBST) {
+            out.push("Inverted BST");
         }
-        if (rules.invertedBST) {
-            out.push("Inverted BST Effectiveness");
-        }
+        
         if ("minBST" in rules && "maxBST" in rules) {
             out.push("Recommended BST: " + rules.minBST + "~" + rules.maxBST);
         } else {
@@ -1801,9 +1871,9 @@ function Safari() {
                         list.push(allBalls[e]);
                     }
                 }
-                out.push("Allowed Balls: " + readable(list.map(finishName), "and"));
+                out.push("Allowed Balls: " + readable(list.map(cap), "and"));
             } else {
-                out.push("Forbidden Balls: " + readable(rules.excludeBalls.map(finishName), "and"));
+                out.push("Forbidden Balls: " + readable(rules.excludeBalls.map(cap), "and"));
             }
         }
         if ("rewards" in rules) {
@@ -1886,13 +1956,13 @@ function Safari() {
         }
         return 1;
     };
-    this.throwBall = function(src, data, bypass, suppress) {
+    this.throwBall = function(src, data, bypass, suppress, command) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         if (!suppress && !bypass) {
-            var mess = "[Track] " + sys.name(src) + " is using /catch " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
+            var mess = "[Track] " + sys.name(src) + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
             for (var t = 0; t < player.trackers.length; t++) {
                 if (sys.id(player.trackers[t]) !== undefined) {
                     safaribot.sendMessage(sys.id(player.trackers[t]), mess, safchan);
@@ -1904,7 +1974,7 @@ function Safari() {
         }
         if (!currentPokemon) {
             if (suppress) {
-                safaribot.sendMessage(src, "Someone caught the wild Pokémon before you could finish preparing your throw!", safchan);
+                safaribot.sendMessage(src, "Someone caught the wild Pokémon while you were preparing your throw!", safchan);
             } else {
                 safaribot.sendMessage(src, "No wild Pokémon around!", safchan);
             }
@@ -3227,7 +3297,7 @@ function Safari() {
            return;
         }
         if (lastBaiters.indexOf(sys.name(src)) !== -1) {
-            safaribot.sendMessage(src, "You just threw some bait not too long ago. Let others have a turn!", safchan);
+            safaribot.sendMessage(src, "You just threw some bait not too long ago. Let others have a turn! [Global cooldown: " + baitCooldown + " seconds]", safchan);
             return;
         }
         if (baitCooldown > 0) {
@@ -3504,17 +3574,17 @@ function Safari() {
                     amount = 1;
                     player.records.masterballsWon += 1;
                 }
-                break;
             }
+            break;
             case "bait": {
                 safaribot.sendMessage(src, "A sweet, fruity aroma wafts through the air as you open your capsule. You received " + amount + " " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             case "rock": {
                 var snowball = itemData.rock.fullName === "Snowball";
                 safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : itemData.rock.name + "s") + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
-                break;
             }
+            break;
             case "wild":
             case "horde": {
                 giveReward = false;
@@ -3549,13 +3619,13 @@ function Safari() {
                         nextGachaSpawn = currentTime + 23 * 1000;
                     }
                 }
-                break;
             }
+            break;
             case "safari": {
                 amount = 1;
                 safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             case "gacha": {
                 var jackpot = Math.floor(gachaJackpot/10);
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
@@ -3563,8 +3633,8 @@ function Safari() {
                 player.records.jackpotsWon += 1;
                 safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
                 gachaJackpot = gachaJackpotAmount; //Reset jackpot for next player
-                break;
             }
+            break;
             case "amulet":
             case "soothe":
             case "scarf":
@@ -3572,29 +3642,29 @@ function Safari() {
                 amount = 1;
                 safaribot.sendHtmlAll("<b>Sweet! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!</b>", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             case "bignugget":
             case "nugget": {
                 amount = 1;
                 safaribot.sendAll("Nice! " + sys.name(src) + " just won a " + finishName(reward) + " from Gachapon!", safchan);
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             case "gem": {
                 amount = 1;
                 safaribot.sendMessage(src, "The Gachapon machine emits a bright flash of light as you reach for your prize. Despite being temporarily blinded, you know you just won a " + finishName(reward) + " due to a very faint baaing sound!", safchan);
                 safaribot.sendMessage(src, "You received an " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             case "pearl":
             case "stardust":
             case "starpiece":
             case "bigpearl": {
                 amount = 1;
                 safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
-                break;
             }
+            break;
             default:
                 safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
             break;
@@ -3822,53 +3892,53 @@ function Safari() {
         switch (reward) {
             case "rare": {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found a " + finishName(reward) + " behind a bush!</b>", safchan);
-                break;
             }
+            break;
             case "recharge": {
                 reward = "permfinder";
                 amount = 3;
                 showMsg = false;
                 safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder slightly recharged due to the shock.", safchan);
                 safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
-                break;
             }
+            break;
             case "crown": {
                 safaribot.sendHtmlAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single Relic Crown.", safchan);
-                break;
             }
+            break;
             case "eviolite": {
                 safaribot.sendHtmlAll("<b>!PEEB !PEEB</b> Another trainer approaches " + sys.name(src) + " as they are looking for items and snickers: <i>\"You have it on backwards.\"</i> " + sys.name(src) + " corrects the position, turns around, and finds a sizeable chunk of Eviolite on the ground.", safchan);
-                break;
             }
+            break;
             case "honey": {
                 safaribot.sendHtmlAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of Honey!", safchan);
-                break;
             }
+            break;
             case "spy": {
                 safaribot.sendMessage(src, "Bep. Your Itemfinder is pointing towards a shadowy area. Within the darkness, you find a suspicious " + finishName(reward) + "!", safchan);
-                break;
             }
+            break;
             case "gacha": {
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused " + finishName(reward) + "!", safchan);
-                break;
             }
+            break;
             case "rock": {
                 safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous " + itemData.rock.fullName + ".", safchan);
-                break;
             }
+            break;
             case "bait": {
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
-                break;
             }
+            break;
             case "pearl":
             case "stardust": {
                 safaribot.sendMessage(src, "Beep Beep Beep. You dig around a sandy area and unbury a " + finishName(reward) + "!", safchan);
-                break;
             }
+            break;
             case "luxury": {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found a " + finishName(reward) + "!", safchan);
-                break;
             }
+            break;
             default:
                 safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. [Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                 giveReward = false;
@@ -5760,10 +5830,14 @@ function Safari() {
             }
         }
         else {
-            if (offer.indexOf("@") === -1 && offer[0] !== "$" && receiver.pokemon.length >= receiver.balls.box * itemData.box.bonusRate) {
+            if (receiver.pokemon.length > receiver.balls.box * itemData.box.bonusRate) {
                 safaribot.sendMessage(src, "Trade cancelled because all of " + sys.name(receiverId) + "'s boxes are full!" , safchan);
                 safaribot.sendMessage(receiverId, "Trade cancelled because all of your boxes are full!", safchan);
-                return;
+                return false;
+            } else if (receiver.pokemon.length === receiver.balls.box * itemData.box.bonusRate && (offer.indexOf("@") !== -1 || offer[0] === "$")) {
+                safaribot.sendMessage(src, "Trade cancelled because all of " + sys.name(receiverId) + "'s boxes are full!" , safchan);
+                safaribot.sendMessage(receiverId, "Trade cancelled because all of your boxes are full!", safchan);
+                return false;
             }
         }
         return true;
@@ -7562,8 +7636,8 @@ function Safari() {
                 safari.startGame(src, commandData);
                 return true;
             }
-            if (command === "catch" || command === "throw") {
-                safari.throwBall(src, commandData);
+            if (command === "catch" || command === "throw" || command === "ccatch") {
+                safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
             if (command === "sell") {
@@ -7998,10 +8072,11 @@ function Safari() {
                     "Legendaries Nerfed: Legendaries Pokémon gets Nerfed.",
                     "Recommended BST: Pokémon outside of this BST range gets Nerfed.",
                     "",
-                    "Inverted BST Effectiveness: Lower BST = Better.",
-                    "Inverted Type Effectiveness: Wild Pokémon resisting your Pokémon = Better (example: Using Normal-type against a Steel-type Wild Pokémon).",
-                    "Defensive Mode: Your Pokémon resisting Wild Pokémon = Better (example: Using Bug-type against a Ground-type Wild Pokémon).",
-                    "Defensive Inverted Type Effectiveness: Wild Pokémon being super-effective on your Pokémon = Better (example: Using Ground-type against an Ice-type Wild Pokémon).",
+                    "Inverted BST: Lower BST = Better.",
+                    "Inverted Type Effectiveness*: Wild Pokémon resisting your Pokémon = Good (example: Using Normal-type against a Steel-type Wild Pokémon).",
+                    "Resistance Mode*: Your Pokémon resisting the Wild Pokémon = Good (example: Using Bug-type against a Ground-type Wild Pokémon).",
+                    "Weakness Mode*: Wild Pokémon super-effective on your Pokémon = Good (example: Using Ground-type against an Ice-type Wild Pokémon).",
+                    "*These rules replace normal Type Effectiveness.",
                     "",
                     "Allowed/Forbidden Balls: Balls not allowed cannot be thrown.",
                     "Reward: Different items given to the contest winner.",
@@ -8215,7 +8290,6 @@ function Safari() {
                     return true;
                 }
 
-                var self = utilities.non_flashing(sys.name(src).toCorrectCase());
                 if (duration === 0) {
                     player.truesalt = 0;
                     safaribot.sendMessage(src, name + " has been de-salted!", safchan);
@@ -8653,7 +8727,7 @@ function Safari() {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
                     safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
-                    safaribot.sendMessage(src, "Types can be ball, auction, collector, scientist, arena, tower or wonder!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, collector, scientist, arena, tower or wonder!", safchan);
                     return true;
                 }
                 var target = cmd[0];
@@ -8665,28 +8739,21 @@ function Safari() {
                 var type = cmd[1].toLowerCase();
                 switch (type) {
                     case "collector":
-                        player.quests.collector.cooldown = 0;
-                    break;
                     case "scientist":
-                        player.quests.scientist.cooldown = 0;
-                    break;
                     case "arena":
-                        player.quests.arena.cooldown = 0;
-                    break;
                     case "tower":
-                        player.quests.tower.cooldown = 0;
-                    break;
                     case "wonder":
-                        player.quests.wonder.cooldown = 0;
-                    break;
-                    case "auction":
-                        player.cooldowns.auction = 0;
+                        player.quests[type].cooldown = 0;
                     break;
                     case "ball":
-                        player.cooldowns.ball = 0;
-                    break;
+                    case "bait":
+                    case "stick":
                     case "costume":
-                        player.cooldowns.costume = 0;
+                    case "rock":
+                    case "auction":
+                    case "gacha":
+                    case "itemfinder":
+                        player.cooldowns[type] = 0;
                     break;
                 }
 
@@ -9487,3 +9554,4 @@ function Safari() {
     };
 }
 module.exports = new Safari();
+
