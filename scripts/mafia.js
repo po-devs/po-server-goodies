@@ -3812,7 +3812,7 @@ function Mafia(mafiachan) {
                                 targetMode = targetMode || {};
                                 var inspectMode = target.role.actions.inspect || {};
                                 var disguise = target.disguiseRole;
-                                var inspectedRole = target.role.role, inspectedSide = target.role.side;
+                                var inspectedRole = target.role.translation, inspectedSide = target.role.side;
                                 var inspectSide = Sight == "Team" || targetMode.revealSide !== undefined;
 
                                 if (typeof Sight == "object") {
@@ -5890,7 +5890,7 @@ function Mafia(mafiachan) {
                     var exposeMessage = (commandObject.exposemsg || "~Self~ revealed that ~Target~ is the ~Role~!");
                     var exposeTargetMessage = commandObject.exposedtargetmsg;
                     var inspectMode = target.role.actions.inspect || {};
-                    var revealedRole;
+                    var revealedRole = mafia.theme.trrole(target.role.role);
                     var revealedSide;
                     if (target.disguiseRole !== undefined) {
                         revealedRole = mafia.theme.trrole(target.disguiseRole);
