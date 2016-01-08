@@ -3308,7 +3308,7 @@ function Safari() {
            return;
         }
         if (lastBaiters.indexOf(sys.name(src)) !== -1) {
-            safaribot.sendMessage(src, "You just threw some bait not too long ago. Let others have a turn! [Global cooldown: " + baitCooldown + " seconds]", safchan);
+            safaribot.sendMessage(src, "You just threw some bait not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + baitCooldown + " seconds]" : ""), safchan);
             return;
         }
         if (baitCooldown > 0) {
