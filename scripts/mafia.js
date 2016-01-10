@@ -21,9 +21,9 @@ function Mafia(mafiachan) {
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
-    if (!this.nextEventTime) this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
-    if (!this.eventQueue) this.eventQueue = ["default"];
-    if (!this.eventThemePool) this.eventThemePool = ["default"];
+    if (!this.nextEventTime) {this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;}
+    if (!this.eventQueue) {this.eventQueue = ["default"];}
+    if (!this.eventThemePool) {this.eventThemePool = ["default"];}
     if (!this.warningLog) {this.warningLog = {};}
     this.isEvent = false;
     this.warningLog = {};
@@ -1282,7 +1282,7 @@ function Mafia(mafiachan) {
         var player = this.players[name], cmds = [];
         if (state in player.role.actions) {
         	var data = player.role.actions[state], pass;
-        	for (c in data) {
+        	for (var c in data) {
         		pass = mafia.theme.macro;
         		if ("macro" in data[c]) {
         			pass = data[c]["macro"];
@@ -4416,9 +4416,9 @@ function Mafia(mafiachan) {
                 gamemsgAll("±Time: Night " + mafia.time.nights);
                 gamemsgAll("Make your moves, you only have " + mafia.ticks + " seconds! :");
                 sendChanAll(border, mafiachan);
-				for (p in mafia.players) {
-					mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
-				}
+		for (p in mafia.players) {
+		    mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
+		}
                 mafia.resetTargets();
                 mafia.compulsoryActions();
             }
