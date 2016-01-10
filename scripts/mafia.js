@@ -21,9 +21,9 @@ function Mafia(mafiachan) {
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
-    this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
-    this.eventQueue = ["default"];
-    this.eventThemePool = ["default"];
+    if (!this.nextEventTime) this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
+    if (!this.eventQueue) this.eventQueue = ["default"];
+    if (!this.eventThemePool) this.eventThemePool = ["default"];
     if (!this.warningLog) {this.warningLog = {};}
     this.isEvent = false;
     this.warningLog = {};
@@ -103,6 +103,15 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendAll(mess, channel);
         return true;
+    }
+    function htmlLink(mess, append) {
+        if (append) {
+            return("<a href=\"po:appendmsg/" + mess + "\">" + mess + "</a>") 
+        }
+        return("<a href=\"po:setmsg/" + mess + "\">" + mess + "</a>") 
+    }
+    function htmlVoteTheme(mess) {
+        return("<a href=\"po:send//votetheme " + mess + "\">" + mess + "</a>") 
     }
     function getBotName(name) {
         if (name) {
@@ -1269,6 +1278,21 @@ function Mafia(mafiachan) {
         var player = this.players[name];
         return (state in player.role.actions && command in player.role.actions[state]);
     };
+    this.getCommands = function (name, state) {
+        var player = this.players[name], cmds = [];
+        if (state in player.role.actions) {
+        	var data = player.role.actions[state], pass;
+        	for (c in data) {
+        		pass = mafia.theme.macro;
+        		if ("macro" in data[c]) {
+        			pass = data[c]["macro"];
+        		}
+        		if (pass) cmds.push(htmlLink("/" + c + " "));
+        	}
+        }
+        var msg = (cmds.length > 0 ? ("Your commands are: " + readable(cmds,"and") + ".") : "")
+        return (msg);
+    };
     this.correctCase = function (string) {
         var lstring = string.toLowerCase();
         for (var x in this.players) {
@@ -1637,7 +1661,7 @@ function Mafia(mafiachan) {
             gamemsgAll(sys.name(src) + " started a voting for next game's theme! You have " + this.ticks + " seconds to vote with /vote or /votetheme!");
             var casedThemes = [];
             for (var x in this.possibleThemes) {
-                casedThemes.push(this.themeManager.themes[x].name);
+                casedThemes.push(htmlVoteTheme(this.themeManager.themes[x].name));
             }
             gamemsgAll("Choose from these themes: " + casedThemes.join(", ") + " !");
             sendChanAll(border, mafiachan);
@@ -1781,7 +1805,7 @@ function Mafia(mafiachan) {
             } else {
                 gamemsgAll(sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "!");
             }
-            gamemsgAll("Type /Join to enter the game!");
+            gamemsgAll("Type <a href=\"po:send//join\">Join</a> to enter the game!");
             sendChanAll(border, mafiachan);
             sendChanAll("", mafiachan);
         }
@@ -1792,7 +1816,7 @@ function Mafia(mafiachan) {
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
             }
-            gamemsgAll("Type /Join to enter the game!");
+            gamemsgAll("Type <a href=\"po:send//join\">Join</a> to enter the game!");
             sendChanAll(GREEN_BORDER, mafiachan);
             sendChanAll("", mafiachan);
         }
@@ -1973,10 +1997,9 @@ function Mafia(mafiachan) {
     this.getCurrentPlayers = function () {
         var list = [];
         for (var p in this.players) {
-            list.push(this.players[p].name);
+            list.push(htmlLink(this.players[p].name, true));
         }
         return list.sort().join(", ");
-
     };
     this.getPlayersForBroadcast = function () {
         var team = [];
@@ -3279,6 +3302,9 @@ function Mafia(mafiachan) {
             gamemsgAll("±Time: Night " + mafia.time.nights);
             gamemsgAll("Make your moves, you only have " + mafia.ticks + " seconds! :");
             sendChanAll(border, mafiachan);
+            for (p in mafia.players) {
+                mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
+            }
             mafia.resetTargets();
             mafia.reduceRecharges();
 
@@ -4305,6 +4331,9 @@ function Mafia(mafiachan) {
                 }
             }
             sendChanAll(border, mafiachan);
+            for (p in mafia.players) {
+                mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
+            }
         },
         standby: function () {
             mafia.ticks = 30;
@@ -4364,7 +4393,7 @@ function Mafia(mafiachan) {
             }
             if (!nolyn) {
                 gamemsgAll("±Time: Day " + mafia.time.days + " (Voting)");
-                gamemsgAll("It's time to vote someone off, type /Vote [name], you only have " + mafia.ticks + " seconds! :");
+                gamemsgAll("It's time to vote someone off, type " + htmlLink("/Vote ") + "[name], you only have " + mafia.ticks + " seconds! :");
                 if (mafia.theme.noplur) {
                     gamemsgAll("A majority vote must be reached otherwise no lynch occurs. With " + mafia.playerCount() + " alive, it's " + (Math.floor(mafia.playerCount()/2)+1) + " to lynch!:");
                 }
@@ -4387,6 +4416,9 @@ function Mafia(mafiachan) {
                 gamemsgAll("±Time: Night " + mafia.time.nights);
                 gamemsgAll("Make your moves, you only have " + mafia.ticks + " seconds! :");
                 sendChanAll(border, mafiachan);
+				for (p in mafia.players) {
+					mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
+				}
                 mafia.resetTargets();
                 mafia.compulsoryActions();
             }
@@ -4619,6 +4651,9 @@ function Mafia(mafiachan) {
             gamemsgAll("±Time: Night " + mafia.time.nights);
             gamemsgAll("Make your moves, you only have " + mafia.ticks + " seconds! :");
             sendChanAll(border, mafiachan);
+            for (p in mafia.players) {
+                mafiabot.sendHtmlMessage(mafia.players[p].name, mafia.getCommands(p, mafia.state));
+            }
             mafia.runusersToSlayMsg();
             mafia.usersToSlay = {};
             mafia.resetTargets();
@@ -4645,7 +4680,7 @@ function Mafia(mafiachan) {
             if (winner.theme !== null) {
                 sendChanAll("", mafiachan);
                 gamemsgAll("Theme " + mafia.themeManager.themes[winner.theme].name + " won with " + winner.votes + " votes!");
-                gamemsgAll("Type /Join to enter the game!");
+                gamemsgAll("Type <a href=\"po:send//join\">Join</a> to enter the game!");
                 sendChanAll("", mafiachan);
                 mafia.startGame(null, winner.theme);
                 mafia.signups = players[winner.theme];
