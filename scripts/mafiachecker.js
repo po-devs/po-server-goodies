@@ -23,10 +23,10 @@ function mafiaChecker() {
         theme.lowerCaseRoles = [];
         theme.correctSides = [];
         theme.lowerCaseSides = [];
-        globalStats = raw["stats"] || {};
+        globalStats = raw.stats || {};
         
-        for (st in globalStats) {
-        	possibleNightActions = possibleNightActions.concat("stat:" + st)
+        for (var st in globalStats) {
+        	possibleNightActions = possibleNightActions.concat("stat:" + st);
         }
 
         // Parse variables first - so we can extract the actual value later.
