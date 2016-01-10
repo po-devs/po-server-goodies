@@ -342,9 +342,39 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
             typeb++;
         }
     }
+    var teamType = typea >= typeb ? sys.type(type1) : sys.type(type2);
     if (typea < teamLength && typeb < teamLength) {
-        return ["Your team is not a valid Monotype team as not every team member is " + (typea >= typeb ? sys.type(type1) : sys.type(type2))];
+        return ["Your team is not a valid Monotype team as not every team member is " + teamType ];
     }
+    
+    var typeBans = { 
+        //flying: {type: "Flying", items: ["Charizardite X"], pokes: []},
+        //bug: {type: "Bug", items: [], pokes: ["Genesect"]},
+        //steel: {type: "Steel", items: [], pokes: ["Aegislash"]}
+    };
+    var ret = [], item, pkmn;
+    for (var e in typeBans) {
+        if (typeBans.hasOwnProperty(e)) {
+            e = typeBans[e];
+            if (teamType === e.type) {
+                for (var p = 0; p < 6; p++) {
+                    pkmn = sys.pokemon(sys.teamPoke(src, team, p));
+                    if (pkmn === sys.pokemon(0)) {
+                        continue;
+                    }
+                    if (e.pokes.contains(pkmn)) {
+                        ret.push("You are not allowed to use " + pkmn + " on a " + teamType + " team in Monotype.");
+                    }
+                    
+                    item = sys.item(sys.teamPokeItem(src, team, p));
+                    if (e.items.contains(item)) {
+                        ret.push("You are not allowed to use " + item + " (held by " + pkmn + ") on a " + teamType + " team in Monotype.");
+                    }
+                }
+            }
+        }
+    }
+    return ret;
 });
 
 tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU"], function batonPassLimitXY(src, team, tier) {
