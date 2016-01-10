@@ -106,12 +106,12 @@ function Mafia(mafiachan) {
     }
     function htmlLink(mess, append) {
         if (append) {
-            return("<a href=\"po:appendmsg/" + mess + "\">" + mess + "</a>") 
+            return("<a href=\"po:appendmsg/" + mess + "\">" + mess + "</a>");
         }
-        return("<a href=\"po:setmsg/" + mess + "\">" + mess + "</a>") 
+        return("<a href=\"po:setmsg/" + mess + "\">" + mess + "</a>");
     }
     function htmlVoteTheme(mess) {
-        return("<a href=\"po:send//votetheme " + mess + "\">" + mess + "</a>") 
+        return("<a href=\"po:send//votetheme " + mess + "\">" + mess + "</a>");
     }
     function getBotName(name) {
         if (name) {
