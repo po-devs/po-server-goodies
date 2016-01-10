@@ -1,5 +1,92 @@
 // Global variables inherited from scripts.js
-/*global breedingpokemons, dwpokemons, checkbot, normalbot, lcpokemons, staffchannel, script, lcmoves */
+/*global checkbot, staffchannel */
+
+var dwlist = [
+    "Timburr", "Gurdurr", "Conkeldurr", "Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour", "Ekans", "Arbok", "Paras", "Parasect", "Happiny", "Chansey", "Blissey", "Munchlax", "Snorlax", "Aipom", "Ambipom", "Pineco", "Forretress", "Wurmple", "Silcoon", "Cascoon", "Beautifly", "Dustox", "Seedot", "Nuzleaf", "Shiftry", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Plusle", "Minun", "Budew", "Roselia", "Gulpin", "Swalot", "Kecleon", "Kricketot", "Kricketune", "Cherubi", "Cherrim", "Carnivine", "Audino", "Throh", "Sawk", "Scraggy", "Scrafty", "Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Burmy-S", "Burmy-G", "Wormadam", "Wormadam-S", "Wormadam-G", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts", "Kirlia", "Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk", "Gothitelle", "Gothorita", "Solosis", "Duosion", "Reuniclus", "Deerling-Summer", "Deerling-Autumn", "Deerling-Winter", "Sawsbuck-Summer", "Sawsbuck-Autumn", "Sawsbuck-Winter", "Roserade", "Mewtwo"
+];
+var halist = dwlist.concat([
+    "Gothita", "Rufflet", "Klefki", "Phantump", "Trevenant", "Axew", "Fraxure", "Haxorus", "Carbink", "Scatterbug", "Spewpa", "Vivillon", "Sandile", "Krokorok", "Krookodile", "Inkay", "Malamar", "Noibat", "Noivern", "Goomy", "Sliggoo", "Goodra", "Dedenne", "Helioptile", "Heliolisk", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Flabébé", "Floette", "Florges", "Pancham", "Pangoro", "Larvesta", "Volcarona", "Litleo", "Pyroar", "Fennekin", "Braixen", "Delphox", "Fletchling", "Fletchinder", "Talonflame", "Hawlucha", "Litwick", "Lampent", "Chandelure", "Pumpkaboo", "Pumpkaboo-S", "Pumpkaboo-L", "Pumpkaboo-XL", "Gourgeist", "Gourgeist-S", "Gourgeist-L", "Gourgeist-XL", "Duskull", "Dusclops", "Dusknoir", "Chespin", "Quilladin", "Chesnaught", "Skiddo", "Gogoat", "Bunnelby", "Diggersby", "Bergmite", "Avalugg", "Espurr", "Meowstic", "Meowstic-F", "Binacle", "Barbaracle", "Froakie", "Frogadier", "Greninja", "Sylveon", "Ferrothorn", "Skrelp", "Dragalge", "Snivy", "Servine", "Serperior", "Oshawott", "Dewott", "Samurott", "Tepig", "Pignite", "Emboar", "Tyrunt", "Tyrantrum", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Amaura", "Aurorus"
+]);
+//two lists for gen 5 and gen 6
+/* use hash for faster lookup */
+var dwpokemons = {};
+var hapokemons = {};
+var dwpok;
+for (dwpok = 0; dwpok < halist.length; dwpok++) {
+    var num = sys.pokeNum(halist[dwpok]);
+    if (num % 65536 == sys.pokeNum("Pikachu")) { //probably add a function to tell the difference between aesthetic and normal formes in the future
+        num = sys.pokeNum("Pikachu");
+    }
+    if (num === undefined)
+        sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
+    else if (hapokemons[num])
+        sys.sendAll("Script Check:  hapokemons contains '" +halist[dwpok]+"' multiple times.", announceChan);
+    else {
+        hapokemons[num] = true;
+        if (dwlist.indexOf(halist[dwpok]) > -1) {
+            dwpokemons[num] = true;
+        }
+    }
+}
+
+var breedingList = [
+    "Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle","Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour"
+];
+var breedingpokemons = breedingList.map(sys.pokeNum);
+
+var lclist = [
+    "Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko", "Torchic", "Mudkip", "Pansage", "Pansear", "Panpour"
+];
+var lcpokemons = lclist.map(sys.pokeNum);
+var lcmoves = {
+    "Bronzor":["Iron Defense"],
+    "Golett":["Rollout","Shadow Punch","Iron Defense","Mega Punch","Magnitude","DynamicPunch","Night Shade","Curse","Hammer Arm","Focus Punch"],
+    "Klink":["Charge","Thundershock","Gear Grind","Bind","Mirror Shot","Screech","Discharge","Metal Sound","Shift Gear","Lock-On","Zap Cannon"],
+    "Petilil":["Entrainment"],
+    "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"]
+};
+
+var pokeAbilities = [];
+
+var Ablist = "Bulbasaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Ivysaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Venusaur-False Swipe/Overgrow|Block/Overgrow|Weather Ball/Overgrow=Charmander-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charmeleon-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charizard-False Swipe/Blaze|Block/Blaze|Acrobatics/Blaze=Squirtle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Wartortle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Blastoise-False Swipe/Torrent|Block/Torrent|Follow Me/Torrent";
+//Terrible, but it works!
+//Bulba line: Weather Ball, Frenzy Plant, False Swipe, Block
+//Charm line: Acrobatics, Blast Burn, False Swipe, Block
+//Squirt line: Follow Me, Hydro Cannon, False Swipe, Block
+var sepAbPokes = Ablist.split('='),
+    sepAbMovesPoke, sepAb, moveab;
+for (var x = 0; x < sepAbPokes.length; x++) {
+    sepAbMovesPoke = sepAbPokes[x].split('-');
+    sepAb = sepAbMovesPoke[1].split('|');
+    
+    var poke = sys.pokeNum(sepAbMovesPoke[0]);
+    pokeAbilities[poke] = [];
+    
+    for (var y = 0; y < sepAb.length; ++y) {
+        moveab = sepAb[y].split('/');
+        pokeAbilities[poke][sys.moveNum(moveab[0])] = sys.abilityNum(moveab[1]);
+    }
+}
+
+var pokeNatures = [];
+
+var list = "Heatran-Eruption/Quiet=Suicune-Extreme Speed/Relaxed|Sheer Cold/Relaxed|Aqua Ring/Relaxed|Air Slash/Relaxed=Raikou-Extreme Speed/Rash|Weather Ball/Rash|Zap Cannon/Rash|Aura Sphere/Rash=Entei-Extreme Speed/Adamant|Flare Blitz/Adamant|Howl/Adamant|Crush Claw/Adamant=Snivy-Aromatherapy/Hardy=Genesect-Extreme Speed/Hasty|Blaze Kick/Hasty|Shift Gear/Hasty";
+//this is really awful btw :(
+var sepPokes = list.split('='),
+    sepMovesPoke, sepMoves, movenat;
+for (var x = 0; x < sepPokes.length; x++) {
+    sepMovesPoke = sepPokes[x].split('-');
+    sepMoves = sepMovesPoke[1].split('|');
+
+    var poke = sys.pokeNum(sepMovesPoke[0]);
+    pokeNatures[poke] = [];
+
+    for (var y = 0; y < sepMoves.length; ++y) {
+        movenat = sepMoves[y].split('/');
+        pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
+    }
+}
+
 
 function TierChecker() {
     this.checkers = [];
@@ -15,9 +102,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
     var complaints = [];
     for (var i = 0; i < this.checkers.length; ++i) {
-        var valid_tier = (this.checkers[i].exclusive
-            ? this.checkers[i].tiers.indexOf(tier) == -1
-            : this.checkers[i].tiers.indexOf(tier) != -1);
+        var valid_tier = (this.checkers[i].exclusive ? this.checkers[i].tiers.indexOf(tier) == -1 : this.checkers[i].tiers.indexOf(tier) != -1);
         if (valid_tier) {
             var new_comp = this.checkers[i].checker(src, team, tier);
             if (Array.isArray(new_comp)) {
@@ -63,11 +148,11 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     var ret = [];
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, team, i);
-        if (poke in script.pokeNatures) {
-            for (var x in script.pokeNatures[poke]) {
-                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != script.pokeNatures[poke][x])
+        if (poke in pokeNatures) {
+            for (var x in pokeNatures[poke]) {
+                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeNature(src, team, i) != pokeNatures[poke][x])
                 {
-                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have a " + sys.nature(script.pokeNatures[poke][x]) + " nature.");
+                    ret.push(sys.pokemon(poke) + " with " + sys.move(x) + " must have a " + sys.nature(pokeNatures[poke][x]) + " nature.");
                 }
             }
         }
@@ -79,11 +164,11 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventMovesCheck(s
     var ret = [];
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, team, i);
-        if (poke in script.pokeAbilities) {
-            for (var x in script.pokeAbilities[poke]) {
-                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeAbility(src, team, i) != script.pokeAbilities[poke][x])
+        if (poke in pokeAbilities) {
+            for (var x in pokeAbilities[poke]) {
+                if (sys.hasTeamPokeMove(src, team, i, x) && sys.teamPokeAbility(src, team, i) != pokeAbilities[poke][x])
                 {
-                    ret.push("" + sys.pokemon(poke) + " with " + sys.move(x) + " must have the ability " + sys.ability(script.pokeAbilities[poke][x]) + ".");
+                    ret.push(sys.pokemon(poke) + " with " + sys.move(x) + " must have the ability " + sys.ability(pokeAbilities[poke][x]) + ".");
                 }
             }
         }
@@ -98,12 +183,12 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "O
     for (var i = 0; i < 6; i++) {
         var x = sys.teamPoke(src, team, i);
         if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && check.indexOf(x) != -1 ) {
-            ret.push("" + sys.pokemon(x) + " is not allowed with a " + (gen > 5 ? "Hidden":"Dream World") + " Ability in " + tier + ".");
+            ret.push(sys.pokemon(x) + " is not allowed with a " + (gen > 5 ? "Hidden":"Dream World") + " Ability in " + tier + ".");
         }
         if (x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) {
             for (var j = 0; j < 4; j++) {
                 if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
+                    ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
                 }
             }
         }
@@ -132,9 +217,9 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
             var x = sys.teamPoke(src, team, i);
             if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && (!(x in dwpokemons) || (breedingpokemons.indexOf(x) != -1 && !sys.compatibleAsDreamWorldEvent(src, team, i)))) {
                 if (!(x in dwpokemons)) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier.");
+                    ret.push(sys.pokemon(x) + " is not allowed with a Dream World ability in " + tier + " tier.");
                 } else {
-                    ret.push("" + sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier.");
+                    ret.push(sys.pokemon(x) + " has to be Male and have no egg moves with its Dream World ability in  " + tier + " tier.");
                 }
             }
         }
@@ -142,11 +227,11 @@ tier_checker.add_new_check(EXCLUDING, Config.DreamWorldTiers, function dwAbility
     // few unreleased abilities left in gen 6
     var pokebank = ["Tentacool", "Tentacruel", "Kangaskhan", "Horsea", "Seadra", "Goldeen", "Seaking", "Staryu", "Starmie", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Aerodactyl", "Snorlax", "Articuno", "Zapdos", "Moltres", "Mewtwo", "Sentret", "Furret", "Chinchou", "Lanturn", "Qwilfish", "Mantine", "Zigzagoon", "Linoone", "Skitty", "Delcatty", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Torkoal", "Lunatone", "Solrock", "Barboach", "Whiscash", "Lileep", "Cradily", "Anorith", "Armaldo", "Clamperl", "Huntail", "Gorebyss", "Relicanth", "Luvdisc", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Burmy", "Wormadam", "Mothim", "Chatot", "Munchlax", "Hippopotas", "Hippowdon", "Mantyke", "Patrat", "Watchog", "Basculin", "Tirtouga", "Carracosta", "Karrablast", "Escavalier", "Alomomola", "Shelmet", "Accelgor"];
     if (sys.gen(src, team) === 6) {
-        for (var i = 0; i < 6; i++) {
-            var x = sys.teamPoke(src, team, i);
-            if (x !== 0 && pokedex.hasDreamWorldAbility(x, sys.teamPokeAbility(src, team, i))) {
-                if (!(x in script.hapokemons) || (tier === "Random Battle") && pokebank.indexOf(sys.pokemon(x)) !== -1) {
-                    ret.push("" + sys.pokemon(x) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, i)) + " in " + tier + " tier. Change it in the teambuilder.");
+        for (var j = 0; j < 6; j++) {
+            var y = sys.teamPoke(src, team, j);
+            if (y !== 0 && pokedex.hasDreamWorldAbility(y, sys.teamPokeAbility(src, team, j))) {
+                if (!(y in hapokemons) || (tier === "Random Battle") && pokebank.indexOf(sys.pokemon(y)) !== -1) {
+                    ret.push(sys.pokemon(y) + " is not allowed with Hidden Ability " + sys.ability(sys.teamPokeAbility(src, team, j)) + " in " + tier + " tier. Change it in the teambuilder.");
                 }
             }
         }
@@ -217,7 +302,7 @@ tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(s
     for (var i = 1; i < 6; ++i) {
         poke = sys.pokemon(sys.teamPoke(src, team, i));
         if (colours[thecolour].indexOf(poke) == -1 && poke != "Missingno") {
-            return ["" + poke + " has not the colour: " + thecolour];
+            return [poke + " has not the colour: " + thecolour];
         }
     }
 });
@@ -245,8 +330,8 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         type2 = sys.pokeType2(poke, 6);
         teamLength++;
     }
-    for (var i = 0; i < 6; i++) {
-        poke = sys.teamPoke(src, team, i);
+    for (var j = 0; j < 6; j++) {
+        poke = sys.teamPoke(src, team, j);
         if (poke === 0) {
             continue;
         }
@@ -335,7 +420,7 @@ tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src
         var poke = sys.pokemon(sys.teamPoke(src, team, i));
         var lpoke = poke.toLowerCase();
         if (lpoke in bannedAbilities && bannedAbilities[lpoke].indexOf(lability) != -1) {
-            ret.push("" + poke + " is not allowed to have ability " + ability + " in Sky Battle. Please change it to Levitate in Teambuilder.");
+            ret.push(poke + " is not allowed to have ability " + ability + " in Sky Battle. Please change it to Levitate in Teambuilder.");
         }
     }
     return ret;

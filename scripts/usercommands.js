@@ -1,4 +1,4 @@
-/*global battlebot, bot, callplugins, channelbot, coinbot, countbot, dwpokemons, exports, getplugins, isNonNegative, isSuperAdmin, normalbot, pokedex, querybot, rankingbot, require, script, sendChanHtmlAll, sys, tier_checker, utilities, CAPSLOCKDAYALLOW, Config, SESSION*/
+/*global battlebot, bot, callplugins, channelbot, coinbot, countbot, exports, getplugins, isNonNegative, isSuperAdmin, normalbot, pokedex, querybot, rankingbot, require, script, sendChanHtmlAll, sys, tier_checker, utilities, CAPSLOCKDAYALLOW, Config, SESSION*/
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
@@ -39,10 +39,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
 
         commandData = commandData.toLowerCase();
-        if ( (commandData === "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod)
-            || (commandData === "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin)
-            || (commandData === "owner" && (sys.auth(src) > 2  || isSuperAdmin(src)))
-            || (commandData === "channel") ) {
+        if ( (commandData === "mod" && sys.auth(src) > 0 || SESSION.users(src).tempMod) ||
+             (commandData === "admin" && sys.auth(src) > 1 || SESSION.users(src).tempAdmin) ||
+             (commandData === "owner" && (sys.auth(src) > 2  || isSuperAdmin(src))) ||
+             (commandData === "channel") ) {
             sys.sendMessage(src, "", channel);
             sys.sendMessage(src, "*** " + utilities.capitalize(commandData.toLowerCase()) + " commands ***", channel);
             var list = require(commandData + "commands.js").help;
@@ -583,6 +583,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         querybot.sendMessage(src, commandData + " was last seen: " + d.toUTCString() + " [" + getTimeString((currentDate - d) / 1000) + " ago.]", channel);
         return;
     }
+    /*
+    Broke in Tierchecks line and below. Useless command, ain't debugging.
     if (command === "dwreleased") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please enter a Pokémon!", channel);
@@ -598,8 +600,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, pokeName + ": has no DW ability!", channel);
             return;
         }
-        if (poke in dwpokemons) {
-            if (breedingpokemons.indexOf(poke) === -1) {
+            var tierchecks = require('tierchecks.js');
+        if (poke in tierchecks.dwpokemons) {
+            if (tierchecks.breedingpokemons.indexOf(poke) === -1) {
                 normalbot.sendMessage(src, pokeName + ": Released fully!", channel);
             } else {
                 normalbot.sendMessage(src, pokeName + ": Released as a Male only, can't have egg moves or previous generation moves!", channel);
@@ -608,7 +611,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, pokeName + ": Not released, only usable on Dream World tiers!", channel);
         }
         return;
-    }
+    }*/
     if (command === "pokemon") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);

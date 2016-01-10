@@ -1,6 +1,6 @@
 // This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.githubusercontent.com/po-devs/po-server-goodies/master/",
@@ -98,7 +98,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, dwpokemons, hapokemons, lcpokemons, breedingpokemons, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, pokeNatures, pokeAbilities, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig;
+var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -423,44 +423,6 @@ init : function() {
     blackjackchan = SESSION.global().channelManager.createPermChannel("Blackjack", "Play Blackjack here!");
     safarichan = SESSION.global().channelManager.createPermChannel("Safari", "Type /help to see how to play!");
 
-    var dwlist = ["Timburr", "Gurdurr", "Conkeldurr", "Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour", "Ekans", "Arbok", "Paras", "Parasect", "Happiny", "Chansey", "Blissey", "Munchlax", "Snorlax", "Aipom", "Ambipom", "Pineco", "Forretress", "Wurmple", "Silcoon", "Cascoon", "Beautifly", "Dustox", "Seedot", "Nuzleaf", "Shiftry", "Slakoth", "Vigoroth", "Slaking", "Nincada", "Ninjask", "Plusle", "Minun", "Budew", "Roselia", "Gulpin", "Swalot", "Kecleon", "Kricketot", "Kricketune", "Cherubi", "Cherrim", "Carnivine", "Audino", "Throh", "Sawk", "Scraggy", "Scrafty", "Rattata", "Raticate", "Nidoran-F", "Nidorina", "Nidoqueen", "Nidoran-M", "Nidorino", "Nidoking", "Oddish", "Gloom", "Vileplume", "Bellossom", "Bellsprout", "Weepinbell", "Victreebel", "Ponyta", "Rapidash", "Farfetch'd", "Doduo", "Dodrio", "Exeggcute", "Exeggutor", "Lickitung", "Lickilicky", "Tangela", "Tangrowth", "Kangaskhan", "Sentret", "Furret", "Cleffa", "Clefairy", "Clefable", "Igglybuff", "Jigglypuff", "Wigglytuff", "Mareep", "Flaaffy", "Ampharos", "Hoppip", "Skiploom", "Jumpluff", "Sunkern", "Sunflora", "Stantler", "Poochyena", "Mightyena", "Lotad", "Ludicolo", "Lombre", "Taillow", "Swellow", "Surskit", "Masquerain", "Bidoof", "Bibarel", "Shinx", "Luxio", "Luxray", "Psyduck", "Golduck", "Growlithe", "Arcanine", "Scyther", "Scizor", "Tauros", "Azurill", "Marill", "Azumarill", "Bonsly", "Sudowoodo", "Girafarig", "Miltank", "Zigzagoon", "Linoone", "Electrike", "Manectric", "Castform", "Pachirisu", "Buneary", "Lopunny", "Glameow", "Purugly", "Natu", "Xatu", "Skitty", "Delcatty", "Eevee", "Vaporeon", "Jolteon", "Flareon", "Espeon", "Umbreon", "Leafeon", "Glaceon", "Bulbasaur", "Charmander", "Squirtle", "Ivysaur", "Venusaur", "Charmeleon", "Charizard", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Infernape", "Monferno", "Piplup", "Prinplup", "Empoleon", "Treecko", "Sceptile", "Grovyle", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Caterpie", "Metapod", "Butterfree", "Pidgey", "Pidgeotto", "Pidgeot", "Spearow", "Fearow", "Zubat", "Golbat", "Crobat", "Aerodactyl", "Hoothoot", "Noctowl", "Ledyba", "Ledian", "Yanma", "Yanmega", "Murkrow", "Honchkrow", "Delibird", "Wingull", "Pelipper", "Swablu", "Altaria", "Starly", "Staravia", "Staraptor", "Gligar", "Gliscor", "Drifloon", "Drifblim", "Skarmory", "Tropius", "Chatot", "Slowpoke", "Slowbro", "Slowking", "Krabby", "Kingler", "Horsea", "Seadra", "Kingdra", "Goldeen", "Seaking", "Magikarp", "Gyarados", "Omanyte", "Omastar", "Kabuto", "Kabutops", "Wooper", "Quagsire", "Qwilfish", "Corsola", "Remoraid", "Octillery", "Mantine", "Mantyke", "Carvanha", "Sharpedo", "Wailmer", "Wailord", "Barboach", "Whiscash", "Clamperl", "Gorebyss", "Huntail", "Relicanth", "Luvdisc", "Buizel", "Floatzel", "Finneon", "Lumineon", "Tentacool", "Tentacruel", "Corphish", "Crawdaunt", "Lileep", "Cradily", "Anorith", "Armaldo", "Feebas", "Milotic", "Shellos", "Gastrodon", "Lapras", "Dratini", "Dragonair", "Dragonite", "Elekid", "Electabuzz", "Electivire", "Poliwag", "Poliwrath", "Politoed", "Poliwhirl", "Vulpix", "Ninetales", "Musharna", "Munna", "Darmanitan", "Darumaka", "Mamoswine", "Togekiss", "Burmy", "Burmy-S", "Burmy-G", "Wormadam", "Wormadam-S", "Wormadam-G", "Mothim", "Pichu", "Pikachu", "Raichu","Abra","Kadabra","Alakazam","Spiritomb","Mr. Mime","Mime Jr.","Meditite","Medicham","Meowth","Persian","Shuppet","Banette","Spinarak","Ariados","Drowzee","Hypno","Wobbuffet","Wynaut","Snubbull","Granbull","Houndour","Houndoom","Smoochum","Jynx","Ralts", "Kirlia", "Gardevoir","Gallade","Sableye","Mawile","Volbeat","Illumise","Spoink","Grumpig","Stunky","Skuntank","Bronzong","Bronzor","Mankey","Primeape","Machop","Machoke","Machamp","Magnemite","Magneton","Magnezone","Koffing","Weezing","Rhyhorn","Rhydon","Rhyperior","Teddiursa","Ursaring","Slugma","Magcargo","Phanpy","Donphan","Magby","Magmar","Magmortar","Larvitar","Pupitar","Tyranitar","Makuhita","Hariyama","Numel","Camerupt","Torkoal","Spinda","Trapinch","Vibrava","Flygon","Cacnea","Cacturne","Absol","Beldum","Metang","Metagross","Hippopotas","Hippowdon","Skorupi","Drapion","Tyrogue","Hitmonlee","Hitmonchan","Hitmontop","Bagon","Shelgon","Salamence","Seel","Dewgong","Shellder","Cloyster","Chinchou","Lanturn","Smeargle","Porygon","Porygon2","Porygon-Z","Drilbur", "Excadrill", "Basculin", "Basculin-a", "Alomomola", "Stunfisk", "Druddigon", "Foongus", "Amoonguss", "Liepard", "Purrloin", "Minccino", "Cinccino", "Sandshrew", "Sandslash", "Vullaby", "Mandibuzz", "Braviary", "Frillish", "Jellicent", "Weedle", "Kakuna", "Beedrill", "Shroomish", "Breloom", "Zangoose", "Seviper", "Combee", "Vespiquen", "Patrat", "Watchog", "Blitzle", "Zebstrika", "Woobat", "Swoobat", "Mienfoo", "Mienshao", "Bouffalant", "Staryu", "Starmie", "Togepi", "Shuckle", "Togetic", "Rotom", "Sigilyph", "Riolu", "Lucario", "Lugia", "Ho-Oh", "Dialga", "Palkia", "Giratina", "Grimer", "Muk", "Ditto", "Venonat", "Venomoth", "Herdier", "Lillipup", "Stoutland", "Sewaddle", "Swadloon", "Leavanny", "Cubchoo", "Beartic", "Landorus", "Thundurus", "Tornadus","Dunsparce", "Sneasel", "Weavile", "Nosepass", "Probopass", "Karrablast", "Escavalier", "Shelmet", "Accelgor", "Snorunt", "Glalie", "Froslass", "Pinsir", "Emolga", "Heracross", "Trubbish", "Garbodor", "Snover", "Abomasnow","Diglett", "Dugtrio", "Geodude", "Graveler", "Golem", "Onix", "Steelix", "Voltorb", "Electrode", "Cubone", "Marowak", "Whismur", "Loudred", "Exploud", "Aron", "Lairon", "Aggron", "Spheal", "Sealeo", "Walrein", "Cranidos", "Rampardos", "Shieldon", "Bastiodon", "Gible", "Gabite", "Garchomp", "Pidove", "Tranquill", "Unfezant", "Tympole", "Palpitoad", "Seismitoad", "Cottonee", "Whimsicott", "Petilil", "Lilligant", "Ducklett", "Swanna", "Deerling", "Sawsbuck", "Elgyem", "Beheeyem", "Pawniard", "Bisharp", "Heatmor", "Durant","Venipede","Whirlipede", "Scolipede", "Tirtouga", "Carracosta", "Joltik", "Galvantula", "Maractus", "Dwebble", "Crustle", "Roggenrola", "Boldore", "Gigalith", "Vanillite", "Vanillish", "Vanilluxe", "Klink", "Klang", "Klinklang", "Swinub", "Piloswine", "Golett", "Golurk", "Gothitelle", "Gothorita", "Solosis", "Duosion", "Reuniclus", "Deerling-Summer", "Deerling-Autumn", "Deerling-Winter", "Sawsbuck-Summer", "Sawsbuck-Autumn", "Sawsbuck-Winter", "Roserade", "Mewtwo"];
-    var halist = dwlist.concat(["Gothita", "Rufflet", "Klefki", "Phantump", "Trevenant", "Axew", "Fraxure", "Haxorus", "Carbink", "Scatterbug", "Spewpa", "Vivillon", "Sandile", "Krokorok", "Krookodile", "Inkay", "Malamar", "Noibat", "Noivern", "Goomy", "Sliggoo", "Goodra", "Dedenne", "Helioptile", "Heliolisk", "Spritzee", "Aromatisse", "Swirlix", "Slurpuff", "Flabébé", "Floette", "Florges", "Pancham", "Pangoro", "Larvesta", "Volcarona", "Litleo", "Pyroar", "Fennekin", "Braixen", "Delphox", "Fletchling", "Fletchinder", "Talonflame", "Hawlucha", "Litwick", "Lampent", "Chandelure", "Pumpkaboo", "Pumpkaboo-S", "Pumpkaboo-L", "Pumpkaboo-XL", "Gourgeist", "Gourgeist-S", "Gourgeist-L", "Gourgeist-XL", "Duskull", "Dusclops", "Dusknoir", "Chespin", "Quilladin", "Chesnaught", "Skiddo", "Gogoat", "Bunnelby", "Diggersby", "Bergmite", "Avalugg", "Espurr", "Meowstic", "Meowstic-F", "Binacle", "Barbaracle", "Froakie", "Frogadier", "Greninja", "Sylveon", "Ferrothorn", "Skrelp", "Dragalge", "Snivy", "Servine", "Serperior", "Oshawott", "Dewott", "Samurott", "Tepig", "Pignite", "Emboar", "Tyrunt", "Tyrantrum", "Chikorita", "Bayleef", "Meganium", "Cyndaquil", "Quilava", "Typhlosion", "Totodile", "Croconaw", "Feraligatr", "Amaura", "Aurorus"]);
-    //two lists for gen 5 and gen 6
-    /* use hash for faster lookup */
-    dwpokemons = {};
-    script.hapokemons = {};
-    var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
-    var dwpok;
-    for (dwpok = 0; dwpok < halist.length; dwpok++) {
-        var num = sys.pokeNum(halist[dwpok]);
-        if (num % 65536 == sys.pokeNum("Pikachu")) { //probably add a function to tell the difference between aesthetic and normal formes in the future
-            num = sys.pokeNum("Pikachu");
-        }
-        if (num === undefined)
-            sys.sendAll("Script Check: Unknown poke in hapokemons: '" +halist[dwpok]+"'.", announceChan);
-        else if (script.hapokemons[num])
-            sys.sendAll("Script Check:  hapokemons contains '" +halist[dwpok]+"' multiple times.", announceChan);
-        else {
-            script.hapokemons[num] = true;
-            if (dwlist.indexOf(halist[dwpok]) > -1) {
-                dwpokemons[num] = true;
-            }
-        }
-    }
-
-    var lclist = ["Bulbasaur", "Charmander", "Squirtle", "Croagunk", "Turtwig", "Chimchar", "Piplup", "Treecko", "Torchic", "Mudkip", "Pansage", "Pansear", "Panpour"];
-    lcpokemons = lclist.map(sys.pokeNum);
-    lcmoves = {
-        "Bronzor":["Iron Defense"],
-        "Golett":["Rollout","Shadow Punch","Iron Defense","Mega Punch","Magnitude","DynamicPunch","Night Shade","Curse","Hammer Arm","Focus Punch"],
-        "Klink":["Charge","Thundershock","Gear Grind","Bind","Mirror Shot","Screech","Discharge","Metal Sound","Shift Gear","Lock-On","Zap Cannon"],
-        "Petilil":["Entrainment"],
-        "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"]
-    };
-
-    var breedingList = ["Bulbasaur", "Ivysaur", "Venusaur", "Charmander", "Charmeleon", "Charizard", "Squirtle", "Wartortle", "Blastoise", "Croagunk", "Toxicroak", "Turtwig", "Grotle", "Torterra", "Chimchar", "Monferno", "Infernape", "Piplup", "Prinplup", "Empoleon", "Treecko", "Grovyle", "Sceptile", "Torchic", "Combusken", "Blaziken", "Mudkip", "Marshtomp", "Swampert", "Hitmonlee","Hitmonchan","Hitmontop","Tyrogue", "Porygon", "Porygon2", "Porygon-Z", "Gothorita", "Gothitelle","Pansage", "Pansear", "Panpour", "Simisear", "Simisage", "Simipour"];
-    breedingpokemons = breedingList.map(sys.pokeNum);
-
     /* restore mutes, smutes, mafiabans, rangebans, megausers */
     script.mutes = new MemoryHash(Config.dataDir+"mutes.txt");
     script.mbans = new MemoryHash(Config.dataDir+"mbans.txt");
@@ -483,6 +445,8 @@ init : function() {
     } catch (e) {
         script.league = {};
     }
+    
+    var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     proxy_ips = {};
     function addProxybans(content) {
         var lines = content.split(/\n/);
@@ -548,18 +512,7 @@ init : function() {
             SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
         });
     }
-
-    isSuperAdmin = function(id) {
-        if (typeof Config.superAdmins != "object" || Config.superAdmins.length === undefined) return false;
-        if (sys.auth(id) != 2) return false;
-        var name = sys.name(id);
-        for (var i = 0; i < Config.superAdmins.length; ++i) {
-            if (script.cmp(name, Config.superAdmins[i]))
-                return true;
-        }
-        return false;
-    };
-
+    
     if (typeof VarsCreated != 'undefined')
         return;
 
@@ -581,53 +534,22 @@ init : function() {
     script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
     script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
     script.isSafariAdmin = require('safari.js').isChannelAdmin;
+    isSuperAdmin = function(id) {
+        if (typeof Config.superAdmins != "object" || Config.superAdmins.length === undefined) return false;
+        if (sys.auth(id) != 2) return false;
+        var name = sys.name(id);
+        for (var i = 0; i < Config.superAdmins.length; ++i) {
+            if (script.cmp(name, Config.superAdmins[i]))
+                return true;
+        }
+        return false;
+    };
 
     script.battlesStopped = false;
 
     maxPlayersOnline = 0;
 
     lineCount = 0;
-
-    script.pokeNatures = [];
-
-    var list = "Heatran-Eruption/Quiet=Suicune-Extreme Speed/Relaxed|Sheer Cold/Relaxed|Aqua Ring/Relaxed|Air Slash/Relaxed=Raikou-Extreme Speed/Rash|Weather Ball/Rash|Zap Cannon/Rash|Aura Sphere/Rash=Entei-Extreme Speed/Adamant|Flare Blitz/Adamant|Howl/Adamant|Crush Claw/Adamant=Snivy-Aromatherapy/Hardy=Genesect-Extreme Speed/Hasty|Blaze Kick/Hasty|Shift Gear/Hasty";
-    //this is really awful btw :(
-    var sepPokes = list.split('='),
-        sepMovesPoke, sepMoves, movenat;
-    for (var x = 0; x < sepPokes.length; x++) {
-        sepMovesPoke = sepPokes[x].split('-');
-        sepMoves = sepMovesPoke[1].split('|');
-
-        var poke = sys.pokeNum(sepMovesPoke[0]);
-        script.pokeNatures[poke] = [];
-
-        for (var y = 0; y < sepMoves.length; ++y) {
-            movenat = sepMoves[y].split('/');
-            script.pokeNatures[poke][sys.moveNum(movenat[0])] = sys.natureNum(movenat[1]);
-        }
-    }
-    
-    script.pokeAbilities = [];
-    
-    var Ablist = "Bulbasaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Ivysaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Venusaur-False Swipe/Overgrow|Block/Overgrow|Weather Ball/Overgrow=Charmander-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charmeleon-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charizard-False Swipe/Blaze|Block/Blaze|Acrobatics/Blaze=Squirtle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Wartortle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Blastoise-False Swipe/Torrent|Block/Torrent|Follow Me/Torrent";
-    //Terrible, but it works!
-    //Bulba line: Weather Ball, Frenzy Plant, False Swipe, Block
-    //Charm line: Acrobatics, Blast Burn, False Swipe, Block
-    //Squirt line: Follow Me, Hydro Cannon, False Swipe, Block
-    var sepAbPokes = Ablist.split('='),
-        sepAbMovesPoke, sepAb, moveab;
-    for (var x = 0; x < sepAbPokes.length; x++) {
-        sepAbMovesPoke = sepAbPokes[x].split('-');
-        sepAb = sepAbMovesPoke[1].split('|');
-        
-        var poke = sys.pokeNum(sepAbMovesPoke[0]);
-        script.pokeAbilities[poke] = [];
-        
-        for (var y = 0; y < sepAb.length; ++y) {
-            moveab = sepAb[y].split('/');
-            script.pokeAbilities[poke][sys.moveNum(moveab[0])] = sys.abilityNum(moveab[1]);
-        }
-    }
     
     if (typeof script.chanNameBans == 'undefined') {
         script.chanNameBans = [];
@@ -1545,10 +1467,10 @@ silence: function(src, minutes, chanName) {
         bot.sendMessage(src, "Sorry, global silence is disabled. Use /silence 5 Channel Name", channel);
         return;
     }
-    var duration = minutes
-    var doCall;
+    var duration = minutes;
+    var doCall, delay;
     if (duration !== "permanent") {
-        var delay = parseInt(minutes * 60, 10);
+        delay = parseInt(minutes * 60, 10);
         if (isNaN(delay) || delay <= 0) {
             channelbot.sendMessage(src, "Your minutes are not a valid number. The channel will be permanently silenced.", channel);
         } else {
@@ -1996,10 +1918,10 @@ beforeChatMessage: function(src, message, chan) {
     
     if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
         if (message.toLowerCase().indexOf("http") != -1) {
-            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [MIGHT BE NSFW. CLICK AT OWN RISK! Message content: " + message + "]!", staffchannel);            
+            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [(May be NSFW) Message content: " + message + "]!", staffchannel);            
             //message = message.replace("http", "ht\u200btp");
             //sys.sendAll(sys.name(src) + ": " + message, channel);
-            sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+            sys.sendMessage(src, sys.name(src) + ": " + message, channel);
             sys.stopEvent();
             this.afterChatMessage(src, message, channel);
             return;
@@ -2257,11 +2179,13 @@ beforeChangeTier : function(src, team, oldtier, newtier) {
     }
 },
 
+/*
 afterChangeTier : function(src, team, oldtier, newtier) {
 },
 
 afterPlayerAway : function(src, away) {
 },
+*/
 
 beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTier) {
     if (script.battlesStopped) {
