@@ -7393,7 +7393,7 @@ function Mafia(mafiachan) {
         try {
             this.tickDown();
         } catch (err) {
-            dualBroadcast("error occurred: " + err);
+            dualBroadcast("Error occurred in Mafia step on line " + (err.lineNumber ? " on line " + err.lineNumber : "") + ": " + err);
         }
     };
     this.init = function () {
