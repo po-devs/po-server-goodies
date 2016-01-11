@@ -9145,7 +9145,7 @@ function Safari() {
                 return true;
             }
             if (command === "stopongoing") {
-                for (e = 0; e < currentAuctions.length; e++) {
+                for (var e = 0; e < currentAuctions.length; e++) {
                     var player = getAvatar(sys.id(currentAuctions[e].hostName));
                     player.cooldowns.auction = 0;
                 }
