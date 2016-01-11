@@ -286,6 +286,7 @@ function Safari() {
     var preparationFirst = null;
     var lastWild = 0;
     var wildEvent = false;
+    var resolvingThrows = false;
 
     /* Leaderboard Variables */
     var leaderboards = {};
@@ -893,7 +894,7 @@ function Safari() {
             return;
         }
         var input = data.split(":");
-        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(input[0]);
         var id = info.id;
         if (!info.num) {
             safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
@@ -1122,7 +1123,7 @@ function Safari() {
         -input: String; What you need to type to get to that result. Used for trade
         */
         var shiny = false, id, num, name;
-        info = info.toLowerCase();
+        info = info.replace(/flabebe/gi, "flabébé").toLowerCase();
 
         if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
             shiny = true;
@@ -1983,6 +1984,12 @@ function Safari() {
                 safaribot.sendMessage(sys.id("Safari Warden"), mess, safchan);
             }
         }
+        if (preparationPhase > 0 && data === "cancel") {
+            safaribot.sendMessage(src, "You cancelled your throw!", safchan);
+            delete preparationThrows[sys.name(src).toLowerCase()];
+            return;
+        }
+
         if (!currentPokemon) {
             if (suppress) {
                 safaribot.sendMessage(src, "Someone caught the wild Pokémon while you were preparing your throw!", safchan);
@@ -2001,7 +2008,7 @@ function Safari() {
             return;
         }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
-            safaribot.sendMessage(src, "You can't catch any new Pokémon because all your boxes are full! Please buy a new box with /buy.", safchan);
+            safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another box or decrease the number of Pokémon in your possession.", safchan);
             return;
         }
         var currentTime = now();
@@ -2212,7 +2219,7 @@ function Safari() {
                 wildEvent = false;
             } else {
                 currentThrows -= Math.floor(maxThrows/2 + 5); //each caught pokemon makes the horde more likely to flee by a large amount
-                if (currentThrows <= 0 && !wildEvent) {
+                if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
                     flee = true;
                 }
             }
@@ -2239,7 +2246,7 @@ function Safari() {
             player.records.pokesNotCaught += 1;
 
             currentThrows -= 1;
-            if (currentThrows <= 0 && !wildEvent) {
+            if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
                 flee = true;
             }
         }
@@ -2335,7 +2342,7 @@ function Safari() {
             return;
         }
         var input = data.split(":");
-        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(input[0]);
         var shiny = info.shiny;
         var num = info.num;
         var id = info.id;
@@ -2379,7 +2386,12 @@ function Safari() {
     this.fullBoxWarning = function(src) {
         var player = getAvatar(src);
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate - 5) {
-            safaribot.sendMessage(src, "Your box is almost full! You can still catch " + (player.balls.box * itemData.box.bonusRate - player.pokemon.length) + " more Pokémon!", safchan);
+            var remaining = player.balls.box * itemData.box.bonusRate - player.pokemon.length;
+            if (remaining > 0) {
+                safaribot.sendMessage(src, "Your boxes are almost full! You can still catch " + remaining + " more Pokémon!", safchan);
+            } else {
+                safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another box or decrease the number of Pokémon in your possession.", safchan);
+            }
         }
     };
 
@@ -3699,7 +3711,7 @@ function Safari() {
         }
 
         var input = commandData.split(":");
-        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(input[0]);
         var starter = input.length > 1 ? input[1].toLowerCase() : "*";
         var shiny = info.shiny;
         var num = info.num;
@@ -3792,7 +3804,7 @@ function Safari() {
             return;
         }
 
-        var info = getInputPokemon(commandData.replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(commandData);
         var shiny = info.shiny;
         var num = info.num;
         if (!num) {
@@ -3909,7 +3921,7 @@ function Safari() {
                 reward = "permfinder";
                 amount = 3;
                 showMsg = false;
-                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a Wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder slightly recharged due to the shock.", safchan);
+                safaribot.sendHtmlAll("<b>Pi-ka-CHUUU!</b> " + sys.name(src) + " was shocked by a wild Pikachu while looking for items! On the bright side, " + sys.name(src) + "'s Itemfinder slightly recharged due to the shock.", safchan);
                 safaribot.sendMessage(src, "Your Itemfinder gained " + amount + " charges [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
             }
             break;
@@ -4100,7 +4112,7 @@ function Safari() {
 
         var player = getAvatar(src);
         var input = data.split(":");
-        var info = getInputPokemon(input[0].replace(/flabebe/gi, "flabébé"));
+        var info = getInputPokemon(input[0]);
         var shiny = info.shiny;
         var id = info.id;
 
@@ -5548,9 +5560,6 @@ function Safari() {
             }
             return;
         }
-        if (cantBecause(src, "trade", ["wild", "contest", "auction", "battle"])) {
-            return;
-        }
 
         var info = data.split(":");
         if (info.length < 3) {
@@ -5558,6 +5567,10 @@ function Safari() {
             safaribot.sendMessage(src, "You can trade a Pokémon (type the name or number), money (type $150) or item (type @master).", safchan);
             return;
         }
+        if (cantBecause(src, "trade", ["wild", "contest", "auction", "battle"])) {
+            return;
+        }
+        
         var autoCancel;
         var targetName = info[0].toLowerCase();
         if (userName in tradeRequests) {
@@ -5583,8 +5596,8 @@ function Safari() {
             return;
         }
 
-        var offer = info[1].replace(/flabebe/gi, "flabébé").toLowerCase();
-        var request = info[2].replace(/flabebe/gi, "flabébé").toLowerCase();
+        var offer = info[1].toLowerCase();
+        var request = info[2].toLowerCase();
 
         var offerType = this.isValidTrade(src, offer, "offer", request);
         if (!offerType) {
@@ -5811,6 +5824,9 @@ function Safari() {
             var data = itemData[item];
             if (data.tradeReq && player.balls[item] - amount < data.tradeReq) {
                 safaribot.sendMessage(src, "You can't trade " + finishName(item) + " unless you have at least " + data.tradeReq + " of those!", safchan);
+                return false;
+            }
+            if (cantBecause(src, "trade", ["wild", "contest", "auction", "battle"])) {
                 return false;
             }
         }
@@ -8965,14 +8981,19 @@ function Safari() {
                 return true;
             }
             if (command === "update") {
-                if (contestCount > 0 || contestCooldown < 181) {
-                    safaribot.sendMessage(src, "You shouldn't update during or right before a contest!", safchan);
-                } else if (currentPokemon) {
-                    safaribot.sendMessage(src, "You shouldn't update while a Wild Pokemon is out!", safchan);
-                } else {
-                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
-                    safariUpdating = true;
+                if (commandData !== "force") {
+                    if (contestCount > 0 || contestCooldown < 181) {
+                        safaribot.sendMessage(src, "You shouldn't update during or right before a contest!", safchan);
+                        return true;
+                    } 
+                    if (currentPokemon) {
+                        safaribot.sendMessage(src, "You shouldn't update while a Wild Pokemon is out!", safchan);
+                        return true;
+                    }
                 }
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                safariUpdating = true;
+                safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles and <b>" + currentAuctions.length + "</b> ongoing auctions.", safchan);
                 return true;
             }
             if (command === "cancelupdate") {
@@ -9124,8 +9145,13 @@ function Safari() {
                 return true;
             }
             if (command === "stopongoing") {
-                currentBattles = [];
+                for (e = 0; e < currentAuctions.length; e++) {
+                    var player = getAvatar(sys.id(currentAuctions[e].hostName));
+                    player.cooldowns.auction = 0;
+                }
                 currentAuctions = [];
+                
+                currentBattles = [];
                 safaribot.sendAll("All ongoing battles and auctions have been stopped.", safchan);
                 return true;
             }
@@ -9174,13 +9200,16 @@ function Safari() {
         }
         if (sys.auth(src) > 2) {
             if (command === "updateplugin" && commandData === "safari.js") {
-                if (contestCount > 0 || contestCooldown < 181) {
-                    safaribot.sendMessage(src, "You shouldn't update during or right before a contest...", safchan);
-                    return true;
-                } else if (currentPokemon) {
-                    safaribot.sendMessage(src, "You shouldn't update while a Wild Pokemon is out!", safchan);
+                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0) {
+                    safariUpdating = true;
+                }
+                if (!safariUpdating) {
+                    safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
                     return true;
                 }
+                
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                safariUpdating = true;
                 //Then fall through to the actual command to update plugin
             }
         }
@@ -9316,6 +9345,7 @@ function Safari() {
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
+                resolvingThrows = true;
                 var name, i;
                 var list = Object.keys(preparationThrows);
                 for (i in preparationThrows) {
@@ -9332,6 +9362,9 @@ function Safari() {
                     }
                 }
                 for (i = 0; i < throwers.length; i++) {
+                    if (i + 1 >= throwers.length) {
+                        resolvingThrows = false;
+                    }
                     name = throwers[i];
                     if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
                         alreadyThrow.push(name);
