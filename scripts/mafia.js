@@ -3281,7 +3281,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            mafiabot.sendHtmlAll(mafia.getCurrentPlayers() + ".", mafiachan);
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
@@ -4301,7 +4301,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            mafiabot.sendHtmlAll(mafia.getCurrentPlayers() + ".", mafiachan);
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
@@ -4352,7 +4352,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            mafiabot.sendHtmlAll(mafia.getCurrentPlayers() + ".", mafiachan);
 
 
             // Send players all roles sided with them
@@ -4611,7 +4611,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".", mafiachan);
+            mafiabot.sendHtmlAll(mafia.getCurrentPlayers() + ".", mafiachan);
 
             // Send players all roles sided with them
             var p, role, side, check,
