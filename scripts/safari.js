@@ -3706,7 +3706,7 @@ function Safari() {
             }
             break;
             case "dust": {
-                amount *= 2;
+                amount *= 5;
                 safaribot.sendMessage(src, "You open the capsule to find a Rare Candy! Unfortunately, some rude player pushes you out of the way causing you to drop it. The Candy impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
             }
             break;
