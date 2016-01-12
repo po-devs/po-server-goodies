@@ -7128,7 +7128,7 @@ function Safari() {
     FactionWar.prototype.sendToViewers = function(msg) {
         var e;
         var list = this.signups.concat(this.viewers);
-        for (e in list) {
+        for (e = 0 ; e < list.length; e++) {
             this.sendMessage(list[e], msg);
         }
     };
