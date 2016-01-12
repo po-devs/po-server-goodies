@@ -1805,7 +1805,7 @@ function Mafia(mafiachan) {
             } else {
                 gamemsgAll(sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "!");
             }
-            gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
+            mafiabot.sendHtmlAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
             sendChanAll(border, mafiachan);
             sendChanAll("", mafiachan);
         }
@@ -1816,7 +1816,7 @@ function Mafia(mafiachan) {
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
             }
-            gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
+            mafiabot.sendHtmlAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
             sendChanAll(GREEN_BORDER, mafiachan);
             sendChanAll("", mafiachan);
         }
@@ -3281,7 +3281,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            gamemsgAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
+            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
@@ -4301,7 +4301,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            gamemsgAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
+            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
                 // Send players all roles sided with them
                 for (p in mafia.players) {
@@ -4352,7 +4352,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            gamemsgAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
+            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
 
 
             // Send players all roles sided with them
@@ -4611,7 +4611,7 @@ function Mafia(mafiachan) {
             if (mafia.theme.closedSetup !== "full") {
                 gamemsgAll("±Current Roles: " + mafia.getCurrentRoles() + ".");
             }
-            gamemsgAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
+            mafiabot.sendHtmlAll("±Current Players: " + mafia.getCurrentPlayers() + ".");
 
             // Send players all roles sided with them
             var p, role, side, check,
@@ -4680,7 +4680,7 @@ function Mafia(mafiachan) {
             if (winner.theme !== null) {
                 sendChanAll("", mafiachan);
                 gamemsgAll("Theme " + mafia.themeManager.themes[winner.theme].name + " won with " + winner.votes + " votes!");
-                gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
+                mafiabot.sendHtmlAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!");
                 sendChanAll("", mafiachan);
                 mafia.startGame(null, winner.theme);
                 mafia.signups = players[winner.theme];
