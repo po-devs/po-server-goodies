@@ -1480,7 +1480,7 @@ function Mafia(mafiachan) {
 	    return;
     };
 	this.startEvent = function (forced) { //can be force started by sMA
-	    if (this.state !== "blank") {
+	    if ((this.state !== "blank") || (mafia.needsUpdating)) {
 		return;
 	    }
 	    if (forced) {
