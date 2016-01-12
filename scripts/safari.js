@@ -267,8 +267,8 @@ function Safari() {
     entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg=="
     };
     var gachaItems = {
-        safari: 100, great: 50, ultra: 30, luxury: 35, myth: 10, quick: 10, heavy: 20, clone: 25,
-        bait: 95, rock: 180, gem: 9,
+        safari: 95, great: 50, ultra: 30, luxury: 35, myth: 10, quick: 10, heavy: 20, clone: 25,
+        bait: 95, rock: 135, gem: 9, dust: 50,
         wild: 60, horde: 8,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
@@ -3633,7 +3633,6 @@ function Safari() {
         } else if (rng < 0.15) {
             amount = 2;
         }
-        var plural = amount > 1 ? "s" : "";
 
         var giveReward = true;
         if (player.truesalt > now()) {
@@ -3662,7 +3661,7 @@ function Safari() {
             break;
             case "rock": {
                 var snowball = itemData.rock.fullName === "Snowball";
-                safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : itemData.rock.name + "s") + " in the Gachapon Machine! You received  " + amount + " " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "A " + (snowball ? "wet splashing sound" : "loud clunk" ) + " comes from the machine. Some prankster put " + (snowball ? "snow" : itemData.rock.name + "s") + " in the Gachapon Machine! You received  " + plural(amount, finishName(reward)) + ".", safchan);
             }
             break;
             case "wild":
@@ -3706,6 +3705,11 @@ function Safari() {
                 safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
             }
             break;
+            case "dust": {
+                amount *= 2;
+                safaribot.sendMessage(src, "You open the capsule to find a Rare Candy! Unfortunately, some rude player pushes you out of the way causing you to drop it. The Candy impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
+            }
+            break;
             case "gacha": {
                 var jackpot = Math.floor(gachaJackpot/10);
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
@@ -3746,7 +3750,7 @@ function Safari() {
             }
             break;
             default:
-                safaribot.sendMessage(src, "You received " + amount + " " + finishName(reward) + plural + ".", safchan);
+                safaribot.sendMessage(src, "You received " + plural(amount, finishName(reward)) + ".", safchan);
             break;
         }
         if (giveReward) {
