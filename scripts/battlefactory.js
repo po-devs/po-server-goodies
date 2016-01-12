@@ -36,7 +36,7 @@ startBF();
 function initFactory() {
     reviewChannel = utilities.get_or_create_channel("BF Review");
     bfbot.sendAll("Version " + bfVersion + " of Battle Factory loaded successfully!", reviewChannel);
-    working = true;
+    working = false;
 }
 
 function startBF() {
