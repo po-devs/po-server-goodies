@@ -9671,13 +9671,13 @@ function Safari() {
             if (command === "updateplugin" && commandData === "safari.js") {
                 if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0) {
                     safariUpdating = true;
+                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
                 if (!safariUpdating) {
                     safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
                     return true;
                 }
                 
-                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 safariUpdating = true;
                 //Then fall through to the actual command to update plugin
             }
