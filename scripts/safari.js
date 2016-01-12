@@ -2856,7 +2856,7 @@ function Safari() {
                 safaribot.sendMessage(src, cos + " is not a valid costume!", safchan);
                 return;
             }
-            if (player.costumes[cos] < 1) {
+            if (!player.costumes.contains(cos)) {
                 safaribot.sendMessage(src, "You do not have the " + costumeName + " costume!", safchan);
                 return;
             }
@@ -7646,6 +7646,9 @@ function Safari() {
             if (!("idnum" in player) || player.idnum === undefined || player.idnum === null || isNaN(player.idnum) || player.idnum < 0 || typeof player.idnum !== "number") {
                 player.idnum = 0;
                 this.assignIdNumber(player);
+            }
+            if (!player.costumes.contains(player.costume)) {
+                player.costume = "none";
             }
 
             this.saveGame(player);
