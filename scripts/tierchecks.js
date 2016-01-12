@@ -350,9 +350,9 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     /* Template */
     //  type: {type: "Type", items: [], pokes: [], abilities: []}
     var typeBans = { 
-        flying: {type: "Flying", items: ["Charizardite X"]}
+        flying: {type: "Flying", items: ["Charizardite X"]},
         //bug: {type: "Bug", pokes: ["Genesect"]},
-        //steel: {type: "Steel", pokes: ["Aegislash"]}
+        steel: {type: "Steel", pokes: ["Aegislash"]}
     };
     var ret = [], item, pkmn;
     for (var e in typeBans) {
