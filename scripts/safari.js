@@ -1018,7 +1018,7 @@ function Safari() {
     }
     function plural(qty, string, altplural, wordy) {
         qty = parseInt(qty, 10);
-        if (qty > 1) {
+        if (qty !== 1) {
             if (altplural) {
                 return qty + " " + altplural;
             } else {
@@ -2861,7 +2861,7 @@ function Safari() {
                 return;
             }
             if (player.cooldowns.costume > currentTime) {
-                safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeftString(player.cooldowns.costume) + " seconds!", safchan);
+                safaribot.sendMessage(src, "You changed your costume recently. Please try again in " + timeLeftString(player.cooldowns.costume) + "!", safchan);
                 return;
             }
         } else if (player.costume === "none") {
@@ -6856,11 +6856,13 @@ function Safari() {
         this.eventName = "Faction War";
         
         this.signups = [];
+        this.preferredTeams = {};
         this.team1 = [];
         this.team2 = [];
         
         this.party1 = [];
         this.party2 = [];
+        this.playerTeams = {};
         
         this.team1Defeated = 0;
         this.team2Defeated = 0;
@@ -6877,85 +6879,28 @@ function Safari() {
         this.finished = false;
         this.hasReward = true;
         
-        var joinCommand = "/join";
+        var joinCommand = "/signup";
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a " + this.eventName + " event! The teams are " + team1 + " and " + team2 + ", and each player from the winning team will receive " + plural(amount, reward.name) + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have 36 seconds)!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
         sys.sendAll("", safchan);
     }
     function toColor(str, color) {
         return "<span style='color:" + color + "'>" + str + "</span>";
     }
+    function addFlashTag(name) {
+        return "<!--f-->" + name + "<!--f-->";
+    }
     FactionWar.prototype.nextTurn = function() {
         this.turn++;
-        if (this.turn < 6) {
+        if (this.turn < 6) { //SIGN-UP PHASE
             if (this.turn == 3) {
-                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 18 seconds! Type " + link("/join") + " to participate!", safchan);
+                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 18 seconds! Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate!", safchan);
             }
             return;
         }
         else if (this.turn === 6) {
-            //SETUP TEAMS
-            var players = this.signups.concat().shuffle();
-            this.team1 = players.slice(0, Math.floor(players.length/2));
-            this.team2 = players.slice(players.length/2);
-            
-            var e, i, len = this.team1.length, player, name;
-            for (e = 0; e < len; e++) {
-                name = this.team1[e];
-                player = getAvatarOff(name);
-                for (i = 0; i < 6; i++) {
-                    this.party1.push({ owner: name, id: player.party[i] });
-                }
-            }
-            len = this.team2.length;
-            for (e = 0; e < len; e++) {
-                name = this.team2[e];
-                player = getAvatarOff(name);
-                for (i = 0; i < 6; i++) {
-                    this.party2.push({ owner: name, id: player.party[i] });
-                }
-            }
-            
-            var createFillerPlayer = function() {
-                var name = "[NPC] " + generateName();
-                var party = generateTeam();
-                return { name: name, party: party };
-            };
-            
-            var playerCount = this.signups.length;
-            if (playerCount < 4) {
-                this.hasReward = false;
-            }
-            
-            while (playerCount < 6 || playerCount % 2 === 1) {
-                var team = playerCount % 2 === 0 ? this.team2 : this.team1;
-                var party = playerCount % 2 === 0 ? this.party2 : this.party1;
-                
-                var npc = createFillerPlayer();
-                
-                if (!team.contains(npc.name) && !this.npcs.contains(npc.name)) {
-                    team.push(npc.name);
-                    this.npcs.push(npc.name);
-                    for (i = 0; i < 6; i++) {
-                        party.push({ owner: npc.name, id: npc.party[i] });
-                    }
-                    playerCount++;
-                }
-            }
-            
-            this.party1.shuffle();
-            this.party2.shuffle();
-            this.battleSize = this.party1.length;
-            
-            this.sendToViewers("");
-            safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
-            this.sendToViewers("The teams have been defined! ");
-            this.sendToViewers(toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"));
-            this.sendToViewers(toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"));
-            this.sendToViewers("Battles will start now!");
-            this.sendToViewers("");
-            
+            this.setupEvent();
             return;
         }
         
@@ -6968,8 +6913,10 @@ function Safari() {
             result = this.runBattle(p1.id, p2.id, p1.owner, p2.owner);
             if (result === 1) {
                 this.team2Defeated++;
+                p1.score++;
             } else if (result === 2) {
                 this.team1Defeated++;
+                p2.score++;
             } else {
                 this.team1Defeated++;
                 this.team2Defeated++;
@@ -6978,7 +6925,7 @@ function Safari() {
                 break;
             }
         }
-        this.sendToViewers("[" + toColor(this.team1Name, this.team1Color) + ": " + (this.party1.length - this.team1Defeated) + " Pokémon remaning] ["+ toColor(this.team2Name, this.team2Color) + ": " + (this.party2.length - this.team2Defeated) + " Pokémon remaning]");
+        this.sendToViewers("[" + toColor(this.team1Name, this.team1Color) + ": " + (this.party1.length - this.team1Defeated) + " Pokémon remaining] ["+ toColor(this.team2Name, this.team2Color) + ": " + (this.party2.length - this.team2Defeated) + " Pokémon remaining]");
         this.sendToViewers("");
         
         if (this.team1Defeated >= this.battleSize || this.team2Defeated >= this.battleSize) {
@@ -6996,6 +6943,128 @@ function Safari() {
                 this.party2.push(this.party2.random());
             }
         }
+    };
+    FactionWar.prototype.setupEvent = function() {
+        //SETUP TEAMS
+        var teamSize = Math.ceil(Math.max(this.signups.length, 6)/2);
+        
+        var pickedSides = this.preferredTeams, name, e, overflow = [], changedTeams = {};
+        for (e in pickedSides) {
+            name = pickedSides[e];
+            if (this.signups.contains(e)) {
+                if (name == this.team1Name) {
+                    if (this.team1.length < teamSize) {
+                        this.team1.push(e);
+                        changedTeams[e] = "you have been added to the " + toColor(this.team1Name, this.team1Color) + " side!";
+                    } else {
+                        overflow.push(e);
+                    }
+                } else if (name == this.team2Name) {
+                    if (this.team2.length < teamSize) {
+                        this.team2.push(e);
+                        changedTeams[e] = "you have been added to the " + toColor(this.team2Name, this.team2Color) + " side!";
+                    } else {
+                        overflow.push(e);
+                    }
+                } else {
+                    overflow.push(e);
+                }
+            }
+        }
+        
+        var players = overflow.shuffle(), otherTeam, chosenTeam, chosenColor;
+        while (players.length > 0) {
+            name = players.shift();
+            chosenTeam = pickedSides[name];
+            if (this.team1.length >= teamSize) {
+                this.team2.push(name);
+                otherTeam = this.team2Name;
+                chosenColor = this.team2Color;
+            } else if (this.team2.length >= teamSize) {
+                this.team1.push(name);
+                otherTeam = this.team1Name;
+                chosenColor = this.team1Color;
+            } else {
+                var randomTeam = Math.random() < 0.5 ? this.team1 : this.team2;
+                otherTeam = randomTeam == this.team1 ? this.team1Name : this.team2Name;
+                chosenColor = randomTeam == this.team1 ? this.team1Color : this.team2Color;
+                randomTeam.push(name);
+            }
+            if (chosenTeam === "*") {
+                changedTeams[name] = "you have been added to the " + toColor(otherTeam, chosenColor) + " side!";
+            } else {
+                changedTeams[name] = "you have been moved to the " + toColor(otherTeam, chosenColor) + " side because the " + chosenTeam + " side was full!";
+            }
+        }
+        
+        var i, len = this.team1.length, player, member;
+        for (e = 0; e < len; e++) {
+            name = this.team1[e];
+            player = getAvatarOff(name);
+            this.playerTeams[name] = [];
+            for (i = 0; i < 6; i++) {
+                member = { owner: name, id: player.party[i], score: 0 };
+                this.party1.push(member);
+                this.playerTeams[name].push(member);
+            }
+        }
+        len = this.team2.length;
+        for (e = 0; e < len; e++) {
+            name = this.team2[e];
+            player = getAvatarOff(name);
+            this.playerTeams[name] = [];
+            for (i = 0; i < 6; i++) {
+                member = { owner: name, id: player.party[i], score: 0 };
+                this.party2.push(member);
+                this.playerTeams[name].push(member);
+            }
+        }
+        
+        var createFillerPlayer = function() {
+            var name = "[NPC] " + generateName();
+            var party = generateTeam();
+            return { name: name, party: party };
+        };
+        
+        var playerCount = this.signups.length;
+        if (playerCount < 4) {
+            this.hasReward = false;
+        }
+        
+        while (playerCount < 6 || playerCount % 2 === 1) {
+            var useSide1 = this.team1.length < this.team2.length;
+            var team = useSide1 ? this.team1 : this.team2;
+            var party = useSide1 ? this.party1 : this.party2;
+            
+            var npc = createFillerPlayer();
+            
+            if (!team.contains(npc.name) && !this.npcs.contains(npc.name)) {
+                team.push(npc.name);
+                this.npcs.push(npc.name);
+                this.playerTeams[npc.name] = [];
+                for (i = 0; i < 6; i++) {
+                    member = { owner: npc.name, id: npc.party[i], score: 0 };
+                    party.push(member);
+                    this.playerTeams[npc.name].push(member);
+                }
+                playerCount++;
+            }
+        }
+        
+        this.party1.shuffle();
+        this.party2.shuffle();
+        this.battleSize = this.party1.length;
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
+        this.sendToViewers("The teams have been defined! ");
+        this.sendToViewers(toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1.map(addFlashTag), "and"), true);
+        this.sendToViewers(toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2.map(addFlashTag), "and"), true);
+        for (e in changedTeams) {
+            this.sendMessage(e, addFlashTag(e) + ", " + changedTeams[e], true);
+        }
+        this.sendToViewers("Battles will start now!");
+        this.sendToViewers("");
     };
     FactionWar.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
         var p1Type1 = sys.type(sys.pokeType1(p1Poke)), p1Type2 = sys.type(sys.pokeType2(p1Poke));
@@ -7051,10 +7120,36 @@ function Safari() {
             winner = this.team1;
             safaribot.sendHtmlAll("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
         }
+        
+        var mvp = [], mvpPoints = 0, e, i, teams = this.playerTeams, id, player, score, mon, totalPoints;
+        
+        for (e in teams) {
+            id = sys.id(e);
+            player = teams[e];
+            score = [];
+            totalPoints = 0;
+            for (i = 0; i < player.length; i++) {
+                mon = player[i];
+                totalPoints += mon.score;
+                score.push(poke(mon.id) + ": " + plural(mon.score, "point"));
+                if (mon.score >= mvpPoints) {
+                    if (mon.score > mvpPoints) {
+                        mvpPoints = mon.score;
+                        mvp = [];
+                    }
+                    mvp.push(addFlashTag(e) + "'s " + poke(mon.id));
+                }
+            }
+            this.sendMessage(e, "Your score: " + score.join(" | ") + " | Total: " + plural(totalPoints, "Point"));
+        }
+        if (mvp.length > 0) {
+            this.sendToViewers("The MVP for this " + this.eventName + " was " + readable(mvp, "and") + " with " + plural(mvpPoints, "Point") + "!", true);
+        }
+        
         if (!this.hasReward) {
             this.sendToViewers("No rewards will be given due to the low number of participants!");
         } else {
-            var name, player, id, e, len = winner.length;
+            var name, len = winner.length;
             
             var reward = this.reward;
             var amt = this.amount;
@@ -7080,7 +7175,7 @@ function Safari() {
         }
         this.finished = true;
     };
-    FactionWar.prototype.join = function(src) {
+    FactionWar.prototype.join = function(src, data) {
         if (this.turn >= 6) {
             safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't join now!", safchan);
             return;
@@ -7101,10 +7196,43 @@ function Safari() {
             return;
         }
         
-        this.sendToViewers(name + " has joined the " + this.eventName + "!");
+        var pickedTeam = "";
+        if (data.toLowerCase() == this.team1Name.toLowerCase()) {
+            pickedTeam = " on the " + this.team1Name + " side";
+            this.preferredTeams[name] = this.team1Name;
+        } else if (data.toLowerCase() == this.team2Name.toLowerCase()) {
+            pickedTeam = " on the " + this.team2Name + " side";
+            this.preferredTeams[name] = this.team2Name;
+        } else {
+            this.preferredTeams[name] = "*";
+        }
+        
+        this.sendToViewers(name + " has joined the " + this.eventName + pickedTeam + "!");
         this.signups.push(name);
         
-        safaribot.sendMessage(src, "You joined the " + this.eventName + "!", safchan);
+        safaribot.sendHtmlMessage(src, "You joined the " + this.eventName + pickedTeam + "! To leave the event, type " + link("/unjoin") + "!", safchan);
+    };
+    FactionWar.prototype.unjoin = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter Safari to use this command!", safchan);
+            return;
+        }
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        var name = sys.name(src);
+        if (!signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You didn't even join this event!", safchan);
+            return;
+        }
+        if (this.turn >= 6) {
+            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't unjoin now!", safchan);
+            return;
+        }
+        var index = signupsLower.indexOf(name.toLowerCase());
+        this.signups.splice(index, 1);
+        delete this.preferredTeams[name];
+        this.sendToViewers(name + " has unjoined the " + this.eventName + "!");
+        safaribot.sendMessage(src, "You unjoined the " + this.eventName + " event!", safchan);
     };
     FactionWar.prototype.watchEvent = function(src) {
         if (this.turn < 6) {
@@ -7131,27 +7259,46 @@ function Safari() {
             
         }
     };
-    FactionWar.prototype.sendMessage = function(name, msg) {
+    FactionWar.prototype.sendMessage = function(name, msg, flashing) {
         var id = sys.id(name);
         if (id) {
             if (msg === "") {
                 sys.sendHtmlMessage(id, msg, safchan);
             } else {
-                safaribot.sendHtmlMessage(id, msg, safchan);
+                if (flashing) {
+                    safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else {
+                    safaribot.sendHtmlMessage(id, msg, safchan);
+                }
             }
         }
     };
-    FactionWar.prototype.sendToViewers = function(msg) {
+    FactionWar.prototype.sendToViewers = function(msg, flashing) {
         var e;
         var list = this.signups.concat(this.viewers);
         for (e = 0 ; e < list.length; e++) {
-            this.sendMessage(list[e], msg);
+            this.sendMessage(list[e], msg, flashing);
         }
     };
     FactionWar.prototype.isInEvent = function(name) {
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         return signupsLower.contains(name.toLowerCase());
     };
+    function toFlashing(message, name) { //Totally not stolen from tours
+        var newmessage = message;
+        var flashtag = "<!--f-->";
+        var htmlname = html_escape(name);
+        var regex = flashtag+htmlname+flashtag;
+        var newregex1 = "";
+        if (sys.os(sys.id(name)) !== "android") {
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname + "</font><ping/>";
+        } else {
+            newregex1 = "<background color='#FCD116'>" + htmlname + "</background><ping/>";
+        }
+        var flashregex = new RegExp(flashtag,"g");
+        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+        return newmessage;
+    }
     
     /* System Functions */
     this.startGame = function(src, data) {
@@ -7909,7 +8056,7 @@ function Safari() {
         var help = userHelp;
         var adminHelp = [
             "*** Safari Warden Commands ***",
-            "/startevent [team1]։[team2]։[reward]։[amount]: Starts a Faction War event.",
+            "/startevent [team1]։[team2]։[reward]։[amount]: Starts a Faction War event. To cancel an event, use /abortevent.",
             "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
             "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
@@ -8049,11 +8196,7 @@ function Safari() {
                 return true;
             }
             if (command === "join") {
-                if (currentEvent && commandData === "*") {
-                    currentEvent.join(src);
-                } else {
-                    safari.joinAuction(src, commandData);
-                }
+                safari.joinAuction(src, commandData);
                 return true;
             }
             if (command === "bid") {
@@ -8062,6 +8205,22 @@ function Safari() {
             }
             if (command === "leave") {
                 safari.quitAuction(src, commandData);
+                return true;
+            }
+            if (command === "signup") {
+                if (currentEvent) {
+                    currentEvent.join(src, commandData);
+                } else {
+                    safaribot.sendMessage(src, "There's no event going on!", safchan);
+                }
+                return true;
+            }
+            if (command === "unjoin") {
+                if (currentEvent) {
+                    currentEvent.unjoin(src);
+                } else {
+                    safaribot.sendMessage(src, "There's no event going on!", safchan);
+                }
                 return true;
             }
             if (command === "party") {
@@ -8485,6 +8644,15 @@ function Safari() {
                 
                 var ev = new FactionWar(src, name1, name2, reward, amt);
                 currentEvent = ev;
+                return true;
+            }
+            if (command === "abortevent") {
+                if (!currentEvent) {
+                    safaribot.sendMessage(src, "There's no event going on!", safchan);
+                    return true;
+                }
+                safaribot.sendAll(sys.name(src) + " cancelled the " + currentEvent.eventName + " event!", safchan);
+                currentEvent = null;
                 return true;
             }
             if (command === "sanitize") {
