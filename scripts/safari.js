@@ -6876,7 +6876,7 @@ function Safari() {
         var joinCommand = "/join";
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a " + this.eventName + " event! The teams are " + team1 + " and " + team2 + ", and each player from the winning team will receive " + plural(amount, reward.name) + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have 30 seconds)!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have 36 seconds)!", safchan);
         sys.sendAll("", safchan);
     }
     function toColor(str, color) {
@@ -6886,7 +6886,7 @@ function Safari() {
         this.turn++;
         if (this.turn < 6) {
             if (this.turn == 3) {
-                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 15 seconds! Type " + link("/join") + " to participate!", safchan);
+                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 18 seconds! Type " + link("/join") + " to participate!", safchan);
             }
             return;
         }
@@ -6945,6 +6945,7 @@ function Safari() {
             this.battleSize = this.party1.length;
             
             this.sendToViewers("");
+            safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
             this.sendToViewers("The teams have been defined! ");
             this.sendToViewers(toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"));
             this.sendToViewers(toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"));
@@ -7041,10 +7042,10 @@ function Safari() {
         var winner;
         if (this.team1Defeated > this.team2Defeated) {
             winner = this.team2;
-            this.sendToViewers("The " + toColor(this.team2Name, this.team2Color) + " (" + readable(winner, "and") + ") has won this Faction War!");
+            safaribot.sendHtmlAll("The " + toColor(this.team2Name, this.team2Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
         } else {
             winner = this.team1;
-            this.sendToViewers("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won this Faction War!");
+            safaribot.sendHtmlAll("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
         }
         if (!this.hasReward) {
             this.sendToViewers("No rewards will be given due to the low number of participants!");
@@ -7082,6 +7083,10 @@ function Safari() {
         }
         var player = getAvatar(src);
         var name = sys.name(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter Safari to join this event!", safchan);
+            return;
+        }
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         if (signupsLower.contains(name.toLowerCase())) {
             safaribot.sendMessage(src, "You already joined the event!", safchan);
@@ -7098,6 +7103,10 @@ function Safari() {
         safaribot.sendMessage(src, "You joined the " + this.eventName + "!", safchan);
     };
     FactionWar.prototype.watchEvent = function(src) {
+        if (this.turn < 6) {
+            safaribot.sendMessage(src, "The " + this.eventName + " didn't start yet!", safchan);
+            return;
+        }
         var name = sys.name(src);
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         if (signupsLower.contains(name.toLowerCase())) {
@@ -7106,13 +7115,16 @@ function Safari() {
         }
         
         if (this.viewers.contains(name.toLowerCase())) {
-            this.sendToViewers(name + " stopped watching this " + this.eventName + "!");
             this.viewers.splice(this.viewers.indexOf(name.toLowerCase()), 1);
+            this.sendToViewers(name + " stopped watching this " + this.eventName + "!");
             safaribot.sendMessage(src, "You are no longer watching the " + this.eventName + "!", safchan);
         } else {
             this.sendToViewers(name + " is watching this " + this.eventName + "!");
             this.viewers.push(name.toLowerCase());
-            safaribot.sendMessage(src, "You are watching the " + this.eventName + "!", safchan);
+            safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The teams are: ", safchan);
+            safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
+            safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
+            
         }
     };
     FactionWar.prototype.sendMessage = function(name, msg) {
@@ -9504,8 +9516,12 @@ function Safari() {
                     nothingFound = false;
                     safaribot.sendMessage(src, "Ongoing Auctions: " + out.join(" | "), safchan);
                 }
+                if (currentEvent) {
+                    nothingFound = false;
+                    safaribot.sendMessage(src, "Ongoing Event: " + currentEvent.eventName, safchan);
+                }
                 if (nothingFound) {
-                    safaribot.sendMessage(src, "No ongoing NPC Battles or Auctions!", safchan);
+                    safaribot.sendMessage(src, "No ongoing NPC Battles, Auctions or Events!", safchan);
                 }
                 return true;
             }
@@ -9515,9 +9531,9 @@ function Safari() {
                     player.cooldowns.auction = 0;
                 }
                 currentAuctions = [];
-                
                 currentBattles = [];
-                safaribot.sendAll("All ongoing battles and auctions have been stopped.", safchan);
+                currentEvent = null;
+                safaribot.sendAll("All ongoing battles, auctions and events have been stopped.", safchan);
                 return true;
             }
             if (command === "dqraffle") {
@@ -9796,7 +9812,7 @@ function Safari() {
         baitCooldown--;
         successfulBaitCount--;
 
-        if (currentEvent && contestCooldown % 5 === 0) {
+        if (currentEvent && contestCooldown % 6 === 0) {
             currentEvent.nextTurn();
             if (currentEvent.finished) {
                 currentEvent = null;
