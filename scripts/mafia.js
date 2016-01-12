@@ -1658,12 +1658,12 @@ function Mafia(mafiachan) {
             border = DEFAULT_BORDER;
             sendChanAll("", mafiachan);
             sendChanAll(border, mafiachan);
-            gamemsgAll(sys.name(src) + " started a voting for next game's theme! You have " + this.ticks + " seconds to vote with /vote or /votetheme!");
+            mafiabot.sendHtmlAll(sys.name(src) + " started a voting for next game's theme! You have " + this.ticks + " seconds to vote with /vote or /votetheme!");
             var casedThemes = [];
             for (var x in this.possibleThemes) {
                 casedThemes.push(htmlVoteTheme(this.themeManager.themes[x].name));
             }
-            gamemsgAll("Choose from these themes: " + casedThemes.join(", ") + " !");
+            mafiabot.sendHtmlAll("Choose from these themes: " + casedThemes.join(", ") + " !");
             sendChanAll(border, mafiachan);
             sendChanAll("", mafiachan);
         }
@@ -4393,7 +4393,7 @@ function Mafia(mafiachan) {
             }
             if (!nolyn) {
                 gamemsgAll("±Time: Day " + mafia.time.days + " (Voting)");
-                gamemsgAll("It's time to vote someone off, type " + htmlLink("/Vote ") + "[name], you only have " + mafia.ticks + " seconds! :");
+                mafiabot.sendHtmlAll("It's time to vote someone off, type " + htmlLink("/Vote ") + "[name], you only have " + mafia.ticks + " seconds! :");
                 if (mafia.theme.noplur) {
                     gamemsgAll("A majority vote must be reached otherwise no lynch occurs. With " + mafia.playerCount() + " alive, it's " + (Math.floor(mafia.playerCount()/2)+1) + " to lynch!:");
                 }
