@@ -2060,12 +2060,11 @@ function Safari() {
             ball = "safari";
         }
 
-        if (!(ball in player.balls) || player.balls[ball] <= 0) {
-            safaribot.sendMessage(src, "You have no " + cap(ball) + " Balls!", safchan);
-            return;
-        }
         if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
             safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another box or decrease the number of Pokémon in your possession.", safchan);
+            return;
+        }
+        if (cantBecause(src, "catch Pokémon", ["item", "auction", "battle", "event"], ball)) {
             return;
         }
         var currentTime = now();
@@ -2073,15 +2072,7 @@ function Safari() {
             safaribot.sendMessage(src, "Please wait " + (Math.floor((player.cooldowns.ball - currentTime)/1000) + 1) + " seconds before throwing a ball!", safchan);
             return;
         }
-        if (this.isInAuction(sys.name(src))) {
-            safaribot.sendMessage(src, "You can't catch a Pokémon while participating in an auction!", safchan);
-            return;
-        }
-        if (this.isBattling(sys.name(src))) {
-            safaribot.sendMessage(src, "You can't catch a Pokémon and battle at the same time!", safchan);
-            return;
-        }
-
+        
         var ballBonus = itemData[ball].ballBonus;
         var cooldown = itemData[ball].cooldown;
         if (wildEvent && ball == "master") {
@@ -2315,7 +2306,12 @@ function Safari() {
                 "The wild {0} got hungry and went somewhere else to find food!",
                 "The wild {0} went back home to take their medicine!",
                 "The wild {0} hid in a hole and disappeared!",
-                "The wild {0} pointed to the sky. While everyone was looking at the clouds, the {0} ran away!"
+                "The wild {0} pointed to the sky. While everyone was looking at the clouds, the {0} ran away!",
+                "The wild {0} vanished into thin air!",
+                "The wild {0} spontaneously combusted and turned to ash.",
+                "The wild {0} was really just a figment of everyone's imagination!",
+                "The wild {0} got eaten by a much larger Pokémon!",
+                "The wild {0} was actually just a well made PokéDoll!"
             ];
 
             sys.sendAll("", safchan);
