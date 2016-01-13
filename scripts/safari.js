@@ -6690,7 +6690,7 @@ function Safari() {
         if (player.costume === "ninja") {
             npc.postArgs.count = costumeData.ninja.rate;
             npc.desc = "Tower Lvl. " + costumeData.ninja.rate;
-            npc.reward = {"bait": 1, "dust": 10}; //If rewards change, these need to be changed too
+            npc.postArgs.reward = {"bait": 1, "dust": 10}; //If rewards change, these need to be changed too
             safaribot.sendMessage(src, "You carefully time your movements to stay cloaked in shadow and avoid being seen by a group of Trainers. Unfortunately for you, you trip as you dash up a flight of stairs and someone spots you! You made it to Floor " + costumeData.ninja.rate + " before being caught and forced to battle!", safchan);
         }
 
