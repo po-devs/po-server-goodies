@@ -130,7 +130,9 @@ function Safari() {
             consecutiveLogins: 0,
             gemsUsed: 0,
             megaEvolutions: 0,
-            wonderTrades: 0
+            wonderTrades: 0,
+            factionMVPs: 0,
+            factionWins: 0
         },
         costumes: [],
         savedParties: [],
@@ -891,26 +893,29 @@ function Safari() {
         }
         return true;
     }
-    function canLosePokemon(src, data, verb) {
+    function canLosePokemon(src, data, verb, cantBecause) {
         if (!validPlayers("self", src)) {
             return;
         }
-        var player = getAvatar(src);
-        if (contestCount > 0) {
-            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
-            return false;
+        if (!cantBecause) {
+            if (contestCount > 0) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a contest!", safchan);
+                return false;
+            }
+            if (safari.isBattling(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a battle!", safchan);
+                return;
+            }
+            if (currentEvent && currentEvent.isInEvent(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during an event!", safchan);
+                return;
+            }
         }
+        
+        var player = getAvatar(src);
         if (player.pokemon.length == 1) {
             safaribot.sendMessage(src, "You can't " + verb + " your last Pokémon!", safchan);
             return false;
-        }
-        if (safari.isBattling(sys.name(src))) {
-            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during a battle!", safchan);
-            return;
-        }
-        if (currentEvent && currentEvent.isInEvent(sys.name(src))) {
-            safaribot.sendMessage(src, "You can't " + verb + " a Pokémon during an event!", safchan);
-            return;
         }
         var input = data.split(":");
         var info = getInputPokemon(input[0]);
@@ -1018,7 +1023,7 @@ function Safari() {
     }
     function plural(qty, string, altplural, wordy) {
         qty = parseInt(qty, 10);
-        if (qty !== 1) {
+        if (Math.abs(qty) !== 1) {
             if (altplural) {
                 return qty + " " + altplural;
             } else {
@@ -1241,6 +1246,41 @@ function Safari() {
         }
         
         return input;
+    }
+    function hasPokeInShop(src, remove) {
+        var player = getAvatar(src);
+        if (player.shop) {
+            var isInShop = [];
+            for (var e = 0; e < player.party.length; e++) {
+                var id = player.party[e];
+                id += typeof id === "string" ? "*" : "";
+
+                var input = getInputPokemon(id);
+                id = input.input;
+                var count = countRepeated(player.pokemon, input.id);
+                if (player.shop.hasOwnProperty(id)) {
+                    var lim = player.shop[id].limit;
+                    if (lim > 0 && count - lim < countRepeated(player.party, input.id)) {
+                        if (!isInShop.contains(input.name)) {
+                            isInShop.push(input.name);
+                            if (remove) {
+                                delete player.shop[id];
+                            }
+                        }
+                    }
+                }
+            }
+            if (isInShop.length > 0) {
+                if (remove) {
+                    safaribot.sendMessage(src, "In order to participate in the event, " + readable(isInShop, "and") + " " + (isInShop.length === 1 ? "was" : "were") + " removed from your shop because it is also in your party!", safchan);
+                    return false;
+                } else {
+                    safaribot.sendMessage(src, "You need to remove " + readable(isInShop, "and") + " from your shop before you start this challenge!", safchan);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
     
     /* Item & Costume Functions */
@@ -2540,10 +2580,6 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, "modify your party", ["contest", "wild", "auction", "battle", "event"])) {
-            return;
-        }
-
         var input = data.split(":"), action, targetId;
         if (input.length < 2) {
             input = data.split(" ");
@@ -2594,6 +2630,9 @@ function Safari() {
         }
 
         if (action === "add") {
+            if (cantBecause(src, "modify your party", ["auction", "battle", "event"])) {
+                return;
+            }
             if (player.party.length >= 6) {
                 safaribot.sendMessage(src, "Please remove a Pokémon from your party before adding another one!", safchan);
                 return;
@@ -2607,6 +2646,17 @@ function Safari() {
             safaribot.sendMessage(src, "You added " + info.name + " to your party!", safchan);
             this.saveGame(player);
         } else if (action === "remove") {
+            var restrictions = ["auction", "battle", "event"];
+            var reason = "modify your party";
+            //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+            if (player.party[0] === id) {
+                restrictions = restrictions.concat(["wild", "contest"]);
+                reason = "remove your active Pokémon";
+            } 
+            if (cantBecause(src, reason, restrictions)) {
+                return;
+            }
+            
             if (player.party.indexOf(id) === -1) {
                 safaribot.sendMessage(src, "This Pokémon is not in your party!", safchan);
                 return;
@@ -2619,6 +2669,9 @@ function Safari() {
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
+            if (cantBecause(src, "change your active Pokémon", ["wild", "contest", "auction", "battle", "event"])) {
+                return;
+            }
             if (player.party[0] === id) {
                 safaribot.sendMessage(src, "This is already your active Pokémon!", safchan);
                 return;
@@ -2654,6 +2707,9 @@ function Safari() {
             safaribot.sendMessage(src, "Saved your current party to slot " + (num + 1) + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
+            if (cantBecause(src, "modify your party", ["wild", "contest", "auction", "battle", "event"])) {
+                return;
+            }
             var num = targetId - 1;
             if (num < 0) {
                 num = 0;
@@ -3763,10 +3819,6 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        if (cantBecause(src, "evolve a Pokémon", ["wild", "contest", "auction", "battle", "item", "event"], "dust")) {
-            return;
-        }
-
         var input = commandData.split(":");
         var info = getInputPokemon(input[0]);
         var starter = input.length > 1 ? input[1].toLowerCase() : "*";
@@ -3828,6 +3880,17 @@ function Safari() {
                     return;
                 }
             }
+        }
+        
+        var restrictions = ["auction", "battle", "item", "event"];
+        var reason = "evolve a Pokémon";
+        //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+        if (player.party[0] === id) {
+            restrictions = restrictions.concat(["wild", "contest"]);
+            reason = "evolve your active Pokémon";
+        }  
+        if (cantBecause(src, reason, restrictions, "dust")) {
+            return;
         }
 
         var possibleEvo = evoData.evo;
@@ -4158,12 +4221,7 @@ function Safari() {
             safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
             return;
         }
-        var verb = "sell";
-        if (!canLosePokemon(src, data, verb)) {
-            return;
-        }
-        //Some of these checks are already in canLosePokemon
-        if (cantBecause(src, "sell a Pokémon", ["wild", "contest", "auction", "battle", "event"])) {
+        if (!canLosePokemon(src, data, "sell", true)) {
             return;
         }
 
@@ -4182,6 +4240,17 @@ function Safari() {
             return;
         }
 
+        var restrictions = ["contest", "auction", "battle", "event"];
+        var reason = "sell a Pokémon";
+        //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+        if (player.party[0] === id) {
+            restrictions = restrictions.concat(["wild"]);
+            reason = "sell your active Pokémon";
+        }        
+        if (cantBecause(src, reason, restrictions)) {
+            return;
+        }
+        
         player.money += price;
         player.records.pokeSoldEarnings += price;
         this.removePokemon(src, id);
@@ -4408,11 +4477,19 @@ function Safari() {
             return;
         }
 
-        if (input.type == "poke" && !fromNPC && seller.party.length === 1 && seller.party[0] == input.id && countRepeated(seller.pokemon, input.id) <= 1) {
-            safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + sys.rand(1, 10) + " seconds ago!", safchan);
-            safaribot.sendMessage(sellerId, "You cannot sell the last Pokémon in your party! Removing them from your shop.", safchan);
-            delete seller.shop[input.input];
-            return;
+        if (input.type == "poke" && !fromNPC && countRepeated(seller.pokemon, input.id) <= 1) {
+            if (seller.party.length === 1 && seller.party[0] == input.id) {
+                safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + sys.rand(1, 10) + " seconds ago!", safchan);
+                safaribot.sendMessage(sellerId, "You cannot sell the last Pokémon in your party! Removing them from your shop.", safchan);
+                delete seller.shop[input.input];
+                return;
+            }
+            if (seller.starter === input.id) {
+                safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + sys.rand(1, 10) + " seconds ago!", safchan);
+                safaribot.sendMessage(sellerId, "You cannot sell your starter Pokémon! Removing them from your shop.", safchan);
+                delete seller.shop[input.input];
+                return;
+            }
         }
 
         var amount = 1;
@@ -4593,10 +4670,6 @@ function Safari() {
             if (!editNPCShop) {
                 if (productType == "poke") {
                     if (!canLosePokemon(src, input.input, "sell")) {
-                        return true;
-                    }
-                    if (input.id == player.starter) {
-                        safaribot.sendMessage(src, "You cannot add your starter Pokémon to your shop!", safchan);
                         return true;
                     }
                     if (limit > countRepeated(player.pokemon, input.id)) {
@@ -6483,29 +6556,11 @@ function Safari() {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
-        if (player.shop) {
-            var isInShop = [];
-            for (var e = 0; e < player.party.length; e++) {
-                var id = player.party[e];
-                id += typeof id === "string" ? "*" : "";
-
-                var input = getInputPokemon(id);
-                id = input.input;
-                var count = countRepeated(player.pokemon, input.id);
-                if (player.shop.hasOwnProperty(id)) {
-                    var lim = player.shop[id].limit;
-                    if (lim > 0 && count - lim < countRepeated(player.party, input.id)) {
-                        if (!isInShop.contains(input.name)) {
-                            isInShop.push(input.name);
-                        }
-                    }
-                }
-            }
-            if (isInShop.length > 0) {
-                safaribot.sendMessage(src, "You need to remove " + readable(isInShop, "and") + " from your shop before you start this challenge!", safchan);
-                return;
-            }
+        
+        if (hasPokeInShop(src)) {
+            return;
         }
+        
         player.money -= cost;
         this.saveGame(player);
 
@@ -7140,6 +7195,7 @@ function Safari() {
         }
         if (mvp.length > 0) {
             this.sendToViewers("The MVP for this " + this.eventName + " was " + readable(mvp, "and") + " with " + plural(mvpPoints, "Point") + "!", true);
+            
         }
         
         if (!this.hasReward) {
@@ -7164,6 +7220,7 @@ function Safari() {
                         } else {
                             rewardCapCheck(player, reward.id, amt);
                         }
+                        player.records.factionWins += 1;
                         safari.saveGame(player);
                     }
                 }
@@ -7191,6 +7248,10 @@ function Safari() {
             safaribot.sendMessage(src, "You must have a party with 6 Pokémon to join this event!", safchan);
             return;
         }
+        
+        if (hasPokeInShop(src, true)) {
+            return;
+        }            
         
         var pickedTeam = "";
         if (data.toLowerCase() == this.team1Name.toLowerCase()) {
@@ -7546,6 +7607,10 @@ function Safari() {
             safaribot.sendMessage(user, "You can't pass save data while one of the players is participating in an auction!", safchan);
             return;
         }
+        if (currentEvent && currentEvent.isInEvent(name1)) {
+            safaribot.sendMessage(user, "You can't pass save data while one of the players is participating in an event!", safchan);
+            return;
+        }
 
         if (target) {
             if (target.tradeban > now()) {
@@ -7558,6 +7623,10 @@ function Safari() {
             }
             if (this.isInAuction(name2)) {
                 safaribot.sendMessage(user, "You can't pass save data while one of the players is participating in an auction!", safchan);
+                return;
+            }
+            if (currentEvent && currentEvent.isInEvent(name2)) {
+                safaribot.sendMessage(user, "You can't pass save data while one of the players is participating in an event!", safchan);
                 return;
             }
             for (var e in monthlyLeaderboards) {
@@ -9332,8 +9401,10 @@ function Safari() {
                     prizeArray = [];
                     switch (prizeLevel) {
                         case 1:
-                            player.balls.mega += 1;
-                            prizeArray.push("a Mega Stone");
+                            if (placing < 3) {
+                                player.balls.mega += 1;
+                                prizeArray.push("a Mega Stone");
+                            }
                             /* falls through */
                         case 2:
                             player.balls.rare += 1;
