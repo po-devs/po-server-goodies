@@ -180,7 +180,7 @@ function Mafia(mafiachan) {
     /*Determines if "a" or "an" is required*/
     function an(string) {
         var vowels = "aeioux";
-        if (vowels.indexOf(string.charAt(0)) > -1) {
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1) {
             string = "an " + string;
         } else {
             string = "a " + string;
