@@ -2351,7 +2351,10 @@ function Safari() {
                 "The wild {0} spontaneously combusted and turned to ash.",
                 "The wild {0} was really just a figment of everyone's imagination!",
                 "The wild {0} got eaten by a much larger Pokémon!",
-                "The wild {0} was actually just a well made PokéDoll!"
+                "The wild {0} was actually just a well made PokéDoll!",
+                "The wild {0} was actually a Poké Fan cosplaying as a {0}!",
+                "The wild {0} turned into MissingNo and glitched out of existence!",
+                "The wild {0} was not really wild! Their owner called them back to their pokéball!"
             ];
 
             sys.sendAll("", safchan);
@@ -2652,7 +2655,7 @@ function Safari() {
             if (player.party[0] === id) {
                 restrictions = restrictions.concat(["wild", "contest"]);
                 reason = "remove your active Pokémon";
-            } 
+            }
             if (cantBecause(src, reason, restrictions)) {
                 return;
             }
@@ -3362,6 +3365,7 @@ function Safari() {
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
         safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ". Items Discarded: " + rec.itemsDiscarded + ".", safchan);
         safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". Pokémon given to Scientist: " + rec.scientistGiven + ". Silver Coins received from Scientist: " + rec.scientistEarnings + ". Arena Battles: " + rec.arenaWon + " won, " + rec.arenaLost + " lost (" + rec.arenaPoints + " points). " , safchan);
+        safaribot.sendMessage(src, "Events-- Faction Wars won: " + rec.factionWins + ". Faction War MVPs: " + rec.factionMVPs + ". " , safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.assignIdNumber = function(player, force) {
@@ -3693,7 +3697,7 @@ function Safari() {
         }
         switch (reward) {
             case "master": {
-                if (player.balls[reward] >= 1) {
+                if (player.balls[reward] >= getCap("master")) {
                     safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
                     safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
                     reward = "safari";
@@ -3888,7 +3892,7 @@ function Safari() {
         if (player.party[0] === id) {
             restrictions = restrictions.concat(["wild", "contest"]);
             reason = "evolve your active Pokémon";
-        }  
+        }
         if (cantBecause(src, reason, restrictions, "dust")) {
             return;
         }
@@ -4246,7 +4250,7 @@ function Safari() {
         if (player.party[0] === id) {
             restrictions = restrictions.concat(["wild"]);
             reason = "sell your active Pokémon";
-        }        
+        }
         if (cantBecause(src, reason, restrictions)) {
             return;
         }
@@ -6064,10 +6068,10 @@ function Safari() {
             case "levels":
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Collector: My requests are organized into 4 different levels:", safchan);
-                    safaribot.sendMessage(src, "Collector: Easy - Three Pokémon with BST between 180 and 320. Reward is 2.4x their price.", safchan);
-                    safaribot.sendMessage(src, "Collector: Normal - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
-                    safaribot.sendMessage(src, "Collector: Hard - Five Pokémon with BST between 460 and 600. Reward is 4.8x their price.", safchan);
-                    safaribot.sendMessage(src, "Collector: Epic - Six Pokémon with BST between 500 and 720, with one of them being a Legendary. Reward is 10x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 180 and 320. Reward is 2.4x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 600. Reward is 4.8x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 720, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
             case "start":
@@ -6274,7 +6278,7 @@ function Safari() {
                 "Fairy": "if a {0} has magical powers"
             };
             var type = sys.type(sys.pokeType1(id));
-            var researching = typeResearch[type].format(poke(id));
+            var researching = typeResearch[type].format(link("/find " + poke(id), poke(id)));
             type = sys.type(sys.pokeType2(id));
             type = type === "???" ? sys.type(sys.pokeType1(id)) : sys.type(sys.pokeType2(id));
 
@@ -6301,8 +6305,8 @@ function Safari() {
             researching += " and " + typeResearch[type];
 
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "Silver Coin") + "!", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type " + link("/quest scientist:finish") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "Silver Coin") + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -6467,7 +6471,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Arena Clerk: Challenge our trainers for a chance to receive some Silver Coins! The trainers available are: ", safchan);
             for (var n in opponents) {
                 var opp = opponents[n];
-                safaribot.sendHtmlMessage(src, "-<b>" + cap(n) + "</b>: Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "Silver Coin") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "Silver Coin") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
@@ -7188,14 +7192,13 @@ function Safari() {
                         mvpPoints = mon.score;
                         mvp = [];
                     }
-                    mvp.push(addFlashTag(e) + "'s " + poke(mon.id));
+                    mvp.push(mon);
                 }
             }
             this.sendMessage(e, "Your score: " + score.join(" | ") + " | Total: " + plural(totalPoints, "Point"));
         }
         if (mvp.length > 0) {
-            this.sendToViewers("The MVP for this " + this.eventName + " was " + readable(mvp, "and") + " with " + plural(mvpPoints, "Point") + "!", true);
-            
+            this.sendToViewers("The MVP for this " + this.eventName + " was " + readable(mvp.map(function(obj) { return addFlashTag(obj.owner) + "'s " + poke(obj.id); }), "and") + " with " + plural(mvpPoints, "Point") + "!", true);
         }
         
         if (!this.hasReward) {
@@ -7203,8 +7206,7 @@ function Safari() {
         } else {
             var name, len = winner.length;
             
-            var reward = this.reward;
-            var amt = this.amount;
+            var reward = this.reward, amt = this.amount;
             
             for (e = 0; e < len; e++) {
                 name = winner[e];
@@ -7221,6 +7223,11 @@ function Safari() {
                             rewardCapCheck(player, reward.id, amt);
                         }
                         player.records.factionWins += 1;
+                        for (i = 0; i < mvp.length; i++) {
+                            if (mvp[i].owner == name) {
+                                player.records.factionMVPs += 1;
+                            }
+                        }
                         safari.saveGame(player);
                     }
                 }
@@ -7251,7 +7258,7 @@ function Safari() {
         
         if (hasPokeInShop(src, true)) {
             return;
-        }            
+        }
         
         var pickedTeam = "";
         if (data.toLowerCase() == this.team1Name.toLowerCase()) {
@@ -9798,22 +9805,27 @@ function Safari() {
             }
             if (command === "loadthemes" || command === "loadtheme") {
                 var cThemes = contestThemes;
-                safaribot.sendMessage(src, "Loading themes from " + commandData + "!", safchan);
+                var url = commandData === "*" ? (permObj.get("themesurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading themes from " + url + "!", safchan);
                 try {
-                    sys.webCall(commandData, function (resp) {
+                    sys.webCall(url, function (resp) {
                         try {
                             contestThemes = JSON.parse(resp);
                             sys.write(themesFile, resp);
-                            permObj.add("themesurl", commandData);
+                            permObj.add("themesurl", url);
                             safaribot.sendMessage(src, "Contest Themes successfully loaded!", safchan);
                         } catch (error) {
                             contestThemes = cThemes;
-                            safaribot.sendMessage(src, "Couldn't load Contest Themes from " + commandData + "! Error: " + error, safchan);
+                            safaribot.sendMessage(src, "Couldn't load Contest Themes from " + url + "! Error: " + error, safchan);
                         }
                     });
                 } catch (err) {
                     contestThemes = cThemes;
-                    safaribot.sendMessage(src, "Couldn't load Contest Themes from " + commandData + "! Error: " + err, safchan);
+                    safaribot.sendMessage(src, "Couldn't load Contest Themes from " + url + "! Error: " + err, safchan);
                 }
                 return true;
             }
