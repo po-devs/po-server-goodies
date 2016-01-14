@@ -83,7 +83,8 @@ function Safari() {
             box: 4,
             salt: 0,
             entry: 0,
-            silver: 0
+            silver: 0,
+            pack: 0
         },
         records: {
             gachasUsed: 0,
@@ -132,7 +133,8 @@ function Safari() {
             megaEvolutions: 0,
             wonderTrades: 0,
             factionMVPs: 0,
-            factionWins: 0
+            factionWins: 0,
+            packsOpened: 0
         },
         costumes: [],
         savedParties: [],
@@ -218,12 +220,13 @@ function Safari() {
         dust: {name: "dust", fullName: "Candy Dust", type: "usable", icon: 24, price: 0, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
         salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt", "nacl"], tradable: false},
 
-        silver: {name: "silver", fullName: "Silver Coin", type: "usable", icon: 273, price: 0, aliases: ["silver", "silver coin"], tradable: false},
+        silver: {name: "silver", fullName: "Silver Coin", type: "usable", icon: 273, price: 0, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
         entry: {name: "entry", fullName: "Raffle Entry", type: "usable", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
 
         //Consumables (for useItem)
         rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
-        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, cooldown: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
+        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
+        pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
@@ -266,7 +269,8 @@ function Safari() {
     gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAG1BMVEX////4+Piw2OjgoNh4kKi4cMCISKhwSGAwMDAYBeQdAAAACXRSTlMA//////////83ApvUAAAACXBIWXMAAArwAAAK8AFCrDSYAAAAIHRFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyBNWLuRKiQAAAB0SURBVHicpYwxCoAwDEUzdhXxApncxRt4AZHGveLHWTyAiyXHtlWLHQX/9B68hOjHNGfeM35FwVwnnmRNopjFPZ3O1mK8RWHLVsBd6AwwFIVg4ySlwNUx8+ijLNe9F9tUcnPowreHyUypiTvkZfIZk8n4007iyyLPYqOktAAAAABJRU5ErkJggg==",
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII=",
     box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg==",
-    entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg=="
+    entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg==",
+    pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RUJDNDUzNDRCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RUJDNDUzNDVCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFQkM0NTM0MkJBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFQkM0NTM0M0JBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PojGFPMAAAAeUExURffqsJiYkIdGDmhoYPDx4PeoPzAwMNDIwMduDQAAANqKy4IAAAAKdFJOU////////////wCyzCzPAAAAm0lEQVR42nSSCQ7AIAgEFcrR/3+4gOJR2000ZkY0Ecv9kzKXaGE+BOJlEeGXaNhq0pSNc2YTguLxLRc30c/HxFJDGA6BA9cQ3JhYQeIugvlUfXYMcfkhAPRLGNYmblZFURV05GMIItRCgEpE+hb0I+xo+RJmjA8BUxA2TsmHyBiGIXTh0Hm8LuuMYZ6NmgZ4by0vrTt/yZ5HgAEALuAO38KzVZwAAAAASUVORK5CYII="    
     };
     var gachaItems = {
         safari: 95, great: 50, ultra: 30, luxury: 35, myth: 10, quick: 10, heavy: 20, clone: 25,
@@ -280,6 +284,16 @@ function Safari() {
         crown: 1, honey: 1, eviolite: 1,
         rare: 5, recharge: 8, spy: 19, rock: 14, bait: 16, pearl: 9, stardust: 7, luxury: 13, gacha: 12,
         nothing: 409
+    };
+    var packItems = {
+        amulet: 2, crown: 2,
+        scarf: 4, soothe: 4, battery: 4,
+        honey: 6, eviolite: 6,
+        rare: 3, nugget: 7,
+        quick: 6, luxury: 6, clone: 6,
+        rock: 8, bait: 8, silver: 9, 
+        gem: 6, gacha: 12,
+        mega: 1
     };
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
@@ -1031,13 +1045,13 @@ function Safari() {
             }
         }
         if (wordy) {
-            qty = "a";
+            return an(string);
         }
         return qty + " " + string;
     }
     function an(string) {
         var vowels = "aeioux";
-        if (vowels.indexOf(string.charAt(0)) > -1) {
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1) {
             string = "an " + string;
         } else {
             string = "a " + string;
@@ -1152,7 +1166,14 @@ function Safari() {
         string2 = string2 || string;
         return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\">" + html_escape(string2) + "</a>";
     }
-
+    function removeDuplicates(arr) {
+        var result = {};
+        for (var x in arr) {
+            result[arr[x]] = 1;
+        }
+        return Object.keys(result);
+    }
+    
     /* Pokemon Functions */
     function getInputPokemon(info) {
         /*
@@ -2870,9 +2891,9 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "battery", "dust", "rare", "mega", "entry"];
+        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "mega", "entry"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "rock", "stick"];
-        var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
+        var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -3363,7 +3384,7 @@ function Safari() {
         //Seasonal change
         safaribot.sendMessage(src, itemData.rock.fullName + "s-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Broke Apart: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
         safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ".", safchan);
-        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ". Items Discarded: " + rec.itemsDiscarded + ".", safchan);
+        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + ". Items Found: " + rec.itemsFound + ".", safchan);
         safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". Pokémon given to Scientist: " + rec.scientistGiven + ". Silver Coins received from Scientist: " + rec.scientistEarnings + ". Arena Battles: " + rec.arenaWon + " won, " + rec.arenaLost + " lost (" + rec.arenaPoints + " points). " , safchan);
         safaribot.sendMessage(src, "Events-- Faction Wars won: " + rec.factionWins + ". Faction War MVPs: " + rec.factionMVPs + ". " , safchan);
         sys.sendMessage(src, "", safchan);
@@ -4134,9 +4155,10 @@ function Safari() {
             player.balls.gem -= 1;
             player.records.gemsUsed += 1;
             this.updateShop(sys.name(src), "gem");
+            this.saveGame(player);
             return;
         }
-        else if (item === "rare") {
+        if (item === "rare") {
             if (player.balls.dust >= itemData.dust.cap) {
                 safaribot.sendMessage(src, "You already have " + itemData.dust.cap + " Candy Dusts!", safchan);
                 return;
@@ -4148,6 +4170,28 @@ function Safari() {
             safaribot.sendMessage(src, "You received " + dustdata + " Candy Dusts and now have " + totaldust + ".", safchan);
             rewardCapCheck(player, "dust", dustdata);
             player.balls.rare -= 1;
+            this.saveGame(player);
+            return;
+        }
+        if (item === "pack") {
+            var reward = randomSample(packItems);
+            var amount = 1;
+            switch (reward) {
+                case "gem": amount = 3; break;
+                case "rock": amount = 50; break;
+                case "bait": amount = 10; break;
+                case "gacha": amount = 10; break;
+                case "silver": amount = 8; break;
+                case "clone": case "luxury": case "quick": amount = 5; break;
+            }
+            safaribot.sendMessage(src, "You excitedly open your prize pack to reveal " + plural(amount, finishName(reward), false, true) + "!", safchan);
+            if (reward === "mega") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found a Mega Stone in their Prize Pack!</b>", safchan);
+            }
+            rewardCapCheck(player, reward, amount);
+            player.balls.pack -= 1;
+            player.records.packsOpened += 1;
+            this.saveGame(player);
             return;
         }
     };
@@ -7224,6 +7268,8 @@ function Safari() {
                             rewardCapCheck(player, reward.id, amt);
                         }
                         player.records.factionWins += 1;
+                        
+                        //TODO: Fix so it records MVP even if their team lost
                         for (i = 0; i < mvp.length; i++) {
                             if (mvp[i].owner == name) {
                                 player.records.factionMVPs += 1;
@@ -7969,14 +8015,15 @@ function Safari() {
             rock: "A small snowball that can be thrown to potentially freeze another player for a short period with /snowball. Has a " + itemData.rock.throwCD/1000 + " second cooldown.",
             rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. To use, type \"/use rare\". Found with Itemfinder.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. (To use, type /evolve [Pokémon]).",
-            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Cannot be obtained through normal gameplay.",
+            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Obtained via Official Giveaways and Prize Packs.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be pawned off with /pawn for a varying amount of money. Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
             itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day.",
             gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! (To use, type \"/use gem\"). Obtained from Gachapon.",
             box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
             stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers, with a simple use of the /stick command.",
             salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
-            entry: "A Raffle Entry that can win a wonderful prize if you own the correct one at the time of drawing."
+            entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing.",
+            pack: "A wonderful package that could contain equally wonderful prizes! To use, type \"/use pack\"."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -9167,28 +9214,20 @@ function Safari() {
             if (command === "checkrate") {
                 commandData = commandData.toLowerCase();
                 if (allItems.indexOf(commandData) !== -1 || commandData === "wild" || commandData === "horde" || commandData === "nothing" || commandData === "recharge") {
-                    var total = 0, percent;
-                    var instance = gachaItems[commandData] || 0;
-                    if (instance < 1) {
-                        safaribot.sendMessage(src, "Gachpon: This item is not available from Gachapon.", safchan);
-                    } else {
-                        for (var e in gachaItems) {
-                            total += gachaItems[e];
+                    var itemSets = [gachaItems, finderItems, packItems];
+                    var method = ["Gachapon", "Item Finder", "Prize Pack"];
+                    for (var i = 0; i < itemSets.length; i++) {
+                        var total = 0, percent;
+                        var instance = itemSets[i][commandData] || 0;
+                        if (instance < 1) {
+                            safaribot.sendMessage(src, method[i] + ": This item is not available from " + method[i] + ".", safchan);
+                        } else {
+                            for (var e in itemSets[i]) {
+                                total += itemSets[i][e];
+                            }
+                            percent = instance / total * 100;
+                            safaribot.sendMessage(src, method[i] + ": The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
                         }
-                        percent = instance / total * 100;
-                        safaribot.sendMessage(src, "Gachpon: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
-                    }
-
-                    total = 0;
-                    instance = finderItems[commandData] || 0;
-                    if (instance < 1) {
-                        safaribot.sendMessage(src, "Itemfinder: This item is not available from Itemfinder.", safchan);
-                    } else {
-                        for (var e in finderItems) {
-                            total += finderItems[e];
-                        }
-                        percent = instance / total * 100;
-                        safaribot.sendMessage(src, "Itemfinder: The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
                     }
                 } else {
                     safaribot.sendMessage(src, "No such item!", safchan);
