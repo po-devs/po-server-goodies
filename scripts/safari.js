@@ -6984,7 +6984,7 @@ function Safari() {
         safaribot.sendHtmlAll(sys.name(src) + " is starting a " + this.eventName + " event! The teams are " + team1 + " and " + team2 + ", and each player from the winning team will receive " + plural(amount, reward.name) + "!", safchan);
         safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
         sys.sendAll("", safchan);
-        this.flashPlayers();
+        safari.flashPlayers();
     }
     function toColor(str, color) {
         return "<span style='color:" + color + "'>" + str + "</span>";
