@@ -8206,7 +8206,7 @@ function Safari() {
             "/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
             "/records: To view your records.",
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
-            "/flashme: Toggle whether or not you get flashed when a contest starts.",
+            "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
             "",
@@ -8591,11 +8591,11 @@ function Safari() {
                 var player = getAvatar(src);
                 if (!player.flashme) {
                     player.flashme = true;
-                    safaribot.sendMessage(src, "You will now be flashed when a contest starts!", safchan);
+                    safaribot.sendMessage(src, "You will now be flashed when a contest or event starts!", safchan);
                 }
                 else {
                     player.flashme = false;
-                    safaribot.sendMessage(src, "You will no longer be flashed when a contest starts!", safchan);
+                    safaribot.sendMessage(src, "You will no longer be flashed when a contest or event starts!", safchan);
                 }
                 safari.saveGame(player);
                 return true;
@@ -10101,6 +10101,9 @@ function Safari() {
         lastIdAssigned = loadLastId();
         this.updateLeaderboards();
         sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
+        if (baitCooldown < 7) {
+            baitCooldown = sys.rand(5,7);
+        }
     };
     this.afterChannelJoin = function (src, channel) {
         if (channel == safchan) {
@@ -10333,13 +10336,21 @@ function Safari() {
                     return "(Caught " + contestCatchers[name].length + ", BST " + catchersBST[name] + ")";
                 };
 
+                var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
                 sys.sendAll("*** ************************************************************ ***", safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                 if (Object.keys(contestCatchers).length === 1) {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
                     winners = [];
                 } else if (winners.length > 0) {
-                    safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won a prize pack!", safchan);
+                    var list = [];
+                    for (var e in reward) {
+                        list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
+                    }
+                    if (list.length < 1) {
+                        list.push("a prize");
+                    }
+                    safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won " + readable(list, "and")  + "!", safchan);
                 }
                 if (allContestants.length > 0) {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
@@ -10364,7 +10375,7 @@ function Safari() {
                         }
                     }
                 }
-                var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
+                
                 if (winners.length > 0) {
                     var r, rewardName, amt;
                     for (e in winners) {
