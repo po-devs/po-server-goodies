@@ -1255,7 +1255,7 @@ function Safari() {
                 info = info.substr(1);
             }
             info = itemAlias(info, true);
-            if (currentItems.indexOf(info) === -1) {
+            if (allItems.indexOf(info) === -1) {
                 return false;
             }
             input = {
@@ -6984,6 +6984,7 @@ function Safari() {
         safaribot.sendHtmlAll(sys.name(src) + " is starting a " + this.eventName + " event! The teams are " + team1 + " and " + team2 + ", and each player from the winning team will receive " + plural(amount, reward.name) + "!", safchan);
         safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
         sys.sendAll("", safchan);
+        this.flashPlayers();
     }
     function toColor(str, color) {
         return "<span style='color:" + color + "'>" + str + "</span>";
@@ -6995,7 +6996,9 @@ function Safari() {
         this.turn++;
         if (this.turn < 6) { //SIGN-UP PHASE
             if (this.turn == 3) {
+                sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 18 seconds! Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate!", safchan);
+                sys.sendAll("", safchan);
             }
             return;
         }
@@ -7245,7 +7248,7 @@ function Safari() {
             this.sendMessage(e, "Your score: " + score.join(" | ") + " | Total: " + plural(totalPoints, "Point"));
         }
         if (mvp.length > 0) {
-            this.sendToViewers("The MVP for this " + this.eventName + " was " + readable(mvp.map(function(obj) { return addFlashTag(obj.owner) + "'s " + poke(obj.id); }), "and") + " with " + plural(mvpPoints, "Point") + "!", true);
+            this.sendToViewers("The MVP for this " + this.eventName + " was <b>" + readable(mvp.map(function(obj) { return addFlashTag(obj.owner) + "'s " + poke(obj.id); }), "and") + "</b> with " + plural(mvpPoints, "Point") + "!", true);
         }
         
         if (!this.hasReward) {
@@ -9684,7 +9687,7 @@ function Safari() {
                 }
                 sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 safariUpdating = true;
-                safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles and <b>" + currentAuctions.length + "</b> ongoing auctions.", safchan);
+                safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles, <b>" + currentAuctions.length + "</b> ongoing auctions, and <b>" + (currentEvent ? "1" : "0") + "</b> ongoing events.", safchan);
                 return true;
             }
             if (command === "cancelupdate") {
@@ -10004,7 +10007,7 @@ function Safari() {
         }
         if (sys.auth(src) > 2) {
             if (command === "updateplugin" && commandData === "safari.js") {
-                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0) {
+                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
                     sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
