@@ -6911,6 +6911,7 @@ function Safari() {
         this.eventName = "Faction War";
         
         this.signups = [];
+        this.forbiddenPlayers = [];
         this.preferredTeams = {};
         this.team1 = [];
         this.team2 = [];
@@ -7246,6 +7247,10 @@ function Safari() {
             safaribot.sendMessage(src, "You need to enter Safari to join this event!", safchan);
             return;
         }
+        if (this.forbiddenPlayers.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You have been shoved from this event and is not allowed to join!", safchan);
+            return;
+        }
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         if (signupsLower.contains(name.toLowerCase())) {
             safaribot.sendMessage(src, "You already joined the event!", safchan);
@@ -7297,6 +7302,23 @@ function Safari() {
         delete this.preferredTeams[name];
         this.sendToViewers(name + " has unjoined the " + this.eventName + "!");
         safaribot.sendMessage(src, "You unjoined the " + this.eventName + " event!", safchan);
+    };
+    FactionWar.prototype.shove = function(src, target) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        if (!signupsLower.contains(target.toLowerCase())) {
+            safaribot.sendMessage(src, target.toCorrectCase() + " didn't join this event!", safchan);
+            return;
+        }
+        if (this.turn >= 6) {
+            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't shove anyone now!", safchan);
+            return;
+        }
+        var index = signupsLower.indexOf(target.toLowerCase());
+        this.sendMessage(target, "You have been shoved from the event!");
+        delete this.preferredTeams[this.signups[index]];
+        this.signups.splice(index, 1);
+        this.sendToViewers(sys.name(src) + " shoved " + target.toCorrectCase() + " from the " + this.eventName + "!");
+        this.forbiddenPlayers.push(target.toLowerCase());
     };
     FactionWar.prototype.watchEvent = function(src) {
         if (this.turn < 6) {
@@ -8716,6 +8738,14 @@ function Safari() {
                 
                 var ev = new FactionWar(src, name1, name2, reward, amt);
                 currentEvent = ev;
+                return true;
+            }
+            if (command === "shove") {
+                if (!currentEvent) {
+                    safaribot.sendMessage(src, "There's no event going on!", safchan);
+                    return true;
+                }
+                currentEvent.shove(src, commandData);
                 return true;
             }
             if (command === "abortevent") {
