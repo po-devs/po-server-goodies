@@ -7168,12 +7168,14 @@ function Safari() {
         }
     };
     FactionWar.prototype.finish = function() {
-        var winner;
+        var winner, loser;
         if (this.team1Defeated > this.team2Defeated) {
             winner = this.team2;
+            loser = this.team1;
             safaribot.sendHtmlAll("The " + toColor(this.team2Name, this.team2Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
         } else {
             winner = this.team1;
+            loser = this.team2;
             safaribot.sendHtmlAll("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
         }
         
@@ -7203,11 +7205,9 @@ function Safari() {
         }
         
         if (!this.hasReward) {
-            this.sendToViewers("No rewards will be given due to the low number of participants!");
+            this.sendToViewers("No records or rewards will be given due to the low number of participants!");
         } else {
-            var name, len = winner.length;
-            
-            var reward = this.reward, amt = this.amount;
+            var name, len = winner.length, reward = this.reward, amt = this.amount;
             
             for (e = 0; e < len; e++) {
                 name = winner[e];
@@ -7224,6 +7224,21 @@ function Safari() {
                             rewardCapCheck(player, reward.id, amt);
                         }
                         player.records.factionWins += 1;
+                        for (i = 0; i < mvp.length; i++) {
+                            if (mvp[i].owner == name) {
+                                player.records.factionMVPs += 1;
+                            }
+                        }
+                        safari.saveGame(player);
+                    }
+                }
+            }
+            len = loser.length;
+            for (e = 0; e < len; e++) {
+                name = loser[e];
+                if (!this.npcs.contains(name)) {
+                    player = getAvatarOff(name);
+                    if (player) {
                         for (i = 0; i < mvp.length; i++) {
                             if (mvp[i].owner == name) {
                                 player.records.factionMVPs += 1;
