@@ -270,7 +270,7 @@ function Safari() {
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII=",
     box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg==",
     entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg==",
-    pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RUJDNDUzNDRCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RUJDNDUzNDVCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFQkM0NTM0MkJBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFQkM0NTM0M0JBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PojGFPMAAAAeUExURffqsJiYkIdGDmhoYPDx4PeoPzAwMNDIwMduDQAAANqKy4IAAAAKdFJOU////////////wCyzCzPAAAAm0lEQVR42nSSCQ7AIAgEFcrR/3+4gOJR2000ZkY0Ecv9kzKXaGE+BOJlEeGXaNhq0pSNc2YTguLxLRc30c/HxFJDGA6BA9cQ3JhYQeIugvlUfXYMcfkhAPRLGNYmblZFURV05GMIItRCgEpE+hb0I+xo+RJmjA8BUxA2TsmHyBiGIXTh0Hm8LuuMYZ6NmgZ4by0vrTt/yZ5HgAEALuAO38KzVZwAAAAASUVORK5CYII="    
+    pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RUJDNDUzNDRCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RUJDNDUzNDVCQTZFMTFFNTg5MjA5OTREODk3RjkyMjMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpFQkM0NTM0MkJBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpFQkM0NTM0M0JBNkUxMUU1ODkyMDk5NEQ4OTdGOTIyMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PojGFPMAAAAeUExURffqsJiYkIdGDmhoYPDx4PeoPzAwMNDIwMduDQAAANqKy4IAAAAKdFJOU////////////wCyzCzPAAAAm0lEQVR42nSSCQ7AIAgEFcrR/3+4gOJR2000ZkY0Ecv9kzKXaGE+BOJlEeGXaNhq0pSNc2YTguLxLRc30c/HxFJDGA6BA9cQ3JhYQeIugvlUfXYMcfkhAPRLGNYmblZFURV05GMIItRCgEpE+hb0I+xo+RJmjA8BUxA2TsmHyBiGIXTh0Hm8LuuMYZ6NmgZ4by0vrTt/yZ5HgAEALuAO38KzVZwAAAAASUVORK5CYII="
     };
     var gachaItems = {
         safari: 95, great: 50, ultra: 30, luxury: 35, myth: 10, quick: 10, heavy: 20, clone: 25,
@@ -291,7 +291,7 @@ function Safari() {
         honey: 6, eviolite: 6,
         rare: 3, nugget: 7,
         quick: 6, luxury: 6, clone: 6,
-        rock: 8, bait: 8, silver: 9, 
+        rock: 8, bait: 8, silver: 9,
         gem: 6, gacha: 12,
         mega: 1
     };
@@ -1032,43 +1032,6 @@ function Safari() {
     }
 
     /* Data Type Functions */
-    function cap(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-    function plural(qty, string, altplural, wordy) {
-        qty = parseInt(qty, 10);
-        if (Math.abs(qty) !== 1) {
-            if (altplural) {
-                return qty + " " + altplural;
-            } else {
-                return qty + " " + string + "s";
-            }
-        }
-        if (wordy) {
-            return an(string);
-        }
-        return qty + " " + string;
-    }
-    function an(string) {
-        var vowels = "aeioux";
-        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1) {
-            string = "an " + string;
-        } else {
-            string = "a " + string;
-        }
-        return string;
-    }
-    function readable(arr, last_delim) {
-        if (!Array.isArray(arr))
-            return arr;
-        if (arr.length > 1) {
-            return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
-        } else if (arr.length == 1) {
-            return arr[0];
-        } else {
-            return "";
-        }
-    }
     function add(arr) {
         var result = 0;
         for (var e in arr) {
@@ -1088,12 +1051,6 @@ function Safari() {
         var last = arr.lastIndexOf(item);
         var count =  last - first + (first === -1 ? 0 : 1);
         return count;
-    }
-    function getOrdinal(n) {
-        //Shamelessly stolen from http://stackoverflow.com/questions/23291256/ext-form-field-number-formatting-the-value
-        var s=["th","st","nd","rd"],
-        v=n%100;
-        return n+(s[(v-20)%10]||s[v]||s[0]);
     }
     function randomSample(hash) {
         var cum = 0;
@@ -1156,6 +1113,58 @@ function Safari() {
             return result.slice(-upper, -lower);
         }
     }
+    function removeDuplicates(arr) {
+        var result = {};
+        for (var x in arr) {
+            result[arr[x]] = 1;
+        }
+        return Object.keys(result);
+    }
+    
+    /* Formatting Functions */
+    function cap(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+    }
+    function plural(qty, string, altplural, wordy) {
+        qty = parseInt(qty, 10);
+        if (Math.abs(qty) !== 1) {
+            if (altplural) {
+                return qty + " " + altplural;
+            } else {
+                return qty + " " + string + "s";
+            }
+        }
+        if (wordy && qty === 1) {
+            return an(string);
+        }
+        return qty + " " + string;
+    }
+    function an(string) {
+        var vowels = "aeioux";
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1) {
+            string = "an " + string;
+        } else {
+            string = "a " + string;
+        }
+        return string;
+    }
+    function readable(arr, last_delim) {
+        if (!Array.isArray(arr))
+            return arr;
+        if (arr.length > 1) {
+            return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
+        } else if (arr.length == 1) {
+            return arr[0];
+        } else {
+            return "";
+        }
+    }
+    function getOrdinal(n) {
+        //Shamelessly stolen from http://stackoverflow.com/questions/23291256/ext-form-field-number-formatting-the-value
+        var s=["th","st","nd","rd"],
+        v=n%100;
+        return n+(s[(v-20)%10]||s[v]||s[0]);
+    }
     function addComma(num) {
         if (typeof num !== "number") {
             return num;
@@ -1166,12 +1175,26 @@ function Safari() {
         string2 = string2 || string;
         return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\">" + html_escape(string2) + "</a>";
     }
-    function removeDuplicates(arr) {
-        var result = {};
-        for (var x in arr) {
-            result[arr[x]] = 1;
+    function toColor(str, color) {
+        return "<span style='color:" + color + "'>" + str + "</span>";
+    }
+    function addFlashTag(name) {
+        return "<!--f-->" + name + "<!--f-->";
+    }
+    function toFlashing(message, name) { //Totally not stolen from tours
+        var newmessage = message;
+        var flashtag = "<!--f-->";
+        var htmlname = html_escape(name);
+        var regex = flashtag+htmlname+flashtag;
+        var newregex1 = "";
+        if (sys.os(sys.id(name)) !== "android") {
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname + "</font><ping/>";
+        } else {
+            newregex1 = "<background color='#FCD116'>" + htmlname + "</background><ping/>";
         }
-        return Object.keys(result);
+        var flashregex = new RegExp(flashtag,"g");
+        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+        return newmessage;
     }
     
     /* Pokemon Functions */
@@ -1525,7 +1548,6 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
-
 
     /* Wild Pokemon & Contests */
     this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player) {
@@ -6946,107 +6968,208 @@ function Safari() {
     }
     
     /* Events */
-    function FactionWar(src, team1, team2, reward, amount) {
-        this.team1Name = team1;
-        this.team2Name = team2;
-        this.reward = reward;
-        this.amount = reward.type == "item" ? amount : 1;
-        
-        this.eventName = "Faction War";
-        
+    function SafariEvent() {
+        this.eventName = "Safari Event";
         this.signups = [];
         this.forbiddenPlayers = [];
-        this.preferredTeams = {};
-        this.team1 = [];
-        this.team2 = [];
-        
-        this.party1 = [];
-        this.party2 = [];
-        this.playerTeams = {};
-        
-        this.team1Defeated = 0;
-        this.team2Defeated = 0;
-        
-        this.team1Color = "red";
-        this.team2Color = "blue";
-        
-        this.npcs = [];
-        
         this.viewers = [];
         
         this.turn = -1;
-        this.suddenDeath = false;
+        this.signupsDuration = 6;
         this.finished = false;
-        this.hasReward = true;
         
-        var joinCommand = "/signup";
-        sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a " + this.eventName + " event! The teams are " + team1 + " and " + team2 + ", and each player from the winning team will receive " + plural(amount, reward.name) + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
-        sys.sendAll("", safchan);
+        this.joinmsg = "Type " + link("/signup") + " to participate!";
         safari.flashPlayers();
     }
-    function toColor(str, color) {
-        return "<span style='color:" + color + "'>" + str + "</span>";
-    }
-    function addFlashTag(name) {
-        return "<!--f-->" + name + "<!--f-->";
-    }
-    FactionWar.prototype.nextTurn = function() {
+    SafariEvent.prototype.setupEvent = function() {};
+    SafariEvent.prototype.nextTurn = function() {
         this.turn++;
-        if (this.turn < 6) { //SIGN-UP PHASE
-            if (this.turn == 3) {
+        var duration = this.signupsDuration;
+        if (this.turn < duration) { //Sign-up Phase
+            if (this.turn == Math.round(duration/2)) {
                 sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in 18 seconds! Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate!", safchan);
+                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in " + (Math.round(duration/2) * 6) + " seconds! " + this.joinmsg, safchan);
                 sys.sendAll("", safchan);
             }
-            return;
         }
-        else if (this.turn === 6) {
+        else if (this.turn === duration) { //Setup
+            if (this.signups.length === 0) {
+                safaribot.sendHtmlAll("The " + this.eventName + " event was cancelled because no one joined it!", safchan);
+                this.finished = true;
+                return;
+            }
             this.setupEvent();
+        }
+        else {
+            this.playTurn();
+        }
+    };
+    SafariEvent.prototype.playTurn = function() {
+        
+    };
+    SafariEvent.prototype.finish = function() {
+        this.finished = true;
+    };
+    SafariEvent.prototype.join = function(src, data) {
+        if (this.turn >= this.signupsDuration) {
+            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't join now!", safchan);
+            return;
+        }
+        var player = getAvatar(src);
+        var name = sys.name(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter Safari to join this event!", safchan);
+            return;
+        }
+        if (this.forbiddenPlayers.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You have been shoved from this event and is not allowed to join!", safchan);
+            return;
+        }
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        if (signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You already joined the event!", safchan);
             return;
         }
         
-        var p1, p2, result, e;
-        
-        for (e = 0; e < 3; e++) {
-            p1 = this.party1[this.team1Defeated];
-            p2 = this.party2[this.team2Defeated];
-            
-            result = this.runBattle(p1.id, p2.id, p1.owner, p2.owner);
-            if (result === 1) {
-                this.team2Defeated++;
-                p1.score++;
-            } else if (result === 2) {
-                this.team1Defeated++;
-                p2.score++;
-            } else {
-                this.team1Defeated++;
-                this.team2Defeated++;
-            }
-            if (this.team1Defeated >= this.party1.length || this.team2Defeated >= this.party2.length) {
-                break;
-            }
+        if (this.canJoin && !this.canJoin(src)) {
+            return;
         }
-        this.sendToViewers("[" + toColor(this.team1Name, this.team1Color) + ": " + (this.party1.length - this.team1Defeated) + " Pokémon remaining] ["+ toColor(this.team2Name, this.team2Color) + ": " + (this.party2.length - this.team2Defeated) + " Pokémon remaining]");
-        this.sendToViewers("");
+        var onJoinMsg = "";
+        if (this.onJoin) {
+            onJoinMsg = this.onJoin(name, data);
+        }
         
-        if (this.team1Defeated >= this.battleSize || this.team2Defeated >= this.battleSize) {
-            if (this.team1Defeated !== this.team2Defeated) {
-                this.finish();
-            } else {
-                if (!this.suddenDeath) {
-                    this.sendToViewers("Both teams have been defeated at the same time! Starting sudden death mode!");
-                    this.suddenDeath = true;
-                } else {
-                    this.sendToViewers("Winner still undefined, sudden death mode will continue!");
-                }
-                
-                this.party1.push(this.party1.random());
-                this.party2.push(this.party2.random());
+        this.sendToViewers(name + " has joined the " + this.eventName + onJoinMsg + "!");
+        this.signups.push(name);
+        safaribot.sendHtmlMessage(src, "You joined the " + this.eventName + onJoinMsg + "! To leave the event, type " + link("/unjoin") + "!", safchan);
+    };
+    SafariEvent.prototype.unjoin = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            safaribot.sendMessage(src, "You need to enter Safari to use this command!", safchan);
+            return;
+        }
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        var name = sys.name(src);
+        if (!signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You didn't even join this event!", safchan);
+            return;
+        }
+        if (this.turn >= this.signupsDuration) {
+            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't unjoin now!", safchan);
+            return;
+        }
+        var index = signupsLower.indexOf(name.toLowerCase());
+        this.signups.splice(index, 1);
+        if (this.onLeave) {
+            this.onLeave(name);
+        }
+        this.sendToViewers(name + " has unjoined the " + this.eventName + "!");
+        safaribot.sendMessage(src, "You unjoined the " + this.eventName + " event!", safchan);
+    };
+    SafariEvent.prototype.shove = function(src, target) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        if (!signupsLower.contains(target.toLowerCase())) {
+            safaribot.sendMessage(src, target.toCorrectCase() + " didn't join this event!", safchan);
+            return;
+        }
+        if (this.turn >= this.signupsDuration) {
+            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't shove anyone now!", safchan);
+            return;
+        }
+        var index = signupsLower.indexOf(target.toLowerCase());
+        this.sendMessage(target, "You have been shoved from the event!");
+        if (this.onLeave) {
+            this.onLeave(this.signups[index]);
+        }
+        this.signups.splice(index, 1);
+        this.sendToViewers(sys.name(src) + " shoved " + target.toCorrectCase() + " from the " + this.eventName + "!");
+        this.forbiddenPlayers.push(target.toLowerCase());
+    };
+    SafariEvent.prototype.watchEvent = function(src) {
+        if (this.turn < this.signupsDuration) {
+            safaribot.sendHtmlMessage(src, "The " + this.eventName + " didn't start yet! " + this.joinmsg, safchan);
+            return;
+        }
+        var name = sys.name(src);
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        if (signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You are one of the participants, you can't watch/unwatch this event!", safchan);
+            return;
+        }
+        
+        if (this.viewers.contains(name.toLowerCase())) {
+            this.viewers.splice(this.viewers.indexOf(name.toLowerCase()), 1);
+            this.sendToViewers(name + " stopped watching this " + this.eventName + "!");
+            safaribot.sendMessage(src, "You are no longer watching the " + this.eventName + "!", safchan);
+        } else {
+            this.sendToViewers(name + " is watching this " + this.eventName + "!");
+            this.viewers.push(name.toLowerCase());
+            if (this.onWatch) {
+                this.onWatch(src);
             }
         }
     };
+    SafariEvent.prototype.sendMessage = function(name, msg, flashing) {
+        var id = sys.id(name);
+        if (id) {
+            if (msg === "") {
+                sys.sendHtmlMessage(id, msg, safchan);
+            } else {
+                if (flashing) {
+                    safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else {
+                    safaribot.sendHtmlMessage(id, msg, safchan);
+                }
+            }
+        }
+    };
+    SafariEvent.prototype.sendToViewers = function(msg, flashing) {
+        var e;
+        var list = removeDuplicates(this.signups.concat(this.viewers));
+        for (e = 0 ; e < list.length; e++) {
+            this.sendMessage(list[e], msg, flashing);
+        }
+    };
+    SafariEvent.prototype.isInEvent = function(name) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        return signupsLower.contains(name.toLowerCase());
+    };
+    
+    function FactionWar(src, team1, team2, reward, amount) {
+        SafariEvent.call(this);
+        this.eventName = "Faction War";
+        
+        this.team1Name = team1;
+        this.team2Name = team2;
+        this.team1Color = "red";
+        this.team2Color = "blue";
+        this.team1 = [];
+        this.team2 = [];
+        this.party1 = [];
+        this.party2 = [];
+        
+        this.npcs = [];
+        this.preferredTeams = {};
+        this.playerTeams = {};
+        
+        this.reward = reward;
+        this.amount = reward.type == "item" ? amount : 1;
+        this.hasReward = true;
+        
+        this.team1Defeated = 0;
+        this.team2Defeated = 0;
+        this.suddenDeath = false;
+        
+        this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! Winners will receive <b>" + plural(amount, reward.name) + "</b>!";
+        
+        var joinCommand = "/signup";
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + plural(amount, reward.name) + "</b>!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
+        sys.sendAll("", safchan);
+    }
+    FactionWar.prototype = new SafariEvent();
     FactionWar.prototype.setupEvent = function() {
         //SETUP TEAMS
         var teamSize = Math.ceil(Math.max(this.signups.length, 6)/2);
@@ -7131,7 +7254,7 @@ function Safari() {
         
         var playerCount = this.signups.length;
         if (playerCount < 4) {
-            this.hasReward = false;
+            // this.hasReward = false;
         }
         
         while (playerCount < 6 || playerCount % 2 === 1) {
@@ -7168,6 +7291,47 @@ function Safari() {
         }
         this.sendToViewers("Battles will start now!");
         this.sendToViewers("");
+    };
+    FactionWar.prototype.playTurn = function() {
+        var p1, p2, result, e;
+        
+        for (e = 0; e < 3; e++) {
+            p1 = this.party1[this.team1Defeated];
+            p2 = this.party2[this.team2Defeated];
+            
+            result = this.runBattle(p1.id, p2.id, p1.owner, p2.owner);
+            if (result === 1) {
+                this.team2Defeated++;
+                p1.score++;
+            } else if (result === 2) {
+                this.team1Defeated++;
+                p2.score++;
+            } else {
+                this.team1Defeated++;
+                this.team2Defeated++;
+            }
+            if (this.team1Defeated >= this.party1.length || this.team2Defeated >= this.party2.length) {
+                break;
+            }
+        }
+        this.sendToViewers("[" + toColor(this.team1Name, this.team1Color) + ": " + (this.party1.length - this.team1Defeated) + " Pokémon remaining] ["+ toColor(this.team2Name, this.team2Color) + ": " + (this.party2.length - this.team2Defeated) + " Pokémon remaining]");
+        this.sendToViewers("");
+        
+        if (this.team1Defeated >= this.battleSize || this.team2Defeated >= this.battleSize) {
+            if (this.team1Defeated !== this.team2Defeated) {
+                this.finish();
+            } else {
+                if (!this.suddenDeath) {
+                    this.sendToViewers("Both teams have been defeated at the same time! Starting sudden death mode!");
+                    this.suddenDeath = true;
+                } else {
+                    this.sendToViewers("Winner still undefined, sudden death mode will continue!");
+                }
+                
+                this.party1.push(this.party1.random());
+                this.party2.push(this.party2.random());
+            }
+        }
     };
     FactionWar.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
         var p1Type1 = sys.type(sys.pokeType1(p1Poke)), p1Type2 = sys.type(sys.pokeType2(p1Poke));
@@ -7216,14 +7380,15 @@ function Safari() {
     };
     FactionWar.prototype.finish = function() {
         var winner, loser;
+        var rewardmsg = this.hasReward ? "Each player will receive " + plural(this.amount, this.reward.name, null, true) + "!" : "";
         if (this.team1Defeated > this.team2Defeated) {
             winner = this.team2;
             loser = this.team1;
-            safaribot.sendHtmlAll("The " + toColor(this.team2Name, this.team2Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
+            safaribot.sendHtmlAll("The " + toColor(this.team2Name, this.team2Color) + " (" + readable(winner, "and") + ") has won the Faction War! " + rewardmsg, safchan);
         } else {
             winner = this.team1;
             loser = this.team2;
-            safaribot.sendHtmlAll("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won the Faction War!", safchan);
+            safaribot.sendHtmlAll("The " + toColor(this.team1Name, this.team1Color) + " (" + readable(winner, "and") + ") has won the Faction War! " + rewardmsg, safchan);
         }
         
         var mvp = [], mvpPoints = 0, e, i, teams = this.playerTeams, id, player, score, mon, totalPoints;
@@ -7272,7 +7437,6 @@ function Safari() {
                         }
                         player.records.factionWins += 1;
                         
-                        //TODO: Fix so it records MVP even if their team lost
                         for (i = 0; i < mvp.length; i++) {
                             if (mvp[i].owner == name) {
                                 player.records.factionMVPs += 1;
@@ -7300,35 +7464,18 @@ function Safari() {
         }
         this.finished = true;
     };
-    FactionWar.prototype.join = function(src, data) {
-        if (this.turn >= 6) {
-            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't join now!", safchan);
-            return;
-        }
+    FactionWar.prototype.canJoin = function(src) {
         var player = getAvatar(src);
-        var name = sys.name(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter Safari to join this event!", safchan);
-            return;
-        }
-        if (this.forbiddenPlayers.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You have been shoved from this event and is not allowed to join!", safchan);
-            return;
-        }
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        if (signupsLower.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You already joined the event!", safchan);
-            return;
-        }
         if (player.party.length < 6) {
             safaribot.sendMessage(src, "You must have a party with 6 Pokémon to join this event!", safchan);
-            return;
+            return false;
         }
-        
         if (hasPokeInShop(src, true)) {
-            return;
+            return false;
         }
-        
+        return true;
+    };
+    FactionWar.prototype.onJoin = function(name, data) {
         var pickedTeam = "";
         if (data.toLowerCase() == this.team1Name.toLowerCase()) {
             pickedTeam = " on the " + this.team1Name + " side";
@@ -7339,116 +7486,17 @@ function Safari() {
         } else {
             this.preferredTeams[name] = "*";
         }
-        
-        this.sendToViewers(name + " has joined the " + this.eventName + pickedTeam + "!");
-        this.signups.push(name);
-        
-        safaribot.sendHtmlMessage(src, "You joined the " + this.eventName + pickedTeam + "! To leave the event, type " + link("/unjoin") + "!", safchan);
+        return pickedTeam;
     };
-    FactionWar.prototype.unjoin = function(src) {
-        var player = getAvatar(src);
-        if (!player) {
-            safaribot.sendMessage(src, "You need to enter Safari to use this command!", safchan);
-            return;
-        }
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        var name = sys.name(src);
-        if (!signupsLower.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You didn't even join this event!", safchan);
-            return;
-        }
-        if (this.turn >= 6) {
-            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't unjoin now!", safchan);
-            return;
-        }
-        var index = signupsLower.indexOf(name.toLowerCase());
-        this.signups.splice(index, 1);
+    FactionWar.prototype.onLeave = function(name) {
         delete this.preferredTeams[name];
-        this.sendToViewers(name + " has unjoined the " + this.eventName + "!");
-        safaribot.sendMessage(src, "You unjoined the " + this.eventName + " event!", safchan);
     };
-    FactionWar.prototype.shove = function(src, target) {
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        if (!signupsLower.contains(target.toLowerCase())) {
-            safaribot.sendMessage(src, target.toCorrectCase() + " didn't join this event!", safchan);
-            return;
-        }
-        if (this.turn >= 6) {
-            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't shove anyone now!", safchan);
-            return;
-        }
-        var index = signupsLower.indexOf(target.toLowerCase());
-        this.sendMessage(target, "You have been shoved from the event!");
-        delete this.preferredTeams[this.signups[index]];
-        this.signups.splice(index, 1);
-        this.sendToViewers(sys.name(src) + " shoved " + target.toCorrectCase() + " from the " + this.eventName + "!");
-        this.forbiddenPlayers.push(target.toLowerCase());
+    FactionWar.prototype.onWatch = function(src) {
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The teams are: ", safchan);
+        safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
+        safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
+        safaribot.sendMessage(src, "Winners will receive " + plural(this.amount, this.reward.name) + "!", safchan);
     };
-    FactionWar.prototype.watchEvent = function(src) {
-        if (this.turn < 6) {
-            safaribot.sendMessage(src, "The " + this.eventName + " didn't start yet!", safchan);
-            return;
-        }
-        var name = sys.name(src);
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        if (signupsLower.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You are already in the event!", safchan);
-            return;
-        }
-        
-        if (this.viewers.contains(name.toLowerCase())) {
-            this.viewers.splice(this.viewers.indexOf(name.toLowerCase()), 1);
-            this.sendToViewers(name + " stopped watching this " + this.eventName + "!");
-            safaribot.sendMessage(src, "You are no longer watching the " + this.eventName + "!", safchan);
-        } else {
-            this.sendToViewers(name + " is watching this " + this.eventName + "!");
-            this.viewers.push(name.toLowerCase());
-            safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The teams are: ", safchan);
-            safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
-            safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
-            
-        }
-    };
-    FactionWar.prototype.sendMessage = function(name, msg, flashing) {
-        var id = sys.id(name);
-        if (id) {
-            if (msg === "") {
-                sys.sendHtmlMessage(id, msg, safchan);
-            } else {
-                if (flashing) {
-                    safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
-                } else {
-                    safaribot.sendHtmlMessage(id, msg, safchan);
-                }
-            }
-        }
-    };
-    FactionWar.prototype.sendToViewers = function(msg, flashing) {
-        var e;
-        var list = this.signups.concat(this.viewers);
-        for (e = 0 ; e < list.length; e++) {
-            this.sendMessage(list[e], msg, flashing);
-        }
-    };
-    FactionWar.prototype.isInEvent = function(name) {
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        return signupsLower.contains(name.toLowerCase());
-    };
-    function toFlashing(message, name) { //Totally not stolen from tours
-        var newmessage = message;
-        var flashtag = "<!--f-->";
-        var htmlname = html_escape(name);
-        var regex = flashtag+htmlname+flashtag;
-        var newregex1 = "";
-        if (sys.os(sys.id(name)) !== "android") {
-            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname + "</font><ping/>";
-        } else {
-            newregex1 = "<background color='#FCD116'>" + htmlname + "</background><ping/>";
-        }
-        var flashregex = new RegExp(flashtag,"g");
-        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
-        return newmessage;
-    }
     
     /* System Functions */
     this.startGame = function(src, data) {
@@ -8799,6 +8847,9 @@ function Safari() {
                 if (!amt || isNaN(amt)) {
                     safaribot.sendMessage(src, "Please type a valid amount for the reward!", safchan);
                     return true;
+                }
+                if (reward.type == "poke") {
+                    amt = 1;
                 }
                 
                 var ev = new FactionWar(src, name1, name2, reward, amt);
