@@ -138,6 +138,7 @@ function Safari() {
         },
         costumes: [],
         savedParties: [],
+        ninjaParty: [],
         megaTimers: [],
         starter: null,
         lastLogin: null,
@@ -254,12 +255,12 @@ function Safari() {
     var costumeData = {
         preschooler: {icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: -0.1, effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon in order to increase catch rate at the beginning of an adventure.", noAcq: "Catch your first Pokémon"},
         breeder: {icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the needed Candy Dust for evolution.", noAcq: "Evolve {0} more Pokémon"},
-        pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.1, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
+        pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.2, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder.", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
-        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.1, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
+        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.2, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
-        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 500, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon ≤500 BST"}
+        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon <500 BST"}
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
         //inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "TBD"}
@@ -3452,7 +3453,9 @@ function Safari() {
         var player = getAvatar(src);
         var mess = "[Track] " + sys.name(src) + " is using /bait " + commandData;
         for (var t = 0; t < player.trackers.length; t++) {
-            safaribot.sendMessage(sys.id(player.trackers[t]), mess, safchan);
+            if (sys.id(player.trackers[t]) !== undefined) {
+                safaribot.sendMessage(sys.id(player.trackers[t]), mess, safchan);
+            }
         }
         if (sys.id("Safari Warden") !== undefined) {
             safaribot.sendMessage(sys.id("Safari Warden"), mess, safchan);
@@ -6195,7 +6198,12 @@ function Safari() {
                     }
                 }
                 if (level == 3) {
-                    request.push(legendaries.random());
+                    var legend;
+                    //This kills the Phione
+                    while (legend === sys.pokeNum("Phione") || legend === 0) {
+                        legend = legendaries.random();
+                    }
+                    request.push(legend);
                 }
 
                 var reward = 0;
@@ -6616,21 +6624,22 @@ function Safari() {
             safaribot.sendMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start. If you need more information, type /quest tower:help.", safchan);
             return;
         }
-
-        var cost = 500;
-        if (player.money < cost) {
-            safaribot.sendMessage(src, "You need to pay $" + addComma(cost) + " to enter the Tower, but you only have $" + addComma(player.money) + "!", safchan);
-            return;
-        }
         if (player.party.length < 6) {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
-        
         if (hasPokeInShop(src)) {
             return;
         }
         
+        var cost = 500;
+        for (var i = 0; i < player.party.length; i++) {
+            cost = Math.max(cost, getBST(player.party[i]));
+        }
+        if (player.money < cost) {
+            safaribot.sendMessage(src, "You need to pay $" + addComma(cost) + " to enter the Tower, but you only have $" + addComma(player.money) + "!", safchan);
+            return;
+        }
         player.money -= cost;
         this.saveGame(player);
 
@@ -6723,13 +6732,14 @@ function Safari() {
                         updatelb = true;
                     }
                 }
-                if (count === 0) {
+                var traveledCount = count - (player.costume === "ninja" ? (costumeData.ninja.rate - 1) : 0);
+                if (traveledCount === 0) {
                     player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
-                } else if (count <= 3) {
+                } else if (traveledCount <= 3) {
                     player.quests.tower.cooldown = now() + 1 * 60 * 60 * 1000;
-                } else if (count <= 6) {
+                } else if (traveledCount <= 6) {
                     player.quests.tower.cooldown = now() + 1.5 * 60 * 60 * 1000;
-                } else if (count <= 10) {
+                } else if (traveledCount <= 10) {
                     player.quests.tower.cooldown = now() + 2 * 60 * 60 * 1000;
                 } else {
                     player.quests.tower.cooldown = now() + 3 * 60 * 60 * 1000;
@@ -6784,6 +6794,7 @@ function Safari() {
                     if (!noAcq) {
                         player.costumes.push("ninja");
                         safaribot.sendHtmlMessage(src, "<b>Received the following costume:</b> " + costumeData.ninja.fullName + ".", safchan);
+                        player.ninjaParty = player.party;
                     }
                 }
 
@@ -7254,7 +7265,7 @@ function Safari() {
         
         var playerCount = this.signups.length;
         if (playerCount < 4) {
-            // this.hasReward = false;
+            this.hasReward = false;
         }
         
         while (playerCount < 6 || playerCount % 2 === 1) {
@@ -8804,7 +8815,7 @@ function Safari() {
                     "",
                     "Inverted BST: Lower BST = Better.",
                     "Inverted Type Effectiveness*: Wild Pokémon resisting your Pokémon = Good (example: Using Normal-type against a Steel-type Wild Pokémon).",
-                    "Resistance Mode*: Your Pokémon resisting the Wild Pokémon = Good (example: Using Bug-type against a Ground-type Wild Pokémon).",
+                    "Resistance Mode*: Your Pokémon resisting the Wild Pokémon = Good (example: Using Steel-type against a Normal-type Wild Pokémon).",
                     "Weakness Mode*: Wild Pokémon super-effective on your Pokémon = Good (example: Using Ground-type against an Ice-type Wild Pokémon).",
                     "*These rules replace normal Type Effectiveness.",
                     "",
