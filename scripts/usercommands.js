@@ -237,7 +237,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (rank === undefined) {
                 rankingbot.sendMessage(src, "You are not ranked in " + tier + " yet!", channel);
             } else {
-                var wins = sys.ratedWins(name, tier);
+                var wins = sys.ratedWins(sys.name(src), tier);
                 rankingbot.sendMessage(src, "Your rank in " + tier + " is " + rank + "/" + sys.totalPlayersByTier(tier) + " [" + sys.ladderRating(src, tier) + " points / " + sys.ratedBattles(sys.name(src), tier) + " battles, " + wins + " win" + (wins !== 1 ? "s" : "") + "]!", channel);
             }
         };
