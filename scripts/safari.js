@@ -6198,7 +6198,7 @@ function Safari() {
                     }
                 }
                 if (level == 3) {
-                    var legend;
+                    var legend = 0;
                     //This kills the Phione
                     while (legend === sys.pokeNum("Phione") || legend === 0) {
                         legend = legendaries.random();
