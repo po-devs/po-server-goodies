@@ -252,9 +252,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var topic = SESSION.channels(channel).topic;
         if (typeof topic === "string" && topic !== "") {
             var i = 0;
-            topic = topic.split(" | ").map(function (part) {
+            topic = topic.split(Config.topic_delimiter).map(function (part) {
                 return "<font color='blue'><b>[" + (++i) + "]</b></font> " + part;
-            }).join(" | ");
+            }).join(Config.topic_delimiter);
             // HTML isn't necessary, but it makes the number more obvious
             sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±" + Config.channelbot + ":</b></font> Topic for this channel is: " + topic, channel);
         } else {
