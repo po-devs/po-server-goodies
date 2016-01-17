@@ -857,6 +857,12 @@ function Safari() {
         }
         return player;
     }
+    function hasSave(name) {
+        if (Object.keys(rawPlayers.hash).contains(name.toLowerCase())) {
+            return true;
+        }
+        return false;
+    }
     function themeName(obj) {
         if (Array.isArray(obj)) {
             return readable(obj.map(function(x){
@@ -8312,7 +8318,8 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
-            "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!"
+            "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
+            "/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             help.push.apply(help, adminHelp);
@@ -9585,6 +9592,41 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "preptour") {
+                var file = "scriptdata/tourdata/tourhistory.json";
+                var eventData = JSON.parse(sys.getFileContent(file)).eventtours;
+                
+                var amount = parseInt(commandData, 10);
+                if (isNaN(amount)) {
+                    amount = 10;
+                }
+                
+                var firstPos, lastPos, ranks = [], player, playerState = [], tourName, noSave = 0;
+                for (var x = 0; x < amount; x++) {
+                    var string = eventData[x];
+                    tourName = string.substring(0, string.indexOf("Event:"));
+                    for (var i = 1; i < 4; i++) {
+                        firstPos = string.indexOf("#" + i + ":") + 3;
+                        lastPos = string.indexOf(";");
+                        player = string.substring(firstPos, lastPos);                        
+                        ranks.push(player);
+                        if (!hasSave(player)) {
+                            playerState.push("<b>" + player + "</b>");
+                            noSave++;
+                        } else {
+                            playerState.push(player);
+                        }
+                        string = string.substring(lastPos + 1);
+                    }
+                    var rankString = ranks.join(", ");
+                    var printString = playerState.join(", ");
+                    sys.sendHtmlMessage(src, "[" + link("/tourgift " + rankString, "Gift") + "] " + tourName + ": " + (noSave > 0 ? "/tourgift " : "") +  printString, safchan);
+                    ranks = []; 
+                    playerState = [];
+                    noSave = 0;
+                }
+                return true;
+            }
             if (command === "checksave" || command === "checksaves") {
                 var temp, multi, checks = [];
                 if (commandData.indexOf(", ") !== -1) {
@@ -9604,7 +9646,7 @@ function Safari() {
 
                 var has = [], hasNot = [], player;
                 for (var j = 0; j < checks.length; j++) {
-                    player = getAvatarOff(checks[j]);
+                    player = hasSave(checks[j]);
                     if (!player) {
                         hasNot.push(checks[j]);
                     } else {
