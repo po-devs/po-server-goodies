@@ -7451,6 +7451,9 @@ function Safari() {
                             player.pokemon.push(reward.id);
                         } else {
                             rewardCapCheck(player, reward.id, amt);
+                            if (reward.name === itemData.entry.fullName) {
+                                rafflePlayers.add(player.id, player.balls.entry);
+                            }
                         }
                         player.records.factionWins += 1;
                         
@@ -7463,6 +7466,7 @@ function Safari() {
                     }
                 }
             }
+            rafflePlayers.save();
             len = loser.length;
             for (e = 0; e < len; e++) {
                 name = loser[e];
