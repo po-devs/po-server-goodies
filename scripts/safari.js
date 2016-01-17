@@ -250,7 +250,7 @@ function Safari() {
     var editableCostumeProps = {
         fullName: "string", icon: "number", aliases: "array", rate: "number", bonusChance: "number",
         acqReq: "number", acqReq2: "number", record: "string", record2: "string", noAcq: "string",
-        thresh1: "number", thresh2: "number", thresh3: "number", changeRate: "number"
+        thresh1: "number", thresh2: "number", thresh3: "number", changeRate: "number", specialAcq: "boolean"
     };
     var costumeData = {
         preschooler: {icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: -0.1, effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon in order to increase catch rate at the beginning of an adventure.", noAcq: "Catch your first Pokémon"},
@@ -260,7 +260,7 @@ function Safari() {
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
         battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.2, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
-        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon <500 BST"}
+        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon &lt;500 BST"}
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
         //inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "TBD"}
@@ -2396,11 +2396,11 @@ function Safari() {
         if (flee) {
             pokeName = poke(currentPokemon);
             var runmsgs = [
-                "The wild {0} got spooked and ran away!",
+                "The wild {0} got spooked and fled!",
                 "The wild {0} got hungry and went somewhere else to find food!",
                 "The wild {0} went back home to take their medicine!",
                 "The wild {0} hid in a hole and disappeared!",
-                "The wild {0} pointed to the sky. While everyone was looking at the clouds, the {0} ran away!",
+                "The wild {0} pointed to the sky. While everyone was looking at the clouds, the {0} fled!",
                 "The wild {0} vanished into thin air!",
                 "The wild {0} spontaneously combusted and turned to ash.",
                 "The wild {0} was really just a figment of everyone's imagination!",
@@ -2408,7 +2408,7 @@ function Safari() {
                 "The wild {0} was actually just a well made PokéDoll!",
                 "The wild {0} was actually a Poké Fan cosplaying as a {0}!",
                 "The wild {0} turned into MissingNo and glitched out of existence!",
-                "The wild {0} was not really wild! Their owner called them back to their pokéball!"
+                "The wild {0} was not really wild! Their owner called them back to their Pokéball!"
             ];
 
             sys.sendAll("", safchan);
@@ -6605,11 +6605,15 @@ function Safari() {
     };
     this.fightTower = function(src, data) {
         var player = getAvatar(src);
-
+        
+        var cost = costumeData.ninja.thresh || 499;
+        for (var i = 0; i < player.party.length; i++) {
+            cost = Math.max(cost, getBST(player.party[i]));
+        }
         if (data.length === 0) {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Tower Clerk: Welcome to the Battle Tower, a place where you can face successive battles until you lose! Type " + link("/quest tower:help") + " for more information!", safchan);
-            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay $500 and have a party of 6 Pokémon, then type " + link("/quest tower:start") + "! Be careful though, you may miss a contest during this challenge!", safchan);
+            safaribot.sendHtmlMessage(src, "Tower Clerk: To enter the Tower, you must pay a cost based on your strongest Pokémon's BST (currently $" + cost + ") and have a party of 6 Pokémon (currently " + player.party.length + "), then type " + link("/quest tower:start") + "! Be careful though, you may miss a contest during this challenge!", safchan);
             if (player.quests.tower.cooldown >= now()) {
                 safaribot.sendMessage(src, "Tower Clerk: Our trainers are still restoring their Pokémon from the last challenge, so please wait " + timeLeftString(player.quests.tower.cooldown) + " to try again!", safchan);
             }
@@ -6646,10 +6650,6 @@ function Safari() {
             return;
         }
         
-        var cost = 500;
-        for (var i = 0; i < player.party.length; i++) {
-            cost = Math.max(cost, getBST(player.party[i]));
-        }
         if (player.money < cost) {
             safaribot.sendMessage(src, "You need to pay $" + addComma(cost) + " to enter the Tower, but you only have $" + addComma(player.money) + "!", safchan);
             return;
@@ -9497,11 +9497,6 @@ function Safari() {
                     safaribot.sendMessage(src, "No such item!", safchan);
                     return true;
                 }
-                if (item === "entry") {
-                    safaribot.sendMessage(src, "You can't gift raffle entries!", safchan);
-                    return true;
-                }
-
                 var player, index, invalidPlayers = [];
                 for (var j = 0; j < playerArray.length; j++) {
                     player = getAvatarOff(playerArray[j]);
@@ -9512,9 +9507,14 @@ function Safari() {
                         continue;
                     }
                     player.balls[item] += itemQty;
+                    if (item === "entry") {                        
+                        rafflePlayers.add(player.id, player.balls.entry);
+                        rafflePlayers.save();
+                    }
                     this.updateShop(player.id, item);
                     this.sanitize(player);
                 }
+                
                 if (playerArray.length > 0) {
                     safaribot.sendAll(readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and") + " has been awarded with " + itemQty + " " + finishName(item) + " by " + sys.name(src) + "!", safchan);
                 }
