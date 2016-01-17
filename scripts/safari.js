@@ -9608,7 +9608,7 @@ function Safari() {
                     for (var i = 1; i < 4; i++) {
                         firstPos = string.indexOf("#" + i + ":") + 3;
                         lastPos = string.indexOf(";");
-                        player = string.substring(firstPos, lastPos);                        
+                        player = string.substring(firstPos, lastPos).trim();                        
                         ranks.push(player);
                         if (!hasSave(player)) {
                             playerState.push("<b>" + player + "</b>");
