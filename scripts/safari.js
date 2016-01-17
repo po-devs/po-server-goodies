@@ -1138,6 +1138,9 @@ function Safari() {
             if (altplural) {
                 return qty + " " + altplural;
             } else {
+                if (string.toLowerCase() === "box") {
+                    return qty + " Boxes";
+                }
                 return qty + " " + string + "s";
             }
         }
@@ -4549,7 +4552,7 @@ function Safari() {
         }
         if (shop[input.input].limit === 0) {
             if (fromNPC) {
-                safaribot.sendMessage(src, "Sorry, we already sold all " + input.name + " we had.", safchan);
+                safaribot.sendMessage(src, "Sorry, we already sold all the " + input.name + "s we had.", safchan);
             } else {
                 safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + sys.rand(1, 10) + " seconds ago!", safchan);
             }
