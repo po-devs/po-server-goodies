@@ -1383,16 +1383,6 @@ function tourCommand(src, command, commandData, channel) {
                 sendChanAll(border, tourschan);
                 return true;
             }
-            if (command === "addeventhistory") {
-                if (tours.eventhistory === undefined) {
-                    tours.eventhistory = [];
-                    save_cache();
-                    sendBotMessage(src,"Tournaments now has eventhistory maybe",tourschan,false);
-                } else {
-                    sendBotMessage(src,"Tournaments already has eventhistory",tourschan,false);
-                }
-                return true;
-            }
             if (command == "resettours") {
                 tours = {"queue": [], "globaltime": -1, "key": 0, "keys": [], "tour": {}, "history": [], "eventhistory": [], "touradmins": {}, "subscriptions": {}, "activetas": [], "activehistory": [], "tourmutes": {}, "metrics": {}, "eventticks": -1, "working": false};
                 refreshTicks(true);
