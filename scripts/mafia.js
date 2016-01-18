@@ -5167,9 +5167,17 @@ function Mafia(mafiachan) {
         return true;
     };
 
-    this.addPhaseStalkAction = function (user, action, target) {
+    this.addPhaseStalkAction = function (user, action, target, after, redir) {
+    	if (after !== "*" && after !== undefined) {
+    	    after = ":" + after
+    	}
+    	else after = "";
+    	if (redir !== "*" && redir !== undefined) {
+    	    redir = "@" + redir
+    	}
+    	else redir = "";
         if (!(user in phaseStalk)) phaseStalk[user] = [];
-        phaseStalk[user].push("/" + action + " " + target);
+        phaseStalk[user].push("/" + action + " " + target + after + redir);
     };
     this.addPhaseStalkHax = function (user, action, target, haxer) {
         phaseStalk[user][phaseStalk[user].length - 1] += " (Haxed by " + haxer.join(", ") + ")";
@@ -5201,7 +5209,7 @@ function Mafia(mafiachan) {
         var target = mafia.players[commandData];
         var canTarget = player.role.actions.night[command].target;
 
-        this.addPhaseStalkAction(name, command, target.name);
+        this.addPhaseStalkAction(name, command, target.name, afterCommandData, redirectData);
 
         if (["Any", "Self", "OnlySelf", "OnlyTeam"].indexOf(canTarget) == -1 && commandData == name) {
             gamemsg(name, "Nope, this wont work... You can't target yourself!", "Hint");
