@@ -9437,10 +9437,6 @@ function Safari() {
                     safaribot.sendMessage(src, "No such player!", safchan);
                     return true;
                 }
-                if (player.balls.entry > 0) {
-                    safaribot.sendMessage(src, "This player has entries in the current raffle, you're not allowed to change their ID!", safchan);
-                    return true;
-                }
                 this.assignIdNumber(player, true);
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s ID has been reset and is now " + player.idnum + ".", safchan);
@@ -9562,7 +9558,8 @@ function Safari() {
                 return true;
             }
             if (command === "tourgift") {
-                var targets = commandData.split(", ");
+                var tour = commandData.split("*");
+                var targets = tour[1].split(", ");
                 var prizeLevel = 1, placing = 1;
                 var player, invalidPlayers = [], out = [], prizeArray;
                 for (var i in targets) {
@@ -9598,7 +9595,7 @@ function Safari() {
                     safaribot.sendMessage(src, "No names supplied match existing Safari Accounts.", safchan);
                     return true;
                 }
-                safaribot.sendHtmlAll("<b>Tour Event Prizes:</b> " + out.join(" | "), safchan);
+                safaribot.sendHtmlAll("<b>" + cap(tour[0]) + " Event Prizes:</b> " + out.join(" | "), safchan);
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, "The following players did not match any save: " + invalidPlayers.join(", "), safchan);
                 }
@@ -9632,7 +9629,7 @@ function Safari() {
                     }
                     var rankString = ranks.join(", ");
                     var printString = playerState.join(", ");
-                    sys.sendHtmlMessage(src, "[" + link("/tourgift " + rankString, "Gift") + "] " + tourName + ": " + (noSave > 0 ? "/tourgift " : "") +  printString, safchan);
+                    sys.sendHtmlMessage(src, "[" + link("/tourgift " + tourName + "*" + rankString, "Gift") + "] " + tourName + ": " + (noSave > 0 ? "/tourgift " + tourName + "*" : "") +  printString, safchan);
                     ranks = [];
                     playerState = [];
                     noSave = 0;
@@ -10500,7 +10497,7 @@ function Safari() {
                                 if (e in contestCatchers) {
                                     safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
                                 }
-                                safaribot.sendMessage(playerId, "You received " + amt + " Bait(s) for participating in the contest!", safchan);
+                                safaribot.sendMessage(playerId, "You received " + plural(amt, itemAlias("bait", true, true), null, true) + " for participating in the contest!", safchan);
                             }
                             rewardCapCheck(player, "bait", amt);
                             safari.saveGame(player);
