@@ -247,14 +247,12 @@ function updateNotice(silent) {
     sys.webCall(url, function (resp){
         sys.writeToFile(Config.dataDir + "notice.html", resp);
     });
-    if (!silent) {
-        sendNotice();
-    }
+    sendNotice(silent);
 }
 
-function sendNotice() {
+function sendNotice(silent) {
     var notice = sys.getFileContent(Config.dataDir + "notice.html");
-    if (notice) {
+    if (notice && !silent) {
         ["Tohjo Falls", "Trivia", "Tournaments", "Indigo Plateau", "Victory Road", "Mafia", "Hangman", "Safari"].forEach(function(c) {
             sys.sendHtmlAll(notice, sys.channelId(c));
         });
