@@ -2856,11 +2856,11 @@ function Mafia(mafiachan) {
             if (teamvote) {
                 var target = mafia.players[commandData];
                 if (teamvote === true && player.role.side == target.role.side) {
-                    sys.sendHtmlMessage(sys.id(name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> This person is your teammate! To vote them, use " + htmlLink("/Teamvote") + " [name] or simply " + htmlLink("/Vote")  + " [name] again.");
+                    sys.sendHtmlMessage(sys.id(name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> This person is your teammate! To vote them, use " + htmlLink("/Teamvote") + " [name] or simply " + htmlLink("/Vote")  + " [name] again.", mafiachan);
                     mafia.teamVoters[name] = commandData;
                     return;
                 } else if (Array.isArray(teamvote) && teamvote.indexOf(target.role.role) !== -1) {
-                    sys.sendHtmlMessage(sys.id(name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> This person is your teammate! To vote them, use " + htmlLink("/Teamvote") + " [name] or simply " + htmlLink("/Vote")  + " [name] again.");
+                    sys.sendHtmlMessage(sys.id(name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> This person is your teammate! To vote them, use " + htmlLink("/Teamvote") + " [name] or simply " + htmlLink("/Vote")  + " [name] again.", mafiachan);
                     mafia.teamVoters[name] = commandData;
                     return;
                 }
@@ -4340,7 +4340,7 @@ function Mafia(mafiachan) {
                                     msg = msg.replace(command, htmlLink(command));
                                 }
                             }
-                            sys.sendHtmlMessage(sys.id(names[j]), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> " + msg);
+                            sys.sendHtmlMessage(sys.id(names[j]), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> " + msg, mafiachan);
                         }
                     }
                 }
@@ -4764,7 +4764,7 @@ function Mafia(mafiachan) {
                         help = help.replace(command, htmlLink(command));
                     }
                 }
-                sys.sendHtmlMessage(sys.id(player.name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> " + help);
+                sys.sendHtmlMessage(sys.id(player.name), "<font color='#3DAA68'><timestamp/> <b>±Game:</b></font> " + help, mafiachan);
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg);
 
