@@ -9613,7 +9613,7 @@ function Safari() {
                 var firstPos, lastPos, ranks = [], player, playerState = [], tourName, noSave = 0;
                 for (var x = 0; x < amount; x++) {
                     var string = eventData[x];
-                    tourName = string.substring(0, string.indexOf("Event:"));
+                    tourName = string.substring(0, string.indexOf("Event:")).trim();
                     for (var i = 1; i < 4; i++) {
                         firstPos = string.indexOf("#" + i + ":") + 3;
                         lastPos = string.indexOf(";");
