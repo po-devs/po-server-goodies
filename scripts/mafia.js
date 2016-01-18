@@ -5168,14 +5168,16 @@ function Mafia(mafiachan) {
     };
 
     this.addPhaseStalkAction = function (user, action, target, after, redir) {
-    	if (after !== "*" && after !== undefined) {
-    	    after = ":" + after
-    	}
-    	else after = "";
-    	if (redir !== "*" && redir !== undefined) {
-    	    redir = "@" + redir
-    	}
-    	else redir = "";
+        if (after !== "*" && after !== undefined) {
+            after = ":" + after;
+        } else {
+            after = "";
+        }
+        if (redir !== "*" && redir !== undefined) {
+            redir = "@" + redir;
+        } else {
+            redir = "";
+        }
         if (!(user in phaseStalk)) phaseStalk[user] = [];
         phaseStalk[user].push("/" + action + " " + target + after + redir);
     };
