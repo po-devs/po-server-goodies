@@ -1569,10 +1569,10 @@ function mafiaChecker() {
         checkType(action.redirectActions, ["array"], act + ".redirectActions");
         checkType(action.restrict, ["array"], act + ".restrict");
         checkType(action.cancel, ["array"], act + ".cancel");
-        checkType(action.ignoreDistract, ["string"], act + ".pinpointFailMsg");
-        checkType(action.ignoreDistract, ["string"], act + ".pinpointBroadcastFailMsg");
+        checkType(action.pinpointFailMsg, ["string"], act + ".pinpointFailMsg");
+        checkType(action.pinpointBroadcastFailMsg, ["string"], act + ".pinpointBroadcastFailMsg");
         checkType(action.ignoreDistract, ["boolean"], act + ".ignoreDistract");
-        checkType(action.ignoreDistract, ["boolean"], act + ".onlyUser");
+        checkType(action.onlyUser, ["boolean"], act + ".onlyUser");
         checkType(action.noRepeat, ["boolean"], act + ".noRepeat");
         checkType(action.pierce, ["boolean"], act + ".pierce");
         checkType(action.pierceChance, ["number"], act + ".pierceChance");
