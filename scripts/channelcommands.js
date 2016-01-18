@@ -414,18 +414,22 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "cmutes") {
-        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src));
+        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src), commandData);
         if (cmutelist !== "") {
             sys.sendHtmlMessage(src, cmutelist, channel);
+        } else if (commandData !== undefined) {
+            channelbot.sendMessage(src, "No users muted in this channel have \"" + commandData +  "\" in their name.", channel);
         } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
     if (command === "cbans") {
-        var cbanlist = poChannel.getReadableList("banlist", sys.os(src));
+        var cbanlist = poChannel.getReadableList("banlist", sys.os(src), commandData);
         if (cbanlist !== "") {
             sys.sendHtmlMessage(src, cbanlist, channel);
+        } else if (commandData !== undefined) {
+            channelbot.sendMessage(src, "No users banned in this channel have \"" + commandData +  "\" in their name.", channel);
         } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
