@@ -315,8 +315,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).inviteDelay) {
-            channelbot.sendMessage(src, "Please wait before sending another invite!");
+        if (typeof SESSION.users(tar).inviteDelay === "object" && SESSION.users(tar).inviteDelay.hasOwnProperty(sys.ip(src)) && now < SESSION.users(tar).inviteDelay[sys.ip(src)]) {
+            channelbot.sendMessage(src, "Please wait before sending another invite!", channel);
             return;
         }
         if (!sys.isInChannel(tar, channel)) {
@@ -328,7 +328,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         } else {
             channelbot.sendMessage(src, "Your target was invited.", channel);
         }
-        SESSION.users(src).inviteDelay = (new Date()).getTime() + 8000;
+        if (typeof SESSION.users(tar).inviteDelay !== "object") {
+            SESSION.users(tar).inviteDelay = {};
+        }
+        SESSION.users(tar).inviteDelay[sys.ip(src)] = (new Date()).getTime() + 8000;
         return;
     }
     if (command == "member") {
