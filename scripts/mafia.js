@@ -333,7 +333,6 @@ function Mafia(mafiachan) {
                 module.init();
                 mafia.endGame(false);
                 sendChanAll("Update Complete!", mafiachan);
-                require("mafia.js");
             });
             sendChanAll("Updating Mafia Script...", mafiachan);
             mafia.needsUpdating = false;
