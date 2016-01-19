@@ -156,7 +156,7 @@ function Mafia(mafiachan) {
         if (mess === null) {
             mess = "";
         }
-        var pos = mess.indexOf(': ');
+        var pos = mess.indexOf(": "a);
         if (!botName && pos !== -1 && (mess.indexOf("±") !== -1 || mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1)) {
             var name = mess.substring(0, pos),
                 id = sys.id(name),
@@ -312,7 +312,7 @@ function Mafia(mafiachan) {
     	if (channel === undefined) {
     	    channel = mafiachan;
     	}
-    	sys.sendHtmlAll(border, channel)
+    	sys.sendHtmlAll(border, channel);
     }
     function runUpdate() {
         if (!mafia.needsUpdating) {return;}
@@ -333,7 +333,7 @@ function Mafia(mafiachan) {
                 module.init();
                 mafia.endGame(false);
                 sendChanAll("Update Complete!", mafiachan);
-                Mafia = require("mafia.js");
+                require("mafia.js");
             });
             sendChanAll("Updating Mafia Script...", mafiachan);
             mafia.needsUpdating = false;
@@ -5535,7 +5535,7 @@ function Mafia(mafiachan) {
     this.handleCommand = function (src, message, channel) {
         var command;
         var commandData = '*';
-        var pos = message.indexOf(' ');
+        var pos = message.indexOf(" ");
         if (pos != -1) {
             command = message.substring(0, pos).toLowerCase();
             commandData = message.substr(pos + 1);
@@ -7390,181 +7390,6 @@ function Mafia(mafiachan) {
             } else {
                 msg(src, "No peak themes are disabled.");
             }
-            return;
-        }
-        if (command === "pushn") {
-            commandData = parseInt(commandData, 10);
-            if (isNaN(commandData) || commandData <= 0) {
-                mafiabot.sendMessage(src, "Please push a number of players greater than 0!", mafiachan)
-                return;
-            }
-            if (this.state != "entry") {
-                mafiabot.sendMessage(src, "Pushing makes no sense outside entry...", mafiachan);
-                return;
-            }
-            if (this.signups.length + commandData >= this.theme["roles" + this.theme.roleLists].length) {
-                mafiabot.sendMessage(src, "This theme only supports a maximum of " + this.theme["roles" + this.theme.roleLists].length + " players!", mafiachan);
-                return;
-            }
-            for (i = 1; i <= commandData; i++) {
-                var name = i.toString();
-                var id = sys.id(name);
-                if (id) {
-                    name = sys.name(id);
-                    this.signups.push(name);
-                    this.ips.push(sys.ip(id));
-                } else {
-                    this.signups.push(name);
-                }
-                gamemsgAll(name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")");
-            }
-            sys.sendAll("±Game: " + nonFlashing(sys.name(src)) + " pushed " + commandData + " players into Mafia!", sachannel);
-            this.ticks = 1;
-            return;
-        }
-        if (command === "showall") {
-            var name = sys.name(src);
-            if (mafia.state != "blank" && mafia.state != "entry") {
-                var list = [];
-                for (var p in mafia.players) {
-                    list.push(p + " ("+ mafia.players[p].role.translation + ")");
-                }
-                mafiabot.sendMessage(src, list.join(", "), mafiachan);
-                mafiabot.sendAll(sys.name(src) + " is using /showall to see everyone's roles!", mafiachan);
-            } else {
-                mafiabot.sendMessage(src, "No game running!", channel);
-            }
-            return;
-        }
-        if (command === "settime") {
-            if (mafia.state != "blank") {
-                if (commandData <= 0) {
-                    mafiabot.sendMessage(src, "Please set a value above 0!", mafiachan);
-                    return;
-                }
-                mafia.ticks = commandData;
-                sys.sendHtmlAll("<timestamp/> <b>" + sys.name(src) + "</b> set this phase to last for <b>" + commandData + "</b> more second" + (commandData == "1" ? "" : "s") + "</b>!", mafiachan);
-            } else {
-                mafiabot.sendMessage(src, "No game running!", mafiachan);
-            }
-            return;
-        }
-        if (command === "addplayer") {
-            var data = commandData.split(":");
-            if (data.length !== 2) {
-                mafiabot.sendMessage(src, "Correct usage is /addplayer [name]:[role]", channel);
-                return;
-            }
-            var player = data[0],
-                role = data[1];
-            if (mafia.state == "blank" || mafia.state == "entry") {
-                mafiabot.sendMessage(src, "No game running!", channel);
-                return;
-            }
-            if (!(role in mafia.theme.roles)) {
-                mafiabot.sendMessage(src, mafia.theme.name + " does not have the " + role + " role!", mafiachan);
-                return;
-            }
-            mafia.players[player] = { 'name': player, 'role': mafia.theme.roles[role], 'targets': {}, 'recharges': {}, 'dayrecharges': {}, 'charges' : {}, 'daycharges': {}, 'evadeCharges': {}, "restrictions": [], "extraVote": 0, "extraVoteshield": 0, 'targets': {}, 'targetsData': {}, 'dayKill': undefined, 'revealUse': undefined, 'exposeUse': undefined, 'guarded': undefined, 'safeguarded': undefined, 'restrictions': [], 'redirectTo': undefined, 'redirectActions': undefined, 'guardActions': [], 'shieldmsg': undefined, 'protectmsg': undefined, 'safeguardmsg': undefined, 'guardmsg': undefined, 'haxCount': {} };
-            var initPlayer = mafia.players[player];
-            if ("night" in initPlayer.role.actions) {
-                for (var act in initPlayer.role.actions.night) {
-                    if ("initialrecharge" in initPlayer.role.actions.night[act]) {
-                        mafia.setRechargeFor(initPlayer, "night", act, initPlayer.role.actions.night[act].initialrecharge);
-                    }
-                    if ("charges" in initPlayer.role.actions.night[act]) {
-                        mafia.setChargesFor(initPlayer, "night", act, initPlayer.role.actions.night[act].charges);
-                    }
-                }
-            }
-            if ("standby" in initPlayer.role.actions) {
-                for (var act in initPlayer.role.actions.standby) {
-                    if ("initialrecharge" in initPlayer.role.actions.standby[act]) {
-                        mafia.setRechargeFor(initPlayer, "standby", act, initPlayer.role.actions.standby[act].initialrecharge);
-                    }
-                    if ("charges" in initPlayer.role.actions.standby[act]) {
-                        mafia.setChargesFor(initPlayer, "standby", act, initPlayer.role.actions.standby[act].charges);
-                    }
-                }
-            }
-            for (var act in initPlayer.role.actions) {
-                var action = initPlayer.role.actions[act];
-                if (typeof action === "object" && "mode" in action && typeof action.mode === "object" && "evadeCharges" in action.mode) {
-                    if (action.mode.evadeCharges == "*") {
-                        initPlayer.evadeCharges[act] = 0;
-                    } else {
-                        initPlayer.evadeCharges[act] = action.mode.evadeCharges;
-                    }
-
-                }
-            }
-            if ("daykill" in initPlayer.role.actions) {
-                var action = initPlayer.role.actions.daykill;
-                if (typeof action === "object" && "mode" in action && typeof action.mode === "object" && "evadeCharges" in action.mode) {
-                    if (action.mode.evadeCharges == "*") {
-                        initPlayer.evadeCharges.daykill = 0;
-                    } else {
-                        initPlayer.evadeCharges.daykill = action.mode.evadeCharges;
-                    }
-                }
-            }
-            if ("expose" in initPlayer.role.actions) {
-                var action = initPlayer.role.actions.expose;
-                if (typeof action === "object" && "mode" in action && typeof action.mode === "object" && "evadeCharges" in action.mode) {
-                    if (action.mode.evadeCharges == "*") {
-                        initPlayer.evadeCharges.expose = 0;
-                    } else {
-                        initPlayer.evadeCharges.expose = action.mode.evadeCharges;
-                    }
-                }
-            }
-            if ("initialCondition" in initPlayer.role.actions) {
-                var condition = initPlayer.role.actions.initialCondition;
-                if ("poison" in condition) {
-                    initPlayer.poisoned = 1;
-                    initPlayer.poisonCount = condition.poison.count || 2;
-                    initPlayer.poisonDeadMessage = condition.poison.poisonDeadMessage;
-                }
-                if ("curse" in condition) {
-                    initPlayer.cursed = 1;
-                    initPlayer.curseCount = condition.curse.curseCount || 2;
-                    initPlayer.cursedRole = condition.curse.cursedRole;
-                    initPlayer.curseConvertMessage = condition.curse.curseConvertMessage;
-                    initPlayer.silentCurse = condition.curse.silentCurse || false;
-                }
-            }
-            if (typeof mafia.theme.roles[role].side == "object") {
-                if ("random" in mafia.theme.roles[role].side) {
-                    var side = randomSample(mafia.theme.roles[role].side.random);
-                    mafia.players[mafia.signups[i]].role.side = side;
-                }
-            }
-            mafiabot.sendAll(sys.name(src) + " added player " + player + "! (Role: " + mafia.theme.roles[role].translation + " [" + role + "])", mafiachan);
-            return;
-        }
-        if (command == "pushall") {
-            if (mafia.state != "entry") {
-                mafiabot.sendChanMessage(src, "Pushing makes no sense outside entry...");
-                return;
-            }
-            var playerson = sys.playerIds(); 
-            for (x in playerson) { 
-                var id = playerson[x];
-                if (sys.isInChannel(id, mafiachan) && !mafia.isInGame(sys.name(id))) {
-                    if (mafia.signups.length >= mafia.theme["roles" + mafia.theme.roleLists].length) {
-                        break;
-                    }
-                    var name = sys.name(id);
-                    mafia.signups.push(name);
-                    mafia.ips.push(sys.ip(id));
-                    gamemsg(name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")");
-                    sys.sendAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
-                    if (name in this.usersToShove) {
-                        delete this.usersToShove[name];
-                    }
-                }
-            }
-            mafia.ticks = 1;
             return;
         }
         throw ("no valid command");
