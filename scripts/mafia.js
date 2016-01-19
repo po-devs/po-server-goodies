@@ -156,7 +156,7 @@ function Mafia(mafiachan) {
         if (mess === null) {
             mess = "";
         }
-        var pos = mess.indexOf(": "a);
+        var pos = mess.indexOf(": ");
         if (!botName && pos !== -1 && (mess.indexOf("±") !== -1 || mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1)) {
             var name = mess.substring(0, pos),
                 id = sys.id(name),
