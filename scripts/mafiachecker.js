@@ -48,7 +48,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "botName", "stats"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "bot", "borderColor", "stats"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -73,6 +73,7 @@ function mafiaChecker() {
             }
             
             checkType(raw.summary, ["string"], "'theme.summary'");
+            checkType(raw.borderColor, ["string"], "'theme.borderColor'");
             checkType(raw.border, ["string"], "'theme.border'");
             checkType(raw.killmsg, ["string"], "'theme.killmsg'");
             checkType(raw.killusermsg, ["string"], "'theme.killusermsg'");
@@ -84,7 +85,6 @@ function mafiaChecker() {
             checkType(raw.minplayers, ["number"], "'theme.minplayers'");
             checkType(raw.threadlink, ["string"], "'theme.threadlink'");
             checkType(raw.altname, ["string"], "'theme.altname'");
-            checkType(raw.botName, ["string"], "'theme.botName'");
             checkType(raw.variables, ["object"], "'theme.variables'");
             checkType(raw.stats, ["object"], "'theme.stats'");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
@@ -120,6 +120,12 @@ function mafiaChecker() {
                 checkType(raw.ticks.night, ["number"], "'theme.ticks.night'");
                 checkType(raw.ticks.night1, ["number"], "'theme.ticks.night1'");
                 checkType(raw.ticks.standby, ["number"], "'theme.ticks.standby'");
+            }
+            
+            if (checkType(raw.bot, ["object"], "'theme.bot'")) {
+                checkAttributes(raw.bot, [], ["name", "color"], "theme.bot");
+                checkType(raw.bot.name, ["string"], "'theme.bot.name'");
+                checkType(raw.bot.color, ["string"], "'theme.bot.color'");
             }
 
             theme.sideTranslations = {};
