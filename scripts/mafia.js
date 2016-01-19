@@ -625,7 +625,7 @@ function Mafia(mafiachan) {
     ThemeManager.prototype.loadThemes = function () {
         if (typeof sys !== "object") return;
         this.themes = {};
-        this.themes["Default"] = this.loadTheme(defaultTheme);
+        this.themes.Default = this.loadTheme(defaultTheme);
         var content = sys.getFileContent("scriptdata/mafiathemes/metadata.json");
         if (!content) return;
         var parsed = JSON.parse(content);
