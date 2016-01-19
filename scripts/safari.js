@@ -265,6 +265,8 @@ function Safari() {
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"}
         //inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "TBD"}
     };
+    var defaultItemData;
+    var defaultCostumeData;
     var base64icons = {
     itemfinder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAALHRFWHRDcmVhdGlvbiBUaW1lAEZyaSAyMSBOb3YgMjAxNCAyMDozMDo0NCAtMDAwMKEIypIAAAAHdElNRQfeCxUUHwrCV61vAAAACXBIWXMAAAsSAAALEgHS3X78AAAABGdBTUEAALGPC/xhBQAABExJREFUeNqFVutPHFUU/93ZpWyAamOMgIm2Pgrl0ZVHq9t+EAPtZiHWRGOaSFPoF+tnYrJGv+jXEhL/Ah8gaRPb2KSNFqqtSiOQxnYXpFUxatwEAbWBpkuz7GOuc+7OnblzZ0hPcrMze8+5v/M7rzuMr/UDMHCwb5EXiyZIrl9uYUABuWwOkZoIpPjf8+g+mnHsps4/wyLVoUD9sAS5du1jGMw632CIxU7w2YkmFqkho5JQ5Jw7RvRMdgSi2h2w7TjPg1n/qU4ZscQvfGrqI0tvD+5m5sHMEmZmP8UL8QXe2b1gnViBzY2iMJSyubGJA72/BtrtP7zANzcKUIWYGfLlbuZz7HiyFeuZBVgu4YuTjRjuq8e+nnkee3lRAEpRPdXt9H0ZifC2ijBM08TDO9uw/lcaO3Y+h2KphKOf/I5SyUTY2n/skUfR0T3Ppy82ODkIsqN3nYkENaYuPs0O9byFQqGA7U9EUTI5urrexA9fNrDZid1iZe+toa6uDgePEDNDePn9had8dlfffxfcBtNzyqjqCDn+xt88Xygn/rtzu6xCqPB49tLrGV4omLhxZS/LZe85h7x45A9hl88XhTMrKyuYvmBVX802j31YxpSYOeh24rkW88HBQew7NMZ//KbVUjBtZs8y0o8lfuahUEjRNz32YTWmVE2V1ZWe97KRIcDn5uaE1/sP3+JSp2Tlk/Zqa2uRTCYxNDQUYA8vkAriemaIUm5qahUHxuNxdHR0OKxHR0fF79LSEtLptB0Jcsz0VJ+TI/VPl5kLsrq6KkKxtvYfOHedGR4eAYWMAIkd5Wh5eRk3r7aI8PpyFMSMmrmlJSqMJcjMpT1MTotyMbwjioEAx8fHnYIAQpBAdL6hAhATV8p5kQklY6pGFYQ8pSKiFkgm38bAwAAMw0B7e7voO5qF7ml2ddGSTOiZ2DQ373VCVlkZtvbdvtD7RDawdK4866qdfUMy0WeZKsRm5lKjwyZIn5gFsSIutB/2T2WKaZVQ1sX1VNePYCuR5xuqZ/n7NN5D4to4dWpEeFVfX2+DhnxMdWYquFPW9r6vjyg3IyMfIpVKiZKluLe1taGzZ47fuNLsTAT9vpEA6dRNWFmi68kjYVk9upEEEcZ2I6pM/DdvlQBv+udrvPb8Q0QFr6aYiEQue79cDHqM6WA1BHo4dH0CocY+dmwAVX3v4YPr1Th5fh3HB0+IcRWp2e7vIypTOphyQx7Somcq71zWmyNiQkLh7u8/LkYTRYFyKnNDg7iz5yfu6yMq03Nnz4ghSV1OiybC9FeNztWh95EqFHIq8d7eXkxOTjrRCOyjy2ceZ78t3sadO/+K9e3ZXYyG5IOqTTSmxYZYSQBP1QXd8cRMV96qjyjcdIUQSDQaxdjYmBisiURCgFLYWfm7zvVUvSoe/F2X89y0uxuaRSuobE+f/kyEXQCpt+pWot+8QaHreuVP53NAyuxEedr/DwgKwzi3jMhsAAAAAElFTkSuQmCC",
     gacha: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAG1BMVEX////4+Piw2OjgoNh4kKi4cMCISKhwSGAwMDAYBeQdAAAACXRSTlMA//////////83ApvUAAAACXBIWXMAAArwAAAK8AFCrDSYAAAAIHRFWHRTb2Z0d2FyZQBNYWNyb21lZGlhIEZpcmV3b3JrcyBNWLuRKiQAAAB0SURBVHicpYwxCoAwDEUzdhXxApncxRt4AZHGveLHWTyAiyXHtlWLHQX/9B68hOjHNGfeM35FwVwnnmRNopjFPZ3O1mK8RWHLVsBd6AwwFIVg4ySlwNUx8+ijLNe9F9tUcnPowreHyUypiTvkZfIZk8n4007iyyLPYqOktAAAAABJRU5ErkJggg==",
@@ -3757,13 +3759,13 @@ function Safari() {
         switch (reward) {
             case "master": {
                 if (player.balls[reward] >= getCap("master")) {
-                    safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s Master Ball turned out to be a simple Safari Ball painted to look like a Master Ball! What a shame!", safchan);
-                    safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 Safari Ball for your troubles.", safchan);
+                    safaribot.sendHtmlAll("<b>JACKP--</b> Wait a second... " + html_escape(sys.name(src)) + "'s " + itemAlias("master", true, true) + " turned out to be a simple " + itemAlias("safari", true, true) + " painted to look like a " + itemAlias("master", true, true) + "! What a shame!", safchan);
+                    safaribot.sendMessage(src, "You wiped the paint off of the ball and pocketed 1 " + itemAlias("safari", true, true) + " for your troubles.", safchan);
                     reward = "safari";
                     amount = 1;
                     player.records.masterballsWon += 1;
                 } else {
-                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a Master Ball from the Gachapon Machine!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won a " + itemAlias("master", true, true) + " from the Gachapon Machine!</b>", safchan);
                     safaribot.sendMessage(src, "You received a " + finishName(reward) + ".", safchan);
                     amount = 1;
                     player.records.masterballsWon += 1;
@@ -3789,7 +3791,7 @@ function Safari() {
                     giveReward = true;
                     reward = "safari";
                     amount = 1;
-                    safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
+                    safaribot.sendMessage(src, "Bummer, only a " + itemAlias("safari", true, true) + ". You received 1 " + finishName(reward) + ".", safchan);
                 } else {
                     var spawn = true;
                     var spawnHorde = (reward === "horde");
@@ -3817,12 +3819,12 @@ function Safari() {
             break;
             case "safari": {
                 amount = 1;
-                safaribot.sendMessage(src, "Bummer, only a Safari Ball. You received 1 " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "Bummer, only a " + itemAlias("safari", true, true) + ". You received 1 " + finishName(reward) + ".", safchan);
             }
             break;
             case "dust": {
                 amount *= 5;
-                safaribot.sendMessage(src, "You open the capsule to find a Rare Candy! Unfortunately, some rude player pushes you out of the way causing you to drop it. The Candy impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
+                safaribot.sendMessage(src, "You open the capsule to find a " + itemAlias("rare", true, true) + "! Unfortunately, some rude player pushes you out of the way causing you to drop it. The " + itemAlias("rare", true, true) + " impacts the ground, shatters, and sends dust flying everywhere. You only manage to scoop up " + plural(amount, finishName(reward)) + ".", safchan);
             }
             break;
             case "gacha": {
@@ -3830,7 +3832,7 @@ function Safari() {
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won the Gachapon Ticket Jackpot valued at " + jackpot + " tickets!</b>", safchan);
                 amount = jackpot;
                 player.records.jackpotsWon += 1;
-                safaribot.sendMessage(src, "You received " + jackpot + " Gachapon Tickets.", safchan);
+                safaribot.sendMessage(src, "You received " + plural(jackpot, itemAlias("gacha", true, true)) + ". ", safchan);
                 gachaJackpot = gachaJackpotAmount; //Reset jackpot for next player
             }
             break;
@@ -6808,7 +6810,7 @@ function Safari() {
                     if (!noAcq) {
                         player.costumes.push("ninja");
                         safaribot.sendHtmlMessage(src, "<b>Received the following costume:</b> " + costumeData.ninja.fullName + ".", safchan);
-                        player.ninjaParty = player.party;
+                        player.ninjaParty = player.party.concat();
                     }
                 }
 
@@ -7095,11 +7097,15 @@ function Safari() {
     SafariEvent.prototype.shove = function(src, target) {
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         if (!signupsLower.contains(target.toLowerCase())) {
-            safaribot.sendMessage(src, target.toCorrectCase() + " didn't join this event!", safchan);
+            if (src) {
+                safaribot.sendMessage(src, target.toCorrectCase() + " didn't join this event!", safchan);
+            }
             return;
         }
         if (this.turn >= this.signupsDuration) {
-            safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't shove anyone now!", safchan);
+            if (src) {
+                safaribot.sendMessage(src, "The " + this.eventName + " is already underway, you can't shove anyone now!", safchan);
+            }
             return;
         }
         var index = signupsLower.indexOf(target.toLowerCase());
@@ -7108,7 +7114,11 @@ function Safari() {
             this.onLeave(this.signups[index]);
         }
         this.signups.splice(index, 1);
-        this.sendToViewers(sys.name(src) + " shoved " + target.toCorrectCase() + " from the " + this.eventName + "!");
+        if (src) {
+            this.sendToViewers(sys.name(src) + " shoved " + target.toCorrectCase() + " from the " + this.eventName + "!");
+        } else {
+            this.sendToViewers(target.toCorrectCase() + " has been shoved from the " + this.eventName + "!");
+        }
         this.forbiddenPlayers.push(target.toLowerCase());
     };
     SafariEvent.prototype.watchEvent = function(src) {
@@ -8722,7 +8732,7 @@ function Safari() {
                             total += parseInt(rafflePlayers.hash[e], 10);
                         }
                     }
-                    safaribot.sendMessage(src, "Current Raffle Prize: " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + " with " + total + " entries sold!", safchan);
+                    safaribot.sendMessage(src, "Current Raffle Prize: " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + " with " + total + " entries sold!" + (rafflePrizeObj.drawDate ? " Estimated draw date: " + rafflePrizeObj.drawDate : ""), safchan);
                 }
                 sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
                 return true;
@@ -8971,15 +8981,12 @@ function Safari() {
 
                 var player = getAvatar(targetId);
                 if (player) {
+                    safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                     for (var x in player.trackers) {
                         var trackerName = player.trackers[x];
                         var trackerId = sys.id(trackerName);
-                        if (trackerId !== undefined) {
-                            if (trackerId === src) {
-                                safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
-                            } else if (trackerId) {
-                                safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
-                            }
+                        if (trackerId && trackerId !== src) {
+                            safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                         }
                     }
                     if (sys.id("Safari Warden") !== undefined) {
@@ -9503,7 +9510,7 @@ function Safari() {
                         continue;
                     }
                     player.balls[item] += itemQty;
-                    if (item === "entry") {                        
+                    if (item === "entry") {
                         rafflePlayers.add(player.id, player.balls.entry);
                         rafflePlayers.save();
                     }
@@ -9839,12 +9846,17 @@ function Safari() {
                         }
                     }
                 }
+                var when;
+                if (info.length > 2) {
+                    when = info.slice(2).join(":");
+                    input.drawDate = when;
+                }
                 input.amount = amt;
                 
                 if (!rafflePrizeObj) {
-                    safaribot.sendAll("A new raffle has started! Buy your tickets for a chance to win " + plural(amt, input.name, null, true) + "!", safchan);
+                    safaribot.sendAll("A new raffle has started! Buy your tickets for a chance to win " + plural(amt, input.name, null, true) + (input.drawDate ? " (Estimated draw date: " + input.drawDate + ")" : "") + "! ", safchan);
                 } else {
-                    safaribot.sendAll("The current raffle prize has been changed to " + plural(amt, input.name, null, true) + ".", safchan);
+                    safaribot.sendAll("The current raffle prize has been changed to " + plural(amt, input.name, null, true)  + (input.drawDate ? " (Estimated draw date: " + input.drawDate + ")" : "") + ". ", safchan);
                 }
                 sys.sendAll("", safchan);
                 permObj.add("rafflePrize", JSON.stringify(input));
@@ -10036,24 +10048,36 @@ function Safari() {
                     return true;
                 }
                 var info = commandData.split(":");
-                var data, e, type, list;
+                var data, e, type, list, defaultData, customValues;
                 switch (info[0]) {
                     case "costume":
                     case "costumes":
                         type = "costume";
                         data = costumeData;
+                        defaultData = defaultCostumeData;
                         list = editableCostumeProps;
                     break;
                     default:
                         type = "item";
                         data = itemData;
+                        defaultData = defaultItemData;
                         list = editableItemProps;
                 }
-                var showEditable = function(obj, list) {
+                var objName = "custom" + cap(type) + "Data";
+                try {
+                    customValues = JSON.parse(permObj.get(objName));
+                } catch (err) {
+                    customValues = {};
+                }
+                var showEditable = function(obj, list, id) {
                     var out = [], i;
                     for (i in obj) {
                         if (i in list) {
-                            out.push(i + ": " + obj[i]);
+                            if (customValues.hasOwnProperty(id) && customValues[id].hasOwnProperty(i) && customValues[id][i] !== defaultData[id][i]) {
+                                out.push("<span style='color: blue'>" + i + ": " + obj[i] + "</span>");
+                            } else {
+                                out.push(i + ": " + obj[i]);
+                            }
                         }
                     }
                     return out.join(", ");
@@ -10061,7 +10085,7 @@ function Safari() {
                 if (info.length < 2 || info[1] === "") {
                     sys.sendMessage(src, "", safchan);
                     for (e in data) {
-                        safaribot.sendMessage(src, e + ": " + showEditable(data[e], list), safchan);
+                        safaribot.sendHtmlMessage(src, e + ": " + showEditable(data[e], list, e), safchan);
                     }
                     sys.sendMessage(src, "", safchan);
                     return true;
@@ -10073,7 +10097,7 @@ function Safari() {
                 }
                 if (info.length < 3) {
                     sys.sendMessage(src, "", safchan);
-                    safaribot.sendMessage(src, item + ": " + showEditable(data[item], list), safchan);
+                    safaribot.sendHtmlMessage(src, item + ": " + showEditable(data[item], list, item), safchan);
                     sys.sendMessage(src, "", safchan);
                     return true;
                 }
@@ -10088,13 +10112,8 @@ function Safari() {
                     safaribot.sendMessage(src, "The property " + prop + " can be edited into a " + readable(propTypes, "or") + "! " + (prop in data[item] ? "Current value: " + currentVal : ""), safchan);
                     return true;
                 }
-                var newVal, customValues, objName = "custom" + cap(type) + "Data";
+                var newVal;
                 if (info[3].toLowerCase() === "clear") {
-                    try {
-                        customValues = JSON.parse(permObj.get(objName));
-                    } catch (err) {
-                        customValues = {};
-                    }
                     if (!customValues.hasOwnProperty(item)) {
                         safaribot.sendMessage(src, "The " + type + " " + item + " has no customized property to clear!", safchan);
                         return true;
@@ -10104,7 +10123,11 @@ function Safari() {
                         return true;
                     }
                     delete customValues[item][prop];
-                    safaribot.sendMessage(src, "Cleared custom property " + prop + " for " + type + "Data." + item + "." + prop + "! The default value will be restored after the next Safari update!", safchan);
+                    data[item][prop] = newVal = defaultData[item][prop];
+                    if (newVal === undefined) {
+                        delete data[item][prop];
+                    }
+                    safaribot.sendMessage(src, "Reset custom property " + prop + " for " + type + "Data." + item + "." + prop + " to its default value '" + newVal + "'!", safchan);
                 } else {
                     try {
                         newVal = JSON.parse(info[3]);
@@ -10117,11 +10140,6 @@ function Safari() {
                     if (newType !== currentType && !propTypes.contains(newType)) {
                         safaribot.sendMessage(src, prop + " cannot be " + an(newType) + "!", safchan);
                         return true;
-                    }
-                    try {
-                        customValues = JSON.parse(permObj.get(objName));
-                    } catch (err) {
-                        customValues = {};
                     }
                     if (!customValues.hasOwnProperty(item)) {
                         customValues[item] = {};
@@ -10195,6 +10213,7 @@ function Safari() {
             rafflePrizeObj = null;
         }
         try {
+            defaultItemData = JSON.parse(JSON.stringify(itemData));
             var customValues = JSON.parse(permObj.get("customItemData")), e, i, obj;
             for (e in customValues) {
                 if (e in itemData) {
@@ -10207,6 +10226,7 @@ function Safari() {
         } catch (err) {
         }
         try {
+            defaultCostumeData = JSON.parse(JSON.stringify(costumeData));
             var customValues = JSON.parse(permObj.get("customCostumeData")), e, i, obj;
             for (e in customValues) {
                 if (e in costumeData) {
@@ -10269,6 +10289,9 @@ function Safari() {
             for (var b in currentAuctions) {
                 currentAuctions[b].removePlayer(src);
             }
+        }
+        if (currentEvent) {
+            currentEvent.shove(null, sys.name(src));
         }
         //TODO: Make them lose their battle too
         if (sys.isInChannel(src, safchan)) {
