@@ -134,6 +134,7 @@ function Safari() {
             wonderTrades: 0,
             factionMVPs: 0,
             factionWins: 0,
+            marathonWins: 0,
             packsOpened: 0
         },
         costumes: [],
@@ -1129,6 +1130,9 @@ function Safari() {
         }
         return Object.keys(result);
     }
+    function addFluctuation(value, variation) {
+        return value + sys.rand(Math.round(value * -variation), Math.round(value * variation));
+    }
     
     /* Formatting Functions */
     function cap(string) {
@@ -1193,6 +1197,9 @@ function Safari() {
     function addFlashTag(name) {
         return "<!--f-->" + name + "<!--f-->";
     }
+    function addColorTag(name) {
+        return "<!--c-->" + name + "<!--c-->";
+    }
     function toFlashing(message, name) { //Totally not stolen from tours
         var newmessage = message;
         var flashtag = "<!--f-->";
@@ -1203,6 +1210,22 @@ function Safari() {
             newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname + "</font><ping/>";
         } else {
             newregex1 = "<background color='#FCD116'>" + htmlname + "</background><ping/>";
+        }
+        var flashregex = new RegExp(flashtag,"g");
+        newmessage = message.replace(regex,newregex1).replace(flashregex,"");
+        return newmessage;
+    }
+    function toColored(message, name) {
+        var newmessage = message;
+        var flashtag = "<!--c-->";
+        var htmlname = html_escape(name);
+        var regex = flashtag+htmlname+flashtag;
+        var newregex1 = "";
+        var color = sys.id(name) ? script.getColor(sys.id(name)) : "#000000";
+        if (sys.os(sys.id(name)) !== "android") {
+            newregex1 = "<span style='COLOR: " + color + "'>" + htmlname + "</span>";
+        } else {
+            newregex1 = "<font color='"+color+"'>" + htmlname + "</font>";
         }
         var flashregex = new RegExp(flashtag,"g");
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -7002,8 +7025,11 @@ function Safari() {
         this.viewers = [];
         
         this.turn = -1;
+        this.turnLength = 6;
+        this.minPlayers = 1;
         this.signupsDuration = 6;
         this.finished = false;
+        this.eventCommands = {};
         
         this.joinmsg = "Type " + link("/signup") + " to participate!";
         safari.flashPlayers();
@@ -7015,13 +7041,13 @@ function Safari() {
         if (this.turn < duration) { //Sign-up Phase
             if (this.turn == Math.round(duration/2)) {
                 sys.sendAll("", safchan);
-                safaribot.sendHtmlAll("A " + this.eventName + " event is starting in " + (Math.round(duration/2) * 6) + " seconds! " + this.joinmsg, safchan);
+                safaribot.sendHtmlAll("A <b>" + this.eventName + "</b> event is starting in " + ((duration - Math.round(duration/2)) * this.turnLength) + " seconds! " + this.joinmsg, safchan);
                 sys.sendAll("", safchan);
             }
         }
         else if (this.turn === duration) { //Setup
-            if (this.signups.length === 0) {
-                safaribot.sendHtmlAll("The " + this.eventName + " event was cancelled because no one joined it!", safchan);
+            if (this.signups.length < this.minPlayers) {
+                safaribot.sendHtmlAll("The " + this.eventName + " event was cancelled due to the low number of participants!", safchan);
                 this.finished = true;
                 return;
             }
@@ -7036,6 +7062,9 @@ function Safari() {
     };
     SafariEvent.prototype.finish = function() {
         this.finished = true;
+    };
+    SafariEvent.prototype.handleCommand = function(src, command, commandData) {
+        this.eventCommands[command].call(this, src, commandData);
     };
     SafariEvent.prototype.join = function(src, data) {
         if (this.turn >= this.signupsDuration) {
@@ -7145,7 +7174,7 @@ function Safari() {
             }
         }
     };
-    SafariEvent.prototype.sendMessage = function(name, msg, flashing) {
+    SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored) {
         var id = sys.id(name);
         if (id) {
             if (msg === "") {
@@ -7153,17 +7182,19 @@ function Safari() {
             } else {
                 if (flashing) {
                     safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else if (colored) {
+                    safaribot.sendHtmlMessage(id, toColored(msg, name), safchan);
                 } else {
                     safaribot.sendHtmlMessage(id, msg, safchan);
                 }
             }
         }
     };
-    SafariEvent.prototype.sendToViewers = function(msg, flashing) {
+    SafariEvent.prototype.sendToViewers = function(msg, flashing, colored) {
         var e;
         var list = removeDuplicates(this.signups.concat(this.viewers));
         for (e = 0 ; e < list.length; e++) {
-            this.sendMessage(list[e], msg, flashing);
+            this.sendMessage(list[e], msg, flashing, colored);
         }
     };
     SafariEvent.prototype.isInEvent = function(name) {
@@ -7201,7 +7232,7 @@ function Safari() {
         var joinCommand = "/signup";
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + plural(amount, reward.name) + "</b>!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have 36 seconds)!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
     FactionWar.prototype = new SafariEvent();
@@ -7535,6 +7566,289 @@ function Safari() {
         safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
         safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
         safaribot.sendMessage(src, "Winners will receive " + plural(this.amount, this.reward.name) + "!", safchan);
+    };
+    
+    function Marathon(src, reward, amount) {
+        SafariEvent.call(this);
+        this.eventName = "Pokémon Marathon";
+        
+        this.amount = reward.type == "item" ? amount : 1;
+        this.reward = reward;
+        this.hasReward = true;
+        
+        this.joinmsg = "Type " + link("/signup") + " "  + " to participate! Winners will receive <b>" + plural(amount, reward.name) + "</b>!";
+        
+        this.goal = 1000;
+        this.turnLength = 7;
+        this.minPlayers = 4;
+        this.maxWinners = 1;
+        this.runners = [];
+        this.attackFrequency = {};
+        
+        this.eventCommands = {
+            attack: this.attack
+        };
+        
+        var joinCommand = "/signup";
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The winner will receive <b>" + plural(amount, reward.name) + "</b>!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to join (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+        sys.sendAll("", safchan);
+    }
+    Marathon.prototype = new SafariEvent();
+    Marathon.prototype.setupEvent = function() {
+        var e, id, len = this.signups.length, player, member, name, names = [];
+        for (e = 0; e < len; e++) {
+            name = this.signups[e];
+            player = getAvatarOff(name);
+            id = player.party[0];
+            member = {
+                owner: name,
+                id: id,
+                position: 0,
+                attackCooldown: 0,
+                hp: sys.baseStats(id, 0),
+                atk: sys.baseStats(id, 1),
+                def: sys.baseStats(id, 2),
+                satk: sys.baseStats(id, 3),
+                sdef: sys.baseStats(id, 4),
+                spd: sys.baseStats(id, 5),
+                damage: 0,
+                movement: 0,
+                lastDamage: 0
+            };
+            this.runners.push(member);
+            this.attackFrequency[name.toLowerCase()] = [];
+            names.push(pokeInfo.icon(member.id) + " " + member.owner + "'s " + poke(member.id));
+        }
+        
+        if (this.signups.length > 6) {
+            this.maxWinners = this.signups.length > 10 ? 3 : 2;
+        } else if (this.signups < 4) {
+            this.hasReward = false;
+        }
+        
+        this.participants = readable(names, "and");
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
+        this.sendToViewers("The participants are defined! They are " + this.participants + "!", true);
+        this.sendToViewers("The first " + (this.maxWinners > 1 ? this.maxWinners + " " : "") + "player" + (this.maxWinners > 1 ? "s" : "") + " to run " + this.goal + "m will receive " + plural(this.amount, this.reward.name, false, true) + "!");
+        this.sendToViewers("You can use /attack [player] to slow down other players (based on stats other than Speed)! Don't spam /attack, you will be told when you can attack again!");
+        this.sendToViewers("");
+    };
+    Marathon.prototype.playTurn = function() {
+        var e, len = this.runners.length, member, dist, winners = [], dmg, attackReady = [];
+        this.sendToViewers("");
+        for (e = 0; e < len; e++) {
+            member = this.runners[e];
+            dmg = 0;
+            
+            dist = Math.round(addFluctuation(member.spd * 0.75, 0.13));
+            if (member.damage > 0) {
+                dmg = Math.round(addFluctuation(member.damage * 0.4, 0.5));
+                if (dmg > 0) {
+                    dmg = Math.max(dmg, Math.min(member.damage, 12 + sys.rand(-2, 2)));
+                    dist -= dmg;
+                    member.damage -= dmg;
+                    if (member.damage < 0) {
+                        member.damage = 0;
+                    }
+                }
+            }
+            if (dist < 0) {
+                dist = 0;
+            }
+            member.position += dist;
+            member.movement = dist;
+            member.lastDamage = dmg;
+            if (member.attackCooldown > 0) {
+                member.attackCooldown -= addFluctuation(Math.round((member.hp * member.hp / 3) / 5), 0.18);
+                if (member.attackCooldown <= 0) {
+                    attackReady.push(member);
+                }
+            }
+            this.sendMessage(member.owner, "Your " + poke(member.id) + " advanced <b>" + dist + "m</b>" + " and it's now at <b>" + member.position + "m</b>" +(dmg > 0 ? " (Movement was reduced by "+dmg+"m this turn due to damage)" : "")+ "! ");
+            if (member.position >= this.goal) {
+                winners.push(member);
+            }
+        }
+        
+        var movements = this.runners.concat();
+        movements.sort(function(a, b) {
+            return b.movement - a.movement;
+        });
+        movements = movements.map(function(obj) {
+            return addColorTag(obj.owner) + "'s " + poke(obj.id) + (obj.movement >= 0 ? " +" : " ") + obj.movement + "m " + (obj.lastDamage > 0 ? " ("+obj.lastDamage+" Damage)" : "");
+        });
+        var positions = this.runners.concat();
+        positions.sort(function(a, b) {
+            return b.position - a.position;
+        });
+        var icons = positions.map(function(obj) {
+            return pokeInfo.icon(obj.id);
+        });
+        positions = positions.map(function(obj) {
+            return addColorTag(obj.owner) + "'s " + poke(obj.id) + " (" + obj.position + "m)";
+        });
+        
+        this.sendToViewers("<b>Movement</b>: " + movements.join(", "), false, true);
+        this.sendToViewers("<b>Standings</b>: " + icons.join(" "), false, true);
+        this.sendToViewers("<b>Positions</b>: " + positions.join(", "), false, true);
+        this.sendToViewers("");
+        for (e = 0, len = attackReady.length; e < len; e++) {
+            member = attackReady[e];
+            this.sendMessage(member.owner, "Your <b>" + poke(member.id) + "</b> can now attack again!");
+        }
+        
+        if (winners.length >= this.maxWinners) {
+            this.finish(winners);
+        }
+    };
+    Marathon.prototype.finish = function(winners) {
+        var rewardmsg = this.hasReward ? "They will receive " + plural(this.amount, this.reward.name, null, true) + "!" : "";
+        var names = winners.map(function(x) {
+            return "<b>" + x.owner + "</b>'s " + poke(x.id);
+        });
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is over! Congratulations to the winner" + (winners.length == 1 ? "" : "s") + ": " + readable(names, "and") + "! " + rewardmsg, safchan);
+        
+        if (!this.hasReward) {
+            this.sendToViewers("No rewards will be given due to the low number of participants!");
+        } else {
+            var e, player, name, id, amt = this.amount, reward = this.reward;
+            for (e = 0; e < winners.length; e++) {
+                name = winners[e].owner;
+                player = getAvatarOff(name);
+                if (player) {
+                    id = sys.id(name);
+                    if (id) {
+                        safaribot.sendMessage(id, "You received " + plural(amt, reward.name, null, true) + " for winning the event!", safchan);
+                    }
+                    if (reward.type == "poke") {
+                        player.pokemon.push(reward.id);
+                    } else {
+                        rewardCapCheck(player, reward.id, amt);
+                        if (reward.name === itemData.entry.fullName) {
+                            rafflePlayers.add(player.id, player.balls.entry);
+                        }
+                    }
+                    player.records.marathonWins += 1;
+                    safari.saveGame(player);
+                }
+            }
+        }
+        
+        this.sendToViewers("");
+        this.finished = true;
+    };
+    Marathon.prototype.attack = function(src, commandData) {
+        if (this.turn <= this.signupsDuration) {
+            safaribot.sendMessage(src, "The " + this.eventName + " didn't start yet, so you can't attack anyone!", safchan);
+            return;
+        }
+        var name = sys.name(src),
+            lName = name.toLowerCase(),
+            tName = commandData.toLowerCase(),
+            member, e, target, len = this.runners.length;
+        
+        var freq = this.attackFrequency[lName];
+        freq.push(now());
+        if (freq.length > 5) {
+            freq.shift();
+        }
+        var l = freq.length - 1;
+        var slip = 0;
+        if (freq.length >= 2 && freq[l] - freq[l-1] < 1100) {
+            slip = 1;
+        } else if (freq.length >= 3 && freq[l] - freq[l-2] < 1900) {
+            slip = 2;
+        } else if (freq.length >= 4 && freq[l] - freq[l-3] < 2900) {
+            slip = 3;
+        } else if (freq.length >= 5 && freq[l] - freq[l-4] < 4200) {
+            slip = 4;
+        }
+        
+        
+        if (lName == tName) {
+            this.sendMessage(name, "You can't attack yourself!");
+            return;
+        }
+        for (e = 0; e < len; e++) {
+            if (this.runners[e].owner.toLowerCase() === lName) {
+                member = this.runners[e];
+                break;
+            }
+        }
+        if (slip) {
+            if (member) {
+                member.attackCooldown += member.hp * 8;
+            }
+            safaribot.sendMessage(src, "Don't spam /attack! Your Pokémon will now take longer to attack as a punishment!", safchan);
+            return;
+        }
+        if (member.attackCooldown > 0) {
+            this.sendMessage(name, "Your " + poke(member.id) + " can't attack again yet!");
+            return;
+        }
+        for (e = 0; e < len; e++) {
+            if (this.runners[e].owner.toLowerCase() === tName) {
+                target = this.runners[e];
+                break;
+            }
+        }
+        if (!target) {
+            this.sendMessage(name, "Please choose a valid target!");
+            if (sys.os(src) === "android") {
+                this.sendMessage(name, "Valid targets: " + this.signups.join(", "));
+            } else {
+                this.sendMessage(name, "Valid targets: " + this.signups.map(function(x) { return link("/attack " + x, x); }).join(", "));
+            }
+            return;
+        }
+        
+        var attrNum = sys.rand(0, 2);
+        var attrAtk = ["atk", "satk"][attrNum];
+        var attrDef = ["def", "sdef"][attrNum];
+        var moveType = ["Physical", "Special"][attrNum];
+        
+        var p1Type1 = sys.type(sys.pokeType1(member.id)), p1Type2 = sys.type(sys.pokeType2(member.id));
+        var p2Type1 = sys.type(sys.pokeType1(target.id)), p2Type2 = sys.type(sys.pokeType2(target.id));
+
+        var typeBonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
+        
+        var damage = Math.round((member[attrAtk] * sys.rand(50, 90) / target[attrDef]) * typeBonus);
+        
+        if (damage < 1) {
+            damage = 1;
+        }
+        target.damage += damage;
+        member.attackCooldown = addFluctuation(member[attrAtk] * member[attrAtk] / 3, 0.17);
+        this.sendToViewers(addFlashTag(name) + " is attacking " + addFlashTag(target.owner) + "'s " + poke(target.id) + " with a " + moveType + " move! " + addFlashTag(target.owner) + "'s " + poke(target.id) + " took " + damage + " damage!", true);
+    };
+    Marathon.prototype.canJoin = function(src) {
+        var player = getAvatar(src);
+        if (getBST(player.party[0]) > 600) {
+            safaribot.sendMessage(src, "You cannot join this event with an Active Pokémon with BST of 601 or more.", safchan);
+            return false;
+        }
+        return true;
+    };
+    Marathon.prototype.onWatch = function(src) {
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The participants are: ", safchan);
+        safaribot.sendHtmlMessage(src, this.participants + "!", safchan);
+        safaribot.sendMessage(src, "The first " + (this.maxWinners > 1 ? this.maxWinners + " " : "") + "player" + (this.maxWinners > 1 ? "s" : "") + " to run " + this.goal + "m will receive " + plural(this.amount, this.reward.name, false, true) + "!", safchan);
+        
+        var positions = this.runners.concat();
+        positions.sort(function(a, b) {
+            return b.position - a.position;
+        });
+        positions = positions.map(function(obj) {
+            return obj.owner + "'s " + poke(obj.id) + " (" + obj.position + "m)";
+        });
+        
+        safaribot.sendHtmlMessage(src, "<b>Positions</b>: " + positions.join(", "), safchan);
     };
     
     /* System Functions */
@@ -8244,6 +8558,19 @@ function Safari() {
             }
         }
     };
+    this.showEventHelp = function (src) {
+        sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "*** EVENTS INFORMATION ***", safchan);
+        sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "Faction War: Players join one of the two teams to battle each other. Pokémon defeated are eliminated from the battle. The team that defeats the all Pokémon from the other side first wins.", safchan);
+        sys.sendMessage(src, "Requirements: A full party (6 Pokémon). Minimum of 1 player for event to start, and 4 players for rewards.", safchan);
+        
+        sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "Pokémon Marathon: Pokémon must race from 0m to 1000m (Pokémon's Speed stat helps). Players can /attack each other to slow them down (remaining stats and type effectiveness help). First to cross the 1000m goal wins (2~3 winners if large amount of participants).", safchan);
+        sys.sendMessage(src, "Requirements: 1 Pokémon with BST of 600 or less (Active Pokémon will be used). Minimum of 3 players for event to start, and 4 players for rewards.", safchan);
+        sys.sendMessage(src, "Note: Currently in Testing Phase, so balance may be off and changes may be constant.", safchan);
+        sys.sendMessage(src, "", safchan);
+    };
     this.onHelp = function (src, topic, channel) {
         if (topic === "safari") {
             safari.showCommands(src, channel);
@@ -8296,13 +8623,14 @@ function Safari() {
             "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
+            "/eventhelp: For a explanation about events like Faction War and Pokémon Marathon.",
             "",
             "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
         ];
         var help = userHelp;
         var adminHelp = [
             "*** Safari Warden Commands ***",
-            "/startevent [team1]։[team2]։[reward]։[amount]: Starts a Faction War event. To cancel an event, use /abortevent.",
+            "/startevent [type]։[parameters]: Starts an event. Use /startevent help for more details. To cancel an event, use /abortevent.",
             "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
             "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
@@ -8380,6 +8708,10 @@ function Safari() {
             }
             if (command === "itemhelp") {
                 safari.showItemHelp(src, commandData);
+                return true;
+            }
+            if (command === "eventhelp") {
+                safari.showEventHelp(src, commandData);
                 return true;
             }
             if (command === "start") {
@@ -8858,6 +9190,10 @@ function Safari() {
                 }
                 return true;
             }
+            if (currentEvent && currentEvent.isInEvent(sys.name(src)) && currentEvent.eventCommands.hasOwnProperty(command)) {
+                currentEvent.handleCommand(src, command, commandData);
+                return true;
+            }
         } else {
             safaribot.sendMessage(src, "You can't play Safari while it is updating.", safchan);
             return true;
@@ -8866,34 +9202,87 @@ function Safari() {
         //Staff Commands
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             if (command === "startevent") {
-                var info = commandData.split(":");
-                
-                if (info.length < 3) {
-                    safaribot.sendMessage(src, "Use /startevent Team1:Team2:Reward:Amount to start a Faction War!", safchan);
-                    return true;
-                }
                 if (currentEvent) {
                     safaribot.sendMessage(src, "There's already an event going on!", safchan);
                     return true;
                 }
-                var name1 = info[0];
-                var name2 = info[1];
-                var reward = getInput(info[2].toLowerCase());
-                if (!reward) {
-                    safaribot.sendMessage(src, info[2] + " is not a valid reward!", safchan);
-                    return true;
-                }
-                var amt = info.length > 3 ? parseInt(info[3], 10) : 1;
-                if (!amt || isNaN(amt)) {
-                    safaribot.sendMessage(src, "Please type a valid amount for the reward!", safchan);
-                    return true;
-                }
-                if (reward.type == "poke") {
-                    amt = 1;
+                var info = commandData.split(":");
+                var type;
+                switch (info[0].toLowerCase()) {
+                    case "help":
+                    case "info":
+                        safaribot.sendMessage(src, "To start an event, use one of the following commands:", safchan);
+                        safaribot.sendMessage(src, "Faction War: /startevent war:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
+                        safaribot.sendMessage(src, "Pokémon Marathon: /startevent race:[Reward]:[Amount]", safchan);
+                        return;
+                    case "war":
+                    case "factionwar":
+                    case "faction war":
+                    case "faction":
+                        type = "factionwar";
+                    break;
+                    case "race":
+                    case "marathon":
+                        type = "marathon";
+                    break;
+                    default:
+                        safaribot.sendMessage(src, "Please type a valid event! Valid events are Faction War and Marathon! Type '/startevent help' for more information.", safchan);
+                        return;
                 }
                 
-                var ev = new FactionWar(src, name1, name2, reward, amt);
-                currentEvent = ev;
+                var param = info.slice(1);
+                
+                if (type == "factionwar") {
+                    if (param.length < 3) {
+                        safaribot.sendMessage(src, "Use /startevent FactionWar:Team1:Team2:Reward:Amount to start a Faction War!", safchan);
+                        return true;
+                    }
+                    
+                    var name1 = param[0];
+                    var name2 = param[1];
+                    var reward = getInput(param[2].toLowerCase());
+                    if (!reward) {
+                        safaribot.sendMessage(src, param[2] + " is not a valid reward!", safchan);
+                        return true;
+                    }
+                    var amt = param.length > 3 ? parseInt(param[3], 10) : 1;
+                    if (!amt || isNaN(amt)) {
+                        safaribot.sendMessage(src, "Please type a valid amount for the reward!", safchan);
+                        return true;
+                    }
+                    if (reward.type == "poke") {
+                        amt = 1;
+                    }
+                    
+                    var ev = new FactionWar(src, name1, name2, reward, amt);
+                    currentEvent = ev;
+                }
+                else if (type == "marathon") {
+                    if (param.length < 1) {
+                        safaribot.sendMessage(src, "Use /startevent Marathon:Reward:Amount to start a Pokémon Marathon!", safchan);
+                        return true;
+                    }
+                    
+                    var reward = getInput(param[0].toLowerCase());
+                    if (!reward) {
+                        safaribot.sendMessage(src, param[0] + " is not a valid reward!", safchan);
+                        return true;
+                    }
+                    var amt = param.length > 1 ? parseInt(param[1], 10) : 1;
+                    if (!amt || isNaN(amt)) {
+                        safaribot.sendMessage(src, "Please type a valid amount for the reward!", safchan);
+                        return true;
+                    }
+                    if (reward.type == "poke") {
+                        amt = 1;
+                    }
+                    
+                    var ev = new Marathon(src, reward, amt);
+                    currentEvent = ev;
+                }
+                else {
+                    safaribot.sendMessage(src, info[0] + " is not a valid event! Valid events are Faction War and Marathon!", safchan);
+                }
                 return true;
             }
             if (command === "shove") {
@@ -9208,7 +9597,7 @@ function Safari() {
             if (command === "transferalt") {
                 var data = commandData.split(":");
                 if (data.length < 2) {
-                    safaribot.sendMessage(src, "You need to define 2 names! Use /transferalt Name1:Name2 for that!");
+                    safaribot.sendMessage(src, "You need to define 2 names! Use /transferalt Name1:Name2 for that!", safchan);
                     return true;
                 }
                 safari.transferAlt(data[0], data[1], src);
@@ -10305,7 +10694,7 @@ function Safari() {
         baitCooldown--;
         successfulBaitCount--;
 
-        if (currentEvent && contestCooldown % 6 === 0) {
+        if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
             currentEvent.nextTurn();
             if (currentEvent.finished) {
                 currentEvent = null;
