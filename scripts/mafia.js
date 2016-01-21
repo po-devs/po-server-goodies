@@ -2449,11 +2449,11 @@ function Mafia(mafiachan) {
 		    exdata = delimSplit(":",excludeRoles);
 		    exrole = exdata[0];
 		    while (rrole.indexOf(exrole) !== -1) {
-		    rrole.splice(rrole.indexOf(exrole),1)
+		    rrole.splice(rrole.indexOf(exrole),1);
 		    }
 		    if (exrole == "~Inspector~") {
 		    while (rrole.indexOf(inspector) !== -1) {
-			rrole.splice(rrole.indexOf(inspector),1)
+			rrole.splice(rrole.indexOf(inspector),1);
 			}
 	    	    }
 		excludeRoles = exdata[1];
@@ -4911,7 +4911,7 @@ function Mafia(mafiachan) {
         return sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase());
     };
     this.isMafiaSuperAdmin = function (src) {
-        return sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()) || script.isSuperAdmin(src);
+        return sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()) || isSuperAdmin(src);
     };
 
     this.slayUser = function (src, name, delayed) {
@@ -6024,8 +6024,8 @@ function Mafia(mafiachan) {
                     if (target.disguiseRole !== undefined) {
                         revealedRole = mafia.theme.trrole(target.disguiseRole);
                     } else if (inspectMode.revealAs !== undefined) {
-                    	revealedRole = this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role)
-                    };
+                    	revealedRole = this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role);
+                    }
                     if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
                         revealedSide = mafia.theme.trside(inspectMode.seenSide);
                     } else {
@@ -7438,7 +7438,7 @@ this.beforeChatMessage = function (src, message, channel) {
                 }
             }
             if (mafia.possibleBotquote(message)) {
-                msg(src, "Please do not send any messages copied and pasted from one of the game bots!")
+                msg(src, "Please do not send any messages copied and pasted from one of the game bots!");
                 return true;
             }
             if (("theme" in mafia) && ("silentNight" in mafia.theme)) {
