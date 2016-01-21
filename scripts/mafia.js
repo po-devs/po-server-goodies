@@ -4911,7 +4911,7 @@ function Mafia(mafiachan) {
         return sys.auth(src) >= 1 || mafia.isMafiaSuperAdmin(src) || script.mafiaAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase());
     };
     this.isMafiaSuperAdmin = function (src) {
-        return sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()) || isSuperOwner(src);
+        return sys.auth(src) >= 3 || script.mafiaSuperAdmins.hash.hasOwnProperty(sys.name(src).toLowerCase()) || script.isSuperAdmin(src);
     };
 
     this.slayUser = function (src, name, delayed) {
