@@ -2466,7 +2466,7 @@ function Mafia(mafiachan) {
 			return(mafia.theme.trrole(appearAs));
 		}
 	    }
-	    if (Array.isArray(inspectMode.revealAs)) {
+	    if (Array.isArray(appearAs)) {
 		return(mafia.theme.trrole(appearAs[Math.floor(Math.random() * appearAs.length)]));
 	    }
 	    return(role.translation);
@@ -4378,10 +4378,10 @@ function Mafia(mafiachan) {
                         act = player.role.actions.standby[k];
                         charges = mafia.getCharges(player, "standby", k);
                         if (act.msg && (charges === undefined || charges > 0)) {
-                            var msg = html_escape(act.msg).replace(/\s\/[A-Z]+[0-9]*[^A-Z]/gi, function(match) {
+                            var msg = html_escape(act.msg).replace(/\s\/[A-Z]+[0-9]*[^A-Z]/gi, function(match)) {
                                 var command = match.slice(1, -1);
                                 return match[0] + htmlLink(command) + match.slice(-1);
-                            });
+                            };
                             gamemsg(names[j], msg, undefined, undefined, true);
                         }
                     }
