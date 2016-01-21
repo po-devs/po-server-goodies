@@ -7568,7 +7568,7 @@ function Safari() {
         safaribot.sendMessage(src, "Winners will receive " + plural(this.amount, this.reward.name) + "!", safchan);
     };
     
-    function PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal) {
+    function PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, silver) {
         SafariEvent.call(this);
         this.eventName = "Pokémon Race";
         
@@ -7579,6 +7579,7 @@ function Safari() {
         this.signupsDuration = 6;
         this.minPlayers = 1;
         
+        this.silver = silver || false;
         this.underdogPay = underdog || 2;
         this.favoritePay = favorite || 1.25;
         this.normalPay = normal || 1.75;
@@ -7619,11 +7620,13 @@ function Safari() {
             return link(joinCommand + " " + x + ":" + this.minBet, null, true);
         }, this);
         
-        this.joinmsg = "Bet with " + readable(betCommands, "or") + "! Bets must be between $" + addComma(this.minBet) + " and $" + addComma(this.maxBet) + " (Payout: Favorite " + this.favoritePay + "x, Underdog " + this.underdogPay + "x, Others " + this.normalPay + "x)!";
+        this.betRange = this.silver ? this.minBet + " and " + this.maxBet + " <b>" + itemAlias("silver", true, true) + "s</b>" : "$" + addComma(this.minBet) + " and $" + addComma(this.maxBet);
+        
+        this.joinmsg = "Bet with " + readable(betCommands, "or") + "! Bets must be between " + this.betRange + " (Payout: Favorite " + this.favoritePay + "x, Underdog " + this.underdogPay + "x, Others " + this.normalPay + "x)!";
         
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The contestants will be " + readable(this.racersList, "and") + ", and they must reach the space " + this.goal + " to win!", safchan);
-        safaribot.sendHtmlAll("Bets must be between $" + addComma(this.minBet) + " and $" + addComma(this.maxBet) + "! Favorite pays " + this.favoritePay + "x, Underdog pays " + this.underdogPay + "x, others pay " + this.normalPay + "x the bet!", safchan);
+        safaribot.sendHtmlAll("Bets must be between " + this.betRange + "! Favorite pays " + this.favoritePay + "x, Underdog pays " + this.underdogPay + "x, others pay " + this.normalPay + "x the bet!", safchan);
         safaribot.sendHtmlAll("To place your bets, type " + readable(betCommands, "or") + "!", safchan);
         sys.sendAll("", safchan);
     }
@@ -7635,7 +7638,7 @@ function Safari() {
                 delete this.bets[e];
             } else {
                 bet = this.bets[e];
-                this.betList.push(addColorTag(e) + " bets $" + addComma(bet.bet) + " on " + bet.racer + (bet.racer == this.favorite ? " (Favorite)" : (bet.racer == this.underdog ? " (Underdog)" : "") ));
+                this.betList.push(addColorTag(e) + " bets " + (this.silver ? plural(bet.bet, itemAlias("silver", true, true)) : "$" + addComma(bet.bet)) + " on " + bet.racer + (bet.racer == this.favorite ? " (Favorite)" : (bet.racer == this.underdog ? " (Underdog)" : "") ));
             }
         }
         
@@ -7723,9 +7726,13 @@ function Safari() {
             } else {
                 player = getAvatarOff(r);
                 if (player) {
-                    player.money -= bet.bet;
+                    if (this.silver) {
+                        player.balls.silver -= bet.bet;
+                    } else {
+                        player.money -= bet.bet;
+                    }
                     safari.saveGame(player);
-                    this.sendMessage(r, "You lost $" + addComma(bet.bet) + " from your losing bet!");
+                    this.sendMessage(r, "You lost " + (this.silver ? plural(bet.bet, itemAlias("silver", true, true)) : "$" + addComma(bet.bet)) + " from your losing bet!");
                 }
             }
         }
@@ -7752,18 +7759,25 @@ function Safari() {
                 
                 player = getAvatarOff(name);
                 if (player) {
-                    player.money += prize;
-                    if (player.money > moneyCap) {
-                        player.money = moneyCap;
+                    if (this.silver) {
+                        player.balls.silver += prize;
+                        if (player.balls.silver > getCap("silver")) {
+                            player.balls.silver = getCap("silver");
+                        }
+                    } else {
+                        player.money += prize;
+                        if (player.money > moneyCap) {
+                            player.money = moneyCap;
+                        }
+                        player.records.pokeRaceEarnings += prize;
                     }
                     player.records.pokeRaceWins += 1;
-                    player.records.pokeRaceEarnings += prize;
                     if (bet.racer == this.favorite) {
                         player.records.favoriteRaceWins += 1;
                     } else if (bet.racer == this.underdog) {
                         player.records.underdogRaceWins += 1;
                     }
-                    this.sendMessage(name, "You received $" + addComma(bet.bet + prize) + " for winning this event! You now have $" + addComma(player.money) + "!");
+                    this.sendMessage(name, "You received " + (this.silver ? plural(bet.bet + prize, itemAlias("silver", true, true)) : "$" + addComma(bet.bet + prize)) + " for winning this event! You now have " + (this.silver ?plural(player.balls.silver, itemAlias("silver", true, true)) : "$" + addComma(player.money)) + "!");
                     safari.saveGame(player);
                 }
             }
@@ -7799,10 +7813,13 @@ function Safari() {
             return false;
         }
         if (bet < this.minBet || bet > this.maxBet) {
-            safaribot.sendMessage(src, "Bets must be between $" + addComma(this.minBet) + " and $" + addComma(this.maxBet) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Bets must be between " + this.betRange + "!", safchan);
             return false;
         }
-        if (player.money < bet) {
+        if (this.silver && player.balls.silver < bet) {
+            safaribot.sendMessage(src, "You don't have " + plural(bet, itemAlias("silver", true, true)) + " to bet!", safchan);
+            return false;
+        } else if (player.money < bet) {
             safaribot.sendMessage(src, "You don't have $" + addComma(bet) + " to bet!", safchan);
             return false;
         }
@@ -7812,7 +7829,7 @@ function Safari() {
     PokeRace.prototype.onWatch = function(src) {
         safaribot.sendMessage(src, "You are watching the " + this.eventName + "!", safchan);
         safaribot.sendHtmlMessage(src, "Contestants: " + readable(this.racersList, "and"), safchan);
-        safaribot.sendHtmlMessage(src, "Bets: " + this.betList.join(", "), safchan);
+        this.sendMessage(sys.name(src), "Bets: " + this.betList.join(", "), false, true);
     };
     PokeRace.prototype.onJoin = function(name, data) {
         var info = data.split(":");
@@ -7824,7 +7841,7 @@ function Safari() {
             racer: racer
         };
         
-        return " by betting $" + addComma(bet) + " on " + racer;
+        return " by betting " + (this.silver ? plural(bet, itemAlias("silver", true, true)) : "$" + addComma(bet)) + " on " + racer;
     };
     
     /* System Functions */
@@ -7877,7 +7894,7 @@ function Safari() {
         SESSION.users(src).safari = player;
         this.assignIdNumber(player);
         this.saveGame(player);
-        safaribot.sendMessage(src, "You received a " + poke(num) + ", " + plural(30, itemAlias("silver", true, true)) + ", " + plural(10, itemAlias("bait", true, true)) + ", " + plural(5, itemAlias("great", true, true)) + ", " + plural(1, itemAlias("ultra", true, true)) + " and 15 Itemfinder charges!", safchan);
+        safaribot.sendMessage(src, "You received a " + poke(num) + ", " + plural(30, itemAlias("safari", true, true)) + ", " + plural(10, itemAlias("bait", true, true)) + ", " + plural(5, itemAlias("great", true, true)) + ", " + plural(1, itemAlias("ultra", true, true)) + " and 15 Itemfinder charges!", safchan);
         safaribot.sendHtmlMessage(src, "For Basic Help: <b><font color='DarkOrchid'>/help</font></b> | To throw a ball: <b><font color='DarkOrchid'>/catch</font></b> | To bait a Pokémon: <b><font color='DarkOrchid'>/bait</font></b> | After catching your first Pokémon use <b><font color='DarkOrchid'>/getcostumes</font></b> to receive a Preschooler costume then use <b><font color='DarkOrchid'>/dressup Preschooler</font></b> to wear the costume and get a bonus on catching Pokémon while using your starter!", safchan);
     };
     this.saveGame = function(player) {
@@ -9189,6 +9206,7 @@ function Safari() {
                         safaribot.sendMessage(src, "To start an event, use one of the following commands:", safchan);
                         safaribot.sendMessage(src, "Faction War: /startevent war:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
                         safaribot.sendMessage(src, "Pokémon Race: /startevent race:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]", safchan);
+                        safaribot.sendMessage(src, "Pokémon Silver Race: /startevent silverrace:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]", safchan);
                         return true;
                     case "war":
                     case "factionwar":
@@ -9199,6 +9217,9 @@ function Safari() {
                     case "race":
                     case "pokerace":
                         type = "race";
+                    break;
+                    case "silverrace":
+                        type = "silverrace";
                     break;
                     default:
                         safaribot.sendMessage(src, "Please type a valid event! Valid events are Faction War and Pokémon Race! Type '/startevent help' for more information.", safchan);
@@ -9232,7 +9253,7 @@ function Safari() {
                     var ev = new FactionWar(src, name1, name2, reward, amt);
                     currentEvent = ev;
                 }
-                else if (type == "race") {
+                else if (type == "race" || type == "silverrace") {
                     var minBet = null, maxBet = null, favorite = null, underdog = null, normal = null, goal = null, val, pLen = param.length;
                     
                     if (pLen > 0) {
@@ -9272,7 +9293,7 @@ function Safari() {
                         }
                     }
                     
-                    var ev = new PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal);
+                    var ev = new PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, type == "silverrace");
                     currentEvent = ev;
                 }
                 else {
