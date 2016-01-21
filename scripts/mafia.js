@@ -4378,11 +4378,7 @@ function Mafia(mafiachan) {
                         act = player.role.actions.standby[k];
                         charges = mafia.getCharges(player, "standby", k);
                         if (act.msg && (charges === undefined || charges > 0)) {
-                            var msg = html_escape(act.msg).replace(/\s\/[A-Z]+[0-9]*[^A-Z]/gi, function(match)) {
-                                var command = match.slice(1, -1);
-                                return match[0] + htmlLink(command) + match.slice(-1);
-                            };
-                            gamemsg(names[j], msg, undefined, undefined, true);
+                            gamemsg(names[j], act.msg, undefined, undefined, true);
                         }
                     }
                 }
