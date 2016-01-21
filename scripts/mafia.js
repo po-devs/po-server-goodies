@@ -340,7 +340,7 @@ function Mafia(mafiachan) {
         }
     }
 
-    var defaultTheme = { name: defaultThemeName,
+    var defaultTheme = { name: "Default",
         sides: [
           {"side": "mafia", "translation": "Mafia"},
           {"side": "mafia1", "translation": "French Canadian Mafia"},
