@@ -17,14 +17,14 @@ var html_escape = require("utilities.js").html_escape;
 function Mafia(mafiachan) {
     this.version = "2012-12-15";
     var mafia = this;
-    var defaultTheme = "Default";
+    var defaultThemeName = "Default";
 
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
     if (!this.nextEventTime) {this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;}
-    if (!this.eventQueue) {this.eventQueue = [defaultTheme];}
-    if (!this.eventThemePool) {this.eventThemePool = [defaultTheme];}
+    if (!this.eventQueue) {this.eventQueue = [defaultThemeName];}
+    if (!this.eventThemePool) {this.eventThemePool = [defaultThemeName];}
     if (!this.warningLog) {this.warningLog = {};}
     this.isEvent = false;
     this.warningLog = {};
@@ -340,7 +340,7 @@ function Mafia(mafiachan) {
         }
     }
 
-    var defaultTheme = { name: defaultTheme,
+    var defaultTheme = { name: defaultThemeName,
         sides: [
           {"side": "mafia", "translation": "Mafia"},
           {"side": "mafia1", "translation": "French Canadian Mafia"},
@@ -626,7 +626,7 @@ function Mafia(mafiachan) {
     ThemeManager.prototype.loadThemes = function () {
         if (typeof sys !== "object") return;
         this.themes = {};
-        this.themes.Default = this.loadTheme(defaultTheme);
+        this.themes.Default = this.loadTheme(defaultThemeName);
         var content = sys.getFileContent("scriptdata/mafiathemes/metadata.json");
         if (!content) return;
         var parsed = JSON.parse(content);
@@ -1457,7 +1457,7 @@ function Mafia(mafiachan) {
     this.advertiseToChannel = function(channel) {
         sendChanAll("", channel);
         sendBorder(channel);
-        if (this.theme.name == defaultTheme) {
+        if (this.theme.name == defaultThemeName) {
             gamemsgAll("A new mafia game was started at <a href='po:join/Mafia'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
         } else {
             gamemsgAll("A new " + (this.theme.altname ? this.theme.altname : this.theme.name) + "-themed mafia game was started at <a href='po:join/Mafia'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
@@ -1528,7 +1528,7 @@ function Mafia(mafiachan) {
 		}
 	    }
     	if (!(this.eventQueue)) {
-    	    this.eventQueue = [defaultTheme];
+    	    this.eventQueue = [defaultThemeName];
     	    }
     	var etheme = this.eventQueue[0];
     	this.startGame("Event", etheme);
@@ -1638,7 +1638,7 @@ function Mafia(mafiachan) {
             this.possibleThemes = {};
             var total = 5;
 
-            this.possibleThemes[defaultTheme] = 0;
+            this.possibleThemes[defaultThemeName] = 0;
 
             var lastGames = PreviousGames.slice(-3),
                 noFeatured = false;
@@ -1682,7 +1682,7 @@ function Mafia(mafiachan) {
                 var name = allThemes[indx];
                 allThemes.splice(indx, 1);
                 // exclude themes played recently
-                if (name != defaultTheme && Check.indexOf(name) !== -1) {
+                if (name != defaultThemeName && Check.indexOf(name) !== -1) {
                     continue;
                 }
                 // exclude disabled themes
@@ -1753,7 +1753,7 @@ function Mafia(mafiachan) {
         return false;
     };
     this.getCurrentTheme = function(data) {
-        var themeName = defaultTheme;
+        var themeName = defaultThemeName;
         if (mafia.state != "blank" && mafia.state != "voting") {
             themeName = mafia.theme.name.toLowerCase();
         }
@@ -1788,7 +1788,7 @@ function Mafia(mafiachan) {
             return;
         }
 
-        var themeName = commandData == noPlayer ? defaultTheme : this.getThemeName(commandData);
+        var themeName = commandData == noPlayer ? defaultThemeName : this.getThemeName(commandData);
 
         // Prevent a single player from dominating the theme selections.
         // We exclude mafia admins from this.
@@ -1829,7 +1829,7 @@ function Mafia(mafiachan) {
                 this.theme = this.themeManager.themes[themeName];
                 this.bot = this.theme.bot;
             } else {
-                this.theme = this.themeManager.themes[defaultTheme];
+                this.theme = this.themeManager.themes[defaultThemeName];
                 this.bot = this.theme.bot;
             }
         }
@@ -1840,7 +1840,7 @@ function Mafia(mafiachan) {
         if ((src !== null) && (src !== "Event")) {
             sendChanAll("", mafiachan);
             sendBorder();
-            if (this.theme.name == defaultTheme) {
+            if (this.theme.name == defaultThemeName) {
                 gamemsgAll(sys.name(src) + " started a game!");
             } else {
                 gamemsgAll(sys.name(src) + " started a game with theme " + this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "") + "!");
@@ -1851,7 +1851,7 @@ function Mafia(mafiachan) {
         }
         if (src == "Event") {
             sendBorder();
-            if (this.theme.name == defaultTheme) {
+            if (this.theme.name == defaultThemeName) {
                 mafiabot.sendHtmlAll("An <b>Event</b> Mafia game is starting!", mafiachan);
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
@@ -1867,16 +1867,16 @@ function Mafia(mafiachan) {
             var user = SESSION.users(id);
             if (sys.loggedIn(id) && user && user.mafiaalertson && (user.mafiaalertsany || user.mafiathemes.indexOf(this.theme.name.toLowerCase()) != -1)) {
                 if (sys.isInChannel(id, mafiachan)) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultTheme ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultThemeName ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", mafiachan);
                     continue;
                 } else if (sys.isInChannel(id, 0)) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultTheme ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultThemeName ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", 0);
                     continue;
                 } else if (sys.existChannel("Mafia Social") && sys.isInChannel(id, sys.channelId("Mafia Social"))) {
-                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultTheme ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Mafia Social"));
+                    sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultThemeName ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!", sys.channelId("Mafia Social"));
                     continue;
                 }
-                sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultTheme ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
+                sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultThemeName ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
             }
         }
         
@@ -6731,7 +6731,7 @@ function Mafia(mafiachan) {
         if (command === "windata") {
             var themeName;
             if (commandData === noPlayer) {
-                themeName = defaultTheme;
+                themeName = defaultThemeName;
                 if (mafia.state != "blank" && mafia.state != "voting") {
                     themeName = mafia.theme.name.toLowerCase();
                 }
@@ -7471,10 +7471,10 @@ this.beforeChatMessage = function (src, message, channel) {
                     gamemsg(srcname, "A voting for the next game is running now! Type /vote [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", "±Info");
                     break;
                 case "entry":
-                    gamemsg(srcname, "You can join a " + (mafia.theme.name == defaultTheme ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", "±Info");
+                    gamemsg(srcname, "You can join a " + (mafia.theme.name == defaultThemeName ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", "±Info");
                     break;
                 default:
-                    gamemsg(srcname, "A " + (mafia.theme.name == defaultTheme ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join during signups after the game finishes!", "±Info");
+                    gamemsg(srcname, "A " + (mafia.theme.name == defaultThemeName ? "" : mafia.theme.name + "-themed ") + "mafia game is in progress! You can join the next game by typing /join during signups after the game finishes!", "±Info");
             }
         }
         return false;
