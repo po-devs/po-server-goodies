@@ -1692,7 +1692,6 @@ function Mafia(mafiachan) {
                 }
             }
             border = "<span style='color:magenta'><timestamp/>" + DEFAULT_BORDER + "</span>";
-            mafia.theme.bot = defaultGameBot;
             sendChanAll("", mafiachan);
             sendBorder();
             mafiabot.sendHtmlAll(sys.name(src) + " started a voting for next game's theme! You have " + this.ticks + " seconds to vote with /vote or /votetheme!", mafiachan);
@@ -2474,7 +2473,8 @@ function Mafia(mafiachan) {
     };
     this.kill = function (player, msg) {
         var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
-        gamemsgAll(killmsg, "Kill");
+        var bn = msg.indexOf("±") === -1 ? "±Kill" : undefined;
+        gamemsgAll(killmsg, bn);
         this.actionBeforeDeath(player);
         this.removePlayer(player);
     };
