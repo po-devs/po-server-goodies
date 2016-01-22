@@ -1914,9 +1914,9 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     
-    if (SESSION.global().blockWebLinks && sys.auth(src) === 0 && sys.os(src) === "webclient") {
-        if (message.toLowerCase().indexOf("http") != -1) {
-            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [(May be NSFW) Message content: " + message + "]!", staffchannel);            
+    if (SESSION.global().blockWebLinks && script.isOfficialChan(channel) && sys.auth(src) === 0 && sys.os(src) === "webclient") {
+        if (message.toLowerCase().indexOf("http") !== -1) {
+            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [(May be NSFW) Message content: " + message + " ]!", staffchannel);            
             //message = message.replace("http", "ht\u200btp");
             //sys.sendAll(sys.name(src) + ": " + message, channel);
             sys.sendMessage(src, sys.name(src) + ": " + message, channel);
