@@ -3006,12 +3006,12 @@ function tourCommand(src, command, commandData, channel) {
             return true;
         }
 
-        if (command == "tourrules") {
-            sys.sendMessage(src, border,tourschan);
+        if (command == "tourrules" && channel === tourschan) {
+            sys.sendMessage(src, border, tourschan);
             for (var t in tourrules) {
-                sys.sendMessage(src, tourrules[t],tourschan);
+                sys.sendMessage(src, tourrules[t], tourschan);
             }
-            sys.sendMessage(src, border,tourschan);
+            sys.sendMessage(src, border, tourschan);
             return true;
         }
         if (command == "monthlyleaderboard" || command == "leaderboard") {
