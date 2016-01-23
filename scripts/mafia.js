@@ -2473,7 +2473,7 @@ function Mafia(mafiachan) {
     };
     this.kill = function (player, msg) {
         var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
-        var bn = msg.indexOf("±") === -1 ? "±Kill" : undefined;
+        var bn = killmsg.indexOf("±") === -1 ? "±Kill" : undefined;
         gamemsgAll(killmsg, bn);
         this.actionBeforeDeath(player);
         this.removePlayer(player);
