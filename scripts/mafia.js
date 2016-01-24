@@ -601,7 +601,7 @@ function Mafia(mafiachan) {
             theme.noplur = plain_theme.noplur;
             theme.rolesAreNames = plain_theme.rolesAreNames;
             theme.borderColor = plain_theme.borderColor || "magenta";
-            theme.border = "<span style='color:" + theme.borderColor + "'><timestamp/> " + (plain_theme.border ? plain_theme.border : DEFAULT_BORDER) + "</span>";
+            theme.border = "<span style='color:" + theme.borderColor + "'><timestamp/> " + (plain_theme.border ? html_escape(plain_theme.border) : DEFAULT_BORDER) + "</span>";
             theme.macro = plain_theme.macro === undefined ? true : plain_theme.macro;
             theme.generateRoleInfo();
             theme.generateSideInfo();
@@ -2433,35 +2433,37 @@ function Mafia(mafiachan) {
         }
     };
     this.revealAsRole = function (appearAs, role, inspector) {
-    if (typeof appearAs == "string") {
-        if (appearAs.charAt(0) == "*") {
-        var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
-        var exdata, exrole, excludeRoles = appearAs.substring(1, appearAs.length);
-        while (excludeRoles.indexOf(":") !== -1) { 
-            exdata = delimSplit(":",excludeRoles);
-            exrole = exdata[0];
-            while (rrole.indexOf(exrole) !== -1) {
-            rrole.splice(rrole.indexOf(exrole),1);
-            }
-            if (exrole == "~Inspector~") {
-            while (rrole.indexOf(inspector) !== -1) {
-            rrole.splice(rrole.indexOf(inspector),1);
-            }
+        if (typeof appearAs == "string") {
+            if (appearAs.charAt(0) == "*") {
+                var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
+                var exdata, exrole, excludeRoles = appearAs.substring(1, appearAs.length);
+                while (excludeRoles.indexOf(":") !== -1) {
+                    exdata = delimSplit(":",excludeRoles);
+                    exrole = exdata[0];
+                    while (rrole.indexOf(exrole) !== -1) {
+                        rrole.splice(rrole.indexOf(exrole),1);
+                    }
+                    if (exrole == "~Inspector~") {
+                        while (rrole.indexOf(inspector) !== -1) {
+                            rrole.splice(rrole.indexOf(inspector),1);
+                        }
+                    }
+                    excludeRoles = exdata[1];
                 }
-        excludeRoles = exdata[1];
-        }
-        if (rrole.length > 0) return(mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]));
-        return (role.translation);
-        } else if (appearAs == "~Inspector~") {
-            return(mafia.theme.trrole(inspector));
-        } else {
-            return(mafia.theme.trrole(appearAs));
-        }
+                if (rrole.length > 0) {
+                    return mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]) ;
+                }
+                return role.translation;
+            } else if (appearAs == "~Inspector~") {
+                return mafia.theme.trrole(inspector) ;
+            } else {
+                return mafia.theme.trrole(appearAs) ;
+            }
         }
         if (Array.isArray(appearAs)) {
-        return(mafia.theme.trrole(appearAs[Math.floor(Math.random() * appearAs.length)]));
+            return mafia.theme.trrole(appearAs[Math.floor(Math.random() * appearAs.length)]);
         }
-        return(role.translation);
+        return role.translation;
     };
     this.kill = function (player, msg) {
         var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
@@ -7443,11 +7445,11 @@ this.beforeChatMessage = function (src, message, channel) {
                 return true;
             }
             if (("theme" in mafia) && ("silentNight" in mafia.theme)) {
-        if ((mafia.theme.silentNight) && (this.state === "night") && (!(is_command(message)) || (message.substr(1, 2).toLowerCase() == "me"))) {
-            msg(src, "Shh! Everyone's asleep right now! You can talk out loud during the day. If you have to send someone a message, use /Whisper [name]:[message]!", mafiachan);
-            return true;
+                if ((mafia.theme.silentNight) && (this.state === "night") && (!(is_command(message)) || (message.substr(1, 2).toLowerCase() == "me"))) {
+                    msg(src, "Shh! Everyone's asleep right now! You can talk out loud during the day. If you have to send someone a message, use /Whisper [name]:[message]!", mafiachan);
+                    return true;
+                }
             }
-        }
             if (message.indexOf("[Team]") != -1) {
                 msg(src, "Please don't fake a Team Talk message!", mafiachan);
                 return true;
