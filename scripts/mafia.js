@@ -131,23 +131,19 @@ function Mafia(mafiachan) {
         if (mess === null) {
             mess = "";
         }
-        var pos = mess.indexOf(": ");
-        if (!botName && pos !== -1 && (mess.indexOf("±") !== -1 || mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(":") !== -1)) {
-            var name = mess.substring(0, pos),
-                pid = sys.id(name),
-                message = html_escape(mess.substr(pos + 2)),
-                color = mafia.bot.color;
-            if (pid !== undefined) {
-                color = script.getColor(pid);
-            }
-            mess = "<font color='" + color + "'><timestamp/> <b>" + name + ":</b></font> " + message;
-        } else if (mess.indexOf("***") === -1) {
-            mess = "<font color='" + mafia.bot.color + "'><timestamp/> <b>" + (botName ? botName : "±" + mafia.bot.name) + ":</b></font> " + (html ? mess : html_escape(mess));
-        }
         if (channel === undefined) {
             channel = mafiachan;
         }
-        sys.sendHtmlMessage(id, mess, channel);
+        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
+            sys.sendMessage(id, mess, channel);
+        } else {
+            var colon = mess.indexOf(":");
+            if (!botName && !html && colon !== -1) {
+                botName = mess.substring(0, colon);
+                mess = mess.slice(colon + 2);
+            }
+            sys.sendHtmlMessage(id, "<font color='" + mafia.bot.color + "'><timestamp/> <b>" + (botName ? botName : "±" + mafia.bot.name) + ":</b></font> " + (html ? mess : html_escape(mess)), channel);
+        }
         return true;
     }
     function gamemsgAll(mess, botName, channel, html) {
@@ -157,23 +153,19 @@ function Mafia(mafiachan) {
         if (mess === null) {
             mess = "";
         }
-        var pos = mess.indexOf(": ");
-        if (!botName && pos !== -1 && (mess.indexOf("±") !== -1 || mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1)) {
-            var name = mess.substring(0, pos),
-                id = sys.id(name),
-                message = html_escape(mess.substr(pos + 2)),
-                color = mafia.bot.color;
-            if (id !== undefined) {
-                color = script.getColor(id);
-            }
-            mess = "<font color='" + color + "'><timestamp/> <b>" + name + ":</b></font> " + message;
-        } else if (mess.indexOf("***") === -1) {
-            mess = "<font color='" + mafia.bot.color + "'><timestamp/> <b>" + (botName ? botName : "±" + mafia.bot.name) + ":</b></font> " + (html ? mess : html_escape(mess));
-        }
         if (channel === undefined) {
             channel = mafiachan;
         }
-        sys.sendHtmlAll(mess, channel);
+        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
+            sys.sendAll(mess, channel);
+        } else {
+            var colon = mess.indexOf(":");
+            if (!botName && !html && colon !== -1) {
+                botName = mess.substring(0, colon);
+                mess = mess.slice(colon + 2);
+            }
+            sys.sendHtmlAll("<font color='" + mafia.bot.color + "'><timestamp/> <b>" + (botName ? botName : "±" + mafia.bot.name) + ":</b></font> " + (html ? mess : html_escape(mess)), channel);
+        }
         return true;
     }
     /* Replaces keywords in messages */
@@ -1458,9 +1450,9 @@ function Mafia(mafiachan) {
         sendChanAll("", channel);
         sendBorder(channel);
         if (this.theme.name == defaultThemeName) {
-            gamemsgAll("A new mafia game was started at <a href='po:join/Mafia'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
+            gamemsgAll("A new mafia game was started at <a href='po:join/" + sys.channel(mafiachan) + "'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
         } else {
-            gamemsgAll("A new " + (this.theme.altname ? this.theme.altname : this.theme.name) + "-themed mafia game was started at <a href='po:join/Mafia'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
+            gamemsgAll("A new " + (this.theme.altname ? this.theme.altname : this.theme.name) + "-themed mafia game was started at <a href='po:join/" + sys.channel(mafiachan) + "'>#" + sys.channel(mafiachan) + "</a>!", false, channel, true);
         }
         sendBorder(channel);
         sendChanAll("", channel);
@@ -1883,7 +1875,7 @@ function Mafia(mafiachan) {
         summary = summary.replace(/(https?:\/\/[^\s]+)/gi, function(url) { // stolen from http://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
             return '<a href="' + url + '">' + url + '</a>';
         });
-        gamemsgAll(summary, undefined, undefined, true);
+        gamemsgAll(summary, "±" + mafia.bot.name, undefined, true);
 
         if (sys.playersOfChannel(mafiachan).length < 150) {
             var time = parseInt(sys.time(), 10);
@@ -1938,7 +1930,7 @@ function Mafia(mafiachan) {
             return;
         }
         sendBorder();
-        gamemsgAll((src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!");
+        mafiabot.sendAll((src ? sys.name(src) : Config.Mafia.bot) + " has stopped the game!", mafiachan);
         sendBorder();
         sendChanAll("", mafiachan);
         if (sys.id('PolkaBot') !== undefined) {
@@ -3189,7 +3181,7 @@ function Mafia(mafiachan) {
             }
             if (mafia.signups.length < minp) {
                 gamemsgAll(null, "Well, Not Enough Players! ");
-                gamemsgAll("You need at least "+minp+" players to join (Current: " + mafia.signups.length + ").");
+                gamemsgAll("You need at least "+minp+" players to join (Current: " + mafia.signups.length + ").", "±Game");
                 sendBorder();
                 mafia.clearVariables();
                 mafia.usersToShove = {};
@@ -4379,7 +4371,20 @@ function Mafia(mafiachan) {
                         act = player.role.actions.standby[k];
                         charges = mafia.getCharges(player, "standby", k);
                         if (act.msg && (charges === undefined || charges > 0)) {
-                            gamemsg(names[j], act.msg, undefined, undefined, true);
+                            var msg = html_escape(act.msg), 
+                                colon = msg.indexOf(":"), 
+                                botName = "",
+                                regexp = /\s\/[A-Z]+[0-9]*[^A-Z]/gi,
+                                htmlLinkCommands = function(match) {
+                                    return match[0] + htmlLink(match.slice(1, -1)) + match.slice(-1);
+                                };
+                            if (colon !== -1) {
+                                botName = msg.substring(0, colon);
+                                msg = msg.slice(colon + 2);
+                            }
+                            botName = botName.replace(regexp, htmlLinkCommands);
+                            msg = msg.replace(regexp, htmlLinkCommands);
+                            gamemsg(names[j], msg !== "" ? msg : null, botName, undefined, true);
                         }
                     }
                 }
@@ -4797,8 +4802,7 @@ function Mafia(mafiachan) {
                 }
                 var help = html_escape(role.help).replace(/~Side~/gi, mafia.theme.trside(player.role.side))
                     .replace(/\s\/[A-Z]+[0-9]*[^A-Z]/gi, function(match) {
-                        var command = match.slice(1, -1);
-                        return match[0] + htmlLink(command) + match.slice(-1);
+                        return match[0] + htmlLink(match.slice(1, -1)) + match.slice(-1);
                     });
                 gamemsg(player.name, help, undefined, undefined, true);
                 var help2msg = (role.help2 || "");
@@ -5048,7 +5052,7 @@ function Mafia(mafiachan) {
         //var warner = typeof src == "string" ? src : sys.name(src);
         commandData = commandData.toLowerCase();
         this.clearOldWarnings( commandData );
-        gamemsg(src, null, "*** Warnings for " + commandData); // otherwise messages are the same as an actual warn
+        gamemsg(src, "*** Warnings for " + commandData); // otherwise messages are the same as an actual warn
         var hasWarns;
         for (var v in mafia.warningLog[commandData]) {
             var inst = mafia.warningLog[commandData][v];
