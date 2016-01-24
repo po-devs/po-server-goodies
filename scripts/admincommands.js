@@ -34,7 +34,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         
         if (!sys.isInChannel(tar, channel)) {
-            if (!SESSION.channels(channel).isChannelMember(src)) {
+            if (!SESSION.channels(channel).isChannelMember(tar)) {
                 SESSION.channels(channel).issueAuth(src, commandData, "member");
             }
             normalbot.sendAll(sys.name(src) + " summoned " + sys.name(tar) + " to this channel!", channel);
