@@ -3098,6 +3098,15 @@ function Safari() {
         }
 
         data = data.toLowerCase();
+        if (data === "*") {
+            if (player.cooldowns.costume > now()) {
+                safaribot.sendMessage(src, "You can change your costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
+            } else {
+                safaribot.sendMessage(src, "You are able to change your costume right now!", safchan);
+            }
+            return;
+        }
+        
         var cos = costumeAlias(data, true);
         var currentTime = now();
         var costumeName = costumeAlias(data, false, true);
