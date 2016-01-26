@@ -7580,13 +7580,13 @@ function Safari() {
         this.minPlayers = 1;
         
         this.silver = silver || false;
-        this.underdogPay = underdog || 2;
-        this.favoritePay = favorite || 1.25;
-        this.normalPay = normal || 1.75;
+        this.underdogPay = underdog || (silver ? 8 : 10);
+        this.favoritePay = favorite || (silver ? 1.35 : 1.5);
+        this.normalPay = normal || (silver ? 3 : 4);
         
-        this.minBet = minBet || 20;
-        this.maxBet = maxBet || 500;
-        this.goal = goal || 30;
+        this.minBet = minBet || (silver ? 1 : 10);
+        this.maxBet = maxBet || (silver ? 10 : 1000);
+        this.goal = goal || 50;
         this.betList = [];
         
         var r;
@@ -7622,7 +7622,7 @@ function Safari() {
         
         this.betRange = this.silver ? this.minBet + " and " + this.maxBet + " <b>" + itemAlias("silver", true, true) + "s</b>" : "$" + addComma(this.minBet) + " and $" + addComma(this.maxBet);
         
-        this.joinmsg = "Bet with " + readable(betCommands, "or") + "! Bets must be between " + this.betRange + " (Payout: Favorite " + this.favoritePay + "x, Underdog " + this.underdogPay + "x, Others " + this.normalPay + "x)!";
+        this.joinmsg = "Bet with " + readable(betCommands, "or") + "! Bets must be between " + this.betRange + " (Payout: Favorite (" + this.favorite + ") " + this.favoritePay + "x, Underdog (" + this.underdog + ") " + this.underdogPay + "x, Others " + this.normalPay + "x)!";
         
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The contestants will be " + readable(this.racersList, "and") + ", and they must reach the space " + this.goal + " to win!", safchan);
@@ -7655,13 +7655,13 @@ function Safari() {
         for (r in this.runners) {
             switch (r) {
                 case this.underdog:
-                    w = sys.rand(1, 6);
+                    w = sys.rand(1, 10);
                 break;
                 case this.favorite:
-                    w = sys.rand(2, 7);
+                    w = sys.rand(2, 11);
                 break;
                 default:
-                    w = sys.rand(1, 7);
+                    w = sys.rand(1, 11);
             }
             this.runners[r] += w;
             if (this.runners[r] >= this.goal) {
@@ -10618,7 +10618,9 @@ function Safari() {
             rafflePrizeObj = null;
         }
         try {
-            defaultItemData = JSON.parse(JSON.stringify(itemData));
+            if (!defaultItemData) {
+                defaultItemData = JSON.parse(JSON.stringify(itemData));
+            }
             var customValues = JSON.parse(permObj.get("customItemData")), e, i, obj;
             for (e in customValues) {
                 if (e in itemData) {
@@ -10631,7 +10633,9 @@ function Safari() {
         } catch (err) {
         }
         try {
-            defaultCostumeData = JSON.parse(JSON.stringify(costumeData));
+            if (!defaultCostumeData) {
+                defaultCostumeData = JSON.parse(JSON.stringify(costumeData));
+            }
             var customValues = JSON.parse(permObj.get("customCostumeData")), e, i, obj;
             for (e in customValues) {
                 if (e in costumeData) {
