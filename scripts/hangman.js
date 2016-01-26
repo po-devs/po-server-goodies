@@ -1382,8 +1382,6 @@ function Hangman() {
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
             "/passha: To give your Hangman Admin powers to an alt.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
-            "/changeword: To change the word in a question in the autogame/eventgame data base. Format /changeword index:word.",
-            "/changehint: To change the hint in a question in the autogame/eventgame data base. Format /changeword index:hint.",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used."
         ];
         var superAdminHelp = [
@@ -1393,6 +1391,8 @@ function Hangman() {
             "/hangmanadminoff: To demote a Hangman Admin or a Hangman Super Admin. Use /shangmanadminoff for a silent demotion.",
             "/addquest: To add a question to the autogame/eventgame data base. Format /addquest Answer:Hint:Guess number.",
             "/deletequest: To delete a question in the autogame/eventgame data base. Format /deletequest index.",
+            "/changeword: To change the word in a question in the autogame/eventgame data base. Format /changeword index:word.",
+            "/changehint: To change the hint in a question in the autogame/eventgame data base. Format /changeword index:hint.",
             "/eventgame: To turn eventgames on/off. Format /eventgame on or /eventgame off.",
             "/forceevent: Forces a regular event game to start.",
             "/forcesuddendeath: Forces a Sudden Death event game to start."
@@ -1578,16 +1578,6 @@ function Hangman() {
             hangman.searchQuest(src, commandData);
             return true;
         }
-
-        if (command === "changeword") {
-            hangman.changeWord(src, commandData);
-            return true;
-        }
-        
-        if (command === "changehint") {
-            hangman.changeHint(src, commandData);
-            return true;
-        }
         
      /*   if(command === "changechances") {
             hangman.changeChances(src, commandData);
@@ -1617,7 +1607,17 @@ function Hangman() {
             hangman.deleteQuest(src, commandData);
             return true;
         }
-
+        
+        if (command === "changeword") {
+            hangman.changeWord(src, commandData);
+            return true;
+        }
+        
+        if (command === "changehint") {
+            hangman.changeHint(src, commandData);
+            return true;
+        }
+        
         if (command === "config") {
             hangman.configGame(src, commandData);
             return true;
