@@ -8861,6 +8861,9 @@ function Safari() {
             delete challengeRequests[name];
         }
         var player = getAvatar(src);
+        if (typeof player.tutorial !== "object") {
+            this.sanitize(player);
+        }
         player.tutorial.privateWildPokemon = null;
         this.saveGame(player);
     };
