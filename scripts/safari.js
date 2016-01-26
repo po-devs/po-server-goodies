@@ -153,7 +153,7 @@ function Safari() {
         ninjaParty: [],
         megaTimers: [],
         starter: null,
-        starter2: null,
+        //starter2: null,
         lastLogin: null,
         consecutiveLogins: 1,
         lastViewedRules : 0,
@@ -1075,9 +1075,9 @@ function Safari() {
             player.balls.permfinder = 0;
 
             switch (player.starter) {
-                case 1: player.starter2 = 155; player.pokemon.push(155); break;
-                case 4: player.starter2 = 158; player.pokemon.push(158); break;
-                case 7: player.starter2 = 152; player.pokemon.push(152); break;
+                case 1: /*player.starter2 = 155;*/ player.pokemon.push(155); break;
+                case 4: /*player.starter2 = 158;*/  player.pokemon.push(158); break;
+                case 7: /*player.starter2 = 152;*/  player.pokemon.push(152); break;
             }
             safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + " Charges, and a " + sys.pokemon(player.starter2) + "!", safchan);
             //sys.sendAll("", safchan);
@@ -2290,7 +2290,8 @@ function Safari() {
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(sys.pokemon(leader)) ? dailyBoost.bonus : 1;
         var rulesMod = currentRules ? this.getRulesMod(player.party[0], currentRules) : 1;
         var costumeMod = 1;
-        if (player.costume === "preschooler" && (player.party[0] === player.starter || player.party[0] === player.starter2)) {
+        //if (player.costume === "preschooler" && (player.party[0] === player.starter || player.party[0] === player.starter2)) {
+        if (player.costume === "preschooler" && player.party[0] === player.starter) {
             var c = costumeData.preschooler;
             costumeMod = c.rate;
             var rec = player.records.pokesCaught;
@@ -9003,13 +9004,13 @@ function Safari() {
                 player.costume = "none";
             }
 
-            if (player.starter2 === null) {
+            /*if (player.starter2 === null || typeof player.starter2 !== "number") {
                 switch (player.starter) {
-                    case 1: player.starter2 = 155; break;
-                    case 4: player.starter2 = 157; break;
-                    case 7: player.starter2 = 152; break;
+                    case 1: case 2: case 3: player.starter2 = 155; break;
+                    case 4: case 4: case 5: player.starter2 = 158; break;
+                    case 7: case 8: case 9: player.starter2 = 152; break;
                 }
-            }
+            }*/
 
             this.saveGame(player);
         }
