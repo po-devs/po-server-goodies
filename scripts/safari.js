@@ -4008,7 +4008,7 @@ function Safari() {
             safaribot.sendMessage(src, "If you throw a " + bName + " now, you will have no way to catch a Pokémon because you are out of balls!", safchan);
            return;
         }
-        if (lastBaiters.indexOf(sys.name(src)) !== -1) {
+        if (lastBaiters.indexOf(sys.name(src).toLowerCase()) !== -1) {
             safaribot.sendMessage(src, "You just threw some " + bName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + baitCooldown + " seconds]" : ""), safchan);
             return;
         }
@@ -4057,7 +4057,7 @@ function Safari() {
             if (lastBaiters.length >= lastBaitersAmount) {
                 lastBaiters.shift();
             }
-            lastBaiters.push(sys.name(src));
+            lastBaiters.push(sys.name(src).toLowerCase());
 
             safari.createWild(null, null, 1, null, player.party[0], player);
             safari.throwBall(src, ballUsed, true);
@@ -8696,6 +8696,7 @@ function Safari() {
     this.transferAlt = function(name1, name2, user) {
         var player = getAvatarOff(name1);
         var target = getAvatarOff(name2);
+        var n1 = name1.toLowerCase(), n2 = name2.toLowerCase();
 
         var src = sys.id(name1);
         var targetId = sys.id(name2);
@@ -8822,6 +8823,12 @@ function Safari() {
                 }
                 return;
             }
+            if (lastBaiters.contains(n1) && !lastBaiters.contains(n2)) {
+                lastBaiters.splice(lastBaiters.indexOf(n1), 1, n2);
+            } else if (lastBaiters.contains(n2) && !lastBaiters.contains(n1)) {
+                lastBaiters.splice(lastBaiters.indexOf(n2), 1, n1);
+            }
+            
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.add(target.id, target.balls.entry);
             rafflePlayers.save();
@@ -8882,6 +8889,10 @@ function Safari() {
                 }
                 return;
             }
+            if (lastBaiters.contains(n1)) {
+                lastBaiters.splice(lastBaiters.indexOf(n1), 1, n2);
+            }
+            
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.remove(name1.toLowerCase());
             rafflePlayers.save();
