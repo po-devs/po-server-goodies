@@ -1074,12 +1074,13 @@ function Safari() {
             }
             player.balls.permfinder = 0;
 
+            var johto;
             switch (player.starter) {
-                case 1: /*player.starter2 = 155;*/ player.pokemon.push(155); break;
-                case 4: /*player.starter2 = 158;*/  player.pokemon.push(158); break;
-                case 7: /*player.starter2 = 152;*/  player.pokemon.push(152); break;
+                case 1: johto = 155; player.pokemon.push(155); break;
+                case 4: johto = 158; player.pokemon.push(158); break;
+                case 7: johto = 152; player.pokemon.push(152); break;
             }
-            safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + " Charges, and a " + sys.pokemon(player.starter2) + "!", safchan);
+            safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + " Charges, and a " + sys.pokemon(johto) + "!", safchan);
             //sys.sendAll("", safchan);
             //tutorbot.sendHtmlAll("<font color='DarkOrchid'>Congratulations to <b>" + html_escape(sys.name(src)) + "</b> on completing the tutorial!</font>", safchan);
             //sys.sendAll("", safchan);
