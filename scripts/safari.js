@@ -11268,9 +11268,6 @@ function Safari() {
                     var inB = parseInt(b.substr(0, b.indexOf(":")), 10);
                     return inB - inA;
                 });
-                for (e in list) {
-                    safaribot.sendMessage(src, list[e], safchan);
-                }
                 safari.showLogList(src, commandData, list, "ID Numbers", function(x) {
                     return x;
                 });
