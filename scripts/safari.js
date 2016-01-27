@@ -1665,7 +1665,7 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs) {
         var num,
             pokeId,
             shiny = sys.rand(0, shinyChance) < 1,
@@ -1774,8 +1774,15 @@ function Safari() {
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
 
-        var disguise = [132, 151, 570, 571].contains(num);
-        currentDisplay = (disguise ? sys.rand(1, 722) : num) + (shiny ? "" : 0);
+        var disguise, appearance;
+        if (appearAs) {
+            disguise = true;
+            appearance = appearAs;
+        } else {
+            disguise = [132, 151, 570, 571].contains(num);
+            appearance = sys.rand(1,722);
+        }
+        currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
         var currentId = poke(currentPokemonDisplay);
 
@@ -1783,7 +1790,7 @@ function Safari() {
 
         if (amount > 1) {
             var ret = [];
-            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + bst + ")</i><br/>";
+            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + bst + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + itemAlias("master", true, true) + "s allowed!</b><br/>" : "");
             for (var i = 0; i < amount; i++) {
                 ret += pokeInfo.sprite(currentPokemonDisplay);
             }
@@ -9360,7 +9367,7 @@ function Safari() {
             "*** Safari Owner Commands ***",
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
-            "/wild[event] [pokemon (optional)]: Spawns a random or designated wild Pokemon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls.",
+            "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokemon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokemon appear as something it is not.",
             "/horde: Spawns a group of random wild Pokemon with no restrictions. Use a valid dex number to spawn a specific Pokemon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
             "/editdata [type]։[item]։[property]։[value]: Changes a property from an item/costume.",
@@ -10519,22 +10526,35 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "wild" || command == "wilds" || command === "horde" || command === "wildevent") {
+            if (command === "wild" || command === "wildevent" || command === "horde") {
                 if (currentPokemon) {
                     safaribot.sendMessage(src, "There's already a Wild Pokemon out there silly!", safchan);
                     return true;
                 }
-                var info = getInputPokemon(commandData), num = info.num, makeShiny = info.shiny, amount = 1;
-                if (command === "wilds") {
-                    makeShiny = true;
+                var data = commandData.split(":");
+                var info = getInputPokemon(data[0]), num = info.num, makeShiny = info.shiny, amount = 1;
+                
+                var amt = command === "horde" ? 3 : 1;
+                if (data.length > 1) {
+                    amt = parseInt(data[1], 10)
+                    switch (amt) {
+                        case 2: amount = 2; break;
+                        case 3: amount = 3; break;
+                        case 4: amount = 4; break;
+                        default: amount = 1;
+                    }
                 }
-                if (command === "horde") {
-                    amount = 3; //Android might look crowded if more than 3
+                
+                
+                var appearAs = null;
+                if (data.length > 2) {
+                    appearAs = getInputPokemon(data[2]).num;
                 }
+                
                 if (command === "wildevent") {
                     wildEvent = true;
                 }
-                safari.createWild(num, makeShiny, amount);
+                safari.createWild(num, makeShiny, amount, null, null, null, appearAs);
                 return true;
             }
             if (command === "contest" || command === "contestsoft") {
@@ -10904,7 +10924,7 @@ function Safari() {
                 if (currentPokemon) {
                     safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
                     if (command === "scare") {
-                        safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentPokemon) + " away!", safchan);
+                        safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
                     }
                     if (isLegendary(currentPokemon) || typeof currentPokemon === "string") {
                         sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + "::\n");
