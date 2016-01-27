@@ -10857,7 +10857,7 @@ function Safari() {
                         player = string.substring(firstPos, lastPos).trim();
                         ranks.push(player);
                         if (!hasSave(player)) {
-                            playerState.push("<b>" + player + "</b>");
+                            playerState.push("<b>~~" + player + "~~</b>");
                             noSave++;
                         } else {
                             playerState.push(player);
@@ -10866,7 +10866,7 @@ function Safari() {
                     }
                     var rankString = ranks.join(", ");
                     var printString = playerState.join(", ");
-                    sys.sendHtmlMessage(src, "[" + link("/tourgift " + tourName + "*" + rankString, "Gift") + "] " + tourName + ": " + (noSave > 0 ? "/tourgift " + tourName + "*" : "") +  printString, safchan);
+                    sys.sendHtmlMessage(src, "[" + link("/tourgift " + tourName + "*" + rankString, "Gift") + "] " + tourName + ": " + (noSave > 0 ? "/tourgift " + tourName + "*" : "") + printString, safchan);
                     ranks = [];
                     playerState = [];
                     noSave = 0;
