@@ -802,7 +802,7 @@ function Hangman() {
             "±Rules: Do not create inappropriate answers, hints or guesses, or attempt to troll the game in any way. This includes but is not limited to offences such as guessing uncommon letters, deliberately spoiling the answer, or ending the game for reasons other than correcting errors.",
             "±Rules: Make sure all games are accessible, playable and spelled correctly. This includes but is not limited to relevant, non-vague, specific and non-opinionated subjects, games in other languages, suitable hints. Games that are lists e.g \"/start Shellos and Gastrodon:Pokemon\" are not allowed.",
             "±Rules: Remember to act in a cordial manner, both when interacting with channel users and authority, and playing the game.",
-            "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropiate person (HA for hangman, auth for server).",
+            "±Rules: Pay attention to channel and server authority (under /has and /auth respectively). Server /rules apply here too. If you have any doubt or see someone breaking the rules, contact the appropriate person (HA for hangman, auth for server).",
             "*** *********************************************************************** ***",
             ""
         ];
