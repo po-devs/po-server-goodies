@@ -1441,7 +1441,20 @@ function Safari() {
         }
         return false;
     }
-
+    function isRare(id) {
+        if (typeof id == "string") {
+            return true;
+        }
+        if (isLegendary(id)) {
+            return true;
+        }
+        var base = pokeInfo.species(id), form = pokeInfo.forme(id);
+        if (form > 0 && (!(base in wildForms) || form > wildForms[base] )) {
+            return true;
+        }
+        return false;
+    }
+    
     /* Item & Costume Functions */
     function itemAlias(name, returnGarbage, full) {
         name = name.toLowerCase();
@@ -2499,7 +2512,7 @@ function Safari() {
                     }
                 }
             }
-            if (isLegendary(currentPokemon) || typeof currentPokemon === "string") {
+            if (isRare(currentPokemon)) {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::caught::" + name + "'s " + itemAlias(ball, true, true) + "\n");
             }
             if (amt < 1) {
@@ -2558,7 +2571,7 @@ function Safari() {
                 "The wild {0} turned into MissingNo and glitched out of existence!",
                 "The wild {0} was not really wild! Their owner called them back to their Pokéball!"
             ];
-            if (isLegendary(currentPokemon) || typeof currentPokemon === "string") {
+            if (isRare(currentPokemon)) {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled::\n");
             }
 
@@ -10122,7 +10135,7 @@ function Safari() {
                     currentEvent = ev;
                 }
                 else {
-                    safaribot.sendMessage(src, info[0] + " is not a valid event! Type /startevent help for more information!!", safchan);
+                    safaribot.sendMessage(src, info[0] + " is not a valid event! Type /startevent help for more information!", safchan);
                 }
                 return true;
             }
@@ -10988,7 +11001,7 @@ function Safari() {
                     if (command === "scare") {
                         safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
                     }
-                    if (isLegendary(currentPokemon) || typeof currentPokemon === "string") {
+                    if (isRare(currentPokemon)) {
                         sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + "::\n");
                     }
                     currentPokemon = null;
