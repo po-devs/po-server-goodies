@@ -3672,7 +3672,7 @@ function Safari() {
             step = 1;
             advanceTutorial(src, step);
             return;
-        } else if (step === 12 && commandData.toLowerCase() === "finish") {
+        } else if (step === 12 && commandData && commandData.toLowerCase() === "finish") {
             step = 13;
         }
 
@@ -9918,7 +9918,7 @@ function Safari() {
                     "Shiny Pokémon Buffed/Nerfed: Shiny Pokémon gets Buffed/Nerfed.",
                     "Single-type Pokémon Buffed/Nerfed: Pokémon with only one type gets Buffed/Nerfed.",
                     "Dual-type Pokémon Buffed/Nerfed: Pokémon with only two types gets Buffed/Nerfed.",
-                    "Legendaries Nerfed: Legendaries Pokémon gets Nerfed.",
+                    "Legendaries Nerfed: Legendaries Pokémon get Nerfed.",
                     "Recommended BST: Pokémon outside of this BST range gets Nerfed.",
                     "",
                     "Inverted BST: Lower BST = Better.",
