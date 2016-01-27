@@ -11256,7 +11256,6 @@ function Safari() {
                 return true;
             }
             if (command === "showids") {
-                sys.sendMessage(src, "Players by ID Number: ", safchan);
                 var list = [];
                 for (var e in idnumList.hash) {
                     if (idnumList.hash.hasOwnProperty(e)) {
