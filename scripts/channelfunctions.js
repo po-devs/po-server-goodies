@@ -619,7 +619,7 @@ POChannel.prototype.getReadableList = function (type, os, searchData) {
                 if (!entries[x].hasOwnProperty("expiry")) {
                     continue;
                 }
-                if (searchData !== undefined && x.indexOf(searchData) === -1) {
+                if (searchData !== undefined && x.toLowerCase().indexOf(searchData.toLowerCase()) === -1) {
                     continue;
                 }
                 var playername = utilities.html_escape(x);
