@@ -2438,32 +2438,31 @@ function Mafia(mafiachan) {
                 var rrole = Object.keys(mafia.players).map(function(x) { return mafia.players[x].role.role; }, mafia);
                 var exdata, exrole, excludeRoles = appearAs.substring(1, appearAs.length);
                 while (excludeRoles.indexOf(":") !== -1) {
-                    exdata = delimSplit(":",excludeRoles);
+                    exdata = delimSplit(":", excludeRoles);
                     exrole = exdata[0];
                     while (rrole.indexOf(exrole) !== -1) {
-                        rrole.splice(rrole.indexOf(exrole),1);
+                        rrole.splice(rrole.indexOf(exrole), 1);
                     }
                     if (exrole == "~Inspector~") {
                         while (rrole.indexOf(inspector) !== -1) {
-                            rrole.splice(rrole.indexOf(inspector),1);
+                            rrole.splice(rrole.indexOf(inspector), 1);
                         }
                     }
                     excludeRoles = exdata[1];
                 }
                 if (rrole.length > 0) {
-                    return mafia.theme.trrole(rrole[sys.rand(0, rrole.length)]) ;
+                    return rrole[sys.rand(0, rrole.length)] ;
                 }
-                return role.translation;
-            } else if (appearAs == "~Inspector~") {
-                return mafia.theme.trrole(inspector) ;
+                return role;
+            } else if (appearAs === "~Inspector~") {
+                return inspector;
             } else {
-                return mafia.theme.trrole(appearAs) ;
+                return appearAs;
             }
+        } else if (Array.isArray(appearAs)) {
+            return appearAs[sys.rand(0, appearAs.length)];
         }
-        if (Array.isArray(appearAs)) {
-            return mafia.theme.trrole(appearAs[Math.floor(Math.random() * appearAs.length)]);
-        }
-        return role.translation;
+        return role;
     };
     this.kill = function (player, msg) {
         var killmsg = (msg || this.theme.killmsg || "~Player~ (~Role~) died!").replace(/~Player~/g, player.name).replace(/~Role~/g, player.role.translation);
@@ -3886,7 +3885,7 @@ function Mafia(mafiachan) {
                                 targetMode = targetMode || {};
                                 var inspectMode = target.role.actions.inspect || {};
                                 var disguise = target.disguiseRole;
-                                var inspectedRole = target.role.translation, inspectedSide = target.role.side;
+                                var inspectedRole = target.role.role, inspectedSide = target.role.side;
                                 var inspectSide = Sight == "Team" || targetMode.revealSide !== undefined;
 
                                 if (typeof Sight == "object") {
@@ -3912,10 +3911,10 @@ function Mafia(mafiachan) {
                                 var inspMsg;
                                 if (inspectSide) {
                                     inspMsg = ("inspectMsg" in Action ? Action.inspectMsg : "~Target~ is sided with the ~Result~!!");
-                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g,mafia.theme.trside(inspectedSide)), "±Info");
+                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g, mafia.theme.trside(inspectedSide)), "±Info");
                                 } else {
                                     inspMsg = ("inspectMsg" in Action ? Action.inspectMsg : "~Target~ is the ~Result~!!");
-                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g, inspectedRole), "±Info");
+                                    gamemsg(player.name, inspMsg.replace(/~Target~/g, target.name).replace(/~Result~/g, mafia.theme.trrole(inspectedRole)), "±Info");
                                 }
                             }
                             else if (command == "kill") {
@@ -6022,12 +6021,14 @@ function Mafia(mafiachan) {
                     var exposeMessage = (commandObject.exposemsg || "~Self~ revealed that ~Target~ is the ~Role~!");
                     var exposeTargetMessage = commandObject.exposedtargetmsg;
                     var inspectMode = target.role.actions.inspect || {};
-                    var revealedRole = mafia.theme.trrole(target.role.role);
+                    var revealedRole;
                     var revealedSide;
                     if (target.disguiseRole !== undefined) {
                         revealedRole = mafia.theme.trrole(target.disguiseRole);
                     } else if (inspectMode.revealAs !== undefined) {
-                        revealedRole = this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role);
+                        revealedRole = mafia.theme.trrole(this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role));
+                    } else {
+                        revealedRole = target.role.translation;
                     }
                     if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
                         revealedSide = mafia.theme.trside(inspectMode.seenSide);
