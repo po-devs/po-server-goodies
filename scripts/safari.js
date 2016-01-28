@@ -1243,7 +1243,6 @@ function Safari() {
         }
         return string + "s";
     }
-
     function readable(arr, last_delim) {
         if (!Array.isArray(arr))
             return arr;
@@ -1453,6 +1452,9 @@ function Safari() {
             return true;
         }
         return false;
+    }
+    function findLink(id) {
+        return link("/find " + poke(id), poke(id));
     }
     
     /* Item & Costume Functions */
@@ -2783,7 +2785,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        sys.sendHtmlMessage(src, this.showCostumes(player), safchan);
+        safaribot.sendHtmlMessage(src, this.showCostumes(player), safchan);
     };
     this.viewBox = function(src, data, textOnly, shopLink) {
         if (!validPlayers("self", src)) {
@@ -3115,9 +3117,10 @@ function Safari() {
         return out;
     };
     this.showCostumes = function (player) {
-        var out = [];
-        for (var i = 0; i < player.costumes.length; i++) {
-            out.push(costumeAlias(player.costumes[i], false, true));
+        var out = [], n, i;
+        for (i = 0; i < player.costumes.length; i++) {
+            n = costumeAlias(player.costumes[i], false, true);
+            out.push(link("/dressup " + n, n));
         }
         return "Owned Costumes: " + (out.length > 0 ? out.join(", ") : "None");
     };
@@ -6764,7 +6767,7 @@ function Safari() {
         if (data.length < 1 || !data[0]) {
             if (ongoing) {
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendMessage(src, "Collector: Hello, did you bring the " + readable(quest.requests.map(poke), "and") + " that I asked for?", safchan);
+                safaribot.sendHtmlMessage(src, "Collector: Hello, did you bring the " + readable(quest.requests.map(findLink), "and") + " that I asked for?", safchan);
                 if (player.tutorial.inTutorial) {
                     tutorMsg(src, "You can complete the Collector's request with " + link("/quest collector:finish"));
                 } else {
@@ -6815,7 +6818,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Collector: My requests are organized into 4 different levels:", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 180 and 320. Reward is 2.4x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 600. Reward is 4.8x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 599. Reward is 4.8x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 720, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
@@ -6866,7 +6869,7 @@ function Safari() {
                 var request = [];
                 var difficultBonus = [2.4, 3.3, 4.8, 10][level];
                 var minBST = [180, 320, 460, 500][level];
-                var maxBST = [320, 460, 600, 720][level];
+                var maxBST = [320, 460, 599, 720][level];
                 var amount = [3, 4, 5, 5][level];
                 var deadlineDays = 2;
 
@@ -6904,7 +6907,7 @@ function Safari() {
                     costumed = true;
                 }
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, "Collector: So you will help me? Great! Then bring me " + readable(request.map(poke), "and") + ", and I will pay you $" + addComma(payout) + " for them!" + (costumed ? "<i>[Note: Without PokeFan Costume only $" + addComma(quest.reward) + " is paid.]</i>" : ""), safchan);
+                safaribot.sendHtmlMessage(src, "Collector: So you will help me? Great! Then bring me " + readable(request.map(findLink), "and") + ", and I will pay you $" + addComma(payout) + " for them!" + (costumed ? "<i>[Note: Without PokeFan Costume only $" + addComma(quest.reward) + " is paid.]</i>" : ""), safchan);
                 safaribot.sendMessage(src, "Collector: But please don't take too long! If you take more than " + (deadlineDays * 24) + " hours, I may buy them from someone else!", safchan);
                 sys.sendMessage(src, "", safchan);
             break;
