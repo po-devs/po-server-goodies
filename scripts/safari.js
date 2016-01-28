@@ -8259,8 +8259,8 @@ function Safari() {
             this.maxBet = maxBet || (silver ? 10 : 50);
             
             this.underdogPay = underdog || (silver ? 6 : 200);
-            this.favoritePay = favorite || (silver ? 0.5 : 40);
-            this.normalPay = normal || (silver ? 2 : 80);
+            this.favoritePay = favorite || (silver ? 0.5 : 30);
+            this.normalPay = normal || (silver ? 2 : 70);
         } else {
             this.minBet = minBet || (silver ? 1 : 10);
             this.maxBet = maxBet || (silver ? 10 : 1000);
@@ -8555,8 +8555,20 @@ function Safari() {
             bet: bet,
             racer: racer
         };
+        var payout = 0;
+        switch (racer) {
+            case this.favorite:
+                payout = bet * this.favoritePay;
+                break;
+            case this.underdog:
+                payout = bet * this.underdogPay;
+                break;
+            default:
+                payout = bet * this.normalPay;
+        }
+        payout = this.silver ? plural(Math.floor(payout), itemAlias("silver", true, true)) : "$" + addComma(Math.floor(payout));
 
-        return " by betting " + (this.item ? plural(bet, itemAlias(this.item, true, true)) : "$" + addComma(bet)) + " on " + racer;
+        return " by betting " + (this.item ? plural(bet, itemAlias(this.item, true, true)) : "$" + addComma(bet)) + " on " + racer + " (Payout: " + payout + ")";
     };
 
     /* System Functions */
