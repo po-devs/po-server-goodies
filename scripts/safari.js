@@ -3265,7 +3265,7 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny, CanEvolve, FinalForm, CanMega or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
@@ -3287,6 +3287,7 @@ function Safari() {
         crit = info[0].toLowerCase();
         val = info.length > 1 ? info[1].toLowerCase() : "asc";
 
+        var noparam = ["shiny", "canevolve", "finalform", "canmega"];
         if (info.length >= 2) {
             switch (crit) {
                 case "number":
@@ -3313,10 +3314,19 @@ function Safari() {
                 case "repeated":
                     crit = "duplicate";
                     break;
+                case "canevolve":
+                    crit = "canevolve";
+                    break;
+                case "canmega":
+                    crit = "canmega";
+                    break;
+                case "finalform":
+                    crit = "finalform";
+                    break;
                 default:
                     crit = "abc";
             }
-        } else if (crit !== "shiny") {
+        } else if (!noparam.contains(crit)) {
             crit = "abc";
             val = info[0].toLowerCase();
         }
@@ -3382,6 +3392,30 @@ function Safari() {
                 }
             });
             title = "Pokémon with at least " + val + " duplicates";
+        }
+        else if (crit == "canevolve") {
+            player.pokemon.forEach(function(x){
+                if (pokeInfo.species(x) in evolutions) {
+                    list.push(x);
+                }
+            });
+            title = "Pokémon that can evolve";
+        }
+        else if (crit == "finalform") {
+            player.pokemon.forEach(function(x){
+                if (!(pokeInfo.species(x) in evolutions) && !isMega(x)) {
+                    list.push(x);
+                }
+            });
+            title = "Fully evolved Pokémon";
+        }
+        else if (crit == "canmega") {
+            player.pokemon.forEach(function(x){
+                if (!isMega(x) && pokeInfo.species(x) in megaEvolutions) {
+                    list.push(x);
+                }
+            });
+            title = "Pokémon that can mega evolve";
         }
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(list, title + " (" + list.length + ")", shopLink), safchan);
