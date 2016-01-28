@@ -426,19 +426,25 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "changeauth" || command == "changeauths") {
-        var pos = commandData.indexOf(' ');
-        if (pos == -1) return;
-        var newauth = commandData.substring(0, pos), name = commandData.substr(pos+1), tar = sys.id(name), silent = command == "changeauths";
-        if (newauth > 0 && !sys.dbRegistered(name)) {
+    if (command === "changeauth" || command === "changeauths") {
+        var pos = commandData.indexOf(" ");
+        if (pos === -1) return;
+        var newAuth = commandData.substring(0, pos),
+            name = commandData.substr(pos + 1),
+            tar = sys.id(name),
+            silent = command === "changeauths";
+        if (!isNaN(newAuth)) {
+            newAuth = (newAuth < 0 ? 0 : newAuth);
+        }
+        if (newAuth > 0 && !sys.dbRegistered(name)) {
             normalbot.sendMessage(src, "This person is not registered");
             normalbot.sendMessage(tar, "Please register, before getting auth");
             return;
         }
-        if (tar !== undefined) sys.changeAuth(tar, newauth);
-        else sys.changeDbAuth(name, newauth);
-        if (!silent) normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth);
-        else normalbot.sendAll("" + sys.name(src) + " changed auth of " + name + " to " + newauth, staffchannel);
+        if (tar !== undefined) sys.changeAuth(tar, newAuth);
+        else sys.changeDbAuth(name, newAuth);
+        if (!silent) normalbot.sendAll(sys.name(src) + " changed auth of " + name + " to " + newAuth);
+        else normalbot.sendAll(sys.name(src) + " changed auth of " + name + " to " + newAuth, staffchannel);
         return;
     }
     if (command == "variablereset") {
