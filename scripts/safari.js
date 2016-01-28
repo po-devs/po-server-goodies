@@ -4336,7 +4336,7 @@ function Safari() {
                 if (currentPokemon) {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
                     player.records.capsulesLost += 1;
-                } else if (contestCount > 0) {
+                } else if (contestCount > 0 || contestCooldown <= 13) {
                     giveReward = true;
                     reward = "safari";
                     amount = 1;
