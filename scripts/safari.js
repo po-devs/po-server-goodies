@@ -1874,6 +1874,9 @@ function Safari() {
         contestantsWild = [];
         wildEvent = false;
         nextRules = null;
+        if (currentPokemon && isRare(currentPokemon)) {
+            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the contest::\n");
+        }
         safari.createWild();
     };
     this.pickRules = function(theme) {
@@ -10655,6 +10658,9 @@ function Safari() {
             if (command === "skipcontest") {
                 if (contestCount > 0 || contestCooldown <= 180) {
                     if (contestCount > 0) {
+                        if (currentPokemon && isRare(currentPokemon)) {
+                            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the contest::\n");
+                        }
                         wildEvent = false;
                         currentPokemon = null;
                         currentDisplay = null;
@@ -11905,6 +11911,9 @@ function Safari() {
                             }
                         }
                     }
+                }
+                if (currentPokemon && isRare(currentPokemon)) {
+                    sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the contest::\n");
                 }
 
                 currentPokemon = null;
