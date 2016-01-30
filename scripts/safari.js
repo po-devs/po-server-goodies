@@ -10143,25 +10143,25 @@ function Safari() {
                     }
                     if (pLen > 1) {
                         val = parseInt(param[1], 10);
-                        if (val && !isNaN(val) && val < moneyCap) {
+                        if (val && !isNaN(val)) {
                             maxBet = val;
                         }
                     }
                     if (pLen > 2) {
-                        val = parseFloat(param[2], 10);
-                        if (val && !isNaN(val) && val > 1) {
+                        val = parseFloat(param[2]);
+                        if (val && !isNaN(val) && val > 0) {
                             favorite = val;
                         }
                     }
                     if (pLen > 3) {
-                        val = parseFloat(param[3], 10);
-                        if (val && !isNaN(val) && val > 1) {
+                        val = parseFloat(param[3]);
+                        if (val && !isNaN(val) && val > 0) {
                             underdog = val;
                         }
                     }
                     if (pLen > 4) {
-                        val = parseFloat(param[4], 10);
-                        if (val && !isNaN(val) && val > 1) {
+                        val = parseFloat(param[4]);
+                        if (val && !isNaN(val) && val > 0) {
                             normal = val;
                         }
                     }
@@ -10182,7 +10182,7 @@ function Safari() {
                             item = "safari";
                         }
                     }
-
+                    
                     var ev = new PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, (type == "silverrace" || type == "itemsilverrace"), item);
                     currentEvent = ev;
                 }
