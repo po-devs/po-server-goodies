@@ -1,5 +1,5 @@
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
-/*global sys, module, SESSION, script, safaribot, require, staffchannel, sachannel */
+/*global sys, module, SESSION, script, safaribot, require, updateModule, staffchannel, sachannel */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var utilities = require('utilities.js');
@@ -9219,7 +9219,24 @@ function Safari() {
     this.isChannelAdmin = function (src) {
         return SESSION.channels(safchan).isChannelAdmin(src);
     };
-
+    function runUpdate() {
+        var POglobal = SESSION.global();
+        var index, source;
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if ("safari.js" == POglobal.plugins[i].source) {
+                source = POglobal.plugins[i].source;
+                index = i;
+            }
+        }
+        if (index !== undefined) {
+            updateModule(source, function (module) {
+                POglobal.plugins[index] = module;
+                module.source = source;
+                module.init();
+            });
+        }
+    }
+    
     /* Help & Commands */
     this["help-string"] = ["safari: To know the safari commands"];
     this.showHelp = function (src) {
@@ -11181,6 +11198,20 @@ function Safari() {
                 } else {
                     safaribot.sendMessage(src, "Safari was not in an updating state.", safchan);
                 }
+                return true;
+            }
+            if (command === "updategame") {
+                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
+                    safariUpdating = true;
+                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                }
+                if (!safariUpdating) {
+                    safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
+                    return true;
+                }
+
+                safariUpdating = true;
+                runUpdate();
                 return true;
             }
             if (command === "updatelb") {
