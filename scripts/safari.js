@@ -8292,12 +8292,12 @@ function Safari() {
         this.silver = silver || false;
         
         if (item) {
-            this.minBet = minBet || (silver ? 2 : 1);
-            this.maxBet = maxBet || (silver ? 10 : 50);
+            this.minBet = minBet || (silver ? 10 : 1);
+            this.maxBet = maxBet || (silver ? 50 : 50);
             
-            this.underdogPay = underdog || (silver ? 6 : 200);
-            this.favoritePay = favorite || (silver ? 0.5 : 30);
-            this.normalPay = normal || (silver ? 2 : 70);
+            this.underdogPay = underdog || (silver ? 0.5 : 90);
+            this.favoritePay = favorite || (silver ? 0.1 : 20);
+            this.normalPay = normal || (silver ? 0.20: 45);
         } else {
             this.minBet = minBet || (silver ? 1 : 10);
             this.maxBet = maxBet || (silver ? 10 : 1000);
