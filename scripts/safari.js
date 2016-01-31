@@ -4400,8 +4400,6 @@ function Safari() {
             reward = ["rock", "wild", "rock", "rock", "rock", "rock", "wild", "safari"].random();
             giveReward = false;
         }
-        reward = "wild";
-        amount = 1;
         switch (reward) {
             case "master": {
                 if (player.balls[reward] >= getCap("master")) {
