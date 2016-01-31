@@ -7633,7 +7633,7 @@ function Safari() {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + args.count + " trainers so far!", safchan);
                     }
                 }
-                if (id) {
+                if (id && getAvatar(id)) {
                     var battle = new Battle(id, npc);
                     for (e = 0; e < viewers.length; e++) {
                         if (!battle.viewers.contains(viewers[e])) {
