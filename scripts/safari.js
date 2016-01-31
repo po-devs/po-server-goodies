@@ -7476,6 +7476,7 @@ function Safari() {
             return;
         }
         npc = JSON.parse(JSON.stringify(npc));
+        npc.postBattle = opponents[opt].postBattle;
         var rep = false, count = 0, list = player.party.map(function(x) { var arr = [sys.type(sys.pokeType1(x)), sys.type(sys.pokeType2(x))].sort(); return arr.join("|"); });
         for (var e = 0; e < 6; e++) {
             count = countRepeated(list, list[e]);
