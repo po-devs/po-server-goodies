@@ -3718,12 +3718,17 @@ function Safari() {
         if (cantBecause(src, "set a favorite ball", ["tutorial"])) {
             return;
         }
+        if (commandData === "*") {
+            safaribot.sendMessage(src, "Your favorite ball is " + itemAlias(player.favoriteBall, true, true) + "! This ball will be thrown automatically if you do not specify a ball when throwing.", safchan);
+            return;
+        }
+        
         var ball = itemAlias(commandData);
         if (!isBall(ball)) {
             ball = "safari";
         }
         player.favoriteBall = ball;
-        safaribot.sendMessage(src, "You changed your favorite ball to " + itemAlias(ball, true, true) + "! This ball will be thrown automatically if you do not specify a different ball when throwing.", safchan);
+        safaribot.sendMessage(src, "You changed your favorite ball to " + itemAlias(ball, true, true) + "! This ball will be thrown automatically if you do not specify a ball when throwing.", safchan);
         this.saveGame(player);        
     };
     
@@ -10991,7 +10996,7 @@ function Safari() {
                 var tour = commandData.split("*");
                 var targets = tour[1].split(", ");
                 var prizeLevel = 1, placing = 1;
-                var player, invalidPlayers = [], out = [], prizeArray;
+                var player, invalidPlayers = [], out = [], prizeTier;
                 for (var i in targets) {
                     i = targets[i];
                     player = getAvatarOff(i);
@@ -11000,25 +11005,25 @@ function Safari() {
                         placing++;
                         continue;
                     }
-                    prizeArray = [];
-                    switch (prizeLevel) {
+                    switch (placing) {
                         case 1:
-                            if (placing < 3) {
-                                player.balls.mega += 1;
-                                prizeArray.push("a Mega Stone");
-                            }
-                            /* falls through */
+                            player.balls.rare += 1;
+                            player.balls.pack += 1;
+                            player.balls.mega += 1;
+                            prizeTier = "Gold";
+                        break;
                         case 2:
                             player.balls.rare += 1;
-                            prizeArray.push("a Rare Candy");
-                            /* falls through */
-                        default:
-                            player.balls.gem += 1;
-                            prizeArray.push("an Ampere Gem");
+                            player.balls.pack += 1;
+                            prizeTier = "Silver";
+                        break;
+                        case 3:
+                            player.balls.pack += 1;
+                            prizeTier = "Bronze";
+                        break;
                     }
-                    prizeLevel++;
                     this.sanitize(player);
-                    out.push("<b>" + getOrdinal(placing) + "</b>: " + html_escape(i.toCorrectCase()) + " received " + readable(prizeArray, "and"));
+                    out.push("<b>" + getOrdinal(placing) + "</b>: " + html_escape(i.toCorrectCase()) + " (" + prizeTier + ")");
                     placing++;
                 }
                 if (out.length === 0) {
