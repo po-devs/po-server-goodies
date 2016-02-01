@@ -76,6 +76,7 @@ function Safari() {
             rare: 0,
             dust: 0,
             mega: 0,
+            spray: 0,
             amulet: 0,
             honey: 0,
             eviolite: 0,
@@ -143,6 +144,7 @@ function Safari() {
             consecutiveLogins: 0,
             gemsUsed: 0,
             megaEvolutions: 0,
+            devolutions: 0,
             wonderTrades: 0,
             factionMVPs: 0,
             factionWins: 0,
@@ -233,9 +235,10 @@ function Safari() {
         rock: {name: "rock", fullName: "Snowball", type: "usable", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
+        spray: {name: "spray", fullName: "Devolution Spray", type: "usable", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"]},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
-        itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},        
+        itemfinder: {name: "itemfinder", fullName: "Itemfinder", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
         permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "usable", icon: 0, price: 0, aliases:["permfinder"], tradable: false},
         dust: {name: "dust", fullName: "Candy Dust", type: "usable", icon: 24, price: 0, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
         salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt", "nacl"], tradable: false},
@@ -311,8 +314,8 @@ function Safari() {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
         honey: 6, eviolite: 6,
-        rare: 3, nugget: 7,
-        quick: 6, luxury: 6, clone: 6,
+        rare: 3, spray: 2, nugget: 6,
+        quick: 5, luxury: 6, clone: 6,
         rock: 8, bait: 8, silver: 9,
         gem: 6, gacha: 12,
         mega: 1
@@ -450,7 +453,7 @@ function Safari() {
             "minChance": 0,
             "min": [230, 400],
             "maxChance": 0.12,
-            "max": [430, 531]
+            "max": [490, 535]
         },
         "noLegendaries": {
             "chance": 0.07
@@ -481,9 +484,9 @@ function Safari() {
                 "defaultSet": {
                     "gacha": 10
                 },
-                "extra": {
+                "silver": {
                     "gacha": 15,
-                    "silver": 2
+                    "silver": 3
                 },
                 "gem": {
                     "gacha": 10,
@@ -496,14 +499,19 @@ function Safari() {
                 "dust": {
                     "gacha": 10,
                     "dust": 40
+                },
+                "rock": {
+                    "gacha": 15,
+                    "rock": 20
                 }
             },
             "chance": {
-                "defaultSet": 0.8,
-                "extra": 0.05,
+                "defaultSet": 0.75,
+                "silver": 0.05,
                 "gem": 0.05,
                 "nugget": 0.05,
-                "dust": 0.05
+                "dust": 0.05,
+                "rock": 0.05
             }
         }
     };
@@ -837,6 +845,9 @@ function Safari() {
     var evolutions = {
         "1":{"evo":2,"candies":207},"2":{"evo":3,"candies":656},"4":{"evo":5,"candies":207},"5":{"evo":6,"candies":668},"7":{"evo":8,"candies":207},"8":{"evo":9,"candies":663},"10":{"evo":11,"candies":105},"11":{"evo":12,"candies":332},"13":{"evo":14,"candies":105},"14":{"evo":15,"candies":332},"16":{"evo":17,"candies":178},"17":{"evo":18,"candies":402},"19":{"evo":20,"candies":347},"21":{"evo":22,"candies":371},"23":{"evo":24,"candies":368},"25":{"evo":26,"candies":407},"27":{"evo":28,"candies":378},"29":{"evo":30,"candies":186},"30":{"evo":31,"candies":424},"32":{"evo":33,"candies":186},"33":{"evo":34,"candies":424},"35":{"evo":36,"candies":406},"37":{"evo":38,"candies":424},"39":{"evo":40,"candies":365},"41":{"evo":42,"candies":232},"42":{"evo":169,"candies":449},"43":{"evo":44,"candies":201},"44":{"evo":[45,182],"candies":412},"46":{"evo":47,"candies":340},"48":{"evo":49,"candies":378},"50":{"evo":51,"candies":340},"52":{"evo":53,"candies":370},"54":{"evo":55,"candies":420},"56":{"evo":57,"candies":382},"58":{"evo":59,"candies":466},"60":{"evo":61,"candies":196},"61":{"evo":[62,186],"candies":424},"63":{"evo":64,"candies":204},"64":{"evo":65,"candies":575},"66":{"evo":67,"candies":207},"67":{"evo":68,"candies":424},"69":{"evo":70,"candies":199},"70":{"evo":71,"candies":412},"72":{"evo":73,"candies":433},"74":{"evo":75,"candies":199},"75":{"evo":76,"candies":416},"77":{"evo":78,"candies":420},"79":{"evo":[80,199],"candies":412},"81":{"evo":82,"candies":237},"82":{"evo":462,"candies":449},"84":{"evo":85,"candies":386},"86":{"evo":87,"candies":399},"88":{"evo":89,"candies":420},"90":{"evo":91,"candies":441},"92":{"evo":93,"candies":207},"93":{"evo":94,"candies":575},"95":{"evo":208,"candies":428},"96":{"evo":97,"candies":406},"98":{"evo":99,"candies":399},"100":{"evo":101,"candies":403},"102":{"evo":103,"candies":437},"104":{"evo":105,"candies":357},"108":{"evo":463,"candies":433},"109":{"evo":110,"candies":412},"111":{"evo":112,"candies":247},"112":{"evo":464,"candies":449},"113":{"evo":242,"candies":621},"114":{"evo":465,"candies":449},"116":{"evo":117,"candies":224},"117":{"evo":230,"candies":454},"118":{"evo":119,"candies":378},"120":{"evo":121,"candies":437},"123":{"evo":212,"candies":420},"125":{"evo":466,"candies":454},"126":{"evo":467,"candies":454},"129":{"evo":130,"candies":454},"133":{"evo":[470,471,135,134,136,196,197,700],"candies":656},"137":{"evo":233,"candies":263},"138":{"evo":139,"candies":416},"140":{"evo":141,"candies":416},"147":{"evo":148,"candies":214},"148":{"evo":149,"candies":699},"152":{"evo":153,"candies":207},"153":{"evo":154,"candies":656},"155":{"evo":156,"candies":207},"156":{"evo":157,"candies":668},"158":{"evo":159,"candies":207},"159":{"evo":160,"candies":663},"161":{"evo":162,"candies":349},"163":{"evo":164,"candies":371},"165":{"evo":166,"candies":328},"167":{"evo":168,"candies":328},"170":{"evo":171,"candies":386},"172":{"evo":25,"candies":163},"173":{"evo":35,"candies":165},"174":{"evo":39,"candies":138},"175":{"evo":176,"candies":207},"176":{"evo":468,"candies":627},"177":{"evo":178,"candies":395},"179":{"evo":180,"candies":186},"180":{"evo":181,"candies":428},"183":{"evo":184,"candies":353},"187":{"evo":188,"candies":173},"188":{"evo":189,"candies":386},"190":{"evo":424,"candies":405},"191":{"evo":192,"candies":357},"193":{"evo":469,"candies":433},"194":{"evo":195,"candies":361},"198":{"evo":430,"candies":424},"200":{"evo":429,"candies":416},"204":{"evo":205,"candies":391},"207":{"evo":472,"candies":428},"209":{"evo":210,"candies":378},"215":{"evo":461,"candies":428},"216":{"evo":217,"candies":420},"218":{"evo":219,"candies":344},"220":{"evo":221,"candies":230},"221":{"evo":473,"candies":445},"223":{"evo":224,"candies":403},"228":{"evo":229,"candies":420},"231":{"evo":232,"candies":420},"233":{"evo":474,"candies":449},"236":{"evo":[107,106,237],"candies":382},"238":{"evo":124,"candies":382},"239":{"evo":125,"candies":250},"240":{"evo":126,"candies":252},"246":{"evo":247,"candies":209},"247":{"evo":248,"candies":699},"252":{"evo":253,"candies":207},"253":{"evo":254,"candies":663},"255":{"evo":256,"candies":207},"256":{"evo":257,"candies":663},"258":{"evo":259,"candies":207},"259":{"evo":260,"candies":669},"261":{"evo":262,"candies":353},"263":{"evo":264,"candies":353},"265":{"evo":[266,268],"candies":105},"266":{"evo":267,"candies":332},"268":{"evo":269,"candies":323},"270":{"evo":271,"candies":173},"271":{"evo":272,"candies":552},"273":{"evo":274,"candies":173},"274":{"evo":275,"candies":403},"276":{"evo":277,"candies":361},"278":{"evo":279,"candies":361},"280":{"evo":281,"candies":142},"281":{"evo":[282,475],"candies":435},"283":{"evo":284,"candies":348},"285":{"evo":286,"candies":386},"287":{"evo":288,"candies":224},"288":{"evo":289,"candies":781},"290":{"evo":[291,292],"candies":291},"293":{"evo":294,"candies":184},"294":{"evo":295,"candies":412},"296":{"evo":297,"candies":398},"298":{"evo":183,"candies":128},"299":{"evo":476,"candies":441},"300":{"evo":301,"candies":319},"304":{"evo":305,"candies":219},"305":{"evo":306,"candies":610},"307":{"evo":308,"candies":344},"309":{"evo":310,"candies":399},"315":{"evo":407,"candies":433},"316":{"evo":317,"candies":392},"318":{"evo":319,"candies":386},"320":{"evo":321,"candies":420},"322":{"evo":323,"candies":575},"325":{"evo":326,"candies":395},"328":{"evo":329,"candies":173},"329":{"evo":330,"candies":598},"331":{"evo":332,"candies":399},"333":{"evo":334,"candies":412},"339":{"evo":340,"candies":393},"341":{"evo":342,"candies":393},"343":{"evo":344,"candies":420},"345":{"evo":346,"candies":416},"347":{"evo":348,"candies":416},"349":{"evo":[350],"candies":454},"353":{"evo":354,"candies":382},"355":{"evo":356,"candies":232},"356":{"evo":477,"candies":441},"360":{"evo":202,"candies":340},"361":{"evo":[362,478],"candies":403},"363":{"evo":364,"candies":209},"364":{"evo":365,"candies":445},"366":{"evo":[367,368],"candies":407},"371":{"evo":372,"candies":214},"372":{"evo":373,"candies":699},"374":{"evo":375,"candies":214},"375":{"evo":376,"candies":699},"387":{"evo":388,"candies":207},"388":{"evo":389,"candies":656},"390":{"evo":391,"candies":207},"391":{"evo":392,"candies":668},"393":{"evo":394,"candies":207},"394":{"evo":395,"candies":663},"396":{"evo":397,"candies":173},"397":{"evo":398,"candies":407},"399":{"evo":400,"candies":344},"401":{"evo":402,"candies":323},"403":{"evo":404,"candies":185},"404":{"evo":405,"candies":439},"406":{"evo":315,"candies":204},"408":{"evo":409,"candies":416},"410":{"evo":411,"candies":416},"412":{"evo":[413,414],"candies":356},"415":{"evo":416,"candies":398},"418":{"evo":419,"candies":416},"420":{"evo":421,"candies":378},"422":{"evo":423,"candies":399},"425":{"evo":426,"candies":418},"427":{"evo":428,"candies":403},"431":{"evo":432,"candies":380},"433":{"evo":358,"candies":357},"434":{"evo":435,"candies":402},"436":{"evo":437,"candies":420},"438":{"evo":185,"candies":344},"439":{"evo":122,"candies":386},"440":{"evo":113,"candies":230},"443":{"evo":444,"candies":209},"444":{"evo":445,"candies":699},"446":{"evo":143,"candies":454},"447":{"evo":448,"candies":604},"449":{"evo":450,"candies":441},"451":{"evo":452,"candies":420},"453":{"evo":454,"candies":412},"456":{"evo":457,"candies":386},"458":{"evo":226,"candies":391},"459":{"evo":460,"candies":415},"495":{"evo":496,"candies":211},"496":{"evo":497,"candies":660},"498":{"evo":499,"candies":213},"499":{"evo":500,"candies":660},"501":{"evo":502,"candies":211},"502":{"evo":503,"candies":660},"504":{"evo":505,"candies":353},"506":{"evo":507,"candies":189},"507":{"evo":508,"candies":420},"509":{"evo":510,"candies":375},"511":{"evo":512,"candies":418},"513":{"evo":514,"candies":418},"515":{"evo":516,"candies":418},"517":{"evo":518,"candies":409},"519":{"evo":520,"candies":183},"520":{"evo":521,"candies":410},"522":{"evo":523,"candies":417},"524":{"evo":525,"candies":199},"525":{"evo":526,"candies":433},"527":{"evo":528,"candies":357},"529":{"evo":530,"candies":427},"532":{"evo":533,"candies":207},"533":{"evo":534,"candies":424},"535":{"evo":536,"candies":196},"536":{"evo":537,"candies":428},"540":{"evo":541,"candies":194},"541":{"evo":542,"candies":420},"543":{"evo":544,"candies":184},"544":{"evo":545,"candies":407},"546":{"evo":547,"candies":403},"548":{"evo":549,"candies":403},"551":{"evo":552,"candies":179},"552":{"evo":553,"candies":597},"554":{"evo":555,"candies":403},"557":{"evo":558,"candies":399},"559":{"evo":560,"candies":410},"562":{"evo":563,"candies":406},"564":{"evo":565,"candies":416},"566":{"evo":567,"candies":652},"568":{"evo":569,"candies":398},"570":{"evo":571,"candies":428},"572":{"evo":573,"candies":395},"574":{"evo":575,"candies":199},"575":{"evo":576,"candies":412},"577":{"evo":578,"candies":189},"578":{"evo":579,"candies":412},"580":{"evo":581,"candies":397},"582":{"evo":583,"candies":201},"583":{"evo":584,"candies":449},"585":{"evo":586,"candies":399},"588":{"evo":589,"candies":416},"590":{"evo":591,"candies":390},"592":{"evo":593,"candies":403},"595":{"evo":596,"candies":396},"597":{"evo":598,"candies":411},"599":{"evo":600,"candies":224},"600":{"evo":601,"candies":437},"602":{"evo":603,"candies":207},"603":{"evo":604,"candies":433},"605":{"evo":606,"candies":407},"607":{"evo":608,"candies":189},"608":{"evo":609,"candies":598},"610":{"evo":611,"candies":209},"611":{"evo":612,"candies":621},"613":{"evo":614,"candies":407},"616":{"evo":617,"candies":416},"619":{"evo":620,"candies":428},"622":{"evo":623,"candies":555},"624":{"evo":625,"candies":412},"627":{"evo":628,"candies":428},"629":{"evo":630,"candies":428},"633":{"evo":634,"candies":214},"634":{"evo":635,"candies":699},"636":{"evo":637,"candies":462},"650":{"evo":651,"candies":207},"651":{"evo":652,"candies":663},"653":{"evo":654,"candies":209},"654":{"evo":655,"candies":668},"656":{"evo":657,"candies":207},"657":{"evo":658,"candies":663},"659":{"evo":660,"candies":355},"661":{"evo":662,"candies":195},"662":{"evo":663,"candies":624},"664":{"evo":665,"candies":109},"665":{"evo":666,"candies":345},"667":{"evo":668,"candies":426},"669":{"evo":670,"candies":189},"670":{"evo":671,"candies":464},"672":{"evo":673,"candies":446},"674":{"evo":675,"candies":416},"677":{"evo":678,"candies":391},"679":{"evo":680,"candies":228},"680":{"evo":681,"candies":598},"682":{"evo":683,"candies":388},"684":{"evo":685,"candies":403},"686":{"evo":687,"candies":405},"688":{"evo":689,"candies":420},"690":{"evo":691,"candies":415},"692":{"evo":693,"candies":420},"694":{"evo":695,"candies":404},"696":{"evo":697,"candies":438},"698":{"evo":699,"candies":651},"704":{"evo":705,"candies":231},"705":{"evo":706,"candies":699},"708":{"evo":709,"candies":398},"710":{"evo":711,"candies":415},"712":{"evo":713,"candies":432},"714":{"evo":715,"candies":449}
     };
+    var devolutions = {
+        "2":1,"3":2,"5":4,"6":5,"8":7,"9":8,"11":10,"12":11,"14":13,"15":14,"17":16,"18":17,"20":19,"22":21,"24":23,"26":25,"28":27,"30":29,"31":30,"33":32,"34":33,"36":35,"38":37,"40":39,"42":41,"169":42,"44":43,"45":44,"182":44,"47":46,"49":48,"51":50,"53":52,"55":54,"57":56,"59":58,"61":60,"62":61,"186":61,"64":63,"65":64,"67":66,"68":67,"70":69,"71":70,"73":72,"75":74,"76":75,"78":77,"80":79,"199":79,"82":81,"462":82,"85":84,"87":86,"89":88,"91":90,"93":92,"94":93,"208":95,"97":96,"99":98,"101":100,"103":102,"105":104,"463":108,"110":109,"112":111,"464":112,"242":113,"465":114,"117":116,"230":117,"119":118,"121":120,"212":123,"466":125,"467":126,"130":129,"470":133,"471":133,"135":133,"134":133,"136":133,"196":133,"197":133,"700":133,"233":137,"139":138,"141":140,"148":147,"149":148,"153":152,"154":153,"156":155,"157":156,"159":158,"160":159,"162":161,"164":163,"166":165,"168":167,"171":170,"25":172,"35":173,"39":174,"176":175,"468":176,"178":177,"180":179,"181":180,"184":183,"188":187,"189":188,"424":190,"192":191,"469":193,"195":194,"430":198,"429":200,"205":204,"472":207,"210":209,"461":215,"217":216,"219":218,"221":220,"473":221,"224":223,"229":228,"232":231,"474":233,"107":236,"106":236,"237":236,"124":238,"125":239,"126":240,"247":246,"248":247,"253":252,"254":253,"256":255,"257":256,"259":258,"260":259,"262":261,"264":263,"266":265,"268":265,"267":266,"269":268,"271":270,"272":271,"274":273,"275":274,"277":276,"279":278,"281":280,"282":281,"475":281,"284":283,"286":285,"288":287,"289":288,"291":290,"292":290,"294":293,"295":294,"297":296,"183":298,"476":299,"301":300,"305":304,"306":305,"308":307,"310":309,"407":315,"317":316,"319":318,"321":320,"323":322,"326":325,"329":328,"330":329,"332":331,"334":333,"340":339,"342":341,"344":343,"346":345,"348":347,"350":349,"354":353,"356":355,"477":356,"202":360,"362":361,"478":361,"364":363,"365":364,"367":366,"368":366,"372":371,"373":372,"375":374,"376":375,"388":387,"389":388,"391":390,"392":391,"394":393,"395":394,"397":396,"398":397,"400":399,"402":401,"404":403,"405":404,"315":406,"409":408,"411":410,"413":412,"414":412,"416":415,"419":418,"421":420,"423":422,"426":425,"428":427,"432":431,"358":433,"435":434,"437":436,"185":438,"122":439,"113":440,"444":443,"445":444,"143":446,"448":447,"450":449,"452":451,"454":453,"457":456,"226":458,"460":459,"496":495,"497":496,"499":498,"500":499,"502":501,"503":502,"505":504,"507":506,"508":507,"510":509,"512":511,"514":513,"516":515,"518":517,"520":519,"521":520,"523":522,"525":524,"526":525,"528":527,"530":529,"533":532,"534":533,"536":535,"537":536,"541":540,"542":541,"544":543,"545":544,"547":546,"549":548,"552":551,"553":552,"555":554,"558":557,"560":559,"563":562,"565":564,"567":566,"569":568,"571":570,"573":572,"575":574,"576":575,"578":577,"579":578,"581":580,"583":582,"584":583,"586":585,"589":588,"591":590,"593":592,"596":595,"598":597,"600":599,"601":600,"603":602,"604":603,"606":605,"608":607,"609":608,"611":610,"612":611,"614":613,"617":616,"620":619,"623":622,"625":624,"628":627,"630":629,"634":633,"635":634,"637":636,"651":650,"652":651,"654":653,"655":654,"657":656,"658":657,"660":659,"662":661,"663":662,"665":664,"666":665,"668":667,"670":669,"671":670,"673":672,"675":674,"678":677,"680":679,"681":680,"683":682,"685":684,"687":686,"689":688,"691":690,"693":692,"695":694,"697":696,"699":698,"705":704,"706":705,"709":708,"711":710,"713":712,"715":714
+    };
     var megaEvolutions = {
         "3":[65539],"6":[65542, 131078],"9":[65545],"15":[65551],"18":[65554],"65":[65601],"80":[65616],"94":[65630],"115":[65651],"127":[65663],"130":[65666],"142":[65678],"150":[65686, 131222],"181":[65717],"208":[65744],"212":[65748],"214":[65750],"229":[65765],"248":[65784],"254":[65790],"257":[65793],"260":[65796],"282":[65818],"302":[65838],"303":[65839],"306":[65842],"308":[65844],"310":[65846],"319":[65855],"323":[65859],"334":[65870],"354":[65890],"359":[65895],"362":[65898],"373":[65909],"376":[65912],"380":[65916],"381":[65917],"382":[65918],"383":[65919],"384":[65920],"428":[65964],"445":[65981],"448":[65984],"460":[65996],"475":[66011],"531":[66067],"719":[66255]
     };
@@ -856,6 +867,8 @@ function Safari() {
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var dailyBoost;
     var scientistQuest;
+    var ccatch = "ccatch";
+    var ccatch2 = "ccatchh";
     }
 
     /* Safari Functions */
@@ -1228,7 +1241,7 @@ function Safari() {
         }
         var q = parseFloat(qty);
         qty = addComma(qty);
-        //A pokemon name is plural and singular        
+        //A pokemon name is plural and singular
         if (Math.abs(q) !== 1 && !getInputPokemon(string).name) {
             if (altplural) {
                 return qty + " " + altplural;
@@ -1252,14 +1265,15 @@ function Safari() {
     }
     function es(string) {
         var end = string.charAt(string.length-1); //Last character would be the quotes
-        var lasttwo = string.charAt(string.length-2) + end;
+        var preEnd = string.charAt(string.length-2);
+        var lasttwo = preEnd + end;
         if (["ch", "sh"].contains(lasttwo) || ["x", "z"].contains(end)) {
             return string + "es";
         }
         if (end === "s") {
             return string;
         }
-        if (end === "y") {
+        if (end === "y" && !["a", "e", "i", "o", "u"].contains(preEnd)) {
             return string.slice(0, -1) + "ies";
         }
         return string + "s";
@@ -1598,7 +1612,7 @@ function Safari() {
                 }
             } else {
                 if (first) {
-                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=13>Inventory</th></tr><tr>";
+                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
                 } else {
                     ret += "<tr>";
@@ -1664,7 +1678,7 @@ function Safari() {
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e)) && !(wildEvent && e === "master")) {
-                ret += "«" + link("/ccatch " + itemData[e].name, cap(itemData[e].name)) + "» ";
+                ret += "«" + link("/" + ccatch + " " + itemData[e].name, cap(itemData[e].name)) + "» ";
                 hasBalls = true;
             }
         }
@@ -3129,7 +3143,7 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "mega", "entry"];
+        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "entry"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "rock", "stick"];
         var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget"];
 
@@ -3729,7 +3743,7 @@ function Safari() {
         }
         player.favoriteBall = ball;
         safaribot.sendMessage(src, "You changed your favorite ball to " + itemAlias(ball, true, true) + "! This ball will be thrown automatically if you do not specify a ball when throwing.", safchan);
-        this.saveGame(player);        
+        this.saveGame(player);
     };
     
     /* Tutorial */
@@ -4168,6 +4182,10 @@ function Safari() {
             safari.throwBall(src, ballUsed, true);
             preparationFirst = sys.name(src).toLowerCase();
             lastBaitersDecay = lastBaitersDecayTime;
+            
+            if (nextGachaSpawn <= now() + 9 * 1000) {
+                nextGachaSpawn = now() + sys.rand(8, 11) * 1000;
+            }
         } else {
             player.cooldowns.bait = now() + (itemData.bait.failCD + sys.rand(0,4)) * 1000;
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.", safchan);
@@ -4443,6 +4461,9 @@ function Safari() {
                             preparationFirst = sys.name(src).toLowerCase();
                         }
                         nextGachaSpawn = currentTime + 23 * 1000;
+                        if (baitCooldown <= 9) {
+                            baitCooldown = sys.rand(9, 13);
+                        }
                     }
                 }
             }
@@ -4509,7 +4530,7 @@ function Safari() {
         gachaJackpot += 1;
         SESSION.global().safariGachaJackpot = gachaJackpot;
     };
-    this.useCandy = function(src, commandData) {
+    this.useCandyDust = function(src, commandData) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -4625,6 +4646,90 @@ function Safari() {
         if (isTut) {
             advanceTutorial(src, 9);
         }
+    };
+    this.useSpray = function(src, commandData) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var reason = "devolve a Pokémon";
+        var input = commandData.split(":");
+        var info = getInputPokemon(input[0]);
+        var starter = input.length > 1 ? input[1].toLowerCase() : "*";
+        var shiny = info.shiny;
+        var num = info.num;
+        if (!num) {
+            safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+            return;
+        }
+        var id = info.id;
+        if (player.pokemon.indexOf(id) == -1) {
+            safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
+            return;
+        }
+        if (isMega(id)) {
+            safaribot.sendMessage(src, "You cannot devolve a Mega Pokémon!", safchan);
+            return;
+        }
+        
+        var species = pokeInfo.species(num);
+        if (!(species in devolutions) || sys.pokemon(info.id) === "Floette-EF") {
+            safaribot.sendMessage(src, "This Pokémon cannot devolve!", safchan);
+            return;
+        }
+
+        var evoData = devolutions[species];
+        
+        if (!["confirm", "starter", "normal"].contains(starter)) {
+            safaribot.sendHtmlMessage(src, info.name + " can devolve into " + poke(evoData) + " with a " + itemAlias("spray", true, true) + ". ", safchan);
+            safaribot.sendHtmlMessage(src, "If you really wish to devolve " + info.name + ", type " + link("/spray " + info.input + ":confirm") + ".", safchan);
+            return;
+        }
+
+        if (info.input in player.shop) {
+            safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before devolving them!", safchan);
+            return;
+        }
+
+        var evolveStarter = true;
+        if (player.starter == id) {
+            var count = countRepeated(player.pokemon, id);
+            if (count > 1) {
+                if (starter == "starter") {
+                    evolveStarter = true;
+                } else if (starter == "normal") {
+                    evolveStarter = false;
+                } else {
+                    safaribot.sendMessage(src, "This Pokémon is your starter, but you have more than one! To pick which one you want to devolve, type /spray " + info.input +":starter or /spray " + info.input +":normal.", safchan);
+                    return;
+                }
+            }
+        }
+
+        var restrictions = ["auction", "battle", "item", "event"];
+        if (player.party[0] === id) {
+            restrictions = restrictions.concat(["wild", "contest"]);
+            reason = "devolve your active Pokémon";
+        }
+        if (cantBecause(src, reason, restrictions, "spray")) {
+            return;
+        }
+
+        var forme = pokeInfo.forme(num);
+        if (forme !== 0) {
+            var tempForme = pokeInfo.calcForme(evoData, forme);
+            if (sys.pokemon(tempForme).toLowerCase() !== "missingno") {
+                evoData = tempForme;
+            }
+        }
+        var evolvedId = shiny ? "" + evoData : evoData;
+
+        player.balls.spray -= 1;
+        player.records.devolutions += 1;
+
+        this.evolvePokemon(src, info, evolvedId, "devolved into", evolveStarter);
+        this.logLostCommand(sys.name(src), "spray " + commandData, "devolved into " + poke(evolvedId));
+        safaribot.sendMessage(src, "You used a " + itemAlias("spray", true, true) + " into your " + info.name + ", making them devolve into " + poke(evolvedId) + "!", safchan);
     };
     this.useMegaStone = function(src, commandData) {
         if (!validPlayers("self", src)) {
@@ -6810,7 +6915,7 @@ function Safari() {
                 this.scientistQuest(src, args);
             break;
             case "arena":
-                this.fightNPC(src, args);
+                this.fightArena(src, args);
             break;
             case "wonder":
             case "wondertrade":
@@ -7236,7 +7341,7 @@ function Safari() {
         };
         permObj.add("scientistQuest", JSON.stringify(scientistQuest));
     };
-    this.fightNPC = function(src, data) {
+    this.fightArena = function(src, data) {
         var player = getAvatar(src);
         var reason = "start a battle";
         if (cantBecause(src, reason, ["tutorial"])) {
@@ -7375,6 +7480,33 @@ function Safari() {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
         }
+        npc = JSON.parse(JSON.stringify(npc));
+        npc.postBattle = opponents[opt].postBattle;
+        var rep = false, count = 0, list = player.party.map(function(x) { var arr = [sys.type(sys.pokeType1(x)), sys.type(sys.pokeType2(x))].sort(); return arr.join("|"); });
+        for (var e = 0; e < 6; e++) {
+            count = countRepeated(list, list[e]);
+            if (count > 3) {
+                rep = player.party[e];
+                break;
+            }
+        }
+        if (rep) {
+            var oppTeam = npc.party.concat().shuffle(), result = [], rest = [], t1 = sys.type(sys.pokeType1(rep)), t2 = sys.type(sys.pokeType2(rep)), p1, p2;
+            for (e = 0; e < oppTeam.length; e++) {
+                p1 = sys.type(sys.pokeType1(oppTeam[e])), p2 = sys.type(sys.pokeType2(oppTeam[e]));
+                if (result.length < count && this.checkEffective(p1, p2, t1, t2) >= this.checkEffective(t1, t2, p1, p2)) {
+                    result.push(oppTeam[e]);
+                } else {
+                    rest.push(oppTeam[e]);
+                }
+            }
+            rest = rest.shuffle();
+            while (result.length < 6) {
+                result.push(rest.shift());
+            }
+            npc.party = result;
+        }
+        
         npc.postArgs.name = npc.name;
         player.money -= cost;
         this.saveGame(player);
@@ -7506,7 +7638,7 @@ function Safari() {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + args.count + " trainers so far!", safchan);
                     }
                 }
-                if (id) {
+                if (id && getAvatar(id)) {
                     var battle = new Battle(id, npc);
                     for (e = 0; e < viewers.length; e++) {
                         if (!battle.viewers.contains(viewers[e])) {
@@ -9332,6 +9464,7 @@ function Safari() {
             rock: "A small snowball that can be thrown to potentially freeze another player for a short period. Has a " + itemData.rock.throwCD/1000 + " second cooldown. Use with \"/snowball [Player]\".",
             rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
+            spray: "A spray that affects the genetic code of a Pokémon, making them devolve. Use with \"/spray [Pokémon]\". Obtained via  Prize Packs.",
             mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained via Official Giveaways and Prize Packs.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
             itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day. Use with \"/finder\".",
@@ -9504,6 +9637,7 @@ function Safari() {
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/evolve: Use a Candy Dusts to evolve a Pokémon*.",
+            "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/megastone: Use a Mega Stone to mega evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
@@ -9635,7 +9769,7 @@ function Safari() {
                 safari.startGame(src, commandData);
                 return true;
             }
-            if (command === "catch" || command === "throw" || command === "ccatch") {
+            if (command === "catch" || command === "throw" || command === ccatch || command === ccatch2) {
                 safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
@@ -9780,7 +9914,11 @@ function Safari() {
                 return true;
             }
             if (command === "evolve") {
-                safari.useCandy(src, commandData);
+                safari.useCandyDust(src, commandData);
+                return true;
+            }
+            if (command === "spray" || command === "devolve" || command === "devolution" || command === "devolutionspray") {
+                safari.useSpray(src, commandData);
                 return true;
             }
             if (command === "mega" || command === "megastone") {
@@ -11521,6 +11659,22 @@ function Safari() {
                 safaribot.sendMessage(src, "ID Numbers successfully reloaded!", safchan);
                 return true;
             }
+            if (command === "setccatch" || command === "setccatch2") {
+                if (commandData === "*") {
+                    safaribot.sendMessage(src, "Current ccatch are '" + ccatch + "' and '" + ccatch2 + "'!", safchan);
+                    return true;
+                }
+                if (command === "setccatch") {
+                    ccatch = commandData.toLowerCase();
+                    permObj.add("ccatch", ccatch);
+                    safaribot.sendMessage(src, "Changed ccatch to " + ccatch + "!", safchan);
+                } else {
+                    ccatch2 = commandData.toLowerCase();
+                    permObj.add("ccatch2", ccatch2);
+                    safaribot.sendMessage(src, "Changed ccatch2 to " + ccatch2 + "!", safchan);
+                }
+                return true;
+            }
             if (command === "editdata") {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "Syntax: /editdata [costume/item]:[Name]:[Property]:[New Value].", safchan);
@@ -11692,6 +11846,12 @@ function Safari() {
             rafflePrizeObj = JSON.parse(permObj.get("rafflePrize"));
         } catch (err) {
             rafflePrizeObj = null;
+        }
+        if (permObj.hash.hasOwnProperty("ccatch")) {
+            ccatch = permObj.get("ccatch");
+        }
+        if (permObj.hash.hasOwnProperty("ccatch2")) {
+            ccatch2 = permObj.get("ccatch2");
         }
         try {
             if (!defaultItemData) {
