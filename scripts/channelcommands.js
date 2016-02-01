@@ -697,7 +697,7 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
         sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edit rule [number].", channel);
     }
-    if (SESSION.global().permaTours.indexOf(channel) > -1) {
+    if (Array.isArray(SESSION.global().permaTours) && SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
         sys.sendMessage(src, "/join: Enters you to in a tournament.", channel);
         sys.sendMessage(src, "/unjoin: Withdraws you from a tournament.", channel);
