@@ -1331,35 +1331,29 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
-    sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
-    commandbot.sendMessage(src, "Use !commands to see the commands!");
+    sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
+    sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
-    if (sys.numPlayers() > maxPlayersOnline) {
-        maxPlayersOnline = sys.numPlayers();
-    }
-
+    maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-
-    countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".");
-    if (typeof(this.startUpTime()) == "string")
-    countbot.sendMessage(src, "Server uptime is "+this.startUpTime());
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + " | " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
 
     callplugins("afterLogIn", src);
 
-//   if (SESSION.users(src).android) {
-//        sys.changeTier(src, "Challenge Cup");
-//        if (sys.existChannel("PO Android")) {
-//            var androidChan = sys.channelId("PO Android");
-//            sys.putInChannel(src, androidChan);
-//            sys.kick(src, 0);
-//            sys.sendMessage(src, "*********", androidChan);
-//            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
-//            sys.sendMessage(src, "*********", androidChan);
-//        }
-//    }
+   /*if (SESSION.users(src).android) {
+        sys.changeTier(src, "Challenge Cup");
+        if (sys.existChannel("PO Android")) {
+            var androidChan = sys.channelId("PO Android");
+            sys.putInChannel(src, androidChan);
+            sys.kick(src, 0);
+            sys.sendMessage(src, "*********", androidChan);
+            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
+            sys.sendMessage(src, "*********", androidChan);
+        }
+    }*/
 
     if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
         sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
@@ -1372,7 +1366,7 @@ afterLogIn : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
-    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
+    if (this.canJoinStaffChannel(src))
         sys.putInChannel(src, staffchannel);
 
     /*if (isAndroid(src)) {
