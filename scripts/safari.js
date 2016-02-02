@@ -1273,6 +1273,7 @@ function Safari() {
     }
     function an(string) {
         var vowels = "aeioux";
+        string = string + ""; //For the numbers
         if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18") {
             string = "an " + string;
         } else {
