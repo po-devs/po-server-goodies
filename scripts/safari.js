@@ -1272,8 +1272,8 @@ function Safari() {
         return ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten"][num] || num;
     }
     function an(string) {
-        var vowels = "aeioux8";
-        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string === "11" || string === "18") {
+        var vowels = "aeioux";
+        if (vowels.indexOf(string.charAt(0).toLowerCase()) > -1 || string.charAt(0) === "8" || string === "11" || string === "18") {
             string = "an " + string;
         } else {
             string = "a " + string;
