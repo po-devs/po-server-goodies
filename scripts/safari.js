@@ -5063,8 +5063,8 @@ function Safari() {
                 var misc = validItems[i];
                 var amt = player.balls[misc];
                 if (amt > 0) {
-                    var plural = amt > 1 ? "s" : "";
-                    valuables.push(amt + " " + finishName(misc) + plural);
+                    var p = amt > 1 ? "s" : "";
+                    valuables.push(amt + " " + finishName(misc) + p);
                 }
             }
             if (valuables.length > 0) {
@@ -5079,30 +5079,64 @@ function Safari() {
             return;
         }
 
-        var info = data.split(":");
-        var item = itemAlias(info[0], true);
-        var amount = 1;
-        if (info.length > 1) {
-            amount = parseInt(info[1], 10);
-            if (isNaN(amount) || amount < 1) {
-                amount = 1;
+        var pawning = [], item, amount, pawnAll;
+        if (data.toLowerCase() === "all") {
+            pawning = validItems;
+            pawnAll = true;
+        } else {
+            var info = data.split(":");
+            item = itemAlias(info[0], true);
+            amount = 1;
+            if (info.length > 1) {
+                amount = parseInt(info[1], 10);
+                if (isNaN(amount) || amount < 1) {
+                    amount = 1;
+                }
+            }
+
+            if (validItems.indexOf(item) == -1) {
+                safaribot.sendMessage(src, "We do not buy \"" + info[0] +  "\" at this location.", safchan);
+                return;
+            }
+
+            if (player.balls[item] < amount) {
+                safaribot.sendMessage(src, "You don't have " + plural(amount, item) + ", you only have " + player.balls[item] + "!", safchan);
+                return;
+            }
+            pawning.push(item);
+        }
+        
+        var cost, out = [], remaining = [], skipped = [], totalMoney = 0;
+        for (var i = 0; i < pawning.length; i++) {
+            item = pawning[i];
+            if (player.balls[item] > 0) {
+                if (pawnAll) {
+                    amount = player.balls[item];
+                }
+                cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
+                if (player.money + cost > moneyCap) {
+                    skipped.push(plural(amount, item));
+                } else {
+                    player.money += cost;
+                    player.balls[item] -= amount;
+                    player.records.pawnEarnings += cost;
+                    
+                    totalMoney += cost;
+                    out.push(plural(amount, item));
+                }
+                remaining.push(plural(player.balls[item], item));
             }
         }
-
-        if (validItems.indexOf(item) == -1) {
-            safaribot.sendMessage(src, "We do not buy \"" + info[0] +  "\" at this location.", safchan);
-            return;
+        if (skipped.length > 0) {
+            safaribot.sendMessage(src, "You can't hold more than $" + addComma(moneyCap) + ", so you cannot currently sell your " + readable(skipped, "and") + "!", safchan);
         }
 
-        if (player.balls[item] < amount) {
-            safaribot.sendMessage(src, "You don't have " + amount + " " + finishName(item) + ", you only have " + player.balls[item] + "!", safchan);
-            return;
+        if (out.length > 0) {
+            safaribot.sendMessage(src, "You sold " + readable(out, "and") +  " for $" + addComma(totalMoney) + "! You now have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
+        } else {
+            safaribot.sendMessage(src, "Huh? You didn't actually sell anything... If you change your mind, I'll be happy to buy from you! You still have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
         }
-        var cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
-        player.money += cost;
-        player.balls[item] -= amount;
-        player.records.pawnEarnings += cost;
-        safaribot.sendMessage(src, "You sold " + amount + " " + finishName(item) +  " for $" + addComma(cost) + "! You now have " + player.balls[item] + " " + finishName(item) + " and $" + addComma(player.money) + "!", safchan);
+        
         this.updateShop(sys.name(src), item);
         this.saveGame(player);
     };
@@ -9826,8 +9860,8 @@ function Safari() {
                 safari.editShop(src, action + ":" + commandData);
                 return true;
             }
-            if (command === "pawn") {
-                safari.sellItems(src, commandData);
+            if (command === "pawn" || command === "pawnall") {
+                safari.sellItems(src, command === "pawnall" ? "all" : commandData);
                 return true;
             }
             if (command === "trade") {
