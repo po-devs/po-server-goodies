@@ -253,7 +253,7 @@ function Safari() {
         rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
         pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
-        fragment: {name: "fragment", fullName: "Ball Fragment", type: "consumable", icon: 120, price: 0, aliases:["fragment"], tradable: false},
+        fragment: {name: "fragment", fullName: "Ball Fragment", type: "consumable", icon: 120, price: 0, aliases:["fragment", "ball fragment", "ballfragment"], tradable: false},
         
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
