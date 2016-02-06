@@ -223,7 +223,6 @@ function Safari() {
         safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], tradable: false},
         great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
         ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
-        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
         myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
@@ -232,6 +231,8 @@ function Safari() {
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
         spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 0, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
+        //Leave at end for lazy/dumb people with Ball Macro
+        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
         //Other Items
         //Seasonal change. Rock icon is 206
@@ -1246,6 +1247,14 @@ function Safari() {
         }
         return Object.keys(result);
     }
+    function compare(a,b) {
+        if (a.sort < b.sort)
+            return -1;
+        else if (a.sort > b.sort)
+            return 1;
+        else 
+            return 0;
+    }
 
     /* Formatting Functions */
     function cap(string) {
@@ -1700,6 +1709,7 @@ function Safari() {
             return;
         }
         var ret = "", hasBalls = false;
+        ret +=  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e)) && !(wildEvent && e === "master")) {
@@ -2474,8 +2484,8 @@ function Safari() {
             }
             return;
         }
-        var ball = itemAlias(data);
-        if (!isBall(ball) || data === "*") {
+        var ball = itemAlias(data, true);
+        if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
 
@@ -4576,7 +4586,7 @@ function Safari() {
             rewardCapCheck(player, reward, amount);
         }
         if (masterCap) {
-            safaribot.sendMessage(src, "You received " + an(finishName("fragment")) + ".", safchan);            
+            safaribot.sendMessage(src, "You received " + an(finishName("fragment")) + ".", safchan);
             rewardCapCheck(player, "fragment", 1);
         }
 
@@ -5252,21 +5262,21 @@ function Safari() {
             input = getInputPokemon(i);
             if (info.silver) {
                 if (input.num) {
-                    silverPokemon.push("<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: " + plural(info.price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: " + plural(info.price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : info.price;
-                    silverItems.push("<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
                 }
             } else {
                 if (input.num) {
-                    pokemon.push("<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : info.price;
-                    items.push("<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")));
+                    items.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: price});
                 }
             }
         }
@@ -5277,8 +5287,9 @@ function Safari() {
 
         if (items.length > 0) {
             safaribot.sendMessage(src, "You can buy the following Items" + (seller ? " from " + seller : "") + ":", safchan);
+            items.sort(compare);
             for (i in items) {
-                safaribot.sendHtmlMessage(src, items[i], safchan);
+                safaribot.sendHtmlMessage(src, items[i].string, safchan);
             }
             hasNormal = true;
         }
@@ -5287,8 +5298,9 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
             }
             safaribot.sendMessage(src, "You can buy the following Pokémon" + (seller ? " from " + seller : "") + ":", safchan);
+            pokemon.sort(compare);
             for (i in pokemon) {
-                safaribot.sendHtmlMessage(src, pokemon[i], safchan);
+                safaribot.sendHtmlMessage(src, pokemon[i].string, safchan);
             }
             hasNormal = true;
         }
@@ -5297,8 +5309,9 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
             }
             safaribot.sendMessage(src, "You can buy the following Items with " + es(silverName) + (seller ? " from " + seller : "") + ":", safchan);
+            silverItems.sort(compare);
             for (i in silverItems) {
-                safaribot.sendHtmlMessage(src, silverItems[i], safchan);
+                safaribot.sendHtmlMessage(src, silverItems[i].string, safchan);
             }
             hasSilver = true;
         }
@@ -5307,8 +5320,9 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
             }
             safaribot.sendMessage(src, "You can buy the following Pokémon with " + es(silverName) + (seller ? " from " + seller : "") + ":", safchan);
+            silverPokemon.sort(compare);
             for (i in silverPokemon) {
-                safaribot.sendHtmlMessage(src, silverPokemon[i], safchan);
+                safaribot.sendHtmlMessage(src, silverPokemon[i].string, safchan);
             }
             hasSilver = true;
         }
