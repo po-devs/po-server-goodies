@@ -1709,7 +1709,6 @@ function Safari() {
             return;
         }
         var ret = "", hasBalls = false;
-        ret +=  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
             if (player.balls[e] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(e)) && !(wildEvent && e === "master")) {
@@ -1718,7 +1717,7 @@ function Safari() {
             }
         }
         if (hasBalls) {
-            safaribot.sendHtmlMessage(src, "Throw: " + ret, safchan);
+            safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] ", safchan);
         }
     }
     function getCap(item) {
