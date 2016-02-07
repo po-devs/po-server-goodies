@@ -1,4 +1,4 @@
-/*global Config, exports, isSuperAdmin, kickbot, nameBans, nonFlashing, normalbot, require, sendChanHtmlAll, SESSION, sachannel, script, staffchannel, sys, tourchannel*/
+/*global Config, exports, isSuperAdmin, kickbot, nameBans, nameWarns, nonFlashing, normalbot, require, sendChanHtmlAll, SESSION, sachannel, script, staffchannel, sys, tourchannel*/
 /*jshint shadow: true*/
 /*jslint continue: true, plusplus: true, sloppy: true, vars: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
