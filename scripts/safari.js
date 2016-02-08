@@ -104,12 +104,9 @@ function Safari() {
             gachasUsed: 0,
             masterballsWon: 0,
             jackpotsWon: 0,
-            capsulesLost: 0,
-            itemsDiscarded: 0,
             contestsWon: 0,
             pokesCaught: 0,
             pokesNotCaught: 0,
-            pokesReleased: 0,
             pokesCloned: 0,
             pokesEvolved: 0,
             pokeSoldEarnings: 0,
@@ -156,6 +153,7 @@ function Safari() {
             packsOpened: 0,
             pokesStolen: 0,
             notBaitedCaught: 0
+            //fullyPlayedContests: 0
         },
         costumes: [],
         savedParties: [],
@@ -287,11 +285,11 @@ function Safari() {
         battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.2, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon &lt;500 BST"},
-        rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.08, rate2: 0.01, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon meant for someone else!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
+        rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.1, rate2: 0.02, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon meant for someone else!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
-        //fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 0, record: 0, rate: 0, effect: "A master in angling. ", noAcq: "{0}"},
-        //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 0, record: 0, rate: 0, effect: "A master in speed. ", noAcq: "{0}"},
+        //fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 0, record: 0, rate: 0.2, effect: "A master in angling. ", noAcq: "{0}"},
+        //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 50, record: fullyPlayedContests, rate: 0.01, thresh1: 5, thresh2: 8, thresh3: 13, effect: "A master in endurance. Even after playing in the Safari Zone all day, extensive training allows a quick and alert response when a wild Pokémon appears.", noAcq: "{0}"},
         
         inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "It is not currently known how"}
     };
@@ -1296,7 +1294,7 @@ function Safari() {
         var end = string.charAt(string.length-1); //Last character would be the quotes
         var preEnd = string.charAt(string.length-2);
         var lasttwo = preEnd + end;
-        if (["ch", "sh"].contains(lasttwo) || ["x", "z"].contains(end)) {
+        if (["ch", "sh", "ss"].contains(lasttwo) || ["x", "z"].contains(end)) {
             return string + "es";
         }
         if (end === "s") {
@@ -1374,7 +1372,17 @@ function Safari() {
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
         return newmessage;
     }
-
+    function percentage(num, denom, places) {
+        places = places || 2;
+        if (typeof num !== "number" || typeof denom !== "number") {
+            return "??.??%";
+        }
+        if (denom === 0) {
+            return "0.00%";
+        }
+        return (num/denom*100).toFixed(places) + "%";
+    }
+    
     /* Pokemon Functions */
     function getInputPokemon(info) {
         /*
@@ -1880,7 +1888,8 @@ function Safari() {
 
         if (amount > 1) {
             var ret = [];
-            ret += "<hr><center>A horde of wild " + currentId + " appeared! <i>(BST: " + bst + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
+            var term = amount === 2 ? "pair" : amount === 3 ? "group" : "horde";
+            ret += "<hr><center>A " + term + " of wild " + currentId + " appeared! <i>(BST: " + bst + ")</i><br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
             for (var i = 0; i < amount; i++) {
                 ret += pokeInfo.sprite(currentPokemonDisplay);
             }
@@ -3728,27 +3737,48 @@ function Safari() {
         }
         this.saveGame(player);
     };
-    this.showRecords = function (src) {
+    this.showRecords = function (src, commandData) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
-
         var rec = player.records;
 
-        sys.sendMessage(src, "", safchan);
-        sys.sendMessage(src, "*** Player Records ***", safchan);
-        safaribot.sendMessage(src, "Pokémon-- Caught: " + rec.pokesCaught + ". Evolved: " + rec.pokesEvolved + ". Cloned: " + rec.pokesCloned + ". Failed Catches: " + rec.pokesNotCaught + ". Stolen from NPCs: " + rec.pokesStolen, safchan);
-        safaribot.sendMessage(src, "Earnings-- Sold Pokémon: $" + rec.pokeSoldEarnings + ". " +  es(finishName("luxury")) + ": $" + rec.luxuryEarnings + ". Pawned Items: $" + rec.pawnEarnings + ". Own Window Broken: $" + rec.rocksWindowEarned + ". Rocking Wallets: $" + rec.rocksWalletEarned + ".", safchan);
-        safaribot.sendMessage(src, "Losses-- Breaking Windows: -$" + rec.rocksWindowLost + " Own Wallet Rocked: -$" + rec.rocksWalletLost + ".", safchan);
-        safaribot.sendMessage(src, "Gachapon-- Used: " + rec.gachasUsed + ". Jackpots Won: " + rec.jackpotsWon + ". " + es(finishName("master")) + " Won: " + rec.masterballsWon + ". Items stolen by Pokémon: " + rec.capsulesLost + ".", safchan);
-        //Seasonal change
-        safaribot.sendMessage(src, es(finishName("rock")) + "-- Thrown: " + rec.rocksThrown + ". Hit: " + rec.rocksHit + ". Missed: " + rec.rocksMissed + ". Broke Apart: " + rec.rocksBounced + ". Hit By: " + rec.rocksHitBy + ". Dodged: " + rec.rocksDodged + ". Caught: " + rec.rocksCaught + ". Hit a Wallet: " + rec.rocksWalletHit + ". Own Wallet Hit: " + rec.rocksWalletHitBy + ". Windows Broken: " + rec.rocksMissedWindow + ". Own Window Broken: " + rec.rocksDodgedWindow, safchan);
-        safaribot.sendMessage(src, "Bait-- Used: " + rec.baitUsed + ". Attracted Pokémon: " + rec.baitAttracted + ". No Interest: " + rec.baitNothing + ". Snagged from someone else: " + rec.notBaitedCaught, safchan);
-        safaribot.sendMessage(src, "Misc-- Contests Won: " + rec.contestsWon + ". Consecutive Logins: " + rec.consecutiveLogins + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Items Found: " + rec.itemsFound + ".", safchan);
-        safaribot.sendMessage(src, "Quests-- Pokémon given to Collector: " + rec.collectorGiven + ". Money from Collector: $" + rec.collectorEarnings + ". Pokémon given to Scientist: " + rec.scientistGiven + ". Silver Coins received from Scientist: " + rec.scientistEarnings + ". Arena Battles: " + rec.arenaWon + " won, " + rec.arenaLost + " lost (" + rec.arenaPoints + " points). " , safchan);
-        safaribot.sendMessage(src, "Events-- Faction Wars won: " + rec.factionWins + ". Faction War MVPs: " + rec.factionMVPs + ". Pokémon Races won: " + rec.pokeRaceWins + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog). Pokémon Race Earnings: $" + rec.pokeRaceEarnings + ". " , safchan);
-        sys.sendMessage(src, "", safchan);
+        if (commandData === "*" || commandData.toLowerCase() !== "earnings") {
+            sys.sendMessage(src, "", safchan);
+            sys.sendMessage(src, "*** Player Records ***", safchan);
+            sys.sendMessage(src, "±Pokémon: " + rec.pokesCaught + " Pokémon caught in " + rec.pokesNotCaught + " attempts (" + percentage(rec.pokesCaught, rec.pokesNotCaught) + "). Performed " + plural(rec.pokesEvolved, "Evolution") + ", " + plural(rec.megaEvolutions, "Mega Evolution") + ", and " + plural(rec.pokesCloned, "Cloning") + ". Stole " + rec.pokesStolen + " Pokémon from NPCs.", safchan); //Devolution defaults to its full item name with plural() so it is left off intentionally.
+            sys.sendMessage(src, "±Bait: Used " + plural(rec.baitUsed, "bait") + " with " + plural(rec.baitAttracted, "success") + " (" + percentage(rec.baitAttracted, rec.baitUsed) + ") and " + plural(rec.baitNothing, "failure") + " (" + percentage(rec.baitNothing, rec.baitUsed) + "). Snagged " + rec.notBaitedCaught + " Pokémon away from other Players.", safchan);
+            var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings;
+            var silverEarnings = rec.scientistEarnings + rec.arenaPoints;
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned $" + addComma(earnings) + " and " + plural(silverEarnings, "silver") + " [" + (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source")) + "].", safchan);           
+            sys.sendMessage(src, "±Gachapon: Used " + plural(rec.gachasUsed, "gacha") + " (" + plural(rec.masterballsWon, "master") + ", " + plural(rec.jackpotsWon, "Jackpot") + ").", safchan);
+            var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow;
+            sys.sendMessage(src, "±" + finishName("rock") + ": Threw " + plural(rec.rocksThrown, "rock") + " (" + percentage(onOthers, rec.rocksThrown) + " accuracy, " + plural(rec.rocksHit, "hit") + "). Embarassed " + plural(rec.rocksBounced, "time") + ".", safchan);
+            var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow;
+            sys.sendMessage(src, "±" + finishName("rock") + ": Hit by " + plural(onMe, "rock") + " (" + percentage(rec.rocksDodged, rec.rocksDodged + onMe) + " evasion, " + plural(rec.rocksDodged, "dodge") + "). Caught " + plural(rec.rocksCaught, "throw") + ".", safchan);
+            sys.sendMessage(src, "±Game: " + rec.consecutiveLogins + " Consecutive Logins" + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Won " + rec.contestsWon + " Contests. Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ".", safchan);
+            var given = rec.collectorGiven + rec.scientistGiven;
+            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + rec.arenaPoints + " points). Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower. Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
+            sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
+            sys.sendMessage(src, "", safchan);
+        } else {
+            sys.sendMessage(src, "", safchan);
+            sys.sendMessage(src, "*** Earnings Breakdown ***", safchan);
+            safaribot.sendMessage(src, "Sold Pokémon: $" + addComma(rec.pokeSoldEarnings), safchan);
+            safaribot.sendMessage(src, es(finishName("luxury")) + ": $" + addComma(rec.luxuryEarnings), safchan);
+            safaribot.sendMessage(src, "Pawned Items: $" + addComma(rec.pawnEarnings), safchan);
+            safaribot.sendMessage(src, "Collector Reward: $" + addComma(rec.collectorEarnings), safchan);
+            safaribot.sendMessage(src, "Pokémon Race: $" + addComma(rec.pokeRaceEarnings), safchan);
+            safaribot.sendMessage(src, "Hitting Wallets: $" + addComma(rec.rocksWalletEarned), safchan);
+            safaribot.sendMessage(src, "Window Restitution: $" + addComma(rec.rocksWindowEarned), safchan);
+            safaribot.sendMessage(src, "Dropped from Wallet: -$" + addComma(rec.rocksWalletLost), safchan);
+            safaribot.sendMessage(src, "Repairing Windows: -$" + addComma(rec.rocksWindowLost), safchan);
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "Scientist Reward: " + plural(rec.scientistEarnings, "silver"), safchan);
+            safaribot.sendMessage(src, "Arena Reward: " + plural(rec.arenaPoints, "silver"), safchan);
+            sys.sendMessage(src, "", safchan);
+        }
     };
     this.assignIdNumber = function(player, force) {
         if (!lastIdAssigned) {
@@ -4168,6 +4198,12 @@ function Safari() {
         var baitName = finishName("bait");
         var bName = baitName.toLowerCase();
 
+        if (preparationPhase > 0 && currentPokemon) {
+            safaribot.sendMessage(src, "You quickly scramble to put your " + bName + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
+            safari.throwBall(src, commandData, true);
+            return;
+        }
+        
         if (cantBecause(src, "throw " + bName, ["wild", "contest", "auction", "battle", "item", "event", "tutorial"], "bait")) {
             return;
         }
@@ -4198,13 +4234,13 @@ function Safari() {
                 var list = player.cooldowns.lastBaits;
                 var l = list.length - 1;
                 var slip = 0;
-                if (list.length >= 2 && list[l] - list[l-1] < 1200) {
+                if (list.length >= 2 && list[l] - list[l-1] < 1100) {
                     slip = 1;
-                } else if (list.length >= 3 && list[l] - list[l-2] < 2220) {
+                } else if (list.length >= 3 && list[l] - list[l-2] < 1700) {
                     slip = 2;
-                } else if (list.length >= 4 && list[l] - list[l-3] < 3480) {
+                } else if (list.length >= 4 && list[l] - list[l-3] < 2400) {
                     slip = 3;
-                } else if (list.length >= 5 && list[l] - list[l-4] < 5040) {
+                } else if (list.length >= 5 && list[l] - list[l-4] < 3200) {
                     slip = 4;
                 }
                 if (slip) {
@@ -5407,6 +5443,11 @@ function Safari() {
             safaribot.sendMessage(src, "You can only enter this shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
             return;
         }
+        
+        //Show own shop if nothing is specified
+        if ((!data || data === "*") && !fromNPC) {
+            data = sys.name(src);
+        }
 
         var info = data.split(":"),
             input,
@@ -5584,7 +5625,7 @@ function Safari() {
                     sys.appendToFile(mythLog, now() + "|||" + input.name + "::was bought  by " + sys.name(src) + " for " +plural(cost, silverName) + "::\n");
                 }
             } else {
-                safaribot.sendHtmlMessage(src, sName + "Here's your " + plural(amount, input.name) + " for a mere " + plural(cost, silverName) + "! Thanks for your purchase, you now have " + plural(player.balls.silver, silverName) + "!", safchan);
+                safaribot.sendHtmlMessage(src, sName + "Thanks for buying " + plural(amount, input.name) + " for " + plural(cost, silverName) + "! You now have " + plural(player.balls.silver, silverName) + "!", safchan);
             }
         } else {
             if (fromNPC) {
@@ -5593,7 +5634,7 @@ function Safari() {
                     sys.appendToFile(mythLog, now() + "|||" + input.name + "::was bought  by " + sys.name(src) + " for $" + cost + "::\n");
                 }
             } else {
-                safaribot.sendHtmlMessage(src, sName + "Here's your " + plural(amount, input.name) + " for a mere $" + addComma(cost) + "! Thanks for your purchase, you now have $" + addComma(player.money) + "!", safchan);
+                safaribot.sendHtmlMessage(src, sName + "Thanks for buying " + plural(amount, input.name) + " for $" + addComma(cost) + "! You now have $" + addComma(player.money) + "!", safchan);
             }
         }
 
@@ -9759,11 +9800,10 @@ function Safari() {
             "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\".",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
-            "/sell: To sell one of your Pokémon*.",
+            "/sell: To sell one of your Pokémon.",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
-            // "/release: Used to release a Pokémon that can be caught by other players*. Pokémon can only be released every 3 minutes.",
-            "/buy: To buy items or Pokémon.",
+            "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
             "/auction: To start an auction.",
@@ -9792,15 +9832,13 @@ function Safari() {
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /mydata. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
             "/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
-            "/records: To view your records.",
+            "/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
-            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
-            "",
-            "*: Add an * to a Pokémon's name to indicate a shiny Pokémon."
+            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw."
         ];
         var help = userHelp;
         var adminHelp = [
@@ -9817,19 +9855,19 @@ function Safari() {
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
-            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokemon. Pokemon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
+            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
-            "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokemon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokemon appear as something it is not.",
-            "/horde: Spawns a group of random wild Pokemon with no restrictions. Use a valid dex number to spawn a specific Pokemon.",
+            "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
+            "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
             "/editdata [type]։[item]։[property]։[value]: Changes a property from an item/costume.",
             "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
-            "/bestow [player]։[pokemon]: Gifts a player a specific Pokemon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
+            "/bestow [player]։[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
             "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
@@ -9842,7 +9880,7 @@ function Safari() {
             "/clearcd [player]։[type]: To clear a player's cooldown on a quest/ball throw/auction.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
             "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
-            "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokemon.",
+            "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokémon.",
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
@@ -10342,7 +10380,7 @@ function Safari() {
                 return true;
             } */
             if (command === "records" || command === "record") {
-                safari.showRecords(src);
+                safari.showRecords(src, commandData);
                 return true;
             }
             if (command === "itemfinder" || command === "finder") {
@@ -10991,7 +11029,7 @@ function Safari() {
                     var itemSets = [gachaItems, finderItems, packItems];
                     var method = ["Gachapon", "Item Finder", "Prize Pack"];
                     for (var i = 0; i < itemSets.length; i++) {
-                        var total = 0, percent;
+                        var total = 0;
                         var instance = itemSets[i][commandData] || 0;
                         if (instance < 1) {
                             safaribot.sendMessage(src, method[i] + ": This item is not available from " + method[i] + ".", safchan);
@@ -10999,8 +11037,7 @@ function Safari() {
                             for (var e in itemSets[i]) {
                                 total += itemSets[i][e];
                             }
-                            percent = instance / total * 100;
-                            safaribot.sendMessage(src, method[i] + ": The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percent.toFixed(2) + "%.", safchan);
+                            safaribot.sendMessage(src, method[i] + ": The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percentage(instance, total) + ".", safchan);
                         }
                     }
                 } else {
@@ -12307,7 +12344,8 @@ function Safari() {
                         player = getAvatarOff(e);
                         if (contestantsCount[e] > 0 && player) {
                             playerId = sys.id(e);
-                            amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * 3.25), 1);
+                            var basis = 3.25;
+                            amt = Math.max(Math.floor(Math.min(contestantsCount[e] / pokemonSpawned, 1) * basis), 1);
                             if (playerId) {
                                 if (e in contestCatchers) {
                                     safaribot.sendMessage(playerId, "You finished in " + getOrdinal(winners.contains(e) ? 1 : allContestants.indexOf(e) + 1) + " place " + playerScore(e), safchan);
@@ -12315,6 +12353,9 @@ function Safari() {
                                 safaribot.sendMessage(playerId, "You received " + plural(amt, "bait") + " for participating in the contest!", safchan);
                             }
                             rewardCapCheck(player, "bait", amt);
+                            /*if (amt >= Math.floor(basis)) {
+                                player.records.fullyPlayedContests += 1;
+                            }*/
                             safari.saveGame(player);
                         }
                     }
