@@ -152,7 +152,8 @@ function Safari() {
             favoriteRaceWins: 0,
             packsOpened: 0,
             pokesStolen: 0,
-            notBaitedCaught: 0
+            notBaitedCaught: 0,
+            pokeRaceSilver: 0
             //fullyPlayedContests: 0
         },
         costumes: [],
@@ -2279,6 +2280,10 @@ function Safari() {
         if (theme.include.indexOf(pokeNum) !== -1) {
             return true;
         }
+        var bst = theme.customBST.pokeNum || getBST(pokeNum);
+        if (bst > theme.maxBST || bst < theme.minBST) {
+            return false;
+        }
         for (var e in theme.excludeTypes) {
             if (hasType(pokeNum, theme.excludeTypes[e])) {
                 return false;
@@ -2286,7 +2291,7 @@ function Safari() {
         }
         for (e in theme.types) {
             //Legendary can only be manually added.
-            if (hasType(pokeNum, theme.types[e]) && !isLegendary(pokeNum)) {
+            if (hasType(pokeNum, theme.types[e]) && !isRare(pokeNum)) {
                 return true;
             }
         }
@@ -2448,7 +2453,7 @@ function Safari() {
 
         return finalChance;
     };
-    this.throwBall = function(src, data, bypass, suppress, command) {
+    this.throwBall = function(src, data, bypass, suppress, command, baitThrow) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -2465,7 +2470,7 @@ function Safari() {
             }
         }
 
-        if (!suppress && !bypass) {
+        if (!suppress && !bypass && !baitThrow) {
             var mess = "[Track] " + sys.name(src) + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
             for (var t = 0; t < player.trackers.length; t++) {
                 if (sys.id(player.trackers[t]) !== undefined) {
@@ -2522,6 +2527,10 @@ function Safari() {
         var name = sys.name(src);
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
             contestantsWild.push(name.toLowerCase());
+        }
+        
+        if (baitThrow) {
+            safaribot.sendMessage(src, "You quickly scramble to put your " + finishName("bait") + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
         }
 
         if (preparationPhase > 0) {
@@ -3777,6 +3786,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Scientist Reward: " + plural(rec.scientistEarnings, "silver"), safchan);
             safaribot.sendMessage(src, "Arena Reward: " + plural(rec.arenaPoints, "silver"), safchan);
+            safaribot.sendMessage(src, "Pokémon Race: " + plural(rec.pokeRaceSilver, "silver"), safchan);
             sys.sendMessage(src, "", safchan);
         }
     };
@@ -4198,15 +4208,17 @@ function Safari() {
         var baitName = finishName("bait");
         var bName = baitName.toLowerCase();
 
-        if (preparationPhase > 0 && currentPokemon) {
-            safaribot.sendMessage(src, "You quickly scramble to put your " + bName + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
-            safari.throwBall(src, commandData, true);
+        if (cantBecause(src, "throw " + bName, ["contest", "auction", "battle", "item", "event", "tutorial"], "bait")) {
+            return;
+        }
+        if (preparationPhase > 0 && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst)) {
+            safari.throwBall(src, commandData, false, false, "bait", true);
+            return;
+        }
+        if (cantBecause(src, "throw " + bName, ["wild"])) {
             return;
         }
         
-        if (cantBecause(src, "throw " + bName, ["wild", "contest", "auction", "battle", "item", "event", "tutorial"], "bait")) {
-            return;
-        }
         if (contestCooldown <= 13) {
             safaribot.sendMessage(src, "A contest is about to start, the Pokémon will run away if you throw " + bName + " now!", safchan);
             return;
@@ -4592,13 +4604,6 @@ function Safari() {
                 safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
             }
             break;
-            case "bignugget":
-            case "nugget": {
-                amount = 1;
-                safaribot.sendAll("Nice! " + sys.name(src) + " just won " + an(finishName(reward)) + " from Gachapon!", safchan);
-                safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
-            }
-            break;
             case "gem": {
                 amount = 1;
                 safaribot.sendMessage(src, "The Gachapon machine emits a bright flash of light as you reach for your prize. Despite being temporarily blinded, you know you just won " + an(finishName(reward)) + " due to a very faint baaing sound!", safchan);
@@ -4608,7 +4613,9 @@ function Safari() {
             case "pearl":
             case "stardust":
             case "starpiece":
-            case "bigpearl": {
+            case "bigpearl": 
+            case "nugget":
+            case "bignugget": {
                 amount = 1;
             }
             /* falls through */
@@ -8872,6 +8879,7 @@ function Safari() {
                         if (player.balls.silver > getCap("silver")) {
                             player.balls.silver = getCap("silver");
                         }
+                        player.records.pokeRaceSilver += prize;
                     } else {
                         player.money += prize;
                         if (player.money > moneyCap) {
@@ -10359,7 +10367,7 @@ function Safari() {
                 if (!isMega(info.num) && species in megaEvolutions) {
                     safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
                 }
-                if (isLegendary(info.num)) {
+                if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
                     var themes = [];
                     for (var e in contestThemes) {
                         if (this.validForTheme(info.num, e)) {
@@ -10367,7 +10375,7 @@ function Safari() {
                         }
                     }
                     if (themes.length > 0) {
-                        safaribot.sendMessage(src, info.name + " can be found in the following theme: " + readable(themes, "and") + ".", safchan);
+                        safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
                     } else {
                         safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                     }
@@ -11313,7 +11321,7 @@ function Safari() {
             if (command === "tourgift") {
                 var tour = commandData.split("*");
                 var targets = tour[1].split(", ");
-                var placing = 1, player, invalidPlayers = [], out = [], prizeTier;
+                var placing = 1, player, invalidPlayers = [], out = [];
                 for (var i in targets) {
                     i = targets[i];
                     player = getAvatarOff(i);
