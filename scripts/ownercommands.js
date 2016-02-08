@@ -534,18 +534,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "updatenotice" || command === "updatenoticesilent") {
-        var silent = command === "updatenoticesilent";
+    if (command === "updatenotice" || command === "updatenoticesilent") {
         var url = Config.base_url + "notice.html";
         sys.webCall(url, function (resp){
             if (resp !== "") {
                 sys.writeToFile(Config.dataDir + "notice.html", resp);
-                sendNotice(silent);
                 normalbot.sendMessage(src, "Notice updated!", channel);
             } else {
                 normalbot.sendAll("Failed to update notice!", staffchannel);
             }
         });
+        if (command === "updatenotice") {
+            sendNotice();
+        }
         return;
     }
     if (command == "updatebansites") {
