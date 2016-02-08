@@ -27,7 +27,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         return;
-    }    
+    }
     if (command == "ipban") {
         var subip;
         var comment;
@@ -536,8 +536,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "updatenotice" || command === "updatenoticesilent") {
         var silent = command === "updatenoticesilent";
-        updateNotice(silent);
-        normalbot.sendMessage(src, "Notice updated!");
+        var url = Config.base_url + "notice.html";
+        sys.webCall(url, function (resp){
+            if (resp !== "") {
+                sys.writeToFile(Config.dataDir + "notice.html", resp);
+                sendNotice(silent);
+                normalbot.sendMessage(src, "Notice updated!", channel);
+            } else {
+                normalbot.sendAll("Failed to update notice!", staffchannel);
+            }
+        });
         return;
     }
     if (command == "updatebansites") {
