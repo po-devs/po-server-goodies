@@ -11327,20 +11327,17 @@ function Safari() {
                             player.balls.rare += 1;
                             player.balls.gem += 1;
                             player.balls.mega += 1;
-                            prizeTier = "Gold";
                         break;
                         case 2:
                             player.balls.rare += 1;
                             player.balls.gem += 1;
-                            prizeTier = "Silver";
                         break;
                         case 3:
                             player.balls.gem += 1;
-                            prizeTier = "Bronze";
                         break;
                     }
                     this.sanitize(player);
-                    out.push("<b>" + getOrdinal(placing) + "</b>: " + html_escape(i.toCorrectCase()) + " (" + prizeTier + ")");
+                    out.push("<b>" + getOrdinal(placing) + "</b>: " + html_escape(i.toCorrectCase()));
                     placing++;
                 }
                 if (out.length === 0) {
