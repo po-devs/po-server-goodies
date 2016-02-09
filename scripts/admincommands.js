@@ -82,7 +82,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command === "ban") {
-        if(sys.dbIp(commandData) === undefined) {
+        if (sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
         }
@@ -121,6 +121,42 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
         return;
     }
+	if (command === "echoban") {
+		if (commandData == undefined) {
+			normalbot.sendMessage(src, "Cannot echoban an empty name");
+		}
+		if (sys.auth(commandData) < 0) {
+			normalbot.sendMessage(src, "Cannot echoban auth");
+		}
+		sys.writeToFile(Config.dataDir+"echobans.txt", ""+commandData+ " was echobanned.");
+		if (!commandData) {
+            return;
+        }
+        if (!sys.loggedIn(sys.id(commandData))) {
+            normalbot.sendMessage(src, "User not logged in", channel);
+            return;
+        }
+        var tar = sys.id(commandData);
+        if (!sys.uniqueId(tar)) {
+            normalbot.sendMessage(src, "User cannot be echobanned (update needed)", channel);
+            return;
+        }
+        var id = sys.uniqueId(tar).id;
+        var psuedo = !sys.uniqueId(tar).isUnique;
+        var banInfo = {};
+        banInfo.name = sys.name(tar);
+        banInfo.ip = sys.ip(tar);
+        banInfo.banner = sys.name(src);
+        banInfo.psuedo = psuedo;
+        script.idBans.add(id, JSON.stringify(banInfo));
+        normalbot.sendAll(commandData.toCorrectCase() + " was echobanned by " + sys.name(src), staffchannel);
+		sys.ban(commandData);
+		sys.kick(commandData);
+		//No such thing as an echo unban
+		sys.sendHtmlAll("<b><i><font size=3 font color=blue>Someone was <i>echobanned</i> by staff, and was also banned normally");
+		return;
+	}
+	
     if (command === "unban") {
         if(sys.dbIp(commandData) === undefined) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
