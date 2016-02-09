@@ -12,16 +12,13 @@ var Config = {
     checkbot: "Snorlax",
     coinbot: "Meowth",
     countbot: "CountBot",
-    tourneybot: "Typhlosion",
     rankingbot: "Porygon",
     battlebot: "Blastoise",
     commandbot: "CommandBot",
     querybot: "QueryBot",
     hangbot: "Unown",
-    bfbot: "Goomy",
-    safaribot: "Tauros",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
+    Plugins: ["tourstats.js", "trivia.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 5,
@@ -106,7 +103,7 @@ var abilityDir = "db/abilities/";
 var itemDir = "db/items/";
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
-var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', "admincommands.js"];
+var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', "admincommands.js", "systemcommands.js"];
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js', "globalfunctions.js", "userfunctions.js", "channelfunctions.js", "channelmanager.js", "pokedex.js"].concat(commandfiles).concat(Config.Plugins);
 var missing = 0;
 for (var i = 0; i < deps.length; ++i) {
@@ -337,14 +334,12 @@ capsbot = new Bot(Config.capsbot);
 checkbot = new Bot(Config.checkbot);
 coinbot = new Bot(Config.coinbot);
 countbot = new Bot(Config.countbot);
-tourneybot = new Bot(Config.tourneybot);
 rankingbot = new Bot(Config.rankingbot);
 battlebot = new Bot(Config.battlebot);
 commandbot = new Bot(Config.commandbot);
 querybot = new Bot(Config.querybot);
 hangbot = new Bot(Config.hangbot);
 bfbot = new Bot(Config.bfbot);
-safaribot = new Bot(Config.safaribot);
 
 /* Start script-object
  *
@@ -403,23 +398,21 @@ serverStartUp : function() {
     this.init();
 },
 
+serverShutDown : function() {
+	//ignore
+},
+
 init : function() {
     lastMemUpdate = 0;
     bannedUrls = [];
     battlesFought = +sys.getVal("Stats/BattlesFought");
     lastCleared = +sys.getVal("Stats/LastCleared");
 
-    mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
     staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
     sachannel = SESSION.global().channelManager.createPermChannel("Victory Road","Welcome MAs and SAs!");
-    tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
     watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
-    triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
-    revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
-    //mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
-    hangmanchan = SESSION.global().channelManager.createPermChannel("Hangman", "Type /help to see how to play!");
     blackjackchan = SESSION.global().channelManager.createPermChannel("Blackjack", "Play Blackjack here!");
-    safarichan = SESSION.global().channelManager.createPermChannel("Safari", "Type /help to see how to play!");
+	echochan = SESSION.global().channelManager.createPermChannel("Echo Channel", "Echo Channel For Messages Regarding Echobans");
 
     /* restore mutes, smutes, mafiabans, rangebans, megausers */
     script.mutes = new MemoryHash(Config.dataDir+"mutes.txt");
@@ -438,11 +431,7 @@ init : function() {
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
-    try {
-        script.league = JSON.parse(sys.read(Config.dataDir+"league.json")).league;
-    } catch (e) {
-        script.league = {};
-    }
+	script.echobans = new MemoryHash(Config.dataDir+"echobans.txt");
     
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     proxy_ips = {};
@@ -529,9 +518,6 @@ init : function() {
     script.cmp = function(a, b) {
         return a.toLowerCase() == b.toLowerCase();
     };
-    script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
-    script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
-    script.isSafariAdmin = require('safari.js').isChannelAdmin;
     isSuperAdmin = function(id) {
         if (typeof Config.superAdmins != "object" || Config.superAdmins.length === undefined) return false;
         if (sys.auth(id) != 2) return false;
@@ -711,48 +697,18 @@ unban: function(type, src, tar, commandData) {
         else {
             banbot = normalbot;
         }
-    var verb = {"mute": "unmuted", "mban": "unbanned from Mafia", "smute": "secretly unmuted", "hmute": "unbanned from Hangman", "safban": "unbanned from Safari"}[type];
-    var nomi = {"mute": "mute", "mban": "mafia ban", "smute": "secret mute", "hmute": "hangman ban", "safban": "safari ban"}[type];
-    var past = {"mute": "muted", "mban": "mafia banned", "smute": "secretly muted", "hmute": "hangman banned", "safban": "safari banned"}[type];
+    var verb = {"mute": "unmuted", "smute": "secretly unmuted"}[type];
+    var nomi = {"mute": "mute", "smute": "secret mute"}[type];
+    var past = {"mute": "muted", "smute": "secretly muted"}[type];
     var sendAll =  {
         "smute": function(line) {
             banbot.sendAll(line, staffchannel);
-        },
-        "mban": function(line, ip) {
-            if (ip) {
-                banbot.sendAll(line, staffchannel);
-                banbot.sendAll(line, sachannel);
-            } else {
-                banbot.sendAll(line, staffchannel);
-                banbot.sendAll(line, mafiachan);
-                banbot.sendAll(line, sachannel);
-            }
         },
         "mute": function(line, ip) {
             if (ip) {
                 banbot.sendAll(line, staffchannel);
             } else {
                 banbot.sendAll(line);
-            }
-        },
-        "hmute" : function(line, ip) {
-            if (ip) {
-                banbot.sendAll(line, staffchannel);
-                banbot.sendAll(line, sachannel);
-            } else {
-                banbot.sendAll(line, hangmanchan);
-                banbot.sendAll(line, sachannel);
-                banbot.sendAll(line, staffchannel);
-            }
-        },
-        "safban" : function(line, ip) {
-            if (ip) {
-                banbot.sendAll(line, staffchannel);
-                banbot.sendAll(line, sachannel);
-            } else {
-                banbot.sendAll(line, safarichan);
-                banbot.sendAll(line, sachannel);
-                banbot.sendAll(line, staffchannel);
             }
         }
     }[type];
@@ -792,15 +748,6 @@ banList: function (src, command, commandData) {
     } else if (command == "smutelist") {
         mh = script.smutes;
         name = "Secretly muted list";
-    } else if (command == "mafiabans") {
-        mh = script.mbans;
-        name = "Mafiabans";
-    } else if (command == "hangmanmutes" || command == "hangmanbans") {
-        mh = script.hmutes;
-        name = "Hangman Bans";
-    } else if (command == "safaribans") {
-        mh = script.safbans;
-        name = "Safari Bans";
     }
 
     var width=5;
@@ -993,6 +940,8 @@ beforeChannelJoin : function(src, channel) {
 
     // Can't ban from main
     if (channel === 0) return;
+	// Can't ban from echochan
+	if (channel === 5) return;
 
     if (sys.auth(src) < 3 && poChannel.canJoin(src) == "banned") {
         if (poChannel.banned.hasOwnProperty(sys.name(src).toLowerCase())) {
@@ -1027,6 +976,11 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
+	if ((channel == echochan) && !this.canJoinStaffChannel(src)) {
+		sys.sendHtmlMessage(src, "<timestamp/><b><i><font size=3 font color=blue>~Echo: </color></i></b>This is for V.I.P users only! Maybe asking one of the auth can earn you V.I.P ~_~", channel);
+	    sys.stopEvent();
+		return;
+	}
     var channels = [mafiachan, hangmanchan, safarichan];
     var bans = ["mban", "hmute", "safban"];
     var type = ["Mafia", "Hangman", "Safari"];
@@ -1089,10 +1043,6 @@ afterChannelJoin : function(player, chan) {
 }, /* end of afterChannelJoin */
 
 beforeChannelDestroyed : function(channel) {
-    if (channel == tourchannel || (SESSION.channels(channel).perm) ) {
-        sys.stopEvent();
-        return;
-    }
 }, /* end of beforeChannelDestroyed */
 
 beforePlayerBan : function(src, dest, dur) {
@@ -1332,7 +1282,7 @@ afterLogIn : function(src) {
         return;
     }
     sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
-    sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
+    sys.sendMessage(src, "±Bot: V.I.P sold here for £30, This grants you hiddenauth (May be removed and refunded if abused)");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
@@ -1617,10 +1567,10 @@ beforeChatMessage: function(src, message, chan) {
     var name = sys.name(src).toLowerCase();
     // spamming bots, linking virus sites
     // using lazy points system for minimizing false positives
-    /*if (channel === 0 && sys.auth(src) === 0) {
-        //if (/http:\/\/(.*)\.tk(\b|\/)/.test(message)) {
-            //bot.sendAll('.tk link pasted at #Tohjo Falls: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '".', staffchannel);
-        //}
+    if (channel === 0 && sys.auth(src) === 0) {
+        if (/http:\/\/(.*)\.tk(\b|\/)/.test(message)) {
+            bot.sendAll('.tk link pasted at #Tohjo Falls: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '".', staffchannel);
+        }
         var points = 0;
 
         if (!sys.dbRegistered(name)) {
@@ -1654,7 +1604,7 @@ beforeChatMessage: function(src, message, chan) {
             sys.stopEvent();
             return;
         }
-    }*/
+    }
 
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
@@ -1920,19 +1870,48 @@ beforeChatMessage: function(src, message, chan) {
         }
     }
     
-    //Special donator
-    /*if (name == "fear") {
-        sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>±Fear: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"),  channel);
+    //V.I.P Names
+    if (sys.name(src) == "Ciella") {
+        sys.sendHtmlAll("<span style='color: #32ede9'><timestamp/><b>( Admin ) Ciella: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
         return;
-    }*/
+    }
+	if (sys.name(src) == "Armu") {
+		sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b>( Owner ) Armu: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+		this.afterChatMessage(src, message, channel);
+		return;
+	}
+	
+	//Auth Titles
+	if (sys.auth(src) == 1) {
+		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Moderator ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	    sys.stopEvent();
+	    this.afterChatMessage(src, message, channel);
+	} else if (sys.auth(src) == 2) {
+		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Admin ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+        this.afterChatMessage(src, message, channel);		
+	} else if (sys.auth(src) == 3) {
+		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Owner ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+		sys.stopEvent();
+		this.afterChatMessage(src, message, channel);
+	} else if (sys.auth(src) == 4) { //VIP Title
+		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( V.I.P ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	    sys.stopEvent();
+		this.afterChatMessage(src, message, channel);
+	} else { //User
+		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Member ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+		sys.stopEvent();
+		this.afterChatMessage(src, message, channel);
+		return;
+	}
 }, /* end of beforeChatMessage */
 
 
 afterChatMessage : function(src, message, chan)
 {
-
     var user = SESSION.users(src);
     var poChannel = SESSION.channels(chan);
     channel = chan;
