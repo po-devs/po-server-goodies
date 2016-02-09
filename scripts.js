@@ -3,7 +3,7 @@
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
 var Config = {
-    base_url: "https://raw.githubusercontent.com/po-devs/po-server-goodies/master/",
+    base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
     bot: "Dratini",
     kickbot: "Blaziken",
@@ -1877,36 +1877,36 @@ beforeChatMessage: function(src, message, chan) {
         this.afterChatMessage(src, message, channel);
         return;
     }
-	if (sys.name(src) == "Armu") {
-		sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b>( Owner ) Armu: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    if (sys.name(src) == "Armu") {
+	sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b>( Owner ) Armu: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
-		this.afterChatMessage(src, message, channel);
-		return;
+	this.afterChatMessage(src, message, channel);
+	return;
 	}
 	
 	//Auth Titles
-	if (sys.auth(src) == 1) {
-		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Moderator ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-	    sys.stopEvent();
-	    this.afterChatMessage(src, message, channel);
-	} else if (sys.auth(src) == 2) {
-		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Admin ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    if (sys.auth(src) == 1) {
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Moderator ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+    } else if (sys.auth(src) == 2) {
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Admin ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);		
-	} else if (sys.auth(src) == 3) {
-		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Owner ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-		sys.stopEvent();
-		this.afterChatMessage(src, message, channel);
-	} else if (sys.auth(src) == 4) { //VIP Title
-		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( V.I.P ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-	    sys.stopEvent();
-		this.afterChatMessage(src, message, channel);
-	} else { //User
-		sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Member ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-		sys.stopEvent();
-		this.afterChatMessage(src, message, channel);
-		return;
-	}
+    } else if (sys.auth(src) == 3) {
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Owner ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+    } else if (sys.auth(src) == 4) { //VIP Title
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( V.I.P ) " + sys.name(src) + ": </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+    } else { //User
+ 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Member ) " + sys.name(src) + ": </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+	return;
+    }
 }, /* end of beforeChatMessage */
 
 
