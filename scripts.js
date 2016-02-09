@@ -1878,7 +1878,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     if (sys.name(src) == "Armu") {
-	sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b>( Member ) Armu: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b>( Sky ) Armu: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
