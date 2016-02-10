@@ -123,10 +123,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
 	if (command === "echoban") {
 		if (commandData == undefined) {
-			normalbot.sendMessage(src, "Cannot echoban an empty name");
+			normalbot.sendMessage(src, "Cannot echoban an empty name", channel);
 		}
 		if (sys.auth(commandData) < 0) {
-			normalbot.sendMessage(src, "Cannot echoban auth");
+			normalbot.sendMessage(src, "Cannot echoban auth", channel);
 		}
 		sys.writeToFile(Config.dataDir+"echobans.txt", ""+commandData+ " was echobanned.");
 		if (!commandData) {
