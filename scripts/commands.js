@@ -31,14 +31,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
     }
-	if (sysCommands === undefined) {
-		sysCommands = require("systemcommands.js");
-	}
-	if (sys.auth(src) > 2) {
-		if (sysCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
+    if (sysCommands === undefined) {
+	sysCommands = require("systemcommands.js");
+    }
+    if (sys.auth(src) > 2) {
+	if (sysCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
-	}
+    }
     if (channelCommands === undefined) {
         channelCommands = require("channelcommands.js");
     }
