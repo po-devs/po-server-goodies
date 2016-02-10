@@ -1889,6 +1889,12 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }
+    if (sys.name(src) == "[TR]Aranian25") {
+    	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green>(Expert)</font> [TR]Aranian25: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
