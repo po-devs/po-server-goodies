@@ -1882,7 +1882,13 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
-	}
+    }
+    if (sys.name(src) == "Cold Wind") {
+    	sys.sendHtmlAll("<span style 'color: #55ffff'><timestamp/><b>( Owner ) Cold Wind: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
