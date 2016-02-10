@@ -1,57 +1,57 @@
 exports.handleCommand = function(src, command, commandData, tar, channel) {
 	if (command === "changeservername") {
-		if (commandData == undefined) {
-			normalbot.sendMessage(src, "Cannot have an empty server name!", channel);
-		}
-		sys.changeServerName(commandData);
-		return;
+	    if (commandData == undefined) {
+		normalbot.sendMessage(src, "Cannot have an empty server name!", channel);
+	    }
+	    sys.changeServerName(commandData);
+	    return;
 	}
 	if (command === "cleardos") {
-		sys.clearDosData();
-		normalbot.sendMessage(src, "DOS Data has been cleared from the database.", channel);
-		return;
+	    sys.clearDosData();
+	    normalbot.sendMessage(src, "DOS Data has been cleared from the database.", channel);
+	    return;
 	}
 	if (command === "private") {
-		sys.makeServerPublic(false);
-		normalbot.sendMessage(src, "The server is now currently pirvate.", channel);
-		return;
+	    sys.makeServerPublic(false);
+	    normalbot.sendMessage(src, "The server is now currently pirvate.", channel);
+	    return;
 	}
 	if (command === "public") {
-		sys.makeServerPublic(true);
-		normalbot.sendMessage(src, "The server is now currently public.", channel);
-		return;
+	    sys.makeServerPublic(true);
+            normalbot.sendMessage(src, "The server is now currently public.", channel);
+	    return;
 	}
 	if (command === "setannouncement") {
-		sys.changeAnnouncement(commandData);
-		normalbot.sendMessage(src, "Announcement changed.", channel);
-		return;
+	    sys.changeAnnouncement(commandData);
+	    normalbot.sendMessage(src, "Announcement changed.", channel);
+	    return;
 	}
 	if (command === "setdescription") {
-		sys.changeDescription(commandData);
-		normalbot.sendMessage(src, "Description changed.", channel);
-		return;
+	    sys.changeDescription(commandData);
+	    normalbot.sendMessage(src, "Description changed.", channel);
+	    return;
 	}
 	if (command === "seeannouncement") {
-		sys.sendMessage(src, sys.getAnnouncement(), channel);
-		return;
+	    sys.sendMessage(src, sys.getAnnouncement(), channel);
+	    return;
 	}
 	if (command === "checkports") {
-		sys.sendMessage(src, sys.serverPorts(), channel);
-		return;
+	    sys.sendMessage(src, sys.serverPorts(), channel);
+	    return;
 	}
 	if (command === "proxyservers") {
-		sys.sendMessage(src, sys.proxyServers(), channel);
-		return;
+	    sys.sendMessage(src, sys.proxyServers(), channel);
+	    return;
 	}
 	if (command === "trustip") {
-		sys.addTrustedIp(commandData);
-		normalbot.sendMessage(src, "IP added to trusted IPs array.", channel);
-		return;
+	    sys.addTrustedIp(commandData);
+	    normalbot.sendMessage(src, "IP added to trusted IPs array.", channel);
+	    return;
 	}
 	if (command === "untrustip") {
-		sys.removeTrustedIp(commandData);
-		normalbot.sendMessage(src, "IP removed from trusted IPs array.", channel);
-		return;
+	    sys.removeTrustedIp(commandData);
+	    normalbot.sendMessage(src, "IP removed from trusted IPs array.", channel);
+	    return;
 	}
 	
 	return "no command";
