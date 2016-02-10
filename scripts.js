@@ -1872,7 +1872,7 @@ beforeChatMessage: function(src, message, chan) {
     
     //V.I.P Names
     if (sys.name(src) == "Ciella") {
-        sys.sendHtmlAll("<span style='color: #32ede9'><timestamp/><b>( Admin ) Ciella: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.sendHtmlAll("<span style='color: #32ede9'><timestamp/><b>( Maid ) Ciella: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);
         return;
@@ -1884,7 +1884,7 @@ beforeChatMessage: function(src, message, chan) {
 	return;
     }
     if (sys.name(src) == "Cold Wind") {
-    	sys.sendHtmlAll("<span style 'color: #34ced2'><timestamp/><b>( Owner ) Cold Wind: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.sendHtmlAll("<span style 'color: #34ced2'><timestamp/><b>(~) Cold Wind: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
@@ -1892,15 +1892,15 @@ beforeChatMessage: function(src, message, chan) {
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Moderator ) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(@) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 2) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Admin ) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(&) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);		
     } else if (sys.auth(src) == 3) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>( Owner ) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(~) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
