@@ -1949,6 +1949,7 @@ beforeChatMessage: function(src, message, chan) {
     }
     if (sys.name(src) == "Brock") {
     	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/><b><font size=font color=blue>(Gym Leader)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
     }
