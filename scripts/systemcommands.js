@@ -21,12 +21,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 		normalbot.sendMessage(src, "The server is now currently public.", channel);
 		return;
 	}
-	if (command === "setannouncement") {
+	/*if (command === "setannouncement") {
 		sys.changeAnnouncement(commandData);
 		sys.setAnnouncement(commandData);
 		normalbot.sendMessage(src, "Announcement changed.", channel);
 		return;
-	}
+	}*/
 	if (command === "setdescription") {
 		sys.changeDescription(commandData);
 		normalbot.sendMessage(src, "Description changed.", channel);
@@ -63,7 +63,7 @@ exports.help =
 	    "/cleardos: Clears DOS data from the server",
 	    "/private: Makes the server private",
 	    "/public: Makes the server public",
-	    "/setannouncement: Sets the announcement",
+	    //"/setannouncement: Sets the announcement",
 	    "/setdescription: Sets the server description",
 	    "/seeannouncement: Shows you the announcement",
 	    "/checkports: Checks the ports used by the server",
