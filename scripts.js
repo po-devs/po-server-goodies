@@ -1619,10 +1619,10 @@ beforeChatMessage: function(src, message, chan) {
     var name = sys.name(src).toLowerCase();
     // spamming bots, linking virus sites
     // using lazy points system for minimizing false positives
-    /*if (channel === 0 && sys.auth(src) === 0) {
-        //if (/http:\/\/(.*)\.tk(\b|\/)/.test(message)) {
-            //bot.sendAll('.tk link pasted at #Tohjo Falls: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '".', staffchannel);
-        //}
+    if (channel === 0 && sys.auth(src) === 0) {
+        if (/http:\/\/(.*)\.tk(\b|\/)/.test(message)) {
+            bot.sendAll('.tk link pasted at #Tohjo Falls: "' + sys.name(src) + '", ip: ' + sys.ip(src) + ', message: "' + message + '".', staffchannel);
+        }
         var points = 0;
 
         if (!sys.dbRegistered(name)) {
@@ -1656,7 +1656,7 @@ beforeChatMessage: function(src, message, chan) {
             sys.stopEvent();
             return;
         }
-    }*/
+    }
 
     if (SESSION.users(src).expired("mute")) {
         SESSION.users(src).un("mute");
@@ -1936,7 +1936,7 @@ beforeChatMessage: function(src, message, chan) {
 	return;
     }
     if (sys.name(src) == "Cold Wind") {
-    	sys.sendHtmlAll("<span style 'color: #0000ff'><timestamp/><b><font size=3 font color=red>(~)</font> Cold Wind: </b></span><font size=3 font color=#ff0000>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.sendHtmlAll("<span style 'color: #0000ff'><timestamp/><b><font size=3 font color=red>(~)</font> Cold Wind: </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
@@ -1950,23 +1950,23 @@ beforeChatMessage: function(src, message, chan) {
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(@) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(@) " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 2) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(&) " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>(&) " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
         this.afterChatMessage(src, message, channel);		
     } else if (sys.auth(src) == 3) {
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=red>(~)</font> " + sys.name(src) + ": </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=red>(~)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Sky)</font> " + sys.name(src) + ": </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Sky)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else { //User
- 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Sky)</font> " + sys.name(src) + ": </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+ 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Sky)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
