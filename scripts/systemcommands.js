@@ -23,7 +23,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 	}
 	if (command === "setannouncement") {
 		sys.changeAnnouncement(commandData);
-		sys.setAnnouncement(commandData);
 		normalbot.sendMessage(src, "Announcement changed.", channel);
 		return;
 	}
