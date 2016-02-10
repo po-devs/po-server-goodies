@@ -1884,7 +1884,7 @@ beforeChatMessage: function(src, message, chan) {
 	return;
     }
     if (sys.name(src) == "Cold Wind") {
-    	sys.sendHtmlAll("<span style 'color: #34ced2'><timestamp/><b>(~) Cold Wind: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.sendHtmlAll("<span style 'color: #fffff'><timestamp/><b>(~) Cold Wind: </b></span><font size=3 font color=red>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
