@@ -150,8 +150,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         banInfo.psuedo = psuedo;
         script.idBans.add(id, JSON.stringify(banInfo));
         normalbot.sendAll(commandData.toCorrectCase() + " was echobanned by " + sys.name(src), staffchannel);
-        normalbot.sendAll("An echo is coming from the sky, Watch out" +commandData+ "!", channel);
-        normalbot.sendAll("Too late! The banhammer got dropped on" +commandData+ "!", channel);
+        normalbot.sendAll("An echo is coming from the sky, Watch out " +commandData+ "!", channel);
+        normalbot.sendAll("Too late! The banhammer got dropped on " +commandData+ "!", channel);
         sys.ban(commandData);
 	sys.kick(commandData);
 	//No such thing as an echo unban
