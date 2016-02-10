@@ -56,7 +56,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 	
 	return "no command";
 };
-exports.help = [
+exports.help = 
+    [
 	"/changeservername: Changes the server name.",
 	"/cleardos: Clears DOS data from the server",
 	"/private: Makes the server private",
@@ -68,4 +69,4 @@ exports.help = [
 	"/proxyservers: Shows the proxy server array",
 	"/trustip [IP]: Adds [IP] to trusted IPs array",
 	"/untrustip [IP]: Removes [IP] from trusted IPs array"
-];
+    ];
