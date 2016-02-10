@@ -27,7 +27,7 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     DreamWorldTiers: ["All Gen Hackmons", "ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["[LD]Jirachier", "Mahnmut", "Strudels", "Draciel", "Alice"],
+    superAdmins: [],
     canJoinStaffChannel: [],
     disallowStaffChannel: [],
     topic_delimiter: " | ",
@@ -1282,7 +1282,7 @@ afterLogIn : function(src) {
         return;
     }
     sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
-    sys.sendMessage(src, "±Bot: V.I.P sold here for £30, This grants you hiddenauth (May be removed and refunded if abused)");
+    sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", We hope you enjoy your stay.");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
