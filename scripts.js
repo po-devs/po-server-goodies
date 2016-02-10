@@ -1878,13 +1878,13 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     if (sys.name(src) == "Armu") {
-	sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b><i>(Sky) Armu: </i></b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: #1bb133'><timestamp/><b><i><font size=3 font color=red>(Sky)</font> Armu: </i></b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
     }
     if (sys.name(src) == "Cold Wind") {
-    	sys.sendHtmlAll("<span style 'color: #fffff'><timestamp/><b>(~) Cold Wind: </b></span><font size=3 font color=#ff0000>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.sendHtmlAll("<span style 'color: #fffff'><timestamp/><b><font size=3 font color=green>(~)</font> Cold Wind: </b></span><font size=3 font color=#ff0000>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
