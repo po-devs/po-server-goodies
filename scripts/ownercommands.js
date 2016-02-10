@@ -588,7 +588,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 commands = require('commands.js');
             }
         });
-        normalbot.sendAll("Updated commands!", staffchannel);
+        normalbot.sendAll("Updated commands!", sachannel);
         return;
     }
     if (command == "updatechannels") {
