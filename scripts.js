@@ -1532,10 +1532,6 @@ beforeNewMessage : function(msg) {
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
-    if (sys.auth(src) === 0 && user.smute.active){
-        sys.stopEvent();
-        return;
-    }
     if (typeof user.lastpm === "undefined") {
         user.lastpm = parseInt(sys.time(), 10);
     }
