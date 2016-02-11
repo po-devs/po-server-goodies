@@ -499,7 +499,7 @@ function Hangman() {
             this.lastAdvertise = time;
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("A new game of Hangman with the hint '" + hint + "' started in #Hangman!", 0);
+            hangbot.sendAll("A new " + (isEvent ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
         }
@@ -645,9 +645,9 @@ function Hangman() {
         }
         this.resetTimers();
     };
-    this.viewLeaderboards = function(src, commandData) {
+    this.viewLeaderboards = function(src, commandData, last) {
         var cut = 10;
-        var fromLastMonth = commandData && commandData.toLowerCase() == "last";
+        var fromLastMonth = last;
         var lb = fromLastMonth ? leaderboards.last : leaderboards.current;
         var list = Object.keys(lb).sort(function(a, b) {
             return lb[b] - lb[a];
@@ -662,9 +662,16 @@ function Hangman() {
         }
         name = sys.name(src).toLowerCase();
         if (!fromLastMonth && top.indexOf(name) == -1) {
-            if (name in lb) {
+            if (commandData) {
+                var req = commandData.toLowerCase();
+                if (req in lb) {
+                    hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
+                }
+            }
+            else if (name in lb) {
                 hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
-            } else {
+            } 
+            else {
                 hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
             }
         }
@@ -680,11 +687,10 @@ function Hangman() {
         var currentName = sys.name(src).toLowerCase();
         var targetName = commandData.toLowerCase();
         if (currentName === targetName) { // CHECK IF TARGET ALT IS SAME AS CURRENT ALT
-            hangbot.sendMessage(src, "The target user is the same as your current. Please choose a new target that is on the same IP and logged on.", hangchan);
             return;
         }
         if (!leaderboards.current.hasOwnProperty(currentName)) { // CURRENT NAME NOT ON THE LEADERBOARD
-            hangbot.sendMessage(src, "Your currently not rated on the leaderboard.", hangchan);
+            hangbot.sendMessage(src, "You're currently not rated on the leaderboard.", hangchan);
             return;
         }
         if (sys.id(targetName) === undefined) { // CHECK IF TARGET NAME IS ONLINE
@@ -1339,6 +1345,9 @@ function Hangman() {
             case "event":
                 eventLimit = val*60;
                 hangbot.sendMessage(src, "Event games will happen every " + val + " minutes.", hangchan);
+                break;
+            default:
+                break;
         }
     };
     this.onHelp = function (src, topic, channel) {
@@ -1456,8 +1465,8 @@ function Hangman() {
             hangman.passWinner(src, commandData);
             return true;
         }
-        if (command === "leaderboard" || command === "leaderboards") {
-            hangman.viewLeaderboards(src, commandData);
+        if (command === "leaderboard" || command === "lb" || command === "leaderboardlast" || command === "lblast") {
+            hangman.viewLeaderboards(src, commandData, (command === "leaderboardlast" || command === "lblast"));
             return true;
         }
         if (command === "passleaderboard" || command === "passlb" || command === "passscore") {
