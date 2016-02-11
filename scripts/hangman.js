@@ -1382,8 +1382,8 @@ function Hangman() {
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
             "/passha: To give your Hangman Admin powers to an alt.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
-            "/checkgame: To see the answer of a game (only once per game). Prevents playing if used."
-            "/changelog: Display event game edit logs. Format /changelog range:criteria",
+            "/checkgame: To see the answer of a game (only once per game). Prevents playing if used.",
+            "/changelog: Display event game edit logs. Format /changelog range:criteria"
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
