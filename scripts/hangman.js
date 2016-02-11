@@ -1982,7 +1982,7 @@ function Hangman() {
 
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("The top player on the Hangman Leaderboard is " + (list[0] !== undefined ? list[0] : "~No Top Player Yet~") + "! Challenge him by winning Event Games in #Hangman!", 0);
+            hangbot.sendAll("The top player on the Hangman Leaderboard is " + (list[0] !== undefined ? nonFlashing(list[0]) : "~No Top Player Yet~") + "! Challenge him by winning Event Games in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
 
