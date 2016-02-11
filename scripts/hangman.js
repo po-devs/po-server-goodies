@@ -1131,7 +1131,7 @@ function Hangman() {
             autoGames.splice(e, 1, sub);
         }
         sys.write(autoGamesFile, JSON.stringify(autoGames));
-        sys.appendToFile(changeLogFile, new Date().getTime() + "|||" + i + "::" + a + "::" + h + "::deleted::" + sys.name(src) + "::\n");
+        sys.appendToFile(changeLogFile, new Date().getTime() + "|||" + commandData + "::" + a + "::" + h + "::deleted::" + sys.name(src) + "::\n");
         hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
     };
 
@@ -1982,7 +1982,7 @@ function Hangman() {
 
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("The top player on the Hangman Leaderboard is " + (list[0] !== undefined ? list[0] : "~No Top Player Yet~") + "! Challenge him by winning Event Games in #Hangman!", 0);
+            hangbot.sendAll("The top player on the Hangman Leaderboard is " + (list[0] !== undefined ? nonFlashing(list[0]) : "~No Top Player Yet~") + "! Challenge him by winning Event Games in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
 
