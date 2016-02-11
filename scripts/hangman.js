@@ -1383,6 +1383,7 @@ function Hangman() {
             "/passha: To give your Hangman Admin powers to an alt.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used."
+            "/changelog: Display event game edit logs. Format /changelog range:criteria",
         ];
         var superAdminHelp = [
             "*** Hangman Super Admin Commands ***",
@@ -1399,7 +1400,6 @@ function Hangman() {
         ];
         var ownerHelp = [
             "*** Server owner Hangman Commands ***",
-            "/changelog range:criteria: Display event game edit logs.",
             "/hangmansuperadmin: To promote a new Hangman Super Admin. Use /shangmansuperadmin for a silent promotion.",
             "/hangmansuperadminoff: To demote a Hangman Super Admin. Use /shangmansuperadminoff for a silent demotion."
         ];
@@ -1594,7 +1594,25 @@ function Hangman() {
             hangman.checkGame(src);
             return true;
         }
-
+        
+        if (command === "changelog") {
+            if (commandData === undefined) {
+                hangbot.sendMessage(src, "Command syntax: /changelog range:criteria", hangchan);
+                return true;
+            }
+            hangman.showLog(src, commandData, changeLogFile, "Event Game Changes", function(x) {
+                var info = x.split("|||"),
+                    time = new Date(parseInt(info[0], 10)).toUTCString(),
+                    p1Info = info[1].split("::"),
+                    index = p1Info[0],
+                    q = p1Info[1] + ":" + p1Info[2],
+                    act = p1Info[3],
+                    who = p1Info[4];
+                return "[" + index + "] " + q + " was " + act + " by " + who + " --- (" + time + ")";
+            });
+            return true;
+        }
+        
         if (hangman.authLevel(src) < 2) {
             return false;
         }
@@ -1666,23 +1684,6 @@ function Hangman() {
         }
         if (command === "hangmansuperadminoff" || command === "shangmansuperadminoff") {
             hangman.demoteSuperAdmin(src, commandData, channel, (command === "shangmansuperadminoff"));
-            return true;
-        }
-        if (command === "changelog") {
-            if (commandData === undefined) {
-                hangbot.sendMessage(src, "Command syntax: /changelog range:criteria", hangchan);
-                return true;
-            }
-            hangman.showLog(src, commandData, changeLogFile, "Event Game Changes", function(x) {
-                var info = x.split("|||"),
-                    time = new Date(parseInt(info[0], 10)).toUTCString(),
-                    p1Info = info[1].split("::"),
-                    index = p1Info[0],
-                    q = p1Info[1] + ":" + p1Info[2],
-                    act = p1Info[3],
-                    who = p1Info[4];
-                return "[" + index + "] " + q + " was " + act + " by " + who + " --- (" + time + ")";
-            });
             return true;
         }
         return false;
