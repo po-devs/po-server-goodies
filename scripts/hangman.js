@@ -1131,7 +1131,7 @@ function Hangman() {
             autoGames.splice(e, 1, sub);
         }
         sys.write(autoGamesFile, JSON.stringify(autoGames));
-        sys.appendToFile(changeLogFile, new Date().getTime() + "|||" + i + "::" + a + "::" + h + "::deleted::" + sys.name(src) + "::\n");
+        sys.appendToFile(changeLogFile, new Date().getTime() + "|||" + commandData + "::" + a + "::" + h + "::deleted::" + sys.name(src) + "::\n");
         hangbot.sendMessage(src, "You have successfully deleted the question!", hangchan);
     };
 
