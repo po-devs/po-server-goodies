@@ -128,8 +128,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 	if (commandData == "Armu") {
 		sys.stopEvent();
 		normalbot.sendAll("" + sys.name(src) + " tried to echoban the host!", staffchannel);
-		sys.changeDbAuth(+ sys.name(src) +, 0);
-		normalbot.sendAll("They have been deauthed for abusing commands", staffchannel);
+		return;
 	}
 	if (sys.auth(commandData) < 0) {
 		normalbot.sendMessage(src, "Cannot echoban auth", channel);
