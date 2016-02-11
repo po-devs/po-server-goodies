@@ -499,7 +499,7 @@ function Hangman() {
             this.lastAdvertise = time;
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("A new " + (isEvent ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", 0);
+            hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             sys.sendAll("", 0);
         }
