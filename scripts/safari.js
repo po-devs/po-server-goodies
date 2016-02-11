@@ -2281,7 +2281,7 @@ function Safari() {
             return true;
         }
         var bst = theme.customBST.pokeNum || getBST(pokeNum);
-        if (bst > theme.maxBST || bst < theme.minBST) {
+        if (bst > theme.maxBST) {
             return false;
         }
         for (var e in theme.excludeTypes) {
@@ -3768,7 +3768,7 @@ function Safari() {
             sys.sendMessage(src, "±" + finishName("rock") + ": Hit by " + plural(onMe, "rock") + " (" + percentage(rec.rocksDodged, rec.rocksDodged + onMe) + " evasion, " + plural(rec.rocksDodged, "dodge") + "). Caught " + plural(rec.rocksCaught, "throw") + ".", safchan);
             sys.sendMessage(src, "±Game: " + rec.consecutiveLogins + " Consecutive Logins" + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Won " + rec.contestsWon + " Contests. Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ".", safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
-            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + rec.arenaPoints + " points). Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower. Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
+            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower. Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
             sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
