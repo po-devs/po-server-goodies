@@ -1953,6 +1953,12 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }
+    if (sys.name(src) == "Rindou") {
+    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#85BB65>(&)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
