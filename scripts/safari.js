@@ -5263,7 +5263,7 @@ function Safari() {
 
         if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
             var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
+            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
             return;
         }
 
@@ -9940,6 +9940,51 @@ function Safari() {
                     return false;
                 }
                 safari.skipTutorial(src, commandData);
+                return true;
+            }
+            if (command === "birthday") {
+                if (commandData === "*") {
+                    safaribot.sendMessage(src, "As part of Fuzzysqurl's Birthday Something event, you can exchange Pokemon for Raffle Entries into a drawing to win cool prizes. Only 3 Pokemon are accepted however: Vanillite is worth 1 Entry, Mareep is worth 2 Entries, and Litwick is worth 5 Entries. If you would like to exchange your Pokemon, you can use \"/birthday [pokemon]:confirm\"!", safchan);
+                    return true;
+                }
+                var player = getAvatar(src);
+                var input = commandData.split(":");
+                var info = getInputPokemon(input[0]);
+                var id = info.id;
+                
+                if (info.name !== "Vanillite" && info.name !== "Mareep" && info.name !== "Litwick") {
+                    safaribot.sendMessage(src, "Sorry, only Vanillite, Mareep, and Litwick are allowed to be traded!", safchan);
+                    return true;
+                }
+                var values = {"Vanillite": 1, "Mareep": 2, "Litwick": 5};
+                if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
+                    var confirmCommand = "/birthday "+ sys.pokemon(id) + ":confirm";
+                    safaribot.sendHtmlMessage(src, "You can exchange your " + info.name + " for " + plural(values[info.name], "Raffle Entry") + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
+                    return true;
+                }
+                
+                if (!canLosePokemon(src, commandData, "exchange", true)) {
+                    return true;
+                }
+                
+                var restrictions = ["contest", "auction", "battle", "event", "tutorial"];
+                var reason = "exchange a Pokémon";
+                //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+                if (player.party[0] === id) {
+                    restrictions = restrictions.concat(["wild"]);
+                    reason = "exchange your active Pokémon";
+                }
+                if (cantBecause(src, reason, restrictions)) {
+                    return;
+                }
+                
+                player.balls.entry += values[info.name];
+                rafflePlayers.add(player.id, player.balls.entry);
+                rafflePlayers.save();
+                safaribot.sendMessage(src, "You exchanged your " + info.name + " for " + plural(values[info.name], "Raffle Entry") + "! You now have " + plural(player.balls.entry, "Raffle Entry") + ".", safchan);
+                this.removePokemon(src, id);
+                this.logLostCommand(sys.name(src), "birthday " + commandData);
+                this.saveGame(player);                
                 return true;
             }
             if (command === "help") {
