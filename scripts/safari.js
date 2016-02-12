@@ -4246,13 +4246,13 @@ function Safari() {
                 var list = player.cooldowns.lastBaits;
                 var l = list.length - 1;
                 var slip = 0;
-                if (list.length >= 2 && list[l] - list[l-1] < 1100) {
+                if (list.length >= 2 && list[l] - list[l-1] < 1900) {
                     slip = 1;
-                } else if (list.length >= 3 && list[l] - list[l-2] < 1700) {
+                } else if (list.length >= 3 && list[l] - list[l-2] < 2500) {
                     slip = 2;
-                } else if (list.length >= 4 && list[l] - list[l-3] < 2400) {
+                } else if (list.length >= 4 && list[l] - list[l-3] < 3100) {
                     slip = 3;
-                } else if (list.length >= 5 && list[l] - list[l-4] < 3200) {
+                } else if (list.length >= 5 && list[l] - list[l-4] < 3900) {
                     slip = 4;
                 }
                 if (slip) {
