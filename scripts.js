@@ -1334,13 +1334,14 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
     sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
-    sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
+    sys.sendMessage(src, "");
+    sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
     sys.sendMessage(src, "");
 
     callplugins("afterLogIn", src);
