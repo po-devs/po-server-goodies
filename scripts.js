@@ -1923,6 +1923,12 @@ beforeChatMessage: function(src, message, chan) {
     }
     
     //V.I.P Names
+    if (sys.name(src) == "Kisin") {
+    	sys.sendHtmlAll("<span style'color: " + sys.getColor(src) + "'><timestamp/><b><font size=3>[M◊P] Kisin: </font></b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
     if (sys.name(src) == "Armu") {
 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><i><font size=3 font color=red>(Host)</font> Secrets: </i></b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
