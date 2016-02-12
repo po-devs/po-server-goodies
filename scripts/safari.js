@@ -1187,11 +1187,11 @@ function Safari() {
         });
         if (html) {
             for (var e in players) {
-                sys.sendHtmlMessage(players[e], mess, safchan);
+                safaribot.sendHtmlMessage(players[e], mess, safchan);
             }
         } else {
             for (var e in players) {
-                sys.sendMessage(players[e], mess, safchan);               
+                safaribot.sendMessage(players[e], mess, safchan);               
             }
         }
     }
