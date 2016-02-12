@@ -1781,7 +1781,7 @@ function Safari() {
                         safaribot.sendMessage(src, "However, you only had space for " + check + " and were forced to discard the rest" + (withName ? " of the " + finishName(reward) : "") + "!", safchan);
                     }
                 }
-                player.records.itemsDiscarded += (amount - check);
+                //player.records.itemsDiscarded += (amount - check);
             }
             if (master) {
                 reward = "fragment";
@@ -3797,17 +3797,19 @@ function Safari() {
             sys.sendMessage(src, "*** Player Records ***", safchan);
             sys.sendMessage(src, "±Pokémon: " + rec.pokesCaught + " Pokémon caught in " + rec.pokesNotCaught + " attempts (" + percentage(rec.pokesCaught, rec.pokesNotCaught) + "). Performed " + plural(rec.pokesEvolved, "Evolution") + ", " + plural(rec.megaEvolutions, "Mega Evolution") + ", and " + plural(rec.pokesCloned, "Cloning") + ". Stole " + rec.pokesStolen + " Pokémon from NPCs.", safchan); //Devolution defaults to its full item name with plural() so it is left off intentionally.
             sys.sendMessage(src, "±Bait: Used " + plural(rec.baitUsed, "bait") + " with " + plural(rec.baitAttracted, "success") + " (" + percentage(rec.baitAttracted, rec.baitUsed) + ") and " + plural(rec.baitNothing, "failure") + " (" + percentage(rec.baitNothing, rec.baitUsed) + "). Snagged " + rec.notBaitedCaught + " Pokémon away from other Players.", safchan);
-            var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings;
-            var silverEarnings = rec.scientistEarnings + rec.arenaPoints;
+            var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
+            var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver;
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned $" + addComma(earnings) + " and " + plural(silverEarnings, "silver") + " [" + (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source")) + "].", safchan);
             sys.sendMessage(src, "±Gachapon: Used " + plural(rec.gachasUsed, "gacha") + " (" + plural(rec.masterballsWon, "master") + ", " + plural(rec.jackpotsWon, "Jackpot") + ").", safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow;
             sys.sendMessage(src, "±" + finishName("rock") + ": Threw " + plural(rec.rocksThrown, "rock") + " (" + percentage(onOthers, rec.rocksThrown) + " accuracy, " + plural(rec.rocksHit, "hit") + "). Embarassed " + plural(rec.rocksBounced, "time") + ".", safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow;
             sys.sendMessage(src, "±" + finishName("rock") + ": Hit by " + plural(onMe, "rock") + " (" + percentage(rec.rocksDodged, rec.rocksDodged + onMe) + " evasion, " + plural(rec.rocksDodged, "dodge") + "). Caught " + plural(rec.rocksCaught, "throw") + ".", safchan);
-            sys.sendMessage(src, "±Game: " + rec.consecutiveLogins + " Consecutive Logins" + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Won " + rec.contestsWon + " Contests. Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ".", safchan);
+            sys.sendMessage(src, "±Game: " + rec.consecutiveLogins + " Consecutive Logins" + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Won " + rec.contestsWon + " Contests.", safchan);
+            sys.sendMessage(src, "±Game: Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ". Hatched " + plural(rec.eggsHatched, "egg") + " and " +  plural(rec.eggsHatched, "bright") + " with " + rec.rareHatched + " being a Rare Pokémon!", safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
-            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower. Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
+            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
+            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + "point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
             sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
@@ -3820,12 +3822,14 @@ function Safari() {
             safaribot.sendMessage(src, "Pokémon Race: $" + addComma(rec.pokeRaceEarnings), safchan);
             safaribot.sendMessage(src, "Hitting Wallets: $" + addComma(rec.rocksWalletEarned), safchan);
             safaribot.sendMessage(src, "Window Restitution: $" + addComma(rec.rocksWindowEarned), safchan);
+            safaribot.sendMessage(src, "Pyramid Loot: $" + addComma(rec.pyramidMoney), safchan);
             safaribot.sendMessage(src, "Dropped from Wallet: -$" + addComma(rec.rocksWalletLost), safchan);
             safaribot.sendMessage(src, "Repairing Windows: -$" + addComma(rec.rocksWindowLost), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Scientist Reward: " + plural(rec.scientistEarnings, "silver"), safchan);
             safaribot.sendMessage(src, "Arena Reward: " + plural(rec.arenaPoints, "silver"), safchan);
             safaribot.sendMessage(src, "Pokémon Race: " + plural(rec.pokeRaceSilver, "silver"), safchan);
+            safaribot.sendMessage(src, "Pyramid Loot: " + plural(rec.pyramidSilver, "silver"), safchan);
             sys.sendMessage(src, "", safchan);
         }
     };
@@ -4583,7 +4587,7 @@ function Safari() {
                 giveReward = false;
                 if (currentPokemon) {
                     safaribot.sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!", safchan);
-                    player.records.capsulesLost += 1;
+                    //player.records.capsulesLost += 1;
                 } else if (contestCount > 0 || contestCooldown <= 13) {
                     giveReward = true;
                     reward = "safari";
