@@ -1343,7 +1343,7 @@ afterLogIn : function(src) {
     sys.sendMessage(src, "");
     sys.sendMessage(src, "");
     sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
-    sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3>" + sys.name(src) + "</font></span><font color=black> has joined the server!</b>");
+    sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3>" + sys.name(src) + "</font></span><font color=black> has joined the server!</b>", channel);
     sys.sendMessage(src, "");
 
     callplugins("afterLogIn", src);
