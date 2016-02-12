@@ -159,6 +159,8 @@ function Safari() {
             //fullyPlayedContests: 0,
             pyramidLeaderScore: 0,
             pyramidHelperScore: 0,
+            pyramidLeaderClears: 0,
+            pyramidHelperClears: 0,
             pyramidMoney: 0,
             pyramidSilver: 0,
             eggsHatched: 0,
@@ -1167,6 +1169,29 @@ function Safari() {
         wildEvent = false;
         currentPokemonCount = 1;
         isBaited = false;
+    }
+    
+    /* Message Functions */
+    function sendAll(mess, html) {
+        var players = sys.playersOfChannel(safchan).filter(function(x) {
+            var name = sys.name(x);
+            if (safari.isInAuction(name) || safari.isBattling(name) || (currentEvent && currentEvent.isInEvent(name))) {
+                return false;
+            }
+            for (var p in currentPyramids) {
+                if (currentPyramids[p].isInPyramid(name)) {
+                    return false;
+                }
+            }
+            return true;
+        });
+        for (var e in players) {
+            if (html) {
+                sys.sendHtmlMessage(players[e], mess, safchan);
+            } else {
+                sys.sendMessage(players[e], mess, safchan);
+            }                
+        }
     }
     
     /* Time Functions */
@@ -2691,7 +2716,7 @@ function Safari() {
             } else {
                 safaribot.sendHtmlMessage(src, "<b>Oh no! The " + pokeName + " broke free!</b>", safchan);
             }
-            safaribot.sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!", safchan);
+            sendAll(pokeName + " broke out of " + (ball == "spy" ? "an anonymous person" : name) + "'s " + ballName + "!");
             player.records.pokesNotCaught += 1;
 
             currentThrows -= 1;
@@ -3810,7 +3835,7 @@ function Safari() {
             sys.sendMessage(src, "±Game: Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ". Hatched " + plural(rec.eggsHatched, "egg") + " and " +  plural(rec.eggsHatched, "bright") + " with " + rec.rareHatched + " being a Rare Pokémon!", safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
-            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + " point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
+            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + " point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Cleared the Pyramid " + plural(rec.pyramidLeaderClears, "times") + " as Leader and " + plural(rec.pyramidHelperClears, "times") + " as Helper. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
             sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
@@ -4339,7 +4364,7 @@ function Safari() {
             }
         } else {
             player.cooldowns.bait = now() + (itemData.bait.failCD + sys.rand(0,4)) * 1000;
-            safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.", safchan);
+            sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
             player.records.baitNothing += 1;
         }
         safaribot.sendMessage(src, "You still have " + plural(player.balls.bait, baitName) + " remaining.", safchan);
@@ -8698,10 +8723,13 @@ function Safari() {
             save = false;
             player = getAvatarOff(name);
             if (name === this.leader) {
-                player.quests.pyramid.cooldown = now() + 20*60*1000;
+                player.quests.pyramid.cooldown = now() + 45*60*1000;
                 if (this.points > player.records.pyramidLeaderScore) {
                     player.records.pyramidLeaderScore = this.points;
                     save = true;
+                }
+                if (this.finishMode === "cleared") {
+                    player.records.pyramidLeaderClears += 1;
                 }
                 if (reward) {
                     this.sendToViewers("Party leader " + name.toCorrectCase() + " received " + plural(amt, reward) + " for their performance at Pyramid!");
@@ -8709,9 +8737,13 @@ function Safari() {
                     save = true;
                 }
             } else {
+                player.quests.pyramid.cooldown = now() + 15*60*1000;
                 if (this.points > player.records.pyramidHelperScore) {
                     player.records.pyramidHelperScore = this.points;
                     save = true;
+                }
+                if (this.finishMode === "cleared") {
+                    player.records.pyramidHelperClears += 1;
                 }
             }
             if (save) {
