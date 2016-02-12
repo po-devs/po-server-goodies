@@ -1098,7 +1098,7 @@ function Safari() {
             }
         }
         if (arr.contains("pyramid")) {
-            for  (var p in currentPyramids) {
+            for (var p in currentPyramids) {
                 if (currentPyramids[p].isInPyramid(sys.name(src))) {
                     safaribot.sendMessage(src, "You can't " + action + " while inside the Pyramid!", safchan);
                     return true;
@@ -1185,12 +1185,14 @@ function Safari() {
             }
             return true;
         });
-        for (var e in players) {
-            if (html) {
+        if (html) {
+            for (var e in players) {
                 sys.sendHtmlMessage(players[e], mess, safchan);
-            } else {
-                sys.sendMessage(players[e], mess, safchan);
-            }                
+            }
+        } else {
+            for (var e in players) {
+                sys.sendMessage(players[e], mess, safchan);               
+            }
         }
     }
     
@@ -8275,6 +8277,9 @@ function Safari() {
                     safaribot.sendMessage(src, "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
+                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+                    return;
+                }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
                     var invited = Object.keys(pyramidRequests[player.id].invites).map(function(x) { return x.toCorrectCase(); });
                     safaribot.sendMessage(src, "You already have invited " + readable(invited, "and") + " to join you in the pyramid quest! Please wait for them to accept your invitation!", safchan);
@@ -8321,6 +8326,9 @@ function Safari() {
                 pyramidRequests[player.id].invites[n2] = false;
             break;
             case "join":
+                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+                    return;
+                }
                 var invites = [];
                 for (var e in pyramidRequests) {
                     if(pyramidRequests.hasOwnProperty(e) && pyramidRequests[e].invites.hasOwnProperty(player.id)) {
@@ -8403,6 +8411,11 @@ function Safari() {
                         }
                         if (this.isBattling(n) || this.isInAuction(n) || (currentEvent && currentEvent.isInEvent(n))) {
                             unavailable.push(n + " is already participating in another activity");
+                        }
+                        for (var p in currentPyramids) {
+                            if (currentPyramids[p].isInPyramid(n)) {
+                                unavailable.push(n + " is already participating in a Pyramid quest");
+                            }
                         }
                         if (n == leader && p.money < cost) {
                             unavailable.push(n + " doesn't have $" + addComma(cost) + " for the entry fee");
