@@ -889,6 +889,7 @@ function Safari() {
     ];
 
     /* Misc Variables */
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -3809,7 +3810,7 @@ function Safari() {
             sys.sendMessage(src, "±Game: Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ". Hatched " + plural(rec.eggsHatched, "egg") + " and " +  plural(rec.eggsHatched, "bright") + " with " + rec.rareHatched + " being a Rare Pokémon!", safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
-            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + "point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
+            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + " point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
             sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
@@ -7183,12 +7184,17 @@ function Safari() {
             var n = now(), quest = getAvatar(src).quests;
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Quests available:", safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Wonder Trade") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")) + (stopQuests.collector ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]") + (stopQuests.arena ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Wonder Trade") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]") + (stopQuests.wonder ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -7315,6 +7321,10 @@ function Safari() {
                     safari.tutorialQuest(src, true);
                     return;
                 }
+                if (stopQuests.collector) {
+                    safaribot.sendMessage(src, "Collector: Sorry, I am buried in Pokémon right now. Please return at a later point in time!", safchan);
+                    return;
+                }
                 if (ongoing) {
                     safaribot.sendHtmlMessage(src, "Collector: Please fulfill my previous request before getting a new one! If you wish to give up this request, type " + link("/quest collector:abort") + ".", safchan);
                     return;
@@ -7411,6 +7421,10 @@ function Safari() {
                 }
                 if (!ongoing) {
                     safaribot.sendHtmlMessage(src, "Collector: I don't recall requesting anything from you. Type " + link("/quest collector:help") + " if you wish to help me.", safchan);
+                    return;
+                }
+                if (stopQuests.collector) {
+                    safaribot.sendMessage(src, "Collector: Sorry, I am buried in Pokémon right now. Please return at a later point in time!", safchan);
                     return;
                 }
                 //Tutorial blocked earlier
@@ -7523,7 +7537,7 @@ function Safari() {
         }
         var quest = scientistQuest;
         var id = quest.pokemon;
-        if (now() > quest.expires) {
+        if (now() > quest.expires || stopQuests.scientist) {
             safaribot.sendMessage(src, "Scientist: I'm going to present my research results in a convention. Please come back later!", safchan);
             return;
         }
@@ -7771,6 +7785,10 @@ function Safari() {
             safaribot.sendMessage(src, "Arena Clerk: There's a long queue of people fighting in the Arena! Please come after " + timeLeftString(player.quests.arena.cooldown) + " to try another challenge!", safchan);
             return;
         }
+        if (stopQuests.arena) {
+            safaribot.sendMessage(src, "Arena Clerk: Sorry, we need to clean out the stadium before we can host more battles. Please return at a later point in time!", safchan);
+            return;
+        }
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
@@ -7874,6 +7892,11 @@ function Safari() {
             safaribot.sendMessage(src, "Tower Clerk: If you are ready to challenge the Battle Tower, type /quest tower:start. If you need more information, type /quest tower:help.", safchan);
             return;
         }
+        if (stopQuests.tower) {
+            safaribot.sendMessage(src, "Tower Clerk: Sorry, our Trainers are taking a short lunch break. Please return at a later point in time!", safchan);
+            return;
+        }
+        
         if (player.party.length < 6) {
             safaribot.sendMessage(src, "Your party must have 6 Pokémon for this challenge!", safchan);
             return;
@@ -8135,6 +8158,10 @@ function Safari() {
             safaribot.sendMessage(src, "Wonder Trade Operator: You don't have " + an(sys.pokemon(id)) + "!", safchan);
             return;
         }
+        if (stopQuests.wonder) {
+            safaribot.sendMessage(src, "Wonder Trade Operator: Sorry, we are having problems with our communication and trading devices, they will be fixed shortly. Please return at a later point in time!", safchan);
+            return;
+        }
 
         var rangeIndex = Math.floor((bst - 180)/70);
         var bstRange = [[180,249], [250,319], [320,389], [390,459], [460,529], [530,599]][rangeIndex];
@@ -8217,6 +8244,10 @@ function Safari() {
                 }
                 if (player.money < cost) {
                     safaribot.sendMessage(src, "Pyramid Guide: You need $" + addComma(cost) + " to enter the Pyramid!", safchan);
+                    return;
+                }
+                if (stopQuests.pyramid) {
+                    safaribot.sendMessage(src, "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
@@ -11825,6 +11856,7 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
+            "/disablequest [quest/all]: Disables specified quest, or all of them. Use /enablequest to re-enable. Updating the script will re-enable all quests.",
             "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             "/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -13314,6 +13346,34 @@ function Safari() {
 
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s cooldown for " + type + " was reset!", safchan);
+                return true;
+            }
+            if (command === "disablequest" || command === "enablequest") {
+                if (commandData === "*") {
+                    var status = [];
+                    for (var e in stopQuests) {
+                        status.push(cap(e) + ": " + stopQuests[e]);
+                    }
+                    safaribot.sendMessage(src, "Disabled? " + status.join(", "), safchan);
+                    return true;
+                }
+                var off = command === "disablequest";
+                if (commandData.toLowerCase() === "all") {
+                    for (var e in stopQuests) {
+                        stopQuests[e] = off;
+                    }
+                    safaribot.sendMessage(src, "All quests were " + (!off ? "enabled" : "disabled") + ".", safchan);
+                    return true;
+                }
+                var data = commandData.split(":");
+                var quest = data[0].toLowerCase();
+                var allQuests = Object.keys(stopQuests);
+                if (allQuests.contains(quest)) {
+                    stopQuests[quest] = off;
+                    safaribot.sendMessage(src, cap(quest) + " was " + (!off ? "enabled" : "disabled") + ".", safchan);
+                } else {
+                    safaribot.sendMessage(src, "This is not a valid quest. Valid quests are: " + readable(allQuests, "and") + ".", safchan);
+                }
                 return true;
             }
             if (command === "tourgift") {
