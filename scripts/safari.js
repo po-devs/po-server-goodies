@@ -1,5 +1,5 @@
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
-/*global sys, module, SESSION, script, safaribot, require, updateModule, staffchannel, sachannel */
+/*global sys, module, SESSION, script, safaribot, require, updateModule, staffchannel, sachannel, pokedex */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
 var utilities = require('utilities.js');
@@ -98,7 +98,9 @@ function Safari() {
             entry: 0,
             silver: 0,
             pack: 0,
-            fragment: 0
+            fragment: 0,
+            egg: 0,
+            bright: 0
         },
         records: {
             gachasUsed: 0,
@@ -153,8 +155,15 @@ function Safari() {
             packsOpened: 0,
             pokesStolen: 0,
             notBaitedCaught: 0,
-            pokeRaceSilver: 0
-            //fullyPlayedContests: 0
+            pokeRaceSilver: 0,
+            //fullyPlayedContests: 0,
+            pyramidLeaderScore: 0,
+            pyramidHelperScore: 0,
+            pyramidMoney: 0,
+            pyramidSilver: 0,
+            eggsHatched: 0,
+            brightEggsHatched: 0,
+            rareHatched: 0
         },
         costumes: [],
         savedParties: [],
@@ -202,6 +211,9 @@ function Safari() {
                 cooldown: 0
             },
             wonder: {
+                cooldown: 0
+            },
+            pyramid: {
                 cooldown: 0
             }
         }
@@ -253,7 +265,9 @@ function Safari() {
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
         pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
         fragment: {name: "fragment", fullName: "Ball Fragment", type: "consumable", icon: 120, price: 0, aliases:["fragment", "ball fragment", "ballfragment"], tradable: false},
-        
+        egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 0, aliases:["egg"], tradable: true},
+        bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 0, aliases:["bright", "bright egg", "brightegg"], tradable: true},
+
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
         honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], tradable: true},
@@ -302,6 +316,8 @@ function Safari() {
     myth: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjEwMPRyoQAAARhJREFUSEvNlT0OgzAMhTlGj8CYo3TsETp2ZOzI2JGRscfoyNiRsUdgzObqIb0qGOenqkAdLCCJ32eHOK5EpNrSNhVH4P8BcM6JZSVbm8yAotPzKJZxPgWKAuAcEw7Hx66es4tBTADF/asVWA6UgqwAC3HvxcMyEABikH0Bet+/2aJYFosMSn+s/skUt7ZpfwCiyJ0azoeR4/126VZHdpVBfR7mE0ERfNNiwhTHOl0TJiAUvZ8O4lsneBLOyBFxuDYLQDUigqa5fhwhTtNi4Td8rIo262AcprnA4KQz0BCswfq+f5QBmEUIgQiFMK4tJp7sB0gXjpYgxzCfEs82HF7HFNLPn67r8PrdrOGUdKzcmv/oybkoU/NvdoVkS0HgewQAAAAASUVORK5CYII=",
     box: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAAA5UlEQVRIx92VwQ2DMAxFMwLHHjtCRuHIGDly7AgdgREyAkdGYIxuEGQJV6ljOwZSVerhCxGF//wTYbsYo/um3M8B3vuEag4A09f6eOsMzGxOZYWJ5tPk0zz3rDld12DVyhEET3y3JGMBtWMBEMK4dEsc0nO884CaOVc5gkBorgJwA0g7c65ygFUBsBElwaRjCeF2DIDKP6SwvJDDCVDwIZcsDN0H+FICdp0AmiVY+o4FtEkA5rukBPRvLrqmmCAzlxKYW0UOKxIIdyA1PfMs0C5Z66jmwVEk2wGn2nXLKef+f+hf1QY4PRz+Bnq4AwAAAABJRU5ErkJggg==",
     entry: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAAJcEhZcwAAD2AAAA9gAXp4RY0AAAJ4SURBVEhL7ZNdSFNhGMe96y7qou6jXSXM7Xy8mzbmsmIO23Duq02jSIlJC0zMjwKR1ILIzYQRCRUGEnoq6CJtQiCCYZQFod2sKKplQREFQRc7+/ec7c0RzsrwKvaD5+KMvf/zPM/7OyVF/h9MkjgmScIAf1w/zBQqCcJCst2D2Yjru1kwrM9LGBN9TBKRCO9Dpr8eOHMA6A3iXrMTJtHYw/+2NioEYTszGHYEqsoxENiDTF8IGIoAH1PI0t8A0G9KowMui6lVp9Nt4Ed/jyzLpUwUfW1O6+tOVyXUc43AzQvApQ5gYRZIPgGezQHnm4Cr3dkXjx6qhtvCjvOIwlgshi2yKPZQ6PRwgx2fuvdnO8TDBJBRgZlbwI1BINYMTCtANAxVieFRixvD9XvhqWRxHrUSzQqPzTQ5RTt+0eEFpq7luuyjfX/+QBMM0QTtQGKE1nQMaSWKpVN+dLmsCNt3KrJQ5meMbeRxeczmvBVvuvy0VwqcuAJ8+5rrWrvMeEtuEip18CjUswcRtJnhs5mey3JZablev5XH5clawciKMbLiIh3upVLT1PWD3PjazrXueXCGjElTnaQ7YaIRPGYljJEVHrLi9G5k3tHhRTcw76Qug8D7V8DcxLIdPyt5og7KYccX0nFRNuqreVRhmGQcn7nthKqFP6bgtm1A3SbgLV3oCO+W1/2IE9qdUPC4LBpbecSfcTnk+OT1GqiXGeDbDHipUjTBS9rxaIisqF22goLX/hFptx30mqJ3Y+T4nV10qVVI0wRLT33obLLiiL1idSv+Fu1wbY0c19aVToUQcJvhcbGsFfpCVvwrmv9Mlla3okiRXykp+QE8HqM/vT34MQAAAABJRU5ErkJggg==",
+    egg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRF////MDAwPJxXbcSHhqtvt+O4v6pv38qP9+qw+Pj4/Tk5SAAAAAF0Uk5TAEDm2GYAAABuSURBVBjTY2AgFwgKItiMHTMF4BzhiJmNcAlji45gmBRjcESHMYwj0dHRYWyIxGmFchgzOjqCO9oh6hiTTTuM4Rwn44iOjjIoR0nJoqMsDWqckJJ6WYoiA4yTluYE4zCmATlwxwmmpQli9wKJAABtjxkjucRGhQAAAABJRU5ErkJggg==",
+    bright: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRF/vPSMDAw4tGw+rV8+ZZE/dzA8uLB+q1t+/v7////3kFdYAAAAAp0Uk5T////////////ALLMLM8AAABySURBVBjTldChDYAwFATQQ4CmAVNHPgIL+WEAkgbdpBt0hg5RW9ltEfALAtNzT13ukD9BDZR6kRB1wWBjI0i8wmmBs2BBD4C3D9oHaQIcOn1j3sEFgS3gHxizwtONPJrTL0cWEAVBIqIgpVkRqf8JlR9c2wmHPYayHNYAAAAASUVORK5CYII=",
     pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAJ1BMVEX////w8PDw6Ijo0FD4yDjgqDjAqFComEDYcDiIaDg4YABYUDgwMDDaxm2rAAAADXRSTlMA////////////////LQRBrQAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAw0lEQVR4nH3PMQrCQBAFUA8wjeQGAQ+gA2vEY0jA3kJQGxsXJZ2FE0iXIg7JEey0SLpAICmcQ5nd1ZRO9R87w/JHo38jUg8ZAirkh4YoZvmyKYk5vzu1y6oHxfYQcM9cElkILpkr9wJJqvIncmYgt1QhKh2ZrbpZnPqsC7MFM3+utY7sCfjhCs/8SgzaSbhGxNIh8OmKeHibvXZKQY+dtkcOF4ejpzaoLhGYj7rxGHGrHxbQeX0+C7iqkpn86y4y9B7mAwpHT1Z1wCFpAAAAAElFTkSuQmCC",
     fragment: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJFBMVEUAAAAxMTGcakFKSmq9i1rerHu0rM32xZzu7v+Ui6zVze7///+kAd76AAAAAXRSTlMAQObYZgAAAAFiS0dECx/XxMAAAAAJb0ZGcwAAAAMAAAADAHeTl6MAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfeCxISIDTCst7zAAAACXZwQWcAAAAeAAAAHgD4T+E9AAAAoUlEQVQY02NgwAcYBQURHCElJQRPWEnFBc5jNHJxCREUgHKSjUNDXAOhUmJpIi6hhVCOxCwTl3Aoh7FrhqGzMVSP2MrmiWaGMInM5pkzLCEyEm0rm6dlNkM5q8CciWBVWatmWKalzQBrYkzLAnPAmqAciCbGaSubZ07LnAnlZCI4DJIzm6elZUItYpScYTlzJsRokLcbBQUbBWDeEwAjVAAAUGwxQVWp15AAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDMtMDJUMTc6MTk6MzYtMDY6MDDWjJb5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTExLTE4VDE4OjMyOjUyLTA2OjAwZ+O8ygAAAABJRU5ErkJggg=="
     };
@@ -875,7 +891,9 @@ function Safari() {
     /* Misc Variables */
     var tradeRequests = {};
     var challengeRequests = {};
+    var pyramidRequests = {};
     var currentBattles = [];
+    var currentPyramids = [];
     var currentAuctions = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
@@ -1210,6 +1228,13 @@ function Safari() {
             }
         }
     }
+    function randomSampleObj(hash) {
+        var sampled = {};
+        for (var e in hash) {
+            sampled[e] = hash[e].chance;
+        }
+        return hash[randomSample(sampled)];
+    }
     function getRange(input) {
         var range = input.split("-"), lower, upper;
 
@@ -1257,8 +1282,8 @@ function Safari() {
     /* Formatting Functions */
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
-    }    
-    function plural(qty, string) {        
+    }
+    function plural(qty, string) {
         var input = getInput(string);
         var q = parseFloat(qty);
         var plur = isNaN(q) || Math.abs(q) !== 1;
@@ -1346,12 +1371,12 @@ function Safari() {
         var newmessage = message;
         var flashtag = "<!--f-->";
         var htmlname = html_escape(name);
-        var regex = flashtag+htmlname+flashtag;
+        var regex = new RegExp(flashtag+htmlname+flashtag, "gi");
         var newregex1 = "";
         if (sys.os(sys.id(name)) !== "android") {
-            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname + "</font><ping/>";
+            newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
         } else {
-            newregex1 = "<background color='#FCD116'>" + htmlname + "</background><ping/>";
+            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
         }
         var flashregex = new RegExp(flashtag,"g");
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -1589,7 +1614,7 @@ function Safari() {
             if (e === costumeData[n].name) {
                 return "<img src='" + base64costumes[e] + "'>";
             }
-        }        
+        }
         if (android) {
             return "<img src='trainer:" + id + "'>";
         } else {
@@ -1654,7 +1679,7 @@ function Safari() {
                 }
             } else {
                 if (first) {
-                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
+                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=15>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
                 } else {
                     ret += "<tr>";
@@ -2708,7 +2733,7 @@ function Safari() {
 
         this.saveGame(player);
     };
-    this.checkEffective = function(atk1, atk2, def1, def2) {
+    this.checkEffective = function(atk1, atk2, def1, def2, def3) {
         var result = 1;
         var immuneCount = 0;
         var typeCount = 1;
@@ -2728,6 +2753,9 @@ function Safari() {
         if (def2 in attacker) {
             result *= countImmune(attacker[def2]);
         }
+        if (def3 && def3 in attacker) {
+            result *= countImmune(attacker[def3]);
+        }
 
         if (atk2 !== "???") {
             typeCount++;
@@ -2737,6 +2765,9 @@ function Safari() {
             }
             if (def2 in attacker) {
                 result *= countImmune(attacker[def2]);
+            }
+            if (def3 && def3 in attacker) {
+                result *= countImmune(attacker[def3]);
             }
         }
         if (immuneCount >= typeCount) {
@@ -3219,8 +3250,8 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "entry"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "rock", "stick"];
+        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "egg", "bright"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "rock", "stick", "entry"];
         var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "fragment"];
 
         var out = "";
@@ -5131,6 +5162,71 @@ function Safari() {
             this.saveGame(player);
             return;
         }
+        if (item === "egg") {
+            if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
+                safaribot.sendMessage(src, "You can't hatch " + an(itemAlias("egg", true, true)) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+                return;
+            }
+            var id, shiny = sys.rand(0, shinyChance) < 1;
+            
+            do {
+                id = sys.rand(1, 722);
+            } while (isLegendary(id));
+            
+            if (shiny) {
+                id = id + "";
+            }
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(itemAlias("egg", true, true), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+            sys.sendMessage(src, "", safchan);
+            
+            player.pokemon.push(id);
+            player.balls.egg -= 1;
+            player.records.eggsHatched += 1;
+            if (isRare(id)) {
+                sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg::" + sys.name(src) + "\n");
+                player.records.rareHatched +=1;
+            }
+            this.saveGame(player);
+            return;
+        }
+        if (item === "bright") {
+            if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
+                safaribot.sendMessage(src, "You can't hatch " + an(itemAlias("bright", true, true)) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+                return;
+            }
+            var id, shiny = sys.rand(0, shinyChance) < 16;
+            if (sys.rand(0, 256) < 1) {
+                do {
+                    id = legendaries.random();
+                } while (getBST(id) > 600);
+                shiny = false;
+            } else {
+                do {
+                    id = sys.rand(1, 722);
+                } while (isLegendary(id));
+            }
+            
+            if (shiny) {
+                id = id + "";
+            }
+            sys.sendMessage(src, "", safchan);
+            if (isLegendary(id)) {
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(itemAlias("bright", true, true), an(poke(id)).toUpperCase(), pokeInfo.icon(id, shiny), itemAlias("bright", true, true).toUpperCase()), safchan);
+            } else {
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(itemAlias("bright", true, true), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+            }
+            sys.sendMessage(src, "", safchan);
+            player.pokemon.push(id);
+            player.balls.bright -= 1;
+            player.records.brightEggsHatched += 1;
+            if (isRare(id)) {
+                sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
+                player.records.rareHatched +=1;
+            }
+            this.saveGame(player);
+            return;
+        }
     };
 
     /* Shops & Raffles */
@@ -6111,33 +6207,19 @@ function Safari() {
         }
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
-
-        var p1Type1 = sys.type(sys.pokeType1(p1Poke)), p1Type2 = sys.type(sys.pokeType2(p1Poke));
-        var p2Type1 = sys.type(sys.pokeType1(p2Poke)), p2Type2 = sys.type(sys.pokeType2(p2Poke));
-
-        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
-        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
-
-        var p1Move = sys.rand(this.npcBattle ? this.selfPowerMin : 10, this.npcBattle ? this.selfPowerMax : 100);
-        var p2Move = sys.rand(this.npcBattle ? this.powerMin : 10, this.npcBattle ? this.powerMax : 100);
-
-        var statName = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
-        var stat = sys.rand(0, 6);
-        var sName = statName[stat];
-
-        var p1Stat = sys.baseStats(p1Poke, stat);
-        var p2Stat = sys.baseStats(p2Poke, stat);
-
-        var p1Power = Math.round((p1Stat + p1Move) * p1Bonus);
-        var p2Power = Math.round((p2Stat + p2Move) * p2Bonus);
+        
+        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null));
 
         var name1 = this.name1 + "'s " + poke(p1Poke);
         var name2 = this.name2 + "'s " + poke(p2Poke);
 
-        this.sendToViewers("Turn " + (this.turn + 1) + " | " + sName + " | " + name1 + " " + pokeInfo.icon(p1Poke) + " x " + pokeInfo.icon(p2Poke) + " " + name2);
-        this.sendToViewers(name1 + " | " + sName + ": " + p1Stat + " | Move Power: " + p1Move + " | Type Effectiveness: " + p1Bonus + "x");
-        this.sendToViewers(name2 + " | " + sName + ": " + p2Stat + " | Move Power: " + p2Move + " | Type Effectiveness: " + p2Bonus + "x");
+        this.sendToViewers("Turn " + (this.turn + 1) + " | " + res.statName + " | " + name1 + " " + pokeInfo.icon(p1Poke) + " x " + pokeInfo.icon(p2Poke) + " " + name2);
+        this.sendToViewers(name1 + " | " + res.statName + ": " + res.stat[0] + " | Move Power: " + res.move[0] + " | Type Effectiveness: " + res.bonus[0] + "x");
+        this.sendToViewers(name2 + " | " + res.statName + ": " + res.stat[1] + " | Move Power: " + res.move[1] + " | Type Effectiveness: " + res.bonus[1] + "x");
 
+        var p1Power = res.power[0];
+        var p2Power = res.power[1];
+        
         if (p1Power > p2Power) {
             this.p1Score++;
             this.scoreOrder.push(1);
@@ -6249,7 +6331,36 @@ function Safari() {
     Battle.prototype.isInBattle = function(name) {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
-
+    function calcDamage(p1, p2, p1Handicap, p2Handicap) {
+        var p1Type1 = sys.type(sys.pokeType1(p1)), p1Type2 = sys.type(sys.pokeType2(p1));
+        var p2Type1 = sys.type(sys.pokeType1(p2)), p2Type2 = sys.type(sys.pokeType2(p2));
+        
+        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
+        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
+        
+        var p1Move = p1Handicap ? sys.rand(p1Handicap[0], p1Handicap[1]) : sys.rand(10, 100);
+        var p2Move = p2Handicap ? sys.rand(p2Handicap[0], p2Handicap[1]) : sys.rand(10, 100);
+        
+        var statName = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
+        var stat = sys.rand(0, 6);
+        var sName = statName[stat];
+        
+        var p1Stat = sys.baseStats(p1, stat);
+        var p2Stat = sys.baseStats(p2, stat);
+        
+        var p1Power = Math.round((p1Stat + p1Move) * p1Bonus);
+        var p2Power = Math.round((p2Stat + p2Move) * p2Bonus);
+        
+        return {
+            type: [[p1Type1, p1Type2], [p2Type1, p2Type2]],
+            bonus: [p1Bonus, p2Bonus],
+            move: [p1Move, p2Move],
+            statName: sName,
+            stat: [p1Stat, p2Stat],
+            power:[p1Power, p2Power]
+        };
+    }
+    
     /* Auctions */
     this.createAuction = function(src, data) {
         if (!validPlayers("self", src, data)) {
@@ -7065,6 +7176,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Wonder Trade") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]"), safchan);
             safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]"), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -7095,6 +7207,9 @@ function Safari() {
             case "battletower":
             case "battle tower":
                 this.fightTower(src, args);
+            break;
+            case "pyramid":
+                this.pyramidQuest(src, args);
             break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
@@ -7341,8 +7456,8 @@ function Safari() {
                     mon = quest.requests[sys.rand(0, quest.requests.length)];
                     safaribot.sendMessage(src, "You cleverly distract the Collector and while he is not looking, you grab your " + poke(mon) + " back and run off!", safchan);
                     theft = " but stole the " + poke(mon) + " back";
-                    player.records.pokesStolen += 1;                  
-                }                
+                    player.records.pokesStolen += 1;
+                }
                 for (e = 0; e < quest.requests.length; e++) {
                     if (quest.requests[e] === mon) {
                         continue;
@@ -7499,7 +7614,7 @@ function Safari() {
                 this.removePokemon(src, id);
             }
             
-            sys.sendMessage(src, "", safchan);            
+            sys.sendMessage(src, "", safchan);
             this.logLostCommand(sys.name(src), "quest scientist:" + data.join(":"), "gave " + poke(id) + theft);
             this.saveGame(player);
         } else {
@@ -8058,6 +8173,206 @@ function Safari() {
         safaribot.sendMessage(src, "Wonder Trade Operator: The trade was finished successfully! You traded your " + input.name + " and received " + an(poke(receivedId)) + "!", safchan);
         sys.sendMessage(src, "", safchan);
         this.logLostCommand(sys.name(src), "quest wonder:" + data.join(":"), "received " + poke(receivedId));
+        if (isRare(receivedId)) {
+            sys.appendToFile(mythLog, now() + "|||" + poke(receivedId) + "::wonder traded::" + sys.name(src) + "\n");
+        }
+    };
+    this.pyramidQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        var quest = player.quests.pyramid,
+            cost = 5000,
+            action;
+
+        if (pyramidRequests.hasOwnProperty(player.id) && now() > pyramidRequests[player.id].deadline) {
+            safaribot.sendHtmlMessage(src, "Pyramid Guide: You prepared for Pyramid quest before, but couldn't start it before deadline! Please use " + link("/quest pyramid:start:Name1:Name2", null, true) + " to start it again!", safchan);
+            delete pyramidRequests[player.id];
+        }
+        if (data.length < 1 || !data[0]) {
+            action = "*";
+        } else {
+            action = data[0].toLowerCase();
+        }
+
+        switch (action) {
+            case "start":
+                var name = sys.name(src);
+                if (quest.cooldown > now()) {
+                    safaribot.sendMessage(src, "Pyramid Guide: You need to wait " + timeLeftString(quest.cooldown) + " before starting another Pyramid quest (you can join someone else's meanwhile)!", safchan);
+                    return;
+                }
+                if (player.money < cost) {
+                    safaribot.sendMessage(src, "Pyramid Guide: You need $" + addComma(cost) + " to enter the Pyramid!", safchan);
+                    return;
+                }
+                if (pyramidRequests.hasOwnProperty(player.id)) {
+                    var invited = Object.keys(pyramidRequests[player.id].invites).map(function(x) { return x.toCorrectCase(); });
+                    safaribot.sendMessage(src, "You already have invited " + readable(invited, "and") + " to join you in the pyramid quest! Please wait for them to accept your invitation!", safchan);
+                    return;
+                }
+                if (player.party.length < 3) {
+                    safaribot.sendMessage(src, "You need to have a party of 3 Pokémon to enter the Pyramid!", safchan);
+                    return;
+                }
+                if (data.length < 3) {
+                    safaribot.sendHtmlMessage(src, "You need to invite two other players to join you in the Pyramid! Use " + link("/quest pyramid:start:Name1:Name2", null, true) + ".", safchan);
+                    return;
+                }
+                var n1 = data[1].toLowerCase();
+                var n2 = data[2].toLowerCase();
+                var id1 = sys.id(n1);
+                var id2 = sys.id(n2);
+                var p1 = getAvatar(id1);
+                var p2 = getAvatar(id2);
+                
+                if (!p1) {
+                    safaribot.sendMessage(src, "There's no player with the name '" + data[1] + "' around to join you in the Pyramid!", safchan);
+                    return;
+                }
+                if (!p2) {
+                    safaribot.sendMessage(src, "There's no player with the name '" + data[2] + "' around to join you in the Pyramid!", safchan);
+                    return;
+                }
+                if (n1 == player.id || n2 == player.id) {
+                    safaribot.sendMessage(src, "You cannot invite yourself to the Pyramid!", safchan);
+                    return;
+                }
+                safaribot.sendMessage(src, "You invited " + n1.toCorrectCase() + " and " + n2.toCorrectCase() + " to join you in the Pyramid!", safchan);
+                safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
+                
+                safaribot.sendHtmlMessage(id1, name + " is inviting you to join their party in the Pyramid quest! To accept it, type " + link("/quest pyramid:join:"+name) + " within the next minute!", safchan);
+                safaribot.sendHtmlMessage(id2, name + " is inviting you to join their party in the Pyramid quest! To accept it, type " + link("/quest pyramid:join:"+name) + " within the next minute!", safchan);
+                
+                pyramidRequests[player.id] = {
+                    invites: {},
+                    deadline: now() + 60*1000
+                };
+                pyramidRequests[player.id].invites[n1] = false;
+                pyramidRequests[player.id].invites[n2] = false;
+            break;
+            case "join":
+                var invites = [];
+                for (var e in pyramidRequests) {
+                    if(pyramidRequests.hasOwnProperty(e) && pyramidRequests[e].invites.hasOwnProperty(player.id)) {
+                        invites.push(e);
+                    }
+                }
+                if (data.length < 2) {
+                    safaribot.sendMessage(src, "Please specify whose Pyramid's Party you are joining! Use /quest pyramid:join:Name for that!", safchan);
+                    if (invites.length > 0) {
+                        safaribot.sendHtmlMessage(src, "You have pending invites from the following players: " + invites.map(function(x){ return link("/quest pyramid:join:" + x, x.toCorrectCase()); }), safchan);
+                    }
+                    return;
+                }
+                if (pyramidRequests.hasOwnProperty(player.id)) {
+                    safaribot.sendMessage(src, "You can't accept an invitation to the Pyramid because you are already preparing to start your own Pyramid quest!", safchan);
+                    return;
+                }
+                for (e in pyramidRequests) {
+                    if (pyramidRequests[e].invites[player.id] && now() <= pyramidRequests[e].deadline) {
+                        safaribot.sendMessage(src, "You already accepted an invitation to a Pyramid quest!", safchan);
+                        return;
+                    }
+                }
+                var leader = data[1].toLowerCase();
+                if (!pyramidRequests.hasOwnProperty(leader)) {
+                    safaribot.sendMessage(src, "You didn't receive any invitation from " + leader.toCorrectCase() + "!", safchan);
+                    return;
+                }
+                var req = pyramidRequests[leader];
+                if (!req.invites.hasOwnProperty(player.id)) {
+                    safaribot.sendMessage(src, "You didn't receive any invitation from " + leader.toCorrectCase() + "!", safchan);
+                    return;
+                }
+                if (player.party.length < 3) {
+                    safaribot.sendMessage(src, "You need to have a party of 3 Pokémon to enter the Pyramid!", safchan);
+                    return;
+                }
+                req.invites[player.id] = true;
+                if (now() > req.deadline) {
+                    var party = [leader];
+                    for (e in req.invites) {
+                        if (req.invites[e] === true) {
+                            party.push(e);
+                        }
+                    }
+                    for (e = 0; e < party.length; e++) {
+                        safaribot.sendMessage(sys.id(party[e]), "Pyramid Quest cancelled because the party took too long to organize themselves!", safchan);
+                    }
+                    delete pyramidRequests[leader];
+                    return;
+                }
+                
+                var isReady = true;
+                for (e in req.invites) {
+                    if (req.invites[e] === false) {
+                        isReady = false;
+                        break;
+                    }
+                }
+                
+                safaribot.sendMessage(src, "You joined " + leader.toCorrectCase() + " on their Pyramid quest!", safchan);
+                safaribot.sendMessage(sys.id(leader), sys.name(src) + " accepted your invitation to the Pyramid quest!", safchan);
+                
+                if (isReady) {
+                    var players = [leader].concat(Object.keys(req.invites));
+                    var unavailable = [], n, p;
+                    for (e = 0; e < players.length; e++) {
+                        n = players[e];
+                        if (!sys.id(n)) {
+                            unavailable.push(n + " couldn't be found");
+                            continue;
+                        }
+                        p = getAvatar(sys.id(n));
+                        if (!p) {
+                            unavailable.push(n + " couldn't be found");
+                            continue;
+                        }
+                        if (p.party.length < 3) {
+                            unavailable.push(n + "'s party has less than 3 Pokémon");
+                        }
+                        if (this.isBattling(n) || this.isInAuction(n) || (currentEvent && currentEvent.isInEvent(n))) {
+                            unavailable.push(n + " is already participating in another activity");
+                        }
+                        if (n == leader && p.money < cost) {
+                            unavailable.push(n + " doesn't have $" + addComma(cost) + " for the entry fee");
+                        }
+                    }
+                    if (unavailable.length > 0) {
+                        for (e = players.length-1; e--;) {
+                            safaribot.sendMessage(sys.id(players[e]), "Pyramid Quest couldn't be started due to the following reasons: " + unavailable.join(", "), safchan);
+                        }
+                        return;
+                    }
+                    var leaderPlayer = getAvatarOff(leader);
+                    leaderPlayer.money -= cost;
+                    this.saveGame(leaderPlayer);
+                    
+                    players = players.map(getAvatarOff);
+                    currentPyramids.push(new Pyramid(players[0], players[1], players[2]));
+                    
+                    delete pyramidRequests[leader];
+                }
+            break;
+            case "information":
+            case "info":
+            case "help":
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: In the Pyramid, your goal is to form a party with 2 other players to clear all the seven floors before the leader's stamina drops to 0!", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: Each player can only bring 3 Pokémon in their party. If you bring more than that, only the first 3 in your party will be used.", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: Once you enter the pyramid, you can use the '/pyr' command to make your choices in each room.", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: To advance, you must pass several challenges in each room. After a certain number of rooms, the leader can choose to go up a level or quit the challenge.", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: Be aware that only the leader pays the entry fee and receives the final reward for the quest, but other players can keep treasures they find during the quest!", safchan);
+                sys.sendMessage(src, "", safchan);
+            break;
+            default:
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendMessage(src, "Pyramid Guide: Welcome to the Pyramid, a place for those looking for a thrilling challenge!", safchan);
+                safaribot.sendHtmlMessage(src, "Pyramid Guide: To learn more about the Pyramid, type " + link("/quest pyramid:help") + "! To enter the Pyramid, pay $" + addComma(cost) + " and invite 2 other players with " + link("/quest pyramid:start:Name1:Name2", null, true) + " to join you!", safchan);
+                sys.sendMessage(src, "", safchan);
+        }
     };
     function generateName() {
         var part1 = sys.rand(1, 722), part2, name2, out,
@@ -8097,6 +8412,1611 @@ function Safari() {
         return out;
     }
 
+    /* Pyramid */
+    function Pyramid(p1, p2, p3) {
+        this.finished = false;
+        
+        this.leader = p1.id;
+        this.players = [p1, p2, p3];
+        this.names = [p1.id, p2.id, p3.id];
+        this.fullNames = this.names.map(function(x) { return x.toCorrectCase(); });
+        this.viewers = [p1.id, p2.id, p3.id];
+        
+        this.level = 1;
+        this.room = 0;
+        this.currentRoom = null;
+        this.points = 0;
+        this.ticks = 0;
+        this.turn = -1;
+        this.turnToAdvance = 1;
+        this.movingRoom = false;
+        this.movingFloor = false;
+        this.quitWarning = false;
+        this.finishMode = null;
+        
+        this.stamina = {};
+        this.stamina[p1.id] = 300;
+        this.stamina[p2.id] = 300;
+        this.stamina[p3.id] = 300;
+        
+        this.parties = {};
+        this.parties[p1.id] = p1.party.slice(0, 3);
+        this.parties[p2.id] = p2.party.slice(0, 3);
+        this.parties[p3.id] = p3.party.slice(0, 3);
+        
+        this.sendToViewers("");
+        this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
+        this.sendToViewers("");
+    }
+    Pyramid.prototype.nextTurn = function() {
+        this.ticks++;
+        if (this.ticks % 6 !== 0) {
+            if (this.ticks % 3 === 0) {
+                if (!(this.movingRoom || this.turn < 1) || this.movingFloor) {
+                    return;
+                }
+            } else {
+                return;
+            }
+        }
+        this.turn++;
+        if (this.turn === 0) {
+            this.sendToViewers("The Pyramid challenge is starting! Preparing to enter the first room!");
+            return;
+        }
+        if (this.quitWarning) {
+            this.sendToViewers("");
+            this.sendToViewers("The party leader (" + this.leader.toCorrectCase() + ") can finish this Pyramid quest by typing " + link("/pyr quit") + ", or keep going by waiting a few seconds.");
+            this.sendToViewers("");
+            this.quitWarning = false;
+        }
+        else if (this.movingRoom) {
+            if (this.movingFloor) {
+                this.level++;
+                this.room = 0;
+            }
+            this.sendToViewers("");
+            this.sendToViewers("You are now moving towards the room {0}-{1}!".format(this.level, (this.room+1)));
+            this.sendToViewers("");
+            this.movingRoom = false;
+            this.movingFloor = false;
+        }
+        else if (this.currentRoom === null) {
+            var type = randomSample({
+                horde: 10,
+                riddle: 8,
+                hazard: 10,
+                blocked: 8,
+                trainer: 7,
+                defense: 7,
+                empty: 6,
+                strong: 8
+            });
+            this.room++;
+            switch (type) {
+                case "horde":
+                    this.currentRoom = new HordeRoom(this, this.level, this.room);
+                break;
+                case "strong":
+                    this.currentRoom = new StrongRoom(this, this.level, this.room);
+                break;
+                case "riddle":
+                    this.currentRoom = new RiddleRoom(this, this.level, this.room);
+                break;
+                case "hazard":
+                    this.currentRoom = new HazardRoom(this, this.level, this.room);
+                break;
+                case "blocked":
+                    this.currentRoom = new BlockedRoom(this, this.level, this.room);
+                break;
+                case "trainer":
+                    this.currentRoom = new TrainerRoom(this, this.level, this.room);
+                break;
+                case "defense":
+                    this.currentRoom = new DefenseRoom(this, this.level, this.room);
+                break;
+                case "empty":
+                    this.currentRoom = new EmptyRoom(this, this.level, this.room);
+                break;
+            }
+            this.currentRoom.turnToAdvance = this.turn + 2;
+        }
+        else {
+            if (this.turn < this.currentRoom.turnToAdvance) {
+                this.currentRoom.midturn();
+            } else {
+                if (!this.currentRoom.earlyFinish) {
+                    this.currentRoom.advance();
+                }
+                if (!this.hasStamina()) {
+                    this.finishMode = "stamina";
+                    this.finish();
+                } else if (this.currentRoom.passed) {
+                    var early = this.currentRoom.earlyFinish;
+                    this.currentRoom = null;
+                    this.movingRoom = true;
+                    if (this.room >= 7) {
+                        if (this.level >= 7) {
+                            this.finishMode = "cleared";
+                            this.finish();
+                        } else {
+                            this.sendToViewers("You cleared the level " + this.level + "!");
+                            this.sendMessage(this.leader, "You can go up one floor or quit the Pyramid now. To leave now, type " + link("/pyr quit") + ". To keep going, just wait a few seconds!");
+                            this.sendToViewers("");
+                            this.movingFloor = true;
+                            this.quitWarning = true;
+                        }
+                    } else if (early) {
+                        this.nextTurn();
+                    }
+                }
+            }
+        }
+    };
+    Pyramid.prototype.hasStamina = function() {
+        if (this.stamina[this.leader] <= 0) {
+            this.sendToViewers("");
+            this.sendToViewers("Party leader " + this.leader.toCorrectCase() + "'s stamina dropped to 0! This Pyramid quest is now over!");
+            return false;
+        }
+        for (var e in this.stamina) {
+            if (this.stamina[e] > 0) {
+                return true;
+            }
+        }
+        
+        this.sendToViewers("");
+        this.sendToViewers("Everyone's stamina dropped to 0! This Pyramid quest is now over!");
+        return false;
+    };
+    Pyramid.prototype.updateStatus = function(points, stamina) {
+        if (points) {
+            this.points += points;
+        }
+        if (stamina) {
+            for (var e in stamina) {
+                this.stamina[e] += stamina[e];
+                if (this.stamina[e] < 0) {
+                    this.stamina[e] = 0;
+                }
+            }
+        }
+        var stm = this.stamina;
+        this.sendToViewers("Points: " + this.points + " | Stamina: " + this.names.map(function(x){ return x.toCorrectCase() + " (" + stm[x] + ")"; }).join(", "));
+    };
+    Pyramid.prototype.useCommand = function(src, commandData) {
+        if (this.currentRoom) {
+            this.currentRoom.useCommand(src, commandData);
+        }
+        else if (this.movingFloor && sys.name(src).toLowerCase() === this.leader && ["quit", "leave", "exist", "abort", "give up"].contains(commandData)) { //Leader can abort quest between floors
+            this.sendToViewers(this.leader.toCorrectCase() + " decided to finish this Pyramid quest!");
+            this.finishMode = "quit";
+            this.finish();
+        }
+    };
+    Pyramid.prototype.finish = function() {
+        if (this.finishMode === "cleared") {
+            var stmBonus = 0;
+            for (var m in this.stamina) {
+                stmBonus += this.stamina[m];
+            }
+            
+            sys.sendAll("", safchan);
+            if (stmBonus > 0) {
+                this.points += Math.round(stmBonus * (this.level/7));
+                this.sendToViewers("You received a bonus " + plural(stmBonus, "Point") + " from your remaining stamina!");
+            }
+            
+            safaribot.sendAll(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(this.points, "Point") + "!", safchan);
+        } else {
+            this.sendToViewers("");
+            this.sendToViewers(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(this.points, "Point") + "!");
+        }
+        switch (this.finishMode) {
+            case "quit":
+                this.sendToViewers("This Pyramid run was finished because the leader decided to leave!");
+            break;
+            case "stamina":
+                this.sendToViewers("This Pyramid run was finished because the leader's stamina dropped to 0!");
+            break;
+            case "cleared":
+                this.sendToViewers("This Pyramid run was finished because the challengers cleared all floors!");
+            break;
+        }
+        
+        var p = this.points, reward = null, amt = 1;
+        if (p >= 6000) {
+            reward = "bright";
+            amt = 2;
+        } else if (p >= 5200) {
+            reward = "bright";
+        } else if (p >= 4400) {
+            reward = "master";
+        } else if (p >= 3600) {
+            reward = "mega";
+        } else if (p >= 2800) {
+            reward = "rare";
+            amt = 2;
+        } else if (p >= 2000) {
+            reward = "egg";
+        } else if (p >= 1000) {
+            reward = "pack";
+        } else if (this.finishMode === "cleared"){
+            reward = "gem";
+            amt = 3;
+        } else {
+            reward = "gacha";
+            amt = this.level * 3;
+        }
+        
+        var e, name, player, save;
+        for (e = 0; e < this.names.length; e++) {
+            name = this.names[e];
+            save = false;
+            player = getAvatarOff(name);
+            if (name === this.leader) {
+                player.quests.pyramid.cooldown = now() + 20*60*1000;
+                if (this.points > player.records.pyramidLeaderScore) {
+                    player.records.pyramidLeaderScore = this.points;
+                    save = true;
+                }
+                if (reward) {
+                    this.sendToViewers("Party leader " + name.toCorrectCase() + " received " + plural(amt, reward) + " for their performance at Pyramid!");
+                    rewardCapCheck(player, reward, amt);
+                    save = true;
+                }
+            } else {
+                if (this.points > player.records.pyramidHelperScore) {
+                    player.records.pyramidHelperScore = this.points;
+                    save = true;
+                }
+            }
+            if (save) {
+                safari.saveGame(player);
+            }
+        }
+        
+        if (this.finishMode === "cleared") {
+            sys.sendAll("", safchan);
+        } else {
+            this.sendToViewers("");
+        }
+        this.finished = true;
+    };
+    Pyramid.prototype.sendMessage = function(name, msg, flashing, colored) {
+        var id = sys.id(name);
+        if (id) {
+            if (msg === "") {
+                sys.sendHtmlMessage(id, msg, safchan);
+            } else {
+                if (flashing) {
+                    safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else if (colored) {
+                    safaribot.sendHtmlMessage(id, toColored(msg, name), safchan);
+                } else {
+                    safaribot.sendHtmlMessage(id, msg, safchan);
+                }
+            }
+        }
+    };
+    Pyramid.prototype.sendToViewers = function(msg, flashing, colored) {
+        var e;
+        var list = removeDuplicates(this.viewers);
+        for (e = 0 ; e < list.length; e++) {
+            this.sendMessage(list[e], msg, flashing, colored);
+        }
+    };
+    Pyramid.prototype.isInPyramid = function(name) {
+        return this.names.contains(name.toLowerCase());
+    };
+    function pyrLink(x) {
+        return link("/pyr " + poke(x));
+    }
+    function getTreasure(id, reward) {
+        var player = getAvatarOff(id);
+        if (player) {
+            if (reward.item === "money") {
+                player.money += reward.amount;
+                player.records.pyramidMoney += reward.amount;
+            } else {
+                rewardCapCheck(player, reward.item, reward.amount);
+                if (reward.item == "silver") {
+                    player.records.pyramidSilver += reward.amount;
+                }
+            }
+            safari.saveGame(player);
+        }
+    }
+    function treasureName(reward) {
+        if (reward.item === "money") {
+            return "$" + addComma(reward.amount);
+        } else {
+            return plural(reward.amount, reward.item);
+        }
+    }
+    
+    function PyramidRoom(pyramidRef) {
+        this.pyr = pyramidRef;
+        this.passed = false;
+        this.choices = {};
+        this.midmsg = "Make your choice, you have 8 seconds!";
+        this.individualmsg = {};
+        this.defaultToFirstPoke = true;
+        this.turnToAdvance = 0;
+    }
+    PyramidRoom.prototype.midturn = function() {
+        this.sendToAlive(this.midmsg);
+        this.sendIndividuals();
+    };
+    PyramidRoom.prototype.sendIndividuals = function() {
+        for (var n in this.individualmsg) {
+            if (this.pyr.stamina[n] > 0) {
+                this.send(n, this.individualmsg[n]);
+            }
+        }
+    };
+    PyramidRoom.prototype.useCommand = function(src, commandData) {
+        var player = getAvatar(src);
+        
+        if (this.validInput && !this.validInput(player.id, commandData)) {
+            return;
+        }
+        this.choices[player.id] = commandData;
+        if (this.postInput && this.postInput(src, commandData)) {
+            return;
+        }
+        this.sendAll("{0} is going to use {1}".format(player.id.toCorrectCase(), commandData));
+    };
+    PyramidRoom.prototype.pokeInParty = function(id, commandData) {
+        var p = getInputPokemon(commandData);
+        if (!p.num) {
+            this.send(id, "Please type a valid Pokémon!");
+            return false;
+        }
+        if (!this.pyr.parties[id].contains(p.id)) {
+            this.send(id, "You didn't bring this Pokémon in your Pyramid party!");
+            return false;
+        }
+        return true;
+    };
+    PyramidRoom.prototype.getChoices = function() {
+        var out = {}, p, id, members = this.pyr.names;
+        for (p in members) {
+            id = members[p];
+            if (this.pyr.stamina[id] <= 0) {
+                continue;
+            }
+            if (id in this.choices) {
+                var pkmn = getInputPokemon(this.choices[id]);
+                if (pkmn.num) {
+                    out[id] = pkmn.id;
+                } else {
+                    out[id] = this.choices[id];
+                }
+            } else {
+                if (this.defaultLeaderChoice && id === this.pyr.leader) {
+                    out[id] = this.defaultLeaderChoice;
+                } else if (this.defaultChoice) {
+                    out[id] = this.defaultChoice;
+                } else if (this.defaultToFirstPoke) {
+                    out[id] = this.pyr.parties[id][0];
+                }
+            }
+        }
+        
+        
+        return out;
+    };
+    PyramidRoom.prototype.send = function(name, msg, flashing, colored) {
+        var id = sys.id(name);
+        if (id) {
+            if (msg === "") {
+                sys.sendHtmlMessage(id, msg, safchan);
+            } else {
+                if (flashing) {
+                    safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else if (colored) {
+                    safaribot.sendHtmlMessage(id, toColored(msg, name), safchan);
+                } else {
+                    safaribot.sendHtmlMessage(id, msg, safchan);
+                }
+            }
+        }
+    };
+    PyramidRoom.prototype.sendAll = function(msg, flashing, colored) {
+        var e;
+        var list = removeDuplicates(this.pyr.viewers);
+        for (e = 0 ; e < list.length; e++) {
+            this.send(list[e], msg, flashing, colored);
+        }
+    };
+    PyramidRoom.prototype.sendToAlive = function(msg, flashing, colored) {
+        for (var n in this.pyr.stamina) {
+            if (this.pyr.stamina[n] > 0) {
+                this.send(n, msg, flashing, colored);
+            }
+        }
+    };
+    
+    function HordeRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.midmsg = "Choose a Pokémon to defeat the horde!";
+        this.horde = [];
+        
+        this.level = level;
+        
+        var size = 9 + level, p;
+        while (this.horde.length < size) {
+            p = sys.rand(1, 722);
+            if (!isLegendary(p)) {
+                this.horde.push(p);
+            }
+        }
+        var parties = pyramidRef.parties;
+        for (p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
+        }
+        this.hordePower = [3 + level * 7, 85 + level * 15];
+        
+        this.treasures = {
+            starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
+            bignugget: { chance: 1 * level, item: "bignugget", amount: 1 },
+            bait: { chance: 18, item: "bait", amount: 3 * level },
+            gacha: { chance: 12, item: "gacha", amount: 4 * level },
+            dust: { chance: 15, item: "dust", amount: 12 * level },
+            safari: { chance: 15, item: "safari", amount: 4 * level },
+            great: { chance: 12, item: "great", amount: 2 * level },
+            quick: { chance: 9, item: "quick", amount: 1 * level },
+            spy: { chance: 9, item: "spy", amount: 1 * level },
+            rock: { chance: 12, item: "rock", amount: 8 * level },
+            pearl: { chance: 10, item: "pearl", amount: 1 * level },
+            stardust: { chance: 7, item: "stardust", amount: 1 * level }
+        };
+        this.treasureHolder = null;
+        if (chance(0.2 + this.level * 0.06)) {
+            this.treasureHolder = sys.rand(0, this.horde.length);
+            this.treasureHeld = randomSampleObj(this.treasures);
+        }
+        
+        this.sendAll("");
+        this.sendAll("Room " + level + "-" + roomNum + ": This room is infested with lots of wild Pokémon! Defeat them to pass!");
+        this.sendAll("Wild Pokémon: " + this.horde.map(pokeInfo.icon).join(""));
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    HordeRoom.prototype = new PyramidRoom();
+    HordeRoom.prototype.validInput = function(id, commandData) {
+        return this.pokeInParty(id, commandData);
+    };
+    HordeRoom.prototype.advance = function() {
+        var members = this.pyr.names, id, choice, m, p, opp, res, defeated = {}, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke;
+        
+        attackers = this.getChoices();
+        attackersNames = Object.keys(attackers);
+        
+        for (m = this.horde.length; m--; ) {
+            opp = this.horde[m];
+            
+            for (p = lastAttacker, l = 0; l < attackersNames.length; p++, l++) {
+                n = p % (attackersNames.length);
+                id = attackersNames[n];
+                choice = attackers[id];
+                
+                res = calcDamage(choice, opp, null, this.hordePower);
+                lastAttacker = n + 1;
+                
+                if (res.power[0] > res.power[1]) {
+                    if (!defeated.hasOwnProperty(id)) {
+                        defeated[id] = [];
+                    }
+                    defeated[id].push("{0} ({1} x {2})".format(toColor(poke(opp), "blue"), res.power[0], res.power[1]));
+                    this.horde.splice(m, 1);
+                    points += 1 * this.level;
+                    if (this.treasureHolder !== null && m === this.treasureHolder) {
+                        treasurePoke = opp;
+                        treasureWinner = id;
+                    }
+                    break;
+                }
+            }
+        }
+        
+        var defeatedStr = [];
+        for (p in defeated) {
+            defeatedStr.push("{0}'s {1} defeated {2}".format("<b>" + p.toCorrectCase() + "</b>", "<b>" + poke(attackers[p]) + "</b>", readable(defeated[p].reverse(), "and")));
+        }
+        
+        this.sendAll("");
+        if (defeatedStr.length > 0) {
+            this.sendAll(defeatedStr.join(" | "));
+            if (treasureWinner) {
+                this.sendAll("");
+                this.sendAll("The <b>{0}</b> defeated by {1} dropped something! <b>{1}</b> found {2}!".format(poke(treasurePoke), addFlashTag(treasureWinner.toCorrectCase()), toColor(treasureName(this.treasureHeld), "blue")), true);
+                getTreasure(treasureWinner, this.treasureHeld);
+            }
+        }
+        var stamina = {};
+        var staminaStr = [];
+        if (this.horde.length > 0) {
+            for (p in members) {
+                id = members[p];
+                if (this.pyr.stamina[id] <= 0) {
+                    continue;
+                }
+                stamina[id] = -(this.horde.length * 2 * this.level);
+                staminaStr.push(id.toCorrectCase() + " -" + (this.horde.length * 2 * this.level));
+            }
+            this.sendAll("The following Wild Pokémon haven't been defeated and attacked the players: " + readable(this.horde.map(function(x){ return toColored(poke(x), "red"); }), "and") + "!");
+        }
+        points = Math.round(points);
+        this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        
+        this.pyr.updateStatus(points, stamina);
+        this.sendAll("");
+        
+        this.passed = true;
+    };
+    
+    function StrongRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.level = level;
+        this.attacks = 0;
+        
+        var parties = pyramidRef.parties;
+        for (var p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ") + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of some stamina!" : "");
+        }
+        
+        this.opponent = legendaries.concat(megaPokemon).random();
+        this.opponentHP = 200 * level;
+        this.opponentPower = 16 * level;
+        this.isRevealed = false;
+        
+        this.treasures = {
+            egg: { chance: 1 * level, item: "egg", amount: 1 },
+            bignugget: { chance: 2 * level, item: "bignugget", amount: 1 },
+            bait: { chance: 12, item: "bait", amount: 8 * level },
+            dust: { chance: 10, item: "dust", amount: 20 * level },
+            myth: { chance: 15, item: "myth", amount: 3 * level },
+            heavy: { chance: 12, item: "heavy", amount: 4 * level },
+            spy: { chance: 13, item: "spy", amount: 3 * level },
+            bigpearl: { chance: 5, item: "bigpearl", amount: 2 * level }
+        };
+        
+        this.sendAll("");
+        this.sendAll("Pokémon: " + pokeInfo.sprite(0));
+        this.sendAll("Room " + level + "-" + roomNum + ": A strong Pokémon stands in your way, but it's too dark to identify them! Defeat them, unless the leader decided to flee!");
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    StrongRoom.prototype = new PyramidRoom();
+    StrongRoom.prototype.midturn = function() {
+        this.sendToAlive("Choose a Pokémon to defeat the {0}!".format(this.isRevealed ? poke(this.opponent) : "hidden Pokémon"));
+        this.sendIndividuals();
+    };
+    StrongRoom.prototype.validInput = function(id, commandData) {
+        return ["run", "runaway", "run away", "flee"].contains(commandData) || this.pokeInParty(id, commandData);
+    };
+    StrongRoom.prototype.postInput = function(src, commandData) {
+        if (sys.name(src).toLowerCase() === this.pyr.leader && ["run", "runaway", "run away", "flee"].contains(commandData)) {
+            this.advance();
+            return true;
+        }
+    };
+    StrongRoom.prototype.advance = function() {
+        var m, p, res, stamina = {},
+            opp = this.opponent,
+            defeated = false,
+            choices = this.getChoices(),
+            attackerNames = Object.keys(choices);
+        
+        this.sendAll("");
+        if (["run", "runaway", "run away", "flee"].contains(choices[this.pyr.leader])) {
+            var pointsLost = 10 * this.level;
+            this.sendAll("Party leader {0} decided to run away from the {1}! {0} lost {2} Stamina!".format(this.pyr.leader.toCorrectCase(), (this.isRevealed ? poke(opp) : "hidden Pokémon"), pointsLost));
+            stamina[this.pyr.leader] = -pointsLost;
+            this.pyr.updateStatus(0, stamina);
+            this.sendAll("");
+            this.turnToAdvance = 0;
+            this.earlyFinish = true;
+            this.passed = true;
+            return;
+        }
+        this.choices = {};
+        
+        for (p in choices) {
+            m = choices[p];
+            
+            res = calcDamage(m, opp);
+            if (res.power[0] > 0) {
+                
+                this.opponentHP -= res.power[0];
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
+                if (this.opponentHP <= 0) {
+                    this.opponentHP = 0;
+                    defeated = true;
+                    if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
+                        var reward = randomSampleObj(this.treasures);
+                        this.sendAll("<b>{0}</b> picked something droped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
+                        getTreasure(p, reward);
+                    }
+                    break;
+                }
+            }
+        }
+        this.attacks++;
+        if (!this.isRevealed) {
+            this.sendAll("The hidden Pokémon is revealed to be <b>{0}</b>! {1}".format(poke(opp), pokeInfo.sprite(opp)));
+            this.isRevealed = true;
+        }
+        
+        if (defeated) {
+            var pointsRange = [36, 18, 7, -6];
+            var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)] * this.level;
+            this.sendAll("<b>{0}</b>'s HP dropped to 0! The {0} has fainted! Points gained: {1}".format(poke(opp), plural(points, "Point")));
+            this.pyr.updateStatus(points, stamina);
+            this.passed = true;
+        } else {
+            var target = attackerNames.random();
+            stamina[target] = -(this.opponentPower);
+            
+            this.sendAll("<b>{0}</b>'s HP is now at {1}! The {0} attacks <b>{2}</b>, who loses {3} stamina!".format(poke(opp), toColor(this.opponentHP, "blue"), target.toCorrectCase(), toColor(this.opponentPower, "red")));
+            this.sendAll("");
+            this.pyr.updateStatus(0, stamina);
+            this.sendAll("You may try to attack them again or run away!".format(poke(opp), this.opponentHP));
+            
+            this.sendIndividuals();
+            this.turnToAdvance += 2;
+        }
+        this.sendAll("");
+    };
+    
+    function BlockedRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.level = level;
+        this.attacks = 0;
+        
+        var parties = pyramidRef.parties;
+        for (var p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
+        }
+        
+        this.types = [];
+        var allTypes = Object.keys(effectiveness), t;
+        while (this.types.length < 3) {
+            t = allTypes.random();
+            if (!this.types.contains(t)) {
+                this.types.push(t);
+            }
+        }
+        this.revealedTypes = [this.types[0]];
+        this.hp = 200 * level;
+        this.dealt = {};
+        this.treasureGoal = Math.round(this.hp * (1.65 - this.level * 0.07));
+        
+        this.treasures = {
+            pack: { chance: 1 * level, item: "pack", amount: 1 },
+            spray: { chance: 2 * level, item: "spray", amount: 1 },
+            starpiece: { chance: 4 * level, item: "starpiece", amount: 1 },
+            silver: { chance: 13, item: "silver", amount: 3 * level },
+            ultra: { chance: 15, item: "ultra", amount: 2 * level },
+            quick: { chance: 15, item: "quick", amount: 2 * level },
+            clone: { chance: 15, item: "clone", amount: 2 * level },
+            rock: { chance: 20, item: "rock", amount: 15 * level },
+            stardust: { chance: 8, item: "stardust", amount: 2 * level }
+        };
+        
+        this.sendAll("");
+        this.sendAll("Room " + level + "-" + roomNum + ": A weird statue is blocking the exit. The statue seems to have 3 types, but only one is visible: " + toColor(this.types[0], "blue") + ". Destroy the statue to proceed!");
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    BlockedRoom.prototype = new PyramidRoom();
+    BlockedRoom.prototype.midturn = function() {
+        var known = this.revealedTypes.concat();
+        while (known.length < this.types.length) {
+            known.push("???");
+        }
+        this.sendToAlive("Choose a Pokémon to break the {0}-type statue!".format(toColor(known.join("/"), "blue")));
+        this.sendIndividuals();
+    };
+    BlockedRoom.prototype.validInput = function(id, commandData) {
+        return this.pokeInParty(id, commandData);
+    };
+    BlockedRoom.prototype.advance = function() {
+        var m, p, dmg, pow, stamina = {},
+            defeated = false,
+            choices = this.getChoices();
+        
+        this.sendAll("");
+        for (p in choices) {
+            m = choices[p];
+            pow = sys.rand(20, 100);
+            dmg = Math.round(pow * safari.checkEffective(sys.type(sys.pokeType1(m)), sys.type(sys.pokeType2(m)), this.types[0], this.types[1], this.types[2]));
+            if (dmg > 0) {
+                this.hp -= dmg;
+                if (!this.dealt.hasOwnProperty(p)) {
+                    this.dealt[p] = 0;
+                }
+                this.dealt[p] += dmg;
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the statue!".format(p.toCorrectCase(), poke(m), toColor(dmg, "blue")));
+                if (this.hp <= 0) {
+                    this.hp = 0;
+                    defeated = true;
+                    break;
+                }
+            }
+        }
+        this.choices = {};
+        this.attacks++;
+        
+        if (defeated) {
+            var totalDealt = 0, bestDmg = 0, bestAttacker;
+            for (p in this.dealt) {
+                dmg = this.dealt[p];
+                totalDealt += dmg;
+                if (dmg > bestDmg) {
+                    bestDmg = dmg;
+                    bestAttacker = p;
+                }
+            }
+            
+            var pointsRange = [36, 15, 6, -6];
+            var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)] * this.level;
+            this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(toColor(this.types.join("/"), "blue"), plural(points, "Point")));
+            if (totalDealt >= this.treasureGoal) {
+                var reward = randomSampleObj(this.treasures);
+                this.sendAll("<b>{0}</b> found something stuck to a fragment of the statue! {0} received {1}!".format(addFlashTag(bestAttacker.toCorrectCase()), toColor(treasureName(reward), "blue")), true);
+                getTreasure(bestAttacker, reward);
+            }
+            this.pyr.updateStatus(points, stamina);
+            this.passed = true;
+        } else {
+            var rt = this.revealedTypes.length;
+            if (rt < this.types.length) {
+                this.revealedTypes.push(this.types[rt]);
+                this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), this.types[rt], toColor(this.revealedTypes.join("/"), "blue")));
+            }
+            
+            var staminaStr = [], members = this.pyr.names, id;
+            for (p in members) {
+                id = members[p];
+                if (this.pyr.stamina[id] <= 0) {
+                    continue;
+                }
+                stamina[id] = -(8 * this.level);
+                staminaStr.push(id.toCorrectCase() + " -" + (8 * this.level));
+            }
+            
+            this.sendAll("The statue's HP is now at {0}! Stamina lost: {1}".format(toColor(this.hp, "blue"), staminaStr.join(", ")));
+            this.sendAll("");
+            
+            this.pyr.updateStatus(0, stamina);
+            this.sendAll("Keep attacking the statue until you destroy it!");
+            this.sendIndividuals();
+            this.turnToAdvance += 2;
+        }
+        this.sendAll("");
+    };
+    
+    function TrainerRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.trainerName = "Trainer " + generateName();
+        this.midmsg = "Choose a Pokémon to fight the {0}!".format(this.trainerName);
+        this.horde = [];
+        
+        this.level = level;
+        
+        var parties = pyramidRef.parties;
+        for (var p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
+        }
+        this.trainerPower = [14 + level * 6, 90 + level * 12];
+        
+        this.trainerTeam = [];
+        var num, bst = 290 + 30 * level, maxLegend = Math.floor((level-1)/3) + 1;
+        while (this.trainerTeam.length < 3) {
+            num = sys.rand(1, 722);
+            if (getBST(num) >= bst) {
+                if (isLegendary(num)) {
+                    if (maxLegend <= 0) {
+                        continue;
+                    }
+                    maxLegend--;
+                }
+                this.trainerTeam.push(num);
+            }
+        }
+        
+        this.treasures = {
+            rare: { chance: 1 * level, item: "rare", amount: 1 },
+            spray: { chance: 2 * level, item: "spray", amount: 1 },
+            money: { chance: 12, item: "money", amount: 300 * level },
+            silver: { chance: 7, item: "silver", amount: 2 * level },
+            gacha: { chance: 10, item: "gacha", amount: 6 * level },
+            great: { chance: 10, item: "great", amount: 3 * level },
+            ultra: { chance: 8, item: "ultra", amount: 2 * level },
+            luxury: { chance: 10, item: "luxury", amount: 1 * level },
+            clone: { chance: 10, item: "clone", amount: 1 * level },
+            premier: { chance: 8, item: "premier", amount: 2 * level }
+        };
+        
+        this.sendAll("");
+        this.sendAll("Room " + level + "-" + roomNum + ": " + this.trainerName + " challenges you to a 3v3 battle! You can't refuse!");
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    TrainerRoom.prototype = new PyramidRoom();
+    TrainerRoom.prototype.validInput = function(id, commandData) {
+        return this.pokeInParty(id, commandData);
+    };
+    TrainerRoom.prototype.advance = function() {
+        var id, m, p, opp, res, points = 0, stamina = {}, choices = {}, attackers = [], attackersNames = [];
+        
+        choices = this.getChoices();
+        
+        for (m in choices) {
+            attackers.push(choices[m]);
+            attackersNames.push(m);
+        }
+        var leaderParty = this.pyr.parties[this.pyr.leader], c = 0;
+        while (attackers.length < 3) {
+            m = leaderParty[c];
+            if (!attackers.contains(m)) {
+                attackers.push(m);
+                attackersNames.push(this.pyr.leader);
+            }
+            c++;
+        }
+        
+        this.sendAll("");
+        var score = 0, oppScore = 0, result, status, n1, n2, treasureTo, treasurePoke;
+        for (p = 0; p < 3; p++) {
+            id = attackersNames[p];
+            m = attackers[p];
+            opp = this.trainerTeam[p];
+            
+            res = calcDamage(m, opp, null, this.trainerPower);
+            
+            result = "{0} {2} ({4}) x ({5}) {3} {1}";
+            if (res.power[0] == res.power[1]) {
+                result += " <b>Draw</b>";
+            }
+            status = "Details ({0}/Power/Type) | {1} ({3}/{5}/{7}x) x {2} ({4}/{6}/{8}x)";
+            
+            n1 = id.toCorrectCase() + "'s " + poke(m);
+            n1 = res.power[0] > res.power[1] ? "<b>" + n1 + "</b>" : n1;
+            
+            n2 = this.trainerName + "'s " + poke(opp);
+            n2 = res.power[0] < res.power[1] ? "<b>" + n2 + "</b>" : n2;
+
+            this.sendAll(result.format(n1, n2, pokeInfo.icon(m), pokeInfo.icon(opp), res.power[0], res.power[1]));
+            this.sendAll(toColor(status.format(res.statName, poke(m), poke(opp), res.stat[0], res.stat[1], res.move[0], res.move[1], res.bonus[0], res.bonus[1]), "gray"));
+            
+            if (res.power[0] > res.power[1]) {
+                score++;
+                if (res.power[0] >= 750 && !treasureTo) {
+                    treasureTo = id;
+                    treasurePoke = poke(m);
+                }
+            } else {
+                if (res.power[0] < res.power[1]) {
+                    oppScore++;
+                }
+                if (!stamina.hasOwnProperty(id)) {
+                    stamina[id] = 0;
+                }
+                stamina[id] -= 12 * this.level;
+            }
+        }
+        
+        var staminaStr = [];
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        }
+        if (score > oppScore) {
+            this.sendAll("Your party defeated {0}! Final score {1} x {2}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>"));
+            if (treasureTo) {
+                var reward = randomSampleObj(this.treasures);
+                this.sendAll("");
+                this.sendAll("{0} was really impressed by <b>{1}</b>'s <b>{2}</b>! {0} gives {3} to {1}!".format(this.trainerName, addFlashTag(treasureTo.toCorrectCase()), treasurePoke, toColor(treasureName(reward), "blue")), true);
+                getTreasure(treasureTo, reward);
+            }
+        } else {
+            this.sendAll("Your party couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>"));
+        }
+        points = [-18, -9, 24, 36][score] * this.level;
+        this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        
+        this.pyr.updateStatus(points, stamina);
+        this.sendAll("");
+        
+        this.passed = true;
+    };
+    
+    function DefenseRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.midmsg = "Choose a Pokémon to defend from the next attack!";
+        this.horde = [];
+        
+        this.level = level;
+        
+        var parties = pyramidRef.parties;
+        for (var p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to defend yourself: " + parties[p].map(pyrLink).join(", ");
+        }
+        this.trainerPower = [14 + level * 6, 90 + level * 12];
+        
+        do {
+            this.opponent = sys.rand(1, 722);
+        } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665].contains(this.opponent));
+        
+        var moves = pokedex.getAllMoves(this.opponent), damaging = [], m;
+        for (m = moves.length; m--; ) {
+            if (pokedex.getMoveBP(moves[m]) !== "---") {
+                damaging.push(moves[m]);
+            }
+        }
+        
+        this.firstAtk = sys.move(damaging.random());
+        this.secondAtk = damaging.random();
+        
+        this.treasures = {
+            rare: { chance: 1 * level, item: "rare", amount: 1 },
+            gem: { chance: 3 * level, item: "gem", amount: 1 },
+            silver: { chance: 6, item: "silver", amount: 1 * level },
+            bait: { chance: 10, item: "bait", amount: 2 * level },
+            great: { chance: 10, item: "great", amount: 2 * level },
+            luxury: { chance: 10, item: "luxury", amount: 1 * level },
+            quick: { chance: 10, item: "quick", amount: 1 * level },
+            rock: { chance: 10, item: "rock", amount: 10 * level },
+            stardust: { chance: 6, item: "stardust", amount: 1 * level }
+        };
+        
+        this.sendAll("");
+        this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue")));
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    DefenseRoom.prototype = new PyramidRoom();
+    DefenseRoom.prototype.validInput = function(id, commandData) {
+        return this.pokeInParty(id, commandData);
+    };
+    DefenseRoom.prototype.advance = function() {
+        var members, m, p,  points = 0, stamina = {}, choices = {}, atk, dmg, totalDef = 1, defended = [], hit = [], eff, treasureTo;
+        
+        choices = this.getChoices();
+        members = Object.keys(choices);
+        
+        this.sendAll("");
+        this.sendAll(toColor("{0} {1} used {2}!".format(pokeInfo.icon(this.opponent), poke(this.opponent), sys.move(this.secondAtk)), "blue"));
+        
+        atk = sys.type(sys.moveType(this.secondAtk));
+        for (p in choices) {
+            m = choices[p];
+            
+            dmg = safari.checkEffective(atk, "???", sys.type(sys.pokeType1(m)), sys.type(sys.pokeType2(m)));
+            totalDef *= dmg;
+            
+            if (dmg === 0) {
+                eff = toColor("It has no effect!", "gray");
+            } else if (dmg < 1) {
+                eff = toColor("It's not very effective... ({0}x)!".format(dmg), "green");
+            } else if (dmg === 1) {
+                eff = toColor("A normal hit!", "blue");
+            } else if (dmg > 1) {
+                eff = toColor("It's super-effective ({0}x)!".format(dmg), "red");
+            }
+            
+            this.sendAll("<b>{0}</b>'s <b>{1}</b> was hit by {2}'s {3}! {4}".format(p.toCorrectCase(), poke(m), poke(this.opponent), sys.move(this.secondAtk), eff));
+            if (dmg < 1) {
+                defended.push(p.toCorrectCase());
+                if (!treasureTo && dmg <= 0.25 && chance(0.2 + 0.5 * this.level)) {
+                    treasureTo = p;
+                }
+            } else {
+                hit.push(p.toCorrectCase());
+                stamina[p] = -(dmg * 6 * this.level);
+            }
+        }
+        
+        var staminaStr = [];
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        }
+        if (defended.length >= members.length) {
+            this.sendAll(toColor("The entire party managed to defend from the attack!", "blue"));
+            points = members.length * 8 * this.level;
+        } else if (defended.length === 0) {
+            this.sendAll(toColor("No one managed to defend from the attack!", "red"));
+            points = -(members.length * 4 * this.level);
+        } else {
+            this.sendAll("{0} managed to defend from the attack, but {1} have been hit!".format(readable(defended, "and"), readable(hit, "and")));
+        }
+        if (treasureTo) {
+            var reward = randomSampleObj(this.treasures);
+            this.sendAll("After defending itself, <b>{0}</b> found {1} at the place the {2} was!".format(addFlashTag(treasureTo.toCorrectCase()), toColor(treasureName(reward), "blue"), poke(this.opponent)), true);
+            getTreasure(treasureTo, reward);
+        }
+        
+        this.sendAll("");
+        this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        this.pyr.updateStatus(points, stamina);
+        this.sendAll("");
+        
+        this.passed = true;
+    };
+    
+    function RiddleRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.level = level;
+        this.defaultChoice = "none";
+        
+        this.answerId = sys.rand(1, 722);
+        this.answer = poke(this.answerId);
+        this.answerAttempts = 0;
+        this.cluesSearched = {};
+        
+        var hints = this.writeHints();
+        
+        var objects = ["crate", "barrel", "rock", "box", "wall", "corner", "floor", "ceiling", "puddle", "coffin", "chains", "pillar", "vase", "statue", "chest", "table", "sword", "torch", "chair"].shuffle();
+        this.hintsLocation = {};
+        for (var h = 0; h < hints.length; h++){
+            this.hintsLocation[objects.shift()] = hints[h];
+        }
+        var treasuresAmt = 0;
+        switch (hints.length) {
+            case 9:
+            case 10:
+                treasuresAmt = 3;
+            break;
+            case 11:
+            case 12:
+                treasuresAmt = 2;
+            break;
+            case 13:
+                treasuresAmt = 1;
+            break;
+            default:
+                treasuresAmt = 0;
+        }
+        var rew = {
+            gem: { chance: 2 * level, item: "gem", amount: 1 },
+            nugget: { chance: 1 * level, item: "nugget", amount: 1 },
+            money: { chance: 12, item: "money", amount: 250 * level },
+            safari: { chance: 18, item: "safari", amount: 10 * level },
+            myth: { chance: 12, item: "myth", amount: 2 * level },
+            spy: { chance: 12, item: "spy", amount: 2 * level },
+            pearl: { chance: 10, item: "pearl", amount: 2 * level }
+        };
+        while (treasuresAmt > 0) {
+            this.hintsLocation[objects.shift()] = randomSampleObj(rew);
+            treasuresAmt--;
+        }
+        this.validObjects = Object.keys(this.hintsLocation);
+        
+        
+        this.hintsFound = [];
+        this.leaderChoice = null;
+        
+        this.sendAll("");
+        this.sendAll("Room {0}-{1}: The door requires a Pokémon name as a password to open! Search for clues in the room so the leader can input the password!!".format(level, roomNum));
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    RiddleRoom.prototype = new PyramidRoom();
+    RiddleRoom.prototype.writeHints = function() {
+        var hints = [], h;
+        hints.push("Starts with '{0}'".format(this.answer[0]));
+        hints.push("Ends with '{0}'".format(cap(this.answer[this.answer.length-1])));
+        hints.push("One of the types is '{0}'".format(sys.type(sys.pokeType1(this.answerId))));
+        h = sys.type(sys.pokeType2(this.answerId));
+        if (h !== "???") {
+            hints.push("One of the types is '{0}'".format(h));
+        }
+        hints.push("Can have the ability '{0}'".format(sys.ability(sys.pokeAbility(this.answerId, 0))));
+        h = sys.pokeAbility(this.answerId, 1);
+        if (h) {
+            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+        }
+        h = sys.pokeAbility(this.answerId, 2);
+        if (h) {
+            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+        }
+        var moves = pokedex.getAllMoves(this.answerId).shuffle().slice(0, 4).map(sys.move);
+        for (h = moves.length; h--; ) {
+            hints.push("Can have the move '{0}'".format(moves[h]));
+        }
+        h = getBST(this.answerId);
+        hints.push("BST is higher than {0}".format(h - sys.rand(1, 49)));
+        hints.push("BST is lower than {0}".format(h + sys.rand(1, 49)));
+        if (this.answerId in evolutions) {
+            hints.push("Can evolve");
+        } else {
+            hints.push("Can't evolve");
+        }
+        if (this.answerId in devolutions) {
+            hints.push("Is evolved");
+        } else {
+            hints.push("Is not evolved");
+        }
+        return hints;
+    };
+    RiddleRoom.prototype.midturn = function() {
+        this.sendToAlive("Find the password to open the door! " + (this.hintsFound.length > 0 ? "Hints found: " + this.hintsFound.map(function(x){ return toColor(x, "blue");}).join(", ") : ""));
+        this.sendIndividuals();
+    };
+    RiddleRoom.prototype.sendIndividuals = function() {
+        var n, id;
+        var toCommand = function(x) {
+            return link("/pyr " + cap(x));
+        };
+        if (this.validObjects.length > 0) {
+            for (n = this.pyr.names.length; n-- ;) {
+                id = this.pyr.names[n];
+                if (this.pyr.stamina[id] > 0) {
+                    this.send(id, "Look for clues at: " + this.validObjects.map(toCommand).join(", ") + (id === this.pyr.leader ? " | Or input the password with " + link("/pyr Answer", null, true) : ""));
+                }
+            }
+        } else {
+            this.send(this.pyr.leader, "Input the password with " + link("/pyr [Answer]", null, true));
+        }
+    };
+    RiddleRoom.prototype.useCommand = function(src, commandData) {
+        var player = getAvatar(src);
+        
+        if (player.id === this.pyr.leader && sys.pokeNum(commandData) > 0) {
+            this.checkAnswer(commandData);
+            return;
+        }
+        if (this.validInput && !this.validInput(player.id, commandData)) {
+            return;
+        }
+        this.choices[player.id] = commandData;
+        if (this.postInput && this.postInput(src, commandData)) {
+            return;
+        }
+        this.sendAll("{0} is going to use {1}".format(player.id.toCorrectCase(), commandData));
+    };
+    RiddleRoom.prototype.validInput = function(id, commandData) {
+        if (this.validObjects.contains(commandData.toLowerCase())) {
+            return true;
+        }
+        this.send(id, "There's no {0} to look for clues at!".format(commandData));
+        return false;
+    };
+    RiddleRoom.prototype.postInput = function(src, commandData) {
+        this.sendAll("{0} is going to look for a clue at the {1}!".format(sys.name(src), cap(commandData.toLowerCase())));
+        return true;
+    };
+    RiddleRoom.prototype.checkAnswer = function(commandData) {
+        var id = sys.pokeNum(commandData), stamina = {}, name = this.pyr.leader.toCorrectCase();
+        this.sendAll("");
+        if (id == this.answerId) {
+            var pointsRange = [30, 15, 5, -5];
+            var points = pointsRange[Math.min(this.answerAttempts, pointsRange.length-1)] * this.level;
+            
+            this.sendAll("<b>{0}</b> answered <b>{1}</b> and the door opened! Points gained: {2}".format(name, sys.pokemon(id), plural(points, "Point")));
+            this.pyr.updateStatus(points, {});
+            this.passed = true;
+            this.earlyFinish = true;
+            this.turnToAdvance = 0;
+        } else {
+            this.answerAttempts++;
+            var stmLost = 8 * this.level;
+            if (this.answerAttempts > 1) {
+                stamina[this.pyr.leader] = -stmLost;
+            }
+            
+            this.sendAll("<b>{0}</b> answered <b>{1}</b>, but nothing happened! {2}".format(name, sys.pokemon(id), (this.answerAttempts > 1 ? "Stamina lost: " + name + "-" + stmLost : "") ));
+            this.pyr.updateStatus(0, stamina);
+        }
+        this.sendAll("");
+    };
+    RiddleRoom.prototype.advance = function() {
+        var p, stamina = {}, place, res, staminaStr = [],
+            choices = this.getChoices(), locationsSearched = {};
+        
+        this.sendAll("");
+        
+        for (p in choices) {
+            place = choices[p].toLowerCase();
+            if (place !== "none") {
+                if (!this.cluesSearched.hasOwnProperty(p)) {
+                    this.cluesSearched[p] = 0;
+                }
+                this.cluesSearched[p]++;
+                if (this.cluesSearched[p] > 1) {
+                    stamina[p] = -3 * this.level;
+                }
+                
+                res = this.hintsLocation[place];
+                locationsSearched[place] = true;
+                
+                if (typeof res === "string") {
+                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found a hint: \"{2}\"".format(p.toCorrectCase(), cap(place), toColor(res, "blue")));
+                    if (!this.hintsFound.contains(res)) {
+                        this.hintsFound.push(res);
+                    }
+                } else if (typeof res === "object") {
+                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found {2}!".format(addFlashTag(p.toCorrectCase()), cap(place), toColor(treasureName(res), "blue")), true);
+                    getTreasure(p, res);
+                }
+            }
+        }
+        this.choices = {};
+        
+        for (p in locationsSearched) {
+            this.validObjects.splice(this.validObjects.indexOf(p), 1);
+        }
+        
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        }
+        if (staminaStr.length > 0) {
+            this.sendAll("The search for the password is becoming tiresome! Stamina lost: {0}".format(staminaStr.join(", ")));
+        }
+        
+        this.pyr.updateStatus(0, stamina);
+        this.sendAll("");
+        this.sendAll("Look for more clues or input the password to open the door!");
+        this.sendIndividuals();
+        this.sendAll("");
+        this.turnToAdvance += 2;
+    };
+    
+    function HazardRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.midmsg = "Choose a move to clear the obstacles!";
+        this.defaultChoice = "struggle";
+        this.level = level;
+        
+        this.hazardMoves = {
+            "plants":[163,15],
+            "water":[57,291],
+            "boulder":[70,249],
+            "toxic":[432,16],
+            "pit":[19,100],
+            "ice":[53,257],
+            "flame":[55,56],
+            "electric":[50,300],
+            "dark":[148,563]
+        };
+        this.validMoves = [];
+        for (var c in this.hazardMoves) {
+            this.validMoves = this.validMoves.concat(this.hazardMoves[c]);
+        }
+        this.hazardNames = {
+            "plants": "Plants",
+            "water": "Water Stream",
+            "boulder": "Boulders",
+            "toxic": "Toxic Gas",
+            "pit": "Pit",
+            "ice": "Ice Pillar",
+            "flame": "Flamethrowers",
+            "electric": "Electric Fence",
+            "dark": "Darkness"
+        };
+        this.hazards = {};
+        var pickedHazards = Object.keys(this.hazardMoves).shuffle();
+        var count = 100, index = 0, added, minVal = 6;
+        while (count > minVal && index < pickedHazards.length) {
+            added = sys.rand(minVal, count);
+            this.hazards[pickedHazards[index]] = added;
+            count -= added;
+            index++;
+        }
+        if (count > 0) {
+            this.hazards[pickedHazards[0]] += count;
+        }
+        var randomHazard = randomSample(this.hazards);
+        var randomHazard2 = randomSample(this.hazards);
+        
+        this.usableMoves = {};
+        this.usableCommands = {};
+        var parties = pyramidRef.parties, p, m, move, set, id;
+        var toMoveCommand = function(x) {
+            return link("/pyr " + sys.move(x));
+        };
+        var toLowerMove = function(x) {
+            return sys.move(x).toLowerCase();
+        };
+        for (p in parties) {
+            this.usableMoves[p] = [];
+            for (m = parties[p].length; m--; ) {
+                id = parseInt(parties[p][m], 10);
+                set = pokedex.getAllMoves(id);
+                if (!set) {
+                    set = pokedex.getAllMoves(pokeInfo.species(id));
+                }
+                for (c = this.validMoves.length; c--;) {
+                    move = this.validMoves[c] + "";
+                    if (set.contains(move) && !this.usableMoves[p].contains(move)) {
+                        this.usableMoves[p].push(move);
+                    }
+                }
+            }
+            this.usableMoves[p].push("165"); //Struggle
+            this.usableCommands[p] = this.usableMoves[p].map(toLowerMove);
+            
+            this.individualmsg[p] = "Pick a move to clear the obstacles: " + this.usableMoves[p].map(toMoveCommand).join(", ");
+        }
+        
+        this.treasures = {
+            egg: { chance: 1 * level, item: "egg", amount: 1 },
+            nugget: { chance: 3 * level, item: "nugget", amount: 1 },
+            silver: { chance: 8, item: "silver", amount: 2 * level },
+            dust: { chance: 14, item: "dust", amount: 10 * level },
+            quick: { chance: 10, item: "quick", amount: 2 * level },
+            rock: { chance: 15, item: "rock", amount: 25 * level },
+            bigpearl: { chance: 5, item: "bigpearl", amount: 1 * level }
+        };
+        if (chance(0.44 + 0.06 * this.level)) {
+            this.hiddenTreasure = randomSampleObj(this.treasures);
+            this.treasureLocation = Object.keys(this.hazards).random();
+        }
+        
+        this.sendAll("");
+        this.sendAll("Room {0}-{1}: Some hazards obstruct your path to the next door! You can identify some <b>{2}</b>, but there are more, so clear them!".format(level, roomNum, this.hazardNames[randomHazard] + (randomHazard !== randomHazard2 ? " and " + this.hazardNames[randomHazard2] : "")));
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    HazardRoom.prototype = new PyramidRoom();
+    HazardRoom.prototype.validInput = function(id, commandData) {
+        return this.usableCommands[id].contains(commandData.toLowerCase());
+    };
+    HazardRoom.prototype.advance = function() {
+        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, attackersNames, n, pId, move, cat, power, set, liveHazards, struggled, strugglers = {}, strugglemsg, stamina = {};
+        
+        attackers = this.getChoices();
+        attackersNames = Object.keys(attackers);
+        
+        this.sendAll("");
+        for (p in attackers) {
+            move = sys.moveNum(attackers[p]);
+            struggled = false;
+            
+            if (move === 165) {
+                liveHazards = [];
+                for (m in this.hazards) {
+                    if (this.hazards[m] > 0) {
+                        liveHazards.push(m);
+                    }
+                }
+                if (liveHazards.length > 0) {
+                    cat = liveHazards.random();
+                    struggled = true;
+                } else {
+                    continue;
+                }
+            } else {
+                for (m in this.hazardMoves) {
+                    if (this.hazardMoves[m].contains(move)) {
+                        cat = m;
+                        break;
+                    }
+                }
+            }
+            
+            strugglemsg = "";
+            if (struggled) {
+                id = parties[p].random();
+                strugglers[p] = 3 * this.level;
+                strugglemsg = p.toCorrectCase() + " lost " + strugglers[p] + " Stamina!";
+            } else {
+                for (n in parties[p]) {
+                    pId = parseInt(parties[p][n], 10);
+                    set = pokedex.getAllMoves(pId);
+                    if (!set) {
+                        set = pokedex.getAllMoves(pokeInfo.species(pId));
+                    }
+                    if (set.contains(move + "")) {
+                        id = parties[p][n];
+                        break;
+                    }
+                }
+            }
+            
+            if (cat in this.hazards && this.hazards[cat] > 0) {
+                if (struggled) {
+                    power = Math.min(sys.rand(8, 38), this.hazards[cat]);
+                } else {
+                    power = Math.min(sys.rand(15, 64), this.hazards[cat]);
+                }
+                
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3} and clear <b>{4}%</b> of the room! {5}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), power, strugglemsg));
+                this.hazards[cat] -= power;
+                if (cat == this.treasureLocation && this.hazards[cat] <= 0) {
+                    this.sendAll("After clearing the {1}, <b>{0}</b> found {2}!".format(addFlashTag(p.toCorrectCase()), this.hazardNames[cat], toColor(treasureName(this.hiddenTreasure), "blue")), true);
+                    getTreasure(p, this.hiddenTreasure);
+                }
+            } else {
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}, but there was no {3}! {4}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), strugglemsg));
+            }
+        }
+        
+        var rest = 0, remaining = [];
+        for (p in this.hazards) {
+            m = this.hazards[p];
+            if (m > 0) {
+                rest += m;
+                remaining.push(m + "% " + this.hazardNames[p]);
+            }
+        }
+        var staminaStr = [];
+        for (p in strugglers) {
+            if (!(p in stamina)) {
+                stamina[p] = 0;
+            }
+            stamina[p] -= strugglers[p];
+        }
+        if (rest > 50) {
+            for (p in members) {
+                id = members[p];
+                if (this.pyr.stamina[id] <= 0) {
+                    continue;
+                }
+                if (!(id in stamina)) {
+                    stamina[id] = 0;
+                }
+                stamina[id] -= (2 * this.level * Math.ceil((rest-50)/5));
+            }
+        }
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        }
+        
+        this.sendAll("");
+        if (rest > 50) {
+            this.sendAll("Only {0}% of the hazards have been cleared, so you struggled to reach the door due to the remaining hazards ({1})!".format(100-rest, readable(remaining, "and")));
+        } else {
+            this.sendAll("You cleared {0}% of the hazards, so reaching the door was piece of cake! Remaining hazards: {1}".format(100-rest, readable(remaining, "and")));
+            points = Math.round(4 * this.level * Math.ceil((50-rest)/5));
+        }
+        
+        this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        this.pyr.updateStatus(points, stamina);
+        this.sendAll("");
+        
+        this.passed = true;
+    };
+    
+    function EmptyRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.midmsg = "Choose a Pokémon to help you explore the room or just walk away.";
+        this.defaultChoice = "ignore";
+        this.level = level;
+        
+        var parties = pyramidRef.parties;
+        for (var p in parties) {
+            this.individualmsg[p] = "Send one of your Pokémon to explore the room: " + parties[p].map(pyrLink).join(", ") + " | Or keep going with " + link("/pyr ignore");
+        }
+        
+        var types = Object.keys(effectiveness).shuffle();
+        this.traps = {};
+        for (p = 0; p < 3; p++) {
+            this.traps[types.shift()] = {
+                stamina: -(this.level * 16)
+            };
+        }
+        this.treasures = {};
+        var rew = {
+            pack: { chance: 3 * level, item: "pack", amount: 1 },
+            gem: { chance: 4 * level, item: "gem", amount: 1 },
+            nugget: { chance: 3 * level, item: "nugget", amount: 1 },
+            bignugget: { chance: 2 * level, item: "bignugget", amount: 1 },
+            money: { chance: 8, item: "money", amount: 800 * level },
+            silver: { chance: 7, item: "silver", amount: 5 * level },
+            gacha: { chance: 12, item: "gacha", amount: 10 * level },
+            dust: { chance: 14, item: "dust", amount: 15 * level },
+            ultra: { chance: 15, item: "ultra", amount: 5 * level },
+            myth: { chance: 14, item: "myth", amount: 3 * level },
+            luxury: { chance: 14, item: "luxury", amount: 3 * level },
+            heavy: { chance: 14, item: "heavy", amount: 3 * level },
+            premier: { chance: 11, item: "premier", amount: 4 * level },
+            pearl: { chance: 10, item: "pearl", amount: 2 * level },
+            bigpearl: { chance: 8, item: "bigpearl", amount: 1 * level }
+        };
+        for (p = 0; p < 3; p++) {
+            this.treasures[types.shift()] = randomSampleObj(rew);
+        }
+        
+        var target, t1, t2, badTypes = Object.keys(this.traps);
+        while (true) {
+            target = sys.rand(1, 722);
+            t1 = sys.type(sys.pokeType1(target));
+            t2 = sys.type(sys.pokeType2(target));
+            
+            if (t2 !== "???" && (badTypes.contains(t1) || badTypes.contains(t2))) {
+                break;
+            }
+        }
+        
+        this.sendAll("");
+        this.sendAll("Room {0}-{1}: Other than a sign saying \"Pokémon like {2} are not recommended in this room\", there's nothing of interest in this room. Or is there?".format(level, roomNum, toColor(poke(target), "blue")));
+        this.sendIndividuals();
+        this.sendAll("");
+        this.sendAll("Use types " + Object.keys(this.treasures));
+    }
+    EmptyRoom.prototype = new PyramidRoom();
+    EmptyRoom.prototype.validInput = function(id, commandData) {
+        return ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(commandData.toLowerCase()) || this.pokeInParty(id, commandData);
+    };
+    EmptyRoom.prototype.advance = function() {
+        var choices = this.getChoices(), id, p, points = 0, stamina = {}, t1, t2, hasTrap, hasTreasure, trapType, treasureType, out, reward, foundTreasure = {}, c;
+        
+        this.sendAll("");
+        for (p in choices) {
+            c = choices[p];
+            if (typeof c === "string" && ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(c.toLowerCase())) {
+                this.sendAll("<b>{0}</b> ignored the room and went straight to the door!".format(p.toCorrectCase()));
+                continue;
+            }
+            id = c;
+            t1 = sys.type(sys.pokeType1(id));
+            t2 = sys.type(sys.pokeType2(id));
+            
+            hasTrap = false;
+            hasTreasure = false;
+            if (t1 in this.traps || t2 in this.traps) {
+                hasTrap = true;
+                if (t1 in this.traps && t2 in this.traps) {
+                    trapType = sys.rand(0, 2) === 0 ? t1 : t2;
+                } else {
+                    trapType = t1 in this.traps ? t1 : t2;
+                }
+            }
+            if (t1 in this.treasures || t2 in this.treasures) {
+                hasTreasure = true;
+                if (t1 in this.treasures && t2 in this.treasures) {
+                    treasureType = sys.rand(0, 2) === 0 ? t1 : t2;
+                } else {
+                    treasureType = t1 in this.treasures ? t1 : t2;
+                }
+            }
+            if (hasTrap && hasTreasure) {
+                if (sys.rand(0, 2) === 0) {
+                    hasTreasure = false;
+                } else {
+                    hasTrap = false;
+                }
+            }
+            out = "But they found nothing...";
+            reward = null;
+            if (hasTrap) {
+                stamina[p] = this.traps[trapType].stamina;
+                foundTreasure[p] = -5 * this.level;
+                out = "{0}'s {1} {3}! <b>{0}</b> lost <b>{2} Stamina</b>!".format(p.toCorrectCase(), poke(c), -stamina[p], toColor("triggered a trap", "red"));
+            } else if (hasTreasure) {
+                reward = this.treasures[treasureType];
+                foundTreasure[p] = 12 * this.level;
+                out = "{0}'s {1} {3}! <b>{0}</b> received <b>{2}</b>!".format(addFlashTag(p.toCorrectCase()), poke(c), treasureName(reward), toColor("found a treasure", "blue"));
+            } else {
+                stamina[p] = -3 * this.level;
+            }
+            
+            this.sendAll("<b>{0}</b> asked for their <b>{1}</b> to explore the room! {2}".format(p.toCorrectCase(), poke(c), out), true);
+            if (reward) {
+                getTreasure(p, reward);
+            }
+        }
+        for (p in foundTreasure) {
+            points += foundTreasure[p];
+        }
+        var staminaStr = [];
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        }
+        
+        if (points !== 0 || staminaStr.length > 0) {
+            this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        }
+        this.pyr.updateStatus(points, stamina);
+        this.sendAll("");
+        
+        this.passed = true;
+    };
+    
     /* Events */
     function SafariEvent() {
         this.eventName = "Safari Event";
@@ -9665,7 +11585,9 @@ function Safari() {
             salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\".",
-            fragment: "A fragment of a rare item. This might come in handy one day, so you better keep it safe!"
+            fragment: "A fragment of a rare item. This might come in handy one day, so you better keep it safe!",
+            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
+            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\"."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -10500,6 +12422,20 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "pyr") {
+                var found = false;
+                for (var p in currentPyramids) {
+                    if (currentPyramids[p].isInPyramid(sys.name(src))) {
+                        currentPyramids[p].useCommand(src, commandData);
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return false;
+                }
+                return true;
+            }
             if (currentEvent && currentEvent.isInEvent(sys.name(src)) && currentEvent.eventCommands.hasOwnProperty(command)) {
                 currentEvent.handleCommand(src, command, commandData);
                 return true;
@@ -11026,7 +12962,7 @@ function Safari() {
                 return true;
             }
             if (command === "mythlog") {
-                safari.showLog(src, commandData, mythLog, "Lgendary/Shiny Pokémon spawn", function(x) {
+                safari.showLog(src, commandData, mythLog, "Legendary/Shiny Pokémon spawn", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
 
@@ -11037,6 +12973,8 @@ function Safari() {
                     
                     if (act == "caught") {
                         return pk + " was caught by " + who + " --- (" + time + ")";
+                    } else if (["hatched from Egg", "hatched from Bright Egg", "wonder traded", "won from Raffle"].contains(act)) {
+                        return pk + " " + act + " by " + who + " --- (" + time + ")";
                     } else {
                         return pk + " " + act + " --- (" + time + ")";
                     }
@@ -11329,7 +13267,7 @@ function Safari() {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
                     safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
-                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, collector, scientist, arena, tower or wonder!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, collector, scientist, arena, tower, pyramid or wonder!", safchan);
                     return true;
                 }
                 var target = cmd[0];
@@ -11345,6 +13283,7 @@ function Safari() {
                     case "arena":
                     case "tower":
                     case "wonder":
+                    case "pyramid":
                         player.quests[type].cooldown = 0;
                     break;
                     case "ball":
@@ -11357,6 +13296,9 @@ function Safari() {
                     case "itemfinder":
                         player.cooldowns[type] = 0;
                     break;
+                    default:
+                        safaribot.sendMessage(src, type + " is not a valid cooldown!", safchan);
+                        return;
                 }
 
                 this.saveGame(player);
@@ -11603,7 +13545,7 @@ function Safari() {
                 }
                 sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 safariUpdating = true;
-                safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles, <b>" + currentAuctions.length + "</b> ongoing auctions, and <b>" + (currentEvent ? "1" : "0") + "</b> ongoing events.", safchan);
+                safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles, <b>" + currentAuctions.length + "</b> ongoing auctions, <b>" + currentPyramids.length + "</b> ongoing Pyramid quests and <b>" + (currentEvent ? "1" : "0") + "</b> ongoing events.", safchan);
                 return true;
             }
             if (command === "cancelupdate") {
@@ -11616,7 +13558,7 @@ function Safari() {
                 return true;
             }
             if (command === "updategame") {
-                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
+                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
                     sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
@@ -11744,6 +13686,9 @@ function Safari() {
                 }
                 if (rafflePrizeObj.type == "poke") {
                     player.pokemon.push(rafflePrizeObj.id);
+                    if (isRare(rafflePrizeObj.id)) {
+                        sys.appendToFile(mythLog, now() + "|||" + poke(rafflePrizeObj.id) + "::won from Raffle::" + winner.toCorrectCase() + "\n");
+                    }
                 } else {
                     rewardCapCheck(player, rafflePrizeObj.id, rafflePrizeObj.amount);
                 }
@@ -11784,6 +13729,14 @@ function Safari() {
                     nothingFound = false;
                     safaribot.sendMessage(src, "Ongoing Auctions: " + out.join(" | "), safchan);
                 }
+                out = [];
+                for (e = 0; e < currentPyramids.length; e++) {
+                    out.push(readable(currentPyramids[e].fullNames, "and"));
+                }
+                if (out.length > 0) {
+                    nothingFound = false;
+                    safaribot.sendMessage(src, "Ongoing Pyramid quests: " + out.join(" | "), safchan);
+                }
                 if (currentEvent) {
                     nothingFound = false;
                     safaribot.sendMessage(src, "Ongoing Event: " + currentEvent.eventName, safchan);
@@ -11800,6 +13753,7 @@ function Safari() {
                 }
                 currentAuctions = [];
                 currentBattles = [];
+                currentPyramids = [];
                 currentEvent = null;
                 safaribot.sendAll("All ongoing battles, auctions and events have been stopped.", safchan);
                 return true;
@@ -12017,7 +13971,7 @@ function Safari() {
         }
         if (sys.auth(src) > 2) {
             if (command === "updateplugin" && commandData === "safari.js") {
-                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
+                if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
                     sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
@@ -12191,6 +14145,15 @@ function Safari() {
                 battle.nextTurn();
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
+                }
+            }
+        }
+        if (currentPyramids.length > 0) {
+            for (var e = currentPyramids.length - 1; e >= 0; e--) {
+                var pyr = currentPyramids[e];
+                pyr.nextTurn();
+                if (pyr.finished) {
+                    currentPyramids.splice(e, 1);
                 }
             }
         }
