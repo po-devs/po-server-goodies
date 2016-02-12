@@ -1172,7 +1172,7 @@ function Safari() {
     }
     
     /* Message Functions */
-    function sendAll(mess, html) {
+    function sendAll(mess, html, system) {
         var players = sys.playersOfChannel(safchan).filter(function(x) {
             var name = sys.name(x);
             if (safari.isInAuction(name) || safari.isBattling(name) || (currentEvent && currentEvent.isInEvent(name))) {
@@ -1185,7 +1185,11 @@ function Safari() {
             }
             return true;
         });
-        if (html) {
+        if (system) { 
+            for (var e in players) {
+                sys.sendHtmlMessage(players[e], mess, safchan);
+            }
+        } else if (html) {
             for (var e in players) {
                 safaribot.sendHtmlMessage(players[e], mess, safchan);
             }
@@ -4982,10 +4986,10 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
-            sys.sendAll("", safchan);
-            safaribot.sendHtmlAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), safchan);
-            safaribot.sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
-            sys.sendAll("", safchan);
+            sendAll("", false, true);
+            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
+            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
+            sendAll("", false, true);
         }
         this.saveGame(player);
     };
