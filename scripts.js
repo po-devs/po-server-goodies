@@ -1923,12 +1923,6 @@ beforeChatMessage: function(src, message, chan) {
     }
     
     //V.I.P Names
-    if (sys.name(src) == "Ciella") {
-        sys.sendHtmlAll("<span style='color: #32ede9'><timestamp/><b>( Maid ) Ciella: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-        sys.stopEvent();
-        this.afterChatMessage(src, message, channel);
-        return;
-    }
     if (sys.name(src) == "Armu") {
 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><i><font size=3 font color=red>(Host)</font> Secrets: </i></b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
@@ -1949,12 +1943,6 @@ beforeChatMessage: function(src, message, chan) {
     }
     if (sys.name(src) == "Brock") {
     	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Gym Leader)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-    	sys.stopEvent();
-    	this.afterChatMessage(src, message, channel);
-    	return;
-    }
-    if (sys.name(src) == "Rindou") {
-    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
