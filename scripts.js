@@ -1342,7 +1342,6 @@ afterLogIn : function(src) {
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
     sys.sendMessage(src, "");
-    sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(Moderator)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", channel);
     } else if (sys.auth(src) == 2) {
