@@ -833,7 +833,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "version" || command == "vers" || command == "scv") {
-        normalbot.sendMessage(src, "The script version is 10.0.0", channel);
+        normalbot.sendMessage(src, "The script version is 10.0.4", channel);
         return;
     }
     return "no command";
