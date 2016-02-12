@@ -1344,15 +1344,15 @@ afterLogIn : function(src) {
     sys.sendMessage(src, "");
     sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
     if (sys.auth(src) == 1) {
-    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><font size=3 font color=#00007f>(Moderator)</font> " + sys.name(src) + "</span><font color=black> has joined the server!", channel);
+    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(Moderator)</font> " + sys.name(src) + "</span><font size=3 font color=black> has joined the server!", channel);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><font size=3 font color=#00007f>(Admin)</font> " + sys.name(src) + "</span><font color=black> has joined the server!", channel);
+    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(Admin)</font> " + sys.name(src) + "</span><font size=3 font color=black> has joined the server!", channel);
     } else if (sys.auth(src) == 3) {
-    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><font size=3 font color=#00007f>(Owner)</font> " + sys.name(src) + "</span><font color=black> has joined the server!", channel);
+    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(Owner)</font> " + sys.name(src) + "</span><font size=3 font color=black> has joined the server!", channel);
     } else if (sys.auth(src) == 4) {
-    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font color=black> has joined the server!", channel);
+    	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> has joined the server!", channel);
     } else {
-        sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3>" + sys.name(src) + "</font></span><font color=black> has joined the server!</b>", channel);
+        sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> has joined the server!", channel);
     }
     sys.sendMessage(src, "");
 
