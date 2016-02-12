@@ -11856,7 +11856,7 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
-            "/disablequest [quest/all]: Disables specified quest, or all of them. Use /enablequest to re-enable. Updating the script will re-enable all quests.",
+            "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests.",
             "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             "/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -13362,7 +13362,12 @@ function Safari() {
                     for (var e in stopQuests) {
                         stopQuests[e] = off;
                     }
-                    safaribot.sendMessage(src, "All quests were " + (!off ? "enabled" : "disabled") + ".", safchan);
+                    safaribot.sendMessage(src, "All quests were " + (off ? "disabled" : "enabled") + ".", safchan);
+                    return true;
+                } else if (commandData.toLowerCase() === "long") {
+                    stopQuests.pyramid = off;
+                    stopQuests.tower = off;
+                    safaribot.sendMessage(src, "Pyramid and Tower were " + (off ? "disabled" : "enabled") + ".", safchan);
                     return true;
                 }
                 var data = commandData.split(":");
@@ -13370,7 +13375,7 @@ function Safari() {
                 var allQuests = Object.keys(stopQuests);
                 if (allQuests.contains(quest)) {
                     stopQuests[quest] = off;
-                    safaribot.sendMessage(src, cap(quest) + " was " + (!off ? "enabled" : "disabled") + ".", safchan);
+                    safaribot.sendMessage(src, cap(quest) + " was " + (off ? "disabled" : "enabled") + ".", safchan);
                 } else {
                     safaribot.sendMessage(src, "This is not a valid quest. Valid quests are: " + readable(allQuests, "and") + ".", safchan);
                 }
