@@ -1341,6 +1341,7 @@ afterLogIn : function(src) {
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
+    sys.sendMessage(src, "");
     sys.sendMessage(src, "±Bot: Welcome to the server, " + sys.name(src) + ", we hope you enjoy your stay.");
     sys.sendMessage(src, "");
 
