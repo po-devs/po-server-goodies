@@ -832,10 +832,15 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    if (command == "version" || command == "vers" || command == "scv") {
+        normalbot.sendMessage(src, "The script version is 10.0.0", channel);
+        return;
+    }
     return "no command";
 };
 exports.help = 
     [
+        "/version: Shows script version [Relevant to scripter only]",
         "/changerating: Changes the rating of a rating abuser. Format is /changerating user:::tier::rating.",
         "/stopbattles: Stops all new battles to allow for server restart with less problems for users.",
         "/hiddenauth: Displays all users with more higher auth than 3.",
