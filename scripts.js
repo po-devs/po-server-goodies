@@ -1,29 +1,29 @@
 // This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
-/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
-    bot: "Dratini",
-    kickbot: "Blaziken",
-    capsbot: "Exploud",
-    channelbot: "Chatot",
-    checkbot: "Snorlax",
-    coinbot: "Meowth",
+    bot: "Sky",
+    kickbot: "Kickedbot",
+    capsbot: "Capsbot",
+    channelbot: "Channelbot",
+    checkbot: "Checkbot",
+    coinbot: "Coinbot",
     countbot: "CountBot",
-    tourneybot: "Typhlosion",
-    rankingbot: "Porygon",
-    battlebot: "Blastoise",
+    tourneybot: "Tournamentbot",
+    rankingbot: "Rankingbot",
+    battlebot: "Battlebot",
     commandbot: "CommandBot",
     querybot: "QueryBot",
-    hangbot: "Unown",
-    bfbot: "Goomy",
-    safaribot: "Tauros",
+    hangbot: "Hangmanbot",
+    bfbot: "BF-bot",
+    safaribot: "Safaribot",
     // suspectvoting.js available, but not in use
     Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
     Mafia: {
-        bot: "Murkrow",
+        bot: "Charizard",
         norepeat: 5,
         stats_file: "scriptdata/mafia_stats.json",
         max_name_length: 16,
@@ -460,14 +460,14 @@ init : function() {
     else sys.webCall(Config.base_url + PROXY_FILE, addProxybans);
 
     rules = [ "",
-    "*** Pokémon Online Server Rules ***",
+    "*** Sky Rules ***",
     "",
-    "1. Pokemon Online is an international server:",
-    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules.",
+    "1. Sky is an international server:",
+    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Sky, as long as they follow the rules.",
     "2. No advertising, excessive messages or caps, inappropriate/obscene links, or text art:",
     "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). We are not interested in your start-up community. Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. Do not advertise non-official channels without prior approval. Posting ASCII art is punishable with a ban, as is posting anything with any type of pornography. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
     "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
-    "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
+    "- The official channels on Sky have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
     "4. Do not ask for authority:",
     "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member then a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, the wiki, or our YouTube channel (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
     "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
@@ -595,7 +595,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         else {
             banbot = normalbot;
         }
-        var verb = {"mute": "muted", "mban": "banned from Mafia", "smute": "secretly muted", "hmute": "banned from Hangman", "safban": "banned from Safari"}[type];
+        var verb = {"mute": "locked from talking", "mban": "banned from Mafia", "smute": "secretly muted", "hmute": "banned from Hangman", "safban": "banned from Safari"}[type];
         var nomi = {"mute": "mute", "mban": "mafia ban", "smute": "secret mute", "hmute": "hangman ban", "safban": "safari ban"}[type];
         var sendAll =  {
             "smute": function(line) {
@@ -624,7 +624,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }[type];
 
         var expires = 0;
-        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d", "safban": "1d"}[type];
+        var defaultTime = {"mute": "1h", "mban": "0d", "smute": "0", "hmute": "0d", "safban": "0d"}[type];
         var reason = "";
         var timeString = "";
         var data = commandData;
@@ -712,7 +712,7 @@ unban: function(type, src, tar, commandData) {
         else {
             banbot = normalbot;
         }
-    var verb = {"mute": "unmuted", "mban": "unbanned from Mafia", "smute": "secretly unmuted", "hmute": "unbanned from Hangman", "safban": "unbanned from Safari"}[type];
+    var verb = {"mute": "unlocked", "mban": "unbanned from Mafia", "smute": "secretly unmuted", "hmute": "unbanned from Hangman", "safban": "unbanned from Safari"}[type];
     var nomi = {"mute": "mute", "mban": "mafia ban", "smute": "secret mute", "hmute": "hangman ban", "safban": "safari ban"}[type];
     var past = {"mute": "muted", "mban": "mafia banned", "smute": "secretly muted", "hmute": "hangman banned", "safban": "safari banned"}[type];
     var sendAll =  {
@@ -1076,11 +1076,10 @@ afterChannelCreated : function (chan, name, src) {
 
 afterChannelJoin : function(player, chan) {
     if (typeof SESSION.channels(chan).topic != 'undefined') {
-        sys.sendMessage(player, "Welcome Message: " + SESSION.channels(chan).topic, chan);
+        sys.sendMessage(player, "Channel Topic: " + SESSION.channels(chan).topic, chan);
         /*if (SESSION.channels(chan).topicSetter)
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
-    if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
@@ -1198,7 +1197,7 @@ nameIsInappropriate: function(src)
     for (var i = 0; i < nameBans.length; ++i) {
         var regexp = nameBans[i];
         if (regexp.test(lname)) {
-            reply('This kind of name is banned from the server. (Matching regexp: ' + regexp + ')');
+            reply('This account is disabled. (Sky Online: ' + regexp + ')');
             return true;
         }
     }
@@ -1295,7 +1294,7 @@ cookieBanned: function(src) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
-        normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
+        normalbot.sendMessage(src, "You are banned from Sky Online, you can appeal on are website/forum here http://pokemon-online.boards.net/ ");
         sys.kick(src);
         return true;
     } else if (cookie === "muted" || cookie.substr(0, 5) === "muted") {
@@ -1320,7 +1319,7 @@ cookieBanned: function(src) {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
             return;
         } else {
-            normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
+            normalbot.sendMessage(src, "You are banned from Sky Online, you can appeal on are website/forum here http://pokemon-online.boards.net/");
             sys.kick(src);
             return true;
         }
@@ -1343,15 +1342,15 @@ afterLogIn : function(src) {
     sys.sendMessage(src, "");
     sys.sendMessage(src, "");
     if (sys.auth(src) == 1) {
-    	sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(Moderator)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=2 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=2 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(Admin)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=2 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=2 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 3) {
-    	sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(Owner)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=2 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=2 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 4) {
-    	sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=2 font color=#005500></font> " + sys.name(src) + "</span><font size=2 font color=black> to the server!", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/> Please welcome <span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> to the server!", 0);
+        sys.sendHtmlAll("<timestamp/><style='color: " + sys.getColor(src) + "'><b><font size=2 font color=#005500></font> " + sys.name(src) + "</span><font size=2 font color=black> Joined the channel!", 0);
     }
     sys.sendMessage(src, "");
 
