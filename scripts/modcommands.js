@@ -766,7 +766,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Cannot warn a person who isn't online!", channel);
             return;
         }
-        normalbot.sendAll("" + sys.name(src) + " has warned " + sys.name(tar) + " for breaking rules!");
+        normalbot.sendAll("" + sys.name(src) + " has warned " + sys.name(tar) + " for breaking rules!", channel);
         return;
     }
     return "no command";
