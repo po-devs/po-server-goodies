@@ -8952,14 +8952,14 @@ function Safari() {
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
             bignugget: { chance: 1 * level, item: "bignugget", amount: 1 },
-            bait: { chance: 18, item: "bait", amount: 3 * level },
-            gacha: { chance: 12, item: "gacha", amount: 4 * level },
-            dust: { chance: 15, item: "dust", amount: 12 * level },
-            safari: { chance: 15, item: "safari", amount: 4 * level },
-            great: { chance: 12, item: "great", amount: 2 * level },
-            quick: { chance: 9, item: "quick", amount: 1 * level },
-            spy: { chance: 9, item: "spy", amount: 1 * level },
-            rock: { chance: 12, item: "rock", amount: 8 * level },
+            bait: { chance: 18, item: "bait", amount: 2 * level },
+            gacha: { chance: 12, item: "gacha", amount: 3 * level },
+            dust: { chance: 15, item: "dust", amount: 10 * level },
+            safari: { chance: 15, item: "safari", amount: 3 * level },
+            great: { chance: 12, item: "great", amount: level },
+            quick: { chance: 9, item: "quick", amount: level },
+            spy: { chance: 9, item: "spy", amount: level },
+            rock: { chance: 12, item: "rock", amount: 5 * level },
             pearl: { chance: 10, item: "pearl", amount: 1 * level },
             stardust: { chance: 7, item: "stardust", amount: 1 * level }
         };
@@ -9065,13 +9065,13 @@ function Safari() {
         
         this.treasures = {
             egg: { chance: 1 * level, item: "egg", amount: 1 },
-            bignugget: { chance: 2 * level, item: "bignugget", amount: 1 },
-            bait: { chance: 12, item: "bait", amount: 8 * level },
-            dust: { chance: 10, item: "dust", amount: 20 * level },
-            myth: { chance: 15, item: "myth", amount: 3 * level },
-            heavy: { chance: 12, item: "heavy", amount: 4 * level },
-            spy: { chance: 13, item: "spy", amount: 3 * level },
-            bigpearl: { chance: 5, item: "bigpearl", amount: 2 * level }
+            bignugget: { chance: 2 + level, item: "bignugget", amount: 1 },
+            bait: { chance: 12, item: "bait", amount: 5 * level },
+            dust: { chance: 10, item: "dust", amount: 14 * level },
+            myth: { chance: 15, item: "myth", amount: 2 * level },
+            heavy: { chance: 12, item: "heavy", amount: 2 * level },
+            spy: { chance: 13, item: "spy", amount: 2 * level },
+            bigpearl: { chance: 5, item: "bigpearl", amount: level }
         };
         
         this.sendAll("");
@@ -9187,14 +9187,14 @@ function Safari() {
         
         this.treasures = {
             pack: { chance: 1 * level, item: "pack", amount: 1 },
-            spray: { chance: 2 * level, item: "spray", amount: 1 },
-            starpiece: { chance: 4 * level, item: "starpiece", amount: 1 },
-            silver: { chance: 13, item: "silver", amount: 3 * level },
-            ultra: { chance: 15, item: "ultra", amount: 2 * level },
-            quick: { chance: 15, item: "quick", amount: 2 * level },
-            clone: { chance: 15, item: "clone", amount: 2 * level },
-            rock: { chance: 20, item: "rock", amount: 15 * level },
-            stardust: { chance: 8, item: "stardust", amount: 2 * level }
+            spray: { chance: 2 + level, item: "spray", amount: 1 },
+            starpiece: { chance: 4 + level, item: "starpiece", amount: 1 },
+            silver: { chance: 13, item: "silver", amount: 2 * level },
+            ultra: { chance: 15, item: "ultra", amount: 1 * level },
+            quick: { chance: 15, item: "quick", amount: 1 * level },
+            clone: { chance: 15, item: "clone", amount: 1 * level },
+            rock: { chance: 20, item: "rock", amount: 10 * level },
+            stardust: { chance: 8, item: "stardust", amount: 1 * level }
         };
         
         this.sendAll("");
@@ -9321,12 +9321,13 @@ function Safari() {
         
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
-            spray: { chance: 2 * level, item: "spray", amount: 1 },
-            money: { chance: 12, item: "money", amount: 300 * level },
+            spray: { chance: 2 + level, item: "spray", amount: 1 },
+            money: { chance: 3, item: "money", amount: 240 * level },
+            money2: { chance: 12, item: "money", amount: 150 * level },
             silver: { chance: 7, item: "silver", amount: 2 * level },
-            gacha: { chance: 10, item: "gacha", amount: 6 * level },
+            gacha: { chance: 10, item: "gacha", amount: 5 * level },
             great: { chance: 10, item: "great", amount: 3 * level },
-            ultra: { chance: 8, item: "ultra", amount: 2 * level },
+            ultra: { chance: 8, item: "ultra", amount: 2 + level },
             luxury: { chance: 10, item: "luxury", amount: 1 * level },
             clone: { chance: 10, item: "clone", amount: 1 * level },
             premier: { chance: 8, item: "premier", amount: 2 * level }
@@ -9547,6 +9548,7 @@ function Safari() {
         this.answer = poke(this.answerId);
         this.answerAttempts = 0;
         this.cluesSearched = {};
+        this.turns = 8;
         
         var hints = this.writeHints();
         
@@ -9574,11 +9576,11 @@ function Safari() {
         var rew = {
             gem: { chance: 2 * level, item: "gem", amount: 1 },
             nugget: { chance: 1 * level, item: "nugget", amount: 1 },
-            money: { chance: 12, item: "money", amount: 250 * level },
-            safari: { chance: 18, item: "safari", amount: 10 * level },
-            myth: { chance: 12, item: "myth", amount: 2 * level },
-            spy: { chance: 12, item: "spy", amount: 2 * level },
-            pearl: { chance: 10, item: "pearl", amount: 2 * level }
+            money: { chance: 12, item: "money", amount: 200 * level },
+            safari: { chance: 18, item: "safari", amount: 5 * level },
+            myth: { chance: 12, item: "myth", amount: 1 * level },
+            spy: { chance: 12, item: "spy", amount: 1 * level },
+            pearl: { chance: 10, item: "pearl", amount: 1 * level }
         };
         while (treasuresAmt > 0) {
             this.hintsLocation[objects.shift()] = randomSampleObj(rew);
@@ -9722,7 +9724,7 @@ function Safari() {
                 }
                 this.cluesSearched[p]++;
                 if (this.cluesSearched[p] > 1) {
-                    stamina[p] = -3 * this.level;
+                    stamina[p] = -2 - this.level;
                 }
                 
                 res = this.hintsLocation[place];
@@ -9745,19 +9747,36 @@ function Safari() {
             this.validObjects.splice(this.validObjects.indexOf(p), 1);
         }
         
-        for (p in stamina) {
-            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+        this.turns--;
+        if (this.turns > 0) {
+            for (p in stamina) {
+                staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+            }
+            if (staminaStr.length > 0) {
+                this.sendAll("The search for the password is becoming tiresome! Stamina lost: {0}".format(staminaStr.join(", ")));
+            }
+            this.pyr.updateStatus(0, stamina);
+            this.sendAll("");
+            this.sendAll("Look for more clues or input the password to open the door! You only have {0} turns left!".format(this.turns));
+            this.sendIndividuals();
+            this.sendAll("");
+            this.turnToAdvance += 2;
+        } else {
+            for (p in this.pyr.stamina) {
+                if (this.pyr.stamina[p] > 0) {
+                    if (!stamina.hasOwnProperty(p)) {
+                        stamina[p] = 0;
+                    }
+                    stamina[p] -= 8 * this.level;
+                    staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+                }
+            }
+            var points = -5 - this.level * 5;
+            this.sendAll("As the door opened by itself, a voice so loud that it hurts your ears could be heard: <b>\"YOU ARE TERRIBLE AT RIDDLES!!\"</b> | Points: {0} | Stamina lost: {1}".format(points, staminaStr.join(", ")));
+            this.pyr.updateStatus(points, stamina);
+            this.sendAll("");
+            this.passed = true;
         }
-        if (staminaStr.length > 0) {
-            this.sendAll("The search for the password is becoming tiresome! Stamina lost: {0}".format(staminaStr.join(", ")));
-        }
-        
-        this.pyr.updateStatus(0, stamina);
-        this.sendAll("");
-        this.sendAll("Look for more clues or input the password to open the door!");
-        this.sendIndividuals();
-        this.sendAll("");
-        this.turnToAdvance += 2;
     };
     
     function HazardRoom(pyramidRef, level, roomNum) {
@@ -9839,11 +9858,11 @@ function Safari() {
         
         this.treasures = {
             egg: { chance: 1 * level, item: "egg", amount: 1 },
-            nugget: { chance: 3 * level, item: "nugget", amount: 1 },
-            silver: { chance: 8, item: "silver", amount: 2 * level },
-            dust: { chance: 14, item: "dust", amount: 10 * level },
-            quick: { chance: 10, item: "quick", amount: 2 * level },
-            rock: { chance: 15, item: "rock", amount: 25 * level },
+            nugget: { chance: 2 + level, item: "nugget", amount: 1 },
+            silver: { chance: 8, item: "silver", amount: 2 + level },
+            dust: { chance: 14, item: "dust", amount: 9 * level },
+            quick: { chance: 10, item: "quick", amount: 1 * level },
+            rock: { chance: 15, item: "rock", amount: 15 * level },
             bigpearl: { chance: 5, item: "bigpearl", amount: 1 * level }
         };
         if (chance(0.44 + 0.06 * this.level)) {
@@ -9996,20 +10015,21 @@ function Safari() {
         }
         this.treasures = {};
         var rew = {
-            pack: { chance: 3 * level, item: "pack", amount: 1 },
-            gem: { chance: 4 * level, item: "gem", amount: 1 },
-            nugget: { chance: 3 * level, item: "nugget", amount: 1 },
-            bignugget: { chance: 2 * level, item: "bignugget", amount: 1 },
-            money: { chance: 8, item: "money", amount: 800 * level },
-            silver: { chance: 7, item: "silver", amount: 5 * level },
-            gacha: { chance: 12, item: "gacha", amount: 10 * level },
-            dust: { chance: 14, item: "dust", amount: 15 * level },
-            ultra: { chance: 15, item: "ultra", amount: 5 * level },
-            myth: { chance: 14, item: "myth", amount: 3 * level },
-            luxury: { chance: 14, item: "luxury", amount: 3 * level },
-            heavy: { chance: 14, item: "heavy", amount: 3 * level },
-            premier: { chance: 11, item: "premier", amount: 4 * level },
-            pearl: { chance: 10, item: "pearl", amount: 2 * level },
+            pack: { chance: 3 + level, item: "pack", amount: 1 },
+            gem: { chance: 4 + level, item: "gem", amount: 1 },
+            nugget: { chance: 3 + level, item: "nugget", amount: 1 },
+            bignugget: { chance: 2 + level, item: "bignugget", amount: 1 },
+            money: { chance: 2, item: "money", amount: 900 * level },
+            money2: { chance: 8, item: "money", amount: 220 * level },
+            silver: { chance: 7, item: "silver", amount: 3 * level },
+            gacha: { chance: 12, item: "gacha", amount: 5 * level },
+            dust: { chance: 14, item: "dust", amount: 10 * level },
+            ultra: { chance: 15, item: "ultra", amount: 3 * level },
+            myth: { chance: 14, item: "myth", amount: 2 * level },
+            luxury: { chance: 14, item: "luxury", amount: 2 * level },
+            heavy: { chance: 14, item: "heavy", amount: 2 * level },
+            premier: { chance: 11, item: "premier", amount: 3 * level },
+            pearl: { chance: 10, item: "pearl", amount: 2 + level },
             bigpearl: { chance: 8, item: "bigpearl", amount: 1 * level }
         };
         for (p = 0; p < 3; p++) {
