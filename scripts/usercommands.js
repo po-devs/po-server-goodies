@@ -328,7 +328,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             sys.sendMessage(src, "*** (~) Masters ***", channel);
             authListArray.filter(filterByAuth(3)).forEach(printOnlineOffline);
             sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** (&)Leaders ***", channel);
+            sys.sendMessage(src, "*** (&) Leaders ***", channel);
             authListArray.filter(filterByAuth(2)).forEach(printOnlineOffline);
             sys.sendMessage(src, '', channel);
             sys.sendMessage(src, "*** (@) Moderators ***", channel);
