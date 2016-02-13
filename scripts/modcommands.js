@@ -769,6 +769,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll("" + sys.name(src) + " has warned " + sys.name(tar) + " for breaking rules!", channel);
         return;
     }
+    
     return "no command";
 };
 exports.help = 
