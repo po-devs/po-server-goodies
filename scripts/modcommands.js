@@ -761,6 +761,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.unban("smute", src, tar, commandData);
         return;
     }
+    if (command == "warn" || command == "w") {
+        if (tar === undefined) {
+            normalbot.sendMessage(src, "Cannot warn a person who isn't online!", channel);
+            return;
+        }
+        normalbot.sendAll("" + sys.name(src) + " has warned " + sys.name(tar) + " for breaking rules!");
+        return;
+    }
     return "no command";
 };
 exports.help = 
@@ -795,5 +803,6 @@ exports.help =
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
-        "/channelusers: Lists users on a channel."
+        "/channelusers: Lists users on a channel.",
+        "/warn: Warns a user for breaking rules."
     ];
