@@ -804,5 +804,5 @@ exports.help =
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel.",
-        "/warn: Warns a user for breaking rules."
+        "/warn: Warns a user for breaking rules. Don't specify what rule in the command."
     ];
