@@ -1080,6 +1080,7 @@ afterChannelJoin : function(player, chan) {
         /*if (SESSION.channels(chan).topicSetter)
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
+    if (SESSION.channels(chan).isChannelOperator(player)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
