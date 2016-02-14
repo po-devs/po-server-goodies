@@ -983,10 +983,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command === "id") {
-    	sys.sendMessage(src sys.id(commandData), channel);
-    	return;
-    }
+
     return "no command";
 };
 
