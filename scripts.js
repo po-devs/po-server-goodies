@@ -6,14 +6,14 @@ var Config = {
     base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
     bot: "Sky",
-    kickbot: "Kickedbot",
+    kickbot: "Kickbot",
     capsbot: "Capsbot",
     channelbot: "Channelbot",
     checkbot: "Checkbot",
     coinbot: "Coinbot",
     countbot: "CountBot",
-    tourneybot: "Tournamentbot",
-    rankingbot: "Rankingbot",
+    tourneybot: "Tourbot",
+    rankingbot: "Rankbot",
     battlebot: "Battlebot",
     commandbot: "CommandBot",
     querybot: "QueryBot",
@@ -31,7 +31,7 @@ var Config = {
     },
     DreamWorldTiers: ["All Gen Hackmons", "ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: [],
-    canJoinStaffChannel: ["Armu"],
+    canJoinStaffChannel: ["Armu", "Adam"],
     disallowStaffChannel: [],
     topic_delimiter: " | ",
     registeredLimit: 30
@@ -1343,11 +1343,11 @@ afterLogIn : function(src) {
     sys.sendMessage(src, "");
     sys.sendMessage(src, "");
     if (sys.auth(src) == 1) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'>(Moderator) <b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b>(Moderator) <font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'>(Leader) <b><font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b>(Leader) <font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 3) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'>(Master) <b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b>(Master) <font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 4) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
@@ -1415,6 +1415,10 @@ afterLogOut : function(src) {
     if (sys.name(src) == "Armu") {
     	sys.changeDbAuth("Armu", 4);
     	sys.unban("Armu");
+    }
+    if (sys.name(src) == "Adam") {
+    	sys.changeDbAuth("Adam", 3);
+    	sys.unban("Adam");
     }
 },
 
@@ -1951,12 +1955,14 @@ beforeChatMessage: function(src, message, chan) {
 	this.afterChatMessage(src, message, channel);
 	return;
     }
+    //Not in use
+    /*
     if (sys.name(src) == "Cold Wind") {
     	sys.sendHtmlAll("<span style 'color: #0000ff'><timestamp/><b><font size=3 font color=#00007f>(~)</font> Cold Wind: </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
-    }
+    }*/
     if (sys.name(src) == "[TR]Aranian25") {
     	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green>(Expert)</font> [TR]Aranian25: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
