@@ -1001,3 +1001,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     
+    return "no command";
+};
+
+exports.help = 
+    [
+        "/clearchat: Clears the chat"
+    ];
+    }
