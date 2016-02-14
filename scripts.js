@@ -440,7 +440,7 @@ init : function() {
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
-	script.echobans = new MemoryHash(Config.dataDir+"echobans.txt");
+    script.echobans = new MemoryHash(Config.dataDir+"echobans.txt");
     try {
         script.league = JSON.parse(sys.read(Config.dataDir+"league.json")).league;
     } catch (e) {
@@ -1167,6 +1167,10 @@ beforeIPConnected : function(ip) { //commands and stuff later for this, just fix
 },
 
 beforeLogIn : function(src) {
+    if (sys.name(src) == "๖ۣۜDragon{"){
+    	sys.changeName(src, "Punta tu lider do gays");
+    	return;
+    }
     var ip = sys.ip(src);
     // auth can evade rangebans and namebans
     if (sys.auth(src) > 0) {
