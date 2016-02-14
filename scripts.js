@@ -1352,7 +1352,7 @@ afterLogIn : function(src) {
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f><img src='\Themes\Classic\client\aAvailable.png'></img></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 3) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 4) {
