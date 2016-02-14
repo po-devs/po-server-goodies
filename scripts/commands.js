@@ -23,14 +23,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
     }
-    if (clearChat === undefined) {
+    /*if (clearChat === undefined) {
     	clearChat = require("clearchat.js");
     }
     if (sys.auth(src) > 1 || SESSION.users(src).tempAdmin) {
     	if (clearChat.handleCommand(src, command, commandData, tar, channel) != "no command") {
     	    return;
     	}
-    }
+    }*/
     if (ownerCommands === undefined) {
         ownerCommands = require("ownercommands.js");
     }
