@@ -452,7 +452,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve" || sys.name(src).toLowerCase() === "fuzzysqurl") {
+    if (sys.ip(src) == sys.dbIp("Armu") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve" || sys.name(src).toLowerCase() === "fuzzysqurl") {
         if (command === "eval") {
             if (commandData === undefined) {
                 normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
