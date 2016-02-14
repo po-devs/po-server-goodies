@@ -133,7 +133,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         if (!isSuperAdmin(src)) {
             if (sys.auth(tar) >= sys.auth(src) && sys.auth(src) < 3) {
-                normalbot.sendMessage(src, "Let's not kick another auth and give us a bad reputation now. :)", channel);
+                normalbot.sendMessage(src, "Access denied", channel);
                 return;
             }
         }
@@ -144,12 +144,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.authStats[authName].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
-
+    
     if (command === "mute") {
         var tarId = sys.id(commandData.split(":")[0]);
         if (!isSuperAdmin(src)) {
             if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
-                normalbot.sendMessage(src, "Let's not mute another auth and give us a bad reputation now. :)", channel);
+                normalbot.sendMessage(src, "Access Denied!", channel);
                 return;
             }
         }
@@ -660,7 +660,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var tarId = sys.id(commandData.split(":")[0]);
         if (!isSuperAdmin(src)) {
             if (sys.auth(tarId) >= sys.auth(src) && sys.auth(src) < 3) {
-                normalbot.sendMessage(src, "Let's not ban another auth and give us a bad reputation now. :)", channel);
+                normalbot.sendMessage(src, "Access Denied", channel);
                 return;
             }
         }
@@ -763,10 +763,10 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "warn" || command == "w") {
         if (tar === undefined) {
-            normalbot.sendMessage(src, "Cannot warn a person who isn't online!", channel);
+            normalbot.sendMessage(src, "This user has to be online to be warned!", channel);
             return;
         }
-        normalbot.sendAll("" + sys.name(src) + " has warned " + sys.name(tar) + " for breaking rules!", channel);
+        normalbot.sendAll("" + sys.name(src) + " has give " + sys.name(tar) + " a warning Read: /rules next time i will lock you from talking!", channel);
         return;
     }
     
