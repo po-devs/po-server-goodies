@@ -1350,11 +1350,11 @@ afterLogIn : function(src) {
     sys.sendMessage(src, "");
     sys.sendHtmlMessage(src, "<font size=4><font color=blue><b>===========================================================</b><br><font color=red><b>Welcome to Sky! Register on the forums <a href='http://pokemon-online.boards.net/'>here</a></b><br><font color=red><b>We offer custom symbols on this server, Ask <i><u>Armu</u></i> for one.</b><br><font color=blue><b>===========================================================</b></font>", channel);
     if (sys.auth(src) == 1) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b>(Moderator) <font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b>(Leader) <font size=3 font color=#00007f><img src="pokemon:471&amp;gen=6" /></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f><img src="pokemon:471&amp;gen=6" /></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 3) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><img src="pokemon:471&amp;gen=6" /><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 4) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
