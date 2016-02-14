@@ -1008,4 +1008,3 @@ exports.help =
     [
         "/clearchat: Clears the chat"
     ];
-    }
