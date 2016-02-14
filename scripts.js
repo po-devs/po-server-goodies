@@ -21,7 +21,7 @@ var Config = {
     bfbot: "BF-bot",
     safaribot: "Safaribot",
     // suspectvoting.js available, but not in use
-    Plugins: ["clearchat.js", "mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
     Mafia: {
         bot: "Charizard",
         norepeat: 5,
@@ -106,7 +106,7 @@ var abilityDir = "db/abilities/";
 var itemDir = "db/items/";
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
-var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', 'admincommands.js', 'systemcommands.js'];
+var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', 'admincommands.js', 'systemcommands.js', "clearchat.js"];
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js', "globalfunctions.js", "userfunctions.js", "channelfunctions.js", "channelmanager.js", "pokedex.js"].concat(commandfiles).concat(Config.Plugins);
 var missing = 0;
 for (var i = 0; i < deps.length; ++i) {
@@ -1346,7 +1346,6 @@ afterLogIn : function(src) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
-    sys.sendMessage(src, "");
     sys.sendMessage(src, "");
     sys.sendHtmlMessage(src, "<font size=4><font color=blue><b>===========================================================</b><br><font color=red><b>Welcome to Sky! Register on the forums <a href='http://pokemon-online.boards.net/'>here</a></b><br><font color=red><b>We offer custom symbols on this server, Ask <i><u>Armu</u></i> for one.</b><br><font color=blue><b>===========================================================</b></font>", channel);
     if (sys.auth(src) == 1) {
