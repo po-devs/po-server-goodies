@@ -1,4 +1,4 @@
-var userCommands, modCommands, adminCommands, ownerCommands, channelCommands, sysCommands;
+var userCommands, modCommands, adminCommands, ownerCommands, channelCommands, sysCommands, clearchat;
 
 exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (userCommands === undefined) {
@@ -22,6 +22,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (adminCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
+    }
+    if (clearchat === undefined) {
+    	clearchat = require("clearchat.js");
+    }
+    if (sys.auth(src) > 1 || SESSION.users(src).tempAdmin) {
+    	if (clearchat.handleCommand(src, command, commandData, tar, channel) != "no command") {
+    	    return;
+    	}
     }
     if (ownerCommands === undefined) {
         ownerCommands = require("ownercommands.js");
