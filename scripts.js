@@ -1348,7 +1348,7 @@ afterLogIn : function(src) {
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<font size=4><font color=blue><b>===========================================================</b><br><font color=red><b>Welcome to Sky! Register on the forums <a href='http://pokemon-online.boards.net/'>here</a></b><br><font color=red><b>We offer custom symbols on this server, Ask <i><u>Armu</u></i> for one.</b><br><font color=blue><b>===========================================================</b></font>", channel);
+    sys.sendHtmlMessage(src, "<tr style='color: " + sys.getColor(src) + "'></tr><font size=3 font color=#00007f><hr></hr><br><font color=blue><b>Welcome to Sky Online!</a><br><font color=red><b>We offer custom symbols on this server, speak to <i>(~)_(&) for more information<u></u></i> for one.<br><font color=blue><hr></hr></font>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
@@ -1976,8 +1976,14 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }
-    if (sys.name(src) == "Brock") {
-    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=blue>(Gym Leader)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    if (sys.name(src) == "Armu") {
+    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
+	if (sys.name(src) == "Master") {
+    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
