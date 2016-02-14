@@ -1351,7 +1351,7 @@ afterLogIn : function(src) {
     } else if (sys.auth(src) == 4) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! We are currently looking for staff members.", 0);
+        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! members.", 0);
     }
     sys.sendMessage(src, "");
 
