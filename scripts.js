@@ -1029,7 +1029,7 @@ beforeChannelJoin : function(src, channel) {
         sys.stopEvent();
         return;
     }
-    if ((channel == echochan) && !this.canJoinStaffChannel(src)) {
+    if (channel == echochan) {
     	sys.sendMessage(src, "±Guard: This is a VIP channel, You require VIP to enter!");
     	sys.stopEvent();
     	return;
