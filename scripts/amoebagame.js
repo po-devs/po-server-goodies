@@ -56,14 +56,14 @@ function EvolutionGame() {
                         SESSION.users(loser).amoeba.role--;
                     }
                 } else {
-                    SESSION.users(loser).amoeba.role = 0;
+                    // SESSION.users(loser).amoeba.role = 0;
                 }
                 if (role === 0) {
                     sys.sendHtmlAll("<hr><center>" + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(battles[role])) + "</b> and " + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(src)) + "</b> engaged in a fierce battle!</center><br /><b><font color='#0000ff'>" + htmlEscape(sys.name(winner)) + "</font></b> won and evolves into " + /*pokeIcon(SESSION.users(winner).amoeba.role) +*/ poke[SESSION.users(winner).amoeba.role].species + " while <b><font color='#ff0000'>" + htmlEscape(sys.name(loser)) + "</font></b> lost and remains a " + /*pokeIcon(SESSION.users(loser).amoeba.role) +*/ poke[SESSION.users(loser).amoeba.role].species + ".<hr>", id);
                 } else if (role > 0 && role < 5) {
                     sys.sendHtmlAll("<hr><center>" + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(battles[role])) + "</b> and " + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(src)) + "</b> engaged in a fierce battle!</center><br /><b><font color='#0000ff'>" + htmlEscape(sys.name(winner)) + "</font></b> won and evolves into " + /*pokeIcon(SESSION.users(winner).amoeba.role) +*/ poke[SESSION.users(winner).amoeba.role].species + " while <b><font color='#ff0000'>" + htmlEscape(sys.name(loser)) + "</font></b> lost and unevolved into " + /*pokeIcon(SESSION.users(loser).amoeba.role) +*/ poke[SESSION.users(loser).amoeba.role].species + ".<hr>", id);
                 } else {
-                    sys.sendHtmlAll("<hr><center>" + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(battles[role])) + "</b> and " + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(src)) + "</b> engaged in a fierce battle of the Gods!</center><br /><b><font color='#0000ff'>" + htmlEscape(sys.name(winner)) + "</font></b> defeated <b><font color='#ff0000'>" + htmlEscape(sys.name(loser)) + "</font></b> and mercilessly reset their evolution back to " + /*pokeIcon(SESSION.users(loser).amoeba.role) +*/ poke[SESSION.users(loser).amoeba.role].species + ".<hr>", id);
+                    // sys.sendHtmlAll("<hr><center>" + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(battles[role])) + "</b> and " + /*pokeIcon(role) +*/ "<b>" + htmlEscape(sys.name(src)) + "</b> engaged in a fierce battle of the Gods!</center><br /><b><font color='#0000ff'>" + htmlEscape(sys.name(winner)) + "</font></b> defeated <b><font color='#ff0000'>" + htmlEscape(sys.name(loser)) + "</font></b> and mercilessly reset their evolution back to " + /*pokeIcon(SESSION.users(loser).amoeba.role) +*/ poke[SESSION.users(loser).amoeba.role].species + ".<hr>", id);
                 }
                 delete battles[role];
             } else {
