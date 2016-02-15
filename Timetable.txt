@@ -1,0 +1,9 @@
+Armu only works for these times per day
+
+Monday: 11AM - 7PM
+Tuesday: 11AM - 7PM
+Wednesday: 11AM - 7PM
+Thursday: 11AM - 7PM
+Friday: 11AM - 7PM
+Saturday: 11AM - 9PM
+Sunday: NOT WORKING
