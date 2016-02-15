@@ -1,4 +1,4 @@
-*******
+*******Test
 These scripts and all parts of its code are licened to Armu/Secrets on the Sky server, Any usage outside of this server must be 
 told to Armu himself
 *******
