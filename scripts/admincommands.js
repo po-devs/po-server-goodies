@@ -1465,7 +1465,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlAll("", channel);
         sys.sendHtmlAll("", channel);
         sys.sendHtmlAll("", channel);
-        normalbot.sendAll("" + sys.name(src) + " cleared the chat!", channel);
+        normalbot.sendAll("The chat was cleared by staff!", channel);
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
