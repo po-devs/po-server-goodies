@@ -11,9 +11,9 @@ function Safari() {
     var safari = this;
     var safariUpdating = false;
     var safchan;
-    var defaultChannel = "Safari";
-    var safaribot = new Bot("Tauros");
-    var tutorbot = new Bot("Kangaskhan");
+    var defaultChannel = "Main Channel";
+    var safaribot = new Bot("Sky");
+    var tutorbot = new Bot("Sky");
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
