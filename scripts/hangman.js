@@ -661,14 +661,14 @@ function Hangman() {
             hangbot.sendMessage(src, (e + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
         }
         name = sys.name(src).toLowerCase();
-        if (!fromLastMonth && top.indexOf(name) == -1) {
+        if (!fromLastMonth) {
             if (commandData) {
                 var req = commandData.toLowerCase();
                 if (req in lb) {
                     hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
                 }
             }
-            else if (name in lb) {
+            else if (name in lb && top.indexOf(name) == -1) {
                 hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
             } 
             else {
