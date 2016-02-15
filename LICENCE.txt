@@ -23,10 +23,11 @@ Do use without permission. -- punishment is possibly ensured by github.com enfor
 Do give or pass these files to 3rd person parties not you are not to link access to public users/members
 
 Credits (&) Contributors
-    Host of Sky: Steve
+    Host of Sky: Steve/Ryan [Armu/Secrets]
     Creator of Sky: Adam (AkA) > [๖ۣۜDragoñite] / Programmer / Scripter 
     Creator of Sky: Lisa (AkA) > [Diamond] / Announcements/ scripts.js edits
-    Main Scripter: Ryan [Amru/Secrets] Sky Dev master/ Programmer / QT building ect.
+    Main Scripter: Ryan [Armu/Secrets] Sky Dev master/ Programmer / QT building ect.
+    
 
 Contributors
     none yet
