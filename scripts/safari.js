@@ -1956,8 +1956,10 @@ function Safari() {
             shiny = appearAs.shiny;
         } else {
             disguise = [132, 151, 570, 571].contains(num);
-            appearance = sys.rand(1,722);
-            shiny = sys.rand(0, shinyChance) < 10;
+            if (disguise) {
+                appearance = sys.rand(1,722);
+                shiny = sys.rand(0, shinyChance) < 10;
+            }
         }
         currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
