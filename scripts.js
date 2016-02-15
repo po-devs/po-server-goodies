@@ -1346,7 +1346,7 @@ afterLogIn : function(src) {
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
     sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=6 font color=#00007f><hr><center><img src='themes/classic/client/oAvailable.png"> Welcome to Sky Online! Make sure your account is registered. <img src='themes/classic/client/oAvailable.png"><hr><i></i><br/><img src='pokemon:num=384&gen=3'></center><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
