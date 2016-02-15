@@ -1,7 +1,8 @@
-// This is the official Pokemon Online Scripts
-// These scripts will only work on 2.0.00 or newer.
+//THIS IS THE OFFICAL SKY SCRIPTS, NOT "Pokemon Online" SCRIPTS
+//& yes these scripts only work on 2.0.00 or newer.
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,:true,proto:true,withstmt:true*/
-// You may change these variables as long as you keep the same type
+// You may change these variables as long as you keep the same type 
+//You never stated the fucking type ^
 var Config = {
     base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
@@ -21,6 +22,7 @@ var Config = {
     bfbot: "BF-bot",
     safaribot: "Safaribot",
     // suspectvoting.js available, but not in use
+    //why keep useless shit?
     Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
     Mafia: {
         bot: "Charizard",
@@ -38,6 +40,7 @@ var Config = {
 };
 
 // Don't touch anything here if you don't know what you do.
+// Why would a non coder touch this file anyways? ^
 /*global print, script, sys, SESSION*/
 
 var require_cache = typeof require != 'undefined' ? require.cache : {};
@@ -106,7 +109,7 @@ var abilityDir = "db/abilities/";
 var itemDir = "db/items/";
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
-//Separator
+// Are you stupid, or what? ^
 var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', 'admincommands.js', 'systemcommands.js'];
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js', "globalfunctions.js", "userfunctions.js", "channelfunctions.js", "channelmanager.js", "pokedex.js"].concat(commandfiles).concat(Config.Plugins);
 var missing = 0;
@@ -169,6 +172,7 @@ Object.defineProperty(Array.prototype, "shuffle", {
     }
 });
 /* stolen from here: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
+// Thanks for the copywrite claim, PO devs. ^
 String.prototype.format = function() {
     var formatted = this;
     for (var i = 0; i < arguments.length; i++) {
@@ -352,6 +356,8 @@ safaribot = new Bot(Config.safaribot);
  * All the events are defined here
  */
 
+//NO SHIT SHERLOCK HOLMES ^
+
 var lastStatUpdate = new Date();
 poScript=({
 /* Executed every second */
@@ -521,6 +527,7 @@ init : function() {
         return a + "*" + sys.ip(b);
     };
 
+    // PO devs couldn't come up with a name, so they named it "thing", just like the other shit they use such as "thingy"
     script.saveKey = function(thing, id, val) {
         sys.saveVal(key(thing,id), val);
     };
