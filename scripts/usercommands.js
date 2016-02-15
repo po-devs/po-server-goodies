@@ -983,6 +983,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
+    if (command === "credits") {
+    	normalbot.sendMessage(src, "*Main Scripter: Armu (Ryan)");
+    	normalbot.sendMessage(src, "Other Scripter: Adam Snowden");
+    	return;
+    }
 
     return "no command";
 };
