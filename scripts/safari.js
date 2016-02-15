@@ -8637,7 +8637,7 @@ function Safari() {
                             var stmBonus = {};
                             for (var s in this.stamina) {
                                 if (this.stamina[s] > 0) {
-                                    stmBonus[s] = Math.ceil(this.stamina[s] * 0.09);
+                                    stmBonus[s] = Math.ceil(this.stamina[s] * (0.03 + this.level * 0.01));
                                     if (this.stamina[s] + stmBonus[s] > this.maxStamina[s]) {
                                         stmBonus[s] = this.maxStamina[s] - this.stamina[s];
                                     }
