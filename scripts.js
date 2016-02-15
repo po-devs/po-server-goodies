@@ -1963,6 +1963,12 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }
+    if (sys.name(src) == "Adam") {
+	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=25&gen=1'></font> Adam: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+	return;
+    }
     if (sys.name(src) == "Armu") {
 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red>(Scripter)</font> ๖ۣۜSecrets: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
