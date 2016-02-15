@@ -12,8 +12,8 @@ function Safari() {
     var safariUpdating = false;
     var safchan;
     var defaultChannel = "Main Channel";
-    var safaribot = new Bot("Sky");
-    var tutorbot = new Bot("Sky");
+    var safaribot = new Bot("Safaribot");
+    var tutorbot = new Bot("Tutorbot");
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
@@ -9851,47 +9851,47 @@ function Safari() {
         var help = userHelp;
         var adminHelp = [
             "*** Safari Warden Commands ***",
-            "/startevent [type]։[parameters]: Starts an event. Use /startevent help for more details. To cancel an event, use /abortevent.",
+            "/startevent [type]:[parameters]: Starts an event. Use /startevent help for more details. To cancel an event, use /abortevent.",
             "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
-            "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
-            "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
-            "/mythlog [amount]։[lookup]: Returns a list of Legendary or Shiny Pokémon spawns. Amount and Lookup works the same as /tradelog.",
-            "/altlog [amount]։[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
-            "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
-            "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
-            "/salt [player]։[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
-            "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
-            "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
+            "/tradelog [amount]:[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
+            "/lostlog [amount]:[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
+            "/mythlog [amount]:[lookup]: Returns a list of Legendary or Shiny Pokémon spawns. Amount and Lookup works the same as /tradelog.",
+            "/altlog [amount]:[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
+            "/transferalt [name1]:[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
+            "/tradeban [player]:[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
+            "/salt [player]:[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
+            "/safariban [player]:[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
+            "/analyze [player]:[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
-            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
+            "/trick [player]:[pokemon]:[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
-            "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
+            "/wild[event] [pokemon (optional)]:[amount]:[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
             "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
-            "/editdata [type]։[item]։[property]։[value]: Changes a property from an item/costume.",
-            "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
-            "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
-            "/bestow [player]։[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
-            "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
+            "/editdata [type]:[item]:[property]:[value]: Changes a property from an item/costume.",
+            "/safaripay [player]:[amount]: Awards a player with the specified amount of money.",
+            "/safarigift [player/player names]:[item]:[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
+            "/bestow [player]:[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]:[pokemon]:Remove to confiscate a Pokémon from a player.",
+            "/forgerecord [player]:[record]:[amount]: Alters a specific record of a player.",
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
             "/checksaves [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
-            "/showids [amount]։[lookup]: Shows all players by their idnum. Use /reloadids to recreate the list if necessary.",
+            "/showids [amount]:[lookup]: Shows all players by their idnum. Use /reloadids to recreate the list if necessary.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
             "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari). Use /stopongoing to cancel all ongoing Battles and Auctions.",
-            "/clearcd [player]։[type]: To clear a player's cooldown on a quest/ball throw/auction.",
+            "/clearcd [player]:[type]: To clear a player's cooldown on a quest/ball throw/auction.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
-            "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
+            "/npc[add/remove] [item/pokemon]:[price]:[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
             "/addraffle [pokemon]: Changes the current raffle prize to the specified Pokémon.",
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
-            "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
+            "/dqraffle [player]:[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
             "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             "/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
