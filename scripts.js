@@ -1346,9 +1346,9 @@ afterLogIn : function(src) {
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Sky has been online for: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<tr style='color: " + sys.getColor(src) + "'></tr><font size=3 font color=#00007f><hr></hr><br><font color=blue><b><img src='item:274' title='Money'> Welcome to Sky Online! Make sure your account is registered. /rules -- /commands <img src='item:274' title='Money'></a><br><font color=red><b>We offer custom symbols on this server, speak to <i>(~)_(&) for more information<u></u></i> for one.<br><font color=blue><hr></hr></font>", channel);
+    sys.sendHtmlMessage(src, "<tr style='color: " + sys.getColor(src) + "'></tr><font size=3 font color=#00007f><hr></hr><br><font color=blue><b><img src='themes:uAvailable' title='client'> Welcome to Sky Online! Make sure your account is registered. /rules -- /commands <img src='themes:uAvailable' title='client'></a><br><font color=red><b>We offer custom symbols on this server, speak to <i>(~)_(&) for more information<u></u></i> for one.<br><font color=blue><hr></hr></font>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='item:274' title='Money'>", 0);
     } else if (sys.auth(src) == 2) {
