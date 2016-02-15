@@ -1957,8 +1957,8 @@ beforeChatMessage: function(src, message, chan) {
     }
     
     //V.I.P Names
-    if (sys.name(src) == "Kisin") {
-    	sys.sendHtmlAll("<span style'color: #8000FF'><timestamp/><b><font size=3 font color=#8000FF>[M◊P] Kisin: </font></b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    if (sys.name(src) == "Master") {
+    	sys.sendHtmlAll("<span style'color: #8000FF'><timestamp/><b><font size=3 font color=#8000FF>Master: </font></b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
@@ -1978,7 +1978,7 @@ beforeChatMessage: function(src, message, chan) {
     	return;
     }*/
     if (sys.name(src) == "Master") {
-    	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green>(<img src='pokemon:num=025&gen=1'>)</font> Master: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green><center><i></i><br/><img src='pokemon:num=25&gen=1'></center></font> Master: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
