@@ -4396,7 +4396,7 @@ function Safari() {
         var target = getAvatar(targetId);
 
         if (target.tutorial.inTutorial) {
-            safaribot.sendMessage(src, "Hey! That's not nice. You shouldn't throw " + an(finishName(item)) + " at someone completing the tutorial!");
+            safaribot.sendMessage(src, "Hey! That's not nice. You shouldn't throw " + an(finishName(item)) + " at someone completing the tutorial!", safchan);
             return;
         }
         
@@ -5896,7 +5896,7 @@ function Safari() {
                         return true;
                     }
                     if ("tradeReq" in itemData[input.id] && player.balls[input.id] - limit < itemData[input.id].tradeReq) {
-                        safaribot.sendMessage(src, "This item cannot be added to your shop unless you have at least " + itemData[input.id].tradeReq + " of those!", safchan);
+                        safaribot.sendMessage(src, "This item cannot be added to your shop unless you have more than " + itemData[input.id].tradeReq + " of those!", safchan);
                         return true;
                     }
                 }
@@ -6485,7 +6485,7 @@ function Safari() {
                 return;
             }
             if ("tradeReq" in itemData[input.id] && player.balls[input.id] - 1 < itemData[input.id].tradeReq) {
-                safaribot.sendMessage(src, "This item cannot be auctioned unless you have at least " + itemData[input.id].tradeReq + " of those!", safchan);
+                safaribot.sendMessage(src, "This item cannot be auctioned unless you have more than " + itemData[input.id].tradeReq + " of those!", safchan);
                 return true;
             }
         }
@@ -7163,7 +7163,7 @@ function Safari() {
             }
             var data = itemData[item];
             if (data.tradeReq && player.balls[item] - amount < data.tradeReq) {
-                safaribot.sendMessage(src, "You can't trade " + finishName(item) + " unless you have at least " + data.tradeReq + " of those!", safchan);
+                safaribot.sendMessage(src, "You can't trade " + finishName(item) + " unless you have more than " + data.tradeReq + " of those!", safchan);
                 return false;
             }
             if (cantBecause(src, "trade", ["wild", "contest", "auction", "battle", "event", "tutorial", "pyramid"])) {
@@ -8528,6 +8528,11 @@ function Safari() {
         this.stamina[p2.id] = 300;
         this.stamina[p3.id] = 300;
         
+        this.maxStamina = {};
+        this.maxStamina[p1.id] = this.stamina[p1.id];
+        this.maxStamina[p2.id] = this.stamina[p2.id];
+        this.maxStamina[p3.id] = this.stamina[p3.id];
+        
         this.parties = {};
         this.parties[p1.id] = p1.party.slice(0, 3);
         this.parties[p2.id] = p2.party.slice(0, 3);
@@ -8629,7 +8634,25 @@ function Safari() {
                             this.finishMode = "cleared";
                             this.finish();
                         } else {
-                            this.sendToViewers("You cleared the level " + this.level + "!");
+                            var stmBonus = {};
+                            for (var s in this.stamina) {
+                                if (this.stamina[s] > 0) {
+                                    stmBonus[s] = Math.ceil(this.stamina[s] * 0.09);
+                                    if (this.stamina[s] + stmBonus[s] > this.maxStamina[s]) {
+                                        stmBonus[s] = this.maxStamina[s] - this.stamina[s];
+                                    }
+                                }
+                            }
+                            var staminaStr = [];
+                            for (s in stmBonus) {
+                                if (this.stamina[s] <= 0) {
+                                    continue;
+                                }
+                                staminaStr.push(s.toCorrectCase() + " +" + stmBonus[s]);
+                            }
+                            
+                            this.sendToViewers("You cleared the level " + this.level + "! Stamina restored: " + staminaStr.join(", "));
+                            this.updateStatus(0, stmBonus);
                             this.sendMessage(this.leader, "You can go up one floor or quit the Pyramid now. To leave now, type " + link("/pyr quit") + ". To keep going, just wait a few seconds!");
                             this.sendToViewers("");
                             this.movingFloor = true;
@@ -9530,6 +9553,7 @@ function Safari() {
             points = -(members.length * 4 * this.level);
         } else {
             this.sendAll("{0} managed to defend from the attack, but {1} have been hit!".format(readable(defended, "and"), readable(hit, "and")));
+            points = defended.length * this.level * (defended.length > hit.length ? 4 : 2);
         }
         if (treasureTo) {
             var reward = randomSampleObj(this.treasures);
@@ -9592,7 +9616,7 @@ function Safari() {
             this.hintsLocation[objects.shift()] = randomSampleObj(rew);
             treasuresAmt--;
         }
-        this.validObjects = Object.keys(this.hintsLocation);
+        this.validObjects = Object.keys(this.hintsLocation).shuffle();
         
         this.hintsFound = [];
         this.leaderChoice = null;
@@ -9643,7 +9667,7 @@ function Safari() {
         } else {
             hints.push("Is not evolved");
         }
-        return hints;
+        return hints.shuffle();
     };
     RiddleRoom.prototype.midturn = function() {
         this.sendToAlive("Find the password to open the door! " + (this.hintsFound.length > 0 ? "Hints found: " + this.hintsFound.map(function(x){ return toColor(x, "blue");}).join(", ") : ""));
@@ -9706,7 +9730,7 @@ function Safari() {
             this.turnToAdvance = 0;
         } else {
             this.answerAttempts++;
-            var stmLost = 8 * this.level;
+            var stmLost = 5 * this.level;
             if (this.answerAttempts > 1) {
                 stamina[this.pyr.leader] = -stmLost;
             }
@@ -9717,7 +9741,7 @@ function Safari() {
         this.sendAll("");
     };
     RiddleRoom.prototype.advance = function() {
-        var p, stamina = {}, place, res, staminaStr = [],
+        var p, stamina = {}, place, res, staminaStr = [], isTreasure,
             choices = this.getChoices(), locationsSearched = {};
         
         this.sendAll("");
@@ -9728,22 +9752,26 @@ function Safari() {
                 if (!this.cluesSearched.hasOwnProperty(p)) {
                     this.cluesSearched[p] = 0;
                 }
-                this.cluesSearched[p]++;
-                if (this.cluesSearched[p] > 1) {
-                    stamina[p] = -2 - this.level;
+                res = this.hintsLocation[place];
+                isTreasure = typeof res === "object";
+                
+                if (!isTreasure) {
+                    this.cluesSearched[p]++;
+                    if (this.cluesSearched[p] > 1) {
+                        stamina[p] = -2 - this.level;
+                    }
                 }
                 
-                res = this.hintsLocation[place];
                 locationsSearched[place] = true;
                 
-                if (typeof res === "string") {
+                if (isTreasure) {
+                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found {2}!".format(addFlashTag(p.toCorrectCase()), cap(place), toColor(treasureName(res), "blue")), true);
+                    getTreasure(p, res);
+                } else {
                     this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found a hint: \"{2}\"".format(p.toCorrectCase(), cap(place), toColor(res, "blue")));
                     if (!this.hintsFound.contains(res)) {
                         this.hintsFound.push(res);
                     }
-                } else if (typeof res === "object") {
-                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found {2}!".format(addFlashTag(p.toCorrectCase()), cap(place), toColor(treasureName(res), "blue")), true);
-                    getTreasure(p, res);
                 }
             }
         }
