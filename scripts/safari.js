@@ -12,8 +12,8 @@ function Safari() {
     var safariUpdating = false;
     var safchan;
     var defaultChannel = "Main Channel";
-    var safaribot = new Bot("Safaribot");
-    var tutorbot = new Bot("Tutorbot");
+    var safaribot = new Bot("Bot");
+    var tutorbot = new Bot("Bot");
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
