@@ -766,7 +766,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "This user has to be online to be warned!", channel);
             return;
         }
-        normalbot.sendAll("" + sys.name(src) + " has give " + sys.name(tar) + " a warning Read: /rules next time i will lock you from talking!", channel);
+        normalbot.sendAll("" + sys.name(src) + " has given " + sys.name(tar) + " a warning, Please read /rules or next time you will be locked from talking!", channel);
         return;
     }
     
