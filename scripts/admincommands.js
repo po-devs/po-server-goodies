@@ -3,7 +3,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
-    /*if (command == "togglerainbow") {
+    if (command == "togglerainbow") {
         if (commandData === "off") {
             SESSION.global().allowRainbow = false;
             normalbot.sendMessage(src, "You turned rainbow off!", channel);
@@ -12,7 +12,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         SESSION.global().allowRainbow = true;
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
-    }*/
+    }
     if (command === "toggleweblinks") {
         if (commandData === "off") {
             SESSION.global().blockWebLinks = true;
