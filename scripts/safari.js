@@ -3834,22 +3834,22 @@ function Safari() {
         if (commandData === "*" || commandData.toLowerCase() !== "earnings") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "*** Player Records ***", safchan);
-            sys.sendMessage(src, "±Pokémon: " + rec.pokesCaught + " Pokémon caught in " + rec.pokesNotCaught + " attempts (" + percentage(rec.pokesCaught, rec.pokesNotCaught) + "). Performed " + plural(rec.pokesEvolved, "Evolution") + ", " + plural(rec.megaEvolutions, "Mega Evolution") + ", and " + plural(rec.pokesCloned, "Cloning") + ". Stole " + rec.pokesStolen + " Pokémon from NPCs.", safchan); //Devolution defaults to its full item name with plural() so it is left off intentionally.
-            sys.sendMessage(src, "±Bait: Used " + plural(rec.baitUsed, "bait") + " with " + plural(rec.baitAttracted, "success") + " (" + percentage(rec.baitAttracted, rec.baitUsed) + ") and " + plural(rec.baitNothing, "failure") + " (" + percentage(rec.baitNothing, rec.baitUsed) + "). Snagged " + rec.notBaitedCaught + " Pokémon away from other Players.", safchan);
+            sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(rec.pokesCaught, rec.pokesNotCaught, percentage(rec.pokesCaught, rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
+            sys.sendMessage(src, "±Bait: Used {0} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed), rec.notBaitedCaught), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver;
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned $" + addComma(earnings) + " and " + plural(silverEarnings, "silver") + " [" + (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source")) + "].", safchan);
-            sys.sendMessage(src, "±Gachapon: Used " + plural(rec.gachasUsed, "gacha") + " (" + plural(rec.masterballsWon, "master") + ", " + plural(rec.jackpotsWon, "Jackpot") + ").", safchan);
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
+            sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow;
-            sys.sendMessage(src, "±" + finishName("rock") + ": Threw " + plural(rec.rocksThrown, "rock") + " (" + percentage(onOthers, rec.rocksThrown) + " accuracy, " + plural(rec.rocksHit, "hit") + "). Embarassed " + plural(rec.rocksBounced, "time") + ".", safchan);
+            sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(rec.rocksHit, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow;
-            sys.sendMessage(src, "±" + finishName("rock") + ": Hit by " + plural(onMe, "rock") + " (" + percentage(rec.rocksDodged, rec.rocksDodged + onMe) + " evasion, " + plural(rec.rocksDodged, "dodge") + "). Caught " + plural(rec.rocksCaught, "throw") + ".", safchan);
-            sys.sendMessage(src, "±Game: " + rec.consecutiveLogins + " Consecutive Logins" + (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : "") + ". Won " + rec.contestsWon + " Contests.", safchan);
-            sys.sendMessage(src, "±Game: Opened " + plural(rec.packsOpened, "pack") + " and used " + plural(rec.gemsUsed, "gem") + ". Hatched " + plural(rec.eggsHatched, "egg") + " and " +  plural(rec.eggsHatched, "bright") + " with " + rec.rareHatched + " being a Rare Pokémon!", safchan);
+            sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw")), safchan);
+            sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests.".format(rec.consecutiveLogins, (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""),rec.contestsWon), safchan);
+            sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon!".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), rec.rareHatched), safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
-            sys.sendMessage(src, "±Quests: Turned in " + given + " Pokémon (Collector: " + rec.collectorGiven + ", Scientist: " + rec.scientistGiven + "). Arena Record: " + rec.arenaWon + "-" + rec.arenaLost + " (" + percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost) + ", " + plural(rec.arenaPoints, "point") + "). Performed " + plural(rec.wonderTrades, "Wonder Trade") + ".", safchan);
-            sys.sendMessage(src, "±Quests: Lead a " + rec.pyramidLeaderScore + " point Pyramid Run. Participated in a " + rec.pyramidHelperScore + " point Pyramid Run. Cleared the Pyramid " + plural(rec.pyramidLeaderClears, "times") + " as Leader and " + plural(rec.pyramidHelperClears, "times") + " as Helper. Reached the " + getOrdinal(rec.towerHighest) + " Floor of Battle Tower.", safchan);
-            sys.sendMessage(src, "±Events: Won " + plural(rec.factionWins, "Faction War") + " with " + plural(rec.factionMVPs, "MVP") + ". Won " + plural(rec.pokeRaceWins, "Pokémon Race") + " (" + rec.favoriteRaceWins + " as Favorite, " + rec.underdogRaceWins + " as Underdog).", safchan);
+            sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade")), safchan);
+            sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
+            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog).".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins), safchan);
             sys.sendMessage(src, "", safchan);
         } else {
             sys.sendMessage(src, "", safchan);
@@ -8725,8 +8725,9 @@ function Safari() {
         } else {
             this.sendToViewers("");
         }
+        stmBonus = Math.round(stmBonus * (this.level/7));
         if (stmBonus > 0) {
-            this.points += Math.round(stmBonus * (this.level/7));
+            this.points += stmBonus;
             this.sendToViewers("You received a bonus " + plural(stmBonus, "Point") + " from your remaining stamina!");
         }
         if (this.finishMode === "cleared") {
@@ -8791,7 +8792,9 @@ function Safari() {
                     save = true;
                 }
             } else {
-                player.quests.pyramid.cooldown = now() + 15*60*1000;
+                if (player.quests.pyramid.cooldown < now()) {
+                    player.quests.pyramid.cooldown = now() + 15*60*1000;
+                }
                 if (this.points > player.records.pyramidHelperScore) {
                     player.records.pyramidHelperScore = this.points;
                     save = true;
@@ -9166,7 +9169,7 @@ function Safari() {
                     defeated = true;
                     if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                         var reward = randomSampleObj(this.treasures);
-                        this.sendAll("<b>{0}</b> picked something droped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
+                        this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
                         getTreasure(p, reward);
                     }
                     break;
