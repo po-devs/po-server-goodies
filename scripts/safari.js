@@ -1313,12 +1313,13 @@ function Safari() {
         return Object.keys(result);
     }
     function compare(a,b) {
-        if (a.sort < b.sort)
+        if (a.sort < b.sort) {
             return -1;
-        else if (a.sort > b.sort)
+        } else if (a.sort > b.sort) {
             return 1;
-        else
+        } else {
             return 0;
+        }
     }
 
     /* Formatting Functions */
@@ -1374,8 +1375,9 @@ function Safari() {
         return string + "s";
     }
     function readable(arr, last_delim) {
-        if (!Array.isArray(arr))
+        if (!Array.isArray(arr)) {
             return arr;
+        }
         if (arr.length > 1) {
             return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
         } else if (arr.length == 1) {
@@ -1943,10 +1945,13 @@ function Safari() {
         var disguise, appearance;
         if (appearAs) {
             disguise = true;
-            appearance = appearAs;
+            appearance = appearAs.num;
+            //At this point changing shiny is purely aesthetic and won't affect the caught pokemon
+            shiny = appearAs.shiny;
         } else {
             disguise = [132, 151, 570, 571].contains(num);
             appearance = sys.rand(1,722);
+            shiny = sys.rand(0, shinyChance) < 10
         }
         currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
@@ -2622,7 +2627,7 @@ function Safari() {
             if (amt < 1) {
                 sys.sendAll("", safchan);
             }
-            var revealName = currentDisplay != currentPokemon ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
+            var revealName = poke(currentDisplay) != poke(currentPokemon) ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
             if (ball == "spy") {
                 safaribot.sendAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
@@ -3738,8 +3743,8 @@ function Safari() {
         }
         else if (crit === "abc") {
             player.pokemon.sort(function(a, b){
-                    if(sys.pokemon(a) < sys.pokemon(b)) return -1;
-                    if(sys.pokemon(a) > sys.pokemon(b)) return 1;
+                    if(sys.pokemon(a) < sys.pokemon(b)) { return -1;}
+                    if(sys.pokemon(a) > sys.pokemon(b)) { return 1;}
                     return 0;
                 }
             );
@@ -4051,8 +4056,8 @@ function Safari() {
         if (product === "*") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You can buy the following Items:", safchan);
-            if (player.tutorial.step >= 1) safaribot.sendHtmlMessage(src, link("/buy bait", "Bait") + ": $100", safchan);
-            if (player.tutorial.step >= 5) safaribot.sendHtmlMessage(src, link("/buy gacha", "Gachapon Ticket") + ": $200", safchan);
+            if (player.tutorial.step >= 1) { safaribot.sendHtmlMessage(src, link("/buy bait", "Bait") + ": $100", safchan);}
+            if (player.tutorial.step >= 5) { safaribot.sendHtmlMessage(src, link("/buy gacha", "Gachapon Ticket") + ": $200", safchan);}
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -13256,7 +13261,7 @@ function Safari() {
                 
                 var appearAs = null;
                 if (data.length > 2) {
-                    appearAs = getInputPokemon(data[2]).num;
+                    appearAs = getInputPokemon(data[2]);
                 }
                 
                 if (command === "wildevent") {
