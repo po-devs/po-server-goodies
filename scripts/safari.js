@@ -1948,7 +1948,7 @@ function Safari() {
         currentPokemonCount = amount;
         currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
 
-        var disguise, appearance;
+        var disguise, appearance, multiplier = 1;
         if (appearAs) {
             disguise = true;
             appearance = appearAs.num;
@@ -1958,14 +1958,17 @@ function Safari() {
             disguise = [132, 151, 570, 571].contains(num);
             if (disguise) {
                 appearance = sys.rand(1,722);
-                shiny = sys.rand(0, shinyChance) < 10;
+                shiny = sys.rand(0, shinyChance) < 4;
+                if (shiny) {
+                    multiplier = 5;
+                }
             }
         }
         currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
         var currentId = poke(currentPokemonDisplay);
 
-        var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() : 0);
+        var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
         if (amount > 1) {
             var ret = [];
