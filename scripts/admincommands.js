@@ -1465,13 +1465,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         sys.sendHtmlAll("", channel);
         sys.sendHtmlAll("", channel);
         sys.sendHtmlAll("", channel);
-        normalbot.sendAll(+ sys.name(src) + " cleared the chat!", channel);
+        normalbot.sendAll("" + sys.name(src) + " cleared the chat!", channel);
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
     if (isSuperAdmin(src)) {
        if (["changeauth"].indexOf(command) != -1) {
-           normalbot.sendMessage(src, "Can't aboos some commands", channel);
+           normalbot.sendMessage(src, "Can't abuse this command.", channel);
            return;
        }
        return require("ownercommands.js").handleCommand(src, command, commandData, tar, channel);
