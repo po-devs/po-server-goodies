@@ -2,6 +2,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 	if (command === "changeservername") {
 		if (commandData == undefined) {
 			normalbot.sendMessage(src, "Cannot have an empty server name!", channel);
+			return;
 		}
 		sys.changeServerName(commandData);
 		return;
@@ -21,12 +22,6 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 		normalbot.sendMessage(src, "The server is now currently public.", channel);
 		return;
 	}
-	/*if (command === "setannouncement") {
-		sys.changeAnnouncement(commandData);
-		sys.setAnnouncement(commandData);
-		normalbot.sendMessage(src, "Announcement changed.", channel);
-		return;
-	}*/
 	if (command === "setdescription") {
 		sys.changeDescription(commandData);
 		normalbot.sendMessage(src, "Description changed.", channel);
@@ -54,6 +49,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 		normalbot.sendMessage(src, "IP removed from trusted IPs array.", channel);
 		return;
 	}
+	//just in case its ever needed...
+	if (command === "shutdown") {
+		sys.setTimer(sys.shutDown(), 60000);
+		normalbot.sendAll("The server is shutting down in one minute, Finish your battles quickly!");
+		return;
+	}
 	
 	return "no command";
 };
@@ -63,7 +64,6 @@ exports.help =
 	    "/cleardos: Clears DOS data from the server",
 	    "/private: Makes the server private",
 	    "/public: Makes the server public",
-	    //"/setannouncement: Sets the announcement",
 	    "/setdescription: Sets the server description",
 	    "/seeannouncement: Shows you the announcement",
 	    "/checkports: Checks the ports used by the server",
