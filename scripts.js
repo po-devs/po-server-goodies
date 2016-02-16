@@ -1,8 +1,7 @@
-//THIS IS THE OFFICAL SKY SCRIPTS, NOT "Pokemon Online" SCRIPTS
-//& yes these scripts only work on 2.0.00 or newer.
+// This is the official Pokemon Online Scripts
+// These scripts will only work on 2.0.00 or newer.
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,:true,proto:true,withstmt:true*/
-// You may change these variables as long as you keep the same type 
-//You never stated the fucking type ^
+// You may change these variables as long as you keep the same type
 var Config = {
     base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
@@ -22,7 +21,6 @@ var Config = {
     bfbot: "BF-bot",
     safaribot: "Safaribot",
     // suspectvoting.js available, but not in use
-    //why keep useless shit?
     Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js"],
     Mafia: {
         bot: "Charizard",
@@ -40,7 +38,6 @@ var Config = {
 };
 
 // Don't touch anything here if you don't know what you do.
-// Why would a non coder touch this file anyways? ^
 /*global print, script, sys, SESSION*/
 
 var require_cache = typeof require != 'undefined' ? require.cache : {};
@@ -109,7 +106,7 @@ var abilityDir = "db/abilities/";
 var itemDir = "db/items/";
 sys.makeDir("scripts");
 /* we need to make sure the scripts exist */
-// Are you stupid, or what? ^
+//Separator
 var commandfiles = ['commands.js', 'channelcommands.js','ownercommands.js', 'modcommands.js', 'usercommands.js', 'admincommands.js', 'systemcommands.js'];
 var deps = ['crc32.js', 'utilities.js', 'bot.js', 'memoryhash.js', 'tierchecks.js', "globalfunctions.js", "userfunctions.js", "channelfunctions.js", "channelmanager.js", "pokedex.js"].concat(commandfiles).concat(Config.Plugins);
 var missing = 0;
@@ -172,7 +169,6 @@ Object.defineProperty(Array.prototype, "shuffle", {
     }
 });
 /* stolen from here: http://stackoverflow.com/questions/610406/javascript-equivalent-to-printf-string-format */
-// Thanks for the copywrite claim, PO devs. ^
 String.prototype.format = function() {
     var formatted = this;
     for (var i = 0; i < arguments.length; i++) {
@@ -356,8 +352,6 @@ safaribot = new Bot(Config.safaribot);
  * All the events are defined here
  */
 
-//NO SHIT SHERLOCK HOLMES ^
-
 var lastStatUpdate = new Date();
 poScript=({
 /* Executed every second */
@@ -527,7 +521,6 @@ init : function() {
         return a + "*" + sys.ip(b);
     };
 
-    // PO devs couldn't come up with a name, so they named it "thing", just like the other shit they use such as "thingy"
     script.saveKey = function(thing, id, val) {
         sys.saveVal(key(thing,id), val);
     };
@@ -1095,7 +1088,7 @@ afterChannelJoin : function(player, chan) {
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
-        sys.sendMessage(player, "±" + Config.channelbot + ": (All Languages)", chan);
+        sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
@@ -1347,25 +1340,25 @@ afterLogIn : function(src) {
         return;
     }
     sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
-    sys.sendMessage(src, "±Official Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
+    sys.sendMessage(src, "±Top Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Sky has been online for: " + this.startUpTime() + ".  " : "") + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=4 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50><hr><i></i><br/><img src='pokemon:num=383&gen=5'></center><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=6 font color=#00007f><hr><center>Welcome to SKy Online! Make sure your account is registered.<i></i><br/><img src='pokemon:num=384&gen=4'></center><hr><hr></hr><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 3) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
-    } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
+    } else if (sys.auth(src) == 4) {
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=381&gen=6' height=50>", 0);
+        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel!", 0);
     }
     sys.sendMessage(src, "");
 
@@ -1957,32 +1950,14 @@ beforeChatMessage: function(src, message, chan) {
     }
     
     //V.I.P Names
-    if (sys.name(src) == "Master") {
-    	sys.sendHtmlAll("<span style'color: #8000FF'><timestamp/><b><font size=3 font color=#8000FF>Master: </font></b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    if (sys.name(src) == "Kisin") {
+    	sys.sendHtmlAll("<span style'color: #8000FF'><timestamp/><b><font size=3 font color=#8000FF>[M◊P] Kisin: </font></b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
     	sys.stopEvent();
     	this.afterChatMessage(src, message, channel);
     	return;
     }
-    if (sys.name(src) == "Adam") {
-	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=491&gen=6' height=45></font> Adam: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-        sys.stopEvent();
-	this.afterChatMessage(src, message, channel);
-	return;
-    }
     if (sys.name(src) == "Armu") {
 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red>(Scripter)</font> ๖ۣۜSecrets: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-        sys.stopEvent();
-	this.afterChatMessage(src, message, channel);
-	return;
-    }
-    if (sys.name(src) == "Mirei Mikagura") {
-	sys.sendHtmlAll("<span style='color: #AA00FF'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=302-1&gen=6' height=45></font> Mirei Mikagura: </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-        sys.stopEvent();
-	this.afterChatMessage(src, message, channel);
-	return;
-    }
-    if (sys.name(src) == "Rindou") {
-	sys.sendHtmlAll("<span style='color: #ec9d00 '><timestamp/><b><font size=3 font color=red><img src='pokemon:num=249&gen=6' height=45></font> Rindou: </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
@@ -1995,6 +1970,25 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }*/
+    if (sys.name(src) == "[TR]Aranian25") {
+    	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green>(Expert)</font> [TR]Aranian25: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
+    if (sys.name(src) == "Armu") {
+    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
+	if (sys.name(src) == "Master") {
+    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+    	sys.stopEvent();
+    	this.afterChatMessage(src, message, channel);
+    	return;
+    }
+	
 	//Auth Titles
     if (sys.auth(src) == 1) {
 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
@@ -2009,11 +2003,11 @@ beforeChatMessage: function(src, message, chan) {
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
-	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=025&gen=6' height=45><span> + sys.name(src) + ": </span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else { //User
- 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=025&gen=6' height=45></font> + sys.name(src) + ": </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel)
+ 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
