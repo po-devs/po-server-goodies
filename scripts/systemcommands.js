@@ -51,9 +51,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 	}
 	//just in case its ever needed...
 	if (command === "shutdown") {
-		sys.setTimer(sys.shutDown(), 60000);
-		normalbot.sendAll("The server is shutting down in one minute, Finish your battles quickly!");
-		return;
+	    sys.setTimer(sys.shutDown(), 60000);
+	    normalbot.sendAll("The server is shutting down in one minute, Finish your battles quickly!");
+	    return;
 	}
 	
 	return "no command";
