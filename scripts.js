@@ -1355,7 +1355,7 @@ afterLogIn : function(src) {
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=6 font color=#00007f><hr><center><img src='item:274' title='Money'> Welcome to Sky Online! Make sure your account is registered. <img src='item:274' title='Money'><hr><i></i><br/><img src='pokemon:num=384&gen=6'></center><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=5 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50> <img src='item:274' title='Money'><hr><i></i><br/><img src='pokemon:num=384&gen=6'></center><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
