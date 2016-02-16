@@ -1365,7 +1365,7 @@ afterLogIn : function(src) {
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=381&gen=1' height=38>", 0);
+        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=381&gen=1' height=30>", 0);
     }
     sys.sendMessage(src, "");
 
