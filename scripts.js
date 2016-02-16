@@ -1353,9 +1353,9 @@ afterLogIn : function(src) {
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "<img src='pokemon:num=312&gen=6' height=38> Sky Uptime: <img src='pokemon:num=312&gen=6' height=38>: " + this.startUpTime() + ".  " : "") + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=4 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50><hr><i></i><br/><img src='pokemon:num=384&gen=4'></center><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=4 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50><hr><i></i><br/><img src='pokemon:num=383&gen=5'></center><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
@@ -1365,7 +1365,7 @@ afterLogIn : function(src) {
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=381&gen=1' height=45><i></i><br</center>", 0);
+        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500></font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=381&gen=1' height=40i><i></i><br</center>", 0);
     }
     sys.sendMessage(src, "");
 
