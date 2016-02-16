@@ -1095,7 +1095,7 @@ afterChannelJoin : function(player, chan) {
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
-        sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
+        sys.sendMessage(player, "±" + Config.channelbot + ": (All Languages)", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
@@ -1347,7 +1347,7 @@ afterLogIn : function(src) {
         return;
     }
     sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
-    sys.sendMessage(src, "±Top Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
+    sys.sendMessage(src, "±Official Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
@@ -1355,7 +1355,7 @@ afterLogIn : function(src) {
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Users Online Was: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=5 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50> <img src='item:274' title='Money'><hr><i></i><br/><img src='pokemon:num=384&gen=6'></center><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<dev tr style='color: " + sys.getColor(src) + "'></tr><font size=4 font color=#00007f><hr><center><img src='pokemon:num=006&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=009&gen=6' height=50><hr><i></i><br/><img src='pokemon:num=384&gen=4'></center><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel!", 0);
     } else if (sys.auth(src) == 2) {
