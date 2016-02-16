@@ -668,8 +668,13 @@ function Hangman() {
                     hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
                 }
             }
-            else if (name in lb && top.indexOf(name) == -1) {
-                hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
+            else if (name in lb) {
+                if (top.indexOf(name) == -1) {
+                    hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
+                }
+                else {
+                    
+                }
             } 
             else {
                 hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
