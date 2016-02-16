@@ -1826,8 +1826,8 @@ function Safari() {
                 //player.records.itemsDiscarded += (amount - check);
             }
             if (master) {
+                check = amount + player.balls[reward] - cap;
                 reward = "fragment";
-                check = cap - player.balls[reward];
             }
 
             amount = check;
