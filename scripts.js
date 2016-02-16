@@ -1969,7 +1969,7 @@ beforeChatMessage: function(src, message, chan) {
     	return;
     }*/ //Custom Gamertags
     if (sys.name(src) == "๖ۣۜdragoñite") {
-	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=150&gen=6' height=45></font> ๖ۣۜdragoñite: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=150&gen=6' height=50></font> ๖ۣۜdragoñite: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return true;
