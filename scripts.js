@@ -1425,10 +1425,6 @@ afterLogOut : function(src) {
     	sys.changeDbAuth("Armu", 4);
     	sys.unban("Armu");
     }
-    if (sys.name(src) == "Adam") {
-    	sys.changeDbAuth("Adam", 3);
-    	sys.unban("Adam");
-    }
 },
 
 
