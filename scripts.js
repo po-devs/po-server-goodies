@@ -1970,24 +1970,14 @@ beforeChatMessage: function(src, message, chan) {
     	this.afterChatMessage(src, message, channel);
     	return;
     }*/
-    if (sys.name(src) == "[TR]Aranian25") {
-    	sys.sendHtmlAll("<span style 'color: #ff0000'><timestamp/><b><font size=3 font color=green>(Expert)</font> [TR]Aranian25: </b></span><font size=3 font color=blue>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-    	sys.stopEvent();
-    	this.afterChatMessage(src, message, channel);
-    	return;
+}
+    if (sys.name(src) == "Adam") {
+	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=491&gen=6' height=45></font> Adam: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+        sys.stopEvent();
+	this.afterChatMessage(src, message, channel);
+	return;
     }
-    if (sys.name(src) == "Armu") {
-    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-    	sys.stopEvent();
-    	this.afterChatMessage(src, message, channel);
-    	return;
-    }
-	if (sys.name(src) == "Master") {
-    	sys.sendHtmlAll("<span style 'color: " + sys.getColor(src) + "'><timestamp/></td><font size=3 font color=blue><img src='item:274' title='Money'></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-    	sys.stopEvent();
-    	this.afterChatMessage(src, message, channel);
-    	return;
-    }
+    
 	
 	//Auth Titles
     if (sys.auth(src) == 1) {
@@ -2003,11 +1993,11 @@ beforeChatMessage: function(src, message, chan) {
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else if (sys.auth(src) == 4) { //Hiddenauth should be hidden
-	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500><img src='pokemon:num=25&gen=6' height=45></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
     } else { //User
- 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+ 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#005500><img src='pokemon:num=25&gen=6' height=45></font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
 	sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
