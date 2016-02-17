@@ -1506,7 +1506,7 @@ silence: function(src, minutes, chanName) {
                 if (!SESSION.channels(cid).muteall)
                     return;
                 SESSION.channels(cid).muteall = false;
-                normalbot.sendAll("Silence is over in "+chanName+".",cid);
+                normalbot.sendAll(" This channel is public again and has been unmuted by a staff member "+chanName+".",cid);
             }, delay);
         }
     } else {
@@ -1521,7 +1521,7 @@ silenceoff: function(src, chanName) {
             channelbot.sendMessage(src, "The channel is not muted.", channel);
             return;
         }
-        channelbot.sendAll("" + sys.name(src) + " cancelled the Minutes of Silence in "+chanName+"!", cid);
+        channelbot.sendAll("" + sys.name(src) + "That was not suppose to happen sorry for any delay in "+chanName+"!", cid);
         SESSION.channels(cid).muteall = false;
     } else {
         normalbot.sendChanMessage("Use /silenceoff Channel Name");
@@ -1570,17 +1570,17 @@ beforeNewPM: function(src){
         user.pmcount += 1;
     }
     if (user.lastpm < parseInt(sys.time() - 300, 10)) {
-        user.pmcount = 0;
-        user.pmwarned = false;
+        user.pmcount = 2;
+        user.pmwarned = true;
     }
-    var pmlimit = 20;
+    var pmlimit = 15;
     if (user.pmcount > pmlimit){
         sys.stopEvent();
         if (!user.pmwarned) {
-            normalbot.sendAll('User ' + sys.name(src) + ' is potentially spamming through PM', sys.channelId('Indigo Plateau'));
+           sys.sendHtmlAll ('User ' + sys.name(src) + ' is flooding through PM', sys.channelId('Indigo Plateau'));
             user.pmwarned = true;
-        }
-        return;
+        }sys.sendHtmlAll
+        return true;
     }
     user.lastpm = parseInt(sys.time(), 10);
 },
@@ -1608,7 +1608,7 @@ beforeChatMessage: function(src, message, chan) {
         throttleMsg = true;
     }
     if (throttleMsg) {
-        normalbot.sendMessage(src, "Hi! Your message is too long, please make it shorter :3", channel);
+        normalbot.sendMessage(src, "Gah: What's the rush slow down already, your get your chance to talk", channel);
         sys.stopEvent();
         return;
     }
@@ -2146,14 +2146,12 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
         tier = sys.tier(src, team1);
     }
     var time = parseInt(sys.time(), 10);
-    var name1 = sys.name(src).toLowerCase();
-    var name2 = sys.name(dest).toLowerCase();
     var battle_data = {players: [sys.name(src), sys.name(dest)], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
     //Testing
-    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle with " + name2 + "!</a>");
+    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle!</a>");
 },
 
 
