@@ -1031,7 +1031,7 @@ beforeChannelJoin : function(src, channel) {
         return;
     }
     if (channel == echochan) {
-    	sys.sendMessage(src, "±Guard: Access Denied ");
+    	sys.sendMessage(src, "±Guard: Access Denied");
     	sys.stopEvent();
     	return;
     }
@@ -1348,7 +1348,7 @@ afterLogIn : function(src) {
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcomme to PokéLand! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcomme to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 2) {
@@ -1955,19 +1955,11 @@ beforeChatMessage: function(src, message, chan) {
     	return;
     }
     if (sys.name(src) == "Armu") {
-	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red>(Scripter)</font> ๖ۣۜSecrets: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
+	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red>(Member)</font> ๖ۣۜSecrets: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
 	this.afterChatMessage(src, message, channel);
 	return;
     }
-    //Not in use
-    /*
-    if (sys.name(src) == "Cold Wind") {
-    	sys.sendHtmlAll("<span style 'color: #0000ff'><timestamp/><b><font size=3 font color=#00007f>(~)</font> Cold Wind: </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
-    	sys.stopEvent();
-    	this.afterChatMessage(src, message, channel);
-    	return;
-    }*/ //Custom Gamertags
     if (sys.name(src) == "๖ۣۜdragoñite") {
 	sys.sendHtmlAll("<span style='color: #3500b8'><timestamp/><b><font size=3 font color=red><img src='pokemon:num=150&gen=6' height=50></font> ๖ۣۜdragoñite: </b></span><font size=3 font color=purple>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
@@ -1975,8 +1967,7 @@ beforeChatMessage: function(src, message, chan) {
 	return true;
     }
     
-	
-	//Auth Titles
+    //Auth Titles
     if (sys.auth(src) == 1) {
 	sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + ": </b></span><font size=3 font color=black>" + message.replace("&", "&amp;").replace("<", "&lt;"), channel);
         sys.stopEvent();
@@ -2008,7 +1999,6 @@ beforeChatMessage: function(src, message, chan) {
 
 afterChatMessage : function(src, message, chan)
 {
-
     var user = SESSION.users(src);
     var poChannel = SESSION.channels(chan);
     channel = chan;
