@@ -2145,6 +2145,7 @@ afterBattleStarted: function(src, tar, dest, clauses, rated, mode, bid, team1, t
     if (sys.tier(src, team1) === sys.tier(dest, team2)) {
         tier = sys.tier(src, team1);
     }
+    var dest = sys.name(tar);
     var time = parseInt(sys.time(), 10);
     var battle_data = {players: [sys.name(src), sys.name(dest)], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
