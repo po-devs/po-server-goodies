@@ -2150,22 +2150,8 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
-    // Ranked stats
-    /*
-    // Writes ranked stats to ranked_stats.csv
-    // Uncomment to enable
-    if (rated) {
-        var tier = sys.tier(src);
-        var writeRating = function(id) {
-            var rating = sys.ladderRating(id, tier);
-            var a = ['"'+tier+'"', rating, parseInt(sys.time())];
-            for(var i = 0; i < 6; ++i) a.push(sys.teamPoke(id, i));
-            sys.appendToFile("ranked_stats.csv", a.join(",")+"\n");
-        }
-        writeRating(src);
-        writeRating(dest);
-    }
-    */
+    //Testing
+    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle!</a>");
 },
 
 
