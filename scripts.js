@@ -1356,9 +1356,9 @@ afterLogIn : function(src) {
     } else if (sys.auth(src) == 3) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=392&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 4) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=452&gen=6' height=50>", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
     } else if (!sys.dbRegistered(sys.name(src))) {		
-     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Unregistered)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=464&gen=6' height=50> ", 0);
+     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Unregistered)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=493&gen=6' height=50> ", 0);
     } else {
         sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=350&gen=6' height=50>", 0);
     }
