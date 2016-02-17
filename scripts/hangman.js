@@ -672,9 +672,6 @@ function Hangman() {
                 if (top.indexOf(name) == -1) {
                     hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
                 }
-                else {
-                    
-                }
             } 
             else {
                 hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
