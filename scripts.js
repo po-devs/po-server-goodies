@@ -668,7 +668,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
         }
         var maxAuth = (tar ? sys.auth(tar) : sys.maxAuth(tarip));
         if (maxAuth>=sys.auth(src) && maxAuth > 0) {
-            banbot.sendMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".", channel);
+            banbot.sendMessage(src, "You don't have permission to " + nomi + " " + commandData + ".", channel);
             return;
         }
         var active = false;
@@ -684,7 +684,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 active = true;
             }
         }
-        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
+        sendAll((active ? nonFlashing(sys.name(src)) + " modified " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
         
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
@@ -1021,17 +1021,17 @@ beforeChannelJoin : function(src, channel) {
         return;
     }
     if (poChannel.inviteonly > sys.auth(src)) {
-        sys.sendMessage(src, "±Guard: Sorry, but this channel is for higher authority!");
+        sys.sendMessage(src, "±Guard: Access Denied");
         sys.stopEvent();
         return;
     }
     if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
-        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Access Denied");
         sys.stopEvent();
         return;
     }
     if (channel == echochan) {
-    	sys.sendMessage(src, "±Guard: This is a VIP channel, You require VIP to enter!");
+    	sys.sendMessage(src, "±Guard: Access Denied ");
     	sys.stopEvent();
     	return;
     }
@@ -1042,7 +1042,7 @@ beforeChannelJoin : function(src, channel) {
         if (channel == channels[x] && poUser[bans[x]].active) {
             if (poUser.expired(bans[x])) {
                 poUser.un(bans[x]);
-                normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
+                normalbot.sendMessage(src, "Your ban from " + type[x] + " has expired.");
             } else {
                 var info = poUser[bans[x]];
                 sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
@@ -1052,7 +1052,7 @@ beforeChannelJoin : function(src, channel) {
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
-        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Acccess Denied");
         sys.stopEvent();
         return;
     }
@@ -1088,7 +1088,7 @@ afterChannelJoin : function(player, chan) {
             sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
     if (SESSION.channels(chan).isChannelOperator(player)) {
-        sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
+        sys.sendMessage(player, "±" + Config.channelbot + ": If you own a channel type /topic ect to set a topic! ", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
@@ -1302,7 +1302,7 @@ cookieBanned: function(src) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
-        normalbot.sendMessage(src, "You are banned from Sky Online, you can appeal on are website/forum here http://pokemon-online.boards.net/ ");
+        normalbot.sendMessage(src, "You are banned, you can appeal on are website/forum here http://pokemon-online.boards.net/ ");
         sys.kick(src);
         return true;
     } else if (cookie === "muted" || cookie.substr(0, 5) === "muted") {
@@ -1327,7 +1327,7 @@ cookieBanned: function(src) {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
             return;
         } else {
-            normalbot.sendMessage(src, "You are banned from Sky Online, you can appeal on are website/forum here http://pokemon-online.boards.net/");
+            normalbot.sendMessage(src, "You are banned, you can appeal on are website/forum here http://pokemon-online.boards.net/");
             sys.kick(src);
             return true;
         }
@@ -1340,15 +1340,15 @@ afterLogIn : function(src) {
         return;
     }
     sys.sendMessage(src, "~~~  (All languages Allowed) Type in /Rules to see the rules and /commands to see the commands! ~~~");
-    sys.sendMessage(src, "±Top Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
+    sys.sendMessage(src, "±Top Channels: | #Tournaments | #Safari | #Hangman | #Trivia | #Mafia |");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Sky Online Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", channel);
+    sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcomme to PokéLand! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 2) {
