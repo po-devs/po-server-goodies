@@ -2139,7 +2139,7 @@ battleSetup: function(p1,p2,battle) {
     }
 },
 
-afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
+afterBattleStarted: function(src, channel, dest, clauses, rated, mode, bid, team1, team2) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid, team1, team2);
     var tier = false;
     if (sys.tier(src, team1) === sys.tier(dest, team2)) {
