@@ -2139,20 +2139,19 @@ battleSetup: function(p1,p2,battle) {
     }
 },
 
-afterBattleStarted: function(src, tar, dest, clauses, rated, mode, bid, team1, team2) {
+afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid, team1, team2);
     var tier = false;
     if (sys.tier(src, team1) === sys.tier(dest, team2)) {
         tier = sys.tier(src, team1);
     }
-    var dest = sys.name(tar);
     var time = parseInt(sys.time(), 10);
     var battle_data = {players: [sys.name(src), sys.name(dest)], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
     //Testing
-    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle with " + sys.name(dest) + "!</a>", channel);
+    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle!</a>", channel);
 },
 
 
