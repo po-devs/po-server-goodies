@@ -2146,12 +2146,14 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
         tier = sys.tier(src, team1);
     }
     var time = parseInt(sys.time(), 10);
+    var name1 = sys.name(src).toLowerCase();
+    var name2 = sys.name(dest).toLowerCase();
     var battle_data = {players: [sys.name(src), sys.name(dest)], clauses: clauses, rated: rated, mode: mode, tier: tier, time: time};
     SESSION.global().battleinfo[bid] = battle_data;
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
     //Testing
-    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle!</a>");
+    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle with " + name2 + "!</a>");
 },
 
 
