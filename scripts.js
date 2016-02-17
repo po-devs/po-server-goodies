@@ -1339,28 +1339,28 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
-    sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
+    sys.sendMessage(src, "~~~  (All languages Allowed) Type in /Rules to see the rules and /commands to see the commands! ~~~");
     sys.sendMessage(src, "±Top Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Sky Online Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
     sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=5 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=4'></center><hr><br><font color=blue>", channel);
     if (sys.auth(src) == 1) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=40>", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 2) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=376&gen=6' height=40>", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(&)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=376&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 3) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=392&gen=6' height=40>", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(~)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=392&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 4) {
-    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=452&gen=6' height=40>", 0);
+    	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=452&gen=6' height=50>", 0);
     } else if (!sys.dbRegistered(sys.name(src))) {		
-     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Unregistered)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=464&gen=6' height=40> ", 0);
+     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Unregistered)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=464&gen=6' height=50> ", 0);
     } else {
-        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=350&gen=6' height=40>", 0);
+        sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#005500>(Member)</font> " + sys.name(src) + "</span><font size=3 font color=blue> Joined the channel! <img src='pokemon:num=350&gen=6' height=50>", 0);
     }
     sys.sendMessage(src, "");
 
