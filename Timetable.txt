@@ -1,5 +1,6 @@
 Adam & Armu -- working times and support times.
 
+WORKING:
 Monday: 11AM - 7PM
 Tuesday: 11AM - 7PM
 Wednesday: 11AM - 7PM
@@ -7,3 +8,13 @@ Thursday: 11AM - 7PM
 Friday: 11AM - 7PM
 Saturday: 11AM - 9PM
 Sunday: NOT WORKING
+
+SUPPORT:
+
+Monday: 11AM - 8:30PM
+Tuesday: 11AM - 8:30PM
+Wednesday: 11AM - 7PM (Armu) | 11AM - 9PM (Adam)
+Thurday: 11AM - 9PM (Armu) | 11AM - 7PM (Adam)
+Friday: 11AM - 7PM
+Saturday: 11AM - 9PM
+Sunday: Limited By Request Till 4PM
