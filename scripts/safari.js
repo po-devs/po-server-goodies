@@ -10032,7 +10032,7 @@ function Safari() {
                 foundTreasure[p] = 12 * this.level;
                 out = "{0}'s {1} {3}! <b>{0}</b> received <b>{2}</b>!".format(addFlashTag(p.toCorrectCase()), poke(c), treasureName(reward), toColor("found a treasure", "blue"));
             } else {
-                stamina[p] = -2 * this.level + 1;
+                stamina[p] = -2 * this.level - 1;
             }
             
             this.sendAll("<b>{0}</b> asked for their <b>{1}</b> to explore the room! {2}".format(p.toCorrectCase(), poke(c), out), true);
@@ -10042,7 +10042,7 @@ function Safari() {
         }
         if (lazyPlayers >= players) {
             for (p in choices) {
-                stamina[p] = -3 * this.level;
+                stamina[p] = -3 * this.level - 2;
             }
             this.sendAll("After arguing why no one went to look for the door, the entire team decided to split up in order to find it at the cost of {0} Stamina each.".format(-stamina[p]), true);
         }
@@ -13292,15 +13292,10 @@ function Safari() {
                 var target = cmd[0];
                 var res, playerArray = [];
 
-                if (target.indexOf(", ") !== -1) {
-                    res = target.split(", ");
-                    for (var i = 0; i < res.length; i++) {
-                        playerArray.push(res[i]);
-                    }
-                } else if (target.indexOf(",") !== -1) {
+                if (target.indexOf(",") !== -1) {
                     res = target.split(",");
                     for (var i = 0; i < res.length; i++) {
-                        playerArray.push(res[i]);
+                        playerArray.push(res[i].trim());
                     }
                 } else {
                     playerArray.push(target);
@@ -13493,20 +13488,9 @@ function Safari() {
                 return true;
             }
             if (command === "checksave" || command === "checksaves") {
-                var temp, multi, checks = [];
-                if (commandData.indexOf(", ") !== -1) {
-                    temp = commandData.split(", ");
-                    multi = true;
-                } else if (commandData.indexOf(",") !== -1) {
-                    temp = commandData.split(",");
-                    multi = true;
-                } else {
-                    checks.push(commandData);
-                }
-                if (multi) {
-                    for (var i = 0; i < temp.length; i++) {
-                        checks.push(temp[i]);
-                    }
+                var checks = [], temp = commandData.split(",");
+                for (var i = 0; i < temp.length; i++) {
+                    checks.push(temp[i].trim());
                 }
 
                 var has = [], hasNot = [], player;
