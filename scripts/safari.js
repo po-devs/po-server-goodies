@@ -252,7 +252,7 @@ function Safari() {
         rock: {name: "rock", fullName: "Snowball", type: "usable", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
         bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
-        spray: {name: "spray", fullName: "Devolution Spray", type: "usable", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"]},
+        spray: {name: "spray", fullName: "Devolution Spray", type: "usable", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
         mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
         itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
@@ -645,162 +645,24 @@ function Safari() {
 
     /* Pokemon Variables */
     var effectiveness = {
-        "Normal": {
-            "Rock": 0.5,
-            "Ghost": 0,
-            "Steel": 0.5
-        },
-        "Fighting": {
-            "Normal": 2,
-            "Flying": 0.5,
-            "Poison": 0.5,
-            "Rock": 2,
-            "Bug": 0.5,
-            "Ghost": 0,
-            "Steel": 2,
-            "Psychic": 0.5,
-            "Ice": 2,
-            "Dark": 2,
-            "Fairy": 0.5
-        },
-        "Flying": {
-            "Fighting": 2,
-            "Rock": 0.5,
-            "Bug": 2,
-            "Steel": 0.5,
-            "Grass": 2,
-            "Electric": 0.5
-        },
-        "Poison": {
-            "Poison": 0.5,
-            "Ground": 0.5,
-            "Rock": 0.5,
-            "Ghost": 0.5,
-            "Steel": 0,
-            "Grass": 2,
-            "Fairy": 2
-        },
-        "Ground": {
-            "Flying": 0,
-            "Poison": 2,
-            "Rock": 2,
-            "Bug": 0.5,
-            "Steel": 2,
-            "Fire": 2,
-            "Grass": 0.5,
-            "Electric": 2
-        },
-        "Rock": {
-            "Fighting": 0.5,
-            "Flying": 2,
-            "Ground": 0.5,
-            "Bug": 2,
-            "Steel": 0.5,
-            "Fire": 2,
-            "Ice": 2
-        },
-        "Bug": {
-            "Fighting": 0.5,
-            "Flying": 0.5,
-            "Poison": 0.5,
-            "Ghost": 0.5,
-            "Steel": 0.5,
-            "Fire": 0.5,
-            "Grass": 2,
-            "Psychic": 2,
-            "Dark": 2,
-            "Fairy": 0.5
-        },
-        "Ghost": {
-            "Normal": 0,
-            "Ghost": 2,
-            "Psychic": 2,
-            "Dark": 0.5
-        },
-        "Steel": {
-            "Rock": 2,
-            "Steel": 0.5,
-            "Fire": 0.5,
-            "Water": 0.5,
-            "Electric": 0.5,
-            "Ice": 2,
-            "Fairy": 2
-        },
-        "Fire": {
-            "Rock": 0.5,
-            "Bug": 2,
-            "Steel": 2,
-            "Fire": 0.5,
-            "Water": 0.5,
-            "Grass": 2,
-            "Ice": 2,
-            "Dragon": 0.5
-        },
-        "Water": {
-            "Ground": 2,
-            "Rock": 2,
-            "Fire": 2,
-            "Water": 0.5,
-            "Grass": 0.5,
-            "Dragon": 0.5
-        },
-        "Grass": {
-            "Flying": 0.5,
-            "Poison": 0.5,
-            "Ground": 2,
-            "Rock": 2,
-            "Bug": 0.5,
-            "Steel": 0.5,
-            "Fire": 0.5,
-            "Water": 2,
-            "Grass": 0.5,
-            "Dragon": 0.5
-        },
-        "Electric": {
-            "Flying": 2,
-            "Ground": 0,
-            "Water": 2,
-            "Grass": 0.5,
-            "Electric": 0.5,
-            "Dragon": 0.5
-        },
-        "Psychic": {
-            "Fighting": 2,
-            "Poison": 2,
-            "Steel": 0.5,
-            "Psychic": 0.5,
-            "Dark": 0
-        },
-        "Ice": {
-            "Flying": 2,
-            "Ground": 2,
-            "Steel": 0.5,
-            "Fire": 0.5,
-            "Water": 0.5,
-            "Grass": 2,
-            "Ice": 0.5,
-            "Dragon": 2
-        },
-        "Dragon": {
-            "Steel": 0.5,
-            "Dragon": 2,
-            "Fairy": 0
-        },
-        "Dark": {
-            "Fighting": 0.5,
-            "Ghost": 2,
-            "Psychic": 2,
-            "Dark": 0.5,
-            "Fairy": 0.5
-        },
-        "Fairy": {
-            "Fighting": 2,
-            "Poison": 0.5,
-            "Steel": 0.5,
-            "Fire": 0.5,
-            "Dragon": 2,
-            "Dark": 2
-        }
+        "Normal": { "Rock": 0.5, "Ghost": 0, "Steel": 0.5 },
+        "Fighting": { "Normal": 2, "Flying": 0.5, "Poison": 0.5, "Rock": 2, "Bug": 0.5, "Ghost": 0, "Steel": 2, "Psychic": 0.5, "Ice": 2, "Dark": 2, "Fairy": 0.5 },
+        "Flying": { "Fighting": 2, "Rock": 0.5, "Bug": 2, "Steel": 0.5, "Grass": 2, "Electric": 0.5 },
+        "Poison": { "Poison": 0.5, "Ground": 0.5, "Rock": 0.5, "Ghost": 0.5, "Steel": 0, "Grass": 2, "Fairy": 2 },
+        "Ground": { "Flying": 0, "Poison": 2, "Rock": 2, "Bug": 0.5, "Steel": 2, "Fire": 2, "Grass": 0.5, "Electric": 2 },
+        "Rock": { "Fighting": 0.5, "Flying": 2, "Ground": 0.5, "Bug": 2, "Steel": 0.5, "Fire": 2, "Ice": 2 },
+        "Bug": { "Fighting": 0.5, "Flying": 0.5, "Poison": 0.5, "Ghost": 0.5, "Steel": 0.5, "Fire": 0.5, "Grass": 2, "Psychic": 2, "Dark": 2, "Fairy": 0.5 },
+        "Ghost": { "Normal": 0, "Ghost": 2, "Psychic": 2, "Dark": 0.5 },
+        "Steel": { "Rock": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Electric": 0.5, "Ice": 2, "Fairy": 2 },
+        "Fire": { "Rock": 0.5, "Bug": 2, "Steel": 2, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 2, "Dragon": 0.5 },
+        "Water": { "Ground": 2, "Rock": 2, "Fire": 2, "Water": 0.5, "Grass": 0.5, "Dragon": 0.5 },
+        "Grass": { "Flying": 0.5, "Poison": 0.5, "Ground": 2, "Rock": 2, "Bug": 0.5, "Steel": 0.5, "Fire": 0.5, "Water": 2, "Grass": 0.5, "Dragon": 0.5 },
+        "Electric": { "Flying": 2, "Ground": 0, "Water": 2, "Grass": 0.5, "Electric": 0.5, "Dragon": 0.5 },
+        "Psychic": { "Fighting": 2, "Poison": 2, "Steel": 0.5, "Psychic": 0.5, "Dark": 0 },
+        "Ice": { "Flying": 2, "Ground": 2, "Steel": 0.5, "Fire": 0.5, "Water": 0.5, "Grass": 2, "Ice": 0.5, "Dragon": 2 },
+        "Dragon": { "Steel": 0.5, "Dragon": 2, "Fairy": 0 },
+        "Dark": { "Fighting": 0.5, "Ghost": 2, "Psychic": 2, "Dark": 0.5, "Fairy": 0.5 },
+        "Fairy": { "Fighting": 2, "Poison": 0.5, "Steel": 0.5, "Fire": 0.5, "Dragon": 2, "Dark": 2 }
     };
     var immuneMultiplier = 0.15;
     var pokeInfo = {
@@ -8982,7 +8844,7 @@ function Safari() {
         
         this.level = level;
         
-        var size = 9 + level, p;
+        var size = 8 + level * 2, p;
         while (this.horde.length < size) {
             p = sys.rand(1, 722);
             if (!isLegendary(p)) {
@@ -9080,8 +8942,8 @@ function Safari() {
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                stamina[id] = -(this.horde.length * 2 * this.level);
-                staminaStr.push(id.toCorrectCase() + " -" + (this.horde.length * 2 * this.level));
+                stamina[id] = -(this.horde.length * 4 * this.level);
+                staminaStr.push(id.toCorrectCase() + " -" + (this.horde.length * 4 * this.level));
             }
             this.sendAll("The following Wild Pokémon haven't been defeated and attacked the players: " + readable(this.horde.map(function(x){ return toColored(poke(x), "red"); }), "and") + "!");
         }
@@ -9149,7 +9011,7 @@ function Safari() {
         
         this.sendAll("");
         if (["run", "runaway", "run away", "flee"].contains(choices[this.pyr.leader])) {
-            var pointsLost = 10 * this.level;
+            var pointsLost = 12 * this.level;
             this.sendAll(toColor("Party leader {0} decided to run away from the {1}! {0} lost {2} Stamina!".format(this.pyr.leader.toCorrectCase(), (this.isRevealed ? poke(opp) : "hidden Pokémon"), pointsLost), "crimson"));
             stamina[this.pyr.leader] = -pointsLost;
             this.pyr.updateStatus(0, stamina);
@@ -9188,7 +9050,7 @@ function Safari() {
         }
         
         if (defeated) {
-            var pointsRange = [36, 18, 7, -6];
+            var pointsRange = [36, 18, 7, -4];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)] * this.level;
             this.sendAll("<b>{0}</b>'s HP dropped to 0! The {0} has fainted! Points gained: {1}".format(poke(opp), plural(points, "Point")));
             this.pyr.updateStatus(points, stamina);
@@ -9298,7 +9160,7 @@ function Safari() {
                 }
             }
             
-            var pointsRange = [36, 15, 6, -6];
+            var pointsRange = [36, 15, 6, -4];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)] * this.level;
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(toColor(this.types.join("/"), "blue"), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
@@ -9463,7 +9325,7 @@ function Safari() {
         } else {
             this.sendAll("Your party couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>"));
         }
-        points = [-18, -9, 24, 36][score] * this.level;
+        points = [-9, -3, 18, 30][score] * this.level;
         this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
         
         this.pyr.updateStatus(points, stamina);
@@ -9496,8 +9358,19 @@ function Safari() {
             }
         }
         
-        this.firstAtk = sys.move(damaging.random());
-        this.secondAtk = damaging.random();
+        var type, count = 0;
+        do {
+            this.firstAtk = damaging.random();
+            type = sys.type(sys.moveType(this.firstAtk));
+            count++;
+        } while (count < level * 2 && type === "Normal");
+        this.firstAtk = sys.move(this.firstAtk);
+        
+        do {
+            this.secondAtk = damaging.random();
+            type = sys.type(sys.moveType(this.secondAtk));
+            count++;
+        } while (count < level * 2 && type === "Normal");
         
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
@@ -9595,7 +9468,7 @@ function Safari() {
         this.answer = poke(this.answerId);
         this.answerAttempts = 0;
         this.cluesSearched = {};
-        this.turns = 8;
+        this.turns = 9;
         
         var hints = this.writeHints();
         
@@ -9606,6 +9479,7 @@ function Safari() {
         }
         var treasuresAmt = 0;
         switch (hints.length) {
+            case 8:
             case 9:
             case 10:
                 treasuresAmt = 3;
@@ -9672,8 +9546,7 @@ function Safari() {
             }
         }
         h = getBST(this.answerId);
-        hints.push("BST is higher than {0}".format(h - sys.rand(1, 49)));
-        hints.push("BST is lower than {0}".format(h + sys.rand(1, 49)));
+        hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
         if (this.answerId in evolutions) {
             hints.push("Can evolve");
         } else {
@@ -9818,7 +9691,7 @@ function Safari() {
                     if (!stamina.hasOwnProperty(p)) {
                         stamina[p] = 0;
                     }
-                    stamina[p] -= 8 * this.level;
+                    stamina[p] -= 7 - 5 * this.level;
                     staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
                 }
             }
@@ -9837,15 +9710,15 @@ function Safari() {
         this.level = level;
         
         this.hazardMoves = {
-            "plants":[163,15],
-            "water":[57,291],
-            "boulder":[70,249],
-            "toxic":[432,16],
-            "pit":[19,100],
-            "ice":[53,257],
-            "flame":[55,56],
+            "plants":[163,13],
+            "water":[57,181],
+            "boulder":[276,477],
+            "toxic":[432,54],
+            "pit":[19,22],
+            "ice":[498,257],
+            "flame":[56,410],
             "electric":[50,300],
-            "dark":[148,563]
+            "dark":[430,497]
         };
         this.validMoves = [];
         for (var c in this.hazardMoves) {
@@ -10568,44 +10441,27 @@ function Safari() {
         }
     };
     FactionWar.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
-        var p1Type1 = sys.type(sys.pokeType1(p1Poke)), p1Type2 = sys.type(sys.pokeType2(p1Poke));
-        var p2Type1 = sys.type(sys.pokeType1(p2Poke)), p2Type2 = sys.type(sys.pokeType2(p2Poke));
-
-        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
-        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
-
-        var p1Move = sys.rand(10, 100);
-        var p2Move = sys.rand(10, 100);
-
-        var statName = ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"];
-        var stat = sys.rand(0, 6);
-        var sName = statName[stat];
-
-        var p1Stat = sys.baseStats(p1Poke, stat);
-        var p2Stat = sys.baseStats(p2Poke, stat);
-
-        var p1Power = Math.round((p1Stat + p1Move) * p1Bonus);
-        var p2Power = Math.round((p2Stat + p2Move) * p2Bonus);
-
+        var res = calcDamage(p1Poke, p2Poke);
         var name1 = owner1 + "'s " + poke(p1Poke);
         var name2 = owner2 + "'s " + poke(p2Poke);
 
-        name1 = p1Power > p2Power ? "<b>" + toColor(name1, this.team1Color) + "</b>" : name1;
-        name2 = p2Power > p1Power ? "<b>" + toColor(name2, this.team2Color) + "</b>" : name2;
+        name1 = res.power[0] > res.power[1] ? "<b>" + toColor(name1, this.team1Color) + "</b>" : name1;
+        name2 = res.power[1] > res.power[0] ? "<b>" + toColor(name2, this.team2Color) + "</b>" : name2;
+        
 
-        var result = name1 + " " + pokeInfo.icon(p1Poke) + " (" + p1Power + ") x (" + p2Power + ") "+ pokeInfo.icon(p2Poke) + " " + name2;
-        if (p1Power == p2Power) {
+        var result = name1 + " " + pokeInfo.icon(p1Poke) + " (" + res.power[0] + ") x (" + res.power[1] + ") "+ pokeInfo.icon(p2Poke) + " " + name2;
+        if (res.power[0] == res.power[1]) {
             result += " <b>Draw</b>";
         }
         this.sendToViewers(result);
 
-        var status = "Details (" + sName + "/Power/Type) | " + poke(p1Poke) + " (" + p1Stat + " / " + p1Move + " / " + p1Bonus + "x) x " + poke(p2Poke) + " (" + p2Stat + " / " + p2Move + " / " + p2Bonus + "x)";
+        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonus[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonus[1] + "x)";
         this.sendToViewers(toColor(status, "gray"));
 
-        if (p1Power > p2Power) {
+        if (res.power[0] > res.power[1]) {
             return 1;
         }
-        else if (p2Power > p1Power) {
+        else if (res.power[1] > res.power[0]) {
             return 2;
         }
         else {
