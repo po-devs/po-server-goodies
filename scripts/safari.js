@@ -9921,13 +9921,13 @@ function Safari() {
     
     function EmptyRoom(pyramidRef, level, roomNum) {
         PyramidRoom.call(this, pyramidRef);
-        this.midmsg = "Choose a Pokémon to help you explore the room or just walk away.";
+        this.midmsg = "Choose a Pokémon to help you explore the room to find the door.";
         this.defaultChoice = "ignore";
         this.level = level;
         
         var parties = pyramidRef.parties;
         for (var p in parties) {
-            this.individualmsg[p] = "Send one of your Pokémon to explore the room: " + parties[p].map(pyrLink).join(", ") + " | Or keep going with " + link("/pyr ignore");
+            this.individualmsg[p] = "Send one of your Pokémon to explore the room: " + parties[p].map(pyrLink).join(", ") + " | Or do nothing with " + link("/pyr ignore");
         }
         
         var types = Object.keys(effectiveness).shuffle();
@@ -9981,13 +9981,15 @@ function Safari() {
         return ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(commandData.toLowerCase()) || this.pokeInParty(id, commandData);
     };
     EmptyRoom.prototype.advance = function() {
-        var choices = this.getChoices(), id, p, points = 0, stamina = {}, t1, t2, hasTrap, hasTreasure, trapType, treasureType, out, reward, foundTreasure = {}, c;
+        var choices = this.getChoices(), id, p, points = 0, stamina = {}, t1, t2, hasTrap, hasTreasure, trapType, treasureType, out, reward, foundTreasure = {}, c, lazyPlayers = 0, players = 0;
         
         this.sendAll("");
         for (p in choices) {
             c = choices[p];
+            players++;
             if (typeof c === "string" && ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(c.toLowerCase())) {
-                this.sendAll("<b>{0}</b> ignored the room and went straight to the door!".format(p.toCorrectCase()));
+                this.sendAll("<b>{0}</b> ignored the room and took a break!".format(p.toCorrectCase()));
+                lazyPlayers++;
                 continue;
             }
             id = c;
@@ -10030,13 +10032,19 @@ function Safari() {
                 foundTreasure[p] = 12 * this.level;
                 out = "{0}'s {1} {3}! <b>{0}</b> received <b>{2}</b>!".format(addFlashTag(p.toCorrectCase()), poke(c), treasureName(reward), toColor("found a treasure", "blue"));
             } else {
-                stamina[p] = -3 * this.level;
+                stamina[p] = -2 * this.level + 1;
             }
             
             this.sendAll("<b>{0}</b> asked for their <b>{1}</b> to explore the room! {2}".format(p.toCorrectCase(), poke(c), out), true);
             if (reward) {
                 getTreasure(p, reward);
             }
+        }
+        if (lazyPlayers >= players) {
+            for (p in choices) {
+                stamina[p] = -3 * this.level;
+            }
+            this.sendAll("After arguing why no one went to look for the door, the entire team decided to split up in order to find it at the cost of {0} Stamina each.".format(-stamina[p]), true);
         }
         for (p in foundTreasure) {
             points += foundTreasure[p];
