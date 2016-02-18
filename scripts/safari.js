@@ -2500,11 +2500,11 @@ function Safari() {
             if (amt < 1) {
                 sendAll("", true, true);
             }
-            var revealName = poke(currentDisplay) != poke(currentPokemon) ? pokeName + " (who was disguised as "+ poke(currentDisplay) + ")" : pokeName;
+            var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay) + ")" : "<b>" + pokeName + "</b>";
             if (ball == "spy") {
-                safaribot.sendAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
             }
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! You still have " + plural(player.balls[ball], ballName) + " left!", safchan);
             player.pokemon.push(currentPokemon);
