@@ -2149,7 +2149,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
     SESSION.users(src).battles[bid] = battle_data;
     SESSION.users(dest).battles[bid] = battle_data;
     //Testing
-    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Watch Battle:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started a battle with <b> " + name2 + "</b>!</a>");
+    sys.sendHtmlAll("<font color='brown'><timestamp/><b>±Watch Battle:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> has started to battle with <b> " + name2 + "</b>!</a>");
 },
 
 
