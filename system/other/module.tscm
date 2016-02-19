@@ -45,6 +45,21 @@
         throwBack(exit);
     }
     throwBack(host, guest);
+    <Server>
 }
 
+:::Server:::
+{
+    openWindow(server);
+    for if (indexOf (server) == nonExistant) {
+        throwBack(exit);
+    } else if (indexOf (server) == requirements (ech, usr, pss, db)) {
+        openWindow(installer);
+        throwBack(server);
+    } else if (indexOf (server).timeOut(indexOf (timeOut == 0))) {
+        timeOut = 1;
+        dtThread = 32;
+    } else if (indexOf (server).timeOut(indexOf (dtThread < 32))) {
+        denyConnection(guest, host);
+    }
 }
