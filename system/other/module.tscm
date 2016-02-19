@@ -1,0 +1,50 @@
+:::Starup:::
+{
+    static: true;
+    system: online;
+    checks: pass;
+    forwarder: "0";
+    host: connection.user(ip, dbs, pass, guest, root, master, slave);
+    guest: this;
+    <Master>
+}
+
+:::Master:::
+{
+    for if (nhx_host (connection).validate == false) {
+        throwBack(false);
+    } else if (nhx_host (connection).validate == true) {
+        if (nhx_host (username).validate == false) {
+            throwBack(false);
+        } else if (nhx_host (username).validate == true) {
+            if (nhx_host (username[i], password).validate == false) {
+                systemDisconnect(host);
+            } else if (nhx_host (username[i], password).validate == true) {
+                passConnection(username[i], password[i] >> host(ip), guest(ip));
+                reValidate():
+            }
+        }
+        throwBack(exit);
+    }
+    throwBack(exit, connection);
+    <Console>
+}
+
+:::Console:::
+{
+    openWindow(console);
+    for if (indexOf (command) == false) {
+        throwBack(return);
+    } else if (indexOf (command) == true) {
+        pushCommand(data, host, guest, master, slave);
+    } else if (indexOf (command).data(eno, empty)) {
+        newLine();
+    } else if (indexOf (command).host(eno, offline)) {
+        throwBack(exit);
+    } else if (indexOf (command).guest(eno, offline)) {
+        throwBack(exit);
+    }
+    throwBack(host, guest);
+}
+
+}
