@@ -56,8 +56,8 @@
    <tier name="Black/White 2" minGen="-1" numberOfRestricted="1" banMode="ban" allowIllegal="false" numberOfPokemons="6" tableName="tier_blackwhite2" subgen="1" restrictedPokemons="" pokemons="" maxLevel="100" items="" displayOrder="0" moves="" banParent="" gen="5" mode="0" abilities=""/>
   </category>
   <category name="Gen 6" displayOrder="6">
-   <tier name="XY" minGen="-1" numberOfRestricted="1" banMode="ban" allowIllegal="false" numberOfPokemons="6" tableName="tier_xy" subgen="0" restrictedPokemons="" pokemons="" maxLevel="100" items="Altarianite, Audinite, Beedrillite, Blue Orb, Cameruptite, Diancite, Galladite, Glalitite, Latiasite, Latiosite, Lopunnite, Metagrossite, Pidgeotite, Red Orb, Sablenite, Salamencite, Sceptilite, Sharpedonite, Slowbronite, Steelixite, Swampertite" displayOrder="0" moves="" banParent="" gen="6" mode="0" abilities=""/>
-   <tier name="Omega Ruby/Alpha Sapphire" minGen="-1" numberOfRestricted="1" banMode="ban" allowIllegal="false" numberOfPokemons="6" tableName="tier_omegarubyalphasapphire" subgen="1" restrictedPokemons="" pokemons="" maxLevel="100" items="" displayOrder="0" moves="" banParent="" gen="6" mode="0" abilities=""/>
+   <tier name="XY" minGen="-1" numberOfRestricted="1" banMode="ban" allowIllegal="true" numberOfPokemons="6" tableName="tier_xy" subgen="0" restrictedPokemons="" pokemons="" maxLevel="100" items="Altarianite, Audinite, Beedrillite, Blue Orb, Cameruptite, Diancite, Galladite, Glalitite, Latiasite, Latiosite, Lopunnite, Metagrossite, Pidgeotite, Red Orb, Sablenite, Salamencite, Sceptilite, Sharpedonite, Slowbronite, Steelixite, Swampertite" displayOrder="0" moves="" banParent="" gen="6" mode="0" abilities=""/>
+   <tier name="Omega Ruby/Alpha Sapphire" minGen="-1" numberOfRestricted="1" banMode="ban" allowIllegal="true" numberOfPokemons="6" tableName="tier_omegarubyalphasapphire" subgen="1" restrictedPokemons="" pokemons="" maxLevel="100" items="" displayOrder="0" moves="" banParent="" gen="6" mode="0" abilities=""/>
   </category>
  </category>
  <category name="RBY" displayOrder="1">
