@@ -14477,6 +14477,7 @@ function Safari() {
                                 if (bst > maxBST) {
                                     tieBreaker = [];
                                     pokeWinners = [];
+                                    fullWinners = [];
                                     maxBST = bst;
                                 }
                                 tieBreaker.push(name);
