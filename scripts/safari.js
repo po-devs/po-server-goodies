@@ -14528,7 +14528,7 @@ function Safari() {
                     safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won " + readable(list, "and")  + "!", safchan);
                     contestInfo.winners = readable(fullWinners, "and");
                     contestInfo.caught = maxCaught;
-                    contestInfo.bst = maxBST;
+                    contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
                 }
                 if (allContestants.length > 0) {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
