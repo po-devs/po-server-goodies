@@ -761,6 +761,7 @@ function Safari() {
     var currentBattles = [];
     var currentPyramids = [];
     var currentAuctions = [];
+    var lastContests = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
     var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : ["safari warden"]);
@@ -8149,6 +8150,10 @@ function Safari() {
         switch (action) {
             case "start":
                 var name = sys.name(src);
+                if (player.records.pokesCaught < 4) {
+                    safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+                    return;
+                }
                 if (quest.cooldown > now()) {
                     safaribot.sendMessage(src, "Pyramid Guide: You need to wait " + timeLeftString(quest.cooldown) + " before starting another Pyramid quest (you can join someone else's meanwhile)!", safchan);
                     return;
@@ -8210,6 +8215,10 @@ function Safari() {
                 pyramidRequests[player.id].invites[n2] = false;
             break;
             case "join":
+                if (player.records.pokesCaught < 4) {
+                    safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+                    return;
+                }
                 if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
                     return;
                 }
@@ -12406,10 +12415,16 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
-            /* if (command === "release") {
-                safari.releasePokemon(src, commandData);
+            if (command === "lastcontest" || command === "lastcontests" || command === "lc") {
+                sys.sendMessage(src, "", safchan);
+                sys.sendMessage(src, "*** LAST CONTESTS ***", safchan);
+                for (var e = 0, x; e < lastContests.length; e++) {
+                    x = lastContests[e];
+                    safaribot.sendHtmlMessage(src, "Theme: {0} --- Won by: {1} --- Score: {2} --- Rules: {3} --- Finished {4} ago".format(x.theme, (x.winners ? x.winners : "No one"), (x.winners ? "Caught " + x.caught + ", BST " + x.bst + "" : "N/A"), x.rules, utilities.getTimeString(Math.floor((now() - x.finished)/1000) + 1)), safchan);
+                }
+                sys.sendMessage(src, "", safchan);
                 return true;
-            } */
+            }
             if (command === "records" || command === "record") {
                 safari.showRecords(src, commandData);
                 return true;
@@ -12752,7 +12767,7 @@ function Safari() {
                 if (command === "trick2") {
                     sys.setTimer(function() {
                         sys.sendMessage(targetId, "", safchan);
-                        safaribot.sendMessage(targetId, "Some stealthy person caught the " + input.name + " with " + an(itemAlias("spy", true, true)) + " and the help of their well-trained spy Pokémon!", safchan);
+                        safaribot.sendMessage(targetId, "Some stealthy person caught the <b>" + input.name + "</b> with " + an(itemAlias("spy", true, true)) + " and the help of their well-trained spy Pokémon!", safchan);
                         sys.sendMessage(targetId, "", safchan);
                     }, 3200, false);
                 }
@@ -12858,6 +12873,10 @@ function Safari() {
                 var player = getAvatarOff(name);
                 if (!player) {
                     safaribot.sendMessage(src, "No such player!", safchan);
+                    if (saltBans.get(name.toLowerCase()) && duration === 0) {
+                        safaribot.sendMessage(src, "Removing entry " + name + " from the salt list!", safchan);
+                        saltBans.remove(name.toLowerCase());
+                    }
                     return true;
                 }
 
@@ -14181,6 +14200,11 @@ function Safari() {
         } catch (err) {
             rafflePrizeObj = null;
         }
+        try {
+            lastContests = JSON.parse(permObj.get("lastContests"));
+        } catch (err) {
+            lastContests = [];
+        }
         if (permObj.hash.hasOwnProperty("ccatch")) {
             ccatch = permObj.get("ccatch");
         }
@@ -14413,7 +14437,7 @@ function Safari() {
         if (contestCount > 0) {
             contestCount--;
             if (contestCount === 0) {
-                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player;
+                var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
                 for (var e in contestCatchers) {
                     if (contestCatchers.hasOwnProperty(e)) {
                         if (contestCatchers[e].length >= maxCaught) {
@@ -14457,6 +14481,7 @@ function Safari() {
                                 }
                                 tieBreaker.push(name);
                                 pokeWinners.push(poke(player.party[0]));
+                                fullWinners.push(name.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
                             }
                         }
                     }
@@ -14488,6 +14513,7 @@ function Safari() {
                 if (Object.keys(contestCatchers).length === 1) {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
                     winners = [];
+                    contestInfo.winners = null;
                 } else if (winners.length > 0) {
                     var list = [];
                     for (var e in reward) {
@@ -14497,6 +14523,9 @@ function Safari() {
                         list.push("a prize");
                     }
                     safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won " + readable(list, "and")  + "!", safchan);
+                    contestInfo.winners = readable(fullWinners, "and");
+                    contestInfo.caught = maxCaught;
+                    contestInfo.bst = maxBST;
                 }
                 if (allContestants.length > 0) {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
@@ -14558,6 +14587,13 @@ function Safari() {
                 }
                 
                 //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                contestInfo.theme = currentTheme ? contestThemes[currentTheme].name : "Default";
+                contestInfo.rules = safari.translateRules(currentRules);
+                lastContests.push(contestInfo);
+                if (lastContests.length > 10) {
+                    lastContests.shift();
+                }
+                permObj.add("lastContests", JSON.stringify(lastContests));
                 resetVars();
                 currentRules = null;
                 contestCatchers = {};
