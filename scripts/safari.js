@@ -14446,10 +14446,12 @@ function Safari() {
                                 if (contestCatchers[e].length > maxCaught) {
                                     winners = [];
                                     pokeWinners = [];
+                                    fullWinners = [];
                                     maxCaught = contestCatchers[e].length;
                                 }
                                 winners.push(e);
                                 pokeWinners.push(poke(player.party[0]));
+                                fullWinners.push(e.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
                             }
                         }
                     }
