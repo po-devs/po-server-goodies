@@ -16,6 +16,7 @@ var Config = {
     rankingbot: "Rankbot",
     battlebot: "Battlebot",
     commandbot: "CommandBot",
+    usersonline: "Users Online",
     querybot: "QueryBot",
     hangbot: "Hangmanbot",
     bfbot: "BF-bot",
@@ -346,6 +347,7 @@ querybot = new Bot(Config.querybot);
 hangbot = new Bot(Config.hangbot);
 bfbot = new Bot(Config.bfbot);
 safaribot = new Bot(Config.safaribot);
+usersonline = new Bot(Config.usersonline);
 
 /* Start script-object
  *
