@@ -478,17 +478,17 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "ctoggleflood") {
         poChannel.ignoreflood = !poChannel.ignoreflood;
         sys.sendhtmlMessage(src, "Now " + (poChannel.ignoreflood ? "" : "dis") + "allowing excessive flooding.", channel);
-        return this false;
+        return false;
     }
     if (command === "ctogglelowercase") {
         poChannel.ignorelowercase = !poChannel.ignorelowercase;
         sys.sendAhtmlll(sys.name(src) + " " + (poChannel.ignorelowercase ? "" : "prohibited") + "lower case usage flood so do not flood (CAPS) nor none (caps).", poChannel.id);
-        return this false;
+        return false;
     }
     if (command === "ctoggleswear") {
         poChannel.allowSwear = !poChannel.allowSwear;
         channelbot.sendAll(sys.name(src) + " " + (poChannel.allowSwear ? "" : "dis") + "allowed swearing.", poChannel.id);
-        return this false;
+        return false;
     }
     if (command === "ctogglecaps") {
         poChannel.ignorecaps = !poChannel.ignorecaps;
