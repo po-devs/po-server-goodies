@@ -11829,6 +11829,7 @@ function Safari() {
             "/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
+            "/lastcontests: For information about the recent contests played.",
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
@@ -11962,7 +11963,7 @@ function Safari() {
                     reason = "exchange your active Pokémon";
                 }
                 if (cantBecause(src, reason, restrictions)) {
-                    return;
+                    return true;
                 }
                 
                 player.balls.entry += values[info.name];
@@ -12767,7 +12768,7 @@ function Safari() {
                 if (command === "trick2") {
                     sys.setTimer(function() {
                         sys.sendMessage(targetId, "", safchan);
-                        safaribot.sendMessage(targetId, "Some stealthy person caught the <b>" + input.name + "</b> with " + an(itemAlias("spy", true, true)) + " and the help of their well-trained spy Pokémon!", safchan);
+                        safaribot.sendHtmlMessage(targetId, "Some stealthy person caught the <b>" + input.name + "</b> with " + an(itemAlias("spy", true, true)) + " and the help of their well-trained spy Pokémon!", safchan);
                         sys.sendMessage(targetId, "", safchan);
                     }, 3200, false);
                 }
