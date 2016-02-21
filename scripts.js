@@ -8,6 +8,7 @@ var Config = {
     bot: "Sky",
     kickbot: "Kickbot",
     capsbot: "Capsbot",
+    usersonline: "Users Online",
     channelbot: "Channelbot",
     checkbot: "Checkbot",
     coinbot: "Coinbot",
@@ -1347,7 +1348,8 @@ afterLogIn : function(src) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
-    sys.sendMessage(src, "<p class="solid">Testing...</p>");
+    usersonline.sendMessage(src, (typeof(usersonline.afterlogin()) == "string" ?  "Users Online: " + usersonline.afterlogin() + ".  " : "")
+    sys.sendMessage(src, "");
     sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", 0);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
