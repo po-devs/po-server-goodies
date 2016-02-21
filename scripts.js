@@ -8,7 +8,6 @@ var Config = {
     bot: "Sky",
     kickbot: "Kickbot",
     capsbot: "Capsbot",
-    usersonline: "Users Online",
     channelbot: "Channelbot",
     checkbot: "Checkbot",
     coinbot: "Coinbot",
@@ -1214,19 +1213,19 @@ nameIsInappropriate: function(src)
     var cyrillic = /\u0430|\u0410|\u0412|\u0435|\u0415|\u041c|\u041d|\u043e|\u041e|\u0440|\u0420|\u0441|\u0421|\u0422|\u0443|\u0445|\u0425|\u0456|\u0406/;
     if (cyrillic.test(name)) {
         reply('You are using cyrillic letters similar to latin letters in your name.');
-        return true;
+        return false;
     }
     var greek = /[\u0370-\u03ff]/;
     if (greek.test(name)) {
         reply('You are using Greek letters similar to Latin letters in your name.');
-        return true;
+        return false;
     }
 
     // \u0020 = space
     var space = /[\u0009-\u000D]|\u0085|\u00A0|\u1680|\u180E|[\u2000-\u200A]|\u2028|\u2029|\u2029|\u202F|\u205F|\u3000|\u3164|\uFEFF|\uFFA0|\u2009|\u2008/;
     if (space.test(name)) {
         reply('You are using whitespace letters in your name.');
-        return true;
+        return false;
     }
 
     // \u002D = -
@@ -1234,22 +1233,22 @@ nameIsInappropriate: function(src)
 
     if (dash.test(name)) {
         reply('You are using dash letters in your name.');
-        return true;
+        return false;
     }
 
     // special marks
     if (/[\ufff0-\uffff]/.test(name)) {
         reply('You are using SPECIAL characters in your name.');
-        return true;
+        return false;
     }
 
     // COMBINING OVERLINE
     if (/\u0305|\u0336/.test(name)) {
         reply('You are using COMBINING OVERLINE character in your name.');
-        return true;
+        return false;
     }
     if (/\u0CBF|\u1D0F/gi.test(name)) {
-        return true;
+        return false;
     }
     return false;
 },
@@ -1348,9 +1347,8 @@ afterLogIn : function(src) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
     countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
-    usersonline.sendMessage(src, (typeof(usersonline.afterlogin()) == "string" ?  "Users Online: " + usersonline.afterlogin() + ".  " : "")
-    sys.sendMessage(src, "");
-    sys.sendHtmlMessage(src, "<p.dashed {border-style: dashed;} ='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", 0);
+    sys.sendMessage(src, "Visit are forum here at -- http://pokemon online.boards.net/ have fun.");
+    sys.sendHtmlMessage(src, "<timestamp/><border-style: solid;='color: " + sys.getColor(src) + "'></p></tr><font size=4 font color=#00007f><hr><center> <img src='pokemon:num=003&gen=6' height=50> Welcome to Sky Online! Make sure your account is registered. <img src='pokemon:num=006&gen=6' height=50><i></i><br/><img src='pokemon:num=384&gen=2'></center><hr><br><font color=blue>", 0);
     if (sys.auth(src) == 1) {
     	sys.sendHtmlAll("<timestamp/><span style='color: " + sys.getColor(src) + "'><b><font size=3 font color=#00007f>(@)</font> " + sys.name(src) + "</span><font size=3 font color=black> Joined the channel! <img src='pokemon:num=488&gen=6' height=50>", 0);
     } else if (sys.auth(src) == 2) {
