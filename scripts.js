@@ -1343,7 +1343,7 @@ afterLogIn : function(src) {
     }
     sys.sendMessage(src, "~~~  (All languages Allowed) Type in /Rules to see the rules and /commands to see the commands! ~~~");
     sys.sendMessage(src, "±Top Channels: | #Main Channel #Tournaments | #Safari | #Hangman | #Trivia | #Mafia |");
-Mai
+
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
