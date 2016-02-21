@@ -5,7 +5,7 @@
 var Config = {
     base_url: "https://raw.githubusercontent.com/MetaScripter/po-server-goodies/master/",
     dataDir: "scriptdata/",
-    bot: "Sky",
+    bot: "HOAX",
     kickbot: "Kickbot",
     capsbot: "Capsbot",
     channelbot: "Channelbot",
