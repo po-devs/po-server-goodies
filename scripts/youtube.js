@@ -5,7 +5,7 @@ function YouTube() {
 
     this.afterChatMessage = function (src, message, channel) {
         if ((message.indexOf("youtube.com") > -1 && message.indexOf("watch?v=") > -1) || message.indexOf("youtu.be/") > -1) {
-            var x, videoId;
+            var videoId;
             // PC LINK
             if (message.indexOf("youtube.com") !== -1) {
                 videoId = message.substr(message.indexOf("watch?v=") + 8, 11).trim();
