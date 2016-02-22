@@ -16,13 +16,13 @@ function YouTube() {
             }
             try {
                 sys.webCall("http://crystal.moe/youtube?id=" + videoId, function (response) {
-                    response = JSON.parse(response);
-                    var title = response.items[0].snippet.localized.title,
-                        length = response.items[0].contentDetails.duration
+                    var x = JSON.parse(response).items[0],
+                        title = x.snippet.localized.title,
+                        length = x.contentDetails.duration
                             .toLowerCase().substr(2).replace("h", "h ").replace("m", "m ").replace("s", "s"),
-                        uploader = response.items[0].snippet.channelTitle,
-                        likes = parseInt(response.items[0].statistics.likeCount, 10),
-                        dislikes = parseInt(response.items[0].statistics.dislikeCount, 10),
+                        uploader = x.snippet.channelTitle,
+                        likes = parseInt(x.statistics.likeCount, 10),
+                        dislikes = parseInt(x.statistics.dislikeCount, 10),
                         ratio = Math.round(likes / (likes + dislikes) * 100);
                     youtubeBot.sendAll("Title: {0}, Length: {1}, Uploader: {2}, Likes: {3}%".format(title, length, uploader, ratio), channel);
                 });
