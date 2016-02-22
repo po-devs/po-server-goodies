@@ -41,6 +41,7 @@ function Mafia(mafiachan) {
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
         border,
+        globalDefaultSideColors = ["#0099ff", "#cc00ff", "red", "#33cc33", "#ff00ff", "#660066", "#ff9933", "#0099cc", "#cc9900", "#cc0066", "#006666"],
         noPlayer = '*',
         CurrentGame,
         PreviousGames,
@@ -530,6 +531,7 @@ function Mafia(mafiachan) {
             theme.haxRoles = {};
             theme.standbyHaxRoles = {};
             theme.randomSideRoles = {};
+            theme.sideColor = {};
 
             // Parse variables first - so we can extract the actual value later.
             theme.variables = plain_theme.variables;
@@ -546,7 +548,7 @@ function Mafia(mafiachan) {
 
             // Init from the theme
             for (i in plain_theme.sides) {
-                theme.addSide(plain_theme.sides[i]);
+                theme.addSide(plain_theme.sides[i], i);
             }
             for (i in plain_theme.roles) {
                 theme.addRole(plain_theme.roles[i]);
@@ -782,10 +784,15 @@ function Mafia(mafiachan) {
     /* Theme is a small helper to organize themes inside the mafia game */
     function Theme() { }
     Theme.prototype.toString = function () { return "[object Theme]"; };
-    Theme.prototype.addSide = function (obj) {
+    Theme.prototype.addSide = function (obj, num) {
         this.sideTranslations[obj.side] = obj.translation;
         if ("winmsg" in obj) {
             this.sideWinMsg[obj.side] = obj.winmsg;
+        }
+        if ("color" in obj && typeof obj.color === "string") {
+            this.sideColor[obj.side] = obj.color;
+        } else {
+            this.sideColor[obj.side] = globalDefaultSideColors[num % globalDefaultSideColors.length];
         }
     };
     Theme.prototype.addRole = function (obj) {
@@ -1872,13 +1879,8 @@ function Mafia(mafiachan) {
                 sys.sendHtmlMessage(id, "A " + (this.theme.name == defaultThemeName ? "" : html_escape(this.theme.name) + "-themed ") + "mafia game is starting, " + sys.name(id) + "<ping/>!");
             }
         }
-        
-        var summary = this.theme.summary ? html_escape(this.theme.summary) : "Consider adding a summary field to this theme that describes the setting of the game and points out the odd quirks of the theme!";
-        summary = summary.replace(/(https?:\/\/[^\s]+)/gi, function(url) { // stolen from http://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
-            return '<a href="' + url + '">' + url + '</a>';
-        });
-        gamemsgAll(summary, "±" + mafia.bot.name, undefined, true);
-
+        var summary = this.theme.summary ? html_escape(this.theme.summary) : "";
+        gamemsgAll(summary.replace(/(https?:\/\/[^\s]+)/gi, "<a href='$1'>$1</a>"), "±" + mafia.bot.name, undefined, true);
         if (sys.playersOfChannel(mafiachan).length < 150) {
             var time = parseInt(sys.time(), 10);
             if (time > this.lastAdvertise + 60 * 15 || src === "Event") {
@@ -2022,15 +2024,25 @@ function Mafia(mafiachan) {
         return mafia.getPlayersForRole(role).join(", ");
     };
     this.getCurrentRoles = function () {
-        var list = [];
-        for (var p in this.players) {
-            if (typeof this.players[p].role.actions.onlist === "string")
-                list.push(this.theme.trrole(this.players[p].role.actions.onlist));
-            else
-                list.push(this.players[p].role.translation);
-        }
-        /* Sorting to not give out the order of the roles per player */
-        return list.sort().join(", ");
+        return Object.keys(this.players).map(function(name) {
+                return this.players[name].role;
+            }, mafia).sort(function(a, b) { /* Sorting to not give out the order of the roles per player */
+                var tra = typeof a.actions.onlist === "string" ? mafia.theme.trrole(a.actions.onlist) : a.translation;
+                var trb = typeof b.actions.onlist === "string" ? mafia.theme.trrole(b.actions.onlist) : b.translation;
+                if (tra == trb)
+                    return 0;
+                else if (tra < trb)
+                    return -1;
+                else
+                    return 1;
+            }).map(function(role) {
+                if (typeof role.actions.onlist === "string") {
+                    var onlistRole = role.actions.onlist;
+                    return "<font color='" + this.theme.sideColor[mafia.theme.roles[onlistRole].side] + "'>" + this.theme.trrole(onlistRole) + "</font>";
+                } else {
+                    return "<font color='" + this.theme.sideColor[role.side] + "'>" + role.translation + "</font>";
+                }
+            }, mafia).join(", ");
     };
     this.sendCurrentPlayers = function () {
         var channelUsers = sys.playersOfChannel(mafiachan),
@@ -2044,7 +2056,7 @@ function Mafia(mafiachan) {
                 var n = players.indexOf(name);
                 list[n] = "<a href=\"po:appendmsg/" + name + "\" style=\"color:" + script.getColor(channelUsers[i]) + "\">" + html_escape(name) + "</a><ping/>";
                 gamemsg(name, list.join(", ") + ".", "±Current Players", undefined, true);
-                list[n] = htmlLink(players[n], true); // Remove color
+                list[n] = htmlLink(name, true); // Remove color
             } else {
                 gamemsg(name, players.join(", ") + ".", "±Current Players");
             }
@@ -3339,7 +3351,7 @@ function Mafia(mafiachan) {
                 mafia.showOwnRole(p, true);
             }
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles");
+                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
             }
             mafia.sendCurrentPlayers();
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
@@ -4362,7 +4374,7 @@ function Mafia(mafiachan) {
             this.eventTimeBoost();
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles");
+                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
             }
             mafia.sendCurrentPlayers();
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
@@ -4390,17 +4402,13 @@ function Mafia(mafiachan) {
                         if (act.msg && (charges === undefined || charges > 0)) {
                             var msg = html_escape(act.msg), 
                                 colon = msg.indexOf(":"), 
-                                botName = "",
-                                regexp = /\s\/[A-Z]+[0-9]*[^A-Z]/gi,
-                                htmlLinkCommands = function(match) {
-                                    return match[0] + htmlLink(match.slice(1, -1)) + match.slice(-1);
-                                };
+                                botName = "";
                             if (colon !== -1) {
                                 botName = msg.substring(0, colon);
                                 msg = msg.slice(colon + 2);
                             }
-                            botName = botName.replace(regexp, htmlLinkCommands);
-                            msg = msg.replace(regexp, htmlLinkCommands);
+                            botName = botName.replace(/\s(\/[A-Z]+[0-9]*)([^A-Z])/gi, " <a href=\"po:setmsg/$1 \">$1</a>$2");
+                            msg = msg.replace(/\s(\/[A-Z]+[0-9]*)([^A-Z])/gi, " <a href=\"po:setmsg/$1 \">$1</a>$2");
                             gamemsg(names[j], msg !== "" ? msg : null, botName, undefined, true);
                         }
                     }
@@ -4429,7 +4437,7 @@ function Mafia(mafiachan) {
             }
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles");
+                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
             }
             mafia.sendCurrentPlayers();
 
@@ -4694,7 +4702,7 @@ function Mafia(mafiachan) {
             }
 
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles");
+                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
             }
             mafia.sendCurrentPlayers();
 
@@ -4820,10 +4828,7 @@ function Mafia(mafiachan) {
                     var startmsg = (role.startupmsg || strIntro + "~Role~!").replace(/~Role~/gi, role.translation).replace(/~Side~/gi, mafia.theme.trside(player.role.side));
                     gamemsg(player.name, startmsg);
                 }
-                var help = html_escape(role.help).replace(/~Side~/gi, mafia.theme.trside(player.role.side))
-                    .replace(/\s\/[A-Z]+[0-9]*[^A-Z]/gi, function(match) {
-                        return match[0] + htmlLink(match.slice(1, -1)) + match.slice(-1);
-                    });
+                var help = html_escape(role.help).replace(/~Side~/gi, mafia.theme.trside(player.role.side)).replace(/\s(\/[A-Z]+[0-9]*)([^A-Z])/gi, " <a href=\"po:setmsg/$1 \">$1</a>$2");
                 gamemsg(player.name, help, undefined, undefined, true);
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg);
@@ -6575,7 +6580,7 @@ function Mafia(mafiachan) {
             if (theme.threadlink) {
                 mess.push('<b>Thread Link: </b><a href="' + theme.threadlink + '">' + theme.threadlink + '</a>');
             }
-            mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary : "No summary available."));
+            mess.push("<b>Summary: </b>" + (theme.summary ? theme.summary.replace(/(https?:\/\/[^\s]+)/gi, "<a href='$1'>$1</a>") : "No summary available."));
 
             var features = [];
             if (theme.nolynch) {
