@@ -4466,6 +4466,7 @@ function Safari() {
                     reward = "safari";
                     amount = 1;
                     player.records.masterballsWon += 1;*/
+                    giveReward = false;
                     masterCap = true;
                 }
                 safaribot.sendHtmlAll("<b>JACKPOT! " + html_escape(sys.name(src)) + " just won " + an(finishName("master")) + " from the Gachapon Machine!</b>", safchan);
