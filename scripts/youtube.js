@@ -27,9 +27,10 @@ function YouTube() {
                     youtubeBot.sendAll("Title: {0}, Length: {1}, Uploader: {2}, Likes: {3}%".format(title, length, uploader, ratio), channel);
                 });
             } catch (error) {
-                youtubeBot.sendAll("YouTube video data load failed.", channel);
+                youtubeBot.sendMessage(src, "Loading YouTube data failed.", channel);
             }
         }
+        return;
     };
 }
 module.exports = new YouTube();
