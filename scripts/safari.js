@@ -8631,19 +8631,18 @@ function Safari() {
         } else if (p >= 5200) {
             reward = "bright";
         } else if (p >= 4400) {
-            reward = "master";
-        } else if (p >= 3600) {
             reward = "mega";
-        } else if (p >= 2800) {
+        } else if (p >= 3600) {
             reward = "rare";
-            amt = 2;
+        } else if (p >= 2800) {
+            reward = "pack";
         } else if (p >= 2000) {
             reward = "egg";
         } else if (p >= 1000) {
-            reward = "pack";
+            reward = "nugget";
         } else if (this.finishMode === "cleared"){
             reward = "gem";
-            amt = 3;
+            amt = 2;
         } else {
             reward = "gacha";
             amt = this.level * 3;
@@ -8977,7 +8976,7 @@ function Safari() {
         }
         
         this.opponent = legendaries.concat(megaPokemon).random();
-        this.opponentHP = 200 * level;
+        this.opponentHP = 150 + 150 * level;
         this.opponentPower = 16 * level;
         this.isRevealed = false;
         
@@ -9036,7 +9035,7 @@ function Safari() {
         for (p in choices) {
             m = choices[p];
             
-            res = calcDamage(m, opp);
+            res = calcDamage(m, opp, [50, 140]);
             if (res.power[0] > 0) {
                 
                 this.opponentHP -= res.power[0];
@@ -9316,7 +9315,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(id)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= 12 * this.level;
+                stamina[id] -= 6 + 6 * this.level;
             }
         }
         
