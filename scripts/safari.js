@@ -8183,8 +8183,8 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "You need to invite two other players to join you in the Pyramid! Use " + link("/quest pyramid:start:Name1:Name2", null, true) + ".", safchan);
                     return;
                 }
-                var n1 = data[1].toLowerCase();
-                var n2 = data[2].toLowerCase();
+                var n1 = data[1].toLowerCase().trim();
+                var n2 = data[2].toLowerCase().trim();
                 var id1 = sys.id(n1);
                 var id2 = sys.id(n2);
                 var p1 = getAvatar(id1);
@@ -11931,7 +11931,7 @@ function Safari() {
                 safari.skipTutorial(src, commandData);
                 return true;
             }
-            if (command === "birthday") {
+            /*if (command === "birthday") {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "As part of Fuzzysqurl's Birthday Something event, you can exchange Pokemon for Raffle Entries into a drawing to win cool prizes. Only 3 Pokemon are accepted however: Vanillite is worth 1 Entry, Mareep is worth 2 Entries, and Litwick is worth 5 Entries. If you would like to exchange your Pokemon, you can use \"/birthday [pokemon]:confirm\"!", safchan);
                     return true;
@@ -11975,7 +11975,7 @@ function Safari() {
                 this.logLostCommand(sys.name(src), "birthday " + commandData);
                 this.saveGame(player);
                 return true;
-            }
+            }*/
             if (command === "help") {
                 safari.showHelp(src);
                 return true;
