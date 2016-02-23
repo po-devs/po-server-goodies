@@ -1242,7 +1242,7 @@ function Safari() {
             return arr;
         }
         if (arr.length > 1) {
-            return arr.slice(0, arr.length - 1).join(", ") + " " + last_delim + " " + arr.slice(-1)[0];
+            return arr.slice(0, arr.length - 1).join(", ") + " " + (last_delim ? last_delim : "and") + " " + arr.slice(-1)[0];
         } else if (arr.length == 1) {
             return arr[0];
         } else {
@@ -1700,7 +1700,142 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
-
+    function translateAsset(asset) {
+        if (asset[0] == "$") {
+            var amount = parseInt(asset.substr(asset.indexOf("$") + 1).replace(",", ""), 10);
+            return {
+                input: asset,
+                amount: amount,
+                name: "$" + addComma(amount),
+                type: "money"
+            };
+        }
+        else if (asset.indexOf("@") !== -1 || allItems.contains(itemAlias(asset, true))) {
+            var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
+            return {
+                id: item,
+                input: "@" + item,
+                amount: amount,
+                name: itemAlias(item, true, true),
+                type: "item"
+            };
+        }
+        else {
+            return getInputPokemon(asset);
+        }
+    }
+    function toStuffObj(raw) {
+        var out = {}, info = raw.split(":"), data;
+        
+        for (var e = 0; e < info.length; e++) {
+            data = translateAsset(info[e]);
+            if (data.type == "money") {
+                if (!out.$) {
+                    out.$ = 0;
+                }
+                out.$ += data.amount;
+            } else if (data.type == "item" || (data.type == "poke" && data.num)) {
+                if (!(data.input in out)) {
+                    out[data.input] = 0;
+                }
+                out[data.input] += data.amount || 1;
+            }
+        }
+        
+        return out;
+    }
+    function giveStuff(name, stuff) {
+        var player = getAvatarOff(name), out = { gained: [], lost: [] }, asset, amt, total, max;
+        if (!player) {
+            return "nothing";
+        }
+        
+        if (typeof stuff === "string") {
+            stuff = {};
+            if (asset[0] === "$") {
+                stuff.$ = parseInt(asset.replace(",", "").substr(1), 10);
+            } else if (asset.indexOf("@") >= 0) {
+                amt = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
+                asset = asset.substr(asset.indexOf("@"));
+                stuff[asset] = amt;
+            } else {
+                asset = getInputPokemon(asset);
+                stuff[asset.input] = 1;
+            }
+        }
+        for (var s in stuff) {
+            total = amt = stuff[s];
+            if (s[0] === "$") {
+                player.money += amt;
+                if (amt > 0) {
+                    if (player.money > moneyCap) {
+                        total = amt - player.money - moneyCap;
+                        player.money = moneyCap;
+                    }
+                    out.gained.push("$" + addComma(total));
+                } else if (amt < 0) {
+                    if (player.money < 0) {
+                        total = amt - player.money;
+                        player.money = 0;
+                    }
+                    out.lost.push("$" + addComma(-total));
+                }
+            } else if (s[0] === "@" || (allItems.contains(itemAlias(s, true)))) {
+                asset = s;
+                if (asset[0] === "@") {
+                    asset = asset.substr(1);
+                }
+                asset = itemAlias(asset, true);
+                
+                player.balls[asset] += amt;
+                max = getCap(asset);
+                if (player.balls[asset] > max) {
+                    total = amt - player.balls[asset] - max;
+                    player.balls[asset] = max;
+                } else if (player.balls[asset] < 0) {
+                    total = amt - player.balls[asset];
+                    player.balls[asset] = 0;
+                }
+                
+                if (total > 0) {
+                    out.gained.push(plural(total, asset));
+                } else if (total < 0) {
+                    out.lost.push(plural(-total, asset));
+                }
+            } else {
+                asset = getInputPokemon(s);
+                total = 0;
+                if (amt > 0) {
+                    for (var p = 0; p < amt; p++) {
+                        player.pokemon.push(asset.id);
+                        total++;
+                    }
+                    out.gained.push(plural(total, asset.name));
+                } else if (amt < 0) {
+                    for (var p = 0; p < -amt; p++) {
+                        if (!player.pokemon.contains(asset.id)) {
+                            break;
+                        }
+                        safari.removePokemon2(player, asset.id);
+                        total++;
+                    }
+                    out.lost.push(plural(total, asset.name));
+                }
+            }
+            
+        }
+        var res = [];
+        if (out.gained.length > 0) {
+            res.push("received " + readable(out.gained));
+        }
+        if (out.lost.length > 0) {
+            res.push("lost " + readable(out.lost));
+        }
+        
+        return res.length > 0 ? readable(res) : "received nothing";
+    }
+    
     /* Wild Pokemon & Contests */
     this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs) {
         var num,
@@ -2502,10 +2637,20 @@ function Safari() {
                 sendAll("", true, true);
             }
             var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay) + ")" : "<b>" + pokeName + "</b>";
+            var msg = "";
+            //Uncomment below to enable
+            /* for (var u = 0; u < player.party.length; u++) {
+                if (pokeInfo.species(player.party[u]) === 201) {
+                    msg += "abcdefghijklmnopqrstuvwxyz!?".charAt(pokeInfo.forme(player.party[u]));
+                }
+            }
+            msg = msg.length > 4 ? msg : "";
+            msg = /asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(msg) ? "" : msg; */
+            
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
-                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! You still have " + plural(player.balls[ball], ballName) + " left!", safchan);
             player.pokemon.push(currentPokemon);
@@ -4719,7 +4864,7 @@ function Safari() {
             safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
             return;
         }
-        if (isMega(id)) {
+        if (isMega(info.num)) {
             safaribot.sendMessage(src, "You cannot devolve a Mega Pokémon!", safchan);
             return;
         }
@@ -8631,19 +8776,18 @@ function Safari() {
         } else if (p >= 5200) {
             reward = "bright";
         } else if (p >= 4400) {
-            reward = "master";
-        } else if (p >= 3600) {
             reward = "mega";
-        } else if (p >= 2800) {
+        } else if (p >= 3600) {
             reward = "rare";
-            amt = 2;
+        } else if (p >= 2800) {
+            reward = "pack";
         } else if (p >= 2000) {
             reward = "egg";
         } else if (p >= 1000) {
-            reward = "pack";
+            reward = "nugget";
         } else if (this.finishMode === "cleared"){
             reward = "gem";
-            amt = 3;
+            amt = 2;
         } else {
             reward = "gacha";
             amt = this.level * 3;
@@ -8977,7 +9121,7 @@ function Safari() {
         }
         
         this.opponent = legendaries.concat(megaPokemon).random();
-        this.opponentHP = 200 * level;
+        this.opponentHP = 150 + 150 * level;
         this.opponentPower = 16 * level;
         this.isRevealed = false;
         
@@ -9036,7 +9180,7 @@ function Safari() {
         for (p in choices) {
             m = choices[p];
             
-            res = calcDamage(m, opp);
+            res = calcDamage(m, opp, [50, 140]);
             if (res.power[0] > 0) {
                 
                 this.opponentHP -= res.power[0];
@@ -9316,7 +9460,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(id)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= 12 * this.level;
+                stamina[id] -= 6 + 6 * this.level;
             }
         }
         
@@ -13355,6 +13499,106 @@ function Safari() {
                 }
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
+                }
+                return true;
+            }
+            if (command === "undo") {
+                var info = commandData.split(":");
+                if (info.length < 4) {
+                    safaribot.sendMessage(src, "Invalid format! Use /undo Player1:Player2:Items|To|Player1:Items|To|Player2!", safchan);
+                    return true;
+                }
+                var n1 = info[0],
+                    n2 = info[1],
+                    p1 = getAvatarOff(n1),
+                    p2 = getAvatarOff(n2);
+                if (!p1) {
+                    safaribot.sendMessage(src, "No player found with the name " + n1.toCorrectCase(), safchan);
+                    return true;
+                }
+                if (!p2) {
+                    safaribot.sendMessage(src, "No player found with the name " + n2.toCorrectCase(), safchan);
+                    return true;
+                }
+                var stuff1 = toStuffObj(info[2].replace(/\|/g, ":")),
+                    stuff2 = toStuffObj(info[3].replace(/\|/g, ":"));
+                
+                var missing1 = [], missing2 = [], data, amt;
+                for (var e in stuff1) {
+                    data = translateAsset(e);
+                    amt = stuff1[e];
+                    if (data.type == "money") {
+                        if (p2.money < amt) {
+                            missing2.push("$" + addComma(amt));
+                        }
+                    } else if (data.type == "item") {
+                        if (p2.balls[data.id] < amt) {
+                            missing2.push(plural(amt, data.name));
+                        }
+                    } else if (data.type == "poke") {
+                        if (countRepeated(p2.pokemon, data.id) < amt) {
+                            missing2.push(plural(amt, data.name));
+                        }
+                    }
+                }
+                for (var e in stuff2) {
+                    data = translateAsset(e);
+                    amt = stuff2[e];
+                    if (data.type == "money") {
+                        if (p1.money < amt) {
+                            missing1.push("$" + addComma(amt));
+                        }
+                    } else if (data.type == "item") {
+                        if (p1.balls[data.id] < amt) {
+                            missing1.push(plural(amt, data.name));
+                        }
+                    } else if (data.type == "poke") {
+                        if (countRepeated(p1.pokemon, data.id) < amt) {
+                            missing1.push(plural(amt, data.name));
+                        }
+                    }
+                }
+                if (missing1.length > 0) {
+                    safaribot.sendMessage(src, n1.toCorrectCase() + " doesn't have " + readable(missing1), safchan);
+                    return true;
+                }
+                if (missing2.length > 0) {
+                    safaribot.sendMessage(src, n2.toCorrectCase() + " doesn't have " + readable(missing2), safchan);
+                    return true;
+                }
+                
+                var inverted1 = {}, inverted2 = {};
+                for (e in stuff1) {
+                    inverted2[e] = -stuff1[e];
+                }
+                for (e in stuff2) {
+                    inverted1[e] = -stuff2[e];
+                }
+                for (e in inverted1) {
+                    if (!(e in stuff1)) {
+                        stuff1[e] = 0;
+                    }
+                    stuff1[e] += inverted1[e];
+                }
+                for (e in inverted2) {
+                    if (!(e in stuff2)) {
+                        stuff2[e] = 0;
+                    }
+                    stuff2[e] += inverted2[e];
+                }
+                
+                var out1 = giveStuff(p1.id, stuff1);
+                var out2 = giveStuff(p2.id, stuff2);
+                safari.saveGame(p1);
+                safari.saveGame(p2);
+                
+                safaribot.sendMessage(src, n1.toCorrectCase() + " " + out1 + "!", safchan);
+                safaribot.sendMessage(src, n2.toCorrectCase() + " " + out2 + "!", safchan);
+                if (sys.id(n1) && out1 !== "received nothing") {
+                    safaribot.sendMessage(sys.id(n1), "You " + out1 + "!", safchan);
+                }
+                if (sys.id(n2) && out2 !== "received nothing") {
+                    safaribot.sendMessage(sys.id(n2), "You " + out2 + "!", safchan);
                 }
                 return true;
             }
