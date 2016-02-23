@@ -9845,7 +9845,7 @@ function Safari() {
                     if (!stamina.hasOwnProperty(p)) {
                         stamina[p] = 0;
                     }
-                    stamina[p] -= 7 - 5 * this.level;
+                    stamina[p] -= 7 + 5 * this.level;
                     staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
                 }
             }
