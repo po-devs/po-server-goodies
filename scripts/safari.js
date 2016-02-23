@@ -4864,7 +4864,7 @@ function Safari() {
             safaribot.sendMessage(src, "You do not have that Pokémon!", safchan);
             return;
         }
-        if (isMega(id)) {
+        if (isMega(info.num)) {
             safaribot.sendMessage(src, "You cannot devolve a Mega Pokémon!", safchan);
             return;
         }
@@ -13589,11 +13589,17 @@ function Safari() {
                 
                 var out1 = giveStuff(p1.id, stuff1);
                 var out2 = giveStuff(p2.id, stuff2);
+                safari.saveGame(p1);
+                safari.saveGame(p2);
                 
                 safaribot.sendMessage(src, n1.toCorrectCase() + " " + out1 + "!", safchan);
                 safaribot.sendMessage(src, n2.toCorrectCase() + " " + out2 + "!", safchan);
-                safari.saveGame(p1);
-                safari.saveGame(p2);
+                if (sys.id(n1) && out1 !== "received nothing") {
+                    safaribot.sendMessage(sys.id(n1), "You " + out1 + "!", safchan);
+                }
+                if (sys.id(n2) && out2 !== "received nothing") {
+                    safaribot.sendMessage(sys.id(n2), "You " + out2 + "!", safchan);
+                }
                 return true;
             }
             if (command === "clearcd") {
