@@ -2,7 +2,12 @@
 /*jshint shadow: true*/
 /*jslint continue: true, plusplus: true, sloppy: true, vars: true*/
 exports.handleCommand = function (src, command, commandData, tar, channel) {
-    /*if (command === "togglerainbow") {
+    /*
+    if (command === "memorydump") {
+        sys.sendMessage(src, sys.memoryDump(), channel);
+        return;
+    }
+    if (command === "togglerainbow") {
         if (commandData === "off") {
             SESSION.global().allowRainbow = false;
             normalbot.sendMessage(src, "You turned rainbow off!", channel);
@@ -438,6 +443,7 @@ exports.help = [
     "/ban: Bans a user.",
     "/unban: Unbans a user.",
     "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
+//  "/memorydump: Shows the state of the memory.",
     "/nameban: Adds a regexp ban on usernames.",
     "/nameunban: Removes a regexp ban on usernames.",
     "/channelnameban: Adds a regexp ban on channel names.",
