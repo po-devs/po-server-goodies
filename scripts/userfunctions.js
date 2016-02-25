@@ -45,7 +45,9 @@ function POUser(id)
     /* stopping spam */
     this.pmwarned = false;
     /* invite delay */
-    this.inviteDelay = 0;
+    this.inviteDelay = {};
+    /* invitespec delay */
+    this.inviteBattleDelay = {};
     /* tour alert */
     if (script.getKey('touralertson', id) == "true") {
         this.tiers = script.getKey("touralerts", id).split("*");
