@@ -14402,6 +14402,34 @@ function Safari() {
         }
         return false;
     };
+    this.toursPromo = function (name, placing) {
+        var player = getAvatarOff(name);
+        if (!player) {
+            return;
+        }
+        var rew;
+        switch (placing) {
+            case 1:
+                player.balls.rare += 1;
+                player.balls.gem += 1;
+                player.balls.mega += 1;
+                rew = plural(1, "mega") + ", " + plural(1, "rare") + ", " + plural(1, "gem");
+            break;
+            case 2:
+                player.balls.rare += 1;
+                player.balls.gem += 1;
+                rew = plural(1, "rare") + ", " + plural(1, "gem");
+            break;
+            case 3:
+                player.balls.gem += 1;
+                rew = plural(1, "gem");
+            break;
+            default:
+                return; //Only top 3 get. Nothing more than 3 should be passed anyway
+        }
+        this.sanitize(player);
+        safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
+    }
 
     /* Events */
     this.init = function () {

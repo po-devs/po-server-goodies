@@ -4076,6 +4076,10 @@ function tourprintbracket(key) {
                 }
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
                 tours.eventhistory.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
+                var Safari = require('safari.js');
+                for (var r = 0; r < 3; r++) {
+                    Safari.toursPromo(rankingorder[r], r+1);
+                }
             }
             if (tours.history.length > 25) {
                 tours.history.pop();
