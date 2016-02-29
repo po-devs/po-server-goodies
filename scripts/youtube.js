@@ -32,5 +32,8 @@ function YouTube() {
         }
         return;
     };
+    this.init = function () {
+        return;  
+    };
 }
 module.exports = new YouTube();
