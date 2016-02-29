@@ -628,8 +628,7 @@ function Hangman() {
 
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
-            var x,
-                lbWon = this.getPropCase(leaderboards.current, w),
+            var lbWon = this.getPropCase(leaderboards.current, w),
                 lbScore = (!leaderboards.current[lbWon] ? 0 : leaderboards.current[lbWon]);
             if (!lbWon) {
                 leaderboards.current[w] = 0;
