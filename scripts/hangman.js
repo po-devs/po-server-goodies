@@ -495,7 +495,7 @@ function Hangman() {
         hangbot.sendAll("Type /g [letter] to guess a letter, and /a [answer] to guess the answer!", hangchan);
         sendChanHtmlAll(" ", hangchan);
         var time = parseInt(sys.time(), 10);
-        if (time > this.lastAdvertise + 60 * 20) {            
+        if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
             sys.sendAll("", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
@@ -628,14 +628,29 @@ function Hangman() {
 
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
-            var win = w.toLowerCase();
-            if (!(win in leaderboards.current)) {
-                leaderboards.current[win] = 0;
+            var x,
+                lbWon = this.getPropCase(leaderboards.current, w),
+                lbScore = (!leaderboards.current[lbWon] ? 0 : leaderboards.current[lbWon]);
+            if (!lbWon) {
+                leaderboards.current[w] = 0;
             }
-            leaderboards.current[win] += 1;
+            if (lbWon !== w) {
+                delete leaderboards.current[lbWon];
+            }
+            leaderboards.current[w] = lbScore + 1;
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
             eventCount = eventLimit;
         }
+        return;
+    };
+    this.getPropCase = function (obj, prop) {
+        var key;
+        for (key in obj) {
+            if (key.toLowerCase() === prop.toLowerCase()) {
+                return key;
+            }
+        }
+        return false;
     };
     this.setWinner = function (name, immediate) {
         word = undefined;
@@ -652,35 +667,32 @@ function Hangman() {
         var list = Object.keys(lb).sort(function(a, b) {
             return lb[b] - lb[a];
         });
-        var top = list.slice(0, cut);
-        var name;
+        var name, top = list.slice(0, cut);
         sys.sendMessage(src, "", hangchan);
         sys.sendMessage(src, "*** " + (fromLastMonth ? "LAST MONTH'S " : "") + "HANGMAN LEADERBOARDS ***", hangchan);
         for (var e = 0; e < top.length; e++) {
             name = top[e];
             hangbot.sendMessage(src, (e + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
         }
-        name = sys.name(src).toLowerCase();
+        var nameCased = this.getPropCase(leaderboards.current, sys.name(src));
+        name = (!nameCased ? commandData : nameCased);
         if (!fromLastMonth) {
             if (commandData) {
-                var req = commandData.toLowerCase();
+                var reqCased = this.getPropCase(leaderboards.current, commandData);
+                var req = (!reqCased ? commandData : reqCased);
                 if (req in lb) {
                     hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
                 }
-            }
-            else if (name in lb) {
-                if (top.indexOf(name) == -1) {
+            } else if (name in lb) {
+                if (top.indexOf(name) === -1) {
                     hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
                 }
-            } 
-            else {
+            } else {
                 hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
             }
         }
         sys.sendMessage(src, "", hangchan);
-
     };
-    
     this.passLeaderboard = function (src, commandData) {
         if (commandData === undefined) {
             hangbot.sendMessage(src, "Please choose a target user that is logged on the same IP.", hangchan);
