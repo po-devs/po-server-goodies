@@ -673,20 +673,18 @@ function Hangman() {
             name = top[e];
             hangbot.sendMessage(src, (e + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
         }
-        var nameCased = this.getPropCase(leaderboards.current, sys.name(src));
+        var nameCased = this.getPropCase(lb, sys.name(src));
         name = (!nameCased ? commandData : nameCased);
-        if (!fromLastMonth) {
-            if (commandData) {
-                var reqCased = this.getPropCase(leaderboards.current, commandData);
-                var req = (!reqCased ? commandData : reqCased);
-                if (req in lb) {
-                    hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
-                }
-            } else if (name in lb) {
-                if (top.indexOf(name) === -1) {
-                    hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
-                }
-            } else {
+        if (commandData) {
+            var reqCased = this.getPropCase(lb, commandData);
+            var req = (!reqCased ? commandData : reqCased);
+            if (req in lb) {
+                hangbot.sendMessage(src, (list.indexOf(req) + 1) + ". " + req + ": " + lb[req] + " point(s)", hangchan);
+            }
+        } else if (name in lb) {
+            if (top.indexOf(name) === -1) {
+                hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
+            } else if (!fromLastMonth) {
                 hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
             }
         }
