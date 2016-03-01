@@ -1048,6 +1048,10 @@ function Safari() {
                     return false;
                 }
             }
+            var player = getAvatar(x);
+            if (player && player.tutorial.inTutorial) {
+                return false;
+            }
             return true;
         });
         if (system) {
@@ -1643,10 +1647,10 @@ function Safari() {
         }
         return null;
     }
-    function ballMacro(src) {
+    function ballMacro(src, override) {
         var player = getAvatar(src);
         var name = sys.name(src);
-        if (!player || sys.os(src) === "android" || (currentEvent && currentEvent.isInEvent(name))) {
+        if (!player || sys.os(src) === "android" || (currentEvent && currentEvent.isInEvent(name)) || (player.tutorial.inTutorial && !override)) {
             return;
         }
         for (var p in currentPyramids) {
@@ -4138,7 +4142,7 @@ function Safari() {
 
         var bst = getBST(num);
         sys.sendHtmlMessage(src, "<hr><center>A wild " + pokeName + " appeared! <i>(BST: " + bst + ")</i><br/>" + pokeInfo.sprite(num) + "<br />(Note: This Pokémon is only visible to you and will flee if you leave the channel! Any ball you throw will be directed at this Pokémon.)</center><hr>", safchan);
-        ballMacro(src);
+        ballMacro(src, true);
         tutorMsg(src, "Wow, a Wild Pikachu! Quick, throw a ball at it with " + link("/catch") + " before it flees!");
     };
     this.tutorialCatch = function(src, data) {
@@ -11940,6 +11944,7 @@ function Safari() {
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon.",
+            "/exchange: To exchange one of your Pokémon for Raffle Entries!",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/buy: To buy items or Pokémon from an NPC.",
@@ -12075,9 +12080,11 @@ function Safari() {
                 safari.skipTutorial(src, commandData);
                 return true;
             }
-            /*if (command === "birthday") {
+            if (command === "exchange") {
+                var values = {"Ditto": 1}; //Make this editable on server maybe
+                var exchanged = Object.keys(values);
                 if (commandData === "*") {
-                    safaribot.sendMessage(src, "As part of Fuzzysqurl's Birthday Something event, you can exchange Pokemon for Raffle Entries into a drawing to win cool prizes. Only 3 Pokemon are accepted however: Vanillite is worth 1 Entry, Mareep is worth 2 Entries, and Litwick is worth 5 Entries. If you would like to exchange your Pokemon, you can use \"/birthday [pokemon]:confirm\"!", safchan);
+                    safaribot.sendMessage(src, "Welcome to the Safari Exchange System! You can connect with players around the world and send them your Pokémon to brighten their day. In return, you will receive some entries into the current raffle! If you have " + readable(exchanged, "or") + ", you could give it a try with \"/exchange [Pokémon]\"!", safchan);
                     return true;
                 }
                 var player = getAvatar(src);
@@ -12085,13 +12092,12 @@ function Safari() {
                 var info = getInputPokemon(input[0]);
                 var id = info.id;
                 
-                if (info.name !== "Vanillite" && info.name !== "Mareep" && info.name !== "Litwick") {
-                    safaribot.sendMessage(src, "Sorry, only Vanillite, Mareep, and Litwick are allowed to be traded!", safchan);
+                if (!exchanged.contains(info.name)) {
+                    safaribot.sendMessage(src, "Sorry, only " + readable(exchanged, "and") + " can be exchanged right now!", safchan);
                     return true;
                 }
-                var values = {"Vanillite": 1, "Mareep": 2, "Litwick": 5};
                 if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
-                    var confirmCommand = "/birthday "+ sys.pokemon(id) + ":confirm";
+                    var confirmCommand = "/exchange "+ sys.pokemon(id) + ":confirm";
                     safaribot.sendHtmlMessage(src, "You can exchange your " + info.name + " for " + plural(values[info.name], "Raffle Entry") + ". To confirm it, type <a href=\"po:send/" + confirmCommand + "\">" + confirmCommand + "</a>.", safchan);
                     return true;
                 }
@@ -12102,7 +12108,7 @@ function Safari() {
                 
                 var restrictions = ["contest", "auction", "battle", "event", "tutorial", "pyramid"];
                 var reason = "exchange a Pokémon";
-                //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
+                //Allow exchanging of pokemon that are not the lead if the rest of the party doesn't matter at that point
                 if (player.party[0] === id) {
                     restrictions = restrictions.concat(["wild"]);
                     reason = "exchange your active Pokémon";
@@ -12116,10 +12122,10 @@ function Safari() {
                 rafflePlayers.save();
                 safaribot.sendMessage(src, "You exchanged your " + info.name + " for " + plural(values[info.name], "Raffle Entry") + "! You now have " + plural(player.balls.entry, "Raffle Entry") + ".", safchan);
                 this.removePokemon(src, id);
-                this.logLostCommand(sys.name(src), "birthday " + commandData);
+                this.logLostCommand(sys.name(src), "exchanged " + commandData);
                 this.saveGame(player);
                 return true;
-            }*/
+            }
             if (command === "help") {
                 safari.showHelp(src);
                 return true;
@@ -14429,7 +14435,7 @@ function Safari() {
         }
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
-    }
+    };
 
     /* Events */
     this.init = function () {
