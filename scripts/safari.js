@@ -1320,6 +1320,9 @@ function Safari() {
         }
         return (num/denom*100).toFixed(places) + "%";
     }
+    function toFixed(num, digits) {
+        return (+num).toFixed(digits).replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/,'$1');
+    }
     
     /* Pokemon Functions */
     function getInputPokemon(info) {
@@ -6290,8 +6293,8 @@ function Safari() {
         var name2 = this.name2 + "'s " + poke(p2Poke);
 
         this.sendToViewers("Turn " + (this.turn + 1) + " | " + res.statName + " | " + name1 + " " + pokeInfo.icon(p1Poke) + " x " + pokeInfo.icon(p2Poke) + " " + name2);
-        this.sendToViewers(name1 + " | " + res.statName + ": " + res.stat[0] + " | Move Power: " + res.move[0] + " | Type Effectiveness: " + res.bonus[0] + "x");
-        this.sendToViewers(name2 + " | " + res.statName + ": " + res.stat[1] + " | Move Power: " + res.move[1] + " | Type Effectiveness: " + res.bonus[1] + "x");
+        this.sendToViewers(name1 + " | " + res.statName + ": " + res.stat[0] + " | Move Power: " + res.move[0] + " | Type Effectiveness: " + res.bonusString[0] + "x");
+        this.sendToViewers(name2 + " | " + res.statName + ": " + res.stat[1] + " | Move Power: " + res.move[1] + " | Type Effectiveness: " + res.bonusString[1] + "x");
 
         var p1Power = res.power[0];
         var p2Power = res.power[1];
@@ -6414,12 +6417,12 @@ function Safari() {
         var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
         var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
         if (inverted) {
-            if (p1Bonus === 0) {
+            if (p1Bonus <= immuneMultiplier) {
                 p1Bonus = 0.5;
             }
             p1Bonus = 1/p1Bonus;
             
-            if (p2Bonus === 0) {
+            if (p2Bonus <= immuneMultiplier) {
                 p2Bonus = 0.5;
             }
             p2Bonus = 1/p2Bonus;
@@ -6441,6 +6444,7 @@ function Safari() {
         return {
             type: [[p1Type1, p1Type2], [p2Type1, p2Type2]],
             bonus: [p1Bonus, p2Bonus],
+            bonusString: [toFixed(p1Bonus, 2), toFixed(p2Bonus, 2)],
             move: [p1Move, p2Move],
             statName: sName,
             stat: [p1Stat, p2Stat],
@@ -9456,7 +9460,7 @@ function Safari() {
             n2 = res.power[0] < res.power[1] ? "<b>" + n2 + "</b>" : n2;
 
             this.sendAll(result.format(n1, n2, pokeInfo.icon(m), pokeInfo.icon(opp), res.power[0], res.power[1]));
-            this.sendAll(toColor(status.format(res.statName, poke(m), poke(opp), res.stat[0], res.stat[1], res.move[0], res.move[1], res.bonus[0], res.bonus[1]), "gray"));
+            this.sendAll(toColor(status.format(res.statName, poke(m), poke(opp), res.stat[0], res.stat[1], res.move[0], res.move[1], res.bonusString[0], res.bonusString[1]), "gray"));
             
             if (res.power[0] > res.power[1]) {
                 score++;
@@ -10630,7 +10634,7 @@ function Safari() {
         }
         this.sendToViewers(result);
 
-        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonus[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonus[1] + "x)";
+        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonusString[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonusString[1] + "x)";
         this.sendToViewers(toColor(status, "gray"));
 
         if (res.power[0] > res.power[1]) {
