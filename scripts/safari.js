@@ -162,6 +162,7 @@ function Safari() {
             pyramidHelperScore: 0,
             pyramidLeaderClears: 0,
             pyramidHelperClears: 0,
+            pyramidTotalScore: 0,
             pyramidMoney: 0,
             pyramidSilver: 0,
             eggsHatched: 0,
@@ -1332,7 +1333,7 @@ function Safari() {
         -input: String; What you need to type to get to that result. Used for trade
         */
         var shiny = false, id, num, name;
-        info = info.replace(/flabebe/gi, "flabébé").toLowerCase();
+        info = info.replace(/flabebe|flabébe|flabebé/gi, "flabébé").toLowerCase();
 
         if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
             shiny = true;
@@ -1346,7 +1347,7 @@ function Safari() {
         id = shiny ? num + "" : num;
 
         name = sys.pokemon(num);
-        if (name == "Missingno") {
+        if (name.toLowerCase() == "missingno") {
             num = null;
         }
 
@@ -6406,12 +6407,23 @@ function Safari() {
     Battle.prototype.isInBattle = function(name) {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
-    function calcDamage(p1, p2, p1Handicap, p2Handicap) {
+    function calcDamage(p1, p2, p1Handicap, p2Handicap, inverted) {
         var p1Type1 = sys.type(sys.pokeType1(p1)), p1Type2 = sys.type(sys.pokeType2(p1));
         var p2Type1 = sys.type(sys.pokeType1(p2)), p2Type2 = sys.type(sys.pokeType2(p2));
         
         var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
         var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
+        if (inverted) {
+            if (p1Bonus === 0) {
+                p1Bonus = 0.5;
+            }
+            p1Bonus = 1/p1Bonus;
+            
+            if (p2Bonus === 0) {
+                p2Bonus = 0.5;
+            }
+            p2Bonus = 1/p2Bonus;
+        }
         
         var p1Move = p1Handicap ? sys.rand(p1Handicap[0], p1Handicap[1]) : sys.rand(10, 100);
         var p2Move = p2Handicap ? sys.rand(p2Handicap[0], p2Handicap[1]) : sys.rand(10, 100);
@@ -6857,7 +6869,7 @@ function Safari() {
             return;
         }
 
-        if (offer >= this.currentOffer * 10 && (!(id in this.confirmBid) || this.confirmBid[id] != offer)) {
+        if (offer >= this.currentOffer * 6 && (!(id in this.confirmBid) || this.confirmBid[id] != offer)) {
             safaribot.sendMessage(src, "Do you really want to offer $" + addComma(offer) + " or was that a typo? If you really want to offer that, make that bid again!", safchan);
             this.confirmBid[id] = offer;
             return;
@@ -7289,8 +7301,8 @@ function Safari() {
                 this.fightTower(src, args);
             break;
             /* case "pyramid":
-                this.pyramidQuest(src, args); */
-            break;
+                this.pyramidQuest(src, args);
+            break; */
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
         }
@@ -8797,16 +8809,14 @@ function Safari() {
             amt = this.level * 3;
         }
         
-        var e, name, player, save;
+        var e, name, player;
         for (e = 0; e < this.names.length; e++) {
             name = this.names[e];
-            save = false;
             player = getAvatarOff(name);
             if (name === this.leader) {
                 player.quests.pyramid.cooldown = now() + 45*60*1000;
                 if (this.points > player.records.pyramidLeaderScore) {
                     player.records.pyramidLeaderScore = this.points;
-                    save = true;
                 }
                 if (this.finishMode === "cleared") {
                     player.records.pyramidLeaderClears += 1;
@@ -8814,7 +8824,6 @@ function Safari() {
                 if (reward) {
                     this.sendToViewers("Party leader " + name.toCorrectCase() + " received " + plural(amt, reward) + " for their performance at Pyramid!");
                     rewardCapCheck(player, reward, amt);
-                    save = true;
                 }
             } else {
                 if (player.quests.pyramid.cooldown < now()) {
@@ -8822,15 +8831,13 @@ function Safari() {
                 }
                 if (this.points > player.records.pyramidHelperScore) {
                     player.records.pyramidHelperScore = this.points;
-                    save = true;
                 }
                 if (this.finishMode === "cleared") {
                     player.records.pyramidHelperClears += 1;
                 }
             }
-            if (save) {
-                safari.saveGame(player);
-            }
+            player.records.pyramidTotalScore += this.points;
+            safari.saveGame(player);
         }
         
         if (this.finishMode === "cleared") {
@@ -9185,7 +9192,7 @@ function Safari() {
             m = choices[p];
             
             res = calcDamage(m, opp, [50, 140]);
-            if (res.power[0] > 0) {
+            if (this.opponentHP > 0 && res.power[0] > 0) {
                 
                 this.opponentHP -= res.power[0];
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
@@ -9626,7 +9633,7 @@ function Safari() {
         this.answer = poke(this.answerId);
         this.answerAttempts = 0;
         this.cluesSearched = {};
-        this.turns = 9;
+        this.turns = 8;
         
         var hints = this.writeHints();
         
@@ -9738,10 +9745,11 @@ function Safari() {
         }
     };
     RiddleRoom.prototype.useCommand = function(src, commandData) {
-        var player = getAvatar(src);
+        var player = getAvatar(src),
+            info = getInputPokemon(commandData);
         
-        if (player.id === this.pyr.leader && sys.pokeNum(commandData) > 0) {
-            this.checkAnswer(commandData);
+        if (player.id === this.pyr.leader && info.num !== null && !info.shiny) {
+            this.checkAnswer(info.name);
             return;
         }
         if (this.validInput && !this.validInput(player.id, commandData)) {
@@ -10409,9 +10417,9 @@ function Safari() {
         return signupsLower.contains(name.toLowerCase());
     };
 
-    function FactionWar(src, team1, team2, reward, amount) {
+    function FactionWar(src, team1, team2, reward, amount, inverted) {
         SafariEvent.call(this);
-        this.eventName = "Faction War";
+        this.eventName = (inverted ? "Inverted " : "") + "Faction War";
 
         this.team1Name = team1;
         this.team2Name = team2;
@@ -10421,6 +10429,7 @@ function Safari() {
         this.team2 = [];
         this.party1 = [];
         this.party2 = [];
+        this.inverted = inverted;
 
         this.npcs = [];
         this.preferredTeams = {};
@@ -10607,7 +10616,7 @@ function Safari() {
         }
     };
     FactionWar.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
-        var res = calcDamage(p1Poke, p2Poke);
+        var res = calcDamage(p1Poke, p2Poke, null, null, this.inverted);
         var name1 = owner1 + "'s " + poke(p1Poke);
         var name2 = owner2 + "'s " + poke(p2Poke);
 
@@ -12554,7 +12563,7 @@ function Safari() {
                 if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
                     var themes = [];
                     for (var e in contestThemes) {
-                        if (this.validForTheme(info.num, e)) {
+                        if ((info.num < 722 || contestThemes[e].include.contains(info.num)) && this.validForTheme(info.num, e)) {
                             themes.push(contestThemes[e].name);
                         }
                     }
@@ -12684,6 +12693,11 @@ function Safari() {
                     case "faction":
                         type = "factionwar";
                     break;
+                    case "inverwar":
+                    case "invertedwar":
+                    case "inverted war":
+                        type = "invertedwar";
+                    break;
                     case "race":
                     case "pokerace":
                         type = "race";
@@ -12703,6 +12717,7 @@ function Safari() {
                     case "info":
                         safaribot.sendMessage(src, "To start an event, use one of the following commands:", safchan);
                         safaribot.sendMessage(src, "Faction War: /startevent war:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
+                        safaribot.sendMessage(src, "Inverted Faction War: /startevent invertedwar:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
                         safaribot.sendMessage(src, "Pokémon Race: /startevent race:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]", safchan);
                         safaribot.sendMessage(src, "Pokémon Silver Race: /startevent silverrace:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
                         safaribot.sendMessage(src, "Pokémon Item Race: /startevent [itemrace/itemsilverrace]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
@@ -12712,7 +12727,7 @@ function Safari() {
 
                 var param = info.slice(1);
 
-                if (type == "factionwar") {
+                if (type == "factionwar" || type == "invertedwar") {
                     if (param.length < 3) {
                         safaribot.sendMessage(src, "Use /startevent FactionWar:Team1:Team2:Reward:Amount to start a Faction War!", safchan);
                         return true;
@@ -12734,7 +12749,7 @@ function Safari() {
                         amt = 1;
                     }
 
-                    var ev = new FactionWar(src, name1, name2, reward, amt);
+                    var ev = new FactionWar(src, name1, name2, reward, amt, type == "invertedwar");
                     currentEvent = ev;
                 }
                 else if (type == "race" || type == "silverrace" || type == "itemrace" || type == "itemsilverrace") {
