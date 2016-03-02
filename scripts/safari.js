@@ -6444,7 +6444,7 @@ function Safari() {
         return {
             type: [[p1Type1, p1Type2], [p2Type1, p2Type2]],
             bonus: [p1Bonus, p2Bonus],
-            bonusString: [toFixed(p1Bonus, 2), toFixed(p2Bonus, 2)],
+            bonusString: [toFixed(p1Bonus, 3), toFixed(p2Bonus, 3)],
             move: [p1Move, p2Move],
             statName: sName,
             stat: [p1Stat, p2Stat],
