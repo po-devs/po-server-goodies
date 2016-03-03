@@ -367,10 +367,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         battlebot.sendMessage(src, "You are currently " + (sys.away(src) ? "idling" : "here and ready to battle") + ". Use /idle on/off to change it.", channel);
         return;
     }
-    if (command === "selfkick" || command === "sk") {
+    if (command === "selfkick") {
         var i, srcIp = sys.ip(src), playersArray = sys.playerIds();
         for (i = 0; i < playersArray.length; ++i) {
-            if ((src !== playersArray[i]) && (srcIp === sys.ip(playersArray[i]))) {
+            if (src !== playersArray[i] && srcIp === sys.ip(playersArray[i])) {
                 sys.kick(playersArray[i]);
                 normalbot.sendMessage(src, "Your ghost was kicked...");
             }
