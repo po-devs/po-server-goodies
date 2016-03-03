@@ -505,12 +505,4 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
-this.returnVar = function (v) {
-    switch (v) {
-        case "halist": return halist;
-        case "pokebank": return pokebank;
-        default: return "idk";
-    }
-};
-
 module.exports = tier_checker;
