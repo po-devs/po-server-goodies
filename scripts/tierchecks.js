@@ -48,7 +48,7 @@ var lcmoves = {
 
 var pokeAbilities = [];
 
-var Ablist = "Bulbasaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Ivysaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Venusaur-False Swipe/Overgrow|Block/Overgrow|Weather Ball/Overgrow=Charmander-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charmeleon-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charizard-False Swipe/Blaze|Block/Blaze|Acrobatics/Blaze=Squirtle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Wartortle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Blastoise-False Swipe/Torrent|Block/Torrent|Follow Me/Torrent";
+var Ablist = "Bulbasaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Ivysaur-False Swipe/Overgrow|Block/Overgrow|Frenzy Plant/Overgrow|Weather Ball/Overgrow=Venusaur-False Swipe/Overgrow|Block/Overgrow|Weather Ball/Overgrow=Charmander-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charmeleon-False Swipe/Blaze|Block/Blaze|Blast Burn/Blaze|Acrobatics/Blaze=Charizard-False Swipe/Blaze|Block/Blaze|Acrobatics/Blaze=Squirtle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Wartortle-False Swipe/Torrent|Block/Torrent|Hydro Cannon/Torrent|Follow Me/Torrent=Blastoise-False Swipe/Torrent|Block/Torrent|Follow Me/Torrent=Articuno-Disable/Snow Cloak";
 //Terrible, but it works!
 //Bulba line: Weather Ball, Frenzy Plant, False Swipe, Block
 //Charm line: Acrobatics, Blast Burn, False Swipe, Block
