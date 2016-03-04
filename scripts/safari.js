@@ -770,6 +770,7 @@ function Safari() {
     var scientistQuest;
     var ccatch = "ccatch";
     var ccatch2 = "ccatchh";
+    var allowedSharedIPNames = [];
     }
 
     /* Safari Functions */
@@ -11129,6 +11130,21 @@ function Safari() {
             this.loadGame(src);
             return;
         }
+        
+        var ip = sys.ip(src);
+        var foundSaves = [];
+        sys.aliases(ip).sort().forEach(function(n){
+            if (hasSave(n)) {
+                foundSaves.push(n);
+            }
+        });
+        if (foundSaves.length > 0) {
+            if (!allowedSharedIPNames.contains(id)) {
+                safaribot.sendMessage(src, "You already have saves under the following names: " + foundSaves.join(", ") + ". Change your name to one of those to load them, or contact a Safari Auth if you have a reason to create a brand new save.", safchan);
+                return;
+            }
+        }
+        
         var num = getInputPokemon(data).num;
         if (!num || starters.indexOf(num) === -1) {
             safaribot.sendHtmlMessage(src, "Invalid Pokémon! Possible choices: " + starters.map(function (x) { x = sys.pokemon(x); return link("/start " + x, x); }).join(", "), safchan);
@@ -11151,6 +11167,12 @@ function Safari() {
         this.assignIdNumber(player);
         this.saveGame(player);
         idnumList.add(player.idnum, player.id);
+        
+        if (allowedSharedIPNames.contains(id)) {
+            allowedSharedIPNames.splice(allowedSharedIPNames.indexOf(id), 1);
+            permObj.add("allowedSharedIPs", JSON.stringify(allowedSharedIPNames));
+        }
+        
         tutorMsg(src, "Welcome to Safari! There are a lot of things to do around here and it may be very overwhelming! If you would like to learn how to play Safari you can use the command " + link("/tutorial") + " and start a guided tour around the facility! If you would rather fend for yourself, you can use " + link("/skiptutorial") + " and get right to playing!");
         safaribot.sendMessage(src, "You enter the Safari Zone with your " + poke(num) + " by your side!", safchan);
     };
@@ -12008,6 +12030,7 @@ function Safari() {
             "/mythlog [amount]։[lookup]: Returns a list of Legendary or Shiny Pokémon spawns. Amount and Lookup works the same as /tradelog.",
             "/altlog [amount]։[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
             "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
+            "/sharedname [name]: Allows/disallows a person to start a new Safari save while they share IP with another Safari Player.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
             "/salt [player]։[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
@@ -13151,6 +13174,25 @@ function Safari() {
                 return true;
             }
 
+            if (command === "sharedname") {
+                if (commandData === "*") {
+                    safaribot.sendMessage(src, "The following names are currently allowed to create a new save sharing IP with another player: " + readable(allowedSharedIPNames), safchan);
+                    return true;
+                }
+                var id = commandData.toLowerCase();
+                if (allowedSharedIPNames.contains(id)) {
+                    allowedSharedIPNames.splice(allowedSharedIPNames.indexOf(id), 1);
+                    safaribot.sendMessage(src, id + " is no longer allowed to create a new save while sharing IP with another player!", safchan);
+                } else {
+                    allowedSharedIPNames.push(id);
+                    safaribot.sendMessage(src, id + " is now allowed to create a new save despite sharing IP with another player!", safchan);
+                    if (sys.id(id)) {
+                        safaribot.sendMessage(sys.id(id), "You can now create a Safari save with /start!", safchan);
+                    }
+                }
+                permObj.add("allowedSharedIPs", JSON.stringify(allowedSharedIPNames));
+                return true;
+            }
             if (command === "transferalt") {
                 var data = commandData.split(":");
                 if (data.length < 2) {
@@ -14503,6 +14545,11 @@ function Safari() {
             lastContests = JSON.parse(permObj.get("lastContests"));
         } catch (err) {
             lastContests = [];
+        }
+        try {
+            allowedSharedIPNames = JSON.parse(permObj.get("allowedSharedIPs"));
+        } catch (err) {
+            allowedSharedIPNames = [];
         }
         if (permObj.hash.hasOwnProperty("ccatch")) {
             ccatch = permObj.get("ccatch");
