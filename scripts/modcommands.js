@@ -139,7 +139,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         if (command === "k") {
             sys.kick(tar);
-            normalbot.sendAll(commandData + " was kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+            normalbot.sendAll(commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
         } else {
             if (isSuperAdmin(src) || sys.auth(src) > 2) {
                 sys.kick(tar);
