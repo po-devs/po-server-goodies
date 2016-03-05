@@ -1754,8 +1754,8 @@ function Safari() {
         
         return out;
     }
-    function giveStuff(name, stuff) {
-        var player = getAvatarOff(name), out = { gained: [], lost: [] }, asset, amt, total, max;
+    function giveStuff(player, stuff) {
+        var out = { gained: [], lost: [] }, asset, amt, total, max;
         if (!player) {
             return "nothing";
         }
@@ -13677,8 +13677,8 @@ function Safari() {
                     stuff2[e] += inverted2[e];
                 }
                 
-                var out1 = giveStuff(p1.id, stuff1);
-                var out2 = giveStuff(p2.id, stuff2);
+                var out1 = giveStuff(p1, stuff1);
+                var out2 = giveStuff(p2, stuff2);
                 safari.saveGame(p1);
                 safari.saveGame(p2);
                 
