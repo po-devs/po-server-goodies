@@ -5077,7 +5077,8 @@ function Safari() {
         if (player.costume === "explorer") {
             if (reward === "nothing" && chance(costumeData.explorer.rate)) {
                 reward = randomSample(finderItems);
-            } else if (reward === "pearl" || reward === "stardust") {
+            }
+            if (reward === "pearl" || reward === "stardust") {
                 amount = chance(costumeData.explorer.rate2) ? 2 : 1;
             }
         }
@@ -8630,12 +8631,12 @@ function Safari() {
         else if (this.currentRoom === null) {
             var type = randomSample({
                 horde: 10,
-                riddle: 8,
+                riddle: 7,
                 hazard: 10,
                 blocked: 8,
                 trainer: 7,
                 defense: 7,
-                empty: 6,
+                empty: 5,
                 strong: 8
             });
             this.room++;
@@ -8973,7 +8974,6 @@ function Safari() {
             }
         }
         
-        
         return out;
     };
     PyramidRoom.prototype.send = function(name, msg, flashing, colored) {
@@ -9047,8 +9047,10 @@ function Safari() {
             this.treasureHeld = randomSampleObj(this.treasures);
         }
         
+        this.inverted = chance(0.14 + level * 0.06);
+        
         this.sendAll("");
-        this.sendAll("Room " + level + "-" + roomNum + ": This room is infested with lots of wild Pokémon! Defeat them to pass!");
+        this.sendAll("Room " + level + "-" + roomNum + ": This room is infested with lots of wild Pokémon! Defeat them to pass! " + (this.inverted ? "This room is under the effect of Inverted Type Effectiveness!" : ""));
         this.sendAll("Wild Pokémon: " + this.horde.map(pokeInfo.icon).join(""));
         this.sendIndividuals();
         this.sendAll("");
@@ -9058,7 +9060,7 @@ function Safari() {
         return this.pokeInParty(id, commandData);
     };
     HordeRoom.prototype.advance = function() {
-        var members = this.pyr.names, id, choice, m, p, opp, res, defeated = {}, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke;
+        var members = this.pyr.names, id, choice, m, p, opp, res, defeated = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke;
         
         attackers = this.getChoices();
         attackersNames = Object.keys(attackers);
@@ -9071,10 +9073,11 @@ function Safari() {
                 id = attackersNames[n];
                 choice = attackers[id];
                 
-                res = calcDamage(choice, opp, null, this.hordePower);
+                res = calcDamage(choice, opp, null, this.hordePower, this.inverted);
                 lastAttacker = n + 1;
                 
                 if (res.power[0] > res.power[1]) {
+                    defeatedCount++;
                     if (!defeated.hasOwnProperty(id)) {
                         defeated[id] = [];
                     }
@@ -9107,13 +9110,33 @@ function Safari() {
         var stamina = {};
         var staminaStr = [];
         if (this.horde.length > 0) {
+            var totalDamage = this.horde.length * 4 * this.level * attackersNames.length;
+            var damage = {};
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                stamina[id] = -(this.horde.length * 4 * this.level);
-                staminaStr.push(id.toCorrectCase() + " -" + (this.horde.length * 4 * this.level));
+                damage[id] = Math.round(totalDamage * (defeated[id].length / Math.max(defeatedCount, 1)));
+            }
+            if (attackersNames.length > 1) {
+                var higher = 0, lower = totalDamage, higherName, lowerName;
+                for (p in damage) {
+                    if (damage[p] <= lower) {
+                        lower = damage[p];
+                        lowerName = p;
+                    }
+                    if (damage[p] >= higher) {
+                        higher = damage[p];
+                        higherName = p;
+                    }
+                }
+                damage[higherName] = lower;
+                damage[lowerName] = higher;
+            }
+            for (p in damage) {
+                stamina[p] = -damage[p];
+                staminaStr.push(p.toCorrectCase() + " -" + damage[p]);
             }
             this.sendAll("The following Wild Pokémon haven't been defeated and attacked the players: " + readable(this.horde.map(function(x){ return toColored(poke(x), "red"); }), "and") + "!");
         }
@@ -9533,14 +9556,14 @@ function Safari() {
             this.firstAtk = damaging.random();
             type = sys.type(sys.moveType(this.firstAtk));
             count++;
-        } while (count < level * 2 && type === "Normal");
+        } while (count < 1 + level * 2 && type === "Normal");
         this.firstAtk = sys.move(this.firstAtk);
         
         do {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
             count++;
-        } while (count < level * 2 && type === "Normal");
+        } while (count < 2 + level * 2 && type === "Normal");
         
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
@@ -9908,7 +9931,7 @@ function Safari() {
         };
         this.hazards = {};
         var pickedHazards = Object.keys(this.hazardMoves).shuffle();
-        var count = 100, index = 0, added, minVal = 6;
+        var count = 100, index = 0, added, minVal = 7;
         while (count > minVal && index < pickedHazards.length) {
             added = sys.rand(minVal, count);
             this.hazards[pickedHazards[index]] = added;
@@ -10028,9 +10051,9 @@ function Safari() {
             
             if (cat in this.hazards && this.hazards[cat] > 0) {
                 if (struggled) {
-                    power = Math.min(sys.rand(8, 38), this.hazards[cat]);
+                    power = Math.min(sys.rand(8, 40 - this.level), this.hazards[cat]);
                 } else {
-                    power = Math.min(sys.rand(15, 64), this.hazards[cat]);
+                    power = Math.min(sys.rand(15 + this.level, 67 - this.level), this.hazards[cat]);
                 }
                 
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3} and clear <b>{4}%</b> of the room! {5}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), power, strugglemsg));
