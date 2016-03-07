@@ -505,4 +505,19 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
+tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCUnown(src, team) {
+    var ret = [];
+    var gen = sys.gen(src, team);
+    //Both shininess and form are determined by IVs in gen 2, making the letters I and V the only ones that can be shiny
+    if (gen == 2) {
+        var letters = [sys.pokeNum("Unown-I"), sys.pokeNum("Unown-V")];
+        for (var i = 0; i < 6; i++) {
+            if (!letters.contains(sys.teamPoke(src, team, i))) {
+                sys.changePokeShine(src, team, i, false);
+            }
+        }
+    }	
+    return ret;
+});
+
 module.exports = tier_checker;
