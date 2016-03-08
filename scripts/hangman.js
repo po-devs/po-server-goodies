@@ -764,7 +764,7 @@ function Hangman() {
         } else {
             w = winners[0];
         }
-        hangbot.sendAll("" + w + " has won " + hostName + "'s game with " + maxPoints + " points!", hangchan);
+        hangbot.sendAll("" + w + " has won " + nonFlashing(hostName) + "'s game with " + maxPoints + " points!", hangchan);
         var ranking = [],
             p;
         for (p in points) {
