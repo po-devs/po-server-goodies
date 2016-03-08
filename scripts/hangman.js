@@ -118,7 +118,7 @@ function Hangman() {
     this.unownGuess = function () {     
         var i, x, y, z, count = 0;
 
-        x = validFills.random();
+        x = Math.floor(Math.random() * validFills.length);
         y = validFills[x];
         validFills.splice(x, 1);
         usedTossUps.push(y);
@@ -605,7 +605,7 @@ function Hangman() {
                 }
                 tossUpOrder.push(y);
             }
-            x = validFills.random();
+            x = Math.floor(Math.random() * validFills.length);
             y = validFills[x];
             currentWord[tossUpOrder[y]] = word[tossUpOrder[y]].toUpperCase();
             validFills.splice(x, 1);
