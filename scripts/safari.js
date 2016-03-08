@@ -8015,16 +8015,17 @@ function Safari() {
                 if (player.costume === "ninja" && chance(costumeData.ninja.rate)) {
                     skip = true;
                 }
+                var ac = args.count + skip;
                 var npc = {
                     name: "Trainer " + generateName(),
-                    party: generateTeam(chance(Math.min(0.02 * args.count, 0.42)) ? Object.keys(effectiveness).random() : null),
-                    power: [10 + Math.floor(args.count/2), 100 + args.count],
+                    party: generateTeam(chance(Math.min(0.02 * ac, 0.42)) ? Object.keys(effectiveness).random() : null),
+                    power: [10 + Math.floor(args.count/2), 100 + ac],
                     postBattle: postBattle,
                     postArgs: {
-                        count: args.count + 1 + skip,
+                        count: ac + 1,
                         reward: args.reward
                     },
-                    desc: "Tower Lvl. " + (args.count + 1)
+                    desc: "Tower Lvl. " + (ac + 1)
                 };
                 var mod, rew, amt, loop, c, times = 1 + skip,
                     specialPrizes = {
@@ -8075,9 +8076,9 @@ function Safari() {
                     npc.postArgs.reward[rew] += amt;
                 }
                 
-                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + plural(args.count - skip, "trainer") + " so far! Now for the next battle!", safchan);
+                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + plural(args.count, "trainer") + " so far! Now for the next battle!", safchan);
                 if (skip) {
-                    safaribot.sendMessage(id, "You carefully time your movements as you head up to the next floor. You dash for the stairs to skip battling, but not before pickpocketing the unaware Trainer!", safchan);
+                    safaribot.sendMessage(id, "You carefully time your movements as you head up to the next floor. You dash for the stairs to skip battling, but not before mocking the unaware Trainer!", safchan);
                 }
                 for (var e = 0; e < viewers.length; e++) {
                     if (viewers[e] !== name.toLowerCase()) {
@@ -8103,11 +8104,11 @@ function Safari() {
                     }
                 }
             } else {
-                var count = args.count - 1, updatelb = false;
+                var count = args.count - 1 - skip, updatelb = false;
                 if (count > player.records.towerHighest) {
                     player.records.towerHighest = count;
                     if (leaderboards.towerHighest.length === 0 || count > leaderboards.towerHighest[0].value) {
-                        safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + count + " trainer" + (args.count == 1 ? "" : "s") + " at the Battle Tower and set a new record!</b>", safchan);
+                        safaribot.sendHtmlAll("<b>" + name.toCorrectCase() + " has defeated " + plural(count, "trainer") + " at the Battle Tower and set a new record!</b>", safchan);
                         updatelb = true;
                     }
                 }
@@ -8141,6 +8142,9 @@ function Safari() {
                         safaribot.sendMessage(id, "Tower Clerk: Good job, " + name + "! You defeated " + count + " trainers!", safchan);
                     } else {
                         safaribot.sendMessage(id, "Tower Clerk: Amazing, " + name + "! You defeated " + count + " trainers! Congratulations!", safchan);
+                    }
+                    if (skip) {
+                        safaribot.sendMessage(id, "Tower Clerk: Hey wait a minute! You didn't defeat the previous Trainer so I can't count it in your performance assessment.", safchan);
                     }
                     if (rewardText.length > 0) {
                         safaribot.sendMessage(id, "Tower Clerk: For your performance in the Battle Tower challenge, we reward you with " + readable(rewardText, "and") + "!", safchan);
@@ -8182,17 +8186,14 @@ function Safari() {
                     safari.updateLeaderboards();
                 }
             }
-        };        
-        if (player.costume === "ninja" && chance(costumeData.ninja.rate)) {
-            skip = true;
-        }
+        };
         var npc = {
             name: "Trainer " + generateName(),
             party: generateTeam(),
             power: [10, 100],
             postBattle: postBattle,
             postArgs: {
-                count: 1 + skip,
+                count: 1,
                 reward: {}
             },
             desc: "Tower Lvl. 1"
