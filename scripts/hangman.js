@@ -118,7 +118,7 @@ function Hangman() {
     this.unownGuess = function () {     
         var i, x, y, z, count = 0;
 
-        x = Math.floor(Math.random() * validFills.length);
+        x = validFills.random();
         y = validFills[x];
         validFills.splice(x, 1);
         usedTossUps.push(y);
@@ -605,7 +605,7 @@ function Hangman() {
                 }
                 tossUpOrder.push(y);
             }
-            x = Math.floor(Math.random() * validFills.length);  
+            x = validFills.random();
             y = validFills[x];
             currentWord[tossUpOrder[y]] = word[tossUpOrder[y]].toUpperCase();
             validFills.splice(x, 1);
@@ -622,7 +622,7 @@ function Hangman() {
             hangbot.sendAll("A " + (gameMode == regular ? "regular":gameMode == suddenDeath ? "Sudden Death":"Toss Up") + " Event Game has started! The winner of this game will receive 1 Leaderboard point!", hangchan);
             suddenDeathTime = suddenDeathLimit;
         } else {
-            hangbot.sendAll(hostName + " started a new game of Hangman!", hangchan);
+            hangbot.sendAll(hostName + " started a new " + (gameMode == regular ? "":gameMode == suddenDeath ? "Sudden Death":"Toss Up") + " game of Hangman!", hangchan);
         }
         hangbot.sendAll(currentWord.join(" "), hangchan);
         hangbot.sendAll(hint, hangchan);
@@ -2149,7 +2149,7 @@ function Hangman() {
                 currentMonth: -1
             };
         }
-	try {
+        try {
             flashlist = JSON.parse(sys.read(flashlistFile));
         } catch (err) {
             hangbot.sendAll("Unable to load Hangman Flashlist.", hangchan);
