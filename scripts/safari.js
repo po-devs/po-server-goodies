@@ -301,10 +301,10 @@ function Safari() {
         pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.2, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
         explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely you can even find multiple items!", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
-        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 1.2, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
+        battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
-        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 3, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon &lt;500 BST"},
-        rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.1, rate2: 0.02, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon meant for someone else!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
+        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon &lt;500 BST"},
+        rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
         //fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 0, record: 0, rate: 0.2, effect: "A master in angling. ", noAcq: "{0}"},
@@ -338,8 +338,8 @@ function Safari() {
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1
     };
     var finderItems = {
-        crown: 1, honey: 1, eviolite: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 15, bait: 20, pearl: 10, stardust: 7, luxury: 15, gacha: 16,
+        crown: 1, honey: 1, eviolite: 1, fragment: 1,
+        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20, pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
         nothing: 480
     };
     var packItems = {
@@ -3389,7 +3389,7 @@ function Safari() {
         if (cos === "none") {
             safaribot.sendMessage(src, "You removed your costume! You can put on a new costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
         } else {
-            player.cooldowns.costume = currentTime + (6 * 60 * 60 * 1000);
+            player.cooldowns.costume = currentTime + (4 * 60 * 60 * 1000);
             safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
             if (player.tutorial.inTutorial && player.tutorial.step === 4 && costumeName === costumeData.preschooler.fullName) {
                 advanceTutorial(src, 5);
@@ -5129,6 +5129,12 @@ function Safari() {
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
             }
             break;
+            case "bigpearl": {
+                if (player.costume !== "explorer") {
+                    reward = "pearl";
+                }
+            }
+            /*falls through*/
             case "pearl":
             case "stardust": {
                 safaribot.sendMessage(src, "Beep Beep Beep. You dig around a sandy area and unbury " + an(finishName(reward)) + "!", safchan);
@@ -5137,6 +5143,15 @@ function Safari() {
                 }
             }
             break;
+            case "fragment": {
+                if (player.costume === "explorer") {
+                    safaribot.sendHtmlAll("<b>Be-Be-Be-Beeep! " + sys.name(src) + " found " + an(finishName(reward)) + "  in a patch of grass!</b>", safchan);
+                    break;
+                } else {
+                    reward = "luxury";
+                }
+            }
+            /* falls through*/
             case "luxury": {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
             }
@@ -6242,9 +6257,9 @@ function Safari() {
         var npcDesc = null;
 
         if (isNPC) {
-            var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 1;
-            this.selfPowerMin = 10 * costumeBonus;
-            this.selfPowerMax = 100 * costumeBonus * (player1.truesalt >= now() ? 0.35 : 1);
+            var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 0;
+            this.selfPowerMin = 10 + costumeBonus;
+            this.selfPowerMax = (100 + costumeBonus) * (player1.truesalt >= now() ? 0.35 : 1);
 
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
@@ -7557,20 +7572,18 @@ function Safari() {
 
                 player.money = Math.min(player.money + payout, moneyCap);
                 
-                var mon, theft = "";
-                if (player.costume === "rocket" && chance(costumeData.rocket.rate)) {
-                    mon = quest.requests[sys.rand(0, quest.requests.length)];
-                    safaribot.sendMessage(src, "You cleverly distract the Collector and while he is not looking, you grab your " + poke(mon) + " back and run off!", safchan);
-                    theft = " but stole the " + poke(mon) + " back";
-                    player.records.pokesStolen += 1;
-                }
+                var stole = 1, costumed = player.costume === "rocket", theft = "";
+                quest.requests = quest.requests.shuffle(); //Shuffle to make it more random
                 for (e = 0; e < quest.requests.length; e++) {
-                    if (quest.requests[e] === mon) {
+                    if (costumed && chance(costumeData.rocket.rate * stole)) {
+                        theft = " but stole the " + poke(quest.requests[e]) + " back";
+                        safaribot.sendMessage(src, "You cleverly distract the Collector and while he is not looking, you grab your " + poke(quest.requests[e]) + " back and run off!", safchan);
+                        player.records.pokesStolen += 1;
+                        stole /= 3;
                         continue;
                     }
                     this.removePokemon(src, quest.requests[e]);
                 }
-
                 sys.sendMessage(src, "", safchan);
                 this.logLostCommand(sys.name(src), "quest collector:" + data.join(":"), "gave " + readable(quest.requests.map(poke), "and") + theft);
                 player.records.collectorEarnings += payout;
@@ -7712,7 +7725,7 @@ function Safari() {
             
             player.balls.silver += quest.reward;
             var theft = "";
-            if (player.costume === "rocket" && chance(costumeData.rocket.rate)) {
+            if (player.costume === "rocket" && chance(costumeData.rocket.rate * 2)) {
                 safaribot.sendMessage(src, "You cleverly distract the Scientist and while he is not looking, you grab your " + poke(id) + " back and run off!", safchan);
                 player.records.pokesStolen += 1;
                 theft = " but stole it back";
@@ -7992,69 +8005,86 @@ function Safari() {
         player.money -= cost;
         this.saveGame(player);
 
+        var skip = false;
         var postBattle = function(name, isWinner, playerScore, npcScore, args, viewers) {
             var player = getAvatarOff(name);
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
+                skip = false;
+                if (player.costume === "ninja" && chance(costumeData.ninja.rate)) {
+                    skip = true;
+                }
                 var npc = {
                     name: "Trainer " + generateName(),
                     party: generateTeam(chance(Math.min(0.02 * args.count, 0.42)) ? Object.keys(effectiveness).random() : null),
                     power: [10 + Math.floor(args.count/2), 100 + args.count],
                     postBattle: postBattle,
                     postArgs: {
-                        count: args.count + 1,
+                        count: args.count + 1 + skip,
                         reward: args.reward
                     },
                     desc: "Tower Lvl. " + (args.count + 1)
                 };
-                var mod = args.count % 6, loop = Math.floor(args.count / 6) + 1, rew, amt,
+                var mod, rew, amt, loop, c, times = 1 + skip,
                     specialPrizes = {
                         "4": "gem",
                         "8": "rare",
                         "15": "master"
                     };
-                switch (mod) {
-                    case 0:
-                        if ((loop % 16) in specialPrizes) {
-                            rew = specialPrizes[loop%16];
-                            amt = 1;
-                        } else {
-                            rew = "silver";
-                            amt = 1;
-                        }
-                    break;
-                    //If rewards change, please also update ninja boy costume at the end of this function
-                    case 1:
-                        rew = "bait";
-                        amt = Math.floor(loop * 1.5);
-                    break;
-                    case 2:
-                        rew = "dust";
-                        amt = loop * 10;
-                    break;
-                    case 3:
-                        rew = "money";
-                        amt = loop * 30;
-                    break;
-                    case 4:
-                        rew = "gacha";
-                        amt = Math.floor(loop * 1.5);
-                    break;
-                    case 5:
-                        rew = ["myth", "luxury", "quick", "heavy", "clone"].random();
-                        amt = Math.floor(loop * 1.25);
-                    break;
+                for (var i = 0; i < times; i++) {
+                    //We calculate the level they are on first, then go back and grab the reward from previous floor
+                    c = args.count - i; 
+                    mod = c % 6;
+                    loop = Math.floor(c / 6) + 1;                        
+                    switch (mod) {
+                        case 0:
+                            if ((loop % 16) in specialPrizes) {
+                                rew = specialPrizes[loop%16];
+                                amt = 1;
+                            } else {
+                                rew = "silver";
+                                amt = 1;
+                            }
+                        break;
+                        //If rewards change, please also update ninja boy costume at the end of this function
+                        case 1:
+                            rew = "bait";
+                            amt = Math.floor(loop * 1.5);
+                        break;
+                        case 2:
+                            rew = "dust";
+                            amt = loop * 10;
+                        break;
+                        case 3:
+                            rew = "money";
+                            amt = loop * 30;
+                        break;
+                        case 4:
+                            rew = "gacha";
+                            amt = Math.floor(loop * 1.5);
+                        break;
+                        case 5:
+                            rew = ["myth", "luxury", "quick", "heavy", "clone"].random();
+                            amt = Math.floor(loop * 1.25);
+                        break;
+                    }
+                    if (!npc.postArgs.reward.hasOwnProperty(rew)) {
+                        npc.postArgs.reward[rew] = 0;
+                    }
+                    npc.postArgs.reward[rew] += amt;
                 }
-                if (!npc.postArgs.reward.hasOwnProperty(rew)) {
-                    npc.postArgs.reward[rew] = 0;
+                
+                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + plural(args.count - skip, "trainer") + " so far! Now for the next battle!", safchan);
+                if (skip) {
+                    safaribot.sendMessage(id, "You carefully time your movements as you head up to the next floor. You dash for the stairs to skip battling, but not before pickpocketing the unaware Trainer!", safchan);
                 }
-                npc.postArgs.reward[rew] += amt;
-
-                safaribot.sendMessage(id, "Tower Clerk: Good job! You have defeated " + args.count + " trainer" + (args.count == 1 ? "" : "s") + " so far! Now for the next battle!", safchan);
                 for (var e = 0; e < viewers.length; e++) {
                     if (viewers[e] !== name.toLowerCase()) {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + plural(args.count, "trainer") + " so far!", safchan);
+                        if (skip) {
+                            safaribot.sendMessage(sys.id(viewers[e]), "You notice " + name + " sneak around on the next floor and dash for the stairs without being noticed. Impressed by their ability, you remain quiet so they don't get caught.", safchan);
+                        }
                     }
                 }
                 if (id && getAvatar(id)) {
@@ -8081,7 +8111,7 @@ function Safari() {
                         updatelb = true;
                     }
                 }
-                var traveledCount = count - (player.costume === "ninja" ? (costumeData.ninja.rate - 1) : 0);
+                var traveledCount = count /*- (player.costume === "ninja" ? (costumeData.ninja.rate - 1) : 0)*/;
                 if (traveledCount === 0) {
                     player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
                 } else if (traveledCount <= 3) {
@@ -8152,14 +8182,17 @@ function Safari() {
                     safari.updateLeaderboards();
                 }
             }
-        };
+        };        
+        if (player.costume === "ninja" && chance(costumeData.ninja.rate)) {
+            skip = true;
+        }
         var npc = {
             name: "Trainer " + generateName(),
             party: generateTeam(),
             power: [10, 100],
             postBattle: postBattle,
             postArgs: {
-                count: 1,
+                count: 1 + skip,
                 reward: {}
             },
             desc: "Tower Lvl. 1"
@@ -8168,12 +8201,12 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         safaribot.sendMessage(src, "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " Entry Fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
 
-        if (player.costume === "ninja") {
+        /*if (player.costume === "ninja") {
             npc.postArgs.count = costumeData.ninja.rate;
             npc.desc = "Tower Lvl. " + costumeData.ninja.rate;
             npc.postArgs.reward = {"bait": 1, "dust": 10}; //If rewards change, these need to be changed too
             safaribot.sendMessage(src, "You carefully time your movements to stay cloaked in shadow and avoid being seen by a group of Trainers. Unfortunately for you, you trip as you dash up a flight of stairs and someone spots you! You made it to Floor " + costumeData.ninja.rate + " before being caught and forced to battle!", safchan);
-        }
+        }*/
 
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
