@@ -12174,6 +12174,10 @@ function Safari() {
                 return true;
             }
             if (command === "exchange") {
+                if (true) {
+                    safaribot.sendMessage(src, "Sorry, we are not exchanging anything right now! Please try again later.", safchan);
+                    return true;
+                }                
                 var values = {"Ditto": 1}; //Make this editable on server maybe
                 var exchanged = Object.keys(values);
                 if (commandData === "*") {
