@@ -633,7 +633,7 @@ function Hangman() {
         }
         hangbot.sendAll("Type " + (gameMode == regular ? "/g [letter] to guess a letter, and ":"") + "/a [answer] to guess the answer!", hangchan);
         if (gameMode === suddenDeath) {
-            hangbot.sendAll("Guess the answer within " + suddenDeathTime / 60 + " minute(s)!", hangchan);
+            hangbot.sendAll("Guess the answer within " + (suddenDeathLimit / 60).toFixed(1) + " minute(s)!", hangchan);
         }
         if (gameMode === tossUp) {
             hangbot.sendAll("Guess the answer before the game reaches " + cutOff + "%!", hangchan);
@@ -1509,8 +1509,8 @@ function Hangman() {
             hangbot.sendMessage(src, "answersreg: Set how many times each player can use /a in a regular game (currently set to " + maxAnswers[regular] + "). ", hangchan);
             hangbot.sendMessage(src, "answerssd: Set how many times each player can use /a in a Sudden Death game (currently set to " + maxAnswers[suddenDeath] + "). ", hangchan);
             hangbot.sendMessage(src, "answerstossup: Set how many times each player can use /a in a Toss Up game (currently set to " + maxAnswers[tossUp] + "). ", hangchan);
-            hangbot.sendMessage(src, "sdlimit: Set the initial time limit for Sudden Death games.", hangchan);
-            hangbot.sendMessage(src, "sdchancetime: Set the chance time given when Sudden Death timers go below \"sdlimit\".", hangchan);
+            hangbot.sendMessage(src, "sdlimit: Set the initial time limit for Sudden Death games. (currently set to " + suddenDeathLimit / 60 + " minutes). ", hangchan);
+            hangbot.sendMessage(src, "sdchancetime: Set the chance time given when Sudden Death timers go below \"sdlimit\". (currently set to " + suddenDeathChanceTime / 60 + " minutes). ", hangchan);
             hangbot.sendMessage(src, "tossupdelay: Set the cooldown of /a for Toss Up games. (currently set to " + tossUpDelay + " seconds). ", hangchan);
             hangbot.sendMessage(src, "cutoff: Set the % completion of Toss Up games before they fail. (currently set to " + cutOff + "%). ", hangchan);
             hangbot.sendMessage(src, "event: Set how often Event Games happen (currently set to " + eventLimit/60 + " minutes).", hangchan);
