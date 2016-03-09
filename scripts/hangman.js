@@ -1605,13 +1605,13 @@ function Hangman() {
             "/help: For a how-to-play guide.",
             "/g or /guess: To guess a letter.",
             "/a or /answer: To answer the question.",
-            "/hangmanrules: To see the hangman rules.",
+            "/hrules or /hangmanrules: To see the hangman rules.",
             "/view: To view the current game's state.",
             "/start: To start a new game of hangman. Format /start answer:hint. Example: /start Pikachu:Pokémon. Use /startsd or /startsuddendeath for Sudden Death games and /starttu or /starttossup Toss Up games.",
             "/pass: To pass starting rights to someone else.",
             "/has or /hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
-            "/leaderboard: To see the event leaderboard. You can type /leaderboard last to see last months leaderboard.",
+            "/lb or /leaderboard: To see the event leaderboard. You can type /lblast or /leaderboardlast to see last months leaderboard.",
             "/passlb [user] or /passleaderboard [user]: Passes all your leaderboard points to another alt on the same IP. Both alts must also be logged on.",
             "/myanswer: To see the answer you submitted (host only).",
             "/flashme: Toggle Event Game flashes on or off."
@@ -2207,7 +2207,7 @@ function Hangman() {
             if (suddenDeathTime > 0) {
                 suddenDeathTime--;
                 if (suddenDeathTime === suddenDeathChanceTime || suddenDeathTime === suddenDeathChanceTime / 2) {
-                    hangbot.sendAll("You only have " + suddenDeathTime / 60 + " minute(s) left!", hangchan);
+                    hangbot.sendAll("You only have " + (suddenDeathTime / 60).toFixed(1) + " minute(s) left!", hangchan);
                 }
             } else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
