@@ -100,7 +100,9 @@ function Safari() {
             pack: 0,
             fragment: 0,
             egg: 0,
-            bright: 0
+            bright: 0,
+            philosopher: 0,
+            materia: 0
         },
         records: {
             gachasUsed: 0,
@@ -167,7 +169,8 @@ function Safari() {
             pyramidSilver: 0,
             eggsHatched: 0,
             brightEggsHatched: 0,
-            rareHatched: 0
+            rareHatched: 0,
+            transmutations: 0
         },
         costumes: [],
         savedParties: [],
@@ -219,6 +222,9 @@ function Safari() {
             },
             pyramid: {
                 cooldown: 0
+            },
+            alchemist: {
+                cooldown: 0
             }
         }
     };
@@ -230,7 +236,7 @@ function Safari() {
         fullName: "string", icon: "number", price: ["number", "array"], aliases: "array",
         ballBonus: "number", bonusRate: "number", maxRate: "number", maxBonus: "number", cooldown: "number",
         successRate: "number", bounceRate: "number", successCD: "number", failCD: "number", targetCD: "number", bounceCD: "number", throwCD: "number", duration: "number",
-        charges: "number", minVar: "number", maxVar: "number", tradeReq: "number", threwshold: "number",
+        charges: "number", minVar: "number", maxVar: "number", tradeReq: "number", threshold: "number",
         tradable: "boolean", cap: "number"
     };
     var itemData = {
@@ -250,27 +256,31 @@ function Safari() {
 
         //Other Items
         //Seasonal change. Rock icon is 206
-        rock: {name: "rock", fullName: "Snowball", type: "usable", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
-        bait: {name: "bait", fullName: "Bait", type: "usable", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "usable", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
-        spray: {name: "spray", fullName: "Devolution Spray", type: "usable", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
-        mega: {name: "mega", fullName: "Mega Stone", type: "usable", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
-        stick: {name: "stick", fullName: "Stick", type: "usable", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
-        itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "usable", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
-        permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "usable", icon: 0, price: 0, aliases:["permfinder"], tradable: false},
-        dust: {name: "dust", fullName: "Candy Dust", type: "usable", icon: 24, price: 0, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
-        salt: {name: "salt", fullName: "Salt", type: "usable", icon: 127, price: 0, aliases: ["salt", "nacl"], tradable: false},
-
-        silver: {name: "silver", fullName: "Silver Coin", type: "usable", icon: 273, price: 0, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
-        entry: {name: "entry", fullName: "Raffle Entry", type: "usable", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
+        rock: {name: "rock", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+        bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
+        spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
+        mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
+        stick: {name: "stick", fullName: "Stick", type: "items", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
+        itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
+        permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 0, aliases:["permfinder"], tradable: false},
+        dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 0, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
+        salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 0, aliases: ["salt", "nacl"], tradable: false},
+        
+        silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 0, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
+        entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
 
         //Consumables (for useItem)
         rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
         gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
         pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
-        fragment: {name: "fragment", fullName: "Ball Fragment", type: "consumable", icon: 120, price: 0, aliases:["fragment", "ball fragment", "ballfragment"], tradable: false},
         egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 0, aliases:["egg"], tradable: true},
         bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 0, aliases:["bright", "bright egg", "brightegg"], tradable: true},
+        
+        //Alchemy related items
+        materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 0, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
+        fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 0, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
+        philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 0, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
@@ -755,7 +765,7 @@ function Safari() {
     ];
 
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -1084,7 +1094,10 @@ function Safari() {
     function getDay(time) {
         return Math.floor(time / (1000 * 60 * 60 * 24));
     }
-
+    function hours(number) {
+        return number * 60 * 60 * 1000;
+    }
+    
     /* Data Type Functions */
     function add(arr) {
         var result = 0;
@@ -1595,7 +1608,7 @@ function Safari() {
                 }
             } else {
                 if (first) {
-                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=15>Inventory</th></tr><tr>";
+                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
                 } else {
                     ret += "<tr>";
@@ -3319,14 +3332,16 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = ["silver", "box", "bait", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "egg", "bright"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "rock", "stick", "entry"];
-        var line3 = ["amulet", "soothe",  "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "fragment"];
+        var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "rock"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "bait", "egg", "bright"];
+        var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "stick"];
+        var line4 = ["philosopher", "materia", "fragment"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
         out += bagRow(player, line2, isAndroid, textOnly);
         out += bagRow(player, line3, isAndroid, textOnly);
+        out += bagRow(player, line4, isAndroid, textOnly);
         out += (textOnly ? "" : "</table>");
         return out;
     };
@@ -3389,7 +3404,7 @@ function Safari() {
         if (cos === "none") {
             safaribot.sendMessage(src, "You removed your costume! You can put on a new costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
         } else {
-            player.cooldowns.costume = currentTime + (4 * 60 * 60 * 1000);
+            player.cooldowns.costume = currentTime + hours(4);
             safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
             if (player.tutorial.inTutorial && player.tutorial.step === 4 && costumeName === costumeData.preschooler.fullName) {
                 advanceTutorial(src, 5);
@@ -3869,7 +3884,7 @@ function Safari() {
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests.".format(rec.consecutiveLogins, (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""),rec.contestsWon), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon!".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), rec.rareHatched), safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
-            sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade")), safchan);
+            sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
             sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog).".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins), safchan);
             sys.sendMessage(src, "", safchan);
@@ -4986,7 +5001,7 @@ function Safari() {
         this.logLostCommand(sys.name(src), "mega " + commandData, "mega evolved into " + poke(evolvedId));
         player.megaTimers.push({
             id: evolvedId,
-            expires: now() + (itemData.mega.duration * 24 * 60 * 60 * 1000),
+            expires: now() + hours(itemData.mega.duration * 24),
             to: id
         });
         safaribot.sendMessage(src, "You used " + an(finishName("mega")) + " on " + info.name + " to evolve them into " + poke(evolvedId) + "! They will revert after 72 hours!", safchan);
@@ -5317,6 +5332,27 @@ function Safari() {
             this.saveGame(player);
             return;
         }
+        /* Alchemy */
+        if (item === "fragment") {
+            if (player.balls.fragment < itemData.fragment.threshold) {
+                safaribot.sendMessage(src, "It doesn't seem you have enough " + finishName("fragment") + " to make anything right now. Maybe if you got " + plural(itemData.fragment.threshold - player.balls.fragment, "more piece") + " you'd be able to assemble them.", safchan);
+                return;
+            }
+            if (player.balls.materia < 1) {
+                safaribot.sendMessage(src, "You can't perform alchemy without " + an(finishName("materia")) + "!", safchan);
+                return;
+            }
+            if (player.balls.master > 0) {
+                safaribot.sendMessage(src, "Alchemist: Hey! " + an(finishName("master")) + " muss be one of your favoritest items or somethin' 'cause ya already got one!", safchan);
+                return;
+            }
+            sys.sendMessage(src, "", safchan);
+            sys.sendMessage(src, "\"To obtain something, something else of equal value must be lost. This is alchemy's first law of Equivalent Exchange.\" A glowing ring envelops the " + plural(itemData.fragment.threshold, "fragment") + " and the " + finishName("materia") +". As the ring fades, a single " + finishName("master") + " remains.", safchan);
+            sys.sendMessage(src, "You received " + plural(1, "master") + "!", safchan);
+            sys.sendMessage(src, "", safchan);
+            this.saveGame(player);
+            return;            
+        }
     };
 
     /* Shops & Raffles */
@@ -5379,7 +5415,7 @@ function Safari() {
                 }
             }
 
-            if (validItems.indexOf(item) == -1) {
+            if (!validItems.contains(item)) {
                 safaribot.sendMessage(src, "We do not buy \"" + info[0] +  "\" at this location.", safchan);
                 return;
             }
@@ -7290,6 +7326,8 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
             
             // safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -7324,6 +7362,10 @@ function Safari() {
             /* case "pyramid":
                 this.pyramidQuest(src, args);
             break; */
+            case "alchemy":
+            case "alchemist":
+                this.alchemyQuest(src, args);
+            break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
         }
@@ -7488,7 +7530,7 @@ function Safari() {
                 var perkBonus = Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
                 quest.requests = request;
                 quest.reward = Math.round(reward * (difficultBonus + perkBonus));
-                quest.deadline = now() + deadlineDays * 24 * 60 * 60 * 1000;
+                quest.deadline = now() + hours(deadlineDays * 24);
                 this.saveGame(player);
 
 
@@ -7591,7 +7633,7 @@ function Safari() {
                 this.addToMonthlyLeaderboards(player.id, "collectorEarnings", payout);
                 quest.reward = 0;
                 quest.requests = [];
-                quest.cooldown = now() + 3 * 60 * 60 * 1000;
+                quest.cooldown = now() + hours(3);
                 quest.deadline = 0;
                 this.saveGame(player);
             break;
@@ -7615,7 +7657,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
                 quest.requests = [];
-                quest.cooldown = now() + 1 * 60 * 60 * 1000;
+                quest.cooldown = now() + hours(1);
                 quest.deadline = null;
                 this.saveGame(player);
             break;
@@ -7759,7 +7801,7 @@ function Safari() {
         scientistQuest = {
             pokemon: randomNum,
             reward: reward,
-            expires: now() + 3 * 60 * 60 * 1000 - 3 * 60 * 1000
+            expires: now() + hours(3) - 3 * 60 * 1000
         };
         permObj.add("scientistQuest", JSON.stringify(scientistQuest));
     };
@@ -7793,7 +7835,7 @@ function Safari() {
                 player.records.arenaLost += 1;
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
-            player.quests.arena.cooldown = now() + args.cooldown * 60 * 60 * 1000;
+            player.quests.arena.cooldown = now() + hours(args.cooldown);
             safari.saveGame(player);
         };
         var opponents = {
@@ -8097,7 +8139,7 @@ function Safari() {
                     }
                     currentBattles.push(battle);
                 } else {
-                    player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(0.5);
                     safari.saveGame(player);
                     for (e = 0; e < viewers.length; e++) {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
@@ -8114,15 +8156,15 @@ function Safari() {
                 }
                 var traveledCount = count /*- (player.costume === "ninja" ? (costumeData.ninja.rate - 1) : 0)*/;
                 if (traveledCount === 0) {
-                    player.quests.tower.cooldown = now() + 0.5 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(0.5);
                 } else if (traveledCount <= 3) {
-                    player.quests.tower.cooldown = now() + 1 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(1);
                 } else if (traveledCount <= 6) {
-                    player.quests.tower.cooldown = now() + 1.5 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(1.5);
                 } else if (traveledCount <= 10) {
-                    player.quests.tower.cooldown = now() + 2 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(2);
                 } else {
-                    player.quests.tower.cooldown = now() + 3 * 60 * 60 * 1000;
+                    player.quests.tower.cooldown = now() + hours(3);
                 }
 
                 var rewardText = [];
@@ -8321,7 +8363,7 @@ function Safari() {
         player.money -= fee;
         player.records.wonderTrades += 1;
 
-        quest.cooldown = now() + cooldown * 60 * 60 * 1000;
+        quest.cooldown = now() + hours(cooldown);
         this.saveGame(player);
         safaribot.sendMessage(src, "Wonder Trade Operator: The trade was finished successfully! You traded your " + input.name + " and received " + an(poke(receivedId)) + "!", safchan);
         sys.sendMessage(src, "", safchan);
@@ -8549,6 +8591,89 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Pyramid Guide: To learn more about the Pyramid, type " + link("/quest pyramid:help") + "! To enter the Pyramid, pay $" + addComma(cost) + " and invite 2 other players with " + link("/quest pyramid:start:Name1:Name2", null, true) + " to join you!", safchan);
                 sys.sendMessage(src, "", safchan);
         }
+    };
+    this.alchemyQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        if (stopQuests.alchemist) {
+            safaribot.sendMessage(src, "Alchemist: Naptime! Zzz... Zzz... (Perhaps you should come back later...)", safchan);
+            return;
+        }        
+        var recipes = {
+            "materia": {
+                "safari": itemData.materia.threshold
+            },
+            "master": {
+                "materia": 1,
+                "fragment": itemData.fragment.threshold
+            }
+        };
+        
+        var validItems = Object.keys(recipes);
+        if (!data[0] || data[0].toLowerCase() === "help") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) { return " " + link("/quest alchemist:" + x, finishName(x)); }), safchan);
+            safaribot.sendHtmlMessage(src, "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[item] to view the required materials)", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        var item = itemAlias(data[0].toLowerCase(), true);
+        var fullItem = finishName(item);
+        if (!validItems.contains(item)) {
+            safaribot.sendHtmlMessage(src, "Alchemist: That's not sumthin' I can make, ya silly badonkadonk! (To view available recipes use " + link("/quest alchemist:help") + ")", safchan);
+            return;
+        }
+        
+        var recipeString = [];
+        for (var e in recipes[item]) {
+            recipeString.push(plural(recipes[item][e], e));
+        }
+        
+        var canMake = true, progress = [];
+        for (var e in recipes[item]) {
+            if (player.balls[e] < recipes[item][e]) {
+                canMake = false;
+            }
+            progress.push(player.balls[e] + "/" + plural(recipes[item][e], e));
+        }
+        if (!data[1] || data[1].toLowerCase() !== "finish") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, fullItem + " Recipe: " + recipeString.join(", "), safchan);
+            safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", ") + (canMake ? " <b>[Available]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "Alchemist: See those materials? Bring 'em back here so I can make you some shiny items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }        
+        
+        if (!canMake) {
+            safaribot.sendHtmlMessage(src, "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+            return;
+        }
+        
+        if (player.quests.alchemist.cooldown >= now()) {
+            safaribot.sendMessage(src, "Alchemist: Hey now! We gotsta wait " + timeLeftString(player.quests.alchemist.cooldown) + " to use this magic spell thingy again else it goes POP! KAPOW! BOOMY BOOM BOOM!", safchan);
+            return;
+        }
+        
+        if (item === "master" && player.balls.master > 0) {
+            //TODO: Make in alchemist's personality
+            safaribot.sendMessage(src, "It probably wouldn't be wise to try making " + an(fullItem) + " when you already have one.", safchan);
+            return;
+        }
+        
+        for (var e in recipes[item]) {
+            player.balls[e] -= recipes[item][e];
+        }
+        safaribot.sendMessage(src, "Alchemist: Yo yo yo yo yo. Less' blow stuff up Princess Fluffybutt!", safchan);
+        safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with smoke but it quickly disappates to reveal a newly created " + fullItem + ".", safchan);
+        safaribot.sendMessage(src, "You received 1 " + fullItem + ".", safchan);
+        player.records.transmutations += 1;
+        player.quests.alchemist.cooldown = now() + hours(12);
+        rewardCapCheck(player, item, 1, true);
+        this.saveGame(player);
     };
     function generateName() {
         var part1 = sys.rand(1, 722), part2, name2, out,
@@ -11362,7 +11487,7 @@ function Safari() {
         dailyBoost = {
             pokemon: randomNum,
             bonus: bonus,
-            expires: now() + 24 * 60 * 60 * 1000
+            expires: now() + hours(24)
         };
         permObj.add("dailyBoost", JSON.stringify(dailyBoost));
         permObj.save();
@@ -11890,7 +12015,9 @@ function Safari() {
             salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\".",
-            fragment: "A fragment of a rare item. This might come in handy one day, so you better keep it safe!",
+            fragment: "A Master Ball fragment. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball!",
+            materia: "A basic substance required for all alchemic creations.",
+            philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\"."
         };
@@ -13751,6 +13878,7 @@ function Safari() {
                     case "tower":
                     case "wonder":
                     case "pyramid":
+                    case "alchemist":
                         player.quests[type].cooldown = 0;
                     break;
                     case "ball":
@@ -15035,4 +15163,5 @@ function Safari() {
         }
     };
 }
+module.exports = new Safari();
 module.exports = new Safari();
