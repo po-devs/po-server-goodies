@@ -138,7 +138,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "showteam") {
-        var teams = [0,1,2,3,4,5].map(function(index) {
+        var teamCount = sys.teamCount(tar);
+        var index = [];
+        for (var i = 0; i < teamCount; i++) {
+            index.push(i);
+        }
+        var teams = index.map(function(index) {
             return script.importable(tar, index);
         }, this).filter(function(data) {
             return data.length > 0;
