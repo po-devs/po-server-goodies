@@ -176,6 +176,12 @@ String.prototype.format = function() {
     }
     return formatted;
 };
+String.prototype.htmlEscape = function () {
+    return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+};
+String.prototype.htmlStrip = function () {
+    return this.replace(/(<([^>]+)>)/gi, "");
+};
 String.prototype.toCorrectCase = function() {
     if (isNaN(this) && sys.id(this) !== undefined) {
         return sys.name(sys.id(this));
