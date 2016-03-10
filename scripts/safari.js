@@ -12016,7 +12016,7 @@ function Safari() {
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\".",
             fragment: "A Master Ball fragment. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball!",
-            materia: "A basic substance required for all alchemic creations.",
+            materia: "A basic substance required for all alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\"."
