@@ -631,7 +631,7 @@ function Hangman() {
         if (src) {
             hangbot.sendMessage(src, "You started a Hangman game with the answer '" + word.toUpperCase() + "'. If you misspelled the answer or made some mistake, use /end to stop the game and fix it.", hangchan);
         }
-        hangbot.sendAll("Type " + (gameMode == regular ? "/g [letter] to guess a letter, and ":"") + "/a [answer] to guess the answer!", hangchan);
+        hangbot.sendAll("Type " + (gameMode !== tossUp ? "/g [letter] to guess a letter, and ":"") + "/a [answer] to guess the answer!", hangchan);
         if (gameMode === suddenDeath) {
             hangbot.sendAll("Guess the answer within " + (suddenDeathLimit / 60).toFixed(1) + " minute(s)!", hangchan);
         }
