@@ -15371,4 +15371,3 @@ function Safari() {
     };
 }
 module.exports = new Safari();
-module.exports = new Safari();
