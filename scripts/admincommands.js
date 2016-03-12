@@ -331,23 +331,22 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (!commandData) {
             return;
         }
-        if (!sys.loggedIn(sys.id(commandData))) {
+        if (!sys.loggedIn(tar)) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
         }
-        var tar = sys.id(commandData);
         if (sys.os(tar) !== "android" && sys.version(tar) < 2402 || sys.os(tar) === "android" && sys.version(tar) < 37) {
             //probably won't work well on windows/linux/etc anyways...
             normalbot.sendMessage(src, "Cookies won't work on this target", channel);
             return;
         }
         if (command == "cookiemute") {
-            SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
+            SESSION.users(tar).activate("smute", Config.kickbot, 0, "Cookie", true);
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
-        sys.setCookie(sys.id(commandData), type + " " + commandData.toCorrectCase());
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src), staffchannel);
+        sys.setCookie(tar, type + " " + commandData.toCorrectCase());
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + " " + sys.version(tar) + "]", staffchannel);
         if (type == "banned") {
             sys.kick(tar);
         }
@@ -383,11 +382,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (!commandData) {
             return;
         }
-        if (!sys.loggedIn(sys.id(commandData))) {
+        var tar = sys.id(commandData);
+        if (!sys.loggedIn(tar)) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
         }
-        var tar = sys.id(commandData);
         if (!sys.uniqueId(tar)) {
             normalbot.sendMessage(src, "Target doesn't have a unique ID (update needed)", channel);
             return;
@@ -402,7 +401,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         banInfo.type = type;
         banInfo.psuedo = psuedo;
         script.idBans.add(id, JSON.stringify(banInfo));
-        normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src), staffchannel);
+        normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + ", v" + sys.version(tar) + "]", staffchannel);
         if (type == "muted") {
             SESSION.users(tar).activate("smute", Config.kickbot, 0, "ID", true);
         } else {
