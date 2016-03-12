@@ -1,52 +1,54 @@
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "channelusers") {
-       if (commandData === undefined) {
-           normalbot.sendMessage(src, "Please give me a channelname!", channel);
-           return;
-       }
-       var chanid;
-       var isbot;
-       if (commandData[0] == "~") {
-           chanid = sys.channelId(commandData.substring(1));
-           isbot = true;
-       } else {
-           chanid = sys.channelId(commandData);
-           isbot = false;
-       }
-       if (chanid === undefined) {
-           channelbot.sendMessage(src, "Such a channel doesn't exist!", channel);
-           return;
-       }
-       var chanName = sys.channel(chanid);
-       var players = sys.playersOfChannel(chanid);
-       var objectList = [];
-       var names = [];
-       for (var i = 0; i < players.length; ++i) {
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please give me a channelname!", channel);
+            return;
+        }
+        var chanId, isBot;
+        if (commandData[0] === "~") {
+            chanId = sys.channelId(commandData.substring(1));
+            isBot = true;
+        } else {
+            chanId = sys.channelId(commandData);
+            isBot = false;
+        }
+        if (chanId === undefined) {
+            channelbot.sendMessage(src, "Such a channel doesn't exist!", channel);
+            return;
+        }
+        var chanName = sys.channel(chanId),
+            players = sys.playersOfChannel(chanId),
+            objectList = [],
+            names = [];
+        for (var i = 0; i < players.length; ++i) {
             var name = sys.name(players[i]);
-            if (isbot)
-            objectList.push({'id': players[i], 'name': name});
-                else
-            names.push(name);
-       }
-       if (isbot) {
-           var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-           sys.sendMessage(src, ":"+JSON.stringify(channelData), channel);
-       } else {
-           channelbot.sendMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "), channel);
-       }
-       return;
+            if (isBot) {
+                objectList.push({"id": players[i], "name": name});
+            } else {
+                names.push(name);
+            }
+        }
+        if (isBot) {
+            var channelData = {"type": "ChannelUsers", "channel-id": chanId, "channel-name": chanName, "players": objectList};
+            sys.sendMessage(src, ":" + JSON.stringify(channelData), channel);
+        } else {
+            channelbot.sendMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "), channel);
+        }
+        return;
     }
-    if (command == "onrange") {
-        var subip = commandData;
-        var players = sys.playerIds();
-        var players_length = players.length;
-        var names = [];
-        for (var i = 0; i < players_length; ++i) {
-            var current_player = players[i];
-            if (!sys.loggedIn(current_player)) continue;
-            var ip = sys.ip(current_player);
-            if (ip.substr(0, subip.length) == subip) {
-                names.push(current_player);
+    if (command === "onrange") {
+        var subip = commandData,
+            players = sys.playerIds(),
+            playersLength = players.length,
+            names = [];
+        for (var i = 0; i < playersLength; ++i) {
+            var currentPlayer = players[i];
+            if (!sys.loggedIn(currentPlayer)) {
+                continue;
+            }
+            var ip = sys.ip(currentPlayer);
+            if (ip.substr(0, subip.length) === subip) {
+                names.push(currentPlayer);
             }
         }
         // Tell about what is found.
@@ -61,9 +63,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "onos") {
+    if (command === "onos") {
         commandData = commandData.toLowerCase();
-        if (["windows", "linux", "android", "mac", "webclient"].indexOf(commandData) !== -1) {
+        if (["windows", "linux", "android", "mac", "webclient"].contains(commandData)) {
             var output = sys.playerIds().filter(function (id) {
                 return sys.os(id) === commandData;
             }).map(sys.name);
@@ -73,7 +75,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is not a valid OS", channel);
         return;
     }
-    if (command == "onversion") {
+    if (command === "onversion") {
         commandData = parseInt(commandData, 10);
         if (isNaN(commandData)) {
             return;
@@ -99,16 +101,16 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         querybot.sendMessage(src,sys.name(tar) + " is in tier" + (tiers.length <= 1 ? "" : "s") + ": " + tiers.join(", "), channel);
         return;
     }
-    if (command == "silence") {
-        if (typeof(commandData) == "undefined") {
+    if (command === "silence") {
+        if (commandData === undefined) {
             return;
         }
-        var minutes;
-        var chanName;
-        var space = commandData.indexOf(' ');
-        if (space != -1) {
-            minutes = commandData.substring(0,space);
-            chanName = commandData.substring(space+1);
+        var minutes,
+            chanName,
+            space = commandData.indexOf(" ");
+        if (space !== -1) {
+            minutes = commandData.substring(0, space);
+            chanName = commandData.substring(space + 1);
         } else {
             minutes = commandData;
             chanName = sys.channel(channel);
@@ -116,7 +118,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.silence(src, minutes, chanName);
         return;
     }
-    if (command == "silenceoff") {
+    if (command === "silenceoff") {
         var chanName;
         if (commandData === undefined) {
             chanName = sys.channel(channel);
@@ -127,6 +129,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "k" || command === "sk") {
+        commandData = commandData.toCorrectCase();
         if (!tar) {
             normalbot.sendMessage(src, "No such user.", channel);
             return;
@@ -146,10 +149,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 sys.dbAuths().map(sys.id).filter(function (authId) {
                     return authId !== undefined;
                 }).forEach(function (authId) {
-                    normalbot.sendMessage(authId, commandData + " was silent kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+                    silentbot.sendHtmlMessage(authId, commandData + " was silent kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
                 });
             } else {
-                normalbot.sendMessage(src, "Only super admins or owners can use this.", channel);
+                silentbot.sendMessage(src, "Only Super Admins or Owners can use this.", channel);
                 return;
             }
         }
@@ -169,18 +172,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.issueBan("mute", src, tar, commandData);
         return;
     }
-    if (command == "bans" || command == "banlist") {
-        var list=sys.banList();
+    if (command === "bans" || command === "banlist") {
+        var list = sys.banList();
         list.sort();
-        var nbr_banned=5;
+        var nbr_banned = 5;
         var max_message_length = 30000;
-        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan='+nbr_banned+'><center><strong>Banned list</strong></center></td></tr><tr>';
+        var table_header = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan=' + nbr_banned + '><center><strong>Banned list</strong></center></td></tr><tr>';
         var table_footer = '</tr></table>';
         var table=table_header;
-        var j=0;
+        var j = 0;
         var line = '';
-        for (var i=0; i<list.length; ++i){
-            if (typeof commandData == 'undefined' || list[i].toLowerCase().indexOf(commandData.toLowerCase()) != -1){
+        for (var i = 0; i <list.length; ++i){
+            if (typeof commandData == 'undefined' || list[i].toLowerCase().indexOf(commandData.toLowerCase()) !== -1){
                 ++j;
                 line += '<td>'+list[i]+'</td>';
                 if(j == nbr_banned &&  i+1 != list.length){
@@ -200,11 +203,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
 
     }
-    if (command == "mutes" || command == "mutelist" || command == "smutelist" || command == "mafiabans" || command == "hangmanmutes" || command == "hangmanbans" || command === "safaribans") {
+    if (["hangmanbans", "hangmanmutes", "mafiabans", "mutes", "mutelist", "safaribans", "smutelist"].contains(command)) {
         script.banList(src, command, commandData);
         return;
     }
-    if (command == "rangebans") {
+    if (command === "rangebans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         if (!commandData || commandData.indexOf('-text') == -1) {
            TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Range banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on rangeban</th><th>By</th></tr>';
@@ -216,28 +219,30 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
            TABLE_END = '';
         }
         try {
-        var table = TABLE_HEADER;
-        var tmp = [];
-        for (var key in script.rangebans.hash) {
-            if (script.rangebans.hash.hasOwnProperty(key)) {
-                var comment = script.rangebans.get(key).split(" --- ");
-                tmp.push([key, comment[0], comment[1]]);
+            var table = TABLE_HEADER;
+            var tmp = [];
+            for (var key in script.rangebans.hash) {
+                if (script.rangebans.hash.hasOwnProperty(key)) {
+                    var comment = script.rangebans.get(key).split(" --- ");
+                    tmp.push([key, comment[0], comment[1]]);
+                }
             }
+            tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
+            for (var row = 0; row < tmp.length; ++row) {
+                table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
+            }
+            table += TABLE_END;
+            sys.sendHtmlMessage(src, table, channel);
+        } catch (error) {
+            sys.sendMessage(src, error, channel);
         }
-        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
-        for (var row = 0; row < tmp.length; ++row) {
-            table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
-        }
-        table += TABLE_END;
-        sys.sendHtmlMessage(src, table, channel);
-        } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
-    if (command == "profiling") {
-        sys.profileDump().split("\n").forEach(function(string) {sys.sendMessage(src, string, channel);});
+    if (command === "profiling") {
+        sys.profileDump().split("\n").forEach(function (string) {sys.sendMessage(src, string, channel);});
         return;
     }
-    if (command == "ipbans") {
+    if (command === "ipbans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         if (!commandData || commandData.indexOf('-text') == -1) {
            TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Ip Banned</strong></center></td></tr><tr><th>IP subaddress</th><th>Comment on ipban</th></tr>';
@@ -249,30 +254,32 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
            TABLE_END = '';
         }
         try {
-        var table = TABLE_HEADER;
-        var tmp = [];
-        for (var key in script.ipbans.hash) {
-            if (script.ipbans.hash.hasOwnProperty(key)) {
-                tmp.push([key, script.ipbans.get(key)]);
+            var table = TABLE_HEADER,
+                tmp = [];
+            for (var key in script.ipbans.hash) {
+                if (script.ipbans.hash.hasOwnProperty(key)) {
+                    tmp.push([key, script.ipbans.get(key)]);
+                }
             }
+            tmp.sort(function (a,b) { return a[0] < b[0] ? -1 : 1; });
+            for (var row = 0; row < tmp.length; ++row) {
+                table += TABLE_LINE.format(tmp[row][0], tmp[row][1]);
+            }
+            table += TABLE_END;
+            sys.sendHtmlMessage(src, table, channel);
+        } catch (error) {
+            sys.sendMessage(src, error, channel);
         }
-        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
-        for (var row = 0; row < tmp.length; ++row) {
-            table += TABLE_LINE.format(tmp[row][0], tmp[row][1]);
-        }
-        table += TABLE_END;
-        sys.sendHtmlMessage(src, table, channel);
-        } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
-    if (command == "autosmutelist") {
+    if (command === "autosmutelist") {
         sys.sendMessage(src, "*** AUTOSMUTE LIST ***", channel);
         for (var x = 0; x < autosmute.length; x++) {
             sys.sendMessage(src, autosmute[x], channel);
         }
         return;
     }
-    if (command == "namebans") {
+    if (command === "namebans") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
         for (var i = 0; i < nameBans.length; i+=5) {
@@ -286,7 +293,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
-    if (command == "channamebans" || command == "channelnamebans") {
+    if (command === "channamebans" || command === "channelnamebans") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Name banned</strong></center></td></tr>';
         for (var i = 0; i < script.chanNameBans.length; i+=5) {
@@ -300,7 +307,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
-    if (command == "namewarns") {
+    if (command === "namewarns") {
         var table = '';
         table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Namewarnings</strong></center></td></tr>';
         for (var i = 0; i < nameWarns.length; i+=5) {
@@ -314,9 +321,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, table, channel);
         return;
     }
-    if (command == "watchlist") {
+    if (command === "watchlist") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
-        if (!commandData || commandData.indexOf('-text') == -1) {
+        if (!commandData || commandData.indexOf('-text') === -1) {
            TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="3"><center><strong>Watch list</strong></center></td></tr><tr><th>Name</th><th>Comment</th><th>By</th></tr>';
            TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>';
            TABLE_END = '</table>';
@@ -326,27 +333,28 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
            TABLE_END = '';
         }
         try {
-        var table = TABLE_HEADER;
-        var tmp = [];
-        for (var key in script.namesToWatch.hash) {
-            if (script.namesToWatch.hash.hasOwnProperty(key)) {
-                var comment = script.namesToWatch.get(key).split(" ~ ");
-                tmp.push([key, comment[0], comment[1]]);
+            var table = TABLE_HEADER,
+                tmp = [];
+            for (var key in script.namesToWatch.hash) {
+                if (script.namesToWatch.hash.hasOwnProperty(key)) {
+                    var comment = script.namesToWatch.get(key).split(" ~ ");
+                    tmp.push([key, comment[0], comment[1]]);
+                }
             }
+            tmp.sort(function (a,b) { return a[0] < b[0] ? -1 : 1; });
+            for (var row = 0; row < tmp.length; ++row) {
+                table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
+            }
+            table += TABLE_END;
+            sys.sendHtmlMessage(src, table, channel);
+        } catch (error) {
+            sys.sendMessage(src, error, channel);
         }
-        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
-        for (var row = 0; row < tmp.length; ++row) {
-            table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2] ? tmp[row][2] : "");
-        }
-        table += TABLE_END;
-        sys.sendHtmlMessage(src, table, channel);
-        } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }    
-    if (command == "idbans") {
-        //steal from rangebans
+    if (command === "idbans") {
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
-        if (!commandData || commandData.indexOf('-text') == -1) {
+        if (!commandData || commandData.indexOf('-text') === -1) {
             if (sys.auth(src) > 1) {
                 TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="5"><center><strong>ID Bans</strong></center></td></tr><tr><th>ID</th><th>Type</th><th>Name</th><th>IP</th><th>By</th></tr>';
                 TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>';
@@ -361,36 +369,37 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
            TABLE_END = '';
         }
         try {
-        var table = TABLE_HEADER;
-        var tmp = [];
-        for (var key in script.idBans.hash) {
-            if (script.idBans.hash.hasOwnProperty(key)) {
-                var comment = JSON.parse(script.idBans.get(key));
-                if (sys.auth(src) > 1) {
-                    tmp.push([key, comment.type, comment.name, comment.ip, comment.banner]);
-                } else {
-                    tmp.push([comment.type, comment.name, comment.ip, comment.banner]);
+            var table = TABLE_HEADER, tmp = [];
+            for (var key in script.idBans.hash) {
+                if (script.idBans.hash.hasOwnProperty(key)) {
+                    var comment = JSON.parse(script.idBans.get(key));
+                    if (sys.auth(src) > 1) {
+                        tmp.push([key, comment.type, comment.name, comment.ip, comment.banner]);
+                    } else {
+                        tmp.push([comment.type, comment.name, comment.ip, comment.banner]);
+                    }
                 }
             }
-        }
-        tmp.sort(function(a,b) { return a[0] < b[0] ? -1 : 1; });
-        for (var row = 0; row < tmp.length; ++row) {
-            if (sys.auth(src) > 1) {
-                table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2], tmp[row][3], tmp[row][4]);
-            } else {
-                table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2], tmp[row][3]);
+            tmp.sort(function (a,b) { return a[0] < b[0] ? -1 : 1; });
+            for (var row = 0; row < tmp.length; ++row) {
+                if (sys.auth(src) > 1) {
+                    table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2], tmp[row][3], tmp[row][4]);
+                } else {
+                    table += TABLE_LINE.format(tmp[row][0], tmp[row][1], tmp[row][2], tmp[row][3]);
+                }
             }
+            table += TABLE_END;
+            sys.sendHtmlMessage(src, table, channel);
+        } catch (e) {
+            sys.sendMessage(src, e, channel);
         }
-        table += TABLE_END;
-        sys.sendHtmlMessage(src, table, channel);
-        } catch (e) { sys.sendMessage(src, e, channel); }
         return;
     }
-    if (command == "unmute") {
+    if (command === "unmute") {
         script.unban("mute", src, tar, commandData);
         return;
     }
-    if (command == "battlehistory") {
+    if (command === "battlehistory") {
         if (tar === undefined) {
             querybot.sendMessage(src, "Usage: /battleHistory username. Only works on online users.", channel);
             return;
@@ -407,7 +416,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, res.join("<br>"), channel);
         return;
     }
-    if (command == "userinfo" || command == "whois" || command == "whereis") {
+    if (command === "userinfo" || command === "whois" || command === "whereis") {
         var bindChannel = channel;
         if (commandData === undefined) {
             querybot.sendMessage(src, "Please provide a username.", channel);

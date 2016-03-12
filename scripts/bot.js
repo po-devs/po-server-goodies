@@ -1,8 +1,9 @@
 /*global channel, exports, sendChanAll, sys*/
 /*jshint strict: false, shadow: true, evil: true, laxcomma: true*/
 /*jslint sloppy: true, vars: true, evil: true, plusplus: true*/
-function Bot(name) {
+function Bot(name, color) {
     this.name = name;
+    this.color = (color === undefined || !sys.validColor(color) ? "#318739" : color);
 }
 Bot.prototype.formatMsg = function (message) {
     return "±" + this.name + ": " + message;
@@ -24,16 +25,16 @@ Bot.prototype.sendMessage = function (tar, message, channel) {
 };
 Bot.prototype.sendHtmlAll = function (message, channel) {
     if (channel === undefined) {
-        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
+        sys.sendHtmlAll("<font color='" + this.color + "'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
     } else {
-        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message, channel);
+        sys.sendHtmlAll("<font color='" + this.color + "'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message, channel);
     }
 };
 Bot.prototype.sendHtmlMessage = function (tar, message, channel) {
     if (channel === undefined) {
-        sys.sendHtmlMessage(tar, "<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
+        sys.sendHtmlMessage(tar, "<font color='" + this.color + "'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message);
     } else {
-        sys.sendHtmlMessage(tar, "<font color='#3daa68'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message, channel);
+        sys.sendHtmlMessage(tar, "<font color='" + this.color + "'><timestamp/><b>" + "±" + this.name + ":</font></b> " + message, channel);
     }
 };
 Bot.prototype.sendMainTour = function (message) {
