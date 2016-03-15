@@ -156,6 +156,9 @@ function Safari() {
             pokeRaceEarnings: 0,
             underdogRaceWins: 0,
             favoriteRaceWins: 0,
+            factoryFirst: 0,
+            factorySecond: 0,
+            factoryThird: 0,
             packsOpened: 0,
             pokesStolen: 0,
             notBaitedCaught: 0,
@@ -1769,6 +1772,48 @@ function Safari() {
         }
         
         return out;
+    }
+    function validateStuff(str) {
+        var info = str.replace(/\|/g, ":").split(":"), out = [], data;
+        for (var e = 0; e < info.length; e++) {
+            data = translateAsset(info[e]);
+            if ((data.type === "poke" && !data.num) || (data.type === "item" && !allItems.contains(data.id)) || (data.type === "money" && isNaN(data.amount))) {
+                out.push(info[e]);
+            }
+        }
+        return out;
+    }
+    function translateStuff(stuff) {
+        if (typeof stuff === "string") {
+            stuff = toStuffObj(stuff.replace(/\|/g, ":"));
+        }
+        var out = [], s, amt, asset;
+        for (s in stuff) {
+            amt = stuff[s];
+            if (s[0] === "$") {
+                if (amt > 0) {
+                    out.push("$" + addComma(amt));
+                } else if (amt < 0) {
+                    out.push("-$" + addComma(-amt));
+                }
+            } else if (s[0] === "@" || (allItems.contains(itemAlias(s, true)))) {
+                asset = s;
+                if (asset[0] === "@") {
+                    asset = asset.substr(1);
+                }
+                asset = itemAlias(asset, true);
+                
+                if (amt > 0) {
+                    out.push(plural(amt, asset));
+                } else if (amt < 0) {
+                    out.push(plural(-amt, asset));
+                }
+            } else {
+                asset = getInputPokemon(s);
+                out.push(plural(amt, asset.name));
+            }
+        }
+        return readable(out);
     }
     function giveStuff(player, stuff) {
         var out = { gained: [], lost: [] }, asset, amt, total, max;
@@ -5354,7 +5399,7 @@ function Safari() {
             sys.sendMessage(src, "You received " + plural(1, "master") + "!", safchan);
             sys.sendMessage(src, "", safchan);
             this.saveGame(player);
-            return;            
+            return;
         }
     };
 
@@ -6596,9 +6641,14 @@ function Safari() {
             safaribot.sendMessage(src, "Please remove the " + input.name + " from your shop before auctioning it!", safchan);
             return;
         }
-
-        var auction = new Auction(src, input.input, startingOffer, minBid);
-        currentAuctions.push(auction);
+        if (startingOffer >= moneyCap) {
+            sys.sendAll("", safchan);
+            safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + startingOffer + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
+            sys.sendAll("", safchan);
+        } else {
+            var auction = new Auction(src, input.input, startingOffer, minBid);
+            currentAuctions.push(auction);
+        }
 
         player.cooldowns.auction = now() + 15 * 60 * 1000;
         this.saveGame(player);
@@ -8063,7 +8113,7 @@ function Safari() {
                 var ac = args.count + skip;
                 var npc = {
                     name: "Trainer " + generateName(),
-                    party: generateTeam(chance(Math.min(0.02 * ac, 0.42)) ? Object.keys(effectiveness).random() : null),
+                    party: generateTeam(6, null, null, null, chance(Math.min(0.02 * ac, 0.42)) ? Object.keys(effectiveness).random() : null),
                     power: [10 + Math.floor(args.count/2), 100 + ac],
                     postBattle: postBattle,
                     postArgs: {
@@ -8080,9 +8130,9 @@ function Safari() {
                     };
                 for (var i = 0; i < times; i++) {
                     //We calculate the level they are on first, then go back and grab the reward from previous floor
-                    c = args.count - i; 
+                    c = args.count - i;
                     mod = c % 6;
-                    loop = Math.floor(c / 6) + 1;                        
+                    loop = Math.floor(c / 6) + 1;
                     switch (mod) {
                         case 0:
                             if ((loop % 16) in specialPrizes) {
@@ -8603,7 +8653,7 @@ function Safari() {
         if (stopQuests.alchemist) {
             safaribot.sendMessage(src, "Alchemist: Naptime! Zzz... Zzz... (Perhaps you should come back later...)", safchan);
             return;
-        }        
+        }
         var recipes = {
             "materia": {
                 "safari": itemData.materia.threshold
@@ -8649,7 +8699,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Alchemist: See those materials? Bring 'em back here so I can make you some shiny items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
-        }        
+        }
         
         if (!canMake) {
             safaribot.sendHtmlMessage(src, "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
@@ -8691,11 +8741,23 @@ function Safari() {
 
         return out;
     }
-    function generateTeam(useType) {
-        var out = [], p, legendCount = 0;
+    function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved) {
+        var out = [], p, legendCount = 0, bst;
+        size = size || 6;
+        maxLegends = maxLegends || 1;
 
-        while (out.length < 6) {
+        while (out.length < size) {
             p = sys.rand(1, 722);
+            bst = getBST(p);
+            
+            if (minBST && bst < minBST) {
+                continue;
+            } else if (maxBST && bst > maxBST) {
+                continue;
+            }
+            if (onlyEvolved && p in evolutions) {
+                continue;
+            }
 
             if (useType && out.length < 3) {
                 if (!hasType(p, useType)) {
@@ -8706,7 +8768,7 @@ function Safari() {
                 continue;
             }
             if (isLegendary(p)) {
-                if (legendCount > 0) {
+                if (legendCount >= maxLegends) {
                     continue;
                 }
                 legendCount++;
@@ -8852,7 +8914,7 @@ function Safari() {
                             var stmBonus = {};
                             for (var s in this.stamina) {
                                 if (this.stamina[s] > 0) {
-                                    stmBonus[s] = Math.ceil(this.stamina[s] * (0.03 + this.level * 0.01));
+                                    stmBonus[s] = Math.ceil(this.stamina[s] * (0.03 + this.level * 0.0095));
                                     if (this.stamina[s] + stmBonus[s] > this.maxStamina[s]) {
                                         stmBonus[s] = this.maxStamina[s] - this.stamina[s];
                                     }
@@ -8969,6 +9031,9 @@ function Safari() {
         if (p >= 15000) {
             reward = "bright";
             amt = 5;
+        } else if (p >= 13000) {
+            reward = "bright";
+            amt = 3;
         } else if (p >= 11000) {
             reward = "bright";
             amt = 2;
@@ -9222,7 +9287,7 @@ function Safari() {
             }
         }
         
-        this.hordePower = [9 + level * 7, 94 + level * 16];
+        this.hordePower = [8 + level * 9, 90 + level * 20];
         
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
@@ -9300,7 +9365,7 @@ function Safari() {
         return out;
     };
     HordeRoom.prototype.advance = function() {
-        var members = this.pyr.names, id, choice, m, p, opp, res, defeated = {}, stamina = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke;
+        var members = this.pyr.names, id, choice, m, p, dmg, opp, res, defeated = {}, stamina = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke;
         
         if (this.noBattlers) {
             this.sendAll("");
@@ -9363,37 +9428,14 @@ function Safari() {
             }
         }
         if (this.horde.length > 0) {
-            var playersAlive = 0;
-            for (p in members) {
-                if (this.pyr.stamina[members[p]] > 0) {
-                    playersAlive++;
-                }
-            }
-            
-            var totalDamage = this.horde.length * (1 + 2 * this.level) * playersAlive;
-            var damage = {}, higher = 0, lower = totalDamage, higherName, lowerName;
+            var averageDamage = this.horde.length * (1 + 2 * this.level);
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                damage[id] = Math.round(totalDamage * ((id in defeated ? defeated[id].length : 0) / Math.max(defeatedCount, 1)));
-                
-                if (damage[id] <= lower) {
-                    lower = damage[id];
-                    lowerName = id;
-                }
-                if (damage[id] >= higher) {
-                    higher = damage[id];
-                    higherName = id;
-                }
-            }
-            if (playersAlive > 1) {
-                damage[higherName] = lower;
-                damage[lowerName] = higher;
-            }
-            for (p in damage) {
-                stamina[p] = -damage[p];
+                dmg = Math.round(averageDamage * (1 - (((id in defeated ? defeated[id].length : 0) / Math.max(defeatedCount, 1)) - 0.5)));
+                stamina[id] = -dmg;
             }
             this.sendAll("The following Wild Pokémon haven't been defeated and attacked the players: " + readable(this.horde.map(function(x){ return toColored(poke(x), "red"); }), "and") + "!");
         }
@@ -9412,11 +9454,11 @@ function Safari() {
         
         var parties = pyramidRef.parties;
         for (var p in parties) {
-            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ") + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of some stamina!" : "");
+            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ") + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
         }
         
         this.opponent = legendaries.concat(megaPokemon).random();
-        this.opponentHP = 200 + 160 * level;
+        this.opponentHP = 210 + 165 * level;
         this.opponentPower = 8 + 6 * level;
         this.isRevealed = false;
         
@@ -9540,7 +9582,7 @@ function Safari() {
             }
         }
         this.revealedTypes = [this.types[0]];
-        this.hp = 800 + 200 * level;
+        this.hp = 850 + 200 * level;
         this.dealt = {};
         this.treasureGoal = Math.round(this.hp * (1.65 - this.level * 0.07));
         
@@ -9631,34 +9673,15 @@ function Safari() {
             }
             
             var staminaStr = [], members = this.pyr.names, id;
-            var attackersNames = Object.keys(choices), totalDamage = 8 * this.level * attackersNames.length;
-            var damage = {}, higher = 0, lower = totalDamage, higherName, lowerName;
+            var averageDamage = 5 + 5 * this.level;
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                damage[id] = Math.round(totalDamage * (turnDealt[id] / Math.max(turnDamage, 1)));
-                if (damage[id] <= lower) {
-                    lower = damage[id];
-                    lowerName = id;
-                }
-                if (damage[id] >= higher) {
-                    higher = damage[id];
-                    higherName = id;
-                }
-            }
-            if (attackersNames.length > 1) {
-                damage[higherName] = lower;
-                damage[lowerName] = higher;
-            }
-            for (p in members) {
-                id = members[p];
-                if (this.pyr.stamina[id] <= 0) {
-                    continue;
-                }
-                stamina[id] = -damage[id];
-                staminaStr.push(id.toCorrectCase() + " -" + damage[id]);
+                dmg = Math.round(averageDamage * (1 - ((turnDealt[id]/turnDamage) - 0.5)));
+                stamina[id] = -dmg;
+                staminaStr.push(id.toCorrectCase() + " -" + dmg);
             }
             
             this.sendAll("The statue's HP is now at {0}! Stamina lost: {1}".format(toColor(this.hp, "blue"), staminaStr.join(", ")));
@@ -9715,7 +9738,7 @@ function Safari() {
             premier: { chance: 8, item: "premier", amount: 2 * level }
         };
         
-        this.inverted = chance(0.27 + 0.05 * this.level);
+        this.inverted = chance(0.30 + 0.06 * this.level);
         
         this.sendAll("");
         this.sendAll("Room {0}-{1}: {2} challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : ""));
@@ -9796,7 +9819,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(id)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= 5 + 5 * this.level;
+                stamina[id] -= 5 + 6 * this.level;
             }
         }
         
@@ -10153,7 +10176,7 @@ function Safari() {
             this.turnToAdvance = 0;
         } else {
             this.answerAttempts++;
-            var stmLost = 5 * this.level;
+            var stmLost = 5 + 5 * this.level;
             if (this.answerAttempts > 1) {
                 stamina[this.pyr.leader] = -stmLost;
             }
@@ -10372,7 +10395,7 @@ function Safari() {
             strugglemsg = "";
             if (struggled) {
                 id = parties[p].random();
-                strugglers[p] = 3 * this.level;
+                strugglers[p] = 3 + 3 * this.level;
                 strugglemsg = p.toCorrectCase() + " lost " + strugglers[p] + " Stamina!";
             } else {
                 for (n in parties[p]) {
@@ -10430,7 +10453,7 @@ function Safari() {
                 if (!(id in stamina)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= (2 * this.level * Math.ceil((rest-50)/5));
+                stamina[id] -= ((1 + 3 * this.level) * Math.ceil((rest-50)/5));
             }
             this.sendAll("Only {0}% of the hazards have been cleared, so you struggled to reach the door due to the remaining hazards ({1})!".format(100-rest, readable(remaining, "and")));
         } else {
@@ -10459,7 +10482,7 @@ function Safari() {
         this.traps = {};
         for (p = 0; p < 3; p++) {
             this.traps[types.shift()] = {
-                stamina: -(6 + this.level * 8)
+                stamina: -(8 + this.level * 8)
             };
         }
         this.treasures = {};
@@ -10630,7 +10653,7 @@ function Safari() {
         this.finished = true;
     };
     SafariEvent.prototype.log = function(finished, winners, extra) {
-        sys.appendToFile(eventLog, now() + "|||" + this.eventName + "|||" + this.hostName + "|||" + this.signups.join(", ") + "|||" + finished + "|||" + (Array.isArray(winners) ? (winners.length > 0 ? winners.join(", ") : "None") : winners) + "|||" + this.rewardName + "|||" + extra + "\n");
+        sys.appendToFile(eventLog, now() + "|||" + this.eventName + "|||" + this.hostName + "|||" + this.signups.join(", ") + "|||" + finished + "|||" + (Array.isArray(winners) ? (winners.length > 0 ? winners.join(", ") : "None") : winners) + "|||" + this.rewardName + "|||" + (extra || "N/A") + "\n");
     };
     SafariEvent.prototype.handleCommand = function(src, command, commandData) {
         this.eventCommands[command].call(this, src, commandData);
@@ -10746,11 +10769,17 @@ function Safari() {
             }
         }
     };
-    SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored) {
+    SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored, nobot) {
         var id = sys.id(name);
         if (id) {
-            if (msg === "") {
-                sys.sendHtmlMessage(id, msg, safchan);
+            if (msg === "" || nobot) {
+                if (flashing) {
+                    sys.sendHtmlMessage(id, toFlashing(msg, name), safchan);
+                } else if (colored) {
+                    sys.sendHtmlMessage(id, toColored(msg, name), safchan);
+                } else {
+                    sys.sendHtmlMessage(id, msg, safchan);
+                }
             } else {
                 if (flashing) {
                     safaribot.sendHtmlMessage(id, toFlashing(msg, name), safchan);
@@ -10762,11 +10791,11 @@ function Safari() {
             }
         }
     };
-    SafariEvent.prototype.sendToViewers = function(msg, flashing, colored) {
+    SafariEvent.prototype.sendToViewers = function(msg, flashing, colored, nobot) {
         var e;
         var list = removeDuplicates(this.signups.concat(this.viewers));
         for (e = 0 ; e < list.length; e++) {
-            this.sendMessage(list[e], msg, flashing, colored);
+            this.sendMessage(list[e], msg, flashing, colored, nobot);
         }
     };
     SafariEvent.prototype.isInEvent = function(name) {
@@ -11299,7 +11328,7 @@ function Safari() {
         this.sendToViewers("");
         this.sendToViewers(readable(winners.map(function(x){ return "<b>" + x + "</b>" + (x === this.favorite ? " (Favorite)" : "") + (x === this.underdog ? " (Underdog)" : ""); }, this), "and") + " won the " + this.eventName  + "!");
 
-        var pwinners = [], player, r, bet, betStr = [];
+        var pwinners = [], player, r, bet, betStr = [], payments = [];
 
         for (r in this.bets) {
             bet = this.bets[r];
@@ -11377,6 +11406,7 @@ function Safari() {
                         this.sendMessage(name, "You paid " + plural(bet.bet, this.item) + " as your bet!");
                     }
                     this.sendMessage(name, "You received " + (this.silver ? plural(prize, "silver") : "$" + addComma(prize)) + " for winning this event! You now have " + (this.item ? plural(player.balls[this.item],  this.item) : "$" + addComma(player.money)) + "!");
+                    payments.push(name.toCorrectCase() + " (" + (this.silver ? plural(prize, "silver") : "$" + addComma(prize)) + ")");
                     safari.saveGame(player);
                 }
             }
@@ -11385,7 +11415,7 @@ function Safari() {
         }
         this.sendToViewers("");
         this.finished = true;
-        this.log(true, pwinners, "Bets: " + betStr.join(", "));
+        this.log(true, payments, "Bets: " + betStr.join(", "));
     };
     PokeRace.prototype.canJoin = function(src, data) {
         var player = getAvatar(src);
@@ -11464,6 +11494,407 @@ function Safari() {
         return " by betting " + (this.item ? plural(bet, this.item) : "$" + addComma(bet)) + " on " + racer + " (Payout: " + payout + ")";
     };
 
+    function BFactory(src, reward1, reward2, reward3) {
+        SafariEvent.call(this, src);
+        this.eventName = "Battle Factory";
+        this.minPlayers = 4;
+
+        this.playerTeams = {};
+        this.survivors = [];
+        this.battles = [];
+        this.lastByes = [];
+        this.eliminationOrder = [];
+        this.round = -1;
+        
+        this.currentMatch = 0;
+        this.choices = {};
+        this.opponents = {};
+        this.resting = "";
+        
+        this.phase = "signup";
+        this.subturn = 0;
+        
+        this.thirdPrize = false;
+        this.thirdPlace = null;
+        this.isThirdPlaceMatch = false;
+        this.fightingForThird = [];
+
+        this.reward1 = reward1;
+        this.reward2 = reward2;
+        this.reward3 = reward3;
+        this.rewardName1 = translateStuff(reward1);
+        this.rewardName2 = translateStuff(reward2);
+        this.rewardName3 = translateStuff(reward3);
+        
+        this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
+        this.hasReward = true;
+        
+        this.eventCommands = {
+            choose: this.choosePokemon
+        };
+        
+        var joinCommand = "/signup";
+        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: <b>" + this.rewardName + "</b>!";
+
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: <b>" + this.rewardName + "</b>!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " or to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+        sys.sendAll("", safchan);
+    }
+    BFactory.prototype = new SafariEvent();
+    BFactory.prototype.setupEvent = function() {
+        this.thirdPrize = this.signups.length > 6;
+        
+        for (var e = 0; e < this.signups.length; e++) {
+            this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 450, 600, 1, null, true);
+            this.survivors.push(this.signups[e].toLowerCase());
+        }
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
+        for (e in this.playerTeams) {
+            this.sendMessage(e, "Parties have been formed! " + addFlashTag(e.toCorrectCase()) + ",  your team for this event is: ", true);
+            this.sendMessage(e, this.playerTeams[e].map(pokeInfo.icon).join(" "));
+        }
+        this.sendToViewers("");
+    };
+    function toChooseLink(x) {
+        return link("/choose " + poke(x), poke(x));
+    }
+    BFactory.prototype.playTurn = function() {
+        if (this.phase === "signup") {
+            this.phase = "prepare";
+            this.sendToViewers("Battles will start soon, use this time to get used to your team!");
+            return;
+        }
+        if (this.phase === "input") {
+            this.subturn--;
+            if (this.subturn > 0) {
+                return;
+            }
+            this.phase = "match";
+        }
+        
+        if (this.phase === "prepare") { //Create match-ups here
+            this.prepareBattles();
+        }
+        else if (this.phase === "match") { //Run battles here
+            this.nextMatch();
+        }
+        if (this.survivors.length === 1) { //Check if event is over here
+            this.finish();
+        }
+    };
+    BFactory.prototype.prepareBattles = function() {
+        var players = this.survivors.concat().shuffle(), freePass, e, bat, det;
+        this.resting = "";
+        //Check if some player automatically advances to the next round due to odd number of players
+        if (players.length % 2 === 1) {
+            var canPass = [];
+            for (e = 0; e < players.length; e++) {
+                if (!this.lastByes.contains(players[e])) {
+                    canPass.push(players[e]);
+                }
+            }
+            if (canPass.length > 0) {
+                freePass = canPass.random();
+            } else {
+                this.lastByes = [];
+                freePass = players.random();
+            }
+            this.resting = freePass;
+            players.splice(players.indexOf(freePass), 1);
+            this.lastByes.push(freePass);
+        }
+        this.battles = [];
+        
+        var prepareForThird = this.survivors.length === 2;
+        if (this.round >= 0 && this.eliminationOrder[this.round].length === 1) {
+            prepareForThird = false;
+            this.thirdPlace = this.eliminationOrder[this.round][0];
+        }
+        if (prepareForThird) {
+            var eliminated = this.eliminationOrder[this.round];
+            this.battles.push([eliminated[0], eliminated[1]]);
+            this.fightingForThird = [eliminated[0], eliminated[1]];
+            this.isThirdPlaceMatch = true;
+        }
+        
+        for (e = 0; e < players.length; e += 2) {
+            this.battles.push([players[e], players[e+1]]);
+        }
+        
+        this.round++;
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        
+        var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (this.survivors.length === 2 ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
+        for (e = 0; e < this.battles.length; e++) {
+            bat = this.battles[e];
+            det = "";
+            if (prepareForThird && e === 0) {
+                det = "Third Place Match: ";
+            } else if (this.survivors.length === 2) {
+                det = toColor("Final: ", "red");
+            }
+            
+            roundTable += "<tr>" + (det ? "<td align=right><b>" + det + "</b></td>" : "") + "<td align=right>" + addFlashTag(bat[0].toCorrectCase()) + "</td> <td align=center>" + toColor("vs", "gray") + "</td> <td align=left>" + addFlashTag(bat[1].toCorrectCase()) + "</td></tr>";
+        }
+        roundTable += "</table>";
+        this.sendToViewers(roundTable, true, false, true);
+        
+        if (freePass) {
+            this.sendToViewers(addFlashTag(freePass.toCorrectCase()) + " advances to the next round!", true);
+        }
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        
+        this.choices = {};
+        this.opponents = {};
+        for (e = 0; e < this.battles.length; e++) {
+            bat = this.battles[e];
+            
+            this.sendMessage(bat[0], "Your opponent (" + bat[1].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[1]].map(pokeInfo.icon).join(" "));
+            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle: " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
+            
+            this.sendMessage(bat[1], "Your opponent (" + bat[0].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[0]].map(pokeInfo.icon).join(" "));
+            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle: " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
+            
+            this.choices[bat[0]] = [];
+            this.choices[bat[1]] = [];
+            this.opponents[bat[0]] = bat[1];
+            this.opponents[bat[1]] = bat[0];
+        }
+        this.sendToViewers("");
+        
+        this.currentMatch = 0;
+        this.eliminationOrder.push([]);
+        this.phase = "input";
+        this.subturn = 3;
+    };
+    BFactory.prototype.nextMatch = function() {
+        var bat = this.battles[this.currentMatch], res, p1 = bat[0], p2 = bat[1], p1Poke, p2Poke, r, points1 = 0, points2 = 0;
+            
+        var team1 = this.choices[p1];
+        var team2 = this.choices[p2];
+        
+        var roundName = "Round " + (this.round + 1) + ", Match " + (this.currentMatch + 1) + ": ";
+        if (this.isThirdPlaceMatch) {
+            roundName = "Third Place Match: ";
+        } else if (this.survivors.length === 2) {
+            roundName = toColor("Final: ", "red");
+        }
+        
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers("<b>" + roundName + "</b>" + addFlashTag(p1.toCorrectCase()) + " x " + addFlashTag(p2.toCorrectCase()), true);
+        while (team1.length < 3) {
+            r = this.playerTeams[p1].random();
+            if (!team1.contains(r)) {
+                team1.push(r);
+            }
+        }
+        while (team2.length < 3) {
+            r = this.playerTeams[p2].random();
+            if (!team2.contains(r)) {
+                team2.push(r);
+            }
+        }
+        for (var e = 0; e < 3; e++) {
+            p1Poke = team1[e];
+            p2Poke = team2[e];
+            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
+            if (res === 1) {
+                points1++;
+            } else if (res === 2) {
+                points2++;
+            }
+        }
+        team1 = team1.shuffle();
+        team2 = team2.shuffle();
+        if (points1 === points2) {
+            this.sendToViewers("");
+            this.sendToViewers("Match winner still not defined! Going into tiebreak rounds!");
+        }
+        for (e = 0; e < 3 && points1 === points2; e++) {
+            p1Poke = team1[e];
+            p2Poke = team2[e];
+            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
+            if (res === 1) {
+                points1++;
+            } else if (res === 2) {
+                points2++;
+            }
+        }
+        if (points1 === points2) {
+            this.sendToViewers("Players are stalling! Match will be decided with a coin flip!", true);
+            if (Math.random() < 0.5) {
+                points1++;
+            } else {
+                points2++;
+            }
+        }
+        
+        var score = " with a score of <b>" + (points1 > points2 ? points1 + " x " + points2 : points2 + " x " + points1) + "</b>";
+        var eliminated = this.eliminationOrder[this.round];
+        if (this.isThirdPlaceMatch) {
+            this.isThirdPlaceMatch = false;
+            if (points1 > points2) {
+                this.thirdPlace = p1;
+                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + " and got Third Place!", true);
+            } else if (points2 > points1) {
+                this.thirdPlace = p2;
+                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + " and got Third Place!", true);
+            }
+        }
+        else {
+            if (points1 > points2) {
+                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + "!", true);
+                this.survivors.splice(this.survivors.indexOf(p2), 1);
+                eliminated.push(p2);
+            } else {
+                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + "!", true);
+                this.survivors.splice(this.survivors.indexOf(p1), 1);
+                eliminated.push(p1);
+            }
+        }
+        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers("");
+        
+        this.currentMatch++;
+        if (this.currentMatch >= this.battles.length) {
+            this.phase = "prepare";
+        }
+    };
+    BFactory.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
+        var res = calcDamage(p1Poke, p2Poke);
+        var name1 = owner1 + "'s " + poke(p1Poke);
+        var name2 = owner2 + "'s " + poke(p2Poke);
+
+        name1 = res.power[0] > res.power[1] ? "<b>" + name1 + "</b>" : name1;
+        name2 = res.power[1] > res.power[0] ? "<b>" + name2 + "</b>" : name2;
+        
+        var result = name1 + " " + pokeInfo.icon(p1Poke) + " (" + res.power[0] + ") x (" + res.power[1] + ") "+ pokeInfo.icon(p2Poke) + " " + name2;
+        if (res.power[0] == res.power[1]) {
+            result += " <b>Draw</b>";
+        }
+        this.sendToViewers(result);
+
+        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonusString[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonusString[1] + "x)";
+        this.sendToViewers(toColor(status, "gray"));
+
+        if (res.power[0] > res.power[1]) {
+            return 1;
+        }
+        else if (res.power[1] > res.power[0]) {
+            return 2;
+        }
+        else {
+            return 0;
+        }
+    };
+    BFactory.prototype.choosePokemon = function(src, commandData) {
+        var name = sys.name(src).toLowerCase();
+        if (name === this.resting) {
+            this.sendMessage(name, "You are not in any battle during this round!");
+            return;
+        }
+        var team = this.playerTeams[name];
+        var info = getInputPokemon(commandData);
+        var id = info.id;
+        if (!team.contains(id)) {
+            this.sendMessage(name, "You don't have " + an(info.name) + " available for this event! You can use " + team.map(toChooseLink) + "!");
+            return;
+        }
+        var choices = this.choices[name];
+        if (choices.contains(id)) {
+            choices.splice(choices.indexOf(id), 1);
+        }
+        choices.push(id);
+        if (choices.length > 3) {
+            choices.shift();
+        }
+        this.sendMessage(name, "You picked " + toColor(readable(choices.map(poke)), "blue") + " for your match against " + this.opponents[name].toCorrectCase() + "!");
+    };
+    BFactory.prototype.finish = function() {
+        var winner = this.survivors[0];
+        var runnerup = this.eliminationOrder[this.round][0];
+        var thirdplace = this.thirdPlace;
+        
+        var winnerName = winner.toCorrectCase();
+        var runnerupName = runnerup.toCorrectCase();
+        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
+        
+        
+        
+        safaribot.sendHtmlAll("<b>" + winnerName + "</b> won the " + this.eventName + " and received " + this.rewardName1 + "!", safchan);
+        var player = getAvatarOff(winner), out, stuff;
+        if (player) {
+            stuff = toStuffObj(this.reward1.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.factoryFirst += 1;
+            safari.saveGame(player);
+            this.sendMessage(winner, "You " + out + "!");
+        }
+        
+        safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
+        player = getAvatarOff(runnerup);
+        if (player) {
+            stuff = toStuffObj(this.reward2.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.factorySecond += 1;
+            safari.saveGame(player);
+            this.sendMessage(runnerup, "You " + out + "!");
+        }
+        
+        if (thirdplace && this.thirdPrize) {
+            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
+            player = getAvatarOff(thirdplace);
+            if (player) {
+                stuff = toStuffObj(this.reward3.replace(/\|/g, ":")),
+                out = giveStuff(player, stuff);
+                
+                player.records.factoryThird += 1;
+                safari.saveGame(player);
+                this.sendMessage(thirdplace, "You " + out + "!");
+            }
+        } else {
+            this.sendToViewers("No third place prize will be given due to the low number of participants!");
+        }
+        
+        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
+        this.finished = true;
+    };
+    BFactory.prototype.canJoin = function(src) {
+        var player = getAvatar(src);
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You can't join this event while tradebanned!", safchan);
+            return false;
+        }
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only join this event after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
+        return true;
+    };
+    BFactory.prototype.onWatch = function(src) {
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! Current matches:", safchan);
+        if (this.battles.length > 0) {
+            for (var e in this.battles) {
+                safaribot.sendMessage(src, this.battles[e][0].toCorrectCase() + " x " + this.battles[e][1].toCorrectCase(), safchan);
+            }
+        } else {
+            safaribot.sendMessage(src, "Matches will be drawn in a few seconds.", safchan);
+        }
+    };
+    BFactory.prototype.isInEvent = function(name) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        var n = name.toLowerCase();
+        return signupsLower.contains(n) && (this.survivors.contains(n) || this.fightingForThird.contains(n));
+    };
+    
     /* System Functions */
     this.startGame = function(src, data) {
         if (getAvatar(src) || SESSION.users(src).smute.active) {
@@ -12361,6 +12792,9 @@ function Safari() {
         sys.sendMessage(src, "Pokémon Race: 6 Pokémon compete in a race to the goal. Players can place bets for the winner to win a better payout. Favorite has a better chance of winning, but lower payout, while Underdog has a lower chance of winning but with a higher payout.", safchan);
         sys.sendMessage(src, "Requirements: Money, Silver Coins or Items to place the bet.", safchan);
         sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match. Rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon.", safchan);
+        sys.sendMessage(src, "", safchan);
     };
     this.onHelp = function (src, topic, channel) {
         if (topic === "safari") {
@@ -12428,6 +12862,7 @@ function Safari() {
             "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
             "/mythlog [amount]։[lookup]: Returns a list of Legendary or Shiny Pokémon spawns. Amount and Lookup works the same as /tradelog.",
             "/altlog [amount]։[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
+            "/eventlog [amount]։[lookup]: Returns a list of recent Safari Events. Amount and Lookup works the same as /tradelog.",
             "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
             "/sharedname [name]: Allows/disallows a person to start a new Safari save while they share IP with another Safari Player.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
@@ -12519,7 +12954,7 @@ function Safari() {
                 if (true) {
                     safaribot.sendMessage(src, "Sorry, we are not exchanging anything right now! Please try again later.", safchan);
                     return true;
-                }                
+                }
                 var values = {"Ditto": 1}; //Make this editable on server maybe
                 var exchanged = Object.keys(values);
                 if (commandData === "*") {
@@ -13142,6 +13577,12 @@ function Safari() {
                     case "silveritemrace":
                         type = "itemsilverrace";
                     break;
+                    case "bf":
+                    case "factory":
+                    case "bfactory":
+                    case "battlefactory":
+                        type = "bfactory";
+                    break;
                     default:
                     case "help":
                     case "info":
@@ -13151,6 +13592,7 @@ function Safari() {
                         safaribot.sendMessage(src, "Pokémon Race: /startevent race:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]", safchan);
                         safaribot.sendMessage(src, "Pokémon Silver Race: /startevent silverrace:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
                         safaribot.sendMessage(src, "Pokémon Item Race: /startevent [itemrace/itemsilverrace]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
+                        safaribot.sendMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
                         safaribot.sendMessage(src, "For the race events, most values can be left blank to use the default settings.", safchan);
                         return true;
                 }
@@ -13234,6 +13676,47 @@ function Safari() {
                     }
                     
                     var ev = new PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, (type == "silverrace" || type == "itemsilverrace"), item);
+                    currentEvent = ev;
+                }
+                else if (type == "bfactory") {
+                    var r1 = "", r2 = "", r3 = "", pLen = param.length;
+
+                    if (pLen > 0) {
+                        r1 = param[0];
+                    }
+                    if (pLen > 1) {
+                        r2 = param[1];
+                    }
+                    if (pLen > 2) {
+                        r3 = param[2];
+                    }
+                    if (!r1) {
+                        safaribot.sendMessage(src, "Please specify a valid reward for the first place!", safchan);
+                        return true;
+                    }
+                    if (!r2) {
+                        safaribot.sendMessage(src, "Please specify a valid reward for the second place!", safchan);
+                        return true;
+                    }
+                    var valid = validateStuff(r1);
+                    if (valid.length > 0) {
+                        safaribot.sendMessage(src, "Invalid reward for first place found: " + readable(valid) + " !", safchan);
+                        return true;
+                    }
+                    valid = validateStuff(r2);
+                    if (valid.length > 0) {
+                        safaribot.sendMessage(src, "Invalid reward for second place found: " + readable(valid) + " !", safchan);
+                        return true;
+                    }
+                    if (r3) {
+                        valid = validateStuff(r3);
+                        if (valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid reward for third place found: " + readable(valid) + " !", safchan);
+                            return true;
+                        }
+                    }
+                    
+                    var ev = new BFactory(src, r1, r2, r3);
                     currentEvent = ev;
                 }
                 else {
@@ -14009,6 +14492,17 @@ function Safari() {
                 }
                 var stuff1 = toStuffObj(info[2].replace(/\|/g, ":")),
                     stuff2 = toStuffObj(info[3].replace(/\|/g, ":"));
+                
+                var valid = validateStuff(info[2]);
+                if (valid.length > 0) {
+                    safaribot.sendMessage(src, "Invalid assets found: " + readable(valid) + " !", safchan);
+                    return true;
+                }
+                valid = validateStuff(info[3]);
+                if (valid.length > 0) {
+                    safaribot.sendMessage(src, "Invalid assets found: " + readable(valid) + " !", safchan);
+                    return true;
+                }
                 
                 var missing1 = [], missing2 = [], data, amt;
                 for (var e in stuff1) {
