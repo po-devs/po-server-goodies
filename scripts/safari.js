@@ -11546,7 +11546,7 @@ function Safari() {
         this.rewardName3 = translateStuff(reward3);
         
         this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
-        this.rewardName2 = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
+        this.rewardNameB = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
         this.hasReward = true;
         
         this.eventCommands = {
@@ -11554,10 +11554,10 @@ function Safari() {
         };
         
         var joinCommand = "/signup";
-        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardName2 + "!";
+        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardNameB + "!";
 
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardName2 + "!", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
         safaribot.sendHtmlAll("Type " + link(joinCommand) + " or to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
