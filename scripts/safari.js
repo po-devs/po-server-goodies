@@ -447,7 +447,7 @@ function Safari() {
             ]
         },
         "excludeTypes": { //onlyTypes has priority over excludeTypes; if a set from onlyTypes is used, excludeTypes will be skipped
-            "Normal" : 0.06,
+            "Normal" : 0.015,
             "Fighting" : 0.06,
             "Flying" : 0.06,
             "Poison" : 0.06,
@@ -2854,7 +2854,7 @@ function Safari() {
         player.cooldowns.bait = player.cooldowns.ball;
         if (ball === player.favoriteBall && ball !== "safari" && player.balls[ball] <= 5) {
             if (player.balls[ball] === 0) {
-                safaribot.sendMessage(src, "Note: You are completely out of " + plural(player.balls[ball], ballName) + ". Consider obtaining more or setting a new favorite ball with /favorite.", safchan);
+                safaribot.sendMessage(src, "Note: You are completely out of " + es(ballName) + ". Consider obtaining more or setting a new favorite ball with /favorite.", safchan);
             } else {
                 safaribot.sendMessage(src, "Note: You have " + plural(player.balls[ball], ballName) + " left. Consider obtaining more or setting a new favorite ball with /favorite.", safchan);
             }
@@ -3663,11 +3663,30 @@ function Safari() {
                 safaribot.sendMessage(src, "Please specify a valid number higher than 1!", safchan);
                 return;
             }
-            pokeList.forEach(function(x){
-                if (countArray(pokeList, x) >= val) {
-                    list.push(x);
+            var normalCount = {}, shinyCount = {}, p, obj, e;
+            for (var i = 0, l = pokeList.length; i < l; i++) {
+                p = pokeList[i];
+                obj = typeof p === "string" ? shinyCount : normalCount;
+                if (!obj.hasOwnProperty(p)) {
+                    obj[p] = 0;
                 }
-            });
+                obj[p]++;
+            }
+            for (i in normalCount) {
+                if (normalCount[i] >= val) {
+                    p = parseInt(i, 10);
+                    for (e = 0, l = normalCount[i]; e < l; e++) {
+                        list.push(p);
+                    }
+                }
+            }
+            for (i in shinyCount) {
+                if (shinyCount[i] >= val) {
+                    for (e = 0, l = shinyCount[i]; e < l; e++) {
+                        list.push(i);
+                    }
+                }
+            }
             title = "Pokémon with at least " + val + " duplicates";
         }
         else if (crit == "canevolve") {
@@ -11527,6 +11546,7 @@ function Safari() {
         this.rewardName3 = translateStuff(reward3);
         
         this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
+        this.rewardName2 = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
         this.hasReward = true;
         
         this.eventCommands = {
@@ -11534,10 +11554,10 @@ function Safari() {
         };
         
         var joinCommand = "/signup";
-        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: <b>" + this.rewardName + "</b>!";
+        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardName2 + "!";
 
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: <b>" + this.rewardName + "</b>!", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardName2 + "!", safchan);
         safaribot.sendHtmlAll("Type " + link(joinCommand) + " or to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
@@ -11569,8 +11589,8 @@ function Safari() {
         }
         if (this.phase === "input") {
             this.subturn--;
-            if (this.subturn === 2) {
-                this.sendToViewers("Make your choices, you still have 12 seconds!");
+            if (this.subturn === 3) {
+                this.sendToViewers("Round " + (this.round + 1) + " Matches will start in 18 seconds!");
             }
             if (this.subturn > 0) {
                 return;
@@ -11647,7 +11667,7 @@ function Safari() {
         this.sendToViewers(roundTable, true, false, true);
         
         if (freePass) {
-            this.sendToViewers(addFlashTag(freePass.toCorrectCase()) + " advances to the next round!", true);
+            this.sendToViewers(addFlashTag(freePass.toCorrectCase()) + " advances to the next round!", true, false, true);
         }
         this.sendToViewers("");
         this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
@@ -11658,10 +11678,10 @@ function Safari() {
             bat = this.battles[e];
             
             this.sendMessage(bat[0], "Your opponent (" + bat[1].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[1]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle (you have 30 seconds): " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
+            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
             
             this.sendMessage(bat[1], "Your opponent (" + bat[0].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[0]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle (you have 30 seconds): " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
+            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
             
             this.choices[bat[0]] = [];
             this.choices[bat[1]] = [];
@@ -11673,7 +11693,7 @@ function Safari() {
         this.currentMatch = 0;
         this.eliminationOrder.push([]);
         this.phase = "input";
-        this.subturn = 5;
+        this.subturn = 6;
     };
     BFactory.prototype.nextMatch = function() {
         var bat = this.battles[this.currentMatch], res, p1 = bat[0], p2 = bat[1], p1Poke, p2Poke, r, points1 = 0, points2 = 0;
@@ -11897,7 +11917,7 @@ function Safari() {
     BFactory.prototype.isInEvent = function(name) {
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
         var n = name.toLowerCase();
-        return signupsLower.contains(n) && (this.survivors.contains(n) || this.fightingForThird.contains(n));
+        return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
     };
     
     /* System Functions */
@@ -14190,13 +14210,13 @@ function Safari() {
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var name = info[1];
                     var host = info[2];
-                    // var signups = info[3];
+                    var signups = info[3];
                     var finished = info[4];
                     var winners = info[5];
                     var rewards = info[6];
                     var extra = info[7];
 
-                    return name + " (by " + host + ", " + (finished == "true" ? "finished" : "aborted") + ") --- Winners: " + winners + " --- Rewards: " + rewards + (extra ? " --- " + extra : "") + " --- (" + time + ")";
+                    return name + " (" + plural(signups.split(",").length, "Player") + ", by " + host + ", " + (finished == "true" ? "finished" : "aborted") + ") " + " --- Winners: " + winners + " --- Rewards: " + rewards + (extra ? " --- " + extra : "") + " --- (" + time + ")";
                 });
                 return true;
             }
