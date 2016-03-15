@@ -11569,6 +11569,9 @@ function Safari() {
         }
         if (this.phase === "input") {
             this.subturn--;
+            if (this.subturn === 2) {
+                this.sendToViewers("Make your choices, you still have 12 seconds!");
+            }
             if (this.subturn > 0) {
                 return;
             }
@@ -11655,10 +11658,10 @@ function Safari() {
             bat = this.battles[e];
             
             this.sendMessage(bat[0], "Your opponent (" + bat[1].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[1]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle: " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
+            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle (you have 30 seconds): " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
             
             this.sendMessage(bat[1], "Your opponent (" + bat[0].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[0]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle: " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
+            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle (you have 30 seconds): " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
             
             this.choices[bat[0]] = [];
             this.choices[bat[1]] = [];
@@ -11670,7 +11673,7 @@ function Safari() {
         this.currentMatch = 0;
         this.eliminationOrder.push([]);
         this.phase = "input";
-        this.subturn = 3;
+        this.subturn = 5;
     };
     BFactory.prototype.nextMatch = function() {
         var bat = this.battles[this.currentMatch], res, p1 = bat[0], p2 = bat[1], p1Poke, p2Poke, r, points1 = 0, points2 = 0;
@@ -11807,6 +11810,10 @@ function Safari() {
             return;
         }
         var choices = this.choices[name];
+        if (!choices) {
+            this.sendMessage(name, "Please wait for an opponent to choose your Pokémon!");
+            return;
+        }
         if (choices.contains(id)) {
             choices.splice(choices.indexOf(id), 1);
         }
@@ -11825,9 +11832,7 @@ function Safari() {
         var runnerupName = runnerup.toCorrectCase();
         var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
         
-        
-        
-        safaribot.sendHtmlAll("<b>" + winnerName + "</b> won the " + this.eventName + " and received " + this.rewardName1 + "!", safchan);
+        safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
         var player = getAvatarOff(winner), out, stuff;
         if (player) {
             stuff = toStuffObj(this.reward1.replace(/\|/g, ":")),
@@ -12792,8 +12797,8 @@ function Safari() {
         sys.sendMessage(src, "Pokémon Race: 6 Pokémon compete in a race to the goal. Players can place bets for the winner to win a better payout. Favorite has a better chance of winning, but lower payout, while Underdog has a lower chance of winning but with a higher payout.", safchan);
         sys.sendMessage(src, "Requirements: Money, Silver Coins or Items to place the bet.", safchan);
         sys.sendMessage(src, "", safchan);
-        sys.sendMessage(src, "Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match. Rewards are given to the 1st, 2nd and 3rd place.", safchan);
-        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon.", safchan);
+        sys.sendMessage(src, "Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match (they are sent in the order picked; if not enough Pokémon are selected, the rest will be picked randomly). Rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 4 players to start, and 7 for the 3rd place reward.", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.onHelp = function (src, topic, channel) {
