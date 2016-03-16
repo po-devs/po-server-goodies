@@ -420,7 +420,8 @@ function Safari() {
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this month", alts: ["caught monthly"], alias: "caught monthly", lastAlias: "caught last", file: "scriptdata/safari/monthlyPokesCaught.txt", lastDesc: "by successful catches during the last month"  },
         contestsWon: { desc: "by contests won during this month", alts: ["contest monthly", "contests monthly"], alias: "contest monthly", lastAlias: "contest last", file: "scriptdata/safari/monthlyContestsWon.txt", lastDesc: "by contests won during the last month" },
-        collectorEarnings: { desc: "by money received from the Collector during this month", alts: ["collector monthly", "collector money monthly", "collectormoney monthly", "collector $ monthly"], alias: "collector monthly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/monthlyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last month" }
+        collectorEarnings: { desc: "by money received from the Collector during this month", alts: ["collector monthly", "collector money monthly", "collectormoney monthly", "collector $ monthly"], alias: "collector monthly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/monthlyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last month" },
+        arenaPoints: { desc: "by Arena points won this month", alts: ["arena monthly"], alias: "arena monthly",  lastAlias: "arena last", file: "scriptdata/safari/monthlyArenaPoints.txt", lastDesc: "by Arena points won during the last month" }
     };
 
     /* Contest Variables */
@@ -3953,7 +3954,7 @@ function Safari() {
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
-            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog).".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins), safchan);
+            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Was Battle Factory Winner {5} and Runner-up {6}.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time")), safchan);
             sys.sendMessage(src, "", safchan);
         } else {
             sys.sendMessage(src, "", safchan);
@@ -7900,6 +7901,7 @@ function Safari() {
             if (isWinner) {
                 player.records.arenaWon += 1;
                 player.records.arenaPoints += args.reward;
+                safari.addToMonthlyLeaderboards(player.id, "arenaPoints", args.reward);
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Wow, I didn't expect to lose! Good job, here's your reward!", safchan);
                 safaribot.sendMessage(id, "You received " + plural(args.reward, "silver") + "!", safchan);
                 rewardCapCheck(player, "silver", args.reward, true);
@@ -8873,7 +8875,7 @@ function Safari() {
         }
         else if (this.currentRoom === null) {
             var type = randomSample({
-                horde: 12,
+                horde: 11,
                 riddle: 12,
                 hazard: 13,
                 blocked: 13,
@@ -9278,15 +9280,22 @@ function Safari() {
         this.level = level;
         
         var size = 8 + level * 2, p;
+        var minBST = 130 + 50 * level;
         while (this.horde.length < size) {
             p = sys.rand(1, 722);
-            if (!isLegendary(p)) {
+            if (!isLegendary(p) && getBST(p) >= minBST) {
                 this.horde.push(p);
             }
         }
         
-        var types = Object.keys(effectiveness).shuffle();
-        var fTypes = this.forbiddenTypes = [types.shift(), types.shift()];
+        var typeChances = { "Normal":7,"Fighting":9,"Flying":13,"Poison":9,"Ground":11,"Rock":9.5,"Bug":7,"Ghost":19,"Steel":25,"Fire":12,"Water":13,"Grass":7.5,"Electric":10,"Psychic":7.5,"Ice":4.5,"Dragon":16,"Dark":14,"Fairy":12 };
+        var fTypes = this.forbiddenTypes = [randomSample(typeChances)], t;
+        while (fTypes.length < 2) {
+            t = randomSample(typeChances);
+            if (!fTypes.contains(t)) {
+                fTypes.push(t);
+            }
+        }
         
         var isValidForBattle = function(pokeId) {
             return !hasType(pokeId, fTypes[0]) && !hasType(pokeId, fTypes[1]);
@@ -9306,7 +9315,7 @@ function Safari() {
             }
         }
         
-        this.hordePower = [8 + level * 9, 90 + level * 20];
+        this.hordePower = [10 + level * 10, 100 + level * 25];
         
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
@@ -9447,7 +9456,7 @@ function Safari() {
             }
         }
         if (this.horde.length > 0) {
-            var averageDamage = this.horde.length * (1 + 2 * this.level);
+            var averageDamage = this.horde.length * (0 + 3 * this.level);
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -9476,9 +9485,9 @@ function Safari() {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ") + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
         }
         
-        this.opponent = legendaries.concat(megaPokemon).random();
+        this.opponent = [149, 248, 289, 373, 376, 445, 609, 635, 681, 697, 706, 66256, 66184,66028].concat(legendaries).concat(megaPokemon).random();
         this.opponentHP = 210 + 165 * level;
-        this.opponentPower = 8 + 6 * level;
+        this.opponentPower = 9 + 6 * level;
         this.isRevealed = false;
         
         this.treasures = {
@@ -9521,7 +9530,7 @@ function Safari() {
         
         this.sendAll("");
         if (["run", "runaway", "run away", "flee"].contains(choices[this.pyr.leader])) {
-            var pointsLost = 8 + 5 * this.level;
+            var pointsLost = 9 + 5 * this.level;
             this.sendAll(toColor("Party leader {0} decided to run away from the {1}! {0} lost {2} Stamina!".format(this.pyr.leader.toCorrectCase(), (this.isRevealed ? poke(opp) : "hidden Pokémon"), pointsLost), "crimson"));
             stamina[this.pyr.leader] = -pointsLost;
             this.pyr.updateStatus(0, stamina);
@@ -9692,7 +9701,7 @@ function Safari() {
             }
             
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = 5 + 5 * this.level;
+            var averageDamage = 5 + 6 * this.level;
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -9757,7 +9766,7 @@ function Safari() {
             premier: { chance: 8, item: "premier", amount: 2 * level }
         };
         
-        this.inverted = chance(0.30 + 0.06 * this.level);
+        this.inverted = chance(0.35 + 0.05 * this.level);
         
         this.sendAll("");
         this.sendAll("Room {0}-{1}: {2} challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : ""));
@@ -9838,7 +9847,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(id)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= 5 + 6 * this.level;
+                stamina[id] -= 5 + 7 * this.level;
             }
         }
         
@@ -9962,7 +9971,7 @@ function Safari() {
                 }
             } else {
                 hit.push(p.toCorrectCase());
-                stamina[p] = -(dmg * (3 + 5 * this.level));
+                stamina[p] = -(dmg * (3 + 6 * this.level));
             }
             if (dmg <= 1) {
                 bonusUsed = [];
@@ -10223,7 +10232,7 @@ function Safari() {
                 if (!isTreasure) {
                     this.cluesSearched[p]++;
                     if (this.cluesSearched[p] > 1) {
-                        stamina[p] = -2 - this.level;
+                        stamina[p] = -1 - 2 * this.level;
                     }
                 }
                 
@@ -10414,7 +10423,7 @@ function Safari() {
             strugglemsg = "";
             if (struggled) {
                 id = parties[p].random();
-                strugglers[p] = 3 + 3 * this.level;
+                strugglers[p] = 2 + 3 * this.level;
                 strugglemsg = p.toCorrectCase() + " lost " + strugglers[p] + " Stamina!";
             } else {
                 for (n in parties[p]) {
@@ -10472,7 +10481,7 @@ function Safari() {
                 if (!(id in stamina)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= ((1 + 3 * this.level) * Math.ceil((rest-50)/5));
+                stamina[id] -= ((2 + 3 * this.level) * Math.ceil((rest-50)/5));
             }
             this.sendAll("Only {0}% of the hazards have been cleared, so you struggled to reach the door due to the remaining hazards ({1})!".format(100-rest, readable(remaining, "and")));
         } else {
@@ -10609,7 +10618,7 @@ function Safari() {
         }
         if (lazyPlayers >= players) {
             for (p in choices) {
-                stamina[p] = -3 * this.level - 2;
+                stamina[p] = -4 * this.level - 4;
             }
             this.sendAll("After arguing why no one went to look for the door, the entire team decided to split up in order to find it at the cost of {0} Stamina each.".format(-stamina[p]), true);
         }
@@ -11630,8 +11639,9 @@ function Safari() {
             this.lastByes.push(freePass);
         }
         this.battles = [];
+        var isFinal = this.survivors.length === 2;
         
-        var prepareForThird = this.survivors.length === 2;
+        var prepareForThird = isFinal;
         if (this.round >= 0 && this.eliminationOrder[this.round].length === 1) {
             prepareForThird = false;
             this.thirdPlace = this.eliminationOrder[this.round][0];
@@ -11651,24 +11661,24 @@ function Safari() {
         this.sendToViewers("");
         this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
         
-        var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (this.survivors.length === 2 ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
+        var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (isFinal ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
         for (e = 0; e < this.battles.length; e++) {
             bat = this.battles[e];
             det = "";
             if (prepareForThird && e === 0) {
                 det = "Third Place Match: ";
-            } else if (this.survivors.length === 2) {
+            } else if (isFinal) {
                 det = toColor("Final: ", "red");
             }
             
             roundTable += "<tr>" + (det ? "<td align=right><b>" + det + "</b></td>" : "") + "<td align=right>" + addFlashTag(bat[0].toCorrectCase()) + "</td> <td align=center>" + toColor("vs", "gray") + "</td> <td align=left>" + addFlashTag(bat[1].toCorrectCase()) + "</td></tr>";
         }
+        if (freePass) {
+            roundTable += "<tr><td align=center colspan=" + (isFinal ? 4 : 3) + ">" + addFlashTag(freePass.toCorrectCase()) + " advances to the next round!</td></tr>";
+        }
         roundTable += "</table>";
         this.sendToViewers(roundTable, true, false, true);
         
-        if (freePass) {
-            this.sendToViewers(addFlashTag(freePass.toCorrectCase()) + " advances to the next round!", true, false, true);
-        }
         this.sendToViewers("");
         this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
         
@@ -12072,7 +12082,7 @@ function Safari() {
             leaderboards[e].sort(byHigherValue);
         }
         for (e in monthlyLeaderboardTypes) {
-            leaderboards[e + "Last"] = lastLeaderboards ? lastLeaderboards[e + "Last"] : [];
+            leaderboards[e + "Last"] = lastLeaderboards && lastLeaderboards.hasOwnProperty(e + "Last") ? lastLeaderboards[e + "Last"] : [];
         }
         lastLeaderboardUpdate = new Date().toUTCString();
     };
