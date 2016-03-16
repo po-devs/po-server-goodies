@@ -8697,7 +8697,7 @@ function Safari() {
         if (!data[0] || data[0].toLowerCase() === "help") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) { return " " + link("/quest alchemist:" + x, finishName(x)); }), safchan);
-            safaribot.sendHtmlMessage(src, "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[item] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
