@@ -3954,7 +3954,7 @@ function Safari() {
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
-            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Was Battle Factory Winner {5} and Runner-up {6}.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time")), safchan);
+            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time")), safchan);
             sys.sendMessage(src, "", safchan);
         } else {
             sys.sendMessage(src, "", safchan);
@@ -6661,16 +6661,24 @@ function Safari() {
             safaribot.sendMessage(src, "Please remove the " + input.name + " from your shop before auctioning it!", safchan);
             return;
         }
+        var multiplier = 1;
         if (startingOffer >= moneyCap) {
             sys.sendAll("", safchan);
             safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + startingOffer + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
+            var lost = Math.min(Math.round(player.money * 0.05), 500);
+            player.money -= lost;
+            if (player.money < 0) {
+                player.money = 0;
+            }
+            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playhouse! I'm going to take $" + addComma(lost) + " from you for abusing the system!", safchan);
+            multiplier = 10;
             sys.sendAll("", safchan);
         } else {
             var auction = new Auction(src, input.input, startingOffer, minBid);
             currentAuctions.push(auction);
         }
 
-        player.cooldowns.auction = now() + 15 * 60 * 1000;
+        player.cooldowns.auction = now() + 15 * 60 * 1000 * multiplier;
         this.saveGame(player);
     };
     this.joinAuction = function(src, data) {
