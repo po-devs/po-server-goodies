@@ -279,59 +279,70 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command === "auth") {
-        var doNotShowIfOffline = ["loseyourself", "oneballjay"];
-        var filterByAuth = function (level) {
+    if (command === "auth" || command === "auths") {
+        var filterAuth = function (level) {
             return function (name) {
                 return sys.dbAuth(name) === level;
             };
         };
-        var printOnlineOffline = function (name) {
+        var getStatus = function (name) {
             if (sys.id(name) === undefined) {
-                if (doNotShowIfOffline.indexOf(name) === -1) {
-                    sys.sendMessage(src, name, channel);
-                }
+                return name.htmlEscape();
+            } else if (isAndroid(src)) { // sorry, no pm links for android yet
+                return "<b><font color='" + script.getColor(sys.id(name)) + "'>" + name.toCorrectCase().htmlEscape() + "</font></b>";
             } else {
-                sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
+                return "<a href='po:pm/" + sys.id(name) + "' style='color: " + script.getColor(sys.id(name)) + "; font-weight: bold; text-decoration: none;'>" + name.toCorrectCase().htmlEscape() + "</a>";
             }
         };
-        var authListArray = sys.dbAuths().sort();
+        var x,
+            auths = sys.dbAuths().sort(),
+            owners = auths.filter(filterAuth(3)),
+            admins = auths.filter(filterAuth(2)),
+            mods = auths.filter(filterAuth(1));
+        for (x = 0; x < owners.length; x++) {
+            owners[x] = getStatus(owners[x]);
+        }
+        for (x = 0; x < admins.length; x++) {
+            admins[x] = getStatus(admins[x]);
+        }
+        for (x = 0; x < mods.length; x++) {
+            mods[x] = getStatus(mods[x]);
+        }
         if (commandData !== "~") {
             sys.sendMessage(src, "", channel);
         }
-        switch (commandData) {
+        bot.sendHtmlMessage(src, "The server staff are:", channel);
+        switch (!commandData ? "" : commandData.toLowerCase()) {
+        case "owner":
         case "owners":
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authListArray.filter(filterByAuth(3)).forEach(printOnlineOffline);
+            bot.sendHtmlMessage(src, "Owners: " + owners.join(", "), channel);
             break;
+        case "admin":
         case "admins":
+        case "administrator":
         case "administrators":
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authListArray.filter(filterByAuth(2)).forEach(printOnlineOffline);
+            bot.sendHtmlMessage(src, "Admins: " + admins.join(", "), channel);
             break;
+        case "mod":
         case "mods":
+        case "moderator":
         case "moderators":
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authListArray.filter(filterByAuth(1)).forEach(printOnlineOffline);
+            bot.sendHtmlMessage(src, "Mods: " + mods.join(", "), channel);
             break;
         case "~":
-            var ret = {};
-            ret.owners = authListArray.filter(filterByAuth(3));
-            ret.administrators = authListArray.filter(filterByAuth(2));
-            ret.moderators = authListArray.filter(filterByAuth(1));
-            sys.sendMessage(src, "+auth: " + JSON.stringify(ret), channel);
+            var data = {
+                owners: auths.filter(filterAuth(3)),
+                administrators: auths.filter(filterAuth(2)),
+                moderators: auths.filter(filterAuth(1))
+            };
+            sys.sendMessage(src, "+auth: " + JSON.stringify(data), channel);
             return;
         default:
-            sys.sendMessage(src, "*** Owners ***", channel);
-            authListArray.filter(filterByAuth(3)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Administrators ***", channel);
-            authListArray.filter(filterByAuth(2)).forEach(printOnlineOffline);
-            sys.sendMessage(src, '', channel);
-            sys.sendMessage(src, "*** Moderators ***", channel);
-            authListArray.filter(filterByAuth(1)).forEach(printOnlineOffline);
+            bot.sendHtmlMessage(src, "Owners: " + owners.join(", "), channel);
+            bot.sendHtmlMessage(src, "Admins: " + admins.join(", "), channel);
+            bot.sendHtmlMessage(src, "Mods: " + mods.join(", "), channel);
         }
-        sys.sendMessage(src, '', channel);
+        sys.sendMessage(src, "", channel);
         return;
     }
     if (command === "sametier") {
