@@ -11976,7 +11976,7 @@ function Safari() {
             this.sendMessage(runnerup, "You " + out + "!");
         }
         
-        if (thirdplace && this.thirdPrize) {
+        if (thirdplace && this.thirdPrize && this.reward3) {
             safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
             player = getAvatarOff(thirdplace);
             if (player) {
