@@ -25,6 +25,7 @@ function Safari() {
     var lostLog = "scriptdata/safaricommands.txt";
     var mythLog = "scriptdata/safari/mythlog.txt";
     var eventLog = "scriptdata/safari/eventlog.txt";
+    var giftLog = "scriptdata/safari/giftlog.txt";
     var tradebansFile = "scriptdata/safaribans.txt";
     var saltbansFile = "scriptdata/safarisalt.txt";
     var permFile = "scriptdata/safariobjects.txt";
@@ -103,7 +104,8 @@ function Safari() {
             egg: 0,
             bright: 0,
             philosopher: 0,
-            materia: 0
+            materia: 0,
+            water: 0
         },
         records: {
             gachasUsed: 0,
@@ -191,6 +193,7 @@ function Safari() {
         tradeban: 0,
         truesalt: 0,
         trackers: [],
+        auctionWarn: false,
         cooldowns: {
             ball: 0,
             bait: 0,
@@ -225,7 +228,8 @@ function Safari() {
                 cooldown: 0
             },
             pyramid: {
-                cooldown: 0
+                cooldown: 0,
+                bonusStamina: 0
             },
             alchemist: {
                 cooldown: 0
@@ -259,8 +263,8 @@ function Safari() {
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
 
         //Other Items
-        //Seasonal change. Rock icon is 206
-        rock: {name: "rock", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+        //Seasonal change. Rock icon is 206, Snowball is 334
+        rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
         bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
         spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
@@ -280,6 +284,7 @@ function Safari() {
         pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
         egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 0, aliases:["egg"], tradable: true},
         bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 0, aliases:["bright", "bright egg", "brightegg"], tradable: true},
+        water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
         
         //Alchemy related items
         materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 0, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -1208,6 +1213,41 @@ function Safari() {
             return 1;
         } else {
             return 0;
+        }
+    }
+    function countProps(obj) { //Stolen from http://stackoverflow.com/a/3849480
+        var count = 0;
+        for (var k in obj) {
+            if (obj.hasOwnProperty(k)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    function objectEquals(v1, v2) {
+
+        if (typeof(v1) !== typeof(v2)) {
+            return false;
+        }
+
+        if (typeof(v1) === "function") {
+            return v1.toString() === v2.toString();
+        }
+
+        if (v1 instanceof Object && v2 instanceof Object) {
+            if (countProps(v1) !== countProps(v2)) {
+                return false;
+            }
+            var r = true;
+            for (var k in v1) {
+                r = objectEquals(v1[k], v2[k]);
+                if (!r) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return v1 === v2;
         }
     }
 
@@ -4411,8 +4451,13 @@ function Safari() {
             safaribot.sendMessage(src, "You can't catch any new Pokémon because all your boxes are full! Please buy a new box with /buy.", safchan);
             return;
         }
-        var ballUsed = isBall(commandData.toLowerCase()) ? commandData.toLowerCase() : "safari";
-        ballUsed = toUsableBall(player, ballUsed);
+        var ballUsed = itemAlias(commandData, true);
+        if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
+            ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
+        } else {
+            ballUsed = isBall(commandData.toLowerCase()) ? commandData.toLowerCase() : "safari";
+            ballUsed = toUsableBall(player, ballUsed);
+        }
         if (!ballUsed) {
             safaribot.sendMessage(src, "If you throw " + bName + " now, you will have no way to catch a Pokémon because you are out of balls!", safchan);
            return;
@@ -4520,7 +4565,7 @@ function Safari() {
             success = 0;
         }
 
-        var verb = "frozen"; //change to stunned, seasonal change
+        var verb = "stunned"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
                 safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
@@ -4563,14 +4608,16 @@ function Safari() {
         } else {
             if (rng2 < itemData.rock.bounceRate + (preparationPhase > 0 ? 0.4 : 0)) {
                 //Seasonal change
-                //safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it broke apart before it was thrown and covered " + sys.name(src) + " in snow! That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
+                // safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it broke apart before it was thrown and covered " + sys.name(src) + " in snow! That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
 
                 player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
                 player.records.rocksBounced += 1;
             }
             else if (rng2 < 0.25) {
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their mitten-covered hands!", safchan); //seasonal change
+                //seasonal change
+                // safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their mitten-covered hands!", safchan);
+                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their bare hands!", safchan);
                 if (target.balls.rock < getCap("rock")) {
                     target.balls.rock += 1;
                     safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
@@ -4736,7 +4783,11 @@ function Safari() {
                 } else {
                     var spawn = true;
                     var spawnHorde = amount > 1;
-                    safaribot.sendAll((commandData.toLowerCase() == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName(reward)) + "!", safchan);
+                    var ballUsed = itemAlias(commandData, true);
+                    if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
+                        ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
+                    }
+                    safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName(reward)) + "!", safchan);
 
                     if (chance(0.15) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
                         safaribot.sendAll("Unfortunately " + (spawnHorde ? "they" : "it") + " fled before anyone could try to catch "+ (spawnHorde ? "them" : "it") + "!", safchan);
@@ -4749,7 +4800,7 @@ function Safari() {
                         } else {
                             safari.createWild();
                         }
-                        safari.throwBall(src, commandData, true);
+                        safari.throwBall(src, ballUsed, true);
                         preparationFirst = sys.name(src).toLowerCase();
                         nextGachaSpawn = currentTime + 23 * 1000;
                         if (baitCooldown <= 9) {
@@ -5397,6 +5448,20 @@ function Safari() {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Bright Egg::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
             }
+            this.saveGame(player);
+            return;
+        }
+        if (item === "water") {
+            if (player.quests.pyramid.bonusStamina > 0) {
+                safaribot.sendMessage(src, "You already packed  " + an(itemAlias("water", true, true)) + " for your next Pyramid tour!", safchan);
+                return;
+            }
+            
+            player.balls.water -= 1;
+            player.quests.pyramid.bonusStamina = itemData.water.bonusRate;
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "You packed some " + itemAlias("water", true, true) + "! You will start your next Pyramid tour with " + (itemData.water.bonusRate * 100) + "% more Stamina!", safchan);
+            sys.sendMessage(src, "", safchan);
             this.saveGame(player);
             return;
         }
@@ -6663,15 +6728,23 @@ function Safari() {
         }
         var multiplier = 1;
         if (startingOffer >= moneyCap) {
-            sys.sendAll("", safchan);
-            safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + startingOffer + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
-            var lost = Math.min(Math.round(player.money * 0.05), 500);
+            if (!player.auctionWarn) {
+                safaribot.sendMessage(src, "Please don't create auctions with absurd starting offers. This is your only warning!", safchan);
+                player.auctionWarn = true;
+                this.saveGame(player);
+                return;
+            }
+            var lost = Math.round(player.money * 0.05);
             player.money -= lost;
             if (player.money < 0) {
                 player.money = 0;
             }
-            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playhouse! I'm going to take $" + addComma(lost) + " from you for abusing the system!", safchan);
             multiplier = 10;
+            
+            sys.sendAll("", safchan);
+            safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + addComma(startingOffer) + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
+            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you for abusing the system!", safchan);
+            this.applyTradeban("Safari Warden", sys.name(src), player, 12 * 60 * 60);
             sys.sendAll("", safchan);
         } else {
             var auction = new Auction(src, input.input, startingOffer, minBid);
@@ -7928,7 +8001,7 @@ function Safari() {
                 postBattle: postBattle,
                 postArgs: {
                     reward: 1,
-                    cooldown: 1
+                    cooldown: 0.75
                 },
                 desc: "Arena NPC"
             },
@@ -7939,7 +8012,7 @@ function Safari() {
                 postBattle: postBattle,
                 postArgs: {
                     reward: 2,
-                    cooldown: 1.75
+                    cooldown: 1.25
                 },
                 desc: "Arena NPC"
             },
@@ -7950,7 +8023,7 @@ function Safari() {
                 postBattle: postBattle,
                 postArgs: {
                     reward: 3,
-                    cooldown: 2.5
+                    cooldown: 1.75
                 },
                 desc: "Arena NPC"
             },
@@ -7961,7 +8034,7 @@ function Safari() {
                 postBattle: postBattle,
                 postArgs: {
                     reward: 6,
-                    cooldown: 3.25
+                    cooldown: 2.75
                 },
                 desc: "Arena NPC"
             },
@@ -8830,9 +8903,16 @@ function Safari() {
         this.finishMode = null;
         
         this.stamina = {};
-        this.stamina[p1.id] = 300;
-        this.stamina[p2.id] = 300;
-        this.stamina[p3.id] = 300;
+        this.stamina[p1.id] = 300 + Math.floor(300 * p1.quests.pyramid.bonusStamina);
+        this.stamina[p2.id] = 300 + Math.floor(300 * p2.quests.pyramid.bonusStamina);
+        this.stamina[p3.id] = 300 + Math.floor(300 * p3.quests.pyramid.bonusStamina);
+        
+        p1.quests.pyramid.bonusStamina = 0;
+        p2.quests.pyramid.bonusStamina = 0;
+        p3.quests.pyramid.bonusStamina = 0;
+        safari.saveGame(p1);
+        safari.saveGame(p2);
+        safari.saveGame(p3);
         
         this.maxStamina = {};
         this.maxStamina[p1.id] = this.stamina[p1.id];
@@ -9323,7 +9403,7 @@ function Safari() {
             }
         }
         
-        this.hordePower = [10 + level * 10, 100 + level * 25];
+        this.hordePower = [20 + level * 12, 100 + level * 25];
         
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
@@ -9494,7 +9574,7 @@ function Safari() {
         }
         
         this.opponent = [149, 248, 289, 373, 376, 445, 609, 635, 681, 697, 706, 66256, 66184,66028].concat(legendaries).concat(megaPokemon).random();
-        this.opponentHP = 210 + 165 * level;
+        this.opponentHP = 220 + 170 * level;
         this.opponentPower = 9 + 6 * level;
         this.isRevealed = false;
         
@@ -9618,7 +9698,7 @@ function Safari() {
             }
         }
         this.revealedTypes = [this.types[0]];
-        this.hp = 850 + 200 * level;
+        this.hp = 860 + 210 * level;
         this.dealt = {};
         this.treasureGoal = Math.round(this.hp * (1.65 - this.level * 0.07));
         
@@ -9743,7 +9823,7 @@ function Safari() {
         for (var p in parties) {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
         }
-        this.trainerPower = [8 + level * 6, 88 + level * 12];
+        this.trainerPower = [11 + level * 7, 84 + level * 16];
         
         this.trainerTeam = [];
         var num, bst = 285 + 30 * level, maxLegend = Math.floor((level-1)/3) + 1;
@@ -9888,7 +9968,6 @@ function Safari() {
         for (var p in parties) {
             this.individualmsg[p] = "Send one of your Pokémon to defend yourself: " + parties[p].map(pyrLink).join(", ");
         }
-        this.trainerPower = [14 + level * 6, 90 + level * 12];
         
         do {
             this.opponent = sys.rand(1, 722);
@@ -10041,7 +10120,7 @@ function Safari() {
         this.answer = poke(this.answerId);
         this.answerAttempts = 0;
         this.cluesSearched = {};
-        this.turns = 10 - Math.floor(level/2);
+        this.turns = 9 - Math.floor(level/2);
         
         var hints = this.writeHints(level);
         
@@ -11835,6 +11914,10 @@ function Safari() {
         }
     };
     BFactory.prototype.choosePokemon = function(src, commandData) {
+        if (this.phase === "signup") {
+            this.sendMessage(name, "The event didn't even start yet!");
+            return;
+        }
         var name = sys.name(src).toLowerCase();
         if (name === this.resting) {
             this.sendMessage(name, "You are not in any battle during this round!");
@@ -12470,6 +12553,42 @@ function Safari() {
             }
         }
     };
+    this.applyTradeban = function(self, name, player, duration) {
+        var chans = [safchan, staffchannel, sachannel];
+        if (duration === 0) {
+            player.tradeban = 0;
+            for (var x in chans) {
+                safaribot.sendAll(name + " has been unbanned from trading and shopping by " + self + "!", chans[x]);
+            }
+            safari.saveGame(player);
+            tradeBans.remove(player.id);
+        } else {
+            var length;
+            if (duration == -1) {
+                length = "permanently";
+                player.tradeban = 2147483000000;
+            } else {
+                length = "for " + utilities.getTimeString(duration);
+                player.tradeban = now() + duration * 1000;
+            }
+            player.shop = {};
+            safari.saveGame(player);
+            for (var x in chans) {
+                safaribot.sendAll(name + " has been banned from trading and shopping " + length + " by " + self + "!", chans[x]);
+            }
+            var id = sys.id(name);
+            if (id) {
+                for (var b in currentAuctions) {
+                    currentAuctions[b].removePlayer(id);
+                }
+            }
+            tradeBans.add(player.id, player.tradeban);
+        }
+        tradeBans.removeIf(function(obj, e) {
+            return parseInt(obj.get(e), 10) === 0 || parseInt(obj.get(e), 10) < now();
+        });
+        tradeBans.save();
+    };
     this.sanitize = function(player) {
         if (player) {
             var clean, i;
@@ -12585,6 +12704,18 @@ function Safari() {
                     list.splice(e, 1);
                 }
             }
+        }
+    };
+    this.sanitizeAll = function() {
+        var onChannel = sys.playersOfChannel(safchan);
+        var player;
+        for (var e in onChannel) {
+            player = getAvatar(onChannel[e]);
+            if (!player) {
+                continue;
+            }
+            safari.sanitize(player);
+            safari.sanitizePokemon(player);
         }
     };
     this.trackMessage = function(mess, player) {
@@ -13804,16 +13935,7 @@ function Safari() {
                 return true;
             }
             if (command === "sanitizeall") {
-                var onChannel = sys.playersOfChannel(safchan);
-                var player;
-                for (var e in onChannel) {
-                    player = getAvatar(onChannel[e]);
-                    if (!player) {
-                        continue;
-                    }
-                    safari.sanitize(player);
-                    safari.sanitizePokemon(player);
-                }
+                safari.sanitizeAll();
                 safaribot.sendMessage(src, "All safaris have been sanitized of invalid values!", safchan);
                 return true;
             }
@@ -13917,41 +14039,8 @@ function Safari() {
                     return true;
                 }
 
-                var chans = [safchan, staffchannel, sachannel];
                 var self = utilities.non_flashing(sys.name(src).toCorrectCase());
-                if (duration === 0) {
-                    player.tradeban = 0;
-                    for (var x in chans) {
-                        safaribot.sendAll(name + " has been unbanned from trading and shopping by " + self + "!", chans[x]);
-                    }
-                    safari.saveGame(player);
-                    tradeBans.remove(player.id);
-                } else {
-                    var length;
-                    if (duration == -1) {
-                        length = "permanently";
-                        player.tradeban = 2147483000000;
-                    } else {
-                        length = "for " + utilities.getTimeString(duration);
-                        player.tradeban = now() + duration * 1000;
-                    }
-                    player.shop = {};
-                    safari.saveGame(player);
-                    for (var x in chans) {
-                        safaribot.sendAll(name + " has been banned from trading and shopping " + length + " by " + self + "!", chans[x]);
-                    }
-                    var id = sys.id(name);
-                    if (id) {
-                        for (var b in currentAuctions) {
-                            currentAuctions[b].removePlayer(id);
-                        }
-                    }
-                    tradeBans.add(player.id, player.tradeban);
-                }
-                tradeBans.removeIf(function(obj, e) {
-                    return parseInt(obj.get(e), 10) === 0 || parseInt(obj.get(e), 10) < now();
-                });
-                tradeBans.save();
+                safari.applyTradeban(self, name, player, duration);
                 return true;
             }
             if (command === "tradebans") {
@@ -14459,6 +14548,7 @@ function Safari() {
                 player.money += moneyGained;
                 this.sanitize(player);
                 safaribot.sendAll(target.toCorrectCase() + " has been awarded with $" + moneyGained + " by " + sys.name(src) + "!", safchan);
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||safaripay|||" + (moneyGained < 0 ? "lost" : "received") + "|||$" + addComma(moneyGained) + "\n");
                 return true;
             }
             if (command === "safarigift" || command === "gift") {
@@ -14508,7 +14598,9 @@ function Safari() {
                 }
 
                 if (playerArray.length > 0) {
-                    safaribot.sendAll(readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and") + " has been awarded with " + plural(itemQty, item) + " by " + sys.name(src) + "!", safchan);
+                    var targets = readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and");
+                    safaribot.sendAll(targets + " has been awarded with " + plural(itemQty, item) + " by " + sys.name(src) + "!", safchan);
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||gift|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, item) + "\n");
                 }
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
@@ -14624,6 +14716,7 @@ function Safari() {
                 if (sys.id(n2) && out2 !== "received nothing") {
                     safaribot.sendMessage(sys.id(n2), "You " + out2 + "!", safchan);
                 }
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + n1.toCorrectCase() + " and " + n2.toCorrectCase() + "|||undo|||exchanged|||" + translateStuff(info[2]) + " <--> " + translateStuff(info[3]) + "\n");
                 return true;
             }
             if (command === "clearcd") {
@@ -14870,14 +14963,30 @@ function Safari() {
                     if (playerId) {
                         safaribot.sendMessage(playerId, "A Safari Warden confiscated " + an(info.name) + " from you!", safchan);
                     }
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||bestow|||lost|||" + info.name + "\n");
                 } else {
                     safaribot.sendMessage(src, "You gave " + an(info.name) + " to " + target.toCorrectCase() + "!", safchan);
                     if (playerId) {
                         safaribot.sendMessage(playerId, "You received " + an(info.name) + "!", safchan);
                     }
                     player.pokemon.push(info.id);
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||bestow|||received|||" + info.name + "\n");
                 }
                 this.saveGame(player);
+                return true;
+            }
+            if (command === "giftlog") {
+                safari.showLog(src, commandData, giftLog, "gift", function(x) {
+                    var info = x.split("|||");
+                    var time = new Date(parseInt(info[0], 10)).toUTCString();
+                    var name = info[1];
+                    var target = info[2];
+                    var commandName = info[3];
+                    var verb = info[4];
+                    var gift = info[5];
+
+                    return name + " used /" + commandName + " --- " + target + " " + verb + " " + gift + " --- (" + time + ")";
+                });
                 return true;
             }
             if (command === "clearjackpot") {
@@ -15530,6 +15639,17 @@ function Safari() {
             monthlyLeaderboards[e] = new MemoryHash(monthlyLeaderboardTypes[e].file);
         }
         lastIdAssigned = loadLastId();
+        
+        var template = permObj.get("playerTemplate");
+        if (template) {
+            template = JSON.parse(template);
+            if (!objectEquals(playerTemplate, template)) {
+                safaribot.sendAll("Updating save files...", safchan);
+                safari.sanitizeAll();
+            }
+        }
+        permObj.add("playerTemplate", JSON.stringify(playerTemplate));
+        
         this.updateLeaderboards();
         sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
         if (baitCooldown < 7) {
