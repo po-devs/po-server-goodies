@@ -11914,11 +11914,11 @@ function Safari() {
         }
     };
     BFactory.prototype.choosePokemon = function(src, commandData) {
+        var name = sys.name(src).toLowerCase();
         if (this.phase === "signup") {
             this.sendMessage(name, "The event didn't even start yet!");
             return;
         }
-        var name = sys.name(src).toLowerCase();
         if (name === this.resting) {
             this.sendMessage(name, "You are not in any battle during this round!");
             return;
