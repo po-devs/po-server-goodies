@@ -6740,10 +6740,11 @@ function Safari() {
                 player.money = 0;
             }
             multiplier = 10;
+            player.balls.salt += 1;
             
             sys.sendAll("", safchan);
             safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + addComma(startingOffer) + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
-            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you for abusing the system!", safchan);
+            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you and give you some " + itemAlias("salt", true, true) + " for abusing the system!", safchan);
             this.applyTradeban("Safari Warden", sys.name(src), player, 12 * 60 * 60);
             sys.sendAll("", safchan);
         } else {
