@@ -312,6 +312,7 @@ function Hangman() {
         if (commandData === undefined) {
             return;
         }
+        var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ");        
         if (sys.name(src).toLowerCase() === hostName.toLowerCase()) { // CHECK IF HOST CHANGED IP
             if (hostIpArray.indexOf(sys.ip(src)) === -1) {
                 hostIpArray.push(sys.ip(src));
@@ -333,7 +334,7 @@ function Hangman() {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
             return;
         }
-        if (commandData.length < 4) {
+        if (ans.length < 4) {
             hangbot.sendMessage(src, "The answer must have at least four letters!", hangchan);
             return;
         }
@@ -357,7 +358,6 @@ function Hangman() {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
             return;
         }
-        var ans = commandData.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ");
         if (usedAnswers.indexOf(ans.toLowerCase()) >= 0) {
             hangbot.sendMessage(src, "This answer was already used!", hangchan);
             return;
