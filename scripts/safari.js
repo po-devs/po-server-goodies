@@ -1908,6 +1908,9 @@ function Safari() {
                     total = amt - player.balls[asset];
                     player.balls[asset] = 0;
                 }
+                if (asset === "entry") {
+                    rafflePlayers.add(player.id, player.balls.entry);
+                }
                 
                 if (total > 0) {
                     out.gained.push(plural(total, asset));
@@ -7355,6 +7358,10 @@ function Safari() {
                 safaribot.sendMessage(src, "Please " + action + " a valid amount of money!", safchan);
                 return false;
             }
+            if (val > moneyCap) {
+                safaribot.sendMessage(src, "You can't " + action + " more than $" + addComma(moneyCap) + "!", safchan);
+                return false;
+            }
             return "money";
         }
         else if (asset.indexOf("@") !== -1) {
@@ -9824,7 +9831,7 @@ function Safari() {
         for (var p in parties) {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
         }
-        this.trainerPower = [11 + level * 7, 84 + level * 16];
+        this.trainerPower = [9 + level * 7, 85 + level * 15];
         
         this.trainerTeam = [];
         var num, bst = 285 + 30 * level, maxLegend = Math.floor((level-1)/3) + 1;
@@ -13039,7 +13046,7 @@ function Safari() {
             "/altlog [amount]։[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
             "/eventlog [amount]։[lookup]: Returns a list of recent Safari Events. Amount and Lookup works the same as /tradelog.",
             "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
-            "/sharedname [name]: Allows/disallows a person to start a new Safari save while they share IP with another Safari Player.",
+            "/allowname [name]: Allows/disallows a person to start a new Safari save while they share IP with another Safari Player.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
             "/salt [player]։[duration]: Reduces a player's luck to near 0 (unrelated to Salt item/leaderboard). Use /salt [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /saltbans to view players currently saltbanned.",
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
@@ -14193,8 +14200,28 @@ function Safari() {
                 safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
                 return true;
             }
+            if (command === "viewbox" || command === "viewboxsorted") {
+                var player = getAvatarOff(commandData);
+                if (!player) {
+                    safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
+                    return true;
+                }
+                var list = player.pokemon.concat();
+                if (command === "viewboxsorted") {
+                    list.sort(function(a, b) {
+                        if (pokeInfo.species(a) != pokeInfo.species(b)) {
+                            return pokeInfo.species(a)-pokeInfo.species(b);
+                        } else {
+                            return pokeInfo.forme(a)-pokeInfo.forme(b);
+                        }
+                    });
+                }
 
-            if (command === "sharedname") {
+                safaribot.sendMessage(src, commandData.toCorrectCase() + "'s box: " + list.map(poke), safchan);
+                return true;
+            }
+
+            if (command === "allowname" || command === "sharedname") {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "The following names are currently allowed to create a new save sharing IP with another player: " + readable(allowedSharedIPNames), safchan);
                     return true;
@@ -14519,6 +14546,7 @@ function Safari() {
                 player.records[record] = recValue;
                 this.sanitize(player);
                 safaribot.sendAll(target.toCorrectCase() + "'s \"" + record + "\" record has been changed to " + recValue + " by " + sys.name(src) + "!", safchan);
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||forgerecord|||had their " + record + " record forged to|||" + recValue + "\n");
                 return true;
             }
             if (command === "reassignid") {
@@ -15404,6 +15432,7 @@ function Safari() {
                     if (success) {
                         safaribot.sendMessage(src, "Successfully changed {0}.{1} from '{2}' to '{3}'!".format(info[0].toCorrectCase(), propName.join("."), oldVal, JSON.stringify(val)), safchan);
                         safari.saveGame(player);
+                        sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + info[0].toCorrectCase() + "|||editplayer|||had their " + propName.join(".") + " property changed from|||" + oldVal + " to " + JSON.stringify(val) + "\n");
                     } else {
                         safaribot.sendMessage(src, "Couldn't edit {0}.{1} from '{2}' to '{3}'!".format(info[0].toCorrectCase(), propName.join("."), oldVal, JSON.stringify(val)), safchan);
                     }
