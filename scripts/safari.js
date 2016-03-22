@@ -105,7 +105,8 @@ function Safari() {
             bright: 0,
             philosopher: 0,
             materia: 0,
-            water: 0
+            water: 0,
+            cherry: 0
         },
         records: {
             gachasUsed: 0,
@@ -222,7 +223,8 @@ function Safari() {
                 cooldown: 0
             },
             tower: {
-                cooldown: 0
+                cooldown: 0,
+                bonusPower: 0
             },
             wonder: {
                 cooldown: 0
@@ -285,6 +287,7 @@ function Safari() {
         egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 0, aliases:["egg"], tradable: true},
         bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 0, aliases:["bright", "bright egg", "brightegg"], tradable: true},
         water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
+        cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 0, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
         
         //Alchemy related items
         materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 0, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -331,6 +334,30 @@ function Safari() {
         
         inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "It is not currently known how"}
     };
+    var recipeData = { //Makes = how many are made when the recipe is completed
+        "materia": {
+            "makes": 1,
+            "safari": itemData.materia.threshold
+        },
+        "master": {
+            "makes": 1,
+            "materia": 1,
+            "fragment": itemData.fragment.threshold
+        },
+        "cherry": {
+            "makes": 2,
+            "materia": 1,
+            "bait": 50,
+            "honey": 2,
+            "dust": 50,
+            "bigpearl": 2
+        },
+        "bigpearl": {
+            "makes": 15,
+            "pearl": 50
+        }
+    };
+    
     var defaultItemData;
     var defaultCostumeData;
     var base64icons = {
@@ -3427,7 +3454,7 @@ function Safari() {
         var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "rock"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "bait", "egg", "bright"];
         var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "stick"];
-        var line4 = ["philosopher", "materia", "fragment"];
+        var line4 = ["philosopher", "materia", "fragment", "cherry"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -5391,7 +5418,7 @@ function Safari() {
         }
         if (item === "egg") {
             if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
-                safaribot.sendMessage(src, "You can't hatch " + an(itemAlias("egg", true, true)) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+                safaribot.sendMessage(src, "You can't hatch " + an(finishName("egg")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
                 return;
             }
             var id, shiny = sys.rand(0, shinyChance) < 1;
@@ -5404,7 +5431,7 @@ function Safari() {
                 id = id + "";
             }
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(itemAlias("egg", true, true), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+            safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("egg"), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
             sys.sendMessage(src, "", safchan);
             
             player.pokemon.push(id);
@@ -5419,7 +5446,7 @@ function Safari() {
         }
         if (item === "bright") {
             if (player.pokemon.length >= player.balls.box * itemData.box.bonusRate) {
-                safaribot.sendMessage(src, "You can't hatch " + an(itemAlias("bright", true, true)) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
+                safaribot.sendMessage(src, "You can't hatch " + an(finishName("bright")) + " because all your boxes are full! Please buy a new box with /buy.", safchan);
                 return;
             }
             var id, shiny = sys.rand(0, shinyChance) < 16;
@@ -5439,9 +5466,9 @@ function Safari() {
             }
             sys.sendMessage(src, "", safchan);
             if (isLegendary(id)) {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(itemAlias("bright", true, true), an(poke(id)).toUpperCase(), pokeInfo.icon(id, shiny), itemAlias("bright", true, true).toUpperCase()), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} <b>OH MY GOD! {1} HATCHED FROM THE {3}!!</b>".format(finishName("bright"), an(poke(id)).toUpperCase(), pokeInfo.icon(id, shiny), finishName("bright").toUpperCase()), safchan);
             } else {
-                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(itemAlias("bright", true, true), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
+                safaribot.sendHtmlMessage(src, "Oh? The {0} is hatching... {2} {1} hatched from the {0}!".format(finishName("bright"), (shiny ? toColor(poke(id), "DarkOrchid") : poke(id)), pokeInfo.icon(id, shiny)), safchan);
             }
             sys.sendMessage(src, "", safchan);
             player.pokemon.push(id);
@@ -5456,35 +5483,28 @@ function Safari() {
         }
         if (item === "water") {
             if (player.quests.pyramid.bonusStamina > 0) {
-                safaribot.sendMessage(src, "You already packed  " + an(itemAlias("water", true, true)) + " for your next Pyramid tour!", safchan);
+                safaribot.sendMessage(src, "You already packed  " + an(finishName("water")) + " for your next Pyramid tour!", safchan);
                 return;
             }
             
             player.balls.water -= 1;
             player.quests.pyramid.bonusStamina = itemData.water.bonusRate;
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "You packed some " + itemAlias("water", true, true) + "! You will start your next Pyramid tour with " + (itemData.water.bonusRate * 100) + "% more Stamina!", safchan);
+            safaribot.sendMessage(src, "You packed some " + finishName("water") + "! You will start your next Pyramid tour with " + (itemData.water.bonusRate * 100) + "% more Stamina!", safchan);
             sys.sendMessage(src, "", safchan);
             this.saveGame(player);
             return;
         }
-        /* Alchemy */
-        if (item === "fragment") {
-            if (player.balls.fragment < itemData.fragment.threshold) {
-                safaribot.sendMessage(src, "It doesn't seem you have enough " + finishName("fragment") + " to make anything right now. Maybe if you got " + plural(itemData.fragment.threshold - player.balls.fragment, "more piece") + " you'd be able to assemble them.", safchan);
+        if (item === "cherry") {
+            if (player.quests.tower.bonusPower > 0) {
+                safaribot.sendMessage(src, "You already ate  " + an(finishName("cherry")) + ". There's no reason to eat another before attempting your next Battle Tower challenge!", safchan);
                 return;
             }
-            if (player.balls.materia < 1) {
-                safaribot.sendMessage(src, "You can't perform alchemy without " + an(finishName("materia")) + "!", safchan);
-                return;
-            }
-            if (player.balls.master > 0) {
-                safaribot.sendMessage(src, "Alchemist: Hey! " + an(finishName("master")) + " muss be one of your favoritest items or somethin' 'cause ya already got one!", safchan);
-                return;
-            }
+            
+            player.balls.cherry -= 1;
+            player.quests.tower.bonusPower = itemData.cherry.bonusRate;
             sys.sendMessage(src, "", safchan);
-            sys.sendMessage(src, "\"To obtain something, something else of equal value must be lost. This is alchemy's first law of Equivalent Exchange.\" A glowing ring envelops the " + plural(itemData.fragment.threshold, "fragment") + " and the " + finishName("materia") +". As the ring fades, a single " + finishName("master") + " remains.", safchan);
-            sys.sendMessage(src, "You received " + plural(1, "master") + "!", safchan);
+            safaribot.sendMessage(src, "You and your Pokémon ate " + an(finishName("cherry")) + "! You will start your next Battle Tower challenge more energized and able to deal up to " + (itemData.cherry.bonusRate) + " more damage with your attacks!", safchan);
             sys.sendMessage(src, "", safchan);
             this.saveGame(player);
             return;
@@ -6279,7 +6299,7 @@ function Safari() {
             var recharges = 30 + perkBonus;
             player.balls.itemfinder = recharges;
 
-            safaribot.sendMessage(src, "You received the following rewards for joining Safari today: " + gained.join(", "), safchan);
+            safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + gained.join(", "), safchan);
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
             if (frag) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
@@ -6430,8 +6450,12 @@ function Safari() {
 
         if (isNPC) {
             var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 0;
-            this.selfPowerMin = 10 + costumeBonus;
-            this.selfPowerMax = (100 + costumeBonus) * (player1.truesalt >= now() ? 0.35 : 1);
+            var useBonus = 0;
+            if (p2.desc.indexOf("Tower Lvl.") > -1) {
+                useBonus = player1.quests.tower.bonusPower;
+            }            
+            this.selfPowerMin = 10 + costumeBonus + useBonus;
+            this.selfPowerMax = (100 + costumeBonus + useBonus) * (player1.truesalt >= now() ? 0.35 : 1);
 
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
@@ -6747,7 +6771,7 @@ function Safari() {
             
             sys.sendAll("", safchan);
             safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + addComma(startingOffer) + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
-            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you and give you some " + itemAlias("salt", true, true) + " for abusing the system!", safchan);
+            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you and give you some " + finishName("salt") + " for abusing the system!", safchan);
             this.applyTradeban("Safari Warden", sys.name(src), player, 12 * 60 * 60);
             sys.sendAll("", safchan);
         } else {
@@ -8253,7 +8277,6 @@ function Safari() {
                                 amt = 1;
                             }
                         break;
-                        //If rewards change, please also update ninja boy costume at the end of this function
                         case 1:
                             rew = "bait";
                             amt = Math.floor(loop * 1.5);
@@ -8317,18 +8340,19 @@ function Safari() {
                         updatelb = true;
                     }
                 }
-                var traveledCount = count /*- (player.costume === "ninja" ? (costumeData.ninja.rate - 1) : 0)*/;
+                var traveledCount = count;
+                var h = 3;
+                var penalty = player.quests.tower.bonusPower !== 0; //could edit player value to a negative number mid-tower to act as a kill switch in order to complete a run
                 if (traveledCount === 0) {
-                    player.quests.tower.cooldown = now() + hours(0.5);
+                    h = 0.5;
                 } else if (traveledCount <= 3) {
-                    player.quests.tower.cooldown = now() + hours(1);
+                    h = 1;
                 } else if (traveledCount <= 6) {
-                    player.quests.tower.cooldown = now() + hours(1.5);
+                    h = 1.5;
                 } else if (traveledCount <= 10) {
-                    player.quests.tower.cooldown = now() + hours(2);
-                } else {
-                    player.quests.tower.cooldown = now() + hours(3);
+                    h = 2;
                 }
+                player.quests.tower.cooldown = now() + hours(h + penalty);
 
                 var rewardText = [];
                 for (var r in args.reward) {
@@ -8386,6 +8410,10 @@ function Safari() {
                     }
                 }
 
+                if (penalty) {
+                    safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
+                    player.quests.tower.bonusPower = 0;
+                }
                 safari.saveGame(player);
                 if (updatelb) {
                     safari.updateLeaderboards();
@@ -8406,13 +8434,6 @@ function Safari() {
 
         sys.sendMessage(src, "", safchan);
         safaribot.sendMessage(src, "Tower Clerk: You have a party with 6 Pokémon and paid the $" + addComma(cost) + " Entry Fee, therefore you are allowed to enter that door and start your Battle Tower challenge!", safchan);
-
-        /*if (player.costume === "ninja") {
-            npc.postArgs.count = costumeData.ninja.rate;
-            npc.desc = "Tower Lvl. " + costumeData.ninja.rate;
-            npc.postArgs.reward = {"bait": 1, "dust": 10}; //If rewards change, these need to be changed too
-            safaribot.sendMessage(src, "You carefully time your movements to stay cloaked in shadow and avoid being seen by a group of Trainers. Unfortunately for you, you trip as you dash up a flight of stairs and someone spots you! You made it to Floor " + costumeData.ninja.rate + " before being caught and forced to battle!", safchan);
-        }*/
 
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
@@ -8764,20 +8785,13 @@ function Safari() {
             safaribot.sendMessage(src, "Alchemist: Naptime! Zzz... Zzz... (Perhaps you should come back later...)", safchan);
             return;
         }
-        var recipes = {
-            "materia": {
-                "safari": itemData.materia.threshold
-            },
-            "master": {
-                "materia": 1,
-                "fragment": itemData.fragment.threshold
-            }
-        };
-        
+        var recipes = recipeData;        
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) { return " " + link("/quest alchemist:" + x, finishName(x)); }), safchan);
+            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
+                return " " + link("/quest alchemist:" + x, finishName(x)) + " ×" + recipes[x].makes; 
+            }), safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -8792,11 +8806,13 @@ function Safari() {
         
         var recipeString = [];
         for (var e in recipes[item]) {
+            if (e === "makes") {continue;}
             recipeString.push(plural(recipes[item][e], e));
         }
         
         var canMake = true, progress = [];
         for (var e in recipes[item]) {
+            if (e === "makes") {continue;}
             if (player.balls[e] < recipes[item][e]) {
                 canMake = false;
             }
@@ -8830,12 +8846,14 @@ function Safari() {
         for (var e in recipes[item]) {
             player.balls[e] -= recipes[item][e];
         }
+        var amt = recipes[item].makes || 1;
         safaribot.sendMessage(src, "Alchemist: Yo yo yo yo yo. Less' blow stuff up Princess Fluffybutt!", safchan);
-        safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with smoke but it quickly disappates to reveal a newly created " + fullItem + ".", safchan);
-        safaribot.sendMessage(src, "You received 1 " + fullItem + ".", safchan);
+        safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with smoke but it quickly disappates to reveal " + plural(amt, fullItem) + ".", safchan);
+        safaribot.sendMessage(src, "You received " + plural(amt, fullItem) + ".", safchan);
         player.records.transmutations += 1;
         player.quests.alchemist.cooldown = now() + hours(12);
-        rewardCapCheck(player, item, 1, true);
+        player.quests.alchemist.cooldown = now() + hours(12);
+        rewardCapCheck(player, item, amt, true);
         this.saveGame(player);
     };
     function generateName() {
@@ -11662,7 +11680,7 @@ function Safari() {
 
         sys.sendAll("", safchan);
         safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand) + " or to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
     BFactory.prototype = new SafariEvent();
@@ -12844,10 +12862,11 @@ function Safari() {
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\".",
             fragment: "A Master Ball fragment. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball!",
-            materia: "A basic substance required for all alchemic creations. Obtained from Alchemy quest.",
+            materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
-            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\"."
+            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\".",
+            cherry: "A tasty treat that keeps you energized during a Tower Challenge. Obtained from Alchemy quest."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -13081,9 +13100,9 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
-            "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests.",
-            "/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
-            "/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
+            "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests."
+            //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
+            //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             help.push.apply(help, adminHelp);
@@ -13116,6 +13135,15 @@ function Safari() {
 
         //User commands
         if (!safariUpdating || SESSION.channels(safchan).isChannelOwner(src)) {
+            if (command === "me") {
+                if (commandData === "*") {
+                    return true; //retain server behavior
+                }
+                if (!SESSION.channels(safchan).isChannelOwner(src)) {
+                    sys.sendAll(sys.name(src) + ": " + commandData, safchan);
+                    return true;
+                }
+            }
             if (command === "tutorial") {
                 var player = getAvatar(src);
                 if (!player || !player.tutorial.inTutorial) {
@@ -14010,7 +14038,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                 }
                 if (contestCount <= 0) {
-                    var bName = itemAlias("bait", true, true).toLowerCase();
+                    var bName = finishName("bait").toLowerCase();
                     safaribot.sendMessage(targetId, "Some stealthy person left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
                 }
                 sys.sendHtmlMessage(targetId, "<hr><center>" + (input.shiny ? "<font color='DarkOrchid'>" : "") + "A wild " + input.name + " appeared! <i>(BST: " + getBST(input.num) + ")</i>" + (input.shiny ? "</font>" : "") + "<br/>" + pokeInfo.sprite(input.id) + "</center><hr>", safchan);
@@ -14021,7 +14049,7 @@ function Safari() {
                 if (command === "trick2") {
                     sys.setTimer(function() {
                         sys.sendMessage(targetId, "", safchan);
-                        safaribot.sendHtmlMessage(targetId, "Some stealthy person caught the <b>" + input.name + "</b> with " + an(itemAlias("spy", true, true)) + " and the help of their well-trained spy Pokémon!", safchan);
+                        safaribot.sendHtmlMessage(targetId, "Some stealthy person caught the <b>" + input.name + "</b> with " + an(finishName("spy")) + " and the help of their well-trained spy Pokémon!", safchan);
                         sys.sendMessage(targetId, "", safchan);
                     }, 3200, false);
                 }
