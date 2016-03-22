@@ -1908,7 +1908,7 @@ function Safari() {
                 player.money += amt;
                 if (amt > 0) {
                     if (player.money > moneyCap) {
-                        total = amt - player.money - moneyCap;
+                        total = amt - (player.money - moneyCap);
                         player.money = moneyCap;
                     }
                     out.gained.push("$" + addComma(total));
@@ -1929,7 +1929,7 @@ function Safari() {
                 player.balls[asset] += amt;
                 max = getCap(asset);
                 if (player.balls[asset] > max) {
-                    total = amt - player.balls[asset] - max;
+                    total = amt - (player.balls[asset] - max);
                     player.balls[asset] = max;
                 } else if (player.balls[asset] < 0) {
                     total = amt - player.balls[asset];
@@ -4803,7 +4803,7 @@ function Safari() {
             case "wild": {
                 giveReward = false;
                 if (currentPokemon) {
-                    sendAll(sys.name(src) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!");
+                    sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the capsule was swiped by the wild Pokémon!");
                     //player.records.capsulesLost += 1;
                 } else if (contestCount > 0 || contestCooldown <= 13) {
                     giveReward = true;
@@ -12188,6 +12188,7 @@ function Safari() {
                     if (player.value === 0 || player.value == "0") {
                         continue;
                     }
+                    player.value = parseInt(player.value, 10);
                     leaderboards[i + "Monthly"].push(player);
                 }
             }
@@ -14245,7 +14246,7 @@ function Safari() {
                     });
                 }
 
-                safaribot.sendMessage(src, commandData.toCorrectCase() + "'s box: " + list.map(poke), safchan);
+                safaribot.sendMessage(src, commandData.toCorrectCase() + "'s box: " + list.map(poke).join(", "), safchan);
                 return true;
             }
 
