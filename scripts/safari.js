@@ -12866,7 +12866,7 @@ function Safari() {
             philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\".",
-            cherry: "A tasty treat that keeps you energized during a Tower Challenge. Obtained from Alchemy quest."
+            cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy quest."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
