@@ -199,7 +199,9 @@ function Hangman() {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
-                SESSION.users(src).hangmanGuessTime = SESSION.users(sys.id(x)).hangmanGuessTime;       
+                if (sys.id(x) !== undefined) {
+                    SESSION.users(src).hangmanGuessTime = SESSION.users(sys.id(x)).hangmanGuessTime;
+                }                    
                 break;
             }
         }
@@ -351,7 +353,9 @@ function Hangman() {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
-                SESSION.users(src).hangmanAnswerTime = SESSION.users(sys.id(x)).hangmanAnswerTime;  
+                if (sys.id(x) !== undefined) {                
+                    SESSION.users(src).hangmanAnswerTime = SESSION.users(sys.id(x)).hangmanAnswerTime;
+                }
                 break;
             }
         }   
