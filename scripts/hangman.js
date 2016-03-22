@@ -170,11 +170,6 @@ function Hangman() {
             hangbot.sendMessage(src, "You can't guess letters in Toss Up!", hangchan);
             return;
         } 
-        var now = (new Date()).getTime();
-        if (now < SESSION.users(src).hangmanGuessTime) {
-            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
-            return;
-        }        
         if (commandData === undefined) {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
@@ -185,17 +180,6 @@ function Hangman() {
         }*/
         if (checked.indexOf(sys.ip(src)) >= 0) {
             hangbot.sendMessage(src, "You checked the answer, so you can't play!", hangchan);
-            return;
-        }
-        for (var x in points) {
-            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
-                hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
-                this.switchPlayer(x, sys.name(src));
-                break;
-            }
-        }
-        if (SESSION.users(src).smute.active) {
-            hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
         var letter = commandData.toLowerCase();
@@ -211,6 +195,23 @@ function Hangman() {
             hangbot.sendMessage(src, "This letter was already used!", hangchan);
             return;
         }
+        for (var x in points) {
+            if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
+                hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
+                this.switchPlayer(x, sys.name(src));
+                SESSION.users(src).hangmanGuessTime = SESSION.users(sys.id(x)).hangmanGuessTime;       
+                break;
+            }
+        }
+        if (SESSION.users(src).smute.active) {
+            hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
+            return;
+        }
+        var now = (new Date()).getTime();
+        if (now < SESSION.users(src).hangmanGuessTime) {
+            hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanGuessTime - now) / 1000) + 1) + " seconds before using /g again!", hangchan);
+            return;
+        }        
         var thing = "";
         if (gameMode === suddenDeath) {
             if (vowels.indexOf(letter) >= 0) {
@@ -338,30 +339,31 @@ function Hangman() {
             hangbot.sendMessage(src, "The answer must have at least four letters!", hangchan);
             return;
         }
+        if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers[gameMode]) {
+            hangbot.sendMessage(src, "You can only use /a " + maxAnswers[gameMode] + " times!", hangchan);
+            return;
+        }
+        if (usedAnswers.indexOf(ans.toLowerCase()) >= 0) {
+            hangbot.sendMessage(src, "This answer was already used!", hangchan);
+            return;
+        }
         for (var x in points) {
             if (sys.ip(src) === sys.dbIp(x) && sys.name(src)!== x) {
                 hangbot.sendAll(x + " changed their name to " + sys.name(src) + "!", hangchan);
                 this.switchPlayer(x, sys.name(src));
+                SESSION.users(src).hangmanAnswerTime = SESSION.users(sys.id(x)).hangmanAnswerTime;  
                 break;
             }
-        }
+        }   
         if (SESSION.users(src).smute.active) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
-            return;
-        }
-        if (sys.name(src) in answers && answers[sys.name(src)] >= maxAnswers[gameMode]) {
-            hangbot.sendMessage(src, "You can only use /a " + maxAnswers[gameMode] + " times!", hangchan);
             return;
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).hangmanAnswerTime) {
             hangbot.sendMessage(src, "You need to wait for another " + (Math.floor((SESSION.users(src).hangmanAnswerTime - now) / 1000) + 1) + " seconds before using /a again!", hangchan);
             return;
-        }
-        if (usedAnswers.indexOf(ans.toLowerCase()) >= 0) {
-            hangbot.sendMessage(src, "This answer was already used!", hangchan);
-            return;
-        }   
+        }        
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(ans)) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player " + sys.name(src) + " answered '" + ans + "' in #Hangman", sys.channelId("Victory Road"));
@@ -691,7 +693,7 @@ function Hangman() {
                 answers[newName] = answers[oldName];
                 delete answers[oldName];
             }
-        }
+        }      
     };
     this.applyPoints = function (src, p) {
         if (!points[sys.name(src)]) {
