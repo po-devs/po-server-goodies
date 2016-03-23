@@ -188,24 +188,22 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventValidation(s
                 for (var e in eventMons[pname].moves) { //Loop in case there are multiple moves
                     if (sys.hasTeamPokeMove(src, team, i, sys.moveNum(e))) { //Proceed if mon has move
                         var mv = eventMons[pname].moves[e];
-                        for (var f in mv) { //Check out all restrictions
-                            if (Object.keys(mv).contains("abilities")) { //Restricted by ability?
-                                restrAbs = mv.abilities; //All restricted abilities
-                                currentAb = sys.ability(sys.teamPokeAbility(src, team, i));
-                                if (!restrAbs.contains(currentAb)) {
-                                    ret.push("{0} with {1} must have the ability {2}".format(pname, e, readable(restrAbs, "or")));
-                                }
+                        if (Object.keys(mv).contains("abilities")) { //Restricted by ability?
+                            restrAbs = mv.abilities; //All restricted abilities
+                            currentAb = sys.ability(sys.teamPokeAbility(src, team, i));
+                            if (!restrAbs.contains(currentAb)) {
+                                ret.push("{0} with {1} must have the ability {2}".format(pname, e, readable(restrAbs, "or")));
                             }
-                            if (Object.keys(mv).contains("natures")) { //Restricted by nature?
-                                var restrNats = mv.natures; //All restricted natures                                
-                                var currentNat = sys.nature(sys.teamPokeNature(src, team, i));
-                                if (!restrNats.contains(currentNat)) {
-                                    ret.push("{0} with {1} must have the nature {2}".format(pname, e, readable(restrNats, "or")));
-                                }
+                        }
+                        if (Object.keys(mv).contains("natures")) { //Restricted by nature?
+                            var restrNats = mv.natures; //All restricted natures                                
+                            var currentNat = sys.nature(sys.teamPokeNature(src, team, i));
+                            if (!restrNats.contains(currentNat)) {
+                                ret.push("{0} with {1} must have the nature {2}".format(pname, e, readable(restrNats, "or")));
                             }
-                            if (Object.keys(mv).contains("shinyForce")) { //Just force correct shininess
-                                sys.changePokeShine(src, team, i, mv.shinyForce);
-                            }
+                        }
+                        if (Object.keys(mv).contains("shinyForce")) { //Just force correct shininess
+                            sys.changePokeShine(src, team, i, mv.shinyForce);
                         }
                     }
                 }
@@ -214,10 +212,8 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventValidation(s
                 for (var g in eventMons[pname].abilities) { //Unlikely this is needed. Required shiny locked mon with 2 normal and a hidden ability.
                     if (sys.ability(sys.teamPokeAbility(src, team, i)) === g) { //Proceed if mon has ability
                         var ab = eventMons[pname].abilities[g];
-                        for (var h in ab) { 
-                            if (Object.keys(ab).contains("shinyForce")) { //Just force correct shininess
-                                sys.changePokeShine(src, team, i, ab.shinyForce);
-                            }
+                        if (Object.keys(ab).contains("shinyForce")) { //Just force correct shininess
+                            sys.changePokeShine(src, team, i, ab.shinyForce);
                         }
                     }
                 }
