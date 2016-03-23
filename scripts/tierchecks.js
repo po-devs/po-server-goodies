@@ -133,7 +133,7 @@ var eventMons = { //Try to keep in order of dex
     "Venusaur": {"moves": {"False Swipe": {"abilities": ["Overgrow"]}, "Block": {"abilities": ["Overgrow"]}, "Weather Ball": {"abilities": ["Overgrow"]}}},
     
     "Charmander": {"moves": {"False Swipe": {"abilities": ["Blaze"]}, "Block": {"abilities": ["Blaze"]}, "Acrobatics": {"abilities": ["Blaze"]}}},
-    "Charmeeleon": {"moves": {"False Swipe": {"abilities": ["Blaze"]}, "Block": {"abilities": ["Blaze"]}, "Acrobatics": {"abilities": ["Blaze"]}}},
+    "Charmeleon": {"moves": {"False Swipe": {"abilities": ["Blaze"]}, "Block": {"abilities": ["Blaze"]}, "Acrobatics": {"abilities": ["Blaze"]}}},
     "Charizard": {"moves": {"False Swipe": {"abilities": ["Blaze"]}, "Block": {"abilities": ["Blaze"]}}},
     
     "Squirtle": {"moves": {"False Swipe": {"abilities": ["Torrent"]}, "Block": {"abilities": ["Torrent"]}, "Hydro Cannon": {"abilities": ["Torrent"]}, "Follow Me": {"abilities": ["Torrent"]}}},
@@ -185,7 +185,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventValidation(s
         if (events.contains(pname) && poke !== 0) {
             var restrictions = Object.keys(eventMons[pname]);
             if (restrictions.contains("moves")) { //Check if pokemon has restricted move
-                 for (var e in eventMons[pname].moves) { //Loop in case there are multiple moves
+                for (var e in eventMons[pname].moves) { //Loop in case there are multiple moves
                     if (sys.hasTeamPokeMove(src, team, i, sys.moveNum(e))) { //Proceed if mon has move
                         var mv = eventMons[pname].moves[e];
                         for (var f in mv) { //Check out all restrictions
@@ -197,8 +197,8 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventValidation(s
                                 }
                             }
                             if (Object.keys(mv).contains("natures")) { //Restricted by nature?
-                                var restrNats = mv.natures; //All restricted natures
-                                var currentNat = sys.teamPokeNature(src, team, i);
+                                var restrNats = mv.natures; //All restricted natures                                
+                                var currentNat = sys.nature(sys.teamPokeNature(src, team, i));
                                 if (!restrNats.contains(currentNat)) {
                                     ret.push("{0} with {1} must have the nature {2}".format(pname, e, readable(restrNats, "or")));
                                 }
