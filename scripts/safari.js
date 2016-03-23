@@ -14197,7 +14197,7 @@ function Safari() {
                 script.unban("safban", src, tar, commandData);
                 return true;
             }
-            if (command === "analyze") {
+            if (command === "analyze" || command === "analyzer") {
                 var info = commandData.split(":");
                 var target = sys.id(info[0]);
                 var player = getAvatarOff(info[0]);
@@ -14226,6 +14226,11 @@ function Safari() {
                     }
                 }
 
+                if (command === "analyzer") { //Readable format
+                    if (["pokemon", "party", "ninjaParty"].contains(propName[1])) {
+                        attr = attr.map(poke);
+                    }
+                }
                 safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
                 return true;
             }
