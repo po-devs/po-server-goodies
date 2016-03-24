@@ -14664,10 +14664,16 @@ function Safari() {
                     this.sanitize(player);
                 }
 
+                var customValues;
+                try {
+                    customValues = JSON.parse(permObj.get("customItemData"))[item].fullName;
+                } catch (err) {
+                    customValues = item;
+                }
                 if (playerArray.length > 0) {
                     var targets = readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and");
                     safaribot.sendAll(targets + " has been awarded with " + plural(itemQty, item) + " by " + sys.name(src) + "!", safchan);
-                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||gift|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, item) + "\n");
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||gift|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, item) + (customValues === finishName(item) ? " [actually " + finishName(item) + "]" : "") + "\n");
                 }
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
