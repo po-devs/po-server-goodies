@@ -14673,7 +14673,7 @@ function Safari() {
                 if (playerArray.length > 0) {
                     var targets = readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and");
                     safaribot.sendAll(targets + " has been awarded with " + plural(itemQty, item) + " by " + sys.name(src) + "!", safchan);
-                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||gift|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, item) + (customValues === finishName(item) ? " [actually " + finishName(item) + "]" : "") + "\n");
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||gift|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, item) + (customValues === finishName(item) ? " [actually " + defaultItemData[item].fullName + "]" : "") + "\n");
                 }
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
@@ -15518,7 +15518,7 @@ function Safari() {
                     for (i in obj) {
                         if (i in list) {
                             if (customValues.hasOwnProperty(id) && customValues[id].hasOwnProperty(i) && customValues[id][i] !== defaultData[id][i]) {
-                                out.push("<span style='color: blue'>" + i + ": " + obj[i] + "</span>");
+                                out.push("<span style='color: blue'><b>" + i + ": " + obj[i] + "</b></span>");
                             } else {
                                 out.push(i + ": " + obj[i]);
                             }
