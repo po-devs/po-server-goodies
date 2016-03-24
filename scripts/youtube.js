@@ -23,7 +23,7 @@ function YouTube() {
                         uploader = x.snippet.channelTitle,
                         likes = parseInt(x.statistics.likeCount, 10),
                         dislikes = parseInt(x.statistics.dislikeCount, 10),
-                        ratio = Math.round(likes / (likes + dislikes) * 100);
+                        ratio = Math.round(likes / (likes + dislikes) * 100) || "-";
                     youtubeBot.sendAll("Title: {0}, Length: {1}, Uploader: {2}, Likes: {3}%".format(title, length, uploader, ratio), channel);
                 });
             } catch (error) {
