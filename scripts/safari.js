@@ -8827,6 +8827,10 @@ function Safari() {
             return;
         }
         
+        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+        
         if (!canMake) {
             safaribot.sendHtmlMessage(src, "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
             return;
