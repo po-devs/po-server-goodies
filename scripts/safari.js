@@ -135,6 +135,9 @@ function Safari() {
             rocksWalletLost: 0,
             rocksWindowEarned: 0,
             rocksWindowLost: 0,
+            rocksItemfinderHit: 0,
+            rocksChargesGained: 0,
+            rocksChargesLost: 0,
             baitUsed: 0,
             baitAttracted: 0,
             baitNothing: 0,
@@ -977,15 +980,15 @@ function Safari() {
                 }
             }
         }
-        if (arr.contains("wild")) {
-            if (currentPokemon) {
-                safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
-                return true;
-            }
-        }
         if (arr.contains("contest")) {
             if (contestCount > 0) {
                 safaribot.sendMessage(src, "You can't " + action + " during a contest!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("wild")) {
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "You can't " + action + " while a Wild Pokemon is out!", safchan);
                 return true;
             }
         }
@@ -4629,6 +4632,16 @@ function Safari() {
                 safaribot.sendMessage(targetId, "You lost $" + dropped + "!", safchan);
                 target.money = target.money - dropped < 0 ? 0 : target.money - dropped;
             }
+            else if (rng2 < 0.56) {
+                
+                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but only hit their Itemfinder, which caused the Itemfinder to get slightly discharged!", safchan);
+                if (target.balls.permfinder > 1) {
+                    safaribot.sendMessage(targetId, "You lost " + plural(1, finishName("recharge")) + "!", safchan);
+                    target.balls.permfinder -= 1;
+                }
+                player.records.rocksItemfinderHit += 1;
+                target.records.rocksChargesLost += 1;
+            }
             else {
                 var parts = ["right leg", "left leg", "right arm", "left arm", "back"];
                 safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! The " + finishName(item) + " hit " + targetName + "'s " + parts[sys.rand(0, parts.length)] + "!", safchan);
@@ -4700,6 +4713,14 @@ function Safari() {
                 player.records.rocksMissed += 1;
                 target.records.rocksDodged += 1;
             }
+            else if (rng2 < 0.53) {
+                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their Itemfinder got hit! The Itemfinder reacted to the impact and gained 1 extra charge!!", safchan);
+                safaribot.sendMessage(targetId, "You received " + plural(1, finishName("recharge")) + "!", safchan);
+                    
+                target.balls.permfinder += 1;
+                player.records.rocksMissed += 1;
+                target.records.rocksChargesGained += 1;
+            }
             else {
                 safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
                 player.records.rocksMissed += 1;
@@ -4708,6 +4729,7 @@ function Safari() {
         }
         player.cooldowns.rock = currentTime + itemData.rock.throwCD;
         this.saveGame(player);
+        this.saveGame(target);
     };
     this.useStick = function (src, commandData) {
         var sName = finishName("stick");
@@ -6453,7 +6475,7 @@ function Safari() {
             var useBonus = 0;
             if (p2.desc.indexOf("Tower Lvl.") > -1) {
                 useBonus = player1.quests.tower.bonusPower;
-            }            
+            }
             this.selfPowerMin = 10 + costumeBonus + useBonus;
             this.selfPowerMax = (100 + costumeBonus + useBonus) * (player1.truesalt >= now() ? 0.35 : 1);
 
@@ -7512,6 +7534,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
             
             // safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
             sys.sendMessage(src, "", safchan);
@@ -8363,14 +8386,17 @@ function Safari() {
                     }
                 }
                 if (id) {
+                    var team = " Your Team: " + (player.costume !== "none" ? " [" + costumeAlias(player.costume, true, true) + " costume] " : "") + readable(player.party.map(poke));
                     if (count === 0) {
                         safaribot.sendMessage(id, "Tower Clerk: Too bad, " + name + "! You couldn't defeat any trainer!", safchan);
                     } else if (count < 5) {
-                        safaribot.sendMessage(id, "Tower Clerk: Game over, " + name + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!", safchan);
+                        safaribot.sendMessage(id, "Tower Clerk: Game over, " + name + "! You defeated " + count + " trainer" + (count == 1 ? "" : "s") + "!" + team, safchan);
                     } else if (count < 20) {
-                        safaribot.sendMessage(id, "Tower Clerk: Good job, " + name + "! You defeated " + count + " trainers!", safchan);
+                        safaribot.sendMessage(id, "Tower Clerk: Good job, " + name + "! You defeated " + count + " trainers!" + team, safchan);
+                    } else if (count < 50) {
+                        safaribot.sendMessage(id, "Tower Clerk: Amazing, " + name + "! You defeated " + count + " trainers! Congratulations!" + team, safchan);
                     } else {
-                        safaribot.sendMessage(id, "Tower Clerk: Amazing, " + name + "! You defeated " + count + " trainers! Congratulations!", safchan);
+                        safaribot.sendMessage(id, "Tower Clerk: OH MY GOD, " + name + "! You defeated " + count + " trainers! That was superb!" + team, safchan);
                     }
                     if (skip) {
                         safaribot.sendMessage(id, "Tower Clerk: Hey wait a minute! You didn't defeat the previous Trainer so I can't count it in your performance assessment.", safchan);
@@ -8785,12 +8811,12 @@ function Safari() {
             safaribot.sendMessage(src, "Alchemist: Naptime! Zzz... Zzz... (Perhaps you should come back later...)", safchan);
             return;
         }
-        var recipes = recipeData;        
+        var recipes = recipeData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
-                return " " + link("/quest alchemist:" + x, finishName(x)) + " ×" + recipes[x].makes; 
+                return " " + link("/quest alchemist:" + x, finishName(x)) + " ×" + recipes[x].makes;
             }), safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             sys.sendMessage(src, "", safchan);
@@ -9841,6 +9867,373 @@ function Safari() {
         this.sendAll("");
     };
     
+    function RiddleRoom(pyramidRef, level, roomNum) {
+        PyramidRoom.call(this, pyramidRef);
+        this.level = level;
+        this.defaultChoice = "none";
+        this.answerType = chance(0.36 + level * 0.04) ? "move" : "name";
+        
+        this.answerAttempts = 0;
+        this.cluesSearched = {};
+        this.turns = 9 - Math.floor(level/2);
+        
+        var hints;
+        if (this.answerType === "name") {
+            this.answerId = sys.rand(1, 722);
+            this.answer = poke(this.answerId);
+            hints = this.writeHints(level);
+        } else if (this.answerType === "move") {
+            do {
+                this.answerId = sys.rand(1, 622);
+            } while (pokedex.getMoveBP(this.answerId) === "---" && pokedex.getMoveAccuracy(this.answerId) === "---");
+            this.answer = sys.move(this.answerId);
+            hints = this.writeHintsMove(level);
+        }
+        
+        var objects = ["crate", "barrel", "rock", "box", "wall", "corner", "floor", "ceiling", "puddle", "coffin", "chains", "pillar", "vase", "statue", "chest", "table", "sword", "torch", "chair"].shuffle();
+        this.hintsLocation = {};
+        for (var h = 0; h < hints.length; h++){
+            this.hintsLocation[objects.shift()] = hints[h];
+        }
+        var treasuresAmt = 0;
+        switch (hints.length) {
+            case 8:
+            case 9:
+            case 10:
+                treasuresAmt = 3;
+            break;
+            case 6:
+            case 11:
+            case 12:
+                treasuresAmt = 2;
+            break;
+            case 7:
+            case 13:
+                treasuresAmt = 1;
+            break;
+            default:
+                treasuresAmt = 0;
+        }
+        var rew = {
+            gem: { chance: 2 * level, item: "gem", amount: 1 },
+            nugget: { chance: 1 * level, item: "nugget", amount: 1 },
+            money: { chance: 12, item: "money", amount: 200 * level },
+            safari: { chance: 18, item: "safari", amount: 5 * level },
+            myth: { chance: 12, item: "myth", amount: 1 * level },
+            spy: { chance: 12, item: "spy", amount: 1 * level },
+            pearl: { chance: 10, item: "pearl", amount: 1 * level }
+        };
+        while (treasuresAmt > 0) {
+            this.hintsLocation[objects.shift()] = randomSampleObj(rew);
+            treasuresAmt--;
+        }
+        this.validObjects = Object.keys(this.hintsLocation).shuffle();
+        
+        this.hintsFound = [];
+        this.leaderChoice = null;
+        
+        this.sendAll("");
+        this.sendAll("Room {0}-{1}: The door requires a Pokémon <b>{2}</b> as a password to open! Search for clues in the room so the leader can input the password!!".format(level, roomNum, toColor(cap(this.answerType), "blue")));
+        this.sendIndividuals();
+        this.sendAll("");
+    }
+    RiddleRoom.prototype = new PyramidRoom();
+    RiddleRoom.prototype.writeHints = function(level) {
+        var hints = [], h;
+        hints.push("Starts with '{0}'".format(this.answer[0]));
+        if (level <= 4) {
+            hints.push("Ends with '{0}'".format(cap(this.answer[this.answer.length-1])));
+        }
+        hints.push("One of the types is '{0}'".format(sys.type(sys.pokeType1(this.answerId))));
+        h = sys.type(sys.pokeType2(this.answerId));
+        if (h !== "???" && level <= 6) {
+            hints.push("One of the types is '{0}'".format(h));
+        }
+        hints.push("Can have the ability '{0}'".format(sys.ability(sys.pokeAbility(this.answerId, 0))));
+        h = sys.pokeAbility(this.answerId, 1);
+        if (h) {
+            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+        }
+        h = sys.pokeAbility(this.answerId, 2);
+        if (h) {
+            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
+        }
+        var maxMoves = level <= 2 ? 6 : 8;
+        var moves = pokedex.getAllMoves(this.answerId).shuffle().slice(0, maxMoves).map(sys.move);
+        for (h = moves.length; h--; ) {
+            if (h >= 1) {
+                hints.push("Can have the moves '{0} and {1}'".format(moves[h], moves[h-1]));
+                h--;
+            } else {
+                hints.push("Can have the move '{0}'".format(moves[h]));
+            }
+        }
+        h = getBST(this.answerId);
+        hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
+        if (this.answerId in evolutions) {
+            hints.push("Can evolve");
+        } else {
+            hints.push("Can't evolve");
+        }
+        if (this.answerId in devolutions) {
+            hints.push("Is evolved");
+        } else {
+            hints.push("Is not evolved");
+        }
+        return hints.shuffle();
+    };
+    RiddleRoom.prototype.writeHintsMove = function(level) {
+        var hints = [], h;
+        
+        hints.push("Starts with '{0}'".format(this.answer[0]));
+        if (level <= 4) {
+            hints.push("Ends with '{0}'".format(cap(this.answer[this.answer.length-1])));
+        }
+        hints.push("Type is '{0}'".format(sys.type(sys.moveType(this.answerId))));
+        
+        h = pokedex.getMoveBP(this.answerId);
+        if (h !== "---") {
+            h = parseInt(h, 10);
+            hints.push("Power is between {0} and {1}".format(h - sys.rand(0, 10), h + sys.rand(1, 10)));
+        }
+        
+        h = pokedex.getMovePP(this.answerId);
+        hints.push("Base PP is {0}".format(h));
+        
+        h = pokedex.getMoveAccuracy(this.answerId);
+        if (h !== "---") {
+            hints.push("Accuracy is {0}".format(h));
+        }
+        
+        h = pokedex.getMoveCategory(this.answerId);
+        hints.push("Category is {0}".format(h));
+        
+        h = pokedex.getMoveContact(this.answerId);
+        hints.push(h ? "Makes contact" : "Doesn't make contact");
+        
+        h = pokedex.getMoveEffect(this.answerId);
+        var cropIndex = h.length-1;
+        var i = h.indexOf(";");
+        if (i >= 0 && i < cropIndex) {
+            cropIndex = i;
+        }
+        i = h.indexOf(".");
+        if (i >= 0 && i < cropIndex) {
+            cropIndex = i;
+        }
+        cropIndex = Math.min(cropIndex, 100);
+        h = h.substring(0, cropIndex);
+        hints.push("Description contains \"{0}\"".format(h));
+        
+        h = pokedex.getMoveEffect(this.answerId).substr(cropIndex+1);
+        if (h.length > 18 && level <= 6) {
+            cropIndex = h.length-1;
+            i = h.indexOf(";");
+            if (i >= 0 && i < cropIndex) {
+                cropIndex = i;
+            }
+            i = h.indexOf(".");
+            if (i >= 0 && i < cropIndex) {
+                cropIndex = i;
+            }
+            cropIndex = Math.min(cropIndex, 100);
+            h = h.substring(0, cropIndex+1);
+            if (h.length > 18) {
+                hints.push("Description contains \"{0}\"".format(h));
+            }
+        }
+        
+        var canLearn = [];
+        var cantLearn = [];
+        for (i = 1; i < 722; i++) {
+            if (pokedex.getAllMoves(i).contains(this.answerId + "")) {
+                canLearn.push(sys.pokemon(i));
+            } else {
+                cantLearn.push(sys.pokemon(i));
+            }
+        }
+        if (canLearn.length > 0) {
+            canLearn = canLearn.shuffle();
+            hints.push("Can be learned by {0}".format(readable(canLearn.slice(0, 4))));
+            if (canLearn.length > 4 && level > 2) {
+                hints.push("Can be learned by {0}".format(readable(canLearn.slice(4, 8))));
+            }
+        }
+        
+        if (cantLearn.length > 0) {
+            hints.push("Can NOT be learned by {0}".format(readable(cantLearn.shuffle().slice(0, 3))));
+        }
+        
+        h = this.answer.replace(/[\s\-']/g, "").length;
+        i = (this.answer.match(/[\s\-]/g) || []).length + 1;
+        hints.push("Name has {0} letters and {1}".format(h, plural(i, "word")));
+        
+        return hints.shuffle();
+    };
+    RiddleRoom.prototype.midturn = function() {
+        this.sendToAlive("Find the password (Pokémon " + this.answerType + ") to open the door! " + (this.hintsFound.length > 0 ? "Hints found: " + this.hintsFound.map(function(x){ return toColor(x, "blue");}).join(", ") : ""));
+        this.sendIndividuals();
+    };
+    RiddleRoom.prototype.sendIndividuals = function() {
+        var n, id;
+        var toCommand = function(x) {
+            return link("/pyr " + cap(x));
+        };
+        if (this.validObjects.length > 0) {
+            for (n = this.pyr.names.length; n-- ;) {
+                id = this.pyr.names[n];
+                if (this.pyr.stamina[id] > 0) {
+                    this.send(id, "Look for clues at: " + this.validObjects.map(toCommand).join(", ") + (id === this.pyr.leader ? " | Or input the password with " + link("/pyr Answer", null, true) : ""));
+                }
+            }
+        } else {
+            this.send(this.pyr.leader, "Input the password with " + link("/pyr [Answer]", null, true));
+        }
+    };
+    RiddleRoom.prototype.useCommand = function(src, commandData) {
+        var player = getAvatar(src),
+            info = getInputPokemon(commandData);
+        
+        if (player.id === this.pyr.leader) {
+            if (this.answerType === "name" && info.num !== null && !info.shiny) {
+                this.checkAnswer(info.name, sys.pokeNum(info.name));
+                return;
+            }
+            if (this.answerType === "move" && sys.moveNum(commandData)) {
+                this.checkAnswer(sys.move(sys.moveNum(commandData)), sys.moveNum(commandData));
+                return;
+            }
+        }
+        if (this.validInput && !this.validInput(player.id, commandData)) {
+            return;
+        }
+        this.choices[player.id] = commandData;
+        if (this.postInput && this.postInput(src, commandData)) {
+            return;
+        }
+        this.sendAll(toColor("{0} is going to use {1}!".format(player.id.toCorrectCase(), commandData), "crimson"));
+    };
+    RiddleRoom.prototype.validInput = function(id, commandData) {
+        if (!this.validObjects.contains(commandData.toLowerCase())) {
+            this.send(id, "There's no {0} to look for clues at!".format(commandData));
+            return false;
+        }
+        for (var e in this.choices) {
+            if (this.choices[e].toLowerCase() === commandData.toLowerCase()) {
+                this.send(id, "{0} is already going to look for clues at the {1}! Look somewhere else!".format(e.toCorrectCase(), commandData));
+                return false;
+            }
+        }
+        return true;
+    };
+    RiddleRoom.prototype.postInput = function(src, commandData) {
+        this.sendAll(toColor("{0} is going to look for a clue at the {1}!".format(sys.name(src), cap(commandData.toLowerCase())), "crimson"));
+        return true;
+    };
+    RiddleRoom.prototype.checkAnswer = function(commandData, id) {
+        var stamina = {}, name = this.pyr.leader.toCorrectCase();
+        this.sendAll("");
+        if (id == this.answerId) {
+            var extraPoints = 12 + 8 * this.level, hintsUsed = this.hintsFound.length;
+            if (hintsUsed > 10) {
+                extraPoints = Math.round(-extraPoints * 0.115 * (hintsUsed - 10));
+            } else if (hintsUsed > 3) {
+                extraPoints = Math.round(extraPoints - (extraPoints * (hintsUsed - 3) / 4));
+            }
+            
+            var basePointsRange = [36 + 24 * this.level, 18 + 12 * this.level, 6 + 6 * this.level, 1 + 2 * this.level];
+            var points = basePointsRange[Math.min(this.answerAttempts, basePointsRange.length-1)] + extraPoints;
+            
+            this.sendAll("<b>{0}</b> answered <b>{1}</b> and the door opened! Points gained: {2}".format(name, this.answer, plural(points, "Point")));
+            this.pyr.updateStatus(points, {});
+            this.passed = true;
+            this.earlyFinish = true;
+            this.turnToAdvance = 0;
+        } else {
+            this.answerAttempts++;
+            var stmLost = 5 + 5 * this.level;
+            if (this.answerAttempts > 1) {
+                stamina[this.pyr.leader] = -stmLost;
+            }
+            
+            this.sendAll("<b>{0}</b> answered <b>{1}</b>, but nothing happened! {2}".format(name, commandData, (this.answerAttempts > 1 ? "Stamina lost: " + name + "-" + stmLost : "") ));
+            this.pyr.updateStatus(0, stamina);
+        }
+        this.sendAll("");
+    };
+    RiddleRoom.prototype.advance = function() {
+        var p, stamina = {}, place, res, staminaStr = [], isTreasure,
+            choices = this.getChoices(), locationsSearched = {};
+        
+        this.sendAll("");
+        
+        for (p in choices) {
+            place = choices[p].toLowerCase();
+            if (place !== "none") {
+                if (!this.cluesSearched.hasOwnProperty(p)) {
+                    this.cluesSearched[p] = 0;
+                }
+                res = this.hintsLocation[place];
+                isTreasure = typeof res === "object";
+                
+                if (!isTreasure) {
+                    this.cluesSearched[p]++;
+                    if (this.cluesSearched[p] > 1) {
+                        stamina[p] = -1 - 2 * this.level;
+                    }
+                }
+                
+                locationsSearched[place] = true;
+                
+                if (isTreasure) {
+                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found {2}!".format(addFlashTag(p.toCorrectCase()), cap(place), toColor(treasureName(res), "blue")), true);
+                    getTreasure(p, res);
+                } else {
+                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found a hint: \"{2}\"".format(p.toCorrectCase(), cap(place), toColor(res, "blue")));
+                    if (!this.hintsFound.contains(res)) {
+                        this.hintsFound.push(res);
+                    }
+                }
+            }
+        }
+        this.choices = {};
+        
+        for (p in locationsSearched) {
+            this.validObjects.splice(this.validObjects.indexOf(p), 1);
+        }
+        
+        this.turns--;
+        if (this.turns > 0) {
+            for (p in stamina) {
+                staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+            }
+            if (staminaStr.length > 0) {
+                this.sendAll("The search for the password is becoming tiresome! Stamina lost: {0}".format(staminaStr.join(", ")));
+            }
+            this.pyr.updateStatus(0, stamina);
+            this.sendAll("");
+            this.sendAll("Look for more clues or input the password to open the door! The password is a Pokémon " + this.answerType + "! You only have {0} turns left!".format(this.turns));
+            this.sendIndividuals();
+            this.sendAll("");
+            this.turnToAdvance += 2;
+        } else {
+            for (p in this.pyr.stamina) {
+                if (this.pyr.stamina[p] > 0) {
+                    if (!stamina.hasOwnProperty(p)) {
+                        stamina[p] = 0;
+                    }
+                    stamina[p] -= 7 + 5 * this.level;
+                    staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
+                }
+            }
+            var points = -10 - this.level * 8;
+            this.sendAll("As the door opened by itself, a voice so loud that it hurts your ears could be heard: <b>\"YOU ARE TERRIBLE AT RIDDLES!!\"</b> | Points: {0} | Stamina lost: {1}".format(points, staminaStr.join(", ")));
+            this.pyr.updateStatus(points, stamina);
+            this.sendAll("");
+            this.passed = true;
+        }
+    };
+    
     function TrainerRoom(pyramidRef, level, roomNum) {
         PyramidRoom.call(this, pyramidRef);
         this.trainerName = "Trainer " + generateName();
@@ -10139,269 +10532,6 @@ function Safari() {
         this.sendAll("");
         
         this.passed = true;
-    };
-    
-    function RiddleRoom(pyramidRef, level, roomNum) {
-        PyramidRoom.call(this, pyramidRef);
-        this.level = level;
-        this.defaultChoice = "none";
-        
-        this.answerId = sys.rand(1, 722);
-        this.answer = poke(this.answerId);
-        this.answerAttempts = 0;
-        this.cluesSearched = {};
-        this.turns = 9 - Math.floor(level/2);
-        
-        var hints = this.writeHints(level);
-        
-        var objects = ["crate", "barrel", "rock", "box", "wall", "corner", "floor", "ceiling", "puddle", "coffin", "chains", "pillar", "vase", "statue", "chest", "table", "sword", "torch", "chair"].shuffle();
-        this.hintsLocation = {};
-        for (var h = 0; h < hints.length; h++){
-            this.hintsLocation[objects.shift()] = hints[h];
-        }
-        var treasuresAmt = 0;
-        switch (hints.length) {
-            case 8:
-            case 9:
-            case 10:
-                treasuresAmt = 3;
-            break;
-            case 6:
-            case 11:
-            case 12:
-                treasuresAmt = 2;
-            break;
-            case 7:
-            case 13:
-                treasuresAmt = 1;
-            break;
-            default:
-                treasuresAmt = 0;
-        }
-        var rew = {
-            gem: { chance: 2 * level, item: "gem", amount: 1 },
-            nugget: { chance: 1 * level, item: "nugget", amount: 1 },
-            money: { chance: 12, item: "money", amount: 200 * level },
-            safari: { chance: 18, item: "safari", amount: 5 * level },
-            myth: { chance: 12, item: "myth", amount: 1 * level },
-            spy: { chance: 12, item: "spy", amount: 1 * level },
-            pearl: { chance: 10, item: "pearl", amount: 1 * level }
-        };
-        while (treasuresAmt > 0) {
-            this.hintsLocation[objects.shift()] = randomSampleObj(rew);
-            treasuresAmt--;
-        }
-        this.validObjects = Object.keys(this.hintsLocation).shuffle();
-        
-        this.hintsFound = [];
-        this.leaderChoice = null;
-        
-        this.sendAll("");
-        this.sendAll("Room {0}-{1}: The door requires a Pokémon name as a password to open! Search for clues in the room so the leader can input the password!!".format(level, roomNum));
-        this.sendIndividuals();
-        this.sendAll("");
-    }
-    RiddleRoom.prototype = new PyramidRoom();
-    RiddleRoom.prototype.writeHints = function(level) {
-        var hints = [], h;
-        hints.push("Starts with '{0}'".format(this.answer[0]));
-        if (level <= 4) {
-            hints.push("Ends with '{0}'".format(cap(this.answer[this.answer.length-1])));
-        }
-        hints.push("One of the types is '{0}'".format(sys.type(sys.pokeType1(this.answerId))));
-        h = sys.type(sys.pokeType2(this.answerId));
-        if (h !== "???" && level <= 6) {
-            hints.push("One of the types is '{0}'".format(h));
-        }
-        hints.push("Can have the ability '{0}'".format(sys.ability(sys.pokeAbility(this.answerId, 0))));
-        h = sys.pokeAbility(this.answerId, 1);
-        if (h) {
-            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
-        }
-        h = sys.pokeAbility(this.answerId, 2);
-        if (h) {
-            hints.push("Can have the ability '{0}'".format(sys.ability(h)));
-        }
-        var maxMoves = level <= 2 ? 6 : 8;
-        var moves = pokedex.getAllMoves(this.answerId).shuffle().slice(0, maxMoves).map(sys.move);
-        for (h = moves.length; h--; ) {
-            if (h >= 1) {
-                hints.push("Can have the moves '{0} and {1}'".format(moves[h], moves[h-1]));
-                h--;
-            } else {
-                hints.push("Can have the move '{0}'".format(moves[h]));
-            }
-        }
-        h = getBST(this.answerId);
-        hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
-        if (this.answerId in evolutions) {
-            hints.push("Can evolve");
-        } else {
-            hints.push("Can't evolve");
-        }
-        if (this.answerId in devolutions) {
-            hints.push("Is evolved");
-        } else {
-            hints.push("Is not evolved");
-        }
-        return hints.shuffle();
-    };
-    RiddleRoom.prototype.midturn = function() {
-        this.sendToAlive("Find the password to open the door! " + (this.hintsFound.length > 0 ? "Hints found: " + this.hintsFound.map(function(x){ return toColor(x, "blue");}).join(", ") : ""));
-        this.sendIndividuals();
-    };
-    RiddleRoom.prototype.sendIndividuals = function() {
-        var n, id;
-        var toCommand = function(x) {
-            return link("/pyr " + cap(x));
-        };
-        if (this.validObjects.length > 0) {
-            for (n = this.pyr.names.length; n-- ;) {
-                id = this.pyr.names[n];
-                if (this.pyr.stamina[id] > 0) {
-                    this.send(id, "Look for clues at: " + this.validObjects.map(toCommand).join(", ") + (id === this.pyr.leader ? " | Or input the password with " + link("/pyr Answer", null, true) : ""));
-                }
-            }
-        } else {
-            this.send(this.pyr.leader, "Input the password with " + link("/pyr [Answer]", null, true));
-        }
-    };
-    RiddleRoom.prototype.useCommand = function(src, commandData) {
-        var player = getAvatar(src),
-            info = getInputPokemon(commandData);
-        
-        if (player.id === this.pyr.leader && info.num !== null && !info.shiny) {
-            this.checkAnswer(info.name);
-            return;
-        }
-        if (this.validInput && !this.validInput(player.id, commandData)) {
-            return;
-        }
-        this.choices[player.id] = commandData;
-        if (this.postInput && this.postInput(src, commandData)) {
-            return;
-        }
-        this.sendAll(toColor("{0} is going to use {1}!".format(player.id.toCorrectCase(), commandData), "crimson"));
-    };
-    RiddleRoom.prototype.validInput = function(id, commandData) {
-        if (!this.validObjects.contains(commandData.toLowerCase())) {
-            this.send(id, "There's no {0} to look for clues at!".format(commandData));
-            return false;
-        }
-        for (var e in this.choices) {
-            if (this.choices[e].toLowerCase() === commandData.toLowerCase()) {
-                this.send(id, "{0} is already going to look for clues at the {1}! Look somewhere else!".format(e.toCorrectCase(), commandData));
-                return false;
-            }
-        }
-        return true;
-    };
-    RiddleRoom.prototype.postInput = function(src, commandData) {
-        this.sendAll(toColor("{0} is going to look for a clue at the {1}!".format(sys.name(src), cap(commandData.toLowerCase())), "crimson"));
-        return true;
-    };
-    RiddleRoom.prototype.checkAnswer = function(commandData) {
-        var id = sys.pokeNum(commandData), stamina = {}, name = this.pyr.leader.toCorrectCase();
-        this.sendAll("");
-        if (id == this.answerId) {
-            var extraPoints = 12 + 8 * this.level, hintsUsed = this.hintsFound.length;
-            if (hintsUsed > 10) {
-                extraPoints = Math.round(-extraPoints * 0.115 * (hintsUsed - 10));
-            } else if (hintsUsed > 3) {
-                extraPoints = Math.round(extraPoints - (extraPoints * (hintsUsed - 3) / 4));
-            }
-            
-            var basePointsRange = [36 + 24 * this.level, 18 + 12 * this.level, 6 + 6 * this.level, 1 + 2 * this.level];
-            var points = basePointsRange[Math.min(this.answerAttempts, basePointsRange.length-1)] + extraPoints;
-            
-            this.sendAll("<b>{0}</b> answered <b>{1}</b> and the door opened! Points gained: {2}".format(name, sys.pokemon(id), plural(points, "Point")));
-            this.pyr.updateStatus(points, {});
-            this.passed = true;
-            this.earlyFinish = true;
-            this.turnToAdvance = 0;
-        } else {
-            this.answerAttempts++;
-            var stmLost = 5 + 5 * this.level;
-            if (this.answerAttempts > 1) {
-                stamina[this.pyr.leader] = -stmLost;
-            }
-            
-            this.sendAll("<b>{0}</b> answered <b>{1}</b>, but nothing happened! {2}".format(name, sys.pokemon(id), (this.answerAttempts > 1 ? "Stamina lost: " + name + "-" + stmLost : "") ));
-            this.pyr.updateStatus(0, stamina);
-        }
-        this.sendAll("");
-    };
-    RiddleRoom.prototype.advance = function() {
-        var p, stamina = {}, place, res, staminaStr = [], isTreasure,
-            choices = this.getChoices(), locationsSearched = {};
-        
-        this.sendAll("");
-        
-        for (p in choices) {
-            place = choices[p].toLowerCase();
-            if (place !== "none") {
-                if (!this.cluesSearched.hasOwnProperty(p)) {
-                    this.cluesSearched[p] = 0;
-                }
-                res = this.hintsLocation[place];
-                isTreasure = typeof res === "object";
-                
-                if (!isTreasure) {
-                    this.cluesSearched[p]++;
-                    if (this.cluesSearched[p] > 1) {
-                        stamina[p] = -1 - 2 * this.level;
-                    }
-                }
-                
-                locationsSearched[place] = true;
-                
-                if (isTreasure) {
-                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found {2}!".format(addFlashTag(p.toCorrectCase()), cap(place), toColor(treasureName(res), "blue")), true);
-                    getTreasure(p, res);
-                } else {
-                    this.sendAll("<b>{0}</b> investigated the <b>{1}</b> and found a hint: \"{2}\"".format(p.toCorrectCase(), cap(place), toColor(res, "blue")));
-                    if (!this.hintsFound.contains(res)) {
-                        this.hintsFound.push(res);
-                    }
-                }
-            }
-        }
-        this.choices = {};
-        
-        for (p in locationsSearched) {
-            this.validObjects.splice(this.validObjects.indexOf(p), 1);
-        }
-        
-        this.turns--;
-        if (this.turns > 0) {
-            for (p in stamina) {
-                staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
-            }
-            if (staminaStr.length > 0) {
-                this.sendAll("The search for the password is becoming tiresome! Stamina lost: {0}".format(staminaStr.join(", ")));
-            }
-            this.pyr.updateStatus(0, stamina);
-            this.sendAll("");
-            this.sendAll("Look for more clues or input the password to open the door! You only have {0} turns left!".format(this.turns));
-            this.sendIndividuals();
-            this.sendAll("");
-            this.turnToAdvance += 2;
-        } else {
-            for (p in this.pyr.stamina) {
-                if (this.pyr.stamina[p] > 0) {
-                    if (!stamina.hasOwnProperty(p)) {
-                        stamina[p] = 0;
-                    }
-                    stamina[p] -= 7 + 5 * this.level;
-                    staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
-                }
-            }
-            var points = -10 - this.level * 8;
-            this.sendAll("As the door opened by itself, a voice so loud that it hurts your ears could be heard: <b>\"YOU ARE TERRIBLE AT RIDDLES!!\"</b> | Points: {0} | Stamina lost: {1}".format(points, staminaStr.join(", ")));
-            this.pyr.updateStatus(points, stamina);
-            this.sendAll("");
-            this.passed = true;
-        }
     };
     
     function HazardRoom(pyramidRef, level, roomNum) {
@@ -10896,9 +11026,7 @@ function Safari() {
             return;
         }
         var name = sys.name(src);
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        if (signupsLower.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You are one of the participants, you can't watch/unwatch this event!", safchan);
+        if (this.canWatch && !this.canWatch(src)) {
             return;
         }
 
@@ -10913,6 +11041,15 @@ function Safari() {
                 this.onWatch(src);
             }
         }
+    };
+    SafariEvent.prototype.canWatch = function(src) {
+        var name = sys.name(src);
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        if (signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You are one of the participants, you can't watch/unwatch this event!", safchan);
+            return false;
+        }
+        return true;
     };
     SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored, nobot) {
         var id = sys.id(name);
@@ -11300,6 +11437,436 @@ function Safari() {
         safaribot.sendMessage(src, "Winners will receive " + plural(this.amount, this.reward.name) + "!", safchan);
     };
 
+    function BFactory(src, reward1, reward2, reward3) {
+        SafariEvent.call(this, src);
+        this.eventName = "Battle Factory";
+        this.minPlayers = 4;
+
+        this.playerTeams = {};
+        this.survivors = [];
+        this.battles = [];
+        this.lastByes = [];
+        this.eliminationOrder = [];
+        this.round = -1;
+        
+        this.currentMatch = 0;
+        this.choices = {};
+        this.opponents = {};
+        this.resting = "";
+        
+        this.phase = "signup";
+        this.subturn = 0;
+        
+        this.thirdPrize = false;
+        this.thirdPlace = null;
+        this.isThirdPlaceMatch = false;
+        this.fightingForThird = [];
+
+        this.reward1 = reward1;
+        this.reward2 = reward2;
+        this.reward3 = reward3;
+        this.rewardName1 = translateStuff(reward1);
+        this.rewardName2 = translateStuff(reward2);
+        this.rewardName3 = translateStuff(reward3);
+        
+        this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
+        this.rewardNameB = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
+        this.hasReward = true;
+        
+        this.eventCommands = {
+            choose: this.choosePokemon
+        };
+        
+        var joinCommand = "/signup";
+        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardNameB + "!";
+
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+        sys.sendAll("", safchan);
+    }
+    BFactory.prototype = new SafariEvent();
+    BFactory.prototype.setupEvent = function() {
+        this.thirdPrize = this.signups.length > 6;
+        
+        for (var e = 0; e < this.signups.length; e++) {
+            this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 450, 600, 1, null, true);
+            this.survivors.push(this.signups[e].toLowerCase());
+        }
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
+        for (e in this.playerTeams) {
+            this.sendMessage(e, "Parties have been formed! " + addFlashTag(e.toCorrectCase()) + ",  your team for this event is: ", true);
+            this.sendMessage(e, this.playerTeams[e].map(pokeInfo.icon).join(" "));
+        }
+        this.sendToViewers("");
+    };
+    function toChooseLink(x) {
+        return link("/choose " + poke(x), poke(x));
+    }
+    BFactory.prototype.playTurn = function() {
+        if (this.phase === "signup") {
+            this.phase = "prepare";
+            this.sendToViewers("Battles will start soon, use this time to get used to your team!");
+            return;
+        }
+        if (this.phase === "input") {
+            this.subturn--;
+            if (this.subturn === 3) {
+                this.sendToViewers("Round " + (this.round + 1) + " Matches will start in 18 seconds!");
+            }
+            if (this.subturn > 0) {
+                return;
+            }
+            this.phase = "match";
+        }
+        
+        if (this.phase === "prepare") { //Create match-ups here
+            this.prepareBattles();
+        }
+        else if (this.phase === "match") { //Run battles here
+            this.nextMatch();
+        }
+        if (this.survivors.length === 1) { //Check if event is over here
+            this.finish();
+        }
+    };
+    BFactory.prototype.prepareBattles = function() {
+        var players = this.survivors.concat().shuffle(), freePass, e, bat, det;
+        this.resting = "";
+        //Check if some player automatically advances to the next round due to odd number of players
+        if (players.length % 2 === 1) {
+            var canPass = [];
+            for (e = 0; e < players.length; e++) {
+                if (!this.lastByes.contains(players[e])) {
+                    canPass.push(players[e]);
+                }
+            }
+            if (canPass.length > 0) {
+                freePass = canPass.random();
+            } else {
+                this.lastByes = [];
+                freePass = players.random();
+            }
+            this.resting = freePass;
+            players.splice(players.indexOf(freePass), 1);
+            this.lastByes.push(freePass);
+        }
+        this.battles = [];
+        var isFinal = this.survivors.length === 2;
+        
+        var prepareForThird = isFinal;
+        if (this.round >= 0 && this.eliminationOrder[this.round].length === 1) {
+            prepareForThird = false;
+            this.thirdPlace = this.eliminationOrder[this.round][0];
+        }
+        if (prepareForThird) {
+            var eliminated = this.eliminationOrder[this.round];
+            this.battles.push([eliminated[0], eliminated[1]]);
+            this.fightingForThird = [eliminated[0], eliminated[1]];
+            this.isThirdPlaceMatch = true;
+        }
+        
+        for (e = 0; e < players.length; e += 2) {
+            this.battles.push([players[e], players[e+1]]);
+        }
+        
+        this.round++;
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        
+        var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (isFinal ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
+        for (e = 0; e < this.battles.length; e++) {
+            bat = this.battles[e];
+            det = "";
+            if (prepareForThird && e === 0) {
+                det = "Third Place Match: ";
+            } else if (isFinal) {
+                det = toColor("Final: ", "red");
+            }
+            
+            roundTable += "<tr>" + (det ? "<td align=right><b>" + det + "</b></td>" : "") + "<td align=right>" + addFlashTag(bat[0].toCorrectCase()) + "</td> <td align=center>" + toColor("vs", "gray") + "</td> <td align=left>" + addFlashTag(bat[1].toCorrectCase()) + "</td></tr>";
+        }
+        if (freePass) {
+            roundTable += "<tr><td align=center colspan=" + (isFinal ? 4 : 3) + ">" + addFlashTag(freePass.toCorrectCase()) + " advances to the next round!</td></tr>";
+        }
+        roundTable += "</table>";
+        this.sendToViewers(roundTable, true, false, true);
+        
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        
+        this.choices = {};
+        this.opponents = {};
+        for (e = 0; e < this.battles.length; e++) {
+            bat = this.battles[e];
+            
+            this.sendMessage(bat[0], "Your opponent (" + bat[1].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[1]].map(pokeInfo.icon).join(" "));
+            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
+            
+            this.sendMessage(bat[1], "Your opponent (" + bat[0].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[0]].map(pokeInfo.icon).join(" "));
+            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
+            
+            this.choices[bat[0]] = [];
+            this.choices[bat[1]] = [];
+            this.opponents[bat[0]] = bat[1];
+            this.opponents[bat[1]] = bat[0];
+        }
+        this.sendToViewers("");
+        
+        this.currentMatch = 0;
+        this.eliminationOrder.push([]);
+        this.phase = "input";
+        this.subturn = 6;
+    };
+    BFactory.prototype.nextMatch = function() {
+        var bat = this.battles[this.currentMatch], res, p1 = bat[0], p2 = bat[1], p1Poke, p2Poke, r, points1 = 0, points2 = 0;
+            
+        var team1 = this.choices[p1];
+        var team2 = this.choices[p2];
+        
+        var roundName = "Round " + (this.round + 1) + ", Match " + (this.currentMatch + 1) + ": ";
+        if (this.isThirdPlaceMatch) {
+            roundName = "Third Place Match: ";
+        } else if (this.survivors.length === 2) {
+            roundName = toColor("Final: ", "red");
+        }
+        
+        this.sendToViewers("");
+        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers("<b>" + roundName + "</b>" + addFlashTag(p1.toCorrectCase()) + " x " + addFlashTag(p2.toCorrectCase()), true);
+        while (team1.length < 3) {
+            r = this.playerTeams[p1].random();
+            if (!team1.contains(r)) {
+                team1.push(r);
+            }
+        }
+        while (team2.length < 3) {
+            r = this.playerTeams[p2].random();
+            if (!team2.contains(r)) {
+                team2.push(r);
+            }
+        }
+        for (var e = 0; e < 3; e++) {
+            p1Poke = team1[e];
+            p2Poke = team2[e];
+            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
+            if (res === 1) {
+                points1++;
+            } else if (res === 2) {
+                points2++;
+            }
+        }
+        team1 = team1.shuffle();
+        team2 = team2.shuffle();
+        if (points1 === points2) {
+            this.sendToViewers("");
+            this.sendToViewers("Match winner still not defined! Going into tiebreak rounds!");
+        }
+        for (e = 0; e < 3 && points1 === points2; e++) {
+            p1Poke = team1[e];
+            p2Poke = team2[e];
+            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
+            if (res === 1) {
+                points1++;
+            } else if (res === 2) {
+                points2++;
+            }
+        }
+        if (points1 === points2) {
+            this.sendToViewers("Players are stalling! Match will be decided with a coin flip!", true);
+            if (Math.random() < 0.5) {
+                points1++;
+            } else {
+                points2++;
+            }
+        }
+        
+        var score = " with a score of <b>" + (points1 > points2 ? points1 + " x " + points2 : points2 + " x " + points1) + "</b>";
+        var eliminated = this.eliminationOrder[this.round];
+        if (this.isThirdPlaceMatch) {
+            this.isThirdPlaceMatch = false;
+            if (points1 > points2) {
+                this.thirdPlace = p1;
+                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + " and got Third Place!", true);
+            } else if (points2 > points1) {
+                this.thirdPlace = p2;
+                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + " and got Third Place!", true);
+            }
+        }
+        else {
+            if (points1 > points2) {
+                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + "!", true);
+                this.survivors.splice(this.survivors.indexOf(p2), 1);
+                this.viewers.push(p2);
+                eliminated.push(p2);
+            } else {
+                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + "!", true);
+                this.survivors.splice(this.survivors.indexOf(p1), 1);
+                this.viewers.push(p1);
+                eliminated.push(p1);
+            }
+        }
+        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers("");
+        
+        this.currentMatch++;
+        if (this.currentMatch >= this.battles.length) {
+            this.phase = "prepare";
+        }
+    };
+    BFactory.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
+        var res = calcDamage(p1Poke, p2Poke);
+        var name1 = owner1 + "'s " + poke(p1Poke);
+        var name2 = owner2 + "'s " + poke(p2Poke);
+
+        name1 = res.power[0] > res.power[1] ? "<b>" + name1 + "</b>" : name1;
+        name2 = res.power[1] > res.power[0] ? "<b>" + name2 + "</b>" : name2;
+        
+        var result = name1 + " " + pokeInfo.icon(p1Poke) + " (" + res.power[0] + ") x (" + res.power[1] + ") "+ pokeInfo.icon(p2Poke) + " " + name2;
+        if (res.power[0] == res.power[1]) {
+            result += " <b>Draw</b>";
+        }
+        this.sendToViewers(result);
+
+        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonusString[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonusString[1] + "x)";
+        this.sendToViewers(toColor(status, "gray"));
+
+        if (res.power[0] > res.power[1]) {
+            return 1;
+        }
+        else if (res.power[1] > res.power[0]) {
+            return 2;
+        }
+        else {
+            return 0;
+        }
+    };
+    BFactory.prototype.choosePokemon = function(src, commandData) {
+        var name = sys.name(src).toLowerCase();
+        if (this.phase === "signup") {
+            this.sendMessage(name, "The event didn't even start yet!");
+            return;
+        }
+        if (name === this.resting) {
+            this.sendMessage(name, "You are not in any battle during this round!");
+            return;
+        }
+        var team = this.playerTeams[name];
+        var info = getInputPokemon(commandData);
+        var id = info.id;
+        if (!team.contains(id)) {
+            this.sendMessage(name, "You don't have " + an(info.name) + " available for this event! You can use " + team.map(toChooseLink) + "!");
+            return;
+        }
+        var choices = this.choices[name];
+        if (!choices) {
+            this.sendMessage(name, "Please wait for an opponent to choose your Pokémon!");
+            return;
+        }
+        if (choices.contains(id)) {
+            choices.splice(choices.indexOf(id), 1);
+        }
+        choices.push(id);
+        if (choices.length > 3) {
+            choices.shift();
+        }
+        this.sendMessage(name, "You picked " + toColor(readable(choices.map(poke)), "blue") + " for your match against " + this.opponents[name].toCorrectCase() + "!");
+    };
+    BFactory.prototype.finish = function() {
+        var winner = this.survivors[0];
+        var runnerup = this.eliminationOrder[this.round][0];
+        var thirdplace = this.thirdPlace;
+        
+        var winnerName = winner.toCorrectCase();
+        var runnerupName = runnerup.toCorrectCase();
+        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
+        
+        safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
+        var player = getAvatarOff(winner), out, stuff;
+        if (player) {
+            stuff = toStuffObj(this.reward1.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.factoryFirst += 1;
+            safari.saveGame(player);
+            this.sendMessage(winner, "You " + out + "!");
+        }
+        
+        safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
+        player = getAvatarOff(runnerup);
+        if (player) {
+            stuff = toStuffObj(this.reward2.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.factorySecond += 1;
+            safari.saveGame(player);
+            this.sendMessage(runnerup, "You " + out + "!");
+        }
+        
+        if (thirdplace && this.thirdPrize && this.reward3) {
+            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
+            player = getAvatarOff(thirdplace);
+            if (player) {
+                stuff = toStuffObj(this.reward3.replace(/\|/g, ":")),
+                out = giveStuff(player, stuff);
+                
+                player.records.factoryThird += 1;
+                safari.saveGame(player);
+                this.sendMessage(thirdplace, "You " + out + "!");
+            }
+        } else {
+            this.sendToViewers("No third place prize will be given due to the low number of participants!");
+        }
+        
+        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
+        this.finished = true;
+    };
+    BFactory.prototype.canJoin = function(src) {
+        var player = getAvatar(src);
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You can't join this event while tradebanned!", safchan);
+            return false;
+        }
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only join this event after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
+        return true;
+    };
+    BFactory.prototype.canWatch = function(src) {
+        var name = sys.name(src);
+        var signupsLower = this.survivors.map(function(x) { return x.toLowerCase(); });
+        if (signupsLower.contains(name.toLowerCase())) {
+            safaribot.sendMessage(src, "You are one of the participants, you can't watch/unwatch this event!", safchan);
+            return false;
+        }
+        return true;
+    };
+    BFactory.prototype.onWatch = function(src) {
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! Current matches:", safchan);
+        if (this.battles.length > 0) {
+            for (var e in this.battles) {
+                safaribot.sendMessage(src, this.battles[e][0].toCorrectCase() + " x " + this.battles[e][1].toCorrectCase(), safchan);
+            }
+        } else {
+            safaribot.sendMessage(src, "Matches will be drawn in a few seconds.", safchan);
+        }
+    };
+    BFactory.prototype.sendToViewers = function(msg, flashing, colored, nobot) {
+        var e, players = this.phase === "signup" ? this.signups : this.survivors;
+        var list = removeDuplicates(players.concat(this.viewers));
+        for (e = 0 ; e < list.length; e++) {
+            this.sendMessage(list[e], msg, flashing, colored, nobot);
+        }
+    };
+    BFactory.prototype.isInEvent = function(name) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        var n = name.toLowerCase();
+        return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
+    };
+    
     function PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, silver, item) {
         SafariEvent.call(this, src);
         this.eventName = "Pokémon Race";
@@ -11639,418 +12206,6 @@ function Safari() {
         return " by betting " + (this.item ? plural(bet, this.item) : "$" + addComma(bet)) + " on " + racer + " (Payout: " + payout + ")";
     };
 
-    function BFactory(src, reward1, reward2, reward3) {
-        SafariEvent.call(this, src);
-        this.eventName = "Battle Factory";
-        this.minPlayers = 4;
-
-        this.playerTeams = {};
-        this.survivors = [];
-        this.battles = [];
-        this.lastByes = [];
-        this.eliminationOrder = [];
-        this.round = -1;
-        
-        this.currentMatch = 0;
-        this.choices = {};
-        this.opponents = {};
-        this.resting = "";
-        
-        this.phase = "signup";
-        this.subturn = 0;
-        
-        this.thirdPrize = false;
-        this.thirdPlace = null;
-        this.isThirdPlaceMatch = false;
-        this.fightingForThird = [];
-
-        this.reward1 = reward1;
-        this.reward2 = reward2;
-        this.reward3 = reward3;
-        this.rewardName1 = translateStuff(reward1);
-        this.rewardName2 = translateStuff(reward2);
-        this.rewardName3 = translateStuff(reward3);
-        
-        this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
-        this.rewardNameB = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
-        this.hasReward = true;
-        
-        this.eventCommands = {
-            choose: this.choosePokemon
-        };
-        
-        var joinCommand = "/signup";
-        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardNameB + "!";
-
-        sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
-        sys.sendAll("", safchan);
-    }
-    BFactory.prototype = new SafariEvent();
-    BFactory.prototype.setupEvent = function() {
-        this.thirdPrize = this.signups.length > 6;
-        
-        for (var e = 0; e < this.signups.length; e++) {
-            this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 450, 600, 1, null, true);
-            this.survivors.push(this.signups[e].toLowerCase());
-        }
-        
-        this.sendToViewers("");
-        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
-        for (e in this.playerTeams) {
-            this.sendMessage(e, "Parties have been formed! " + addFlashTag(e.toCorrectCase()) + ",  your team for this event is: ", true);
-            this.sendMessage(e, this.playerTeams[e].map(pokeInfo.icon).join(" "));
-        }
-        this.sendToViewers("");
-    };
-    function toChooseLink(x) {
-        return link("/choose " + poke(x), poke(x));
-    }
-    BFactory.prototype.playTurn = function() {
-        if (this.phase === "signup") {
-            this.phase = "prepare";
-            this.sendToViewers("Battles will start soon, use this time to get used to your team!");
-            return;
-        }
-        if (this.phase === "input") {
-            this.subturn--;
-            if (this.subturn === 3) {
-                this.sendToViewers("Round " + (this.round + 1) + " Matches will start in 18 seconds!");
-            }
-            if (this.subturn > 0) {
-                return;
-            }
-            this.phase = "match";
-        }
-        
-        if (this.phase === "prepare") { //Create match-ups here
-            this.prepareBattles();
-        }
-        else if (this.phase === "match") { //Run battles here
-            this.nextMatch();
-        }
-        if (this.survivors.length === 1) { //Check if event is over here
-            this.finish();
-        }
-    };
-    BFactory.prototype.prepareBattles = function() {
-        var players = this.survivors.concat().shuffle(), freePass, e, bat, det;
-        this.resting = "";
-        //Check if some player automatically advances to the next round due to odd number of players
-        if (players.length % 2 === 1) {
-            var canPass = [];
-            for (e = 0; e < players.length; e++) {
-                if (!this.lastByes.contains(players[e])) {
-                    canPass.push(players[e]);
-                }
-            }
-            if (canPass.length > 0) {
-                freePass = canPass.random();
-            } else {
-                this.lastByes = [];
-                freePass = players.random();
-            }
-            this.resting = freePass;
-            players.splice(players.indexOf(freePass), 1);
-            this.lastByes.push(freePass);
-        }
-        this.battles = [];
-        var isFinal = this.survivors.length === 2;
-        
-        var prepareForThird = isFinal;
-        if (this.round >= 0 && this.eliminationOrder[this.round].length === 1) {
-            prepareForThird = false;
-            this.thirdPlace = this.eliminationOrder[this.round][0];
-        }
-        if (prepareForThird) {
-            var eliminated = this.eliminationOrder[this.round];
-            this.battles.push([eliminated[0], eliminated[1]]);
-            this.fightingForThird = [eliminated[0], eliminated[1]];
-            this.isThirdPlaceMatch = true;
-        }
-        
-        for (e = 0; e < players.length; e += 2) {
-            this.battles.push([players[e], players[e+1]]);
-        }
-        
-        this.round++;
-        this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
-        
-        var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (isFinal ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
-        for (e = 0; e < this.battles.length; e++) {
-            bat = this.battles[e];
-            det = "";
-            if (prepareForThird && e === 0) {
-                det = "Third Place Match: ";
-            } else if (isFinal) {
-                det = toColor("Final: ", "red");
-            }
-            
-            roundTable += "<tr>" + (det ? "<td align=right><b>" + det + "</b></td>" : "") + "<td align=right>" + addFlashTag(bat[0].toCorrectCase()) + "</td> <td align=center>" + toColor("vs", "gray") + "</td> <td align=left>" + addFlashTag(bat[1].toCorrectCase()) + "</td></tr>";
-        }
-        if (freePass) {
-            roundTable += "<tr><td align=center colspan=" + (isFinal ? 4 : 3) + ">" + addFlashTag(freePass.toCorrectCase()) + " advances to the next round!</td></tr>";
-        }
-        roundTable += "</table>";
-        this.sendToViewers(roundTable, true, false, true);
-        
-        this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
-        
-        this.choices = {};
-        this.opponents = {};
-        for (e = 0; e < this.battles.length; e++) {
-            bat = this.battles[e];
-            
-            this.sendMessage(bat[0], "Your opponent (" + bat[1].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[1]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[0], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[0]].map(toChooseLink).join(", "));
-            
-            this.sendMessage(bat[1], "Your opponent (" + bat[0].toCorrectCase() + ")'s Team: " + this.playerTeams[bat[0]].map(pokeInfo.icon).join(" "));
-            this.sendMessage(bat[1], "Use /choose to pick 3 of your Pokémon for this battle (you have 36 seconds): " + this.playerTeams[bat[1]].map(toChooseLink).join(", "));
-            
-            this.choices[bat[0]] = [];
-            this.choices[bat[1]] = [];
-            this.opponents[bat[0]] = bat[1];
-            this.opponents[bat[1]] = bat[0];
-        }
-        this.sendToViewers("");
-        
-        this.currentMatch = 0;
-        this.eliminationOrder.push([]);
-        this.phase = "input";
-        this.subturn = 6;
-    };
-    BFactory.prototype.nextMatch = function() {
-        var bat = this.battles[this.currentMatch], res, p1 = bat[0], p2 = bat[1], p1Poke, p2Poke, r, points1 = 0, points2 = 0;
-            
-        var team1 = this.choices[p1];
-        var team2 = this.choices[p2];
-        
-        var roundName = "Round " + (this.round + 1) + ", Match " + (this.currentMatch + 1) + ": ";
-        if (this.isThirdPlaceMatch) {
-            roundName = "Third Place Match: ";
-        } else if (this.survivors.length === 2) {
-            roundName = toColor("Final: ", "red");
-        }
-        
-        this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
-        this.sendToViewers("<b>" + roundName + "</b>" + addFlashTag(p1.toCorrectCase()) + " x " + addFlashTag(p2.toCorrectCase()), true);
-        while (team1.length < 3) {
-            r = this.playerTeams[p1].random();
-            if (!team1.contains(r)) {
-                team1.push(r);
-            }
-        }
-        while (team2.length < 3) {
-            r = this.playerTeams[p2].random();
-            if (!team2.contains(r)) {
-                team2.push(r);
-            }
-        }
-        for (var e = 0; e < 3; e++) {
-            p1Poke = team1[e];
-            p2Poke = team2[e];
-            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
-            if (res === 1) {
-                points1++;
-            } else if (res === 2) {
-                points2++;
-            }
-        }
-        team1 = team1.shuffle();
-        team2 = team2.shuffle();
-        if (points1 === points2) {
-            this.sendToViewers("");
-            this.sendToViewers("Match winner still not defined! Going into tiebreak rounds!");
-        }
-        for (e = 0; e < 3 && points1 === points2; e++) {
-            p1Poke = team1[e];
-            p2Poke = team2[e];
-            res = this.runBattle(p1Poke, p2Poke, p1.toCorrectCase(), p2.toCorrectCase());
-            if (res === 1) {
-                points1++;
-            } else if (res === 2) {
-                points2++;
-            }
-        }
-        if (points1 === points2) {
-            this.sendToViewers("Players are stalling! Match will be decided with a coin flip!", true);
-            if (Math.random() < 0.5) {
-                points1++;
-            } else {
-                points2++;
-            }
-        }
-        
-        var score = " with a score of <b>" + (points1 > points2 ? points1 + " x " + points2 : points2 + " x " + points1) + "</b>";
-        var eliminated = this.eliminationOrder[this.round];
-        if (this.isThirdPlaceMatch) {
-            this.isThirdPlaceMatch = false;
-            if (points1 > points2) {
-                this.thirdPlace = p1;
-                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + " and got Third Place!", true);
-            } else if (points2 > points1) {
-                this.thirdPlace = p2;
-                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + " and got Third Place!", true);
-            }
-        }
-        else {
-            if (points1 > points2) {
-                this.sendToViewers(addFlashTag(p1.toCorrectCase()) + " defeated " + addFlashTag(p2.toCorrectCase()) + score + "!", true);
-                this.survivors.splice(this.survivors.indexOf(p2), 1);
-                eliminated.push(p2);
-            } else {
-                this.sendToViewers(addFlashTag(p2.toCorrectCase()) + " defeated " + addFlashTag(p1.toCorrectCase()) + score + "!", true);
-                this.survivors.splice(this.survivors.indexOf(p1), 1);
-                eliminated.push(p1);
-            }
-        }
-        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
-        this.sendToViewers("");
-        
-        this.currentMatch++;
-        if (this.currentMatch >= this.battles.length) {
-            this.phase = "prepare";
-        }
-    };
-    BFactory.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
-        var res = calcDamage(p1Poke, p2Poke);
-        var name1 = owner1 + "'s " + poke(p1Poke);
-        var name2 = owner2 + "'s " + poke(p2Poke);
-
-        name1 = res.power[0] > res.power[1] ? "<b>" + name1 + "</b>" : name1;
-        name2 = res.power[1] > res.power[0] ? "<b>" + name2 + "</b>" : name2;
-        
-        var result = name1 + " " + pokeInfo.icon(p1Poke) + " (" + res.power[0] + ") x (" + res.power[1] + ") "+ pokeInfo.icon(p2Poke) + " " + name2;
-        if (res.power[0] == res.power[1]) {
-            result += " <b>Draw</b>";
-        }
-        this.sendToViewers(result);
-
-        var status = "Details (" + res.statName + "/Power/Type) | " + poke(p1Poke) + " (" + res.stat[0] + " / " + res.move[0] + " / " + res.bonusString[0] + "x) x " + poke(p2Poke) + " (" + res.stat[1] + " / " + res.move[1] + " / " + res.bonusString[1] + "x)";
-        this.sendToViewers(toColor(status, "gray"));
-
-        if (res.power[0] > res.power[1]) {
-            return 1;
-        }
-        else if (res.power[1] > res.power[0]) {
-            return 2;
-        }
-        else {
-            return 0;
-        }
-    };
-    BFactory.prototype.choosePokemon = function(src, commandData) {
-        var name = sys.name(src).toLowerCase();
-        if (this.phase === "signup") {
-            this.sendMessage(name, "The event didn't even start yet!");
-            return;
-        }
-        if (name === this.resting) {
-            this.sendMessage(name, "You are not in any battle during this round!");
-            return;
-        }
-        var team = this.playerTeams[name];
-        var info = getInputPokemon(commandData);
-        var id = info.id;
-        if (!team.contains(id)) {
-            this.sendMessage(name, "You don't have " + an(info.name) + " available for this event! You can use " + team.map(toChooseLink) + "!");
-            return;
-        }
-        var choices = this.choices[name];
-        if (!choices) {
-            this.sendMessage(name, "Please wait for an opponent to choose your Pokémon!");
-            return;
-        }
-        if (choices.contains(id)) {
-            choices.splice(choices.indexOf(id), 1);
-        }
-        choices.push(id);
-        if (choices.length > 3) {
-            choices.shift();
-        }
-        this.sendMessage(name, "You picked " + toColor(readable(choices.map(poke)), "blue") + " for your match against " + this.opponents[name].toCorrectCase() + "!");
-    };
-    BFactory.prototype.finish = function() {
-        var winner = this.survivors[0];
-        var runnerup = this.eliminationOrder[this.round][0];
-        var thirdplace = this.thirdPlace;
-        
-        var winnerName = winner.toCorrectCase();
-        var runnerupName = runnerup.toCorrectCase();
-        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
-        
-        safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
-        var player = getAvatarOff(winner), out, stuff;
-        if (player) {
-            stuff = toStuffObj(this.reward1.replace(/\|/g, ":")),
-            out = giveStuff(player, stuff);
-            
-            player.records.factoryFirst += 1;
-            safari.saveGame(player);
-            this.sendMessage(winner, "You " + out + "!");
-        }
-        
-        safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
-        player = getAvatarOff(runnerup);
-        if (player) {
-            stuff = toStuffObj(this.reward2.replace(/\|/g, ":")),
-            out = giveStuff(player, stuff);
-            
-            player.records.factorySecond += 1;
-            safari.saveGame(player);
-            this.sendMessage(runnerup, "You " + out + "!");
-        }
-        
-        if (thirdplace && this.thirdPrize && this.reward3) {
-            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
-            player = getAvatarOff(thirdplace);
-            if (player) {
-                stuff = toStuffObj(this.reward3.replace(/\|/g, ":")),
-                out = giveStuff(player, stuff);
-                
-                player.records.factoryThird += 1;
-                safari.saveGame(player);
-                this.sendMessage(thirdplace, "You " + out + "!");
-            }
-        } else {
-            this.sendToViewers("No third place prize will be given due to the low number of participants!");
-        }
-        
-        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
-        this.finished = true;
-    };
-    BFactory.prototype.canJoin = function(src) {
-        var player = getAvatar(src);
-        if (player.tradeban > now()) {
-            safaribot.sendMessage(src, "You can't join this event while tradebanned!", safchan);
-            return false;
-        }
-        if (player.records.pokesCaught < 4) {
-            safaribot.sendMessage(src, "You can only join this event after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
-            return;
-        }
-        return true;
-    };
-    BFactory.prototype.onWatch = function(src) {
-        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! Current matches:", safchan);
-        if (this.battles.length > 0) {
-            for (var e in this.battles) {
-                safaribot.sendMessage(src, this.battles[e][0].toCorrectCase() + " x " + this.battles[e][1].toCorrectCase(), safchan);
-            }
-        } else {
-            safaribot.sendMessage(src, "Matches will be drawn in a few seconds.", safchan);
-        }
-    };
-    BFactory.prototype.isInEvent = function(name) {
-        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        var n = name.toLowerCase();
-        return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
-    };
-    
     /* System Functions */
     this.startGame = function(src, data) {
         if (getAvatar(src) || SESSION.users(src).smute.active) {
@@ -12530,18 +12685,17 @@ function Safari() {
     this.saveShop = function() {
         permObj.add("npcShop", JSON.stringify(npcShop));
     };
-    this.showLog = function(src, commandData, file, name, parser) {
+    this.showLog = function(src, command, commandData, file, name, parser) {
         var log = sys.getFileContent(file);
 
         if (log) {
-
             log = log.split("\n");
-            this.showLogList(src, commandData, log, name, parser);
+            this.showLogList(src, command, commandData, log, name, parser);
         } else {
             safaribot.sendMessage(src, cap(name) + " Log not found!", safchan);
         }
     };
-    this.showLogList = function(src, commandData, log, name, parser) {
+    this.showLogList = function(src, command, commandData, log, name, parser) {
         var info = commandData.split(":"),
             range = getRange(info[0]),
             term = info.length > 1 ? info[1] : "",
@@ -12550,7 +12704,7 @@ function Safari() {
             log.splice(log.indexOf(""), 1);
         }
         if (!range) {
-            range = { lower: 0, upper: 10 };
+            range = { lower: 1, upper: 10 };
         }
         log = getArrayRange(log.reverse(), range.lower, range.upper).reverse();
 
@@ -12578,10 +12732,14 @@ function Safari() {
                 }
                 safaribot.sendMessage(src, parser(log[e]), safchan);
             }
-            sys.sendMessage(src, "", safchan);
             if (spliced) {
                 safaribot.sendMessage(src, "Only showing first 100 entries found. Narrow down your search for more results.", safchan);
             }
+        }
+        var more = range.upper - range.lower + (range.lower <= 1 ? 1 : 0);
+        safaribot.sendHtmlMessage(src, link("/" + command + " " + range.upper + "-" + (range.upper + more) + (term ? ":" + term : "")), safchan);
+        if (log.length > 0) {
+            sys.sendMessage(src, "", safchan);
         }
     };
     this.applyTradeban = function(self, name, player, duration) {
@@ -12871,6 +13029,7 @@ function Safari() {
             philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\".",
+            // water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
             cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy quest."
         };
         var perkHelp = {
@@ -14288,7 +14447,7 @@ function Safari() {
                 return true;
             }
             if (command === "tradelog") {
-                safari.showLog(src, commandData, tradeLog, "trade", function(x) {
+                safari.showLog(src, command, commandData, tradeLog, "trade", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var p1 = info[1].split("::")[0];
@@ -14301,7 +14460,7 @@ function Safari() {
                 return true;
             }
             if (command === "shoplog") {
-                safari.showLog(src, commandData, shopLog, "shop", function(x) {
+                safari.showLog(src, command, commandData, shopLog, "shop", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var p1Info = info[1].split("::");
@@ -14317,7 +14476,7 @@ function Safari() {
                 return true;
             }
             if (command === "auctionlog") {
-                safari.showLog(src, commandData, auctionLog, "auction", function(x) {
+                safari.showLog(src, command, commandData, auctionLog, "auction", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var p1Info = info[1].split("::");
@@ -14332,7 +14491,7 @@ function Safari() {
                 return true;
             }
             if (command === "altlog") {
-                safari.showLog(src, commandData, altLog, "alt Change", function(x) {
+                safari.showLog(src, command, commandData, altLog, "alt Change", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
 
@@ -14344,7 +14503,7 @@ function Safari() {
                 return true;
             }
             if (command === "lostlog") {
-                safari.showLog(src, commandData, lostLog, "lost Pokémon", function(x) {
+                safari.showLog(src, command, commandData, lostLog, "lost Pokémon", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
 
@@ -14358,7 +14517,7 @@ function Safari() {
                 return true;
             }
             if (command === "mythlog") {
-                safari.showLog(src, commandData, mythLog, "Legendary/Shiny Pokémon spawn", function(x) {
+                safari.showLog(src, command, commandData, mythLog, "Legendary/Shiny Pokémon spawn", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
 
@@ -14378,7 +14537,7 @@ function Safari() {
                 return true;
             }
             if (command === "eventlog") {
-                safari.showLog(src, commandData, eventLog, "event", function(x) {
+                safari.showLog(src, command, commandData, eventLog, "event", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var name = info[1];
@@ -15049,7 +15208,7 @@ function Safari() {
                 return true;
             }
             if (command === "giftlog") {
-                safari.showLog(src, commandData, giftLog, "gift", function(x) {
+                safari.showLog(src, command, commandData, giftLog, "gift", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var name = info[1];
@@ -15393,7 +15552,7 @@ function Safari() {
                     var inB = parseInt(b.substr(0, b.indexOf(":")), 10);
                     return inB - inA;
                 });
-                safari.showLogList(src, commandData, list, "ID Numbers", function(x) {
+                safari.showLogList(src, command, commandData, list, "ID Numbers", function(x) {
                     return x;
                 });
                 return true;
