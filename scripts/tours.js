@@ -3730,7 +3730,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll(redhtmlborder, channels[x]);
             }
             if (channels[x] == tourschan || parameters.event) {
-                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
+                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><font color='Blue'>"+tier+"</font></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
                 if (channels[x] == tourschan) {
@@ -3745,7 +3745,7 @@ function tourstart(tier, starter, key, parameters) {
                 }
             }
             else {
-                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
+                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><<font color='Blue'>"+tier+"</font></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
                 sendChanHtmlAll("<timestamp/> Go to the <a href='po:join/Tournaments'>#Tournaments</a>  channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
             }
             if (!parameters.event) {
