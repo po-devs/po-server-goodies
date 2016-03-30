@@ -1086,17 +1086,19 @@ function Safari() {
             safaribot.sendMessage(src, "You received $" + cash + ", " + readable(rew, "and") + "!", safchan);
         }
     }
-    function resetVars() {
+    function resetVars(saveContest) {
         preparationPhase = 0;
         preparationThrows = {};
         preparationFirst = null;
         baitCooldown = sys.rand(4,7);
         currentPokemon = null;
         currentDisplay = null;
-        currentTheme = null;
         wildEvent = false;
         currentPokemonCount = 1;
         isBaited = false;
+        if (!saveContest) {
+            currentTheme = null;
+        }
     }
     
     /* Message Functions */
@@ -15161,7 +15163,7 @@ function Safari() {
                     if (isRare(currentPokemon)) {
                         sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + "::\n");
                     }
-                    resetVars();
+                    resetVars(true);
                 }
                 return true;
             }
