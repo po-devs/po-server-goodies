@@ -197,7 +197,8 @@ function Safari() {
         tradeban: 0,
         truesalt: 0,
         trackers: [],
-        auctionWarn: false,
+        auctionWarns: 0,
+        auctionWarnCooldown: 0,
         cooldowns: {
             ball: 0,
             bait: 0,
@@ -255,56 +256,56 @@ function Safari() {
     var itemData = {
         //Balls
         safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], tradable: false},
-        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 60, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
-        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 120, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
-        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 0, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
+        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 75, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
+        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
+        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
-        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 0, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 0, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 0, ballBonus: 1.1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 0, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 0, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
-        spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 0, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
-        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 0, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
+        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
+        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
+        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
+        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
+        spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
+        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
 
         //Other Items
         //Seasonal change. Rock icon is 206, Snowball is 334
         rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
         bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 189, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
-        spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 0, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
-        mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 0, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
+        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
+        spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 5000, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
+        mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 10000, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
         stick: {name: "stick", fullName: "Stick", type: "items", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
-        itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 0, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
-        permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 0, aliases:["permfinder"], tradable: false},
-        dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 0, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
-        salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 0, aliases: ["salt", "nacl"], tradable: false},
+        itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 50, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
+        permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 50, aliases:["permfinder"], tradable: false},
+        dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
+        salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false},
         
-        silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 0, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
-        entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 0, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
+        silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
+        entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
 
         //Consumables (for useItem)
-        rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 0, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
-        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 0, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
-        pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 0, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
-        egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 0, aliases:["egg"], tradable: true},
-        bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 0, aliases:["bright", "bright egg", "brightegg"], tradable: true},
+        rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
+        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 1000, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
+        pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 5000, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
+        egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 5000, aliases:["egg"], tradable: true},
+        bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 50000, aliases:["bright", "bright egg", "brightegg"], tradable: true},
         water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
-        cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 0, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
+        cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 5000, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
         
         //Alchemy related items
-        materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 0, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
-        fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 0, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
-        philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 0, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: false},
+        materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
+        fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
+        philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: false},
 
         //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], tradable: true},
-        soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], tradable: true},
-        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 0, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], tradable: true, tradeReq: 10},
-        scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 0, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
-        battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 0, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
-        eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 0, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
+        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
+        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 1000, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], tradable: true},
+        soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], tradable: true},
+        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 5000, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], tradable: true, tradeReq: 10},
+        scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
+        battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
+        eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
         box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
 
         //Valuables
@@ -2641,7 +2642,7 @@ function Safari() {
         }
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
-        var noDailyBonusForms = ["Floette-EF", "Rotom-W", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmanitan-D"];
+        var noDailyBonusForms = ["Floette-EF", "Rotom-C", "Rotom-F", "Rotom-H", "Rotom-W", "Rotom-S", "Darmanitan-D"];
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(sys.pokemon(leader)) ? dailyBoost.bonus : 1;
         var rulesMod = currentRules ? this.getRulesMod(player.party[0], currentRules) : 1;
         var costumeMod = 1;
@@ -4029,9 +4030,9 @@ function Safari() {
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver;
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
             sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
-            var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow;
+            var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(rec.rocksHit, "hit"), plural(rec.rocksBounced, "time")), safchan);
-            var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow;
+            var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
             sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw")), safchan);
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests.".format(rec.consecutiveLogins, (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""),rec.contestsWon), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon!".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), rec.rareHatched), safchan);
@@ -6752,6 +6753,7 @@ function Safari() {
             safaribot.sendMessage(src, "Please type a valid number for the minimum bid raise!", safchan);
             return;
         }
+        var reasonable = moneyCap;
         if (input.type == "poke") {
             if (!player.pokemon.contains(input.id)) {
                 safaribot.sendMessage(src, "You do not have " + an(input.name) + "!", safchan);
@@ -6764,6 +6766,14 @@ function Safari() {
                 safaribot.sendMessage(src, "Starting offer for " + input.name + " must be at least $" + addComma(getPrice(input.id, input.shiny)) + "!", safchan);
                 return;
             }
+            reasonable = getPrice(input.id, input.shiny) * getBST(input.id) / 5;
+            if (input.shiny) {
+                reasonable *= 3;
+            }
+            if (input.legendary) {
+                reasonable *= 4;
+            }
+            reasonable = Math.min(Math.round(reasonable), moneyCap);
         } else {
             if (!itemData[input.id].tradable) {
                 safaribot.sendMessage(src, "You can't auction this item!", safchan);
@@ -6777,6 +6787,7 @@ function Safari() {
                 safaribot.sendMessage(src, "This item cannot be auctioned unless you have more than " + itemData[input.id].tradeReq + " of those!", safchan);
                 return true;
             }
+            reasonable = Math.min(itemData[input.id].price * 20, moneyCap);
         }
         if (minBid > startingOffer / 2) {
             safaribot.sendMessage(src, "Minimum bid raise can't be more than half of the starting offer ($" + Math.floor(startingOffer/2) + ")!", safchan);
@@ -6787,25 +6798,28 @@ function Safari() {
             return;
         }
         var multiplier = 1;
-        if (startingOffer >= moneyCap) {
-            if (!player.auctionWarn) {
-                safaribot.sendMessage(src, "Please don't create auctions with absurd starting offers. This is your only warning!", safchan);
-                player.auctionWarn = true;
+        if (startingOffer >= reasonable) {
+            if (now() > player.auctionWarnCooldown) {
+                safaribot.sendMessage(src, "Please don't create auctions with absurd starting offers! This is your only warning!", safchan);
+                player.auctionWarnCooldown = now() + hours(2);
                 this.saveGame(player);
                 return;
             }
-            var lost = Math.round(player.money * 0.05);
+            player.auctionWarns += 1;
+            var warns = player.auctionWarns;
+            var lost = Math.round(player.money * (0.03 + 0.02 * warns));
+            lost = Math.min(Math.max(lost, 2000), player.money);
             player.money -= lost;
             if (player.money < 0) {
                 player.money = 0;
             }
-            multiplier = 10;
+            multiplier = 5 + warns * 5;
             player.balls.salt += 1;
             
             sys.sendAll("", safchan);
             safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + addComma(startingOffer) + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
             safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you and give you some " + finishName("salt") + " for abusing the system!", safchan);
-            this.applyTradeban("Safari Warden", sys.name(src), player, 12 * 60 * 60);
+            this.applyTradeban("Safari Warden", sys.name(src), player, (6 + warns * 6) * 60 * 60);
             sys.sendAll("", safchan);
         } else {
             var auction = new Auction(src, input.input, startingOffer, minBid);
@@ -14405,32 +14419,14 @@ function Safari() {
                     }
                 }
 
+                var spc = 0;
                 if (command === "analyzer") { //Readable format
                     if (["pokemon", "party", "ninjaParty"].contains(propName[1])) {
                         attr = attr.map(poke);
+                        spc = 1;
                     }
                 }
-                safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr), safchan);
-                return true;
-            }
-            if (command === "viewbox" || command === "viewboxsorted") {
-                var player = getAvatarOff(commandData);
-                if (!player) {
-                    safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
-                    return true;
-                }
-                var list = player.pokemon.concat();
-                if (command === "viewboxsorted") {
-                    list.sort(function(a, b) {
-                        if (pokeInfo.species(a) != pokeInfo.species(b)) {
-                            return pokeInfo.species(a)-pokeInfo.species(b);
-                        } else {
-                            return pokeInfo.forme(a)-pokeInfo.forme(b);
-                        }
-                    });
-                }
-
-                safaribot.sendMessage(src, commandData.toCorrectCase() + "'s box: " + list.map(poke).join(", "), safchan);
+                safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr, null, spc), safchan);
                 return true;
             }
 
