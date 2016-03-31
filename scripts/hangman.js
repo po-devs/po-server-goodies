@@ -148,6 +148,9 @@ function Hangman() {
             if (isEventGame) {
                 eventCount = eventLimit;
             }
+            if (pendingEvent) {
+                eventDelay = true;
+            }
         }
     };
     
