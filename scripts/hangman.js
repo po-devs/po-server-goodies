@@ -556,7 +556,7 @@ function Hangman() {
         if (gameMode === suddenDeath) {
             guesses = {};
         }
-	if (gameMode === tossUp) {
+        if (gameMode === tossUp) {
             tossUpCount = 0;
             tossUpGuess = 7;
         }
@@ -589,7 +589,7 @@ function Hangman() {
                 }
             }
         }
-	if (gameMode === tossUp) {          
+        if (gameMode === tossUp) {          
             var x, y, i = 0, total = word.length, keys = [];        
             while (i < total) {
                 x = Math.floor(Math.random() * word.length);
@@ -625,10 +625,10 @@ function Hangman() {
         sys.sendAll("*** ************************************************************ ***", hangchan);
         if (isEventGame) {
             hangbot.sendAll("A " + (gameMode == regular ? "regular":gameMode == suddenDeath ? "Sudden Death":"Toss Up") + " Event Game has started! The winner of this game will receive 1 Leaderboard point!", hangchan);
-            suddenDeathTime = suddenDeathLimit;
         } else {
             hangbot.sendAll(hostName + " started a new " + (gameMode == regular ? "":gameMode == suddenDeath ? "Sudden Death":"Toss Up") + " game of Hangman!", hangchan);
         }
+        suddenDeathTime = suddenDeathLimit;
         hangbot.sendAll(currentWord.join(" "), hangchan);
         hangbot.sendAll(hint, hangchan);
         sys.sendAll("*** ************************************************************ ***", hangchan);
