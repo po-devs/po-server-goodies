@@ -29,10 +29,12 @@ function Safari() {
     var tradebansFile = "scriptdata/safaribans.txt";
     var saltbansFile = "scriptdata/safarisalt.txt";
     var permFile = "scriptdata/safariobjects.txt";
+    var configFile = "scriptdata/safari/config.txt";
     var rafflePlayersFile = "scriptdata/safari/raffleplayers.txt";
     var idnumFile = "scriptdata/safari/idnum.txt";
 
     var permObj;
+    var configObj;
     var tradeBans;
     var saltBans;
     var rawPlayers;
@@ -165,6 +167,9 @@ function Safari() {
             factoryFirst: 0,
             factorySecond: 0,
             factoryThird: 0,
+            quizFirst: 0,
+            quizSecond: 0,
+            quizThird: 0,
             packsOpened: 0,
             pokesStolen: 0,
             notBaitedCaught: 0,
@@ -338,29 +343,6 @@ function Safari() {
         
         inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "It is not currently known how"}
     };
-    var recipeData = { //Makes = how many are made when the recipe is completed
-        "materia": {
-            "makes": 1,
-            "safari": itemData.materia.threshold
-        },
-        "master": {
-            "makes": 1,
-            "materia": 1,
-            "fragment": itemData.fragment.threshold
-        },
-        "cherry": {
-            "makes": 2,
-            "materia": 1,
-            "bait": 50,
-            "honey": 2,
-            "dust": 50,
-            "bigpearl": 2
-        },
-        "bigpearl": {
-            "makes": 15,
-            "pearl": 50
-        }
-    };
     
     var defaultItemData;
     var defaultCostumeData;
@@ -432,6 +414,7 @@ function Safari() {
     var wildEvent = false;
     var isBaited = false;
     var resolvingThrows = false;
+    var catchTierChance = [0.20, 0.18, 0.14, 0.11, 0.07, 0.03];
 
     /* Leaderboard Variables */
     var leaderboards = {};
@@ -816,6 +799,83 @@ function Safari() {
         144,145,146,150,151,243,244,245,249,250,251,377,378,379,380,381,382,383,384,385,386,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,638,639,640,641,642,643,644,645,646,647,648,649,716,717,718,719,720,721
     ];
 
+    /* Quest Variables */
+    var arenaOpponents = {
+        pink: {
+            name: "Trainer Pink",
+            party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
+            power: [60, 130],
+            postArgs: {
+                reward: 1,
+                cooldown: 0.75
+            },
+            desc: "Arena NPC"
+        },
+        teal: {
+            name: "Trainer Teal",
+            party: [282,330,248,"178",186,598,652,437,623,475,65790,384,272,550,66086],
+            power: [90, 170],
+            postArgs: {
+                reward: 2,
+                cooldown: 1.25
+            },
+            desc: "Arena NPC"
+        },
+        mustard: {
+            name: "Trainer Mustard",
+            party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
+            power: [110, 200],
+            postArgs: {
+                reward: 3,
+                cooldown: 1.75
+            },
+            desc: "Arena NPC"
+        },
+        cyan: {
+            name: "Trainer Cyan",
+            party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
+            power: [150, 300],
+            postArgs: {
+                reward: 6,
+                cooldown: 2.75
+            },
+            desc: "Arena NPC"
+        },
+        crimson: {
+            name: "Trainer Crimson",
+            party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
+            power: [200, 380],
+            postArgs: {
+                reward: 10,
+                cooldown: 4
+            },
+            desc: "Arena NPC"
+        }
+    };
+    var recipeData = { //Makes = how many are made when the recipe is completed
+        "materia": {
+            "makes": 1,
+            "safari": itemData.materia.threshold
+        },
+        "master": {
+            "makes": 1,
+            "materia": 1,
+            "fragment": itemData.fragment.threshold
+        },
+        "cherry": {
+            "makes": 2,
+            "materia": 1,
+            "bait": 50,
+            "honey": 2,
+            "dust": 50,
+            "bigpearl": 2
+        },
+        "bigpearl": {
+            "makes": 15,
+            "pearl": 50
+        }
+    };
+    
     /* Misc Variables */
     var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false };
     var tradeRequests = {};
@@ -2636,7 +2696,7 @@ function Safari() {
         var tierChance = 0.02;
         for (var x = 0; x < tiers.length; x++) {
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
-                tierChance = [0.20, 0.18, 0.14, 0.11, 0.07, 0.03][x];
+                tierChance = catchTierChance[x];
                 break;
             }
         }
@@ -8072,63 +8132,6 @@ function Safari() {
             player.quests.arena.cooldown = now() + hours(args.cooldown);
             safari.saveGame(player);
         };
-        var opponents = {
-            pink: {
-                name: "Trainer Pink",
-                party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
-                power: [60, 130],
-                postBattle: postBattle,
-                postArgs: {
-                    reward: 1,
-                    cooldown: 0.75
-                },
-                desc: "Arena NPC"
-            },
-            teal: {
-                name: "Trainer Teal",
-                party: [282,330,248,"178",186,598,652,437,623,475,65790,384,272,550,66086],
-                power: [90, 170],
-                postBattle: postBattle,
-                postArgs: {
-                    reward: 2,
-                    cooldown: 1.25
-                },
-                desc: "Arena NPC"
-            },
-            mustard: {
-                name: "Trainer Mustard",
-                party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
-                power: [110, 200],
-                postBattle: postBattle,
-                postArgs: {
-                    reward: 3,
-                    cooldown: 1.75
-                },
-                desc: "Arena NPC"
-            },
-            cyan: {
-                name: "Trainer Cyan",
-                party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
-                power: [150, 300],
-                postBattle: postBattle,
-                postArgs: {
-                    reward: 6,
-                    cooldown: 2.75
-                },
-                desc: "Arena NPC"
-            },
-            crimson: {
-                name: "Trainer Crimson",
-                party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
-                power: [200, 380],
-                postBattle: postBattle,
-                postArgs: {
-                    reward: 10,
-                    cooldown: 4
-                },
-                desc: "Arena NPC"
-            }
-        };
         var price = {
             pink: 100,
             teal: 200,
@@ -8140,8 +8143,8 @@ function Safari() {
         var opt = data[0].toLowerCase();
         if (opt === "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Challenge our trainers for a chance to receive some " + es(finishName("silver")) + "! The trainers available are: ", safchan);
-            for (var n in opponents) {
-                var opp = opponents[n];
+            for (var n in arenaOpponents) {
+                var opp = arenaOpponents[n];
                 safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "silver") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
             sys.sendMessage(src, "", safchan);
@@ -8165,7 +8168,7 @@ function Safari() {
             return;
         }
 
-        var npc = opponents[opt];
+        var npc = arenaOpponents[opt];
         if (!npc) {
             safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
             return;
@@ -8182,7 +8185,7 @@ function Safari() {
             return;
         }
         npc = JSON.parse(JSON.stringify(npc));
-        npc.postBattle = opponents[opt].postBattle;
+        npc.postBattle = postBattle;
         var rep = false, count = 0, list = player.party.map(function(x) { var arr = [sys.type(sys.pokeType1(x)), sys.type(sys.pokeType2(x))].sort(); return arr.join("|"); });
         for (var e = 0; e < 6; e++) {
             count = countRepeated(list, list[e]);
@@ -8607,7 +8610,7 @@ function Safari() {
         var quest = player.quests.pyramid,
             cost = 5000,
             action,
-            trainerSprite = '<img src="' + base64trainers.pyramid + '">';;
+            trainerSprite = '<img src="' + base64trainers.pyramid + '">';
 
         if (pyramidRequests.hasOwnProperty(player.id) && now() > pyramidRequests[player.id].deadline) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: You prepared for Pyramid quest before, but couldn't start it before deadline! Please use " + link("/quest pyramid:start:Name1:Name2", null, true) + " to start it again!", safchan);
@@ -11882,6 +11885,327 @@ function Safari() {
         return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
     };
     
+    function Quiz(src, reward1, reward2, reward3) {
+        SafariEvent.call(this, src);
+        this.eventName = "Quiz";
+        this.minPlayers = 3;
+        this.turnLength = 5;
+        this.signupsDuration = 8;
+        
+        this.round = 0;
+        this.phase = "signup";
+        this.points = {};
+        this.thirdPrize = false;
+        
+        this.currentQuestion = "";
+        this.validAnswers = [];
+        this.usedAnswers = [];
+        this.playersAnswered = [];
+
+        this.reward1 = reward1;
+        this.reward2 = reward2;
+        this.reward3 = reward3;
+        this.rewardName1 = translateStuff(reward1);
+        this.rewardName2 = translateStuff(reward2);
+        this.rewardName3 = translateStuff(reward3);
+        
+        this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
+        this.rewardNameB = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
+        this.hasReward = true;
+        
+        this.eventCommands = {
+            answer: this.answer
+        };
+        
+        var joinCommand = "/signup";
+        this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardNameB + "!";
+
+        sys.sendAll("", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
+        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+        sys.sendAll("", safchan);
+    }
+    Quiz.prototype = new SafariEvent();
+    Quiz.prototype.setupEvent = function() {
+        this.thirdPrize = this.signups.length > 6;
+        
+        for (var e = 0; e < this.signups.length; e++) {
+            this.points[this.signups[e].toLowerCase()] = 0;
+        }
+        
+        this.sendToViewers("");
+        safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
+        this.sendToViewers("Your goal is to answer each round's question with a Pokémon name . Use /answer [Pokémon] for that!");
+        this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points.");
+        this.sendToViewers("");
+        this.phase = "preparing";
+    };
+    Quiz.prototype.playTurn = function() {
+        if (this.phase === "answer2") {
+            this.sendToViewers("Only 5 seconds remaining to answer!");
+            this.phase = "answer3";
+            return;
+        }
+        if (this.phase === "answer") {
+            this.phase = "answer2";
+            return;
+        }
+        if (this.round === 10) { //Check if event is over here
+            this.finish();
+            return;
+        }
+        if (this.phase === "preparing" || this.phase === "answer3") {
+            this.sendToViewers((this.round === 0 ? "First" : "<b>Time's Over!</b> Next") + " question coming in 5 seconds!");
+            this.phase = "question";
+            return;
+        }
+        if (this.phase === "question") { //Prepare next question
+            var list = [];
+            this.validAnswers = [];
+            for (var e = 1; e < 722; e++) {
+                list.push(e);
+            }
+            
+            var typesUsed = [], result, desc = [], e;
+            do {
+                result = this.filter(list.concat(), typesUsed);
+            } while (result.list.length < 3);
+            desc.push(result.desc);
+            typesUsed.push(result.type);
+            this.validAnswers = result.list;
+            
+            //Second parameter
+            if (this.validAnswers.length > 15) {
+                for (e = 0; e < 15; e++) {
+                    result = this.filter(this.validAnswers.concat(), typesUsed);
+                    if (result.list.length > 3 && result.list.length !== this.validAnswers.length) {
+                        this.validAnswers = result.list.concat();
+                        desc.push(result.desc);
+                        typesUsed.push(result.type);
+                        break;
+                    }
+                }
+            }
+            //Third parameter
+            if (this.validAnswers.length > 12) {
+                for (e = 0; e < 10; e++) {
+                    result = this.filter(this.validAnswers.concat(), typesUsed);
+                    if (result.list.length > 4 && result.list.length !== this.validAnswers.length) {
+                        this.validAnswers = result.list.concat();
+                        desc.push(result.desc);
+                        typesUsed.push(result.type);
+                        break;
+                    }
+                }
+            }
+            
+            this.currentQuestion = cap(readable(desc));
+            this.usedAnswers = [];
+            this.playersAnswered = [];
+            this.round++;
+            this.sendToViewers("");
+            this.sendToViewers("<b>Round " + this.round + "</b>: You have 15 seconds to say a Pokémon with these features: " + toColor(this.currentQuestion, "blue") + "!");
+            this.sendToViewers("");
+            this.phase = "answer";
+        }
+        
+    };
+    Quiz.prototype.filter = function(list, typesUsed) {
+        var type, val2, val, desc;
+        do {
+            type = ["start", "end", "move", "type", "bst", "height", "weight", "evolve", "evolved"].random();
+        } while (type !== "move" && typesUsed.contains(type));
+        
+        switch (type) {
+            case "start":
+                val = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"].random();
+                list = list.filter(function(x){
+                    return sys.pokemon(x).toLowerCase()[0] === val;
+                });
+                desc = "starts with " + val.toUpperCase();
+            break;
+            case "end":
+                val = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"].random();
+                list = list.filter(function(x){
+                    var n = sys.pokemon(x).toLowerCase();
+                    return n[n.length-1] === val;
+                });
+                desc = "ends with " + val.toUpperCase();
+            break;
+            case "move":
+                val = sys.rand(1, 622);
+                list = list.filter(function(x){
+                    return pokedex.getAllMoves(x).contains("" + val);
+                });
+                desc = "can learn " + sys.move(val);
+            break;
+            case "type":
+                val = Object.keys(effectiveness).random();
+                list = list.filter(function(x){
+                    return hasType(x, val);
+                });
+                desc = "has " + val + " type";
+            break;
+            case "bst":
+                val = sys.rand(200, 500);
+                val2 = sys.rand(val + 25, 610);
+                list = list.filter(function(x){
+                    return getBST(x) >= val && getBST(x) <= val2;
+                });
+                desc = "BST is between " + val + " and " + val2;
+            break;
+            case "weight":
+                val = sys.rand(4, 125);
+                val2 = sys.rand(val + 15, 201);
+                list = list.filter(function(x){
+                    return parseFloat(pokedex.getWeight(x)) >= val && parseFloat(pokedex.getWeight(x)) <= val2;
+                });
+                desc = "weight is between " + val + " kg and " + val2 + " kg";
+            break;
+            case "height":
+                val = sys.rand(3, 18);
+                val2 = sys.rand(val + 3, 35);
+                list = list.filter(function(x){
+                    return parseFloat(pokedex.getHeight(x)) >= val && parseFloat(pokedex.getHeight(x)) <= val2;
+                });
+                desc = "height is between " + val + "m and " + val2 + "m";
+            break;
+            case "evolve":
+                val = chance(0.5) ? true : false;
+                list = list.filter(function(x){
+                    return (x in evolutions) === val;
+                });
+                desc = "can" + (val ? "" : "not")+ " evolve";
+            break;
+            case "evolved":
+                val = chance(0.5) ? true : false;
+                list = list.filter(function(x){
+                    return (x in devolutions) === val;
+                });
+                desc = "is " + (val ? "" : "not ")+ "evolved";
+            break;
+        }
+        return {
+            list: list,
+            type: type,
+            val: val,
+            desc: desc
+        };
+    };
+    Quiz.prototype.answer = function(src, commandData) {
+        var name = sys.name(src).toLowerCase();
+        if (this.phase === "signup") {
+            this.sendMessage(name, "The event didn't even start yet!");
+            return;
+        }
+        if (["answer", "answer2", "answer3"].contains(this.phase) === false) {
+            this.sendMessage(name, "Wait for the next question!");
+            return;
+        }
+        if (this.playersAnswered.contains(name)) {
+            this.sendMessage(name, "You already answered during this round! Wait for the next question!");
+            return;
+        }
+        var info = getInputPokemon(commandData);
+        if (!info.num) {
+            this.sendMessage(name, "This is not a valid Pokémon!");
+            return;
+        }
+        if (this.usedAnswers.contains(info.num)) {
+            this.sendMessage(name, info.name + " was already answered!");
+            return;
+        }
+        if (!this.validAnswers.contains(info.num)) {
+            this.sendMessage(name, info.name + " doesn't fit all the criteria for this round (criteria required: " + this.currentQuestion + ")!");
+            return;
+        }
+        var pointsRange = [100, 85, 75, 60, 50, 40, 30, 20, 15, 12];
+        var points = pointsRange[Math.min(this.playersAnswered.length, pointsRange.length-1)];
+        this.playersAnswered.push(name);
+        this.usedAnswers.push(info.num);
+        this.points[name] += points;
+        
+        this.sendToViewers(addFlashTag(name.toCorrectCase()) + " answered " + toColor(info.name, "blue") + " and got " + plural(points, "point") + "!", true);
+    };
+    Quiz.prototype.finish = function() {
+        var ordered = Object.keys(this.points);
+        var pts = this.points;
+        ordered = ordered.sort(function(a, b) {
+            return pts[b] - pts[a];
+        });
+        //TODO: Tiebreaker criteria
+        
+        this.sendToViewers("");
+        this.sendToViewers("<b>Final Score</b>: " + ordered.map(function(x) { return addFlashTag(x.toCorrectCase()) + " (" + plural(pts[x], "point") + ")"; }).join(", "), true);
+        
+        var winner = ordered[0];
+        var runnerup = ordered[1];
+        var thirdplace = ordered.length > 2 ? ordered[2] : "";
+        
+        var winnerName = winner.toCorrectCase();
+        var runnerupName = runnerup.toCorrectCase();
+        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
+        
+        safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
+        var player = getAvatarOff(winner), out, stuff;
+        if (player) {
+            stuff = toStuffObj(this.reward1.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.quizFirst += 1;
+            safari.saveGame(player);
+            this.sendMessage(winner, "You " + out + "!");
+        }
+        
+        safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
+        player = getAvatarOff(runnerup);
+        if (player) {
+            stuff = toStuffObj(this.reward2.replace(/\|/g, ":")),
+            out = giveStuff(player, stuff);
+            
+            player.records.quizSecond += 1;
+            safari.saveGame(player);
+            this.sendMessage(runnerup, "You " + out + "!");
+        }
+        
+        if (thirdplace && this.thirdPrize && this.reward3) {
+            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
+            player = getAvatarOff(thirdplace);
+            if (player) {
+                stuff = toStuffObj(this.reward3.replace(/\|/g, ":")),
+                out = giveStuff(player, stuff);
+                
+                player.records.quizThird += 1;
+                safari.saveGame(player);
+                this.sendMessage(thirdplace, "You " + out + "!");
+            }
+        } else {
+            this.sendToViewers("No third place prize will be given due to the low number of participants!");
+        }
+        this.sendToViewers("");
+        
+        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
+        this.finished = true;
+    };
+    Quiz.prototype.canJoin = function(src) {
+        var player = getAvatar(src);
+        if (player.tradeban > now()) {
+            safaribot.sendMessage(src, "You can't join this event while tradebanned!", safchan);
+            return false;
+        }
+        if (player.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "You can only join this event after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
+            return;
+        }
+        return true;
+    };
+    Quiz.prototype.onWatch = function(src) {
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! Please don't give hints or answers to the participants!", safchan);
+        if (["answer", "answer2", "answer3"].contains(this.phase)) {
+            safaribot.sendMessage(src, "Current round's question: " + this.currentQuestion, safchan);
+        }
+    };
+    
     function PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, silver, item) {
         SafariEvent.call(this, src);
         this.eventName = "Pokémon Race";
@@ -12388,6 +12712,45 @@ function Safari() {
             }
         }
         monthlyLeaderboards[record].add(name, val + value);
+    };
+    this.loadConfigurables = function() {
+        var val;
+        var loadArenaTeams = function(name) {
+            val = configObj.get("arena_" + name);
+            try {
+                val = JSON.parse(val);
+            } catch (err) { val = null; }
+            if (Array.isArray(val)) {
+                arenaOpponents[name].party = val;
+            }
+        };
+        loadArenaTeams("pink");
+        loadArenaTeams("teal");
+        loadArenaTeams("mustard");
+        loadArenaTeams("cyan");
+        loadArenaTeams("crimson");
+        
+        val = configObj.get("tier_chances");
+        try {
+            val = JSON.parse(val);
+        } catch (err) { val = null; }
+        if (Array.isArray(val)) {
+            var valid = true;
+            for (var e = 0; e < val.length; e++) {
+                if (typeof val[e] !== "number") {
+                    valid = false;
+                    break;
+                }
+            }
+            if (val.length < 6) {
+                valid = false;
+            }
+            
+            if (valid) {
+                catchTierChance = val;
+            }
+        }
+        
     };
     this.checkNewMonth = function() {
         var date = new Date().getUTCMonth();
@@ -13174,6 +13537,9 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match (they are sent in the order picked; if not enough Pokémon are selected, the rest will be picked randomly). Rewards are given to the 1st, 2nd and 3rd place.", safchan);
         sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 4 players to start, and 7 for the 3rd place reward.", safchan);
+        sys.sendMessage(src, "", safchan);
+        sys.sendMessage(src, "Quiz: On each round, a question is made and players must answer with a Pokémon. One answer per player, can't repeat answer within the round. Lasts for 10 rounds, rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 3 players to start, and 7 for the 3rd place reward.", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.onHelp = function (src, topic, channel) {
@@ -13972,6 +14338,9 @@ function Safari() {
                     case "battlefactory":
                         type = "bfactory";
                     break;
+                    case "quiz":
+                        type = "quiz";
+                    break;
                     default:
                     case "help":
                     case "info":
@@ -13982,6 +14351,7 @@ function Safari() {
                         safaribot.sendMessage(src, "Pokémon Silver Race: /startevent silverrace:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
                         safaribot.sendMessage(src, "Pokémon Item Race: /startevent [itemrace/itemsilverrace]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Goal]:[Item]", safchan);
                         safaribot.sendMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
+                        safaribot.sendMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
                         safaribot.sendMessage(src, "For the race events, most values can be left blank to use the default settings.", safchan);
                         return true;
                 }
@@ -14106,6 +14476,47 @@ function Safari() {
                     }
                     
                     var ev = new BFactory(src, r1, r2, r3);
+                    currentEvent = ev;
+                }
+                else if (type == "quiz") {
+                    var r1 = "", r2 = "", r3 = "", pLen = param.length;
+
+                    if (pLen > 0) {
+                        r1 = param[0];
+                    }
+                    if (pLen > 1) {
+                        r2 = param[1];
+                    }
+                    if (pLen > 2) {
+                        r3 = param[2];
+                    }
+                    if (!r1) {
+                        safaribot.sendMessage(src, "Please specify a valid reward for the first place!", safchan);
+                        return true;
+                    }
+                    if (!r2) {
+                        safaribot.sendMessage(src, "Please specify a valid reward for the second place!", safchan);
+                        return true;
+                    }
+                    var valid = validateStuff(r1);
+                    if (valid.length > 0) {
+                        safaribot.sendMessage(src, "Invalid reward for first place found: " + readable(valid) + " !", safchan);
+                        return true;
+                    }
+                    valid = validateStuff(r2);
+                    if (valid.length > 0) {
+                        safaribot.sendMessage(src, "Invalid reward for second place found: " + readable(valid) + " !", safchan);
+                        return true;
+                    }
+                    if (r3) {
+                        valid = validateStuff(r3);
+                        if (valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid reward for third place found: " + readable(valid) + " !", safchan);
+                            return true;
+                        }
+                    }
+                    
+                    var ev = new Quiz(src, r1, r2, r3);
                     currentEvent = ev;
                 }
                 else {
@@ -15751,6 +16162,40 @@ function Safari() {
                 permObj.add(objName, JSON.stringify(customValues));
                 return true;
             }
+            if (command === "config") {
+                var info = commandData.split(":"), editable = ["arena_pink", "arena_teal", "arena_mustard", "arena_cyan", "arena_crimson", "tier_chances"], prop, val;
+                if (commandData.toLowerCase() === "current") {
+                    safaribot.sendMessage(src, "Current configurable values:", safchan);
+                    for (var e = 0; e < editable.length; e++) {
+                        prop = editable[e];
+                        val = configObj.get(prop);
+                        if (val) {
+                            safaribot.sendMessage(src, prop + ": " + val, safchan);
+                        }
+                    }
+                    return true;
+                }
+                if (commandData === "*" || info.length < 2) {
+                    safaribot.sendMessage(src, "Syntax: /config [Property]:[New Value].", safchan);
+                    safaribot.sendMessage(src, "When editing a string, remember to include the quotation marks.", safchan);
+                    safaribot.sendMessage(src, "Valid Properties: " + editable.join(", ") + ". Type '/config current' to see the current values.", safchan);
+                    return true;
+                }
+                prop = info[0].toLowerCase();
+                val = info.slice(1).join(":");
+                
+                
+                if (editable.contains(prop) === false) {
+                    safaribot.sendMessage(src, "Invalid property! Type /config for more details!", safchan);
+                    return true;
+                }
+                var old = configObj.get(prop);
+                
+                configObj.add(prop, val);
+                safari.loadConfigurables();
+                safaribot.sendMessage(src, "Edited property '{0}' from '{1}' to '{2}'!".format(prop, old, val), safchan);
+                return true;
+            }
         }
         if (sys.auth(src) > 2) {
             if (command === "updateplugin" && commandData === "safari.js") {
@@ -15788,6 +16233,8 @@ function Safari() {
         saltBans = new MemoryHash(saltbansFile);
         idnumList = new MemoryHash(idnumFile);
         permObj = new MemoryHash(permFile);
+        configObj = new MemoryHash(configFile);
+        safari.loadConfigurables();
         try {
             npcShop = JSON.parse(permObj.get("npcShop"));
         } catch (err) {
