@@ -282,9 +282,9 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function endlessCheck(src,
     return ret;
 });
 
-/* Monogen no longer an official tier
+
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
-    var GEN_MAX = [0, 151, 252, 386, 493, 649, 718];
+    var GEN_MAX = [0, 151, 252, 386, 493, 649, 721];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, team, i);
@@ -296,7 +296,7 @@ tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, te
             return [sys.pokemon(pokenum) + " is not from Generation " + gen];
         }
     }
-});*/
+});
 
 /* Monocolor no longer an official tier
 tier_checker.add_new_check(INCLUDING, ["Monocolour"], function monoColourCheck(src, team) {
