@@ -2171,17 +2171,11 @@ function Safari() {
             shiny = appearAs.shiny;
         } else {
             disguise = [132, 151, 570, 571].contains(num);
-            disguise = true;//Remove later
             if (disguise) {
                 appearance = sys.rand(1,722);
                 shiny = sys.rand(0, shinyChance) < 4;
                 if (shiny) {
                     multiplier = 5;
-                }
-                appearance = pokeInfo.calcForme(493, sys.rand(0, 18));//Remove this too
-                multiplier = 0;//and this
-                if (!isLegendary(num)) {
-                    wildEvent = true;
                 }
             }
         }
@@ -5282,8 +5276,10 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
         } else {
             sendAll("", false, true);
-            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
-            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
+            // sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
+            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)) + " -> " + pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);//UNDO
+            // sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
+            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + ", then changed back, then " + verb + " " + poke(evolution) + " again!");//UNDO
             sendAll("", false, true);
         }
         this.saveGame(player);
@@ -7617,7 +7613,6 @@ function Safari() {
         }
         if (data == "*") {
             var n = now(), quest = getAvatar(src).quests;
-            //sys.sendMessage(src, "", safchan);
             var qs = Object.keys(base64trainers);
             var sprites = [];
             for (var i = 0; i < qs.length; i++) {
@@ -7635,11 +7630,11 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
             
             // safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
-            safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
+            // safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
