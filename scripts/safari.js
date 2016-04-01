@@ -801,6 +801,17 @@ function Safari() {
 
     /* Quest Variables */
     var arenaOpponents = {
+        nub: {
+            name: "Trainer Nub",
+            party: [19,50,316,582,116,27,194,207,200,570,489,"235",236,624,513,511,417,147],
+            power: [10, 60],
+            postArgs: {
+                reward: 0,
+                cooldown: 0.15,
+                noRecords: true
+            },
+            desc: "Arena NPC"
+        },
         pink: {
             name: "Trainer Pink",
             party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
@@ -848,6 +859,17 @@ function Safari() {
             postArgs: {
                 reward: 10,
                 cooldown: 4
+            },
+            desc: "Arena NPC"
+        },
+        rainbow: {
+            name: "Trainer Rainbow",
+            party: [66217,721,717,65744,65919,65790,483,484,66023,65859,65909,"462",272,442,411,227,429,563],
+            power: [360, 500],
+            postArgs: {
+                reward: 2,
+                cooldown: 0.17,
+                noRecords: true
             },
             desc: "Arena NPC"
         }
@@ -8130,25 +8152,32 @@ function Safari() {
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
-                player.records.arenaWon += 1;
-                player.records.arenaPoints += args.reward;
-                safari.addToMonthlyLeaderboards(player.id, "arenaPoints", args.reward);
+                if (!args.noRecords) {
+                    player.records.arenaWon += 1;
+                    player.records.arenaPoints += args.reward;
+                    safari.addToMonthlyLeaderboards(player.id, "arenaPoints", args.reward);
+                }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Wow, I didn't expect to lose! Good job, here's your reward!", safchan);
                 safaribot.sendMessage(id, "You received " + plural(args.reward, "silver") + "!", safchan);
                 rewardCapCheck(player, "silver", args.reward, true);
             } else {
-                player.records.arenaLost += 1;
+                if (!args.noRecords) {
+                    player.records.arenaLost += 1;
+                }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
             player.quests.arena.cooldown = now() + hours(args.cooldown);
             safari.saveGame(player);
         };
         var price = {
+            nub: 0,
             pink: 100,
             teal: 200,
             mustard: 300,
             cyan: 500,
-            crimson: 1000
+            crimson: 1000,
+            rainbow: 50,
+            copycat: 300
         };
 
         var opt = data[0].toLowerCase();
@@ -8158,6 +8187,7 @@ function Safari() {
                 var opp = arenaOpponents[n];
                 safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "silver") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(1, "silver") + ". Cooldown: " + utilities.getTimeString(1 * 60 * 60) + ". ", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -8181,8 +8211,23 @@ function Safari() {
 
         var npc = arenaOpponents[opt];
         if (!npc) {
-            safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
-            return;
+            if (opt === sys.name(src).toLowerCase()) {
+                npc = {
+                    name: "Trainer " + sys.name(src),
+                    party: player.party.concat(),
+                    power: [10, 100],
+                    postArgs: {
+                        reward: 1,
+                        cooldown: 1,
+                        noRecords: true
+                    },
+                    desc: "Arena NPC"
+                };
+                opt = "copycat";
+            } else {
+                safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
+                return;
+            }
         }
 
         var cost = price[opt];
@@ -12268,6 +12313,17 @@ function Safari() {
             this.reward = data.reward;
             this.favorite = null;
             this.underdog = null;
+            
+            if (data.rewardUnderdog) {
+                this.rewardUnderdog = data.rewardUnderdog;
+                this.underdog = Object.keys(this.runners).random();
+            }
+            if (data.rewardFavorite) {
+                this.rewardFavorite = data.rewardFavorite;
+                do {
+                    this.favorite = Object.keys(this.runners).random();
+                } while (this.favorite == this.underdog);
+            }
         }
         this.rewardObj = translateAsset(this.reward);
         this.rewardType = this.rewardObj.type;
@@ -12323,6 +12379,17 @@ function Safari() {
             this.joinmsg = "Bet with " + readable(betCommands, "or") + "! Bets must be between " + this.betRange + " (Payout: " + this.payoutmsg + ")";
         } else {
             this.joinmsg = "Join with " + readable(betCommands, "or");
+            this.rewardName = translateStuff(this.reward);
+            if (this.rewardFavorite || this.rewardUnderdog) {
+                var extraRewards = [];
+                if (this.rewardUnderdog) {
+                    extraRewards.push(translateStuff(this.rewardUnderdog) + " if Underdog");
+                }
+                if (this.rewardFavorite) {
+                    extraRewards.push(translateStuff(this.rewardFavorite) + " if Favorite");
+                }
+                this.rewardName += " (" + extraRewards.join(", ") + ")";
+            }
         }
         
         sys.sendAll("", safchan);
@@ -12331,7 +12398,7 @@ function Safari() {
             safaribot.sendHtmlAll("Bets must be between " + this.betRange + "! Payouts are " + this.payoutmsg + "!", safchan);
             safaribot.sendHtmlAll("To place your bets, type " + readable(betCommands, "or") + " (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         } else {
-            safaribot.sendHtmlAll("Rewards: " + translateStuff(this.reward) + "! To join, type " + readable(betCommands, "or") + " (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+            safaribot.sendHtmlAll("Rewards: " + this.rewardName + "! To join, type " + readable(betCommands, "or") + " (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         }
         sys.sendAll("", safchan);
     }
@@ -12520,7 +12587,17 @@ function Safari() {
                         payments.push(name.toCorrectCase() + " (" + (this.silver ? plural(prize, "silver") : "$" + addComma(prize)) + ")");
                     } else {
                         player.records.pokeRaceWins += 1;
-                        stuff = toStuffObj(this.reward.replace(/\|/g, ":"));
+                        
+                        if (bet.racer == this.favorite) {
+                            p = this.rewardFavorite;
+                            player.records.favoriteRaceWins += 1;
+                        } else if (bet.racer == this.underdog) {
+                            p = this.rewardUnderdog;
+                            player.records.underdogRaceWins += 1;
+                        } else {
+                            p = this.reward;
+                        }
+                        stuff = toStuffObj(p.replace(/\|/g, ":"));
                         out = giveStuff(player, stuff);
                         if ("$" in stuff) {
                             player.records.pokeRaceSilver += stuff.$;
@@ -14426,7 +14503,7 @@ function Safari() {
                         safaribot.sendMessage(src, "To start an event, use one of the following commands:", safchan);
                         safaribot.sendMessage(src, "Faction War: /startevent war:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
                         safaribot.sendMessage(src, "Inverted Faction War: /startevent invertedwar:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
-                        safaribot.sendMessage(src, "Pokémon Race: /startevent race:[Reward]", safchan);
+                        safaribot.sendMessage(src, "Pokémon Race: /startevent race:[Reward]:[UnderdogReward]:[FavoriteReward]", safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true), safchan);
                         safaribot.sendMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
                         safaribot.sendMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
@@ -14462,7 +14539,7 @@ function Safari() {
                     currentEvent = ev;
                 }
                 else if (type == "race") {
-                    var r1 = param[0];
+                    var r1 = param[0], r2 = "", r3 = "", l = param.length;
 
                     if (!r1) {
                         safaribot.sendMessage(src, "Please specify a valid reward for the first place!", safchan);
@@ -14473,8 +14550,26 @@ function Safari() {
                         safaribot.sendMessage(src, "Invalid reward found: " + readable(valid) + " !", safchan);
                         return true;
                     }
+                    if (l > 1) {
+                        r2 = param[1];
+                        valid = validateStuff(r2);
+                        if (r2 && valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid Underdog reward found: " + readable(valid) + " !", safchan);
+                            return true;
+                        }
+                    }
+                    if (l > 2) {
+                        r3 = param[2];
+                        valid = validateStuff(r3);
+                        if (r3 && valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid Favorite reward found: " + readable(valid) + " !", safchan);
+                            return true;
+                        }
+                    }
                     var data = {
-                        reward: r1
+                        reward: r1,
+                        rewardUnderdog: r2,
+                        rewardFavorite: r3
                     };
                     
                     var ev = new PokeRace(src, "normal", data);
