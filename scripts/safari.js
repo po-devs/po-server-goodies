@@ -12229,8 +12229,7 @@ function Safari() {
         this.goal = 50;
 
         this.turnLength = 6;
-        // this.signupsDuration = 6;
-        this.signupsDuration = 1;//UNDO
+        this.signupsDuration = 6;
         this.minPlayers = 1;
         
         var r;
@@ -12360,12 +12359,8 @@ function Safari() {
     PokeRace.prototype.playTurn = function() {
         var r, w, passed = [];
         this.sendToViewers("");
-        this.hero = Object.keys(this.runners)[0];//UNDO
         for (r in this.runners) {
             switch (r) {
-                case this.hero:
-                    w = sys.rand(7, 17);//UNDO
-                break;
                 case this.underdog:
                     w = sys.rand(1, 10);
                 break;
