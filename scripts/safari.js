@@ -6830,7 +6830,11 @@ function Safari() {
             if (input.shiny) {
                 reasonable *= 3;
             }
-            if (input.legendary) {
+            if (isLegendary(input.id)) {
+                reasonable *= 4;
+            }
+            var base = pokeInfo.species(input.id), form = pokeInfo.forme(input.id);
+            if (form > 0 && (!(base in wildForms) || form > wildForms[base] )) {
                 reasonable *= 4;
             }
             reasonable = Math.min(Math.round(reasonable), moneyCap);
@@ -7627,6 +7631,8 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+            
+            safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -7661,6 +7667,9 @@ function Safari() {
             /* case "pyramid":
                 this.pyramidQuest(src, args);
             break; */
+            case "piramyd":
+                safaribot.sendHtmlMessage(src, "You need ohter 22 palyers to joyn you at Piramyd! Alll of them must be wearing the Yuongster costume and have a Psichyc-type Pokéman in their party!", safchan);
+            break;
             case "alchemy":
             case "alchemist":
                 this.alchemyQuest(src, args);
@@ -11914,7 +11923,8 @@ function Safari() {
         this.hasReward = true;
         
         this.eventCommands = {
-            answer: this.answer
+            answer: this.answer,
+            ans: this.answer
         };
         
         var joinCommand = "/signup";
@@ -11935,7 +11945,7 @@ function Safari() {
         
         this.sendToViewers("");
         safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
-        this.sendToViewers("Your goal is to answer each round's question with a Pokémon name . Use /answer [Pokémon] for that!");
+        this.sendToViewers("Your goal is to answer each round's question with a Pokémon name . Use " + toColor("/ans [Pokémon]", "blue") + " for that!");
         this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points.");
         this.sendToViewers("");
         this.phase = "preparing";
@@ -12004,7 +12014,7 @@ function Safari() {
             this.playersAnswered = [];
             this.round++;
             this.sendToViewers("");
-            this.sendToViewers("<b>Round " + this.round + "</b>: You have 15 seconds to say a Pokémon with these features: " + toColor(this.currentQuestion, "blue") + "!");
+            this.sendToViewers("<b>Round " + this.round + "</b>: Use /ans [Pokémon] to say a Pokémon with these features: " + toColor(this.currentQuestion, "blue") + " (You have 15 seconds)!");
             this.sendToViewers("");
             this.phase = "answer";
         }
