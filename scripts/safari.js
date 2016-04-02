@@ -10974,7 +10974,6 @@ function Safari() {
         this.rewardName = "";
 
         this.joinmsg = "Type " + link("/signup") + " to participate!";
-        safari.flashPlayers();
     }
     SafariEvent.prototype.setupEvent = function() {};
     SafariEvent.prototype.nextTurn = function() {
@@ -11955,6 +11954,7 @@ function Safari() {
         this.round = 0;
         this.phase = "signup";
         this.points = {};
+        this.answered = {};
         this.thirdPrize = false;
         
         this.currentQuestion = "";
@@ -11992,6 +11992,7 @@ function Safari() {
         
         for (var e = 0; e < this.signups.length; e++) {
             this.points[this.signups[e].toLowerCase()] = 0;
+            this.answered[this.signups[e].toLowerCase()] = 0;
         }
         
         this.sendToViewers("");
@@ -12037,7 +12038,7 @@ function Safari() {
             
             //Second parameter
             if (this.validAnswers.length > 15) {
-                for (e = 0; e < 15; e++) {
+                for (e = 0; e < 30; e++) {
                     result = this.filter(this.validAnswers.concat(), typesUsed);
                     if (result.list.length > 3 && result.list.length !== this.validAnswers.length) {
                         this.validAnswers = result.list.concat();
@@ -12049,9 +12050,9 @@ function Safari() {
             }
             //Third parameter
             if (this.validAnswers.length > 12) {
-                for (e = 0; e < 10; e++) {
+                for (e = 0; e < 16; e++) {
                     result = this.filter(this.validAnswers.concat(), typesUsed);
-                    if (result.list.length > 4 && result.list.length !== this.validAnswers.length) {
+                    if (result.list.length > 3 && result.list.length !== this.validAnswers.length) {
                         this.validAnswers = result.list.concat();
                         desc.push(result.desc);
                         typesUsed.push(result.type);
@@ -12073,8 +12074,21 @@ function Safari() {
     };
     Quiz.prototype.filter = function(list, typesUsed) {
         var type, val2, val, desc;
+        var types = {
+            "start": 9,
+            "end": 9,
+            "move": 28,
+            "type": 16,
+            "bst": 3,
+            "height": 3,
+            "weight": 3,
+            "evolve": 2,
+            "evolved": 2
+        };
         do {
-            type = ["start", "end", "move", "type", "bst", "height", "weight", "evolve", "evolved"].random();
+            type = ["start", "start", "end", "move", "type", "bst", "height", "weight", "evolve", "evolved"].random();
+            type = randomSample(types);
+            
         } while (type !== "move" && typesUsed.contains(type));
         
         switch (type) {
@@ -12108,8 +12122,8 @@ function Safari() {
                 desc = "has " + val + " type";
             break;
             case "bst":
-                val = sys.rand(200, 500);
-                val2 = sys.rand(val + 25, 610);
+                val = sys.rand(200, 515);
+                val2 = sys.rand(val + 18, val + 98);
                 list = list.filter(function(x){
                     return getBST(x) >= val && getBST(x) <= val2;
                 });
@@ -12117,15 +12131,17 @@ function Safari() {
             break;
             case "weight":
                 val = sys.rand(4, 125);
-                val2 = sys.rand(val + 15, 201);
+                val2 = sys.rand(val + 8, val + 70);
                 list = list.filter(function(x){
                     return parseFloat(pokedex.getWeight(x)) >= val && parseFloat(pokedex.getWeight(x)) <= val2;
                 });
                 desc = "weight is between " + val + " kg and " + val2 + " kg";
             break;
             case "height":
-                val = sys.rand(3, 18);
-                val2 = sys.rand(val + 3, 35);
+                val = sys.rand(2, 17);
+                val2 = sys.rand(val + 3, val + 10);
+                val = val/10;
+                val2 = val2/10;
                 list = list.filter(function(x){
                     return parseFloat(pokedex.getHeight(x)) >= val && parseFloat(pokedex.getHeight(x)) <= val2;
                 });
@@ -12185,16 +12201,20 @@ function Safari() {
         this.playersAnswered.push(name);
         this.usedAnswers.push(info.num);
         this.points[name] += points;
+        this.answered[name] += 1;
         
         this.sendToViewers(addFlashTag(name.toCorrectCase()) + " answered " + toColor(info.name, "blue") + " and got " + plural(points, "point") + "!", true);
     };
     Quiz.prototype.finish = function() {
         var ordered = Object.keys(this.points);
-        var pts = this.points;
+        var pts = this.points, ans = this.answered;
         ordered = ordered.sort(function(a, b) {
-            return pts[b] - pts[a];
+            if (pts[b] !== pts[a]) {
+                return pts[b] - pts[a];
+            } else {
+                return ans[b] - ans[a];
+            }
         });
-        //TODO: Tiebreaker criteria
         
         this.sendToViewers("");
         this.sendToViewers("<b>Final Score</b>: " + ordered.map(function(x) { return addFlashTag(x.toCorrectCase()) + " (" + plural(pts[x], "point") + ")"; }).join(", "), true);
@@ -12261,7 +12281,7 @@ function Safari() {
         return true;
     };
     Quiz.prototype.onWatch = function(src) {
-        safaribot.sendMessage(src, "You are watching the " + this.eventName + "! Please don't give hints or answers to the participants!", safchan);
+        safaribot.sendHtmlMessage(src, "You are watching the " + this.eventName + "! <b>" + toColor("Please don't give hints or answers to the participants", "red") + "</b>!", safchan);
         if (["answer", "answer2", "answer3"].contains(this.phase)) {
             safaribot.sendMessage(src, "Current round's question: " + this.currentQuestion, safchan);
         }
@@ -14542,6 +14562,7 @@ function Safari() {
 
                     var ev = new FactionWar(src, name1, name2, reward, amt, type == "invertedwar");
                     currentEvent = ev;
+                    safari.flashPlayers();
                 }
                 else if (type == "race") {
                     var r1 = param[0], r2 = "", r3 = "", l = param.length;
@@ -14579,6 +14600,7 @@ function Safari() {
                     
                     var ev = new PokeRace(src, "normal", data);
                     currentEvent = ev;
+                    safari.flashPlayers();
                 }
                 else if (type == "betrace") {
                     var data = {
@@ -14656,6 +14678,7 @@ function Safari() {
                     
                     var ev = new PokeRace(src, "bet", data);
                     currentEvent = ev;
+                    safari.flashPlayers();
                 }
                 else if (type == "bfactory") {
                     var r1 = "", r2 = "", r3 = "", pLen = param.length;
@@ -14697,6 +14720,7 @@ function Safari() {
                     
                     var ev = new BFactory(src, r1, r2, r3);
                     currentEvent = ev;
+                    safari.flashPlayers();
                 }
                 else if (type == "quiz") {
                     var r1 = "", r2 = "", r3 = "", pLen = param.length;
@@ -14738,6 +14762,7 @@ function Safari() {
                     
                     var ev = new Quiz(src, r1, r2, r3);
                     currentEvent = ev;
+                    safari.flashPlayers();
                 }
                 else {
                     safaribot.sendMessage(src, info[0] + " is not a valid event! Type /startevent help for more information!", safchan);
