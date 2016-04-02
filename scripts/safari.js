@@ -808,7 +808,8 @@ function Safari() {
             postArgs: {
                 reward: 0,
                 cooldown: 0.15,
-                noRecords: true
+                noRecords: true,
+                taunt: true
             },
             desc: "Arena NPC"
         },
@@ -865,10 +866,10 @@ function Safari() {
         rainbow: {
             name: "Trainer Rainbow",
             party: [66217,721,717,65744,65919,65790,483,484,66023,65859,65909,"462",272,442,411,227,429,563],
-            power: [360, 500],
+            power: [380, 520],
             postArgs: {
                 reward: 2,
-                cooldown: 0.17,
+                cooldown: 0.5,
                 noRecords: true
             },
             desc: "Arena NPC"
@@ -5298,10 +5299,8 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
         } else {
             sendAll("", false, true);
-            // sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
-            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)) + " -> " + pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);//UNDO
-            // sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
-            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + ", then changed back, then " + verb + " " + poke(evolution) + " again!");//UNDO
+            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
+            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
             sendAll("", false, true);
         }
         this.saveGame(player);
@@ -8164,6 +8163,11 @@ function Safari() {
                 if (!args.noRecords) {
                     player.records.arenaLost += 1;
                 }
+                if (args.taunt) {
+                    sys.sendAll("", safchan);
+                    safaribot.sendHtmlAll("<b><font color=tomato>LOLOLOL! " + name.toCorrectCase() + " lost a battle against Trainer Nub! You should make fun of them with " + link("/rock " + name.toCorrectCase()) + "!</font></b>", safchan);
+                    sys.sendAll("", safchan);
+                }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
             player.quests.arena.cooldown = now() + hours(args.cooldown);
@@ -8177,7 +8181,7 @@ function Safari() {
             cyan: 500,
             crimson: 1000,
             rainbow: 50,
-            copycat: 300
+            copycat: 400
         };
 
         var opt = data[0].toLowerCase();
@@ -8187,7 +8191,7 @@ function Safari() {
                 var opp = arenaOpponents[n];
                 safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "silver") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(1, "silver") + ". Cooldown: " + utilities.getTimeString(1 * 60 * 60) + ". ", safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(1, "silver") + ". Cooldown: " + utilities.getTimeString(1.2 * 60 * 60) + ". ", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -8218,7 +8222,7 @@ function Safari() {
                     power: [10, 100],
                     postArgs: {
                         reward: 1,
-                        cooldown: 1,
+                        cooldown: 1.2,
                         noRecords: true
                     },
                     desc: "Arena NPC"
@@ -12886,6 +12890,7 @@ function Safari() {
         loadArenaTeams("mustard");
         loadArenaTeams("cyan");
         loadArenaTeams("crimson");
+        loadArenaTeams("rainbow");
         
         val = configObj.get("tier_chances");
         try {
@@ -16378,7 +16383,7 @@ function Safari() {
                 return true;
             }
             if (command === "config") {
-                var info = commandData.split(":"), editable = ["arena_pink", "arena_teal", "arena_mustard", "arena_cyan", "arena_crimson", "tier_chances"], prop, val;
+                var info = commandData.split(":"), editable = ["arena_pink", "arena_teal", "arena_mustard", "arena_cyan", "arena_crimson", "arena_rainbow", "tier_chances"], prop, val;
                 if (commandData.toLowerCase() === "current") {
                     safaribot.sendMessage(src, "Current configurable values:", safchan);
                     for (var e = 0; e < editable.length; e++) {
