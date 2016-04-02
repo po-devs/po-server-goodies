@@ -20,11 +20,15 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
             "Wifi CC 1v1": [0, 0, 0, 0, 1],
             "Challenge Cup": [0, 0, 0, 1, 2],
             "Inverted Challenge Cup": [0, 0, 0, 1, 2],
+            "Hackmons CC 1v1": [0, 0, 0, 0, 1],
+            "Hackmons Wifi CC 1v1": [0, 0, 0, 0, 1],
+            "Hackmons Challenge Cup": [0, 0, 0, 1, 2],
+            "Hackmons Inverted CC": [0, 0, 0, 1, 2],
             "ORAS Balanced Hackmons" : [0, 0 ,0 ,1 ,2],
             "ORAS Hackmons" : [0, 0, 0, 1, 2],
             "ORAS 1v1": [0, 0, 0, 0, 1],
+            "Flash Clash": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
-            "Monotype": [0, 0, 1, 2, 3],
             "default": [0, 1, 2, 4, 6],
         }
         var d = pointsDistributions[tier in pointsDistributions ? tier : "default"];
