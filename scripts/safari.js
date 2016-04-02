@@ -170,6 +170,7 @@ function Safari() {
             quizFirst: 0,
             quizSecond: 0,
             quizThird: 0,
+            topQuizScore: 0,
             packsOpened: 0,
             pokesStolen: 0,
             notBaitedCaught: 0,
@@ -441,7 +442,8 @@ function Safari() {
         towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
         arenaPoints: { desc: "by arena points", alts: ["points", "arena", "arenapoints"], alias: "arenapoints" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
-        pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesStolen"], alias: "stolen" }
+        pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesStolen"], alias: "stolen" },
+        topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score"], alias: "quiz" }
         // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramid", "pyramidscore", "pyramid score"], alias: "pyramid" },
         // pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramidfinished" }
     };
@@ -4123,7 +4125,7 @@ function Safari() {
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
-            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time")), safchan);
+            sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}. Scored a high of {7} and received a prize during a Quiz.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time"), plural(rec.topQuizScore, "point")), safchan);
             sys.sendMessage(src, "", safchan);
         } else {
             sys.sendMessage(src, "", safchan);
@@ -12246,6 +12248,7 @@ function Safari() {
             out = giveStuff(player, stuff);
             
             player.records.quizFirst += 1;
+            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[winner]);
             safari.saveGame(player);
             this.sendMessage(winner, "You " + out + "!");
         }
@@ -12257,6 +12260,7 @@ function Safari() {
             out = giveStuff(player, stuff);
             
             player.records.quizSecond += 1;
+            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[runnerup]);
             safari.saveGame(player);
             this.sendMessage(runnerup, "You " + out + "!");
         }
@@ -12269,6 +12273,7 @@ function Safari() {
                 out = giveStuff(player, stuff);
                 
                 player.records.quizThird += 1;
+                player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[thirdplace]);
                 safari.saveGame(player);
                 this.sendMessage(thirdplace, "You " + out + "!");
             }
