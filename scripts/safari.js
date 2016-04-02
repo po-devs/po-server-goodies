@@ -11961,6 +11961,7 @@ function Safari() {
         this.validAnswers = [];
         this.usedAnswers = [];
         this.playersAnswered = [];
+        this.noSmeargle = false;
 
         this.reward1 = reward1;
         this.reward2 = reward2;
@@ -12060,6 +12061,13 @@ function Safari() {
                     }
                 }
             }
+            this.noSmeargle = false;
+            for (e = 0; e < typesUsed.length; e++) {
+                if (typesUsed[e] === "move") {
+                    this.noSmeargle = true;
+                    break;
+                }
+            }
             
             this.currentQuestion = cap(readable(desc));
             this.usedAnswers = [];
@@ -12135,7 +12143,7 @@ function Safari() {
                 list = list.filter(function(x){
                     return parseFloat(pokedex.getWeight(x)) >= val && parseFloat(pokedex.getWeight(x)) <= val2;
                 });
-                desc = "weight is between " + val + " kg and " + val2 + " kg";
+                desc = "weight is between " + val + "~" + val2 + " kg / " + (val * 2.20462).toFixed(1) + "~" + (val2 * 2.20462).toFixed(1) + " lbs";
             break;
             case "height":
                 val = sys.rand(2, 17);
@@ -12194,6 +12202,10 @@ function Safari() {
         }
         if (!this.validAnswers.contains(info.num)) {
             this.sendMessage(name, info.name + " doesn't fit all the criteria for this round (criteria required: " + this.currentQuestion + ")!");
+            return;
+        }
+        if (this.noSmeargle && info.num === 235) {
+            this.sendMessage(name, info.name + " is not allowed when the hints include moves!");
             return;
         }
         var pointsRange = [100, 85, 75, 60, 50, 40, 30, 20, 15, 12];
