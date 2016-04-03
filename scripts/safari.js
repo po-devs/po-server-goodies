@@ -215,7 +215,8 @@ function Safari() {
             costume: 0,
             auction: 0,
             shopEdit: 0,
-            lastBaits: []
+            lastBaits: [],
+            nubTaunt: 0
         },
         shop: {},
         quests: {
@@ -808,8 +809,9 @@ function Safari() {
             party: [19,50,316,582,116,27,194,207,200,570,489,"235",236,624,513,511,417,147],
             power: [10, 60],
             postArgs: {
-                reward: 0,
-                cooldown: 0.15,
+                rewardAmt: 0,
+                moneyReward: 1,
+                cooldown: 0.1667,
                 noRecords: true,
                 taunt: true
             },
@@ -820,7 +822,7 @@ function Safari() {
             party: ["36",80,222,700,594,706,65838,472,205,423,308,620,368,429,510,151],
             power: [60, 130],
             postArgs: {
-                reward: 1,
+                rewardAmt: 1,
                 cooldown: 0.75
             },
             desc: "Arena NPC"
@@ -830,7 +832,7 @@ function Safari() {
             party: [282,330,248,"178",186,598,652,437,623,475,65790,384,272,550,66086],
             power: [90, 170],
             postArgs: {
-                reward: 2,
+                rewardAmt: 2,
                 cooldown: 1.25
             },
             desc: "Arena NPC"
@@ -840,7 +842,7 @@ function Safari() {
             party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
             power: [110, 200],
             postArgs: {
-                reward: 3,
+                rewardAmt: 3,
                 cooldown: 1.75
             },
             desc: "Arena NPC"
@@ -850,7 +852,7 @@ function Safari() {
             party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
             power: [150, 300],
             postArgs: {
-                reward: 6,
+                rewardAmt: 6,
                 cooldown: 2.75
             },
             desc: "Arena NPC"
@@ -860,7 +862,7 @@ function Safari() {
             party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
             power: [200, 380],
             postArgs: {
-                reward: 10,
+                rewardAmt: 10,
                 cooldown: 4
             },
             desc: "Arena NPC"
@@ -870,7 +872,8 @@ function Safari() {
             party: [66217,721,717,65744,65919,65790,483,484,66023,65859,65909,"462",272,442,411,227,429,563],
             power: [380, 520],
             postArgs: {
-                reward: 2,
+                reward: "gacha",
+                rewardAmt: 10,
                 cooldown: 0.5,
                 noRecords: true
             },
@@ -1972,10 +1975,8 @@ function Safari() {
                 }
                 asset = itemAlias(asset, true);
                 
-                if (amt > 0) {
+                if (amt !== 0) {
                     out.push(plural(amt, asset));
-                } else if (amt < 0) {
-                    out.push(plural(-amt, asset));
                 }
             } else {
                 asset = getInputPokemon(s);
@@ -3248,7 +3249,7 @@ function Safari() {
         var player = getAvatar(src);
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
-            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot]. ", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -3258,7 +3259,7 @@ function Safari() {
             input = data.split(" ");
             if (input.length < 2) {
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
+                safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader. To quickly change your party, use /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
                 safaribot.sendMessage(src, "You can also manage saved parties with /party save:[slot] and /party load:[slot]. " + (player.savedParties.length > 0 ? "You have the following parties saved: " : ""), safchan);
                 this.showSavedParties(src);
                 sys.sendMessage(src, "", safchan);
@@ -3272,7 +3273,7 @@ function Safari() {
         }
 
         var info, id, slots = 10;
-        if (action !== "save" && action !== "load") {
+        if (!["save", "load"].contains(action)) {
             info = getInputPokemon(targetId);
             if (!info.num) {
                 safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
@@ -3434,6 +3435,48 @@ function Safari() {
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
         }
+    };
+    this.quickLoadParty = function(src, data) {
+        if (cantBecause(src, "modify your party", ["wild", "contest", "auction", "battle", "event", "pyramid", "tutorial"])) {
+            return;
+        }
+        var player = getAvatar(src);
+        data = data.replace(/\,[\s]/gi, ",").split(",");
+        
+        var toLoad = [], invalid = [], info, p, id, c;
+        for (var p = 0; p < 6 && p < data.length; p++) {
+            info = getInputPokemon(data[p]);
+            if (info.num) {
+                toLoad.push(info.id);
+            } else {
+                invalid.push(data[p]);
+            }
+        }
+        if (invalid.length > 0) {
+            safaribot.sendMessage(src, "Cannot load invalid Pokémon " + readable(invalid) + "!", safchan);
+        }
+        for (p = toLoad.length - 1; p >= 0; p--) {
+            id = toLoad[p];
+            if (player.pokemon.indexOf(id) === -1) {
+                safaribot.sendMessage(src, "You don't have " + an(poke(id)) + "!", safchan);
+                toLoad.splice(p, 1);
+                continue;
+            }
+            c = countRepeated(toLoad, id);
+            if (c > countRepeated(player.pokemon, id)) {
+                safaribot.sendMessage(src, "You don't have " + c + " " + poke(id) + "!", safchan);
+                toLoad.splice(p, 1);
+            }
+        }
+
+        if (toLoad.length === 0) {
+            safaribot.sendMessage(src, "Couldn't load party don't have any of those Pokémon!", safchan);
+            return;
+        }
+
+        player.party = toLoad.concat();
+        safaribot.sendMessage(src, "Quick loaded party " + readable(player.party.map(poke), "and") + "!", safchan);
+        this.saveGame(player);
     };
     this.showSavedParties = function(src) {
         var player = getAvatar(src);
@@ -8153,22 +8196,35 @@ function Safari() {
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
+                var amt = args.rewardAmt;
                 if (!args.noRecords) {
                     player.records.arenaWon += 1;
-                    player.records.arenaPoints += args.reward;
-                    safari.addToMonthlyLeaderboards(player.id, "arenaPoints", args.reward);
+                    player.records.arenaPoints += amt;
+                    safari.addToMonthlyLeaderboards(player.id, "arenaPoints", amt);
                 }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Wow, I didn't expect to lose! Good job, here's your reward!", safchan);
-                safaribot.sendMessage(id, "You received " + plural(args.reward, "silver") + "!", safchan);
-                rewardCapCheck(player, "silver", args.reward, true);
+                var rew = args.reward || "silver";
+
+                if (amt !== 0) {
+                    safaribot.sendMessage(id, "You received " + plural(amt, rew) + "!", safchan);
+                    rewardCapCheck(player, rew, amt, true);
+                }
+                if (args.moneyReward) {
+                    safaribot.sendMessage(id, "You received $" + addComma(args.moneyReward) + "!", safchan);
+                    player.money += args.moneyReward;
+                    if (player.money > moneyCap) {
+                        player.money = moneyCap;
+                    }
+                }
             } else {
                 if (!args.noRecords) {
                     player.records.arenaLost += 1;
                 }
-                if (args.taunt) {
+                if (args.taunt && now() > player.cooldowns.nubTaunt) {
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b><font color=tomato>LOLOLOL! " + name.toCorrectCase() + " lost a battle against Trainer Nub! You should make fun of them with " + link("/rock " + name.toCorrectCase()) + "!</font></b>", safchan);
                     sys.sendAll("", safchan);
+                    player.cooldowns.nubTaunt = now() + hours(24);
                 }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
@@ -8185,15 +8241,27 @@ function Safari() {
             rainbow: 50,
             copycat: 400
         };
+        var copycat = {
+            name: "Trainer " + sys.name(src),
+            party: [],
+            power: [10, 100],
+            postArgs: {
+                reward: "dust",
+                rewardAmt: 40,
+                cooldown: 1.2,
+                noRecords: true
+            },
+            desc: "Arena NPC"
+        };
 
         var opt = data[0].toLowerCase();
         if (opt === "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Challenge our trainers for a chance to receive some " + es(finishName("silver")) + "! The trainers available are: ", safchan);
             for (var n in arenaOpponents) {
                 var opp = arenaOpponents[n];
-                safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + plural(opp.postArgs.reward, "silver") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + (opp.postArgs.rewardAmt !== 0 ? plural(opp.postArgs.rewardAmt, (opp.postArgs.reward || "silver")) : "") + (opp.postArgs.moneyReward ? "$" + addComma(opp.postArgs.moneyReward) : "") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
             }
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(1, "silver") + ". Cooldown: " + utilities.getTimeString(1.2 * 60 * 60) + ". ", safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(copycat.postArgs.rewardAmt, copycat.postArgs.reward) + ". Cooldown: " + utilities.getTimeString(1.2 * 60 * 60) + ". ", safchan);
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -8218,17 +8286,8 @@ function Safari() {
         var npc = arenaOpponents[opt];
         if (!npc) {
             if (opt === sys.name(src).toLowerCase()) {
-                npc = {
-                    name: "Trainer " + sys.name(src),
-                    party: player.party.concat(),
-                    power: [10, 100],
-                    postArgs: {
-                        reward: 1,
-                        cooldown: 1.2,
-                        noRecords: true
-                    },
-                    desc: "Arena NPC"
-                };
+                npc = copycat;
+                npc.part = player.party.concat();
                 opt = "copycat";
             } else {
                 safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
@@ -14074,6 +14133,10 @@ function Safari() {
             }
             if (command === "active") {
                 safari.manageParty(src, "active:" + commandData);
+                return true;
+            }
+            if (command === "qload") {
+                safari.quickLoadParty(src, commandData);
                 return true;
             }
             if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
