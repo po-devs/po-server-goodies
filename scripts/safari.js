@@ -8287,7 +8287,7 @@ function Safari() {
         if (!npc) {
             if (opt === sys.name(src).toLowerCase()) {
                 npc = copycat;
-                npc.part = player.party.concat();
+                npc.party = player.party.concat();
                 opt = "copycat";
             } else {
                 safaribot.sendMessage(src, "There's no one with that name around here!", safchan);
