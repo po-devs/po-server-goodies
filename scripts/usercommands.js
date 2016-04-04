@@ -631,6 +631,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             case "landorus-therian": commandData = "Landorus-T"; break;
             case "kyurem-black": commandData = "Kyurem-B"; break;
             case "kyurem-white": commandData = "Kyurem-W"; break;
+            case "porygonz":
+            case "porygon z": commandData = "Porygon-Z"; break;
+            case "porygon-2":
+            case "porygon 2": commandData = "Porygon2"; break;
             default: commandData = commandData;
         }
         return commandData;
