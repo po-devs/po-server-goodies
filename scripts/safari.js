@@ -1,4 +1,4 @@
-/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
+/*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true,-W030*/
 /*global sys, module, SESSION, script, safaribot, require, updateModule, staffchannel, sachannel, pokedex */
 
 var MemoryHash = require("memoryhash.js").MemoryHash;
@@ -382,9 +382,10 @@ function Safari() {
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20, pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
-        nothing: 480
+        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20, 
+        pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16
     };
+    var finderMissRate = 0.80;
     var packItems = {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
@@ -883,24 +884,65 @@ function Safari() {
     var recipeData = { //Makes = how many are made when the recipe is completed
         "materia": {
             "makes": 1,
-            "safari": itemData.materia.threshold
+            "cooldown": 12,
+            "failChance": 0.05,
+            "failUses": {
+                "safari": Math.floor(itemData.materia.threshold/10)
+            },
+            "ingredients": {
+                "safari": itemData.materia.threshold
+            },
+            "transmutation": true
         },
         "master": {
             "makes": 1,
-            "materia": 1,
-            "fragment": itemData.fragment.threshold
+            "cooldown": 24,
+            "failChance": 0.07,
+            "failUses": {
+                "materia": 1
+            },
+            "ingredients": {
+                "materia": 1,
+                "fragment": itemData.fragment.threshold
+            },
+            "transmutation": true
         },
         "cherry": {
-            "makes": 2,
-            "materia": 1,
-            "bait": 50,
-            "honey": 2,
-            "dust": 50,
-            "bigpearl": 2
+            "makes": 3,
+            "cooldown": 2,
+            "failChance": 0.04,
+            "failUses": {
+                "bait": 50
+            },
+            "ingredients": {
+                "materia": 1,
+                "bait": 50,
+                "honey": 2,
+                "dust": 50,
+                "bigpearl": 2
+            },
+            "transmutation": true
         },
         "bigpearl": {
             "makes": 15,
-            "pearl": 50
+            "cooldown": 1,
+            "failChance": 0,
+            "ingredients": {
+                "pearl": 50
+            },
+            "transmutation": false
+        },
+        "gem": {
+            "makes": 1,
+            "cooldown": 2,
+            "failChance": 0.8,
+            "failUses": {
+                "itemfinder": 15
+            },
+            "ingredients": {
+                "itemfinder": 15
+            },
+            "transmutation": false
         }
     };
     
@@ -5399,11 +5441,11 @@ function Safari() {
         }
         totalCharges -= 1;
 
-        var reward = randomSample(finderItems);
+        var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         var amount = 1;
         if (player.costume === "explorer") {
             if (reward === "nothing" && chance(costumeData.explorer.rate)) {
-                reward = randomSample(finderItems);
+                reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
             }
             if (reward === "pearl" || reward === "stardust") {
                 amount = chance(costumeData.explorer.rate2) ? 2 : 1;
@@ -8955,9 +8997,9 @@ function Safari() {
         var recipes = recipeData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Mr. Booplesnoot and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Princess Fluffybutt and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
-                return " " + link("/quest alchemist:" + x, finishName(x)) + " ×" + recipes[x].makes;
+                return " " + link("/quest alchemist:" + x, finishName(x)) + " ×" + recipes[x].makes + " <small>(CD: " + recipes[x].cooldown + "h)</small>";
             }), safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -8971,21 +9013,19 @@ function Safari() {
         }
         
         var recipeString = [];
-        for (var e in recipes[item]) {
-            if (e === "makes") {continue;}
-            recipeString.push(plural(recipes[item][e], e));
+        for (var e in recipes[item].ingredients) {
+            recipeString.push(plural(recipes[item].ingredients[e], e));
         }
         
         var canMake = true, progress = [];
-        for (var e in recipes[item]) {
-            if (e === "makes") {continue;}
-            if (player.balls[e] < recipes[item][e]) {
+        for (var e in recipes[item].ingredients) {
+            if (player.balls[e] < recipes[item].ingredients[e]) {
                 canMake = false;
             }
-            progress.push(player.balls[e] + "/" + plural(recipes[item][e], e));
+            progress.push(player.balls[e] + "/" + plural(recipes[item].ingredients[e], e));
         }
         if (!data[1] || data[1].toLowerCase() !== "finish") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: See those materials? Bring 'em back here so I can make you some shiny items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: See those materials? Bring 'em back here so I can make you some shiny new items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
             safaribot.sendMessage(src, fullItem + " Recipe: " + recipeString.join(", "), safchan);
             safaribot.sendHtmlMessage(src, "Progress: " + progress.join(", ") + (canMake ? " <b>[Available]</b>" : ""), safchan);
             sys.sendMessage(src, "", safchan);
@@ -9007,22 +9047,31 @@ function Safari() {
         }
         
         if (item === "master" && player.balls.master > 0) {
-            //TODO: Make in alchemist's personality
-            safaribot.sendHtmlMessage(src, trainerSprite + "It probably wouldn't be wise to try making " + an(fullItem) + " when you already have one.", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + an(fullItem) + " mus' be your favoritest item or sumthin' cuz you already gots one!", safchan);
             return;
         }
         
-        for (var e in recipes[item]) {
-            player.balls[e] -= recipes[item][e];
-        }
         var amt = recipes[item].makes || 1;
-        safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less' blow stuff up Princess Fluffybutt!", safchan);
-        safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with smoke but it quickly disappates to reveal " + plural(amt, fullItem) + ".", safchan);
-        safaribot.sendMessage(src, "You received " + plural(amt, fullItem) + ".", safchan);
-        player.records.transmutations += 1;
-        player.quests.alchemist.cooldown = now() + hours(12);
-        player.quests.alchemist.cooldown = now() + hours(12);
-        rewardCapCheck(player, item, amt, true);
+        safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less blow stuff up Princess Fluffybutt!", safchan);        
+        if (chance(recipes[item].failChance)) {
+            var destroyed = [];
+            for (var e in recipes[item].failUses) {
+                player.balls[e] -= recipes[item].failUses[e];
+                destroyed.push(plural(recipes[item].failUses[e], e));
+            }
+            safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to smell like burnt marshmallows as you notice your ingredients ignite! You quickly douse the flames to prevent the whole place from burning down.", safchan);
+            safaribot.sendMessage(src, "As the smoke clears you realize that your " + readable(destroyed) + " were burnt to a crisp!", safchan);
+            player.quests.alchemist.cooldown = now() + hours(0.25); //about 15 minutes
+        } else {
+            for (var e in recipes[item].ingredients) {
+                player.balls[e] -= recipes[item].ingredients[e];
+            }
+            safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with a sparkling mist but it quickly disappates to reveal " + plural(amt, fullItem) + ".", safchan);
+            safaribot.sendMessage(src, "You received " + plural(amt, fullItem) + ".", safchan);
+            player.records.transmutations += recipes[item].transmutation;
+            player.quests.alchemist.cooldown = now() + hours(recipes[item].cooldown);
+            rewardCapCheck(player, item, amt, true);
+        }
         this.saveGame(player);
     };
     function generateName() {
@@ -15324,13 +15373,20 @@ function Safari() {
                     var itemSets = [gachaItems, finderItems, packItems];
                     var method = ["Gachapon", "Item Finder", "Prize Pack"];
                     for (var i = 0; i < itemSets.length; i++) {
+                        var nothing = method[i] === "Item Finder" && commandData === "nothing";
                         var total = 0;
                         var instance = itemSets[i][commandData] || 0;
-                        if (instance < 1) {
+                        if (instance < 1 && !nothing) {
                             safaribot.sendMessage(src, method[i] + ": This item is not available from " + method[i] + ".", safchan);
                         } else {
                             for (var e in itemSets[i]) {
                                 total += itemSets[i][e];
+                            }
+                            if (method[i] === "Item Finder") {
+                                total /= (1 - finderMissRate);
+                            }
+                            if (nothing) {
+                                instance = total * finderMissRate;
                             }
                             safaribot.sendMessage(src, method[i] + ": The rate of " + finishName(commandData) + " is " + instance + "/" + total + ", or " + percentage(instance, total) + ".", safchan);
                         }
