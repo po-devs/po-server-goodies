@@ -2831,6 +2831,7 @@ function Safari() {
             legendaryChance = 1;
             eventChance = 1;
             rulesMod = 1;
+            typeBonus = 1;
             if (isLegend || isShiny){
                 ballBonus = itemData[ball].bonusRate;
             }
