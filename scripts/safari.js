@@ -382,7 +382,7 @@ function Safari() {
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20, 
+        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20,
         pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16
     };
     var finderMissRate = 0.80;
@@ -2831,9 +2831,10 @@ function Safari() {
             legendaryChance = 1;
             eventChance = 1;
             rulesMod = 1;
-            typeBonus = 1;
             if (isLegend || isShiny){
                 ballBonus = itemData[ball].bonusRate;
+            } else {
+                typeBonus = 1;
             }
         }
         
@@ -9080,7 +9081,7 @@ function Safari() {
         }
         
         var amt = recipes[item].makes || 1;
-        safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less blow stuff up Princess Fluffybutt!", safchan);        
+        safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less blow stuff up Princess Fluffybutt!", safchan);
         if (chance(recipes[item].failChance)) {
             var destroyed = [];
             for (var e in recipes[item].failUses) {
