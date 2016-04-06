@@ -908,7 +908,7 @@ function Safari() {
             "transmutation": true
         },
         "cherry": {
-            "makes": 3,
+            "makes": 2,
             "cooldown": 2,
             "failChance": 0.04,
             "failUses": {
@@ -943,6 +943,17 @@ function Safari() {
                 "itemfinder": 15
             },
             "transmutation": false
+        },
+        "mega": {
+            "makes": 1,
+            "cooldown": 8,
+            "failChance": 0,
+            "ingredients": {
+                "gem": 40,
+                "eviolite": 4,
+                "materia": 1
+            },
+            "transmutation": true
         }
     };
     
@@ -2217,7 +2228,7 @@ function Safari() {
         }
         if (isRare(num) && !dexNum) {
             amount = 1;
-            if (isLegendary(num) && contestCount > 0 && contestCount % 3 === 0) {
+            if (isLegendary(num) && contestCount > 0 && contestCount % 2 === 0) {
                 wildEvent = true;
             }
         }
@@ -2730,14 +2741,6 @@ function Safari() {
             userStats -= evioBonus;
             statsBonus = (userStats - wildStats) / -8000;
         }
-
-        if (ball === "myth") {
-            shinyChance = 1;
-            legendaryChance = 1;
-            if (isLegend){
-                ballBonus = itemData[ball].bonusRate;
-            }
-        }
         if (ball === "heavy" && wildStats >= 450) {
             ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
@@ -2802,13 +2805,18 @@ function Safari() {
             }
         }
         
-        
-        var finalChance = (tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod;
-        if (finalChance <= 0) {
-            finalChance = 0.01;
+        var eventChance = (wildEvent ? 0.4 : 1);
+        if (ball === "myth") {
+            shinyChance = 1;
+            legendaryChance = 1;
+            eventChance = 1;
+            rulesMod = 1;
+            if (isLegend || isShiny){
+                ballBonus = itemData[ball].bonusRate;
+            }
         }
-
-        finalChance = finalChance * ballBonus * (wildEvent ? 0.4 : 1);
+        
+        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod * ballBonus, 0.01) * eventChance;
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0);
             finalChance = Math.min(finalChance, maxCloneRate);
