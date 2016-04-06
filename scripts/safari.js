@@ -466,6 +466,9 @@ function Safari() {
     var contestantsCount = {};
     var contestantsWild = [];
     var currentTheme;
+    var contestVotes;
+    var contestVotingCooldown = 4;
+    var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
     var nextTheme;
     var currentRules;
     var nextRules;
@@ -811,7 +814,7 @@ function Safari() {
             power: [10, 60],
             postArgs: {
                 rewardAmt: 0,
-                moneyReward: 1,
+                moneyReward: 5,
                 cooldown: 0.1667,
                 noRecords: true,
                 taunt: true
@@ -828,9 +831,9 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
-        teal: {
-            name: "Trainer Teal",
-            party: [282,330,248,"178",186,598,652,437,623,475,65790,384,272,550,66086],
+        mustard: {
+            name: "Trainer Mustard",
+            party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
             power: [90, 170],
             postArgs: {
                 rewardAmt: 2,
@@ -838,9 +841,9 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
-        mustard: {
-            name: "Trainer Mustard",
-            party: [65,131743,38,203,"26",560,297,563,145,71,479,65964,15,28,135],
+        cyan: {
+            name: "Trainer Cyan",
+            party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
             power: [110, 200],
             postArgs: {
                 rewardAmt: 3,
@@ -848,9 +851,9 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
-        cyan: {
-            name: "Trainer Cyan",
-            party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
+        crimson: {
+            name: "Trainer Crimson",
+            party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
             power: [150, 300],
             postArgs: {
                 rewardAmt: 6,
@@ -858,25 +861,13 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
-        crimson: {
-            name: "Trainer Crimson",
-            party: [131078,101,625,"663",212,342,553,538,721,149,45,197087,168,571,213, 308, 702, 702],
+        rainbow: {
+            name: "Trainer Rainbow",
+            party: [721,483,66023,462,272,442,411,227,429,563,323,208,630,373,65790,230,"59",66217],
             power: [200, 380],
             postArgs: {
                 rewardAmt: 10,
                 cooldown: 4
-            },
-            desc: "Arena NPC"
-        },
-        rainbow: {
-            name: "Trainer Rainbow",
-            party: [66217,721,717,65744,65919,65790,483,484,66023,65859,65909,"462",272,442,411,227,429,563],
-            power: [380, 520],
-            postArgs: {
-                reward: "gacha",
-                rewardAmt: 10,
-                cooldown: 0.5,
-                noRecords: true
             },
             desc: "Arena NPC"
         }
@@ -1240,6 +1231,7 @@ function Safari() {
         isBaited = false;
         if (!saveContest) {
             currentTheme = null;
+            contestVotes = null;
         }
     }
     
@@ -2291,7 +2283,8 @@ function Safari() {
     this.startContest = function(commandData) {
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
-
+        
+        var votesResult;
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
             currentRules = this.pickRules(currentTheme);
@@ -2299,8 +2292,32 @@ function Safari() {
             currentTheme = commandData.toLowerCase();
             currentRules = this.pickRules(currentTheme);
         } else if (nextTheme) {
-            if (Array.isArray(nextTheme)) {
-                nextTheme = nextTheme[sys.rand(0, nextTheme.length)];
+            if (contestVotes) {
+                var vCount = {}, max = 0, winners = nextTheme.concat();
+                for (var t in contestVotes) {
+                    if (nextTheme.contains(contestVotes[t])) {
+                        if (!vCount.hasOwnProperty(contestVotes[t])) {
+                            vCount[contestVotes[t]] = 0;
+                        }
+                        vCount[contestVotes[t]]++;
+                    }
+                }
+                for (t in vCount) {
+                    if (vCount[t] >= max) {
+                        if (vCount[t] > max) {
+                            winners = [];
+                            max = vCount[t];
+                        }
+                        winners.push(t);
+                    }
+                }
+                votesResult = "Votes: " + nextTheme.map(function(x) { return themeName(x) + " (" + (vCount[x] || 0) + ")"; }).join(", ");
+                nextTheme = winners.random();
+                contestVotes = null;
+            } else {
+                if (Array.isArray(nextTheme)) {
+                    nextTheme = nextTheme[sys.rand(0, nextTheme.length)];
+                }
             }
             currentTheme = nextTheme == "none" ? null : nextTheme;
             if (nextRules && nextTheme in nextRules) {
@@ -2319,7 +2336,10 @@ function Safari() {
         } else {
             sys.sendAll("*** ************************************************************ ***", safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now!", safchan);
+        if (votesResult) {
+            safaribot.sendAll(votesResult, safchan);
+        }
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + contestThemes[currentTheme].name + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules), safchan);
         }
@@ -2327,7 +2347,7 @@ function Safari() {
 
         if (contestBroadcast) {
             sys.sendAll("*** ************************************************************ ***", 0);
-            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
+            safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
         } else {
             contestBroadcast = true;
@@ -8284,11 +8304,10 @@ function Safari() {
         var price = {
             nub: 0,
             pink: 100,
-            teal: 200,
-            mustard: 300,
-            cyan: 500,
-            crimson: 1000,
-            rainbow: 50,
+            mustard: 200,
+            cyan: 300,
+            crimson: 500,
+            rainbow: 1000,
             copycat: 400
         };
         var copycat = {
@@ -13035,7 +13054,9 @@ function Safari() {
                 val = JSON.parse(val);
             } catch (err) { val = null; }
             if (Array.isArray(val)) {
-                arenaOpponents[name].party = val;
+                if (name in arenaOpponents) {
+                    arenaOpponents[name].party = val;
+                }
             }
         };
         loadArenaTeams("pink");
@@ -13269,6 +13290,15 @@ function Safari() {
                 lastBaiters.splice(lastBaiters.indexOf(n2), 1, n1);
             }
             
+            if (contestVotes) {
+                var pVote = contestVotes[player.id], tVote = contestVotes[target.id];
+                
+                delete contestVotes[player.id];
+                delete contestVotes[target.id];
+                contestVotes[player.id] = tVote;
+                contestVotes[target.id] = pVote;
+            }
+            
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.add(target.id, target.balls.entry);
             rafflePlayers.save();
@@ -13336,6 +13366,12 @@ function Safari() {
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.remove(name1.toLowerCase());
             rafflePlayers.save();
+            
+            if (contestVotes) {
+                var pVote = contestVotes[targetId];
+                delete contestVotes[targetId];
+                contestVotes[player.id] = pVote;
+            }
 
             if (saltBans.hash.hasOwnProperty(name1.toLowerCase())) {
                 saltBans.add(player.id, player.truesalt);
@@ -14448,6 +14484,9 @@ function Safari() {
                                 }
                             }
                         }
+                        if (contestVotes) {
+                            safaribot.sendHtmlMessage(src, "You can choose which theme will be started! Type " + readable(nextTheme.map(function(x){ return link("/vote " + themeName(x)); }), "or") + " to choose!", safchan);
+                        }
                     }
                 }
                 safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
@@ -14557,6 +14596,39 @@ function Safari() {
                         safaribot.sendMessage(src, "Current themes file: " + url, safchan);
                     }
                 }
+                return true;
+            }
+            if (command === "vote") {
+                if (!contestVotes || !nextTheme) {
+                    safaribot.sendMessage(src, "There's no voting for a theme ongoing!", safchan);
+                    return true;
+                }
+                var player = getAvatar(src);
+                if (!player) {
+                    safaribot.sendMessage(src, "You need to start the game to vote!", safchan);
+                    return true;
+                }
+                var voted = commandData.toLowerCase();
+                if (!nextTheme.contains(voted)) {
+                    var tNames = nextTheme.map(themeName).map(function(x) { return x.toLowerCase();});
+                    if (tNames.contains(voted)) {
+                        voted = nextTheme[tNames.indexOf(voted)];
+                    } else {
+                        if (voted in contestThemes || voted === "none") {
+                            safaribot.sendMessage(src, "This theme is not available to vote at this time! Type /info to find out which themes can be voted for.", safchan);
+                        } else {
+                            safaribot.sendMessage(src, voted + " is not a valid theme!", safchan);
+                        }
+                        return true;
+                    }
+                }
+                
+                if (contestVotes.hasOwnProperty(player.id)) {
+                    safaribot.sendMessage(src, "You changed your vote to " + themeName(voted) + "!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "You voted for " + themeName(voted) + "!", safchan);
+                }
+                contestVotes[player.id] = voted;
                 return true;
             }
             if (command === "contestrules" || command === "contestrule") {
@@ -16849,12 +16921,19 @@ function Safari() {
             }
         }
         if (contestCooldown === 180) {
+            var possibleThemes = Object.keys(contestThemes).concat();
+            var repetitionCooldown = 4;
+            for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
+                if (possibleThemes.contains(lastContests[e].themeId)) {
+                    possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
+                }
+            }
             if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
-                nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle().slice(0, 2));
+                nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             } else {
                 nextTheme = [];
-                nextTheme = nextTheme.concat(Object.keys(contestThemes).shuffle().slice(0, 3));
+                nextTheme = possibleThemes.shuffle().slice(0, 3);
             }
 
             nextRules = {};
@@ -16868,11 +16947,20 @@ function Safari() {
                 }
                 rulesDesc.push("Rules for " + themeName(t) + " --- " + safari.translateRules(nextRules[t]));
             }
+            contestVotingCount--;
+            contestVotes = null;
+            if (contestVotingCount <= 0) {
+                contestVotes = {};
+                contestVotingCount = contestVotingCooldown;
+            }
 
             sys.sendAll("*** ************************************************************ ***", safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
                 safaribot.sendAll(" --- " + rulesDesc[n], safchan);
+            }
+            if (contestVotes) {
+                safaribot.sendHtmlAll("You can choose which theme will be started! Type " + readable(nextTheme.map(function(x){ return link("/vote " + themeName(x)); }), "or") + " to choose!", safchan);
             }
             sys.sendAll("*** ************************************************************ ***", safchan);
 
@@ -17054,7 +17142,7 @@ function Safari() {
                     sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared with the contest::\n");
                 }
                 
-                //Clear throwers if the contest ends with a Wild Pokemon uncaught
+                contestInfo.themeId = currentTheme ? currentTheme : "none";
                 contestInfo.theme = currentTheme ? contestThemes[currentTheme].name : "Default";
                 contestInfo.rules = safari.translateRules(currentRules);
                 lastContests.push(contestInfo);
@@ -17062,6 +17150,7 @@ function Safari() {
                     lastContests.shift();
                 }
                 permObj.add("lastContests", JSON.stringify(lastContests));
+                //Clear throwers if the contest ends with a Wild Pokemon uncaught
                 resetVars();
                 currentRules = null;
                 contestCatchers = {};
