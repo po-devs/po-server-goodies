@@ -11301,7 +11301,7 @@ function Safari() {
         return signupsLower.contains(name.toLowerCase());
     };
 
-    function FactionWar(src, team1, team2, reward, amount, inverted) {
+    function FactionWar(src, reward, team1, team2, inverted) {
         SafariEvent.call(this, src);
         this.eventName = (inverted ? "Inverted " : "") + "Faction War";
 
@@ -11320,19 +11320,18 @@ function Safari() {
         this.playerTeams = {};
 
         this.reward = reward;
-        this.amount = reward.type == "item" ? amount : 1;
-        this.rewardName = plural(amount, reward.name);
+        this.rewardName = translateStuff(reward);
         this.hasReward = true;
 
         this.team1Defeated = 0;
         this.team2Defeated = 0;
         this.suddenDeath = false;
 
-        this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! Winners will receive <b>" + plural(amount, reward.name) + "</b>!";
+        this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! Winners will receive <b>" + this.rewardName + "</b>!";
 
         var joinCommand = "/signup";
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + plural(amount, reward.name) + "</b>!", safchan);
+        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + this.rewardName + "</b>!", safchan);
         safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
@@ -11530,7 +11529,7 @@ function Safari() {
     };
     FactionWar.prototype.finish = function() {
         var winner, loser;
-        var rewardmsg = this.hasReward ? "Each player will receive " + plural(this.amount, this.reward.name) + "!" : "";
+        var rewardmsg = this.hasReward ? "Each player will receive " + this.rewardName + "!" : "";
         if (this.team1Defeated > this.team2Defeated) {
             winner = this.team2;
             loser = this.team1;
@@ -11569,7 +11568,7 @@ function Safari() {
         if (!this.hasReward) {
             this.sendToViewers("No records or rewards will be given due to the low number of participants!");
         } else {
-            var name, len = winner.length, reward = this.reward, amt = this.amount;
+            var name, len = winner.length, reward = this.reward, stuff, out;
 
             for (e = 0; e < len; e++) {
                 name = winner[e];
@@ -11578,16 +11577,11 @@ function Safari() {
                     if (player) {
                         id = sys.id(name);
                         if (id) {
-                            safaribot.sendMessage(id, "You received " + plural(amt, reward.name) + " for winning the event!", safchan);
+                            safaribot.sendMessage(id, "You received " + this.rewardName + " for winning the event!", safchan);
                         }
-                        if (reward.type == "poke") {
-                            player.pokemon.push(reward.id);
-                        } else {
-                            rewardCapCheck(player, reward.id, amt);
-                            if (reward.name === itemData.entry.fullName) {
-                                rafflePlayers.add(player.id, player.balls.entry);
-                            }
-                        }
+                        
+                        stuff = toStuffObj(reward.replace(/\|/g, ":")),
+                        out = giveStuff(player, stuff);
                         player.records.factionWins += 1;
 
                         for (i = 0; i < mvp.length; i++) {
@@ -11628,6 +11622,14 @@ function Safari() {
         if (hasPokeInShop(src, true)) {
             return false;
         }
+        if (this.inverted) {
+            for (var e = 0; e < player.party.length; e++) {
+                if (hasType(player.party[e], "Normal") && hasType(player.party[e], "???")) {
+                    safaribot.sendMessage(src, "You cannot use a pure Normal-type Pokémon on " + an(this.eventName) + "!", safchan);
+                    return false;
+                }
+            }
+        }
         return true;
     };
     FactionWar.prototype.onJoin = function(name, data) {
@@ -11650,7 +11652,7 @@ function Safari() {
         safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The teams are: ", safchan);
         safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
         safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
-        safaribot.sendMessage(src, "Winners will receive " + plural(this.amount, this.reward.name) + "!", safchan);
+        safaribot.sendMessage(src, "Winners will receive " + this.rewardName + "!", safchan);
     };
 
     function BFactory(src, reward1, reward2, reward3) {
@@ -12441,7 +12443,6 @@ function Safari() {
         }
     };
     
-    // function PokeRace(src, minBet, maxBet, favorite, underdog, normal, goal, silver, item) {
     function PokeRace(src, type, data) {
         SafariEvent.call(this, src);
         this.type = type;
@@ -13882,7 +13883,7 @@ function Safari() {
         sys.sendMessage(src, "*** EVENTS INFORMATION ***", safchan);
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "Faction War: Players join one of the two teams to battle each other. Pokémon defeated are eliminated from the battle. The team that defeats the all Pokémon from the other side first wins.", safchan);
-        sys.sendMessage(src, "Requirements: A full party (6 Pokémon). Minimum of 1 player for event to start, and 4 players for rewards.", safchan);
+        sys.sendMessage(src, "Requirements: A full party (6 Pokémon). Minimum of 1 player for event to start, and 4 players for rewards. If Inverted Faction War, pure Normal-type Pokémon cannot be used.", safchan);
 
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "Pokémon Race: 6 Pokémon compete in a race to the goal. Players can place bets for the winner to win the reward.", safchan);
@@ -14737,8 +14738,7 @@ function Safari() {
                     case "help":
                     case "info":
                         safaribot.sendMessage(src, "To start an event, use one of the following commands:", safchan);
-                        safaribot.sendMessage(src, "Faction War: /startevent war:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
-                        safaribot.sendMessage(src, "Inverted Faction War: /startevent invertedwar:[Team1]:[Team2]:[Reward]:[Amount]", safchan);
+                        safaribot.sendMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:[Team1]:[Team2]", safchan);
                         safaribot.sendMessage(src, "Pokémon Race: /startevent race:[Reward]:[UnderdogReward]:[FavoriteReward]", safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true), safchan);
                         safaribot.sendMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:[3rd Place Rewards]", safchan);
@@ -14750,28 +14750,29 @@ function Safari() {
                 var param = info.slice(1);
 
                 if (type == "factionwar" || type == "invertedwar") {
-                    if (param.length < 3) {
-                        safaribot.sendMessage(src, "Use /startevent FactionWar:Team1:Team2:Reward:Amount to start a Faction War!", safchan);
+                    if (param.length < 1) {
+                        safaribot.sendMessage(src, "Use /startevent [FactionWar/InvertedWar]:Reward:Team1:Team2 to start a Faction War!", safchan);
+                        return true;
+                    }
+                    
+                    var reward = param[0];
+                    var valid = validateStuff(reward);
+                    if (valid.length > 0) {
+                        safaribot.sendMessage(src, "Invalid reward found: " + readable(valid) + " !", safchan);
                         return true;
                     }
 
-                    var name1 = param[0];
-                    var name2 = param[1];
-                    var reward = getInput(param[2].toLowerCase());
-                    if (!reward) {
-                        safaribot.sendMessage(src, param[2] + " is not a valid reward!", safchan);
-                        return true;
+                    var name1 = param.length > 1 && param[1] ? param[1] : sys.pokemon(sys.rand(1, 722));
+                    var name2;
+                    if (param.length > 2 && param[2]) {
+                        name2 = param[2];
+                    } else {
+                        do {
+                            name2 = sys.pokemon(sys.rand(1, 722));
+                        } while (name1 === name2);
                     }
-                    var amt = param.length > 3 ? parseInt(param[3], 10) : 1;
-                    if (!amt || isNaN(amt)) {
-                        safaribot.sendMessage(src, "Please type a valid amount for the reward!", safchan);
-                        return true;
-                    }
-                    if (reward.type == "poke") {
-                        amt = 1;
-                    }
-
-                    var ev = new FactionWar(src, name1, name2, reward, amt, type == "invertedwar");
+                    
+                    var ev = new FactionWar(src, reward, name1, name2, type == "invertedwar");
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
