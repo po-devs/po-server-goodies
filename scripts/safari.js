@@ -10,6 +10,7 @@ function Safari() {
     /* Variables */ {
     var safari = this;
     var safariUpdating = false;
+    var needsUpdating = false;
     var safchan;
     var defaultChannel = "Safari";
     var safaribot = new Bot("Tauros");
@@ -3031,6 +3032,7 @@ function Safari() {
                 currentDisplay = null;
                 wildEvent = false;
                 isBaited = false;
+                checkUpdate();
             } else {
                 currentThrows -= Math.floor(maxThrows/2 + 5); //each caught pokemon makes the horde more likely to flee by a large amount
                 if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
@@ -9478,6 +9480,7 @@ function Safari() {
             this.sendToViewers("");
         }
         this.finished = true;
+        checkUpdate();
     };
     Pyramid.prototype.sendMessage = function(name, msg, flashing, colored) {
         var id = sys.id(name);
@@ -13702,6 +13705,17 @@ function Safari() {
             });
         }
     }
+    function checkUpdate() {
+        if (!needsUpdating) {
+            return;
+        }
+        if (currentPokemon || contestCount > 0 || contestCooldown < 200 || currentAuctions.length > 0 || currentBattles.length > 0 || currentPyramids.length > 0 || currentEvent) {
+            return;
+        }
+        safariUpdating = true;
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+        runUpdate();
+    }
     
     /* Help & Commands */
     this["help-string"] = ["safari: To know the safari commands"];
@@ -14997,6 +15011,7 @@ function Safari() {
                 safaribot.sendAll(sys.name(src) + " cancelled the " + currentEvent.eventName + " event!", safchan);
                 currentEvent.log(false, [], "Signups: " + currentEvent.signups.join(", "));
                 currentEvent = null;
+                checkUpdate();
                 return true;
             }
             if (command === "sanitize") {
@@ -15552,6 +15567,7 @@ function Safari() {
                     nextRules = null;
                     nextTheme = null;
                     contestCatchers = {};
+                    checkUpdate();
                 } else {
                     safaribot.sendMessage(src, "You can't skip a contest if there's none running or about to start!", safchan);
                 }
@@ -16021,6 +16037,7 @@ function Safari() {
                     }
                     resetVars(true);
                 }
+                checkUpdate();
                 return true;
             }
             if (command === "bestow") {
@@ -16109,7 +16126,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Last ID number reset to " + value + ".", safchan);
                 return true;
             }
-            if (command === "wipesafariall") {
+            /*if (command === "wipesafariall") {
                 var info = commandData.toLowerCase().split(":");
                 if (info[0] !== "confirm") {
                     safaribot.sendMessage(src, "This will wipe all Safari's save data. If you wish to proceed, type /wipesafariall confirm.", safchan);
@@ -16130,7 +16147,7 @@ function Safari() {
                 idnumList.clear();
                 safaribot.sendAll("Safari has been completely reset!", safchan);
                 return true;
-            }
+            }*/
             if (command === "update") {
                 if (commandData !== "force") {
                     if (contestCount > 0 || contestCooldown < 181) {
@@ -16168,6 +16185,12 @@ function Safari() {
 
                 safariUpdating = true;
                 runUpdate();
+                return true;
+            }
+            if (command === "updateafter") {
+                safaribot.sendMessage(src, "Safari will be updated at the next available opportunity.", safchan);
+                needsUpdating = true;
+                checkUpdate(); //in case it can go right away
                 return true;
             }
             if (command === "updatelb") {
@@ -16363,6 +16386,7 @@ function Safari() {
                 }
                 currentEvent = null;
                 safaribot.sendAll("All ongoing battles, auctions and events have been stopped.", safchan);
+                checkUpdate();
                 return true;
             }
             if (command === "dqraffle") {
@@ -16852,6 +16876,7 @@ function Safari() {
             currentEvent.nextTurn();
             if (currentEvent.finished) {
                 currentEvent = null;
+                checkUpdate(); //test
             }
         }
         if (currentBattles.length > 0 && contestCooldown % 4 === 0) {
@@ -16860,6 +16885,7 @@ function Safari() {
                 battle.nextTurn();
                 if (battle.finished) {
                     currentBattles.splice(e, 1);
+                    checkUpdate();
                 }
             }
         }
@@ -16869,6 +16895,7 @@ function Safari() {
                 pyr.nextTurn();
                 if (pyr.finished) {
                     currentPyramids.splice(e, 1);
+                    checkUpdate();
                 }
             }
         }
@@ -16878,6 +16905,7 @@ function Safari() {
                 auction.nextTurn();
                 if (auction.finished) {
                     currentAuctions.splice(e, 1);
+                    checkUpdate();
                 }
             }
         }
@@ -17081,7 +17109,7 @@ function Safari() {
                     if (list.length < 1) {
                         list.push("a prize");
                     }
-                    safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and has won " + readable(list, "and")  + "!", safchan);
+                    safaribot.sendAll(readable(winners.map(function (x) { return x.toCorrectCase(); }), "and") + ", with the help of their " + readable(pokeWinners, "and") + ", caught the most Pokémon (" + maxCaught + (top > 1 ? ", total BST: " + maxBST : "") + ") during the contest and " + (winners.length > 1 ? "have" : "has") + " won " + readable(list, "and")  + "!", safchan);
                     contestInfo.winners = readable(fullWinners, "and");
                     contestInfo.caught = maxCaught;
                     contestInfo.bst = maxBST === 0 ? catchersBST[winners[0]] : maxBST;
@@ -17176,6 +17204,7 @@ function Safari() {
                     safari.changeDailyBoost();
                     safari.checkNewMonth();
                 }
+                checkUpdate();
             } else {
                 if (!currentPokemon && chance(0.089743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? 3 : 1;
