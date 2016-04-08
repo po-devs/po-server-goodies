@@ -577,7 +577,7 @@ function Safari() {
                 },
                 "gem": {
                     "gacha": 10,
-                    "gem": 1
+                    "gem": 2
                 },
                 "nugget": {
                     "gacha": 10,
@@ -590,15 +590,19 @@ function Safari() {
                 "rock": {
                     "gacha": 15,
                     "rock": 20
+                },
+                "fragment": {
+                    "fragment": 1
                 }
             },
             "chance": {
-                "defaultSet": 0.75,
+                "defaultSet": 0.74,
                 "silver": 0.05,
                 "gem": 0.05,
                 "nugget": 0.05,
                 "dust": 0.05,
-                "rock": 0.05
+                "rock": 0.05,
+                "fragment": 0.01
             }
         }
     };
@@ -941,7 +945,7 @@ function Safari() {
             "cooldown": 8,
             "failChance": 0,
             "ingredients": {
-                "gem": 40,
+                "gem": 20,
                 "eviolite": 4,
                 "materia": 1
             },
