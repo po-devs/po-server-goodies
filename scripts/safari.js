@@ -2187,13 +2187,7 @@ function Safari() {
                     do {
                         num = sys.rand(1, 722);
                         if (getBST(num) <= maxStats) {
-                            var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)));
-                            if (player.costume === "inver") {
-                                if (typeBonus === 0) {
-                                    typeBonus = 0.5;
-                                }
-                                typeBonus = 1/typeBonus;
-                            }
+                            var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)), false, player.costume === "inver");
                             if (typeBonus > 1) {
                                 found = true;
                                 break;
@@ -2773,20 +2767,11 @@ function Safari() {
             }
         }
         var typeBonus;
+        var inverse = (player.costume === "inver" || (currentRules && currentRules.inver));
         if (currentRules && currentRules.defensive) {
-            typeBonus = this.checkEffective(sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)), sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])));
-            if (typeBonus === 0) {
-                typeBonus = 0.5;
-            }
-            typeBonus = 1/typeBonus;
+            typeBonus = this.checkEffective(sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)), sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), false, !inverse);
         } else {
-            typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)));
-        }
-        if (player.costume === "inver" || (currentRules && currentRules.inver)) {
-            if (typeBonus === 0) {
-                typeBonus = 0.5;
-            }
-            typeBonus = 1/typeBonus;
+            typeBonus = this.checkEffective(sys.type(sys.pokeType1(player.party[0])), sys.type(sys.pokeType2(player.party[0])), sys.type(sys.pokeType1(wild)), sys.type(sys.pokeType2(wild)), false, inverse);
         }
 
         var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
@@ -3113,7 +3098,7 @@ function Safari() {
 
         this.saveGame(player);
     };
-    this.checkEffective = function(atk1, atk2, def1, def2, def3) {
+    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted) {
         var result = 1;
         var immuneCount = 0;
         var typeCount = 1;
@@ -3125,36 +3110,42 @@ function Safari() {
             }
             return value;
         };
+        var inverse = function(value) {
+            if (inverted) {
+                return Math.max(value, 0.5);
+            }
+            return value;
+        };
 
         var attacker = effectiveness[atk1];
         if (def1 in attacker) {
-            result *= countImmune(attacker[def1]);
+            result *= countImmune(inverse(attacker[def1]));
         }
         if (def2 in attacker) {
-            result *= countImmune(attacker[def2]);
+            result *= countImmune(inverse(attacker[def2]));
         }
         if (def3 && def3 in attacker) {
-            result *= countImmune(attacker[def3]);
+            result *= countImmune(inverse(attacker[def3]));
         }
 
         if (atk2 !== "???") {
             typeCount++;
             attacker = effectiveness[atk2];
             if (def1 in attacker) {
-                result *= countImmune(attacker[def1]);
+                result *= countImmune(inverse(attacker[def1]));
             }
             if (def2 in attacker) {
-                result *= countImmune(attacker[def2]);
+                result *= countImmune(inverse(attacker[def2]));
             }
             if (def3 && def3 in attacker) {
-                result *= countImmune(attacker[def3]);
+                result *= countImmune(inverse(attacker[def3]));
             }
         }
         if (immuneCount >= typeCount) {
             return 0;
         }
 
-        return result;
+        return inverted ? 1 / result : result;
     };
     this.releasePokemon = function(src, data) {
         var verb = "release";
@@ -6879,19 +6870,8 @@ function Safari() {
         var p1Type1 = sys.type(sys.pokeType1(p1)), p1Type2 = sys.type(sys.pokeType2(p1));
         var p2Type1 = sys.type(sys.pokeType1(p2)), p2Type2 = sys.type(sys.pokeType2(p2));
         
-        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2);
-        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2);
-        if (inverted) {
-            if (p1Bonus <= immuneMultiplier) {
-                p1Bonus = 0.5;
-            }
-            p1Bonus = 1/p1Bonus;
-            
-            if (p2Bonus <= immuneMultiplier) {
-                p2Bonus = 0.5;
-            }
-            p2Bonus = 1/p2Bonus;
-        }
+        var p1Bonus = safari.checkEffective(p1Type1, p1Type2, p2Type1, p2Type2, false, inverted);
+        var p2Bonus = safari.checkEffective(p2Type1, p2Type2, p1Type1, p1Type2, false, inverted);
         
         var p1Move = p1Handicap ? sys.rand(p1Handicap[0], p1Handicap[1]) : sys.rand(10, 100);
         var p2Move = p2Handicap ? sys.rand(p2Handicap[0], p2Handicap[1]) : sys.rand(10, 100);
