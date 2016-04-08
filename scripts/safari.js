@@ -446,9 +446,9 @@ function Safari() {
         arenaPoints: { desc: "by arena points", alts: ["points", "arena", "arenapoints"], alias: "arenapoints" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
         pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesStolen"], alias: "stolen" },
-        topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score"], alias: "quiz" }
-        // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramid", "pyramidscore", "pyramid score"], alias: "pyramid" },
-        // pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramidfinished" }
+        topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score"], alias: "quiz" },
+        pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramid", "pyramidscore", "pyramid score"], alias: "pyramid" },
+        pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramidfinished" }
     };
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this month", alts: ["caught monthly"], alias: "caught monthly", lastAlias: "caught last", file: "scriptdata/safari/monthlyPokesCaught.txt", lastDesc: "by successful catches during the last month"  },
@@ -950,7 +950,7 @@ function Safari() {
     };
     
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": true, "alchemist": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -6648,6 +6648,13 @@ function Safari() {
         }
         var name = sys.name(src);
         var tName = sys.name(sys.id(data)).toLowerCase();
+        var canView = function(src, name) {
+            var target = getAvatarOff(name);
+            if (!target) {
+                return false;
+            }
+            return !(target.id !== sys.name(src).toLowerCase() && !target.visible && !SESSION.channels(safchan).isChannelAdmin(src));
+        };
 
         var battle, b;
         for (b in currentBattles) {
@@ -6657,6 +6664,10 @@ function Safari() {
                     battle.sendToViewers(name + " stopped watching this battle!");
                     battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
                 } else {
+                    if (!canView(src, battle.name1) || (!battle.npcBattle && !canView(src, battle.name2))) {
+                        safaribot.sendMessage(src, "You cannot view this person's battles!", safchan);
+                        return;
+                    }
                     battle.viewers.push(name.toLowerCase());
                     battle.sendToViewers(name + " is watching this battle!");
                 }
@@ -7806,9 +7817,9 @@ function Safari() {
             case "battle tower":
                 this.fightTower(src, args);
             break;
-            /* case "pyramid":
+            case "pyramid":
                 this.pyramidQuest(src, args);
-            break; */
+            break;
             case "piramyd":
                 safaribot.sendHtmlMessage(src, "You need ohter 22 palyers to joyn you at Piramyd! Alll of them must be wearing the Yuongster costume and have a Psichyc-type Pokéman in their party!", safchan);
             break;
@@ -8563,6 +8574,9 @@ function Safari() {
                         if (!battle.viewers.contains(viewers[e])) {
                             battle.viewers.push(viewers[e]);
                         }
+                    }
+                    if (!viewers.contains(name.toLowerCase())) {
+                        battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
                     }
                     currentBattles.push(battle);
                 } else {
