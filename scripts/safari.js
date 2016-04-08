@@ -13753,6 +13753,7 @@ function Safari() {
             "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Poké Balls.",
             //"±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
             "±Actions: Use /party to form your party. This can give you a small bonus when trying to catch Pokémon based on type effectiveness and stats.",
+            "±Actions: You can dress up in costumes to gain different bonuses! Use /getcostumes to see how to obtain them and /dressup [costume name] to change into a costume!", 
             "*** *********************************************************************** ***",
             "±More: To learn other commands, use /commands safari.",
             "*** *********************************************************************** ***",
