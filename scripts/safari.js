@@ -15,8 +15,6 @@ function Safari() {
     var defaultChannel = "Safari";
     var safaribot = new Bot("Tauros");
     var tutorbot = new Bot("Kangaskhan");
-    var closedMessage = "<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>";
-    var openedMessage = "<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>";
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
@@ -1191,7 +1189,7 @@ function Safari() {
         if (![".", "?", "!"].contains(mess.charAt(mess.length-1))) {
             mess = mess + ".";
         }
-        tutorbot.sendHtmlMessage(src, toColor(mess, "DarkOrchid"), safchan);
+        tutorbot.sendHtmlMessage(src, "<font color='DarkOrchid'>" + mess + "</font>", safchan);
     }
     function advanceTutorial(src, step) {
         var player = getAvatar(src);
@@ -1222,6 +1220,9 @@ function Safari() {
                 case 7: johto = 152; player.pokemon.push(152); break;
             }
             safaribot.sendMessage(src, "You received $" + cash + ", " + rew.join(", ") + ", and " + an(sys.pokemon(johto)) + "!", safchan);
+            //sys.sendAll("", safchan);
+            //tutorbot.sendHtmlAll("<font color='DarkOrchid'>Congratulations to <b>" + html_escape(sys.name(src)) + "</b> on completing the tutorial!</font>", safchan);
+            //sys.sendAll("", safchan);
         } else {
             var cash = 300;
             player.money = cash;
@@ -1554,12 +1555,11 @@ function Safari() {
         var regex = flashtag+htmlname+flashtag;
         var newregex1 = "";
         var color = sys.id(name) ? script.getColor(sys.id(name)) : "#000000";
-        newregex1 = toColor(htmlname, color); 
-        /*if (sys.os(sys.id(name)) !== "android") {
+        if (sys.os(sys.id(name)) !== "android") {
             newregex1 = "<span style='COLOR: " + color + "'>" + htmlname + "</span>";
         } else {
-            newregex1 = "<font color='"+color+"'>" + htmlname + "</font>"; 
-        }*/
+            newregex1 = "<font color='"+color+"'>" + htmlname + "</font>";
+        }
         var flashregex = new RegExp(flashtag,"g");
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
         return newmessage;
@@ -2422,7 +2422,7 @@ function Safari() {
 
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         if (icon) {
-            sys.sendHtmlAll(toColor("<timestamp/> *** **********************************************************</font> ", "magenta") + icon, safchan);
+            sys.sendHtmlAll("<font color='magenta'><timestamp/> *** **********************************************************</font> " + icon, safchan);
         } else {
             sys.sendAll("*** ************************************************************ ***", safchan);
         }
@@ -4317,7 +4317,7 @@ function Safari() {
             sys.sendMessage(src, "±Bait: Used {0} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed), rec.notBaitedCaught), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver;
-            sys.sendHtmlMessage(src, toColor("<timestamp/><b>±Money:</b>", "#3daa68") + " Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
             sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
             sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(rec.rocksHit, "hit"), plural(rec.rocksBounced, "time")), safchan);
@@ -12650,11 +12650,11 @@ function Safari() {
         
         this.racersList = Object.keys(this.runners).map(function(x) {
             if (x == this.favorite) {
-                return toColor(x, "red") + " (Favorite)";
+                return "<font color='red'>" + x + "</font> (Favorite)";
             } else if (x == this.underdog) {
-                return toColor(x, "red") + " (Underdog)";
+                return "<font color='red'>" + x + "</font> (Underdog)";
             } else {
-                return toColor(x, "red");
+                return "<font color='red'>" + x + "</font>";
             }
         }, this);
         this.icons = {};
@@ -13891,7 +13891,7 @@ function Safari() {
             return;
         }
         safariUpdating = true;
-        sys.sendHtmlAll(closedMessage, safchan);
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
         runUpdate();
     }
     
@@ -14597,7 +14597,7 @@ function Safari() {
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 for (e = 0; e < list.length; e++) {
                     // out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
-                    out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(list[e].value));
+                    out.push("<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value));
                     if (list[e].name == self) {
                         selfFound = true;
                     }
@@ -14607,7 +14607,7 @@ function Safari() {
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
                             // var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
-                            var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(list[e].value);
+                            var entry = "<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
                             } else {
@@ -16309,7 +16309,7 @@ function Safari() {
                         return true;
                     }
                 }
-                sys.sendHtmlAll(closedMessage, safchan);
+                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 safariUpdating = true;
                 safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles, <b>" + currentAuctions.length + "</b> ongoing auctions, <b>" + currentPyramids.length + "</b> ongoing Pyramid quests and <b>" + (currentEvent ? "1" : "0") + "</b> ongoing events.", safchan);
                 return true;
@@ -16317,7 +16317,7 @@ function Safari() {
             if (command === "cancelupdate") {
                 if (safariUpdating) {
                     safariUpdating = false;
-                    sys.sendHtmlAll(openedMessage, safchan);
+                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
                 } else {
                     safaribot.sendMessage(src, "Safari was not in an updating state.", safchan);
                 }
@@ -16326,7 +16326,7 @@ function Safari() {
             if (command === "updategame") {
                 if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
-                    sys.sendHtmlAll(closedMessage, safchan);
+                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
                 if (!safariUpdating) {
                     safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
@@ -16839,7 +16839,7 @@ function Safari() {
             if (command === "updateplugin" && commandData === "safari.js") {
                 if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
-                    sys.sendHtmlAll(closedMessage, safchan);
+                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
                 }
                 if (!safariUpdating) {
                     safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
@@ -16966,7 +16966,7 @@ function Safari() {
         permObj.add("playerTemplate", JSON.stringify(playerTemplate));
         
         this.updateLeaderboards();
-        sys.sendHtmlAll(openedMessage, safchan);
+        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
         if (baitCooldown < 7) {
             baitCooldown = sys.rand(5,7);
         }
