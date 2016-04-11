@@ -49,6 +49,8 @@ function Safari() {
     var starters = [1, 4, 7];
     var playerTemplate = {
         id: "",
+        casedName: "",
+        nameColor: "",
         idnum: 0,
         pokemon: [],
         party: [],
@@ -6553,6 +6555,10 @@ function Safari() {
         if (!player) {
             return;
         }
+        
+        player.casedName = sys.name(src);
+        player.nameColor = script.getColor(src);
+        
         if (player.tutorial.inTutorial) {
             return;
         }
@@ -6628,8 +6634,8 @@ function Safari() {
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
             }
-            this.saveGame(player);
         }
+        this.saveGame(player);
     };
     this.refundRaffle = function(player, id, refund) {
         if (!player) {
@@ -13083,7 +13089,7 @@ function Safari() {
             permObj.add("allowedSharedIPs", JSON.stringify(allowedSharedIPNames));
         }
         
-        tutorMsg(src, "Welcome to Safari! There are a lot of things to do around here and it may be very overwhelming! If you would like to learn how to play Safari you can use the command " + link("/tutorial") + " and start a guided tour around the facility! If you would rather fend for yourself, you can use " + link("/skiptutorial") + " and get right to playing!");
+        tutorMsg(src, "Welcome to Safari! There are a lot of things to do around here and it may be very overwhelming! If you would like to learn how to play Safari you can use the command " + link("/tutorial") + " and start a guided tour around the facility!" /*If you would rather fend for yourself, you can use " + link("/skiptutorial") + " and get right to playing!"*/);
         safaribot.sendMessage(src, "You enter the Safari Zone with your " + poke(num) + " by your side!", safchan);
     };
     this.saveGame = function(player) {
@@ -13121,6 +13127,8 @@ function Safari() {
                 for (i in leaderboardTypes) {
                     player = {
                         name: e,
+                        fullName: data.casedName || e,
+                        color: data.nameColor || "#00000",
                         value: 0
                     };
                     switch (i) {
@@ -13151,6 +13159,8 @@ function Safari() {
                 for (i in monthlyLeaderboardTypes) {
                     player = {
                         name: e,
+                        fullName: data.casedName || e,
+                        color: data.nameColor || "#00000",
                         value: 0
                     };
                     player.value = monthlyLeaderboards[i].get(e) || 0;
@@ -13421,6 +13431,10 @@ function Safari() {
                 if (byAuth) {
                     safaribot.sendMessage(user, "You swapped Safari between " + name1.toCorrectCase() + " and " + name2.toCorrectCase() + "!", safchan);
                 }
+                player.casedName = sys.name(targetId);
+                player.nameColor = script.getColor(targetId);
+                target.casedName = sys.name(src);
+                target.nameColor = script.getColor(src);
                 this.saveGame(player);
                 this.saveGame(target);
             } catch (err) {
@@ -13497,6 +13511,8 @@ function Safari() {
                 if (targetId) {
                     this.clearPlayer(targetId);
                 }
+                player.casedName = sys.name(targetId);
+                player.nameColor = script.getColor(targetId);
                 this.saveGame(player);
             } catch (err) {
                 if (byAuth) {
@@ -13761,6 +13777,12 @@ function Safari() {
             }
             if (!player.costumes.contains(player.costume)) {
                 player.costume = "none";
+            }
+            if (player.casedName.length === 0) {
+                player.casedName = sys.name(sys.id(player.id));
+            }
+            if (player.nameColor.length === 0) {
+                player.nameColor = script.getColor(sys.id(player.id));
             }
 
             if (player.starter2 === null || !Array.isArray(player.starter2) || player.starter2.length === 0) {
@@ -14575,7 +14597,7 @@ function Safari() {
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 for (e = 0; e < list.length; e++) {
                     // out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
-                    out.push("<b>" + (list[e].pos) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
+                    out.push("<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value));
                     if (list[e].name == self) {
                         selfFound = true;
                     }
@@ -14585,7 +14607,7 @@ function Safari() {
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
                             // var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
-                            var entry = "<b>" + (list[e].pos) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
+                            var entry = "<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
                             } else {
