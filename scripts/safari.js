@@ -393,13 +393,13 @@ function Safari() {
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1,
-        whtapricorn: 8
+        whtapricorn: 9
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
         rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20,
         pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
-        blkapricorn: 8
+        blkapricorn: 10
     };
     var finderMissRate = 0.80;
     var packItems = {
@@ -5226,6 +5226,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
             }
             break;
+            case "whtapricorn":
             case "pearl":
             case "stardust":
             case "starpiece":
@@ -5641,6 +5642,9 @@ function Safari() {
                 safaribot.sendMessage(src, "Beep. Your Itemfinder pointed you towards a very conspicuous " + finishName(reward) + ".", safchan);
             }
             break;
+            case "blkapricorn": {
+                safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards an Apricorn Tree! You decided to pick one and put it in your bag!", safchan);
+            }
             case "bait": {
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards a berry bush! You decided to pick one and put it in your bag.", safchan);
             }
