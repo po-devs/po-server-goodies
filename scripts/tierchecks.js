@@ -99,7 +99,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "Anything Goes", "BW2 LC", "BW2 LC Ubers", "BW2 NU", "BW2 LU", "BW2 UU", "BW2 OU", "BW2 Ubers", "Battle Factory 6v6", "Challenge Cup", "ORAS Hackmons"];
+    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "Anything Goes", "Battle Factory 6v6", "Challenge Cup", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -175,7 +175,7 @@ var eventMons = { //Try to keep in order of dex
     "Snivy": {"moves": {"Aromatherapy": {"natures": ["Hardy"]}}}
 };
 
-tier_checker.add_new_check(EXCLUDING, challenge_cups, function eventValidation(src, team) {
+tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function eventValidation(src, team) {
     var ret = [];
     var events = Object.keys(eventMons);
     var restrAbs, currentAb;
