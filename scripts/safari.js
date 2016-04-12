@@ -14012,7 +14012,7 @@ function Safari() {
             heavy: "An industrial Pokéball that works better against hardier and stronger Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon.",
             spy: "A stealthy Pokéball that cannot be tracked. " + cdSeconds("spy") + " Found with Itemfinder.",
-            mono: "A monochromatic Pokéball that enhances the power of single-type Pokémon. " + cdSeconds("mono") + " Obtained from Alchemy Quest."
+            mono: "A monochromatic Pokéball that enhances the catch rate of single-type Pokémon. " + cdSeconds("mono") + " Obtained from Alchemy Quest."
         };
         var costumeHelp = {};
         for (var e in costumeData) {
