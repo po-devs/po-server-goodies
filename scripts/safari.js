@@ -8398,7 +8398,6 @@ function Safari() {
             }
         }
 
-        // var reward = Math.floor((bst - 180)/50) + 2;
         var reward = rewRange[ind];
         scientistQuest = {
             pokemon: randomNum,
@@ -9811,7 +9810,7 @@ function Safari() {
         
         var size = 8 + level * 2, p;
         var minBST = 130 + 50 * level;
-        this.damageCap = [4, 4, 5, 5, 6, 6, 7][size-1] * (3 * this.level);
+        this.damageCap = [4, 4, 5, 5, 6, 6, 7][level-1] * (3 * this.level);
         while (this.horde.length < size) {
             p = sys.rand(1, 722);
             if (!isLegendary(p) && getBST(p) >= minBST) {
@@ -14630,7 +14629,6 @@ function Safari() {
                 var out = ["", "<b>" + (recName == "salt" ? "Safari Lameboards " : "Safari Leaderboards ") + desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 for (e = 0; e < list.length; e++) {
-                    // out.push("<b>" + (range.lower + e) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value));
                     out.push("<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value));
                     if (list[e].name == self) {
                         selfFound = true;
@@ -14640,7 +14638,6 @@ function Safari() {
                     list = leaderboards[rec];
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
-                            // var entry = "<b>" + (e + 1) + ".</b> " + list[e].name + ": " + sign + addComma(list[e].value);
                             var entry = "<b>" + (list[e].pos) + ". <font color='" + list[e].color + "'>" + list[e].fullName + ":</font></b> " + sign + addComma(list[e].value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
