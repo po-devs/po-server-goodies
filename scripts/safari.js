@@ -15,6 +15,8 @@ function Safari() {
     var defaultChannel = "Safari";
     var safaribot = new Bot("Tauros");
     var tutorbot = new Bot("Kangaskhan");
+    var closedMessage = "<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>";
+    var openedMessage = "<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>";
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
@@ -73,6 +75,7 @@ function Safari() {
             heavy: 0,
             quick: 0,
             luxury: 0,
+            mono: 0,
             bait: 0,
             rock: 0,
             stick: 0,
@@ -111,7 +114,9 @@ function Safari() {
             philosopher: 0,
             materia: 0,
             water: 0,
-            cherry: 0
+            cherry: 0,
+            blkapricorn: 0,
+            whtapricorn: 0
         },
         records: {
             gachasUsed: 0,
@@ -277,6 +282,7 @@ function Safari() {
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
         spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
         clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
+        mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 10000, aliases:["monoball", "mono", "mono ball"], tradable: true},
 
         //Other Items
         //Seasonal change. Rock icon is 206, Snowball is 334
@@ -306,7 +312,9 @@ function Safari() {
         //Alchemy related items
         materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
         fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
-        philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: false},
+        blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
+        whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
+        //philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: false},
 
         //Perks
         amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
@@ -335,7 +343,7 @@ function Safari() {
         preschooler: {icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure.", noAcq: "Catch your first Pokémon"},
         breeder: {icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the needed Candy Dust for evolution.", noAcq: "Evolve {0} more Pokémon"},
         pokefan: {icon: 398, name: "pokefan", fullName: "PokeFan", aliases: ["pokéfan", "pokefan", "poke fan"], acqReq: 200, record: "collectorGiven", rate: 1.2, effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector"},
-        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely you can even find multiple items!", noAcq: "Find {0} more items"},
+        explorer: {icon: 373, name: "explorer", fullName: "Explorer", aliases: ["explorer"], acqReq: 500, record: "itemsFound", rate: 0.1, rate2: 0.5, effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely you can even find multiple items or exclusive items!", noAcq: "Find {0} more items"},
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
         battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
@@ -360,7 +368,10 @@ function Safari() {
     egg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRF////MDAwPJxXbcSHhqtvt+O4v6pv38qP9+qw+Pj4/Tk5SAAAAAF0Uk5TAEDm2GYAAABuSURBVBjTY2AgFwgKItiMHTMF4BzhiJmNcAlji45gmBRjcESHMYwj0dHRYWyIxGmFchgzOjqCO9oh6hiTTTuM4Rwn44iOjjIoR0nJoqMsDWqckJJ6WYoiA4yTluYE4zCmATlwxwmmpQli9wKJAABtjxkjucRGhQAAAABJRU5ErkJggg==",
     bright: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAB5QTFRF/vPSMDAw4tGw+rV8+ZZE/dzA8uLB+q1t+/v7////3kFdYAAAAAp0Uk5T////////////ALLMLM8AAABySURBVBjTldChDYAwFATQQ4CmAVNHPgIL+WEAkgbdpBt0hg5RW9ltEfALAtNzT13ukD9BDZR6kRB1wWBjI0i8wmmBs2BBD4C3D9oHaQIcOn1j3sEFgS3gHxizwtONPJrTL0cWEAVBIqIgpVkRqf8JlR9c2wmHPYayHNYAAAAASUVORK5CYII=",
     pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAJ1BMVEX////w8PDw6Ijo0FD4yDjgqDjAqFComEDYcDiIaDg4YABYUDgwMDDaxm2rAAAADXRSTlMA////////////////LQRBrQAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAw0lEQVR4nH3PMQrCQBAFUA8wjeQGAQ+gA2vEY0jA3kJQGxsXJZ2FE0iXIg7JEey0SLpAICmcQ5nd1ZRO9R87w/JHo38jUg8ZAirkh4YoZvmyKYk5vzu1y6oHxfYQcM9cElkILpkr9wJJqvIncmYgt1QhKh2ZrbpZnPqsC7MFM3+utY7sCfjhCs/8SgzaSbhGxNIh8OmKeHibvXZKQY+dtkcOF4ejpzaoLhGYj7rxGHGrHxbQeX0+C7iqkpn86y4y9B7mAwpHT1Z1wCFpAAAAAElFTkSuQmCC",
-    fragment: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJFBMVEUAAAAxMTGcakFKSmq9i1rerHu0rM32xZzu7v+Ui6zVze7///+kAd76AAAAAXRSTlMAQObYZgAAAAFiS0dECx/XxMAAAAAJb0ZGcwAAAAMAAAADAHeTl6MAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfeCxISIDTCst7zAAAACXZwQWcAAAAeAAAAHgD4T+E9AAAAoUlEQVQY02NgwAcYBQURHCElJQRPWEnFBc5jNHJxCREUgHKSjUNDXAOhUmJpIi6hhVCOxCwTl3Aoh7FrhqGzMVSP2MrmiWaGMInM5pkzLCEyEm0rm6dlNkM5q8CciWBVWatmWKalzQBrYkzLAnPAmqAciCbGaSubZ07LnAnlZCI4DJIzm6elZUItYpScYTlzJsRokLcbBQUbBWDeEwAjVAAAUGwxQVWp15AAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDMtMDJUMTc6MTk6MzYtMDY6MDDWjJb5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTExLTE4VDE4OjMyOjUyLTA2OjAwZ+O8ygAAAABJRU5ErkJggg=="
+    fragment: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJFBMVEUAAAAxMTGcakFKSmq9i1rerHu0rM32xZzu7v+Ui6zVze7///+kAd76AAAAAXRSTlMAQObYZgAAAAFiS0dECx/XxMAAAAAJb0ZGcwAAAAMAAAADAHeTl6MAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfeCxISIDTCst7zAAAACXZwQWcAAAAeAAAAHgD4T+E9AAAAoUlEQVQY02NgwAcYBQURHCElJQRPWEnFBc5jNHJxCREUgHKSjUNDXAOhUmJpIi6hhVCOxCwTl3Aoh7FrhqGzMVSP2MrmiWaGMInM5pkzLCEyEm0rm6dlNkM5q8CciWBVWatmWKalzQBrYkzLAnPAmqAciCbGaSubZ07LnAnlZCI4DJIzm6elZUItYpScYTlzJsRokLcbBQUbBWDeEwAjVAAAUGwxQVWp15AAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDMtMDJUMTc6MTk6MzYtMDY6MDDWjJb5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTExLTE4VDE4OjMyOjUyLTA2OjAwZ+O8ygAAAABJRU5ErkJggg==",
+    mono: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTE5NkM1NDcwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTE5NkM1NDYwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Puecb4wAAAAqUExURfj4+Hp6es3NzZqamlZWVqamptra2oKCgrq6uk1NTTAwMHt7e2ZmZgAAAAV/T5sAAAAOdFJOU/////////////////8ARcDcyAAAAJdJREFUeNqskkkSwyAMBAW20AL5/3cjhALYKZ+SPlHThcBj4PUA/CDU+RKq1ZkqhFINSHehlI8QHMaF1gzghpmp6SYOgMyDtkQ/N3/y2poPc8ExxWLL7yKwfAniS35OIWZEZMyhU5YwEFB63Nc6r5tEAEAGafuOAqnv8LigbpWYSak4qJcSsUSMeq8dnXvtzz/qD4/hLcAAPMwYmRr6Be0AAAAASUVORK5CYII=",
+    blkapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSCrGq9k4AAAF6SURBVEjH7ZUhc4MwFMd/9CaYAwcSOZm6dg5Zu49RyzfY1WH7MbBI3A5H5GRl4qjEMdELayGBdpvcu+MueSH/f97/vbzAvy2YZ3MKIXoAKaV3PR+bWZ+zJxv4R74D4DWjT5OA9/0WgLIokeHOgAP0S0SeC1yfFABvR0mxFwBESXxDkqYpAFmWOUlWY0dZlJRFOczTJBjGhtSAmy/Pc6eMq7Gmh/oybhoJwH6X3JXMOI6tJJMcpEnAoT6TJgHr0VrTyEGeqqoGf1VVCCFQSs0nWQjRb6IzmwjW6+nJax3gh9wAj6MA+ut8rFwhG4mMHcsT/st2ViYhxHKZ1jpgE50HklpfkrwEfvc9+OyeQX/P2yAxof8NwUAy1Kb+FcEkB23bTn6yVYejdSz3IiFE7zpxFEXWaJRSaK1RSk1utFWitm0Jw3Di11qjtca15y6JpJRe13UPa911nbUfeTM13fu+b41kfHIX+CzB9TtgIzLAD7XrJaKfPDj/tmhf5K2wqRPvPAwAAAAASUVORK5CYII=",
+    whtapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSFEulyy0AAAGDSURBVEjH7VUteMIwEH3lQyA7N9wqwR1yrpXMIdkUm8RVTyEBVzlQbG5VgCxqwzVqRXaK4jo5l6n0Y03Sdj+Sp3KX9L171y854IQSGKokEXEAYIwZx3EeYv9HICK+X475fjnmRMTdnp3Fi0GLCyxf3jgRcZ240gER8dWoDwBI3ncAgLsZw8MtAQCaFy0E/hzXs+gbSafT0bqp5ROBP0fgz7PYscxsLUTzCMNQ28ZavqdT1gAA7MItAKDvWJVaO/IWShHJgWOZmLIG2Me5RLILt1J7BK4u2yh1QESczANc+lRWrhItc1HTHRYtEngKYkyeg0IBlYu6qkoyD5mIqLqMXAdJwHY9bKbDLB5MHtG2mr++yXVV0na9bB0n6Z8EpH+wWfvSoShOKpGtXqPyt4iI+MhbKAms5pnSTRQniJMU98Mb6UYrW7RZ+7C7PSkfJyniJIXum0otYowZgeZwEYK1r3yPjKJX1en2lE7ylevICwWO54BKSBCXzYVKA+NfB84JeXwBn+m8UXJeocMAAAAASUVORK5CYII="
     };
     var base64costumes = {
     //TODO: Cleaner sprite
@@ -381,12 +392,14 @@ function Safari() {
         wild: 70,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
-        pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1
+        pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1,
+        whtapricorn: 8
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
         rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20,
-        pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16
+        pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
+        blkapricorn: 8
     };
     var finderMissRate = 0.80;
     var packItems = {
@@ -883,7 +896,7 @@ function Safari() {
         "materia": {
             "makes": 1,
             "cooldown": 12,
-            "failChance": 0.05,
+            "failChance": 0.03,
             "failUses": {
                 "safari": Math.floor(itemData.materia.threshold/10)
             },
@@ -895,7 +908,7 @@ function Safari() {
         "master": {
             "makes": 1,
             "cooldown": 24,
-            "failChance": 0.07,
+            "failChance": 0.05,
             "failUses": {
                 "materia": 1
             },
@@ -908,7 +921,7 @@ function Safari() {
         "cherry": {
             "makes": 2,
             "cooldown": 2,
-            "failChance": 0.04,
+            "failChance": 0.02,
             "failUses": {
                 "bait": 50
             },
@@ -952,6 +965,15 @@ function Safari() {
                 "materia": 1
             },
             "transmutation": true
+        },
+        "mono": {
+            "makes": 20,
+            "cooldown": 2,
+            "failChance": 0,
+            "ingredients": {
+                "blkapricorn": 10,
+                "whtapricorn": 10
+            }
         }
     };
     
@@ -1300,6 +1322,10 @@ function Safari() {
     }
     function hours(number) {
         return number * 60 * 60 * 1000;
+    }
+    function cdSeconds(item, value) {
+        value = value || "cooldown";
+        return "Cooldown: " + plural(itemData[item][value] / 1000, "second") + ".";
     }
     
     /* Data Type Functions */
@@ -2918,6 +2944,9 @@ function Safari() {
                 typeBonus = 1;
             }
         }
+        if (ball === "mono" && hasType(player.party[0], "???")) {
+            typeBonus *= itemData.mono.bonusRate;
+        }
         
         var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod * ballBonus, 0.01) * eventChance;
         if (ball == "clone") {
@@ -3755,10 +3784,10 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega", "rock"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "bait", "egg", "bright"];
+        var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "dust", "rare", "spray", "mega", "bait", "rock"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "egg", "bright"];
         var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "stick"];
-        var line4 = ["philosopher", "materia", "fragment", "cherry"];
+        var line4 = ["pack", "water", "materia", "fragment", "cherry", "blkapricorn", "whtapricorn"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -13891,7 +13920,7 @@ function Safari() {
             return;
         }
         safariUpdating = true;
-        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+        sys.sendHtmlAll(closedMessage, safchan);
         runUpdate();
     }
     
@@ -13901,7 +13930,7 @@ function Safari() {
         var x, help = [
             "",
             "*** *********************************************************************** ***",
-            "±Goal: Use your Poké Balls to catch Wild Pokémon that appear during contest times.",
+            "±Goal: Use your Pokéballs to catch Wild Pokémon that appear during contest times.",
             //"±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
             "*** *********************************************************************** ***",
@@ -13910,7 +13939,7 @@ function Safari() {
             "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
             "*** *********************************************************************** ***",
             "±Actions: Pokémon you caught can be sold to the NPC with /sell or traded with other players with /trade.",
-            "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Poké Balls.",
+            "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Pokéballs.",
             //"±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
             "±Actions: Use /party to form your party. This can give you a small bonus when trying to catch Pokémon based on type effectiveness and stats.",
             "±Actions: You can dress up in costumes to gain different bonuses! Use /getcostumes to see how to obtain them and /dressup [costume name] to change into a costume!", 
@@ -13934,28 +13963,29 @@ function Safari() {
         var itemHelp = {
             silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
             bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
-            gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! Due to strict gambling regulations, there is " + an(itemData.gacha.cooldown/1000) + " second delay between using the tickets. Use with \"/gacha\".",
-            //Seasonal change
-            rock: "A small snowball that can be thrown to potentially freeze another player for a short period. Has " + an(itemData.rock.throwCD/1000) + " second cooldown. Use with \"/snowball [Player]\".",
+            gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
+            rock: "A small rock that can be thrown to potentially stun another player for a short period of time. " + cdSeconds("rock", "throwCD") + " Use with \"/snowball [Player]\".",
             rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
-            spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained via  Prize Packs.",
-            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained via Official Giveaways and Prize Packs.",
+            spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs.",
+            mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained from Official Events and Prize Packs.",
             valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
             itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day. Use with \"/finder\".",
-            gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! Use with \"/use gem\". Obtained from Gachapon.",
+            gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! Use with \"/use gem\". Obtained from Gachapon and quests.",
             box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
-            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes (every " + itemData.stick.cooldown/1000 + " seconds) unto your enemies and other nefarious evil-doers. Use with \"/stick [Player]\".",
+            stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes unto your enemies and other nefarious evil-doers. " + cdSeconds("stick") + " Use with \"/stick [Player]\".",
             salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
-            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\".",
-            fragment: "A Master Ball fragment. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball!",
+            pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\". Obtained from Official Events.",
+            fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
-            philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
-            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\".",
-            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\".",
-            // water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
-            cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy quest."
+            //philosopher: "A legendary red gem that enables the holder to bypass the laws of equivalent exchange during alchemy.",
+            egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\". Obtained from Pyramid quest.",
+            bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\". Obtained from Pyramid quest.",
+            water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
+            cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy quest.",
+            blkapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very strong flavor. Found with Itemfinder.",
+            whtapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very weak flavor. Obtained from Gachapon."
         };
         var perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -13967,17 +13997,18 @@ function Safari() {
             eviolite: "A mysterious gem that automatically powers up Pokémon with 420 BST or less by " + itemData.eviolite.bonusRate + ". (Max Rate: " + itemData.eviolite.maxRate + "). Found with Itemfinder."
         };
         var ballHelp = {
-            safari: "A standard issue Poké Ball used to catch Pokémon. Has a cooldown of " + itemData.safari.cooldown / 1000 +" seconds.",
-            great: "A Poké Ball that has a slightly increased catch rate. Has a cooldown of " + itemData.great.cooldown / 1000 +" seconds.",
-            ultra: "A high functioning Poké Ball that has a better catch rate than a Great Ball. Has a cooldown of " + itemData.ultra.cooldown / 1000 +" seconds.",
-            master: "An extremely rare Poké Ball that never fails to catch. Has a cooldown of " + itemData.master.cooldown / 1000 +" seconds. It is said to be a rare prize in Gachapon.",
-            premier: "A plain Poké Ball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. Has a cooldown of " + itemData.premier.cooldown / 1000 +" seconds. Obtained by purchasing a lot of Poké Balls from the shop.",
-            luxury: "A comfortable Poké Ball with an increased catch rate that is said to make one wealthy. Has a cooldown of " + itemData.luxury.cooldown / 1000 +" seconds. Obtained from Gachapon and found with Itemfinder.",
-            myth: "An ancient Poké Ball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. Has a cooldown of " + itemData.myth.cooldown / 1000 +" seconds. Obtained from Gachapon.",
-            quick: "A somewhat different Poké Ball that tends to get better priority during throws. Has a cooldown of " + itemData.quick.cooldown / 1000 +" seconds. Obtained from Gachapon.",
-            heavy: "An industrial Poké Ball that works better against hardier and stronger Pokémon. Has a cooldown of " + itemData.heavy.cooldown / 1000 +" seconds. Obtained from Gachapon.",
-            clone: "A mysterious Poké Ball with a very low catch rate that can duplicate a pokémon's D.N.A.. Has a cooldown of " + itemData.clone.cooldown / 1000 +" seconds. Obtained from Gachapon.",
-            spy: "A stealthy Poké Ball that cannot be tracked. Has a cooldown of " + itemData.spy.cooldown / 1000 +" seconds. Found with Itemfinder."
+            safari: "A standard issue Pokéball used to catch Pokémon. " + cdSeconds("safari"),
+            great: "A Pokéball that has a slightly increased catch rate. " + cdSeconds("great"),
+            ultra: "A high functioning Pokéball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
+            master: "An extremely rare Pokéball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
+            premier: "A plain Pokéball gifted to you for your patronage. It works better when a Normal-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Pokéballs from the shop.",
+            luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Gachapon and found with Itemfinder.",
+            myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Gachapon.",
+            quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Gachapon.",
+            heavy: "An industrial Pokéball that works better against hardier and stronger Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon.",
+            clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon.",
+            spy: "A stealthy Pokéball that cannot be tracked. " + cdSeconds("spy") + " Found with Itemfinder.",
+            mono: "A monochromatic Pokéball that enhances the power of single-type Pokémon. " + cdSeconds("mono") + " Obtained from Alchemy Quest."
         };
         var costumeHelp = {};
         for (var e in costumeData) {
@@ -14107,7 +14138,7 @@ function Safari() {
             "",
             "*** Safari Commands ***",
             "/help: For a how-to-play guide.",
-            "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\".",
+            "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon.",
@@ -14156,12 +14187,7 @@ function Safari() {
         var adminHelp = [
             "*** Safari Warden Commands ***",
             "/startevent [type]։[parameters]: Starts an event. Use /startevent help for more details. To cancel an event, use /abortevent.",
-            "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",
-            "/tradelog [amount]։[lookup]: Returns a list of recent trades. Defaults to 10. Amount can be changed to return that number of logs. Lookup will only return logs with the specified value in the past amount of logs. Use /shoplog for shops or /auctionlog for auctions.",
-            "/lostlog [amount]։[lookup]: Returns a list of recent commands that lead to a Pokémon being lost (sell, quests, etc). Amount and Lookup works the same as /tradelog.",
-            "/mythlog [amount]։[lookup]: Returns a list of Legendary or Shiny Pokémon spawns. Amount and Lookup works the same as /tradelog.",
-            "/altlog [amount]։[lookup]: Returns a list of Safari save transfers. Amount and Lookup works the same as /tradelog.",
-            "/eventlog [amount]։[lookup]: Returns a list of recent Safari Events. Amount and Lookup works the same as /tradelog.",
+            "/sanitize [player]: Removes invalid values from the target's inventory, such as NaN and undefined. Use /sanitizeall to sanitize everyone in the channel at once.",            
             "/transferalt [name1]։[name2]: Changes Safari data between two players. Make sure they are the same person before using this.",
             "/allowname [name]: Allows/disallows a person to start a new Safari save while they share IP with another Safari Player.",
             "/tradeban [player]։[duration]: Bans a player from trading or using their shop. Use /tradeban [player]:[length]. Use -1 for length to denote permanent, 0 for length to unban. Use /tradebans to view players currently tradebanned.",
@@ -14169,7 +14195,9 @@ function Safari() {
             "/safariban [player]։[duration]: Bans a player from the Safari Channel. Use /safariunban [player] to unban and /safaribans to view players currently banned from Safari.",
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
-            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing."
+            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing.",            
+            "Log Files: Use /command [amount]։[lookup] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs.",
+            "Available logs: ***tradelog (trades), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited)"
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
@@ -14177,7 +14205,7 @@ function Safari() {
             "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
             "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
             "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
-            "/checkrate [item]: Displays the rate of obtaining that item from Gachapon and Itemfinder.",
+            "/checkrate [item]: Displays the rate of obtaining that item from Gachapon, Itemfinder, and Prize Pack.",
             "/editdata [type]։[item]։[property]։[value]: Changes a property from an item/costume.",
             "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
@@ -14198,7 +14226,8 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/drawraffle confirm: Draws the current raffle.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
-            "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests."
+            "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests.",
+            "/updateafter [abort/cancel/stop]: Updates Safari at next available opportunity. Use any of the command data listed to cancel the pending update."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -15664,7 +15693,7 @@ function Safari() {
                                 total += itemSets[i][e];
                             }
                             if (method[i] === "Item Finder") {
-                                total /= (1 - finderMissRate);
+                                total = Math.floor(total / (1 - finderMissRate));
                             }
                             if (nothing) {
                                 instance = total * finderMissRate;
@@ -16309,7 +16338,7 @@ function Safari() {
                         return true;
                     }
                 }
-                sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                sys.sendHtmlAll(closedMessage, safchan);
                 safariUpdating = true;
                 safaribot.sendHtmlMessage(src, "There are currently <b>" + currentBattles.length + "</b> ongoing battles, <b>" + currentAuctions.length + "</b> ongoing auctions, <b>" + currentPyramids.length + "</b> ongoing Pyramid quests and <b>" + (currentEvent ? "1" : "0") + "</b> ongoing events.", safchan);
                 return true;
@@ -16317,7 +16346,7 @@ function Safari() {
             if (command === "cancelupdate") {
                 if (safariUpdating) {
                     safariUpdating = false;
-                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
+                    sys.sendHtmlAll(openedMessage, safchan);
                 } else {
                     safaribot.sendMessage(src, "Safari was not in an updating state.", safchan);
                 }
@@ -16326,7 +16355,7 @@ function Safari() {
             if (command === "updategame") {
                 if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
-                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                    sys.sendHtmlAll(closedMessage, safchan);
                 }
                 if (!safariUpdating) {
                     safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
@@ -16338,9 +16367,14 @@ function Safari() {
                 return true;
             }
             if (command === "updateafter") {
-                safaribot.sendMessage(src, "Safari will be updated at the next available opportunity.", safchan);
-                needsUpdating = true;
-                checkUpdate(); //in case it can go right away
+                if (["abort", "cancel", "stop"].contains(commandData.toLowerCase())) {
+                    safaribot.sendMessage(src, needsUpdating ? "Pending update has been cancelled." : "No update was pending.", safchan);
+                    needsUpdating = false;
+                } else {
+                    safaribot.sendMessage(src, "Safari will be updated at the next available opportunity.", safchan);
+                    needsUpdating = true;
+                    checkUpdate(); //in case it can go right away
+                }
                 return true;
             }
             if (command === "updatelb") {
@@ -16839,7 +16873,7 @@ function Safari() {
             if (command === "updateplugin" && commandData === "safari.js") {
                 if (!currentPokemon && contestCooldown > 180 && contestCount <= 0 && currentBattles.length === 0 && currentPyramids.length === 0 && currentAuctions.length === 0 && !currentEvent && !safariUpdating) {
                     safariUpdating = true;
-                    sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>", safchan);
+                    sys.sendHtmlAll(closedMessage, safchan);
                 }
                 if (!safariUpdating) {
                     safaribot.sendMessage(src, "You shouldn't update without putting Safari into an update ready state with /update.", safchan);
@@ -16966,7 +17000,7 @@ function Safari() {
         permObj.add("playerTemplate", JSON.stringify(playerTemplate));
         
         this.updateLeaderboards();
-        sys.sendHtmlAll("<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>", safchan);
+        sys.sendHtmlAll(openedMessage, safchan);
         if (baitCooldown < 7) {
             baitCooldown = sys.rand(5,7);
         }
@@ -17136,7 +17170,7 @@ function Safari() {
             }
 
             sys.sendAll("*** ************************************************************ ***", safchan);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Poké Balls you need!", safchan);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Pokéballs you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
                 safaribot.sendAll(" --- " + rulesDesc[n], safchan);
             }
@@ -17146,7 +17180,7 @@ function Safari() {
             sys.sendAll("*** ************************************************************ ***", safchan);
 
             sys.sendAll("*** ************************************************************ ***", 0);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Poké Balls you need!", 0);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Pokéballs you need!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
             safari.flashPlayers();
             var players = sys.playersOfChannel(safchan);
