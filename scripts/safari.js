@@ -11285,7 +11285,8 @@ function Safari() {
         this.finished = false;
         this.eventCommands = {};
         this.rewardName = "";
-
+        
+        this.allowRejoin = false;
         this.joinmsg = "Type " + link("/signup") + " to participate!";
     }
     SafariEvent.prototype.setupEvent = function() {};
@@ -11342,22 +11343,32 @@ function Safari() {
             return;
         }
         var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
-        if (signupsLower.contains(name.toLowerCase())) {
-            safaribot.sendMessage(src, "You already joined the event!", safchan);
-            return;
+        if (!this.allowRejoin) {
+            if (signupsLower.contains(name.toLowerCase())) {
+                safaribot.sendMessage(src, "You already joined the event!", safchan);
+                return;
+            }
         }
 
         if (this.canJoin && !this.canJoin(src, data)) {
             return;
         }
+        var verb = signupsLower.contains(name.toLowerCase()) ? "rejoined" : "joined";
+        if (verb === "rejoined") {
+            if (this.onLeave) {
+                this.onLeave(this.signups[signupsLower.indexOf(name.toLowerCase())]);
+            }
+        } else {
+            this.signups.push(name);
+        }
+        
         var onJoinMsg = "";
         if (this.onJoin) {
             onJoinMsg = this.onJoin(name, data);
         }
-
-        this.sendToViewers(name + " has joined the " + this.eventName + onJoinMsg + "!");
-        this.signups.push(name);
-        safaribot.sendHtmlMessage(src, "You joined the " + this.eventName + onJoinMsg + "! To leave the event, type " + link("/unjoin") + "!", safchan);
+        
+        this.sendToViewers(name + " has " + verb + " the " + this.eventName + onJoinMsg + "!");
+        safaribot.sendHtmlMessage(src, "You " + verb + " the " + this.eventName + onJoinMsg + "! To leave the event, type " + link("/unjoin") + "!", safchan);
     };
     SafariEvent.prototype.unjoin = function(src) {
         var player = getAvatar(src);
@@ -11441,9 +11452,12 @@ function Safari() {
         }
         return true;
     };
-    SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored, nobot) {
+    SafariEvent.prototype.sendMessage = function(name, msg, flashing, colored, nobot, androidAlt) {
         var id = sys.id(name);
         if (id) {
+            if (androidAlt && sys.os(id) === "android") {
+                msg = androidAlt;
+            }
             if (msg === "" || nobot) {
                 if (flashing) {
                     sys.sendHtmlMessage(id, toFlashing(msg, name), safchan);
@@ -11500,6 +11514,7 @@ function Safari() {
         this.team1Defeated = 0;
         this.team2Defeated = 0;
         this.suddenDeath = false;
+        this.allowRejoin = true;
 
         this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! Winners will receive <b>" + this.rewardName + "</b>!";
 
@@ -11966,9 +11981,10 @@ function Safari() {
         
         this.round++;
         this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        this.sendToViewers(toColor("*** *************************************************** ***", "peru"), false, false, true);
         
         var roundTable = "<table cellpadding=2 cellspacing=0 style='margin-left: 50px'><tr><th colspan=" + (isFinal ? 4 : 3) + ">Round " + (this.round + 1) + "</b></th></tr>";
+        var androidTable = ["<br/>Round " + (this.round + 1)];
         for (e = 0; e < this.battles.length; e++) {
             bat = this.battles[e];
             det = "";
@@ -11979,15 +11995,17 @@ function Safari() {
             }
             
             roundTable += "<tr>" + (det ? "<td align=right><b>" + det + "</b></td>" : "") + "<td align=right>" + addFlashTag(bat[0].toCorrectCase()) + "</td> <td align=center>" + toColor("vs", "gray") + "</td> <td align=left>" + addFlashTag(bat[1].toCorrectCase()) + "</td></tr>";
+            androidTable.push(det + addFlashTag(bat[0].toCorrectCase()) + " " + toColor("vs", "gray") + " " + addFlashTag(bat[1].toCorrectCase()));
         }
         if (freePass) {
             roundTable += "<tr><td align=center colspan=" + (isFinal ? 4 : 3) + ">" + addFlashTag(freePass.toCorrectCase()) + " advances to the next round!</td></tr>";
+            androidTable.push(addFlashTag(freePass.toCorrectCase()) + " advances to the next round!");
         }
         roundTable += "</table>";
-        this.sendToViewers(roundTable, true, false, true);
+        this.sendToViewers(roundTable, true, false, true, androidTable.join("<br/>"));
         
         this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "peru"), false, false, true);
+        this.sendToViewers(toColor("*** *************************************************** ***", "peru"), false, false, true);
         
         this.choices = {};
         this.opponents = {};
@@ -12246,11 +12264,11 @@ function Safari() {
             safaribot.sendMessage(src, "Matches will be drawn in a few seconds.", safchan);
         }
     };
-    BFactory.prototype.sendToViewers = function(msg, flashing, colored, nobot) {
+    BFactory.prototype.sendToViewers = function(msg, flashing, colored, nobot, androidAlt) {
         var e, players = this.phase === "signup" ? this.signups : this.survivors;
         var list = removeDuplicates(players.concat(this.viewers));
         for (e = 0 ; e < list.length; e++) {
-            this.sendMessage(list[e], msg, flashing, colored, nobot);
+            this.sendMessage(list[e], msg, flashing, colored, nobot, androidAlt);
         }
     };
     BFactory.prototype.isInEvent = function(name) {
@@ -12629,6 +12647,8 @@ function Safari() {
         this.turnLength = 6;
         this.signupsDuration = 6;
         this.minPlayers = 1;
+        this.allowRejoin = true;
+        this.betList = [];
         
         var r;
         while (Object.keys(this.runners).length < 6) {
@@ -12653,7 +12673,6 @@ function Safari() {
             
             this.betType = translateAsset(this.bet).type;
             
-            this.betList = [];
             this.item = this.betType === "item" ? translateAsset(this.bet).id : null;
             this.betRange = this.item ?  "<b>" + (this.minBet) + " and " + plural(this.maxBet, this.item) + "</b>" : "$" + addComma(this.minBet) + " and $" + addComma(this.maxBet);
             
@@ -12761,17 +12780,20 @@ function Safari() {
         
         this.sendToViewers("");
         safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
-        if (this.type === "bet") {
-            for (e in this.bets) {
-                if (!this.signups.contains(e)) {
-                    delete this.bets[e];
-                } else {
-                    bet = this.bets[e];
+        for (e in this.bets) {
+            if (!this.signups.contains(e)) {
+                delete this.bets[e];
+            } else {
+                bet = this.bets[e];
+                if (this.type === "bet") {
                     this.betList.push(addColorTag(e) + " bets " + (this.item ? plural(bet.bet, this.item) : "$" + addComma(bet.bet)) + " on " + bet.racer + (bet.racer == this.favorite ? " (Favorite)" : (bet.racer == this.underdog ? " (Underdog)" : "") ));
+                } else {
+                    this.betList.push(addColorTag(e) + " bets on " + bet.racer + (bet.racer == this.favorite ? " (Favorite)" : (bet.racer == this.underdog ? " (Underdog)" : "") ));
                 }
             }
-            this.sendToViewers("Bets: " + this.betList.join(", "), false, true);
         }
+        this.sendToViewers("Bets: " + this.betList.join(", "), false, true);
+        
         this.sendToViewers("Preparations are complete, the race will start shortly!");
         this.sendToViewers("");
 
@@ -13053,6 +13075,9 @@ function Safari() {
         } else {
             return " by betting on " + racer;
         }
+    };
+    PokeRace.prototype.onLeave = function(name) {
+        delete this.bets[name];
     };
 
     /* System Functions */
@@ -13632,7 +13657,8 @@ function Safari() {
         var info = commandData.split(":"),
             range = getRange(info[0]),
             term = info.length > 1 ? info[1] : "",
-            e;
+            limit = info.length > 2 && !isNaN(parseInt(info[2], 10)) ? parseInt(info[2], 10) : 100,
+            e, query, termDesc;
         if (log.indexOf("") !== -1) {
             log.splice(log.indexOf(""), 1);
         }
@@ -13642,23 +13668,46 @@ function Safari() {
         log = getArrayRange(log.reverse(), range.lower, range.upper).reverse();
 
         if (term) {
-            var exp = new RegExp(term, "i");
-            for (e = log.length - 1; e >= 0; e--) {
-                if (!exp.test(log[e])) {
-                    log.splice(e, 1);
+            var queryMode = term.indexOf("||") < term.indexOf("&&") ? "&&" : "||";
+            query = term.split(queryMode).map(function(x) { return x.trim(); }).filter(function(x) { return x.length > 0; });
+            
+            if (queryMode === "&&") {
+                var queryStr = "^";
+                for (e = 0; e < query.length; e++) {
+                    queryStr += "(?=.*" + query[e] + ")";
+                }
+                queryStr += ".+";
+                var exp = new RegExp(queryStr, "i");
+                for (e = log.length - 1; e >= 0; e--) {
+                    if (!exp.test(log[e])) {
+                        log.splice(e, 1);
+                    }
+                }
+            } else {
+                var queryStr = [];
+                for (e = 0; e < query.length; e++) {
+                    queryStr.push("(" + query[e] + ")");
+                }
+                queryStr = queryStr.join("|");
+                var exp = new RegExp(queryStr, "i");
+                for (e = log.length - 1; e >= 0; e--) {
+                    if (!exp.test(log[e])) {
+                        log.splice(e, 1);
+                    }
                 }
             }
+            termDesc = readable(query, queryMode === "&&" ? "and" : "or");
         }
         if (log.length <= 0) {
             safaribot.sendMessage(src, "No " + name + " log found for this query!", safchan);
         } else {
             var spliced = false;
-            if (log.length > 100) {
-                log = log.slice(0, 100);
+            if (log.length > limit) {
+                log = log.slice(log.length-limit, log.length);
                 spliced = true;
             }
             sys.sendMessage(src, "", safchan);
-            sys.sendMessage(src, cap(name) + " Log (last " + (range.lower > 1 ? range.lower + "~" : "") + range.upper + " entries" + (term ? ", only including entries with the term " + term : "") + "):", safchan);
+            sys.sendMessage(src, cap(name) + " Log (last " + (range.lower > 1 ? range.lower + "~" : "") + range.upper + " entries" + (term ? ", only displaying entries with the term" + (query.length > 1 ? "s" : "") + " " + termDesc : "") + "):", safchan);
             for (e in log) {
                 if (!log[e]) {
                     continue;
@@ -13666,7 +13715,7 @@ function Safari() {
                 safaribot.sendMessage(src, parser(log[e]), safchan);
             }
             if (spliced) {
-                safaribot.sendMessage(src, "Only showing first 100 entries found. Narrow down your search for more results.", safchan);
+                safaribot.sendMessage(src, "Only showing first " + limit + " entries found. Narrow down your search or use /" + command + " [Range]:[Query]:[Max Entries Displayed] for more results.", safchan);
             }
         }
         var more = range.upper - range.lower + (range.lower <= 1 ? 1 : 0);
@@ -14200,7 +14249,7 @@ function Safari() {
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
             "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing.",            
-            "Log Files: Use /command [amount]։[lookup] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs.",
+            "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
             "Available logs: ***tradelog (trades), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited)"
         ];
         var ownerHelp = [
