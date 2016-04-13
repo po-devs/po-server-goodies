@@ -378,7 +378,7 @@ step: function() {
         sendNotice();
     }
     if (date.getUTCHours() % 1 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
-        print("CURRENT SERVER TIME: " + date.toUTCSTring()); //helps when looking through logs
+        print("CURRENT SERVER TIME: " + date.toUTCString()); //helps when looking through logs
     }
     // Reset stats monthly
     var JSONP_FILE = "usage_stats/formatted/stats.jsonp";
