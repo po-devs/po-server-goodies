@@ -488,8 +488,8 @@ function Safari() {
     var nextTheme;
     var currentRules;
     var nextRules;
-    var RULES_NERF = 0.20;
-    var RULES_BUFF = 1.30;
+    var RULES_NERF = 0.30;
+    var RULES_BUFF = 0.25;
     var defaultRules = {
         "onlyTypes": { //Picks one of the random sets and excludes all types not in that array
             "chance": 0,
@@ -1988,9 +1988,15 @@ function Safari() {
         }
         player.balls[reward] += amount;
     }
+    function toMoney(str) {
+        if (str[0] === "$") {
+            str = str.substr(1);
+        }
+        return parseInt(str.replace(",", ""), 10);
+    }
     function translateAsset(asset) {
         if (asset[0] == "$") {
-            var amount = parseInt(asset.substr(asset.indexOf("$") + 1).replace(",", ""), 10);
+            var amount = toMoney(asset);
             return {
                 id: "$" + amount,
                 input: asset,
@@ -2463,7 +2469,7 @@ function Safari() {
 
         if (contestBroadcast) {
             sys.sendAll("*** ************************************************************ ***", 0);
-            safaribot.sendHtmlAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
+            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
             sys.sendAll("*** ************************************************************ ***", 0);
         } else {
             contestBroadcast = true;
@@ -2814,42 +2820,37 @@ function Safari() {
         var type1 = sys.type(sys.pokeType1(pokeId)),
             type2 = sys.type(sys.pokeType2(pokeId)),
             id = parseInt(pokeId, 10),
-            bst = getBST(pokeId);
+            bst = getBST(pokeId),
+            val = 1;
 
-        if ("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) {
-            return RULES_NERF;
+        if (("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) ||
+        ("minBST" in rules && bst < rules.minBST) ||
+        ("maxBST" in rules && bst > rules.maxBST) ||
+        (rules.noLegendaries && isLegendary(id)) ||
+        ("minBST" in rules && bst < rules.minBST) ||
+        (rules.nerfShiny && typeof pokeId === "string") ||
+        (rules.nerfSingle && type2 === "???") ||
+        (rules.nerfDual && type2 !== "???")) {
+            val = RULES_NERF;
         }
-        if ("minBST" in rules && bst < rules.minBST) {
-            return RULES_NERF;
-        }
-        if ("maxBST" in rules && bst > rules.maxBST) {
-            return RULES_NERF;
-        }
-        if (rules.noLegendaries && isLegendary(id)) {
-            return RULES_NERF;
-        }
-        if (rules.nerfShiny && typeof pokeId === "string") {
-            return RULES_NERF;
-        }
-        if (rules.nerfSingle && type2 === "???") {
-            return RULES_NERF;
-        }
-        if (rules.nerfDual && type2 !== "???") {
-            return RULES_NERF;
-        }
-        if ("bonusTypes" in rules && (rules.bonusTypes.contains(type1) || rules.bonusTypes.contains(type2))) {
-            return RULES_BUFF;
+        if ("bonusTypes" in rules) {
+            if (rules.bonusTypes.contains(type1)) {
+                val += RULES_BUFF;
+            }
+            if (rules.bonusTypes.contains(type2)) {
+                val += RULES_BUFF;
+            }
         }
         if (rules.buffShiny && typeof pokeId === "string") {
-            return RULES_BUFF;
+            val += RULES_BUFF;
         }
         if (rules.buffSingle && type2 === "???") {
-            return RULES_BUFF;
+            val += RULES_BUFF;
         }
         if (rules.buffDual && type2 !== "???") {
-            return RULES_BUFF;
+            val += RULES_BUFF;
         }
-        return 1;
+        return val;
     };
     this.computeCatchRate = function(src, data) {
         var player = getAvatar(src);
@@ -3063,14 +3064,13 @@ function Safari() {
             }
             var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay) + ")" : "<b>" + pokeName + "</b>";
             var msg = "";
-            //Uncomment below to enable
-            /* for (var u = 0; u < player.party.length; u++) {
+            for (var u = 0; u < player.party.length; u++) {
                 if (pokeInfo.species(player.party[u]) === 201) {
                     msg += "abcdefghijklmnopqrstuvwxyz!?".charAt(pokeInfo.forme(player.party[u]));
                 }
             }
             msg = msg.length > 4 ? msg : "";
-            msg = /asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(msg) ? "" : msg; */
+            msg = /asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(msg) ? "" : msg;
             
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
@@ -7063,8 +7063,8 @@ function Safari() {
         }
 
         var product = info[0];
-        var startingOffer = parseInt(info[1], 10);
-        var minBid = parseInt(info[2], 10);
+        var startingOffer = toMoney(info[1]);
+        var minBid = toMoney(info[2]);
 
         var input = getInput(product);
         if (!input) {
@@ -7472,7 +7472,7 @@ function Safari() {
             return;
         }
 
-        var offer = parseInt(bid, 10);
+        var offer = toMoney(bid);
         if (isNaN(offer) || offer < 1) {
             safaribot.sendMessage(src, "Please offer a valid value!", safchan);
             return;
@@ -7559,8 +7559,8 @@ function Safari() {
 
         var info = data.split(":");
         if (info.length < 3) {
-            safaribot.sendMessage(src, "To trade Pokémon with another player, use /trade [Player]:[Your Offer]:[What you want].", safchan);
-            safaribot.sendHtmlMessage(src, "You can trade a Pokémon (type the name or number), money (type $150) or item (type @master). To trade multiples items, type " + toColor("Pichu,3@honey,$200", "blue") + ".", safchan);
+            safaribot.sendMessage(src, "To trade Pokémon with another player, use /trade [Player]:[Your Offer]:[Your Request].", safchan);
+            safaribot.sendHtmlMessage(src, "You can trade a Pokémon (type the name or number), money (type $150) or item (type @master). To trade multiple items, type " + toColor("Pichu,3@honey,$200", "blue") + " in the [Your Offer] or [Your Request] spots.", safchan);
             return;
         }
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
@@ -14914,9 +14914,9 @@ function Safari() {
                 var out = [
                     "",
                     "*** CONTEST RULES EXPLANATION *** ",
-                    "BUFF: Catch rate increased by " + (Math.round((RULES_BUFF - 1) * 100)) + "%.",
-                    "NERF: Catch rate reduced to " + (RULES_NERF * 100) + "%.",
-                    "Buffs/Nerfs do not stack. If a Pokémon is both Buffed and Nerfed, only the Nerf will count.",
+                    "NERF: Any number of nerfs reduces the catch rate to " + (RULES_NERF * 100) + "%.",
+                    "BUFF: Each buff increases the catch rate by " + (RULES_BUFF * 100) + "%.",
+                    "Nerf is only applied once, but Buffs can stack.",
                     "",
                     "Buffed/Nerfed Types: Pokémon with any of those types gets Buffed/Nerfed.",
                     "Enforced Types: Pokémon with any type not in this list gets Nerfed.",
