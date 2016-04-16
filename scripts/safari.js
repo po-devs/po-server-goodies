@@ -1142,8 +1142,9 @@ function Safari() {
         return Math.random() < value;
     }
     function cantBecause(src, action, arr, item) {
+        var player = getAvatar(src);
         if (arr.contains("tutorial")) {
-            if (getAvatar(src).tutorial.inTutorial) {
+            if (player.tutorial.inTutorial) {
                 safaribot.sendHtmlMessage(src, "You cannot " + action + " at this stage in the tutorial! If you forgot what to do, use " + link("/tutorial") + ".", safchan);
                 return true;
             }
@@ -1155,7 +1156,6 @@ function Safari() {
                 return true;
             }
             if (arr.contains("item")) {
-                var player = getAvatar(src);
                 if (player.balls[item] < 1) {
                     safaribot.sendMessage(src, "You don't have any " + finishName(item) + "!", safchan);
                     return true;
@@ -5978,6 +5978,9 @@ function Safari() {
     this.sellPokemon = function(src, data) {
         if (data === "*") {
             safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
+            return;
+        }
+        if (!validPlayers("self", src)) {
             return;
         }
         var reason = "sell a Pokémon";
