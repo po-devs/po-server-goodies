@@ -26,6 +26,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (sys.auth(src) > 2 || isSuperAdmin(src)) {
                 sys.sendMessage(src, "/commands owner: To know of owner commands", channel);
             }
+            if (require("autoteams.js").isAutoTeamsAuth(src)) {
+                sys.sendMessage(src, "/commands autoteams: To know of autoteams commands", channel);
+            }
             var module, pluginhelps = getplugins("help-string");
             for (module in pluginhelps) {
                 if (pluginhelps.hasOwnProperty(module)) {
@@ -621,7 +624,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var pokeId;
         if (isNaN(commandData)) {
             switch (commandData.toLowerCase()) {
-                case ("darmanitan-z") : 
+                case ("darmanitan-z") :
                     commandData = "Darmanitan-D";
                     break;
                 case ("meloetta-p") :
@@ -694,7 +697,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 sys.sendHtmlMessage(src, data[x], channel);
             }
         }
-                
+
         var stone = 0, aforme;
         if (commandData.indexOf(" ") !== -1) {
             stone = sys.stoneForForme(pokeId);
@@ -705,7 +708,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (sys.isAesthetic(pokeId)) {
                 pokeId = sys.pokeNum(aforme[0]);
             }
-        }       
+        }
         var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
         for (var x = 0; x < tiers.length; x++) {
@@ -725,7 +728,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
             return;
         }
-        
+
         var stone = 0, aforme;
         if (commandData.indexOf(" ") !== -1) {
             stone = sys.stoneForForme(pokeId);

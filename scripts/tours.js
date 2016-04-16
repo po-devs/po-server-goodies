@@ -12,7 +12,7 @@ This code will only work on servers updated to 6th Gen!
 */
 
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
-/*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module*/
+/*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module, tourconfig:true*/
 var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
 
 if (typeof tourschan !== "string") {
@@ -59,6 +59,7 @@ var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 250 ? "
 var tourcommands = ["/join: Joins a tournament.",
                     "/unjoin: Unjoins a tournament during signups only.",
                     "/queue: Lists upcoming tournaments.",
+                    "/getteam: Retrieves a random team for the tour entered.",
                     "/viewround: Views current round.",
                     "/iom: Views list of ongoing matches.",
                     "/ipm: Views list of matches yet to start.",
@@ -142,43 +143,6 @@ var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "#12: Do not join multiple tours even if you are using a different alt.",
                 "#13: Do not attempt to circumvent the rules.",
                 "- Attempting to circumvent the rules through trickery, proxy or other such methods will be punished."];
-var tierToRmtId = {
-    "ORAS OU": 42,
-    "ORAS Ubers": 43,
-    "ORAS UU": 44,
-    "ORAS LU": 45,
-    "ORAS NU": 119,
-    "ORAS LC": 46,
-    "Inverted Battle": 47,
-    "Monotype": 48,
-    "BW2 OU": 49,
-    "BW2 Ubers": 51,
-    "BW2 UU": 52,
-    "BW2 LU": 53,
-    "BW2 NU": 54,
-    "BW2 LC": 56,
-    "HGSS OU": 60,
-    "HGSS Ubers": 61,
-    "HGSS UU": 62,
-    "HGSS NU": 63,
-    "HGSS LC": 64,
-    "Adv OU": 66,
-    "Adv Ubers": 67,
-    "Adv UU": 68,
-    "Adv NU": 69,
-    "Adv LC": 70,
-    "GSC OU": 72,
-    "GSC Ubers": 73,
-    "GSC UU": 74,
-    "RBY OU": 76,
-    "RBY UU": 77,
-    "VGC 2013": 79,
-    "VGC 2012": 80,
-    "VGC 2011": 81,
-    "VGC 2010": 82,
-    "VGC 2009": 83,
-    "JAA": 84
-};
 
 function sendBotMessage(user, message, chan, html) {
     if (user === undefined) {
@@ -2551,14 +2515,19 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "No tournament has signups available at the moment!", tourschan, false);
                 return true;
             }
-            if (tours.tour[key].dqs.indexOf(sys.ip(src)) != -1) {
+            if (tours.tour[key].dqs.indexOf(sys.ip(src)) > -1) {
                 sendBotMessage(src, "You were removed from signups, so you can't join again!", tourschan, false);
                 return true;
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                var needsteam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory", "Battle Factory 6v6", "Inverted Challenge Cup"].indexOf(tours.tour[key].tourtype) == -1;
-                sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false);
-                return true;
+                try {
+                    require("autoteams.js").giveTeam(src, 0, tours.tour[key].tourtype);
+                    sendBotMessage(src, "Your first team was set to a random " + tours.tour[key].tourtype + " team.", tourschan, false);
+                } catch (error) {
+                    var needsTeam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory", "Battle Factory 6v6", "Inverted Challenge Cup"].indexOf(tours.tour[key].tourtype) > -1;
+                    sendBotMessage(src, "You need to " + (needsTeam ? "have a team for " : "change your tier to ") + tours.tour[key].tourtype + " to join!", tourschan, false);
+                    return true;
+                }
             }
             if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.os(src) === "android") {
                 sendBotMessage(src, "Android devices are incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
@@ -2785,6 +2754,21 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendMessage(src,(parseInt(e, 10)+1)+") "+queuedata.tier+": Set by "+queuedata.starter+"; Parameters: "+params.mode+" Mode"+(params.gen != "default" ? "; Gen: "+getSubgen(params.gen,true) : "")+(params.type == "double" ? "; Double Elimination" : "")+(!isNaN(parseInt(params.maxplayers, 10)) ? "; For "+ params.maxplayers +" players": "")+(wifiuse != "default" ? "; "+wifiuse : "")+(params.event ? "; Event Mode": ""), tourschan);
                 }
                 firsttour = false;
+            }
+            return true;
+        }
+        if (command === "getteam") {
+            var inTour = isInTour(sys.name(src));
+            if (inTour === false) {
+                sendBotMessage(src, "You aren't currently in a tour!", tourschan, false);
+            } else {
+                var tierName = tours.tour[inTour].tourtype;
+                try {
+                    require("autoteams.js").giveTeam(src, 0, tierName);
+                    sendBotMessage(src, "Your first team was set to a random " + tierName + " team.", tourschan, false);
+                } catch (error) {
+                    sendBotMessage(src, "No teams available for " + tierName + "!", tourschan, false);
+                }
             }
             return true;
         }
@@ -3715,12 +3699,12 @@ function tourstart(tier, starter, key, parameters) {
         if ((sys.getClauses(tier)%256 >= 128 && !parameters.wifi) || (sys.getClauses(tier)%256 < 128 && parameters.wifi)) {
             wifiuse = parameters.wifi ? "Preview Mode" : "No Preview Mode";
         }
-        
+
         //Broadcast to Safari when an event tour is starting
         if (parameters.event) {
             channels.push(sys.channelId("Safari"));
         }
-        
+
         for (var x in channels) {
             sendChanAll("", channels[x]);
             if (!parameters.event) {
@@ -3734,10 +3718,10 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
                 if (channels[x] == tourschan) {
-                    if (tier in tierToRmtId) {
-                        sendChanHtmlAll("<timestamp/> Teams can be found here: <a href='http://pokemon-online.eu/forums/teams.23/?prefix_id=" + tierToRmtId[tier] + "'>Rate My Teams</a>, <a href='http://pokemon-online.eu/forums/team-showcase.65/?prefix_id=" + tierToRmtId[tier] + "'>Team Showcase</a>", channels[x]);
-                    }
                     sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
+                    if (require("autoteams.js").teamsAvailable(tier)) {
+                        sendChanHtmlAll("<timestamp/> Teams will be automatically assigned if you do not have one.", channels[x]);
+                    }
                 }
                 else {
                     sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
@@ -4891,7 +4875,7 @@ module.exports = {
         }
         return false;
     },
-    
+
     onHelp: function(src, commandData, channel) {
         if (commandData === "tournaments") {
             sys.sendMessage(src, "", channel);
@@ -4923,6 +4907,8 @@ module.exports = {
     isChannelAdmin: function(src) {
         return isMegaUser(src) ? true : isTourOwner(src);
     },
-    
+
+    isTourOwner: isTourOwner,
+
     "help-string": ["tournaments: To know the tournament commands"]
 };
