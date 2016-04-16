@@ -415,7 +415,7 @@ function Safari() {
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
     var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "master"];
+    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
     var allCostumes = Object.keys(costumeData);
 
 
@@ -549,7 +549,8 @@ function Safari() {
             "heavy": 0.125,
             "spy": 0.125,
             "clone": 0.125,
-            "premier": 0.125
+            "premier": 0.125,
+            "mono": 0.10
         },
         "bst": { //Both min and max are optional. It's possible to have only one of them in this object
             "minChance": 0,
@@ -7840,7 +7841,7 @@ function Safari() {
                 partyAmt = countRepeated(player.party, p);
                 boxAmt = countRepeated(player.pokemon, p);
                 
-                if (amount < partyAmt || boxAmt > amount) {
+                if (partyAmt === 0 || amount < partyAmt || boxAmt > amount) {
                     canEmptyParty = false;
                     break;
                 }
@@ -12981,7 +12982,7 @@ function Safari() {
                             player.records.pokeRaceSilver += stuff["@silver"];
                         }
                         this.sendMessage(name, "You " + out + "!");
-                        payments.push(name.toCorrectCase());
+                        payments.push(name.toCorrectCase() + (this.rewardUnderdog || this.rewardFavorite ? " (" + translateStuff(stuff) + ")" : ""));
                     }
                     safari.saveGame(player);
                 }
