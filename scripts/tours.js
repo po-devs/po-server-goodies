@@ -15,6 +15,24 @@ This code will only work on servers updated to 6th Gen!
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module, tourconfig:true*/
 var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
 
+//Challenge Cup tiers
+var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Hackmons Inverted CC"];
+//Tiers that are all gen
+var allgentiers = cctiers.concat("Metronome");
+//Tiers that are BF or CC. These also allow others to watch
+var ccbftiers = cctiers.concat("Battle Factory", "Battle Factory 6v6");
+//Tiers with double elim by default
+var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Flash Clash"];
+//Tiers that are locked to Singles Mode
+var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers", "Flash Clash", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
+//Tiers with Team Preview state that can't be modified
+var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles", "Flash Clash"];
+//Tiers used when queue is empty
+var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "ORAS 1v1", "Flash Clash", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
+
+//Clause List
+var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
+    
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
 }
@@ -514,7 +532,6 @@ function getTourClauses(key) {
     else if (!tours.tour[key].parameters.wifi && tierclauses%256 >= 128) {
         tierclauses -= 128;
     }
-    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
     var neededclauses = [];
     for (var c=0;c<clauselist.length;c++) {
         var denom = Math.pow(2,c+1);
@@ -536,7 +553,6 @@ function clauseCheck(key, issuedClauses) {
     else if (tours.tour[key].parameters.wifi === false && requiredClauses%256 >= 128) {
         requiredClauses -= 128;
     }
-    var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
     var clause1 = false;
     var clause2 = false;
     var missing = [];
@@ -545,7 +561,7 @@ function clauseCheck(key, issuedClauses) {
         var denom = Math.pow(2,c+1);
         var num = Math.pow(2,c);
         // don't check for disallow spects in non CC tiers , it's checked manually
-        if (c == 2 && ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) == -1 && !(sys.getClauses(tier) & 16)) { //check for CC clause so the tier list doesn't need constantly updating
+        if (c == 2 && ccbftiers.indexOf(tier) == -1 && !(sys.getClauses(tier) & 16)) { //check for CC clause so the tier list doesn't need constantly updating
             continue;
         }
         if (requiredClauses%denom >= num) {
@@ -910,7 +926,6 @@ function getEventTour(datestring) {
             if (thetier === null) {
                 continue;
             }
-            var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup"];
             var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
             if (eventdata.hasOwnProperty('settings')) {
                 var parameterdata = eventdata.settings;
@@ -918,7 +933,6 @@ function getEventTour(datestring) {
                     var parameterset = p;
                     var parametervalue = parameterdata[p];
                     if (cmp(parameterset, "mode")) {
-                        var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                         if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
                             sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
                         }
@@ -1071,7 +1085,6 @@ function tourStep() {
     }
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var hour = now.getUTCHours();
-    var allgentiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Hackmons Challenge Cup"];
     if (tours.eventticks === 0) {
         var details = getEventTour(datestring);
         if (typeof details === "object") {
@@ -1101,10 +1114,9 @@ function tourStep() {
             tourstart(tourtostart,starter,tours.key,params);
         }
         else if (tours.keys.length === 0) {
-            // start a cycle from tourarray
-            var tourarray = ["Challenge Cup", "BW2 NU", "CC 1v1", "ORAS 1v1", "Random Battle", "XY OU", "XY LC", "BW2 OU", "BW2 UU", "Monotype", "Challenge Cup", "Wifi CC 1v1", "BW2 LC", "BW2 OU", "BW2 LU", "BW2 Ubers", "XY OU", "XY LC"];
-            var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "ORAS 1v1"];
-            var tourtostart = tourarray[tours.key%tourarray.length];
+            //Shuffle commonly played tiers
+            var tourarray = autotiers.shuffle();
+            var tourtostart = tourarray[0]; //And select one to start
             var tourtype = doubleelimtiers.indexOf(tourtostart) != -1 ? "double" : "single";
             tourstart(tourtostart,"~~Server~~",tours.key,{"mode": modeOfTier(tourtostart), "gen": (allgentiers.indexOf(tourtostart) != -1 ? defaultgen : "default"), "type": tourtype, "maxplayers": false, "event": false,  "wifi": sys.getClauses(tourtostart)%256 >= 128 ? true : false});
         }
@@ -2057,10 +2069,8 @@ function tourCommand(src, command, commandData, channel) {
                     if (tours.tour[x].state == "signups") {
                         isSignups = true;
                     }
-                }
-                var detiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1"];
-                var allgentiers = ["Challenge Cup", "Metronome", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup"];
-                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": detiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
+                }         
+                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
                 if (data[1] !== false) {
                     var parameterdata = data[1].split(":");
                     for (var p in parameterdata) {
@@ -2068,7 +2078,6 @@ function tourCommand(src, command, commandData, channel) {
                         var parameterset = parameterinfo[0];
                         var parametervalue = parameterinfo[1];
                         if (cmp(parameterset, "mode")) {
-                            var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers"];
                             if ((modeOfTier(tourtier) == "Doubles" || modeOfTier(tourtier) == "Triples" || singlesonlytiers.indexOf(tourtier) != -1) && !cmp(parametervalue, modeOfTier(tourtier))) {
                                 sendBotMessage(src, "The "+tourtier+" tier can only be played in " + modeOfTier(tourtier) + " mode!", tourschan, false);
                                 return true;
@@ -2115,7 +2124,7 @@ function tourCommand(src, command, commandData, channel) {
                             parameters.maxplayers = players;
                         }
                         else if (cmp(parameterset, "wifi")) {
-                            if (['CC 1v1', 'Wifi CC 1v1', 'Wifi Ubers', 'Wifi OU', 'No Preview Ubers', 'No Preview OU', 'Wifi Triples', 'Wifi Uber Triples', 'No Preview OU Triples', 'No Preview Uber Triples', 'Wifi OU Doubles', 'Wifi Uber Doubles', 'No Preview OU Doubles', 'No Preview Uber Doubles'].indexOf(tourtier) > -1) {
+                            if (previewlockedtiers.indexOf(tourtier) > -1) {
                                 sendBotMessage(src, "You cannot change the Team Preview Setting for the "+tourtier+" tier!", tourschan, false);
                                 return true;
                             }
@@ -2524,8 +2533,8 @@ function tourCommand(src, command, commandData, channel) {
                     require("autoteams.js").giveTeam(src, 0, tours.tour[key].tourtype);
                     sendBotMessage(src, "Your first team was set to a random " + tours.tour[key].tourtype + " team.", tourschan, false);
                 } catch (error) {
-                    var needsTeam = ["Challenge Cup", "Wifi CC 1v1", "CC 1v1", "Battle Factory", "Battle Factory 6v6", "Inverted Challenge Cup"].indexOf(tours.tour[key].tourtype) > -1;
-                    sendBotMessage(src, "You need to " + (needsTeam ? "have a team for " : "change your tier to ") + tours.tour[key].tourtype + " to join!", tourschan, false);
+                    var needsteam = ccbftiers.indexOf(tours.tour[key].tourtype) == -1;
+                    sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false);
                     return true;
                 }
             }
@@ -3714,7 +3723,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll(redhtmlborder, channels[x]);
             }
             if (channels[x] == tourschan || parameters.event) {
-                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
+                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><font color='Blue'>"+tier+"</font></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
                 if (channels[x] == tourschan) {
@@ -3729,7 +3738,7 @@ function tourstart(tier, starter, key, parameters) {
                 }
             }
             else {
-                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><a href='http://wiki.pokemon-online.eu/page/Tiers:"+tier.replace(/ /g,"_")+"'>"+tier+"</a></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
+                sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><font color='Blue'>"+tier+"</font></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
                 sendChanHtmlAll("<timestamp/> Go to the <a href='po:join/Tournaments'>#Tournaments</a>  channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
             }
             if (!parameters.event) {
@@ -4060,6 +4069,10 @@ function tourprintbracket(key) {
                 }
                 tours.history.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
                 tours.eventhistory.unshift(getFullTourName(key)+": "+rankstring.join("; ")+"; with "+tours.tour[key].cpt+" players");
+                var Safari = require('safari.js');
+                for (var r = 0; r < 3; r++) {
+                    Safari.toursPromo(rankingorder[r], r+1);
+                }
             }
             if (tours.history.length > 25) {
                 tours.history.pop();
@@ -4849,8 +4862,7 @@ module.exports = {
             }
         }
         /* check for potential scouters */
-        var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Metronome", "Battle Factory", "Battle Factory 6v6"];
-        var isOkToSpectate = (tours.tour[p1tour].state == "final" || cctiers.indexOf(tours.tour[p1tour].tourtype) != -1 || sys.getClauses(tours.tour[p1tour].tourtype) & 16); //check for CC clause so the tier list doesn't need constantly updating
+        var isOkToSpectate = (tours.tour[p1tour].state == "final" || ccbftiers.indexOf(tours.tour[p1tour].tourtype) != -1 || sys.getClauses(tours.tour[p1tour].tourtype) & 16); //check for CC clause so the tier list doesn't need constantly updating
         if (srctour === p1tour && !isOkToSpectate) {
             sendBotMessage(src, "You can't watch this match because you are in the same tournament!","all", false);
             return true;

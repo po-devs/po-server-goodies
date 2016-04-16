@@ -1,9 +1,13 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
+/*global exports, normalbot, SESSION, sachannel, staffchannel, sys*/
+/*jshint shadow: true*/
+/*jslint sloppy: true*/
+exports.handleCommand = function (src, command, commandData, tar, channel) {
+    /*
     if (command === "memorydump") {
         sys.sendMessage(src, sys.memoryDump(), channel);
         return;
     }
-    /*if (command == "togglerainbow") {
+    if (command == "togglerainbow") {
         if (commandData === "off") {
             SESSION.global().allowRainbow = false;
             normalbot.sendMessage(src, "You turned rainbow off!", channel);
@@ -32,7 +36,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Your target is not online.", channel);
             return;
         }
-        
+
         if (!sys.isInChannel(tar, channel)) {
             if (!SESSION.channels(channel).isChannelMember(tar)) {
                 SESSION.channels(channel).issueAuth(src, commandData, "member");
@@ -327,23 +331,22 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!commandData) {
             return;
         }
-        if (!sys.loggedIn(sys.id(commandData))) {
+        if (!sys.loggedIn(tar)) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
         }
-        var tar = sys.id(commandData);
         if (sys.os(tar) !== "android" && sys.version(tar) < 2402 || sys.os(tar) === "android" && sys.version(tar) < 37) {
             //probably won't work well on windows/linux/etc anyways...
             normalbot.sendMessage(src, "Cookies won't work on this target", channel);
             return;
         }
         if (command == "cookiemute") {
-            SESSION.users(sys.id(commandData)).activate("smute", Config.kickbot, 0, "Cookie", true);
+            SESSION.users(tar).activate("smute", Config.kickbot, 0, "Cookie", true);
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
-        sys.setCookie(sys.id(commandData), type + " " + commandData.toCorrectCase());
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src), staffchannel);
+        sys.setCookie(tar, type + " " + commandData.toCorrectCase());
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + " " + sys.version(tar) + "]", staffchannel);
         if (type == "banned") {
             sys.kick(tar);
         }
@@ -379,11 +382,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         if (!commandData) {
             return;
         }
-        if (!sys.loggedIn(sys.id(commandData))) {
+        var tar = sys.id(commandData);
+        if (!sys.loggedIn(tar)) {
             normalbot.sendMessage(src, "Target not logged in", channel);
             return;
         }
-        var tar = sys.id(commandData);
         if (!sys.uniqueId(tar)) {
             normalbot.sendMessage(src, "Target doesn't have a unique ID (update needed)", channel);
             return;
@@ -398,7 +401,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         banInfo.type = type;
         banInfo.psuedo = psuedo;
         script.idBans.add(id, JSON.stringify(banInfo));
-        normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src), staffchannel);
+        normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + ", v" + sys.version(tar) + "]", staffchannel);
         if (type == "muted") {
             SESSION.users(tar).activate("smute", Config.kickbot, 0, "ID", true);
         } else {
@@ -435,23 +438,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 
     return "no command";
 };
-exports.help = 
-    [
-        "/ban: Bans a user.",
-        "/unban: Unbans a user.",
-        "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
-        "/memorydump: Shows the state of the memory.",
-        "/nameban: Adds a regexp ban on usernames.",
-        "/nameunban: Removes a regexp ban on usernames.",
-        "/channelnameban: Adds a regexp ban on channel names.",
-        "/channelnameunban: Removes a regexp ban on channel names.",
-        "/namewarn: Adds a regexp namewarning",
-        "/nameunwarn: Removes a regexp namewarning",
-        "/destroychan: Destroy a channel (official channels are protected).",
-        "/indigoinvite: To invite somebody to staff channels.",
-        "/indigodeinvite: To deinvite unwanted visitors from staff channel.",
-        "/cookieban: Bans an online target by cookie.",
-        "/cookiemute: Puts an online android target on an autosmute list by cookie.",
-        "/cookieunban/mute: Undos a cookieban/mute. Will take effect when they next log in",
-        "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
-    ];
+exports.help = [
+    "/ban [ip/name]: Bans a user. /unban to unban.",
+    "/cookieban [name]: Bans an online target by cookie. /cookieunban to unban.",
+    "/cookiemute [name]: Puts an online android target on an autosmute list by cookie. /cookiemute to unmute.",
+    "/channelnameban [name]: Adds a regexp ban on channel names. /channelnameunban to unban.",
+    "/destroychan [name]: Destroy a channel (official channels are protected).",
+    "/nameban [name]: Adds a regexp ban on usernames. /nameunban to unban.",
+    "/namewarn [name]: Adds a regexp namewarning. /nameunwarn to unwarn.",
+    "/indigoinvite [name]: To invite somebody to staff channels. /indigodeinvite to deinvite.",
+//  "/memorydump: Shows the state of the memory.",
+    "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
+    "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
+];

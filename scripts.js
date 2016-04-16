@@ -22,7 +22,7 @@ var Config = {
     safaribot: "Tauros",
     teamsbot: "Minun",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js", "autoteams.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js", "youtube.js", "autoteams.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 5,
@@ -31,7 +31,7 @@ var Config = {
         notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
     },
     DreamWorldTiers: ["All Gen Hackmons", "ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
-    superAdmins: ["[LD]Jirachier", "Mahnmut", "Strudels", "Draciel", "Alice"],
+    superAdmins: ["[LD]Jirachier", "Mahnmut", "Strudels"],
     canJoinStaffChannel: [],
     disallowStaffChannel: [],
     topic_delimiter: " | ",
@@ -177,6 +177,12 @@ String.prototype.format = function() {
     }
     return formatted;
 };
+String.prototype.htmlEscape = function () {
+    return this.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+};
+String.prototype.htmlStrip = function () {
+    return this.replace(/(<([^>]+)>)/gi, "");
+};
 String.prototype.toCorrectCase = function() {
     if (isNaN(this) && sys.id(this) !== undefined) {
         return sys.name(sys.id(this));
@@ -243,13 +249,13 @@ function sendChanHtmlAll(message, chan_id) {
     }
 }
 
-function updateNotice(silent) {
+/*function updateNotice(silent) {
     var url = Config.base_url + "notice.html";
     sys.webCall(url, function (resp){
         sys.writeToFile(Config.dataDir + "notice.html", resp);
     });
     sendNotice(silent);
-}
+}*/
 
 function sendNotice(silent) {
     var notice = sys.getFileContent(Config.dataDir + "notice.html");
@@ -372,6 +378,9 @@ step: function() {
     }
     if (date.getUTCHours() % 3 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
         sendNotice();
+    }
+    if (date.getUTCHours() % 1 === 0 && date.getUTCMinutes() === 0 && date.getUTCSeconds() === 0) {
+        print("CURRENT SERVER TIME: " + date.toUTCString()); //helps when looking through logs
     }
     // Reset stats monthly
     var JSONP_FILE = "usage_stats/formatted/stats.jsonp";
@@ -1333,35 +1342,29 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
-    sys.sendMessage(src, "*** Type in /Rules to see the rules. ***");
-    commandbot.sendMessage(src, "Use !commands to see the commands!");
+    sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
+    sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
-    if (sys.numPlayers() > maxPlayersOnline) {
-        maxPlayersOnline = sys.numPlayers();
-    }
-
+    maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
     if (maxPlayersOnline > sys.getVal("MaxPlayersOnline")) {
         sys.saveVal("MaxPlayersOnline", maxPlayersOnline);
     }
-
-    countbot.sendMessage(src, "Max number of players online was " + sys.getVal("MaxPlayersOnline") + ".");
-    if (typeof(this.startUpTime()) == "string")
-    countbot.sendMessage(src, "Server uptime is "+this.startUpTime());
+    countbot.sendMessage(src, (typeof(this.startUpTime()) == "string" ?  "Server Uptime: " + this.startUpTime() + ".  " : "")  + "Max Players Online: " + sys.getVal("MaxPlayersOnline") + ".");
     sys.sendMessage(src, "");
 
     callplugins("afterLogIn", src);
 
-//   if (SESSION.users(src).android) {
-//        sys.changeTier(src, "Challenge Cup");
-//        if (sys.existChannel("PO Android")) {
-//            var androidChan = sys.channelId("PO Android");
-//            sys.putInChannel(src, androidChan);
-//            sys.kick(src, 0);
-//            sys.sendMessage(src, "*********", androidChan);
-//            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
-//            sys.sendMessage(src, "*********", androidChan);
-//        }
-//    }
+   /*if (SESSION.users(src).android) {
+        sys.changeTier(src, "Challenge Cup");
+        if (sys.existChannel("PO Android")) {
+            var androidChan = sys.channelId("PO Android");
+            sys.putInChannel(src, androidChan);
+            sys.kick(src, 0);
+            sys.sendMessage(src, "*********", androidChan);
+            sys.sendMessage(src, "Message: Hello " + sys.name(src) + "! You seem to be using Pokemon Online for Android. With it you are able to battle with random pokemon. If you want to battle with your own made team, please surf to http://pokemon-online.eu/download with your computer and download the desktop application to your desktop. With it you can export full teams to your Android device! If you using the version with ads from Android Market, download adfree version from http://code.google.com/p/pokemon-online-android/downloads/list", androidChan);
+            sys.sendMessage(src, "*********", androidChan);
+        }
+    }*/
 
     if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
         sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
@@ -1374,7 +1377,7 @@ afterLogIn : function(src) {
     authChangingTeam = (sys.auth(src) > 0 && sys.auth(src) <= 3);
     this.afterChangeTeam(src);
 
-    if (sys.auth(src) <= 3 && this.canJoinStaffChannel(src))
+    if (this.canJoinStaffChannel(src) && !sys.isInChannel(src, staffchannel))
         sys.putInChannel(src, staffchannel);
 
     /*if (isAndroid(src)) {
@@ -1568,7 +1571,7 @@ beforeNewPM: function(src){
 
 beforeChatMessage: function(src, message, chan) {
     message = message.trim().replace(/\s{2,}/g, " ");
-    if(message.substr(0, 1) == '%')
+    /*if(message.substr(0, 1) == '%')
     {
          if(sys.id('JiraBot') !== undefined)
               sys.sendMessage(sys.id('JiraBot'), sys.name(src)+": "+message, chan);
@@ -1576,7 +1579,7 @@ beforeChatMessage: function(src, message, chan) {
              sys.sendMessage(sys.id('PolkaBot'), sys.name(src)+": "+message, chan);
          sys.stopEvent();
          return;
-    }
+    }*/
     channel = chan;
 
     var throttleMsg = false;
@@ -1856,12 +1859,12 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-    //Nothing good can come from these.
+    /*
     if (sys.auth(src) === 0 && message.toLowerCase().indexOf(".onion") != -1) {
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 7200, "Onion Link", true);
         kickbot.sendAll(sys.name(src) + " was smuted for 2 hours because they tried to send an Onion Link in the channel " + sys.channel(channel) + " [Message content: " + message + "]!", staffchannel);
     }
-
+    */
     // Secret mute
     if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
         if (SESSION.users(src).expired("smute")) {

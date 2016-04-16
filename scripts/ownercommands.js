@@ -27,7 +27,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         return;
-    }    
+    }
     if (command == "ipban") {
         var subip;
         var comment;
@@ -138,7 +138,12 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "showteam") {
-        var teams = [0,1,2,3,4,5].map(function(index) {
+        var teamCount = sys.teamCount(tar);
+        var index = [];
+        for (var i = 0; i < teamCount; i++) {
+            index.push(i);
+        }
+        var teams = index.map(function(index) {
             return script.importable(tar, index);
         }, this).filter(function(data) {
             return data.length > 0;
@@ -452,7 +457,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve" || sys.name(src).toLowerCase() === "fuzzysqurl") {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "lamperi" || sys.ip(src) == sys.dbIp("crystal moogle") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak")) {
         if (command === "eval") {
             if (commandData === undefined) {
                 normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
@@ -534,10 +539,19 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command == "updatenotice" || command === "updatenoticesilent") {
-        var silent = command === "updatenoticesilent";
-        updateNotice(silent);
-        normalbot.sendMessage(src, "Notice updated!");
+    if (command === "updatenotice" || command === "updatenoticesilent") {
+        var url = Config.base_url + "notice.html";
+        sys.webCall(url, function (resp){
+            if (resp !== "") {
+                sys.writeToFile(Config.dataDir + "notice.html", resp);
+                normalbot.sendMessage(src, "Notice updated!", channel);
+            } else {
+                normalbot.sendAll("Failed to update notice!", staffchannel);
+            }
+        });
+        if (command === "updatenotice") {
+            sendNotice();
+        }
         return;
     }
     if (command == "updatebansites") {

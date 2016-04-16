@@ -370,10 +370,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         battlebot.sendMessage(src, "You are currently " + (sys.away(src) ? "idling" : "here and ready to battle") + ". Use /idle on/off to change it.", channel);
         return;
     }
-    if (command === "selfkick" || command === "sk") {
+    if (command === "selfkick") {
         var i, srcIp = sys.ip(src), playersArray = sys.playerIds();
         for (i = 0; i < playersArray.length; ++i) {
-            if ((src !== playersArray[i]) && (srcIp === sys.ip(playersArray[i]))) {
+            if (src !== playersArray[i] && srcIp === sys.ip(playersArray[i])) {
                 sys.kick(playersArray[i]);
                 normalbot.sendMessage(src, "Your ghost was kicked...");
             }
@@ -613,12 +613,42 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }*/
+    //Messy but who really cares?
+    function translate(commandData) {
+        switch (commandData.toLowerCase()) {
+            case "darmanitan-z": commandData = "Darmanitan-D"; break;
+            case "meloetta-p": commandData = "Meloetta-S"; break;
+            case "hoopa-u": commandData = "Hoopa-B"; break;
+            case "rotom-wash": commandData = "Rotom-W"; break;
+            case "rotom-fan": commandData = "Rotom-S"; break;
+            case "rotom-frost": commandData = "Rotom-F"; break;
+            case "rotom-heat": commandData = "Rotom-H"; break;
+            case "rotom-mow": commandData = "Rotom-C"; break;
+            case "giratina-origin": commandData = "Giratina-O"; break;
+            case "shaymin-sky": commandData = "Shaymin-S"; break;
+            case "deoxys-attack": commandData = "Deoxys-A"; break;
+            case "deoxys-defense": commandData = "Deoxys-D"; break;
+            case "deoxys-speed": commandData = "Deoxys-S"; break;
+            case "tornadus-therian": commandData = "Tornadus-T"; break;
+            case "thundurus-therian": commandData = "Thundurus-T"; break;
+            case "landorus-therian": commandData = "Landorus-T"; break;
+            case "kyurem-black": commandData = "Kyurem-B"; break;
+            case "kyurem-white": commandData = "Kyurem-W"; break;
+            case "porygonz":
+            case "porygon z": commandData = "Porygon-Z"; break;
+            case "porygon-2":
+            case "porygon 2": commandData = "Porygon2"; break;
+            default: commandData = commandData;
+        }
+        return commandData;
+    }
+    
     if (command === "pokemon") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
-        commandData = commandData.split(":");
+        commandData = translate(commandData).split(":");
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
         var pokeId;
@@ -723,6 +753,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "tier") {
+        commandData = translate(commandData);
         var pokeId = sys.pokeNum(commandData);
         if (!pokeId) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
@@ -909,7 +940,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, pokeName + "'s wikipage is here: http://wiki.pokemon-online.eu/page/" + pokeName, channel);
         return;
     }
-    if (-crc32(command, crc32(sys.name(src))) == 22 || command === "wall") {
+    if (command === "wall") {
         if (!isNonNegative(SESSION.global().coins)) {
             SESSION.global().coins = 0;
         }

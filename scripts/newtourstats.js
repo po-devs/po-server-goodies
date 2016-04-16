@@ -495,9 +495,9 @@ function awardTourPoints(player, size, tier, delim, place) {
     // points for 4-7,8-15,16-31,32-63,64-127,128-255,256-511,512 players respectively. Tours with 3 players or less don't score. Double tours score in the higher up bracket
     var tierscore = {
         'a': [1,2,4,8,16,32,64,128], // for individual tiers scroes or high scoring tiers
-        'b': [1,2,3,5,8,12,18,27], // default
-        'c': [0,1,2,3,5,8,12,18],
-        'd': [0,0,1,2,3,5,8,12],
+        'b': [2,4,6,8,10,10,10,10], // default
+        'c': [1,2,2,3,4,4,4,4],
+        'd': [1,1,2,2,3,3,3,3],
         'e': [0,0,0,1,2,3,5,8],
         'f': [0,0,0,0,1,2,3,5],
         'z': [0,0,0,0,0,0,0,0]
@@ -534,15 +534,19 @@ function awardTourPoints(player, size, tier, delim, place) {
     }
     var tiers_a = [];
     var tiers_b = []; // default
-    var tiers_c = ["Monotype", "Sky Battle", "ORAS Cup"];
-    var tiers_d = ["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6", "ORAS Balanced Hackmons", "ORAS Hackmons", "Hackmons Challenge Cup"];
-    var tiers_e = ["Wifi CC 1v1", "ORAS 1v1", "Random Battle"];
-    var tiers_f = ["CC 1v1"];
-    var tiers_z = ["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
-                   "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
-                   "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
-                   "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
-                   "GBU Singles", "GBU Doubles", "GBU Triples"];
+    var tiers_c = ["Battle Factory", "Battle Factory 6v6", "ORAS 1v1", "Challenge Cup",
+                   "Inverted Challenge Cup", "Wifi CC 1v1", "Hackmons Wifi CC 1v1",
+                   "Hackmons Challenge Cup", "Hackmons Inverted CC", "Flash Clash"];
+    var tiers_d = ["CC 1v1", "Hackmons CC 1v1", "Metronome",
+                   "Anything Goes", "Random Battle", "Red/Blue", "Yellow", "Stadium",
+                   "Stadium w/ Tradebacks", "Gold/Silver", "Crystal", "Stadium 2",
+                   "Ruby/Sapphire", "Colosseum", "Fire Red/Leaf Green", "Emerald", "XD",
+                   "Diamond/Pearl", "Platinum", "Heart Gold/Soul Silver", "Black/White",
+                   "Black/White 2", "X/Y", "Omega Ruby/Alpha Sapphire", "GBU Singles",
+                   "GBU Doubles", "GBU Triples"];
+    var tiers_e = [];
+    var tiers_f = [];
+    var tiers_z = [];
     if (tiers_a.indexOf(tier) != -1) {
         points = tierscore.a[scale];
     }
@@ -636,24 +640,19 @@ function detEventPoints(size, ranking, tier) {
     if (scale == -1) {
         return 0;
     }
-    else if (["Metronome", "Red/Blue", "Yellow", "Stadium", "Stadium w/ Tradebacks",
-              "Gold/Silver", "Crystal", "Stadium 2", "Ruby/Sapphire", "Colosseum",
-              "Fire Red/Leaf Green", "Emerald", "XD", "Diamond/Pearl", "Platinum",
-              "Heart Gold/Soul Silver", "Black/White", "Black/White 2", "X/Y",
-              "GBU Singles", "GBU Doubles", "GBU Triples"].indexOf(tier) > -1) {
-        return 0;
-    }
-    else if (["Monotype", "Sky Battle", "ORAS Cup"].indexOf(tier) > -1) {
+    else if (["Battle Factory", "Battle Factory 6v6", "ORAS 1v1", "Challenge Cup",
+              "Inverted Challenge Cup", "Wifi CC 1v1", "Hackmons Wifi CC 1v1",
+              "Hackmons Challenge Cup", "Hackmons Inverted CC", "Flash Clash"].indexOf(tier) > -1) {
         mag -= 1;
     }
-    else if (["Challenge Cup", "Inverted Challenge Cup", "Battle Factory", "Battle Factory 6v6"].indexOf(tier) > -1) {
+    else if (["CC 1v1", "Hackmons CC 1v1", "Metronome",
+              "Anything Goes", "Random Battle", "Red/Blue", "Yellow", "Stadium",
+              "Stadium w/ Tradebacks", "Gold/Silver", "Crystal", "Stadium 2",
+              "Ruby/Sapphire", "Colosseum", "Fire Red/Leaf Green", "Emerald", "XD",
+              "Diamond/Pearl", "Platinum", "Heart Gold/Soul Silver", "Black/White",
+              "Black/White 2", "X/Y", "Omega Ruby/Alpha Sapphire", "GBU Singles",
+              "GBU Doubles", "GBU Triples"].indexOf(tier) > -1) {
         mag -= 2;
-    }
-    else if (["Wifi CC 1v1", "ORAS 1v1", "Random Battle"].indexOf(tier) > -1) {
-        mag -= 3;
-    }
-    else if (["CC 1v1"].indexOf(tier) > -1) {
-        mag -= 4;
     }
     if (mag < 2) {
         return 0;

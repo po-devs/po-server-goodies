@@ -319,7 +319,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         var now = (new Date()).getTime();
         if (now < SESSION.users(src).inviteDelay) {
-            channelbot.sendMessage(src, "Please wait before sending another invite!");
+            channelbot.sendMessage(src, "Please wait before sending another invite!", channel);
             return;
         }
         if (!sys.isInChannel(tar, channel)) {

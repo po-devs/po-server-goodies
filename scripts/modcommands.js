@@ -1,5 +1,5 @@
-exports.handleCommand = function(src, command, commandData, tar, channel) {
-    if (command == "channelusers") {
+exports.handleCommand = function (src, command, commandData, tar, channel) {
+    if (command === "channelusers") {
        if (commandData === undefined) {
            normalbot.sendMessage(src, "Please give me a channelname!", channel);
            return;
@@ -126,8 +126,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.silenceoff(src, chanName);
         return;
     }
-    if (command === "k") {
-        if (tar === undefined) {
+    if (command === "k" || command === "sk") {
+        if (!tar) {
             normalbot.sendMessage(src, "No such user.", channel);
             return;
         }
@@ -137,14 +137,27 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 return;
             }
         }
-        normalbot.sendAll(commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
-        sys.kick(tar);
+        if (command === "k") {
+            normalbot.sendAll(commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+            sys.kick(tar);
+        } else {
+            if (isSuperAdmin(src) || sys.auth(src) > 2) {
+                sys.dbAuths().map(sys.id).filter(function (authId) {
+                    return authId !== undefined;
+                }).forEach(function (authId) {
+                    normalbot.sendMessage(authId, commandData + " was silent kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+                });
+                sys.kick(tar);
+            } else {
+                normalbot.sendMessage(src, "Only super admins or owners can use this.", channel);
+                return;
+            }
+        }
         var authName = sys.name(src).toLowerCase();
         script.authStats[authName] =  script.authStats[authName] || {};
         script.authStats[authName].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
-
     if (command === "mute") {
         var tarId = sys.id(commandData.split(":")[0]);
         if (!isSuperAdmin(src)) {
@@ -198,7 +211,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
            TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td></tr>';
            TABLE_END = '</table>';
         } else {
-           TABLE_HEADER = 'Range banned: IP subaddress, Command on rangeban';
+           TABLE_HEADER = 'Range banned: IP subaddress, Comment on rangeban';
            TABLE_LINE = ' || {0} / {1}';
            TABLE_END = '';
         }
@@ -231,7 +244,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
            TABLE_LINE = '<tr><td>{0}</td><td>{1}</td></tr>';
            TABLE_END = '</table>';
         } else {
-           TABLE_HEADER = 'Ip Banned: IP subaddress, Command on ipban';
+           TABLE_HEADER = 'Ip Banned: IP subaddress, Comment on ipban';
            TABLE_LINE = ' || {0} / {1}';
            TABLE_END = '';
         }
@@ -343,7 +356,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             }
            TABLE_END = '</table>';
         } else {
-           TABLE_HEADER = 'Range banned: IP subaddress, Command on rangeban';
+           TABLE_HEADER = 'Range banned: IP subaddress, Comment on rangeban';
            TABLE_LINE = ' || {0} / {1}';
            TABLE_END = '';
         }
@@ -765,7 +778,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
 };
 exports.help = 
     [
-        "/k: Kicks someone.",
+        "/k: Kicks someone. /sk for silent.",
         "/mute: Mutes someone. Format is /mute name:reason:time. Time is optional and defaults to 1 day.",
         "/unmute: Unmutes someone.",
         "/smute: Secretly mutes a user. Can't smute auth. Format is same as mute. Default time is permanent.",

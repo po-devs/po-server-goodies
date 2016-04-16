@@ -241,7 +241,7 @@ function mafiaChecker() {
     function Theme(){}
     Theme.prototype.addSide = function(obj) {
         var yourSide = (obj.side) ? 'Your side "' + obj.side + '"'  : 'One of your sides';
-        checkAttributes(obj, ["side", "translation"], ["winmsg", "hide"], yourSide);
+        checkAttributes(obj, ["side", "translation"], ["winmsg", "color", "hide"], yourSide);
         if (obj.side in this.sideTranslations) {
             addFatalError("Your theme has a repeated side \"" + obj.side + "\".");
         }
@@ -250,6 +250,7 @@ function mafiaChecker() {
         checkType(obj.side, ["string"], yourSide + "'s 'side' attribute");
         checkType(obj.translation, ["string"], yourSide + "'s 'translation' attribute");
         checkType(obj.winmsg, ["string"], yourSide + "'s 'winmsg' attribute");
+        checkType(obj.color, ["string"], yourSide + "'s 'color' attribute");
         
         if (obj.side) {
             this.correctSides.push(obj.side);
