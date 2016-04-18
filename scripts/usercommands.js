@@ -635,7 +635,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             case "porygon z": commandData = "Porygon-Z"; break;
             case "porygon-2":
             case "porygon 2": commandData = "Porygon2"; break;
-            default: commandData = commandData;
+            default: commandData = commandData.replace(/flabebe/i, "Flabébé");
         }
         return commandData;
     }
