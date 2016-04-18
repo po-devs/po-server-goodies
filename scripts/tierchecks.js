@@ -478,7 +478,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
             if (abilities[ability]++ > 2) {
                 return ["You are not allowed more than 2 of any ability in this tier"];
             }
-        } else {
+        } else if (ability !== "(No Ability)") {
             abilities[ability] = 1;
         }
     }
