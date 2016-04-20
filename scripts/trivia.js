@@ -50,7 +50,7 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
@@ -66,9 +66,13 @@ for (var i = 0; i < neededData.length; ++i) {
         else if (data === "specialChance") {
             trivData[data] = 0;
         }
-        else if (data === "votingCooldown") {
+        else if (data === "votingCooldown" && data !== "eventCooldown") {
             trivData[data] = 5;
         }
+        else if (data === "eventCooldown"){
+            trivData[data] = 8;
+        }
+
         else {
             trivData[data] = {};
         }
@@ -316,6 +320,8 @@ function TriviaGame() {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.lastvote = 0;
+    this.lastEvent = 0;
+    this.eventModeOn = true;
     this.votes = {};
     this.voting = true;
 }
@@ -414,11 +420,11 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         }
     }
     else if (this.scoreType === "elimination") {
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
+        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", 0);
+        this.sendAll("An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
+        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", 0);
         sendChanAll("", 0);
-        this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
+        this.sendAll((name ? name + " opened signups for an elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds!", triviachan);
         sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else {
@@ -443,7 +449,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
     if (this.scoreType === "elimination") {
         this.phase = "signups";
-        this.ticks = 45;
+        this.ticks = 60;
     }
     else {
         this.phase = "standby";
@@ -828,7 +834,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
         var allCats = orderedCategories();
         if (leaderboard.length === 0) {
-            this.htmlAll("<h2>Everyone lost! This is why we can't have nice things.</h2>");
+            this.htmlAll("<h2>Everyone lost! Play more Trivia to make another Event start!</h2>");
         }
         else {
             this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
@@ -849,8 +855,14 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.resetTrivia();
         runUpdate();
         this.lastvote++;
+        this.lastEvent++;
+
         if (this.voting && this.lastvote >= trivData.votingCooldown) {
             this.phase = "voting";
+            this.ticks = 5;
+        }
+        if (this.eventModeOn && this.lastEvent >= trivData.eventCooldown){
+            this.phase = "event";
             this.ticks = 5;
         }
 /*        if (this.autostart) {
@@ -869,6 +881,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
     this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
     Trivia.ticks = rand;
 };
+
+TriviaGame.prototype.event = function() {
+    this.lastEvent = -1;             //clear the counter and account for the upcoming event
+    this.scoreType = "elimination";
+    Trivia.startGame("3");
+};
+
 
 TriviaGame.prototype.startVoting = function () {
     sendChanAll("", triviachan);
@@ -1108,6 +1127,9 @@ TriviaGame.prototype.phaseHandler = function () {
         this.startVoting();
     } else if (this.phase === "countvotes") {
         this.countVotes();
+    }
+    else if (this.phase === "event") {
+        this.event();
     }
     else { //game probably stopped or error, so stopping repeated attempts
         this.ticks = -1;
@@ -1842,9 +1864,9 @@ addAdminCommand(["removeq"], function (src, commandData, channel) {
     Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
 }, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
-addAdminCommand(["elimination", "elim"], function (src, commandData) {
+/*addAdminCommand(["elimination", "elim"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");*/
 
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
@@ -2915,6 +2937,25 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
         Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
     }
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+
+addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
+    if (commandData.length === 0 || isNaN(commandData)){
+        triviabot.sendMessage(src, trivData.eventCooldown + " games is the current event cooldown", channel);
+    } else {
+        trivData.eventCooldown = commandData;
+        Trivia.sendAll(trivData.eventCooldown + " games is the new event cooldown", revchan);
+    }
+}, "Set number of games between each event.");
+
+addOwnerCommand(["enableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = true;
+    triviabot.sendAll("Event elimination games are enabled!", revchan);
+}, "Enables event elimination games.");
+
+addOwnerCommand(["disableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = false;
+    triviabot.sendAll("Event elimination games are disabled!", revchan);
+}, "Disable event elimination games.");
 
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (tsadmin.isTAdmin(commandData)) {
