@@ -14989,6 +14989,7 @@ function Safari() {
                     "Nerf is only applied once, but Buffs can stack.",
                     "",
                     "Buffed/Nerfed Types: Pokémon with any of those types gets Buffed/Nerfed.",
+                    "Buffed/Nerfed Regions: Pokémon from that region are Buffed/Nerfed. Forms and Megas use the base form for this check.",
                     "Enforced Types: Pokémon with any type not in this list gets Nerfed.",
                     "Shiny Pokémon Buffed/Nerfed: Shiny Pokémon gets Buffed/Nerfed.",
                     "Single-type Pokémon Buffed/Nerfed: Pokémon with only one type gets Buffed/Nerfed.",
