@@ -1760,21 +1760,27 @@ function Safari() {
     function findLink(id) {
         return link("/find " + poke(id), poke(id));
     }
-    function generation(pokeNum) {
+    function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
+        var ret;
         if (0 < num && num <= 151 || isNaN(num)) {
-            return 1;
+            ret = 1;
         } else if (152 < num && num <= 251) {
-            return 2;
+            ret = 2;
         } else if (251 < num && num <= 386) {
-            return 3;
+            ret = 3;
         } else if (386 < num && num <= 493) {
-            return 4;
+            ret = 4;
         } else if (493 < num && num <= 649) {
-            return 5;
+            ret = 5;
         } else {
-            return 6;
-        }            
+            ret = 6;
+        }
+        if (wordy) {
+            return generations[ret];
+        } else {
+            return ret;
+        }
     }
     
     /* Item & Costume Functions */
@@ -14863,7 +14869,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 var type1 = sys.type(sys.pokeType1(info.num));
                 var type2 = sys.type(sys.pokeType2(info.num));
-                safaribot.sendMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" +(type1 + (type2 === "???" ? "" : "/" + type2))+ "]", safchan);
+                safaribot.sendMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(type1 + (type2 === "???" ? "" : "/" + type2))+ ", Region: " + generation(info.num, true) + "]", safchan);
                 var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
