@@ -641,7 +641,7 @@ function Hangman() {
         }
         hangbot.sendAll("Type " + (gameMode !== tossUp ? "/g [letter] to guess a letter, and ":"") + "/a [answer] to guess the answer!", hangchan);
         if (gameMode === suddenDeath) {
-            hangbot.sendAll("Guess the answer within " + (suddenDeathLimit / 60).toFixed(1) + " minute(s)!", hangchan);
+            hangbot.sendAll("Guess the answer within " + (suddenDeathLimit / 60) + " minute(s)!", hangchan);
         }
         if (gameMode === tossUp) {
             hangbot.sendAll("Guess the answer before the game reaches " + cutOff + "%!", hangchan);
@@ -2215,7 +2215,7 @@ function Hangman() {
             if (suddenDeathTime > 0) {
                 suddenDeathTime--;
                 if (suddenDeathTime === suddenDeathChanceTime || suddenDeathTime === suddenDeathChanceTime / 2) {
-                    hangbot.sendAll("You only have " + (suddenDeathTime / 60).toFixed(1) + " minute(s) left!", hangchan);
+                    hangbot.sendAll("You only have " + (suddenDeathTime / 60) + " minute(s) left!", hangchan);
                 }
             } else {
                 sys.sendAll("*** ************************************************************ ***", hangchan);
