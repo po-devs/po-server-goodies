@@ -17,6 +17,7 @@ function Safari() {
     var tutorbot = new Bot("Kangaskhan");
     var closedMessage = "<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>";
     var openedMessage = "<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>";
+    var separator = "*** *********************************************************** ***";
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
@@ -485,6 +486,7 @@ function Safari() {
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
+    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos"];
     var nextTheme;
     var currentRules;
     var nextRules;
@@ -581,6 +583,14 @@ function Safari() {
         },
         "defensive": {
             "chance": 0.10
+        },
+        "generation": {
+            "kanto": {"nerf": 0.03, "buff": 0.03},
+            "johto": {"nerf": 0.03, "buff": 0.03},
+            "hoenn": {"nerf": 0.03, "buff": 0.03},
+            "sinnoh": {"nerf": 0.03, "buff": 0.03},
+            "unova": {"nerf": 0.03, "buff": 0.03},
+            "kalos": {"nerf": 0.03, "buff": 0.03}
         },
         "rewards": {
             "sets": {
@@ -1750,6 +1760,22 @@ function Safari() {
     function findLink(id) {
         return link("/find " + poke(id), poke(id));
     }
+    function generation(pokeNum) {
+        var num = pokeInfo.species(pokeNum);
+        if (0 < num && num <= 151 || isNaN(num)) {
+            return 1;
+        } else if (152 < num && num <= 251) {
+            return 2;
+        } else if (251 < num && num <= 386) {
+            return 3;
+        } else if (386 < num && num <= 493) {
+            return 4;
+        } else if (493 < num && num <= 649) {
+            return 5;
+        } else {
+            return 6;
+        }            
+    }
     
     /* Item & Costume Functions */
     function itemAlias(name, returnGarbage, full) {
@@ -2455,9 +2481,9 @@ function Safari() {
 
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         if (icon) {
-            sys.sendHtmlAll("<font color='magenta'><timestamp/> *** **********************************************************</font> " + icon, safchan);
+            sys.sendHtmlAll("<font color='magenta'><timestamp/> *** ***********************************************************</font> " + icon, safchan);
         } else {
-            sys.sendAll("*** ************************************************************ ***", safchan);
+            sys.sendAll(separator, safchan);
         }
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
@@ -2466,12 +2492,12 @@ function Safari() {
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules), safchan);
         }
-        sys.sendAll("*** ************************************************************ ***", safchan);
+        sys.sendAll(separator, safchan);
 
         if (contestBroadcast) {
-            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll(separator, 0);
             safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll(separator, 0);
         } else {
             contestBroadcast = true;
         }
@@ -2572,6 +2598,22 @@ function Safari() {
                 buffNerfCount++;
             }
         }
+        if ("generation" in rules) {
+            var obj = getRule("generation");
+            for (var i = 1; i < generations.length; i++) {
+                var g = generations[i].toLowerCase();
+                if (g in obj) {
+                    if ("nerf" in obj[g] && chance(obj[g].nerf)) {
+                        out["nerfGen" + cap(g)] = true;
+                        buffNerfCount++;
+                    } else if ("buff" in obj[g] && chance(obj[g].buff)) {                      
+                        out["buffGen" + cap(g)]= true;
+                        buffNerfCount++;
+                    }
+                }
+            }
+        }
+
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
             out.noLegendaries = true;
                 buffNerfCount++;
@@ -2722,6 +2764,16 @@ function Safari() {
         } else if (rules.buffShiny) {
             buffed.push("Shiny Pokémon");
         }
+        
+        for (var i = 1; i < generations.length; i++) {
+            var g = generations[i];
+            if (rules["nerfGen" + g]) {
+                nerfed.push(g + " Pokémon");
+            } else if (rules["buffGen" + g]) {
+                buffed.push(g + " Pokémon");
+            }
+        }
+        
         if (buffed.length > 0) {
             out.push("Buffed: " + readable(buffed, "and"));
         }
@@ -2822,7 +2874,8 @@ function Safari() {
             type2 = sys.type(sys.pokeType2(pokeId)),
             id = parseInt(pokeId, 10),
             bst = getBST(pokeId),
-            val = 1;
+            val = 1,
+            gen = generation(id);
 
         if (("excludeTypes" in rules && (rules.excludeTypes.contains(type1) || rules.excludeTypes.contains(type2))) ||
         ("minBST" in rules && bst < rules.minBST) ||
@@ -2834,6 +2887,19 @@ function Safari() {
         (rules.nerfDual && type2 !== "???")) {
             val = RULES_NERF;
         }
+
+        for (var i = 1; i < generations.length; i++) {
+            if (gen === i) {
+                var g = generations[i];
+                if (rules["nerfGen" + g]) {
+                    val = RULES_NERF;
+                } else if (rules["buffGen" + g]) {
+                    val += RULES_BUFF;
+                }
+                break;
+            }
+        }
+        
         if ("bonusTypes" in rules) {
             if (rules.bonusTypes.contains(type1)) {
                 val += RULES_BUFF;
@@ -12048,7 +12114,7 @@ function Safari() {
         }
         
         this.sendToViewers("");
-        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers(toColor(separator, "PaleVioletRed"));
         this.sendToViewers("<b>" + roundName + "</b>" + addFlashTag(p1.toCorrectCase()) + " x " + addFlashTag(p2.toCorrectCase()), true);
         while (team1.length < 3) {
             r = this.playerTeams[p1].random();
@@ -12122,7 +12188,7 @@ function Safari() {
                 eliminated.push(p1);
             }
         }
-        this.sendToViewers(toColor("*** *********************************************************** ***", "PaleVioletRed"));
+        this.sendToViewers(toColor(separator, "PaleVioletRed"));
         this.sendToViewers("");
         
         this.currentMatch++;
@@ -13354,9 +13420,9 @@ function Safari() {
         };
         permObj.add("dailyBoost", JSON.stringify(dailyBoost));
         permObj.save();
-        sys.sendAll("*** ************************************************************ ***", safchan);
+        sys.sendAll(separator, safchan);
         safaribot.sendAll("The Boost-of-the-Day is now " + sys.pokemon(randomNum) + ", who will give a bonus catch rate of " + bonus.toFixed(2) + "x if used as your active Pokémon!", safchan);
-        sys.sendAll("*** ************************************************************ ***", safchan);
+        sys.sendAll(separator, safchan);
     };
     this.changeAlt = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -13986,23 +14052,23 @@ function Safari() {
     this.showHelp = function (src) {
         var x, help = [
             "",
-            "*** *********************************************************************** ***",
+            separator,
             "±Goal: Use your Pokéballs to catch Wild Pokémon that appear during contest times.",
             //"±Goal: You can trade those Pokémon with other players or simply brag about your collection.",
             "±Goal: To start playing, type /start to choose your starter Pokémon and receive 30 Safari Balls.",
-            "*** *********************************************************************** ***",
+            separator,
             //"±Contest: A contest starts every " + contestCooldownLength/60 + " minutes. During that time, wild Pokémon may suddenly appear.",
             "±Contest: When a wild Pokémon appears, players can use /catch to throw a ball until someone gets it.",
             "±Contest: Different balls can be used to get a better chance, but they also may have higher cooldown between throws or other effects.",
-            "*** *********************************************************************** ***",
+            separator,
             "±Actions: Pokémon you caught can be sold to the NPC with /sell or traded with other players with /trade.",
             "±Actions: You can use the money gained by selling Pokémon and logging in everyday to /buy more Pokéballs.",
             //"±Actions: You can set up to 6 Pokémon to be visible to anyone. Form your party with /party, and view others' party with /view.",
             "±Actions: Use /party to form your party. This can give you a small bonus when trying to catch Pokémon based on type effectiveness and stats.",
             "±Actions: You can dress up in costumes to gain different bonuses! Use /getcostumes to see how to obtain them and /dressup [costume name] to change into a costume!", 
-            "*** *********************************************************************** ***",
+            separator,
             "±More: To learn other commands, use /commands safari.",
-            "*** *********************************************************************** ***",
+            separator,
             ""
         ];
         for (x in help) {
@@ -14740,7 +14806,7 @@ function Safari() {
             }
             if (command === "info") {
                 var time = new Date(now()).toUTCString();
-                sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
+                sys.sendMessage(src, separator, safchan);
                 safaribot.sendMessage(src, "Current Time: " + time, safchan);
                 if (contestCount > 0) {
                     var min = Math.floor(contestCount/60);
@@ -14783,7 +14849,7 @@ function Safari() {
                     }
                     safaribot.sendMessage(src, "Current Raffle Prize: " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + " with " + total + " entries sold!" + (rafflePrizeObj.drawDate ? " Estimated draw date: " + rafflePrizeObj.drawDate : ""), safchan);
                 }
-                sys.sendMessage(src, "*** *********************************************************************** ***", safchan);
+                sys.sendMessage(src, separator, safchan);
                 return true;
             }
             if (command === "bst") {
@@ -15820,13 +15886,13 @@ function Safari() {
                         }
                         resetVars();
                         currentRules = null;
-                        sys.sendAll("*** ************************************************************ ***", safchan);
+                        sys.sendAll(separator, safchan);
                         safaribot.sendAll("The current Contest has been aborted!", safchan);
-                        sys.sendAll("*** ************************************************************ ***", safchan);
+                        sys.sendAll(separator, safchan);
                     } else {
-                        sys.sendAll("*** ************************************************************ ***", safchan);
+                        sys.sendAll(separator, safchan);
                         safaribot.sendAll("The next Contest will be skipped!", safchan);
-                        sys.sendAll("*** ************************************************************ ***", safchan);
+                        sys.sendAll(separator, safchan);
                     }
                     contestCooldown = contestCooldownLength;
                     contestCount = 0;
@@ -17224,7 +17290,7 @@ function Safari() {
                 contestVotingCount = contestVotingCooldown;
             }
 
-            sys.sendAll("*** ************************************************************ ***", safchan);
+            sys.sendAll(separator, safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Pokéballs you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
                 safaribot.sendAll(" --- " + rulesDesc[n], safchan);
@@ -17232,11 +17298,11 @@ function Safari() {
             if (contestVotes) {
                 safaribot.sendHtmlAll("You can choose which theme will be started! Type " + readable(nextTheme.map(function(x){ return link("/vote " + themeName(x)); }), "or") + " to choose!", safchan);
             }
-            sys.sendAll("*** ************************************************************ ***", safchan);
+            sys.sendAll(separator, safchan);
 
-            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll(separator, 0);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Pokéballs you need!", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
+            sys.sendAll(separator, 0);
             safari.flashPlayers();
             var players = sys.playersOfChannel(safchan);
             for (var pid in players) {
@@ -17334,7 +17400,7 @@ function Safari() {
                 };
 
                 var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
-                sys.sendAll("*** ************************************************************ ***", safchan);
+                sys.sendAll(separator, safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
                 if (Object.keys(contestCatchers).length === 1) {
                     safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
@@ -17356,7 +17422,7 @@ function Safari() {
                 if (allContestants.length > 0) {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
                 }
-                sys.sendAll("*** ************************************************************ ***", safchan);
+                sys.sendAll(separator, safchan);
 
                 var winner, playerId, amt;
                 for (e in contestantsCount) {
