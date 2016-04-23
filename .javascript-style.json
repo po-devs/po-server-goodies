@@ -15,7 +15,7 @@
   "quotmark": "double",
   "shadow": true,
   "trailing": true,
-  "undef": true,
+  "undef": false,
   "unused": true,
   "evil": true,
   "proto": true,
