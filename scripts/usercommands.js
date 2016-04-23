@@ -981,12 +981,16 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }*/
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).inviteDelay) {
-            normalbot.sendMessage(src, "Please wait before sending another invite!");
+        if (typeof SESSION.users(tar).inviteBattleDelay === "object" && SESSION.users(tar).inviteBattleDelay.hasOwnProperty(sys.ip(src)) && now < SESSION.users(tar).inviteBattleDelay[sys.ip(src)]) {
+            normalbot.sendMessage(src, "Please wait before sending another battle invite!", channel);
             return;
         }
-        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret:  </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> would like you to watch their battle!</a>");
-        SESSION.users(src).inviteDelay = (new Date()).getTime() + 10000;
+        normalbot.sendMessage(src, "You invited " + sys.name(tar) + " to watch your battle.", channel);
+        sys.sendHtmlMessage(tar, "<font color='brown'><timestamp/><b>±Sentret: </b></font><a href='po:watchplayer/" + sys.name(src) + "'><b>" + utilities.html_escape(sys.name(src)) + "</b> would like you to watch their battle!</a>");
+        if (typeof SESSION.users(tar).inviteBattleDelay !== "object") {
+            SESSION.users(tar).inviteBattleDelay = {};
+        }
+        SESSION.users(tar).inviteBattleDelay[sys.ip(src)] = (new Date()).getTime() + 10000;
         return;
     }
     if (command === "notice") {

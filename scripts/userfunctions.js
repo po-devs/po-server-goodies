@@ -1,3 +1,5 @@
+/*global sys, script, callplugins, utilities, exports */
+
 function POUser(id)
 {
     /* user's id */
@@ -45,7 +47,9 @@ function POUser(id)
     /* stopping spam */
     this.pmwarned = false;
     /* invite delay */
-    this.inviteDelay = 0;
+    this.inviteDelay = {};
+    /* invitespec delay */
+    this.inviteBattleDelay = {};
     /* tour alert */
     if (script.getKey('touralertson', id) == "true") {
         this.tiers = script.getKey("touralerts", id).split("*");
@@ -74,8 +78,7 @@ function POUser(id)
     /* check if user is banned or mafiabanned */
     var data;
     var loopArgs = [["mute", script.mutes], ["mban", script.mbans], ["smute", script.smutes], ["hmute", script.hmutes], ["safban", script.safbans]];
-    //If you add something, increase the i < x by 1
-    for (i = 0; i < 5; ++i) {
+    for (var i = 0; i < loopArgs.length; ++i) {
         var action = loopArgs[i][0];
         if ((data = loopArgs[i][1].get(sys.ip(id))) !== undefined) {
             this[action].active=true;
