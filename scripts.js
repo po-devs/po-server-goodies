@@ -20,8 +20,9 @@ var Config = {
     hangbot: "Unown",
     bfbot: "Goomy",
     safaribot: "Tauros",
+    teamsbot: "Minun",
     // suspectvoting.js available, but not in use
-    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js", "youtube.js"],
+    Plugins: ["mafia.js", "amoebagame.js", "tourstats.js", "trivia.js", "tours.js", "newtourstats.js", "auto_smute.js", "battlefactory.js", "hangman.js", "blackjack.js", "mafiastats.js", "mafiachecker.js", "safari.js", "youtube.js", "autoteams.js"],
     Mafia: {
         bot: "Murkrow",
         norepeat: 5,
@@ -98,7 +99,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig;
+var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -351,6 +352,7 @@ querybot = new Bot(Config.querybot);
 hangbot = new Bot(Config.hangbot);
 bfbot = new Bot(Config.bfbot);
 safaribot = new Bot(Config.safaribot);
+teamsbot = new Bot(Config.teamsbot);
 
 /* Start script-object
  *
@@ -452,7 +454,7 @@ init : function() {
     } catch (e) {
         script.league = {};
     }
-    
+
     var announceChan = (typeof staffchannel == "number") ? staffchannel : 0;
     proxy_ips = {};
     function addProxybans(content) {
@@ -519,7 +521,7 @@ init : function() {
             SESSION.global().BannedUrls = resp.toLowerCase().split(/\n/);
         });
     }
-    
+
     if (typeof VarsCreated != 'undefined')
         return;
 
@@ -557,7 +559,7 @@ init : function() {
     maxPlayersOnline = 0;
 
     lineCount = 0;
-    
+
     if (typeof script.chanNameBans == 'undefined') {
         script.chanNameBans = [];
         try {
@@ -580,7 +582,7 @@ init : function() {
         sys.sendAll(message, 0);
         sys.sendAll(message, tourchannel);
     };
-    
+
     script.allowedRangeNames = sys.getFileContent(Config.dataDir + "rangewhitelist.txt").split("\n");
     callplugins("init");
 
@@ -691,7 +693,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             }
         }
         sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
-        
+
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
                 SESSION.users(id).activate(type, sys.name(src), expires, reason, true);
@@ -1579,7 +1581,7 @@ beforeChatMessage: function(src, message, chan) {
          return;
     }*/
     channel = chan;
-    
+
     var throttleMsg = false;
     if (script.isOfficialChan(chan)) {
         if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 250)
@@ -1680,7 +1682,7 @@ beforeChatMessage: function(src, message, chan) {
         } else {
             command = message.substr(1).toLowerCase();
         }
-        
+
         if (command.indexOf("rules") === -1 && command.indexOf("admins") === -1) {
             if (["commands", "topic", "cjoin", "auth", "contributors", "intier", "league", "players", "topchannels", "uptime", "notice", "changetier", "idle", "importable", "sametier", "resetpass", "seen", "myalts", "ranking", "battlecount", "ability", "canlearn", "dwreleased", "item", "move", "ability", "nature", "pokemon", "tier", "wiki", "mas", "has", "mus", "tas", "cauth", "selfkick"].contains(command)) {
                 isBlocked = false;
@@ -1689,7 +1691,7 @@ beforeChatMessage: function(src, message, chan) {
             isBlocked = false;
         }
     }
-    
+
     if (sys.auth(src) < 3 && SESSION.users(src).mute.active && isBlocked) {
         var muteinfo = SESSION.users(src).mute;
         normalbot.sendMessage(src, "You are muted" + (muteinfo.by ? " by " + muteinfo.by : '')+". " + (muteinfo.expires > 0 ? "Mute expires in " + getTimeString(muteinfo.expires - parseInt(sys.time(), 10)) + ". " : '') + (muteinfo.reason ? "[Reason: " + muteinfo.reason + "]" : ''), channel);
@@ -1714,7 +1716,7 @@ beforeChatMessage: function(src, message, chan) {
         sys.stopEvent();
         return;
     }
-    
+
     if (callplugins("beforeChatMessage", src, message, channel)) {
         sys.stopEvent();
         return;
@@ -1916,10 +1918,10 @@ beforeChatMessage: function(src, message, chan) {
         this.afterChatMessage(src, message, channel);
         return;
     }
-    
+
     if (SESSION.global().blockWebLinks && script.isOfficialChan(channel) && sys.auth(src) === 0 && sys.os(src) === "webclient") {
         if (message.toLowerCase().indexOf("http") !== -1) {
-            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [(May be NSFW) Message content: " + message + " ]!", staffchannel);            
+            kickbot.sendAll(sys.name(src) + " is attempting to send a link on Webclient in the channel " + sys.channel(channel) + " [(May be NSFW) Message content: " + message + " ]!", staffchannel);
             //message = message.replace("http", "ht\u200btp");
             //sys.sendAll(sys.name(src) + ": " + message, channel);
             sys.sendMessage(src, sys.name(src) + ": " + message, channel);
@@ -1928,7 +1930,7 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
     }
-    
+
     //Special donator
     /*if (name == "fear") {
         sys.sendHtmlAll("<span style='color: " + sys.getColor(src) + "'><timestamp/><b>±Fear: </b></span>" + message.replace("&", "&amp;").replace("<", "&lt;"),  channel);
@@ -2246,7 +2248,7 @@ beforeSpectateBattle : function(src, p1, p2) {
     if (callplugins("canSpectate", src, p1, p2) || SESSION.users(src).smute.active) {
         sys.stopEvent();
     }
-    
+
 },
 
 beforeBattleMatchup : function(src,dest,clauses,rated)
