@@ -16892,18 +16892,26 @@ function Safari() {
                 }
                 var info = getInputPokemon(data[1]);
                 if (!info.num) {
-                    safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
+                    safaribot.sendMessage(src, "Invalid Actual Pokémon!", safchan);
                     return;
                 }
                 
                 player.nextSpawn.pokemon = info;
                 var amount = parseInt(data[2], 10) || 1;
                 player.nextSpawn.amt = amount;
-                var appearAs = getInputPokemon(data[3]) || info;
-                player.nextSpawn.disguise = appearAs;
+                var appearAs = info;
+                if (data[3]) {
+                    appearAs = getInputPokemon(data[3]);
+                    if (!appearAs.num) {
+                        safaribot.sendMessage(src, "Invalid Disguise Pokémon!", safchan);
+                        return true;
+                    }
+                }
+                player.nextSpawn.disguise = appearAs;                
                 safari.saveGame(player);
-                safaribot.sendMessage(src, "The next spawn by " + data[0].toCorrectCase() + " will be " + amount + " " + info.name + (appearAs.num !== info.num ? " disguised as " + appearAs.name : "") + ".", safchan);
-                //TODO: Giftlog
+                var translated = plural(amount, info.name) + (appearAs.num !== info.num ? " disguised as " + appearAs.name : "") + ".";
+                safaribot.sendMessage(src, "The next spawn by " + data[0].toCorrectCase() + " will be " + translated, safchan);
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + data[0].toCorrectCase() + "|||nextspawn|||had their next spawn changed to " + translated + "|||\n");
                 return true;                
             }
             if (command === "editdata") {
