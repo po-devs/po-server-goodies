@@ -598,7 +598,7 @@ POChannel.prototype.changeParameter = function(src, parameter, value) {
     }
 };
 
-POChannel.prototype.getReadableList = function (type, os) {
+POChannel.prototype.getReadableList = function (type, os, searchData) {
     try {
         var entries = {}, name = "";
         if (type == "mutelist") {
@@ -613,21 +613,24 @@ POChannel.prototype.getReadableList = function (type, os) {
         if (os === undefined) {
             os = "windows";
         }
-        var width = 4, maxMessageLength = 30000, tmp = [];
+        var width = 5, maxMessageLength = 30000, tmp = [];
         for (var x in entries) {
-            if (entries.hasOwnProperty(x)) {
-            if (!entries[x].hasOwnProperty("expiry")) {
-                continue;
-            }
-            var playername = utilities.html_escape(x);
-            var expirytime = isNaN(entries[x].expiry) ? "never" : entries[x].expiry-parseInt(sys.time(),10);
-            if (expirytime <= 0) {
-                continue;
-            }
-            var issuetime = getTimeString(parseInt(sys.time(),10)-entries[x].issuetime);
-            var auth = utilities.html_escape(entries[x].auth);
-            var reason = utilities.html_escape(entries[x].reason);
-            tmp.push([playername, auth, issuetime, isNaN(entries[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
+                if (entries.hasOwnProperty(x)) {
+                if (!entries[x].hasOwnProperty("expiry")) {
+                    continue;
+                }
+                if (searchData !== undefined && x.toLowerCase().indexOf(searchData.toLowerCase()) === -1) {
+                    continue;
+                }
+                var playername = utilities.html_escape(x);
+                var expirytime = isNaN(entries[x].expiry) ? "never" : entries[x].expiry-parseInt(sys.time(),10);
+                if (expirytime <= 0) {
+                    continue;
+                }
+                var issuetime = getTimeString(parseInt(sys.time(),10)-entries[x].issuetime);
+                var auth = utilities.html_escape(entries[x].auth);
+                var reason = utilities.html_escape(entries[x].reason);
+                tmp.push([playername, auth, issuetime, isNaN(entries[x].expiry) ? expirytime : getTimeString(expirytime), reason]);
             }
         }
         tmp.sort(function(a,b) { return a[2] - b[2];});

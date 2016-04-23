@@ -318,7 +318,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var now = (new Date()).getTime();
-        if (now < SESSION.users(src).inviteDelay) {
+        if (typeof SESSION.users(tar).inviteDelay === "object" && SESSION.users(tar).inviteDelay.hasOwnProperty(sys.ip(src)) && now < SESSION.users(tar).inviteDelay[sys.ip(src)]) {
             channelbot.sendMessage(src, "Please wait before sending another invite!", channel);
             return;
         }
@@ -331,7 +331,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         } else {
             channelbot.sendMessage(src, "Your target was invited.", channel);
         }
-        SESSION.users(src).inviteDelay = (new Date()).getTime() + 8000;
+        if (typeof SESSION.users(tar).inviteDelay !== "object") {
+            SESSION.users(tar).inviteDelay = {};
+        }
+        SESSION.users(tar).inviteDelay[sys.ip(src)] = (new Date()).getTime() + 8000;
         return;
     }
     if (command === "member") {
@@ -420,18 +423,22 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "cmutes") {
-        var cmuteList = poChannel.getReadableList("mutelist", sys.os(src));
-        if (cmuteList !== "") {
-            sys.sendHtmlMessage(src, cmuteList, channel);
+        var cmutelist = poChannel.getReadableList("mutelist", sys.os(src), commandData);
+        if (cmutelist !== "") {
+            sys.sendHtmlMessage(src, cmutelist, channel);
+        } else if (commandData !== undefined) {
+            channelbot.sendMessage(src, "No users muted in this channel have \"" + commandData +  "\" in their name.", channel);
         } else {
             channelbot.sendMessage(src, "No one is muted on this channel.", channel);
         }
         return;
     }
     if (command === "cbans") {
-        var cbanList = poChannel.getReadableList("banlist", sys.os(src));
-        if (cbanList !== "") {
-            sys.sendHtmlMessage(src, cbanList, channel);
+        var cbanlist = poChannel.getReadableList("banlist", sys.os(src), commandData);
+        if (cbanlist !== "") {
+            sys.sendHtmlMessage(src, cbanlist, channel);
+        } else if (commandData !== undefined) {
+            channelbot.sendMessage(src, "No users banned in this channel have \"" + commandData +  "\" in their name.", channel);
         } else {
             channelbot.sendMessage(src, "No one is banned on this channel.", channel);
         }
@@ -690,7 +697,7 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
         sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edit rule [number].", channel);
     }
-    if (SESSION.global().permaTours.indexOf(channel) > -1) {
+    if (Array.isArray(SESSION.global().permaTours) && SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
         sys.sendMessage(src, "/join: Enters you to in a tournament.", channel);
         sys.sendMessage(src, "/unjoin: Withdraws you from a tournament.", channel);
