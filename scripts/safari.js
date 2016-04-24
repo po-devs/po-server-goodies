@@ -6864,11 +6864,11 @@ function Safari() {
         
         var autoCancel;
         var targetId = sys.id(data);
-        var tName = sys.name(targetId).toLowerCase();
         if (!targetId) {
             safaribot.sendMessage(src, "No such person!", safchan);
             return;
-        }
+        }        
+        var tName = sys.name(targetId).toLowerCase();
         if (name in challengeRequests) {
             if (challengeRequests[name].toLowerCase() === tName) {
                 safaribot.sendHtmlMessage(src, "You already have a pending challenge with this person! To cancel it, type " + link("/challenge cancel") + ".", safchan);
