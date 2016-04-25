@@ -137,7 +137,7 @@ var serverownercommands = ["/tourowner: Makes someone a Tournament Owner. Use /s
                     "/tourowneroff: Removes someone from Tournament Owner. Use /stowneroff for a silent demotion."];
 var tourrules = ["*** TOURNAMENT GUIDELINES ***",
                 "Breaking the following rules may result in punishment:",
-                "#1: Team revealing or scouting in tiers other than Challenge Cup, Battle Factory, or Metronome will result in disqualification.",
+                "#1: Team revealing or scouting in tiers other than Challenge Cup or Battle Factory will result in disqualification.",
                 "- Scouting is watching the battle of someone else in the tournament to gain information.",
                 "- Team revealing is revealing any information about other entrants' teams.",
                 "- Players are always permitted to watch the final match of any tournament.",
@@ -189,46 +189,22 @@ function sendBotMessage(user, message, chan, html) {
 function sendBotAll(message, chan, html) {
     var staffchan = sys.channelId("Indigo Plateau");
     var tachan = sys.channelId("Victory Road");
-    if (html) {
-        if (chan === "all") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,-1);
-        }
-        else if (chan === "~mt") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,0);
-        }
-        else if (chan === "~st") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,staffchan);
-        }
-        else if (chan === "~tr") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,tachan);
-        }
-        else {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,chan);
-        }
+    
+    switch (chan) {
+        case "all": chan = [-1]; break;
+        case "~mt": chan = [tourschan, 0]; break;
+        case "~st": chan = [tourschan, tachan, staffchan]; break;
+        case "~tr": chan = [tourschan, tachan]; break;
+        default: chan = [chan]; break;
     }
-    else {
-        if (chan === "all") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),-1);
+    
+    if (html) {
+        for (var x in chan) {
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,chan[x]);
         }
-        else if (chan === "~mt") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),0);
-        }
-        else if (chan === "~st") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),staffchan);
-        }
-        else if (chan === "~tr") {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tourschan);
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),tachan);
-        }
-        else {
-            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),chan);
+    } else {
+        for (var x in chan) {
+            sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+html_escape(message),chan[x]);
         }
     }
 }
@@ -367,96 +343,11 @@ function getSubgen(name, getLongName) {
 }
 
 // handles time and outputs in d/h/m/s format
-// eg 3d 5h 16m 22s
-function converttoseconds(string) {
-    var tmp = string.split(" ");
-    var totaltime = 0;
-    try {
-        for (var n in tmp) {
-            var thestring = tmp[n];
-            var lastchar = thestring.charAt(thestring.length - 1).toLowerCase();
-            var timestring = parseInt(thestring.substr(0, thestring.length - 1), 10);
-            if (isNaN(timestring)) {
-                continue;
-            }
-            else if (lastchar == "d") {
-                totaltime += 24*60*60*timestring;
-            }
-            else if (lastchar == "h") {
-                totaltime += 60*60*timestring;
-            }
-            else if (lastchar == "m") {
-                totaltime += 60*timestring;
-            }
-            else if (lastchar == "s") {
-                totaltime += timestring;
-            }
-            else {
-                continue;
-            }
-        }
-    }
-    catch (err) {
-        return "Not a number";
-    }
-    return totaltime;
-}
-
-// handles time and outputs in d/h/m/s format
 function time_handle(time) { //time in seconds
-    var day = 60*60*24;
-    var hour = 60*60;
-    var minute = 60;
     if (time <= 0) {
         return "No time remaining.";
     }
-    var timedays = parseInt(time/day, 10);
-    var timehours = (parseInt(time/hour, 10))%24;
-    var timemins = (parseInt(time/minute, 10))%60;
-    var timesecs = (parseInt(time, 10))%60;
-    var output = "";
-    if (timedays >= 1) {
-        if (timedays == 1) {
-            output = timedays + " day";
-        }
-        else {
-            output = timedays + " days";
-        }
-        if (timehours >=1 || timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timehours >= 1) {
-        if (timehours == 1) {
-            output = output + timehours +  " hour";
-        }
-        else {
-            output = output + timehours +  " hours";
-        }
-        if (timemins >=1 || timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timemins >= 1) {
-        if (timemins == 1) {
-            output = output + timemins +  " minute";
-        }
-        else {
-            output = output + timemins +  " minutes";
-        }
-        if (timesecs >=1) {
-            output = output + ", ";
-        }
-    }
-    if (timesecs >= 1) {
-        if (timesecs == 1) {
-            output = output + timesecs +  " second";
-        }
-        else {
-            output = output + timesecs +  " seconds";
-        }
-    }
-    return output;
+    return utilities.getTimeString(time);
 }
 
 function parseTimer(time) {
@@ -1020,7 +911,8 @@ function tourStep() {
     var canstart = true;
     var canautostart = true;
     var now = new Date();
-    if (parseInt(sys.time(), 10)%3600 === 0) {
+    var systime = parseInt(sys.time(), 10);
+    if (systime%3600 === 0) {
         var comment = now + " ~ " + tours.activetas.join(", ");
         tours.activehistory.unshift(comment);
         if (tours.activehistory.length > 168) {
@@ -1030,7 +922,7 @@ function tourStep() {
         tours.activetas = [];
         // clear out tourmutes list
         for (var m in tours.tourmutes) {
-            if (tours.tourmutes[m].expiry <= parseInt(sys.time(), 10)) {
+            if (tours.tourmutes[m].expiry <= systime) {
                 delete tours.tourmutes[m];
                 saveTourMutes();
             }
@@ -1041,34 +933,34 @@ function tourStep() {
         tours.eventticks -= 1;
     }
     for (var x in tours.tour) {
-        var rtime = tours.tour[x].time-parseInt(sys.time(), 10);
+        var rtime = tours.tour[x].time-systime;
         if ((rtime <= 10 && rtime >= 0) || rtime%30 === 0) {
-            sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-parseInt(sys.time(), 10))+"; State: "+tours.tour[x].state,tourschan);
+            sendDebugMessage("Time Remaining in the "+getFullTourName(x)+" tournament: "+time_handle(tours.tour[x].time-systime)+"; State: "+tours.tour[x].state,tourschan);
         }
         if (tours.tour[x].state == "signups") {
-            if (tours.tour[x].time <= parseInt(sys.time(), 10)) {
+            if (tours.tour[x].time <= systime) {
                 tourinitiate(x);
                 continue;
             }
-            if (tours.tour[x].time-parseInt(sys.time(), 10) == 60) {
+            if (tours.tour[x].time-systime == 60) {
                 sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 1 minute.", "~mt", false);
             }
-            else if (tours.tour[x].time-parseInt(sys.time(), 10) == 30 && tours.tour[x].parameters.event) {
+            else if (tours.tour[x].time-systime == 30 && tours.tour[x].parameters.event) {
                 sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 30 seconds.", "~mt", false);
             }
             continue;
         }
-        if (tours.tour[x].state == "subround" && tours.tour[x].time <= parseInt(sys.time(), 10)) {
-            tours.tour[x].time = parseInt(sys.time(), 10)+tourconfig.tourdq-tourconfig.subtime;
+        if (tours.tour[x].state == "subround" && tours.tour[x].time <= systime) {
+            tours.tour[x].time = systime+tourconfig.tourdq-tourconfig.subtime;
             removesubs(x);
             continue;
         }
         if (tours.tour[x].state == "subround" || tours.tour[x].state == "round" || tours.tour[x].state == "final") {
-            if (tours.tour[x].time <= parseInt(sys.time(), 10) && (parseInt(sys.time(), 10)-tours.tour[x].time)%60 === 0 && tours.tour[x].state != "subround") {
+            if (tours.tour[x].time <= systime && (systime-tours.tour[x].time)%60 === 0 && tours.tour[x].state != "subround") {
                 removeinactive(x);
                 continue;
             }
-            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : (is1v1Tour(x) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq))+tourconfig.reminder) == parseInt(sys.time(), 10)) {
+            if ((tours.tour[x].time-(tours.tour[x].state == "subround" ? tourconfig.subtime : (is1v1Tour(x) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq))+tourconfig.reminder) == systime) {
                 sendReminder(x);
                 continue;
             }
@@ -1089,18 +981,19 @@ function tourStep() {
         var details = getEventTour(datestring);
         if (typeof details === "object") {
             var tourtier = details[0];
-            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",tourschan,true);
-            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",0,true);
-            sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",sys.channelId("Safari"),true);
+            var chans = [tourschan, 0, sys.channelId("Safari")];
+            for (var x in chans) {
+                sendBotAll((startsWithVowel(html_escape(details[0])) ? "An " : "A ") + "<b>"+html_escape(details[0])+"</b> event is starting soon.",chans[x],true);
+            }
             tours.queue.unshift({'tier': tourtier, 'starter': "~Pokemon Online~", 'parameters': details[1]});
-            tours.globaltime = parseInt(sys.time(), 10)+300;
+            tours.globaltime = systime+300;
             tours.eventticks = -1;
         }
         else {
             tours.eventticks = -1;
         }
     }
-    if (canstart && tours.globaltime > 0 && tours.globaltime <= parseInt(sys.time(), 10) && (tourconfig.maxrunning > tours.keys.length || canautostart)) {
+    if (canstart && tours.globaltime > 0 && tours.globaltime <= systime && (tourconfig.maxrunning > tours.keys.length || canautostart)) {
         if (tours.queue.length > 0) {
             var data = tours.queue[0];
             var tourtostart = data.tier;
@@ -2379,9 +2272,13 @@ function tourCommand(src, command, commandData, channel) {
                 var reason = data[1];
                 var time = 900;
                 if (data.length > 2) {
-                    var time = converttoseconds(data[2]);
+                    time = utilities.getSeconds(data[2]);
                 }
                 var ip = sys.dbIp(tar);
+                if (ip === undefined) {
+                    sendBotMessage(src,"This person doesn't exist!",tourschan,false);
+                    return true;
+                }
                 if (sys.id(tar) !== undefined) {
                     if (isMegaUser(sys.id(tar)) && sys.maxAuth(ip) >= sys.auth(src)) {
                         sendBotMessage(src,"Can't mute higher auth!",tourschan, false);
@@ -2394,10 +2291,6 @@ function tourCommand(src, command, commandData, channel) {
                         return true;
                     }
                 }
-                if (ip === undefined) {
-                    sendBotMessage(src,"This person doesn't exist!",tourschan,false);
-                    return true;
-                }
                 if (reason === undefined) {
                     reason = "";
                 }
@@ -2409,16 +2302,9 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotMessage(src,"Can't tourmute someone for less than 1 second!",tourschan, false);
                     return true;
                 }
-                if (usingBadWords(reason)) {
-                    sendBotMessage(src,"'"+reason+"' is not a valid reason!",tourschan,false);
-                    return true;
-                }
-                var maxtime = 0;
+                var maxtime = 86400;
                 if (isTourOwner(src)) {
                     maxtime = Number.POSITIVE_INFINITY;
-                }
-                else {
-                    maxtime = 86400;
                 }
                 if (isNaN(time)) {
                     time = 900;
@@ -4494,14 +4380,6 @@ function loadTourMutes() {
     }
 }
 
-// to prevent silly mute reasons
-function usingBadWords(message) {
-    if (/f[uo]ck|\bass\b|assh[o0]le|\barse|\bcum\b|\bdick|\bsex\b|pussy|bitch|porn|\bfck|nigga|\bcock\b|\bgay|\bhoe\b|slut|whore|cunt|clit|pen[i1]s|vag|nigger|8=+d/i.test(message)) {
-        return true;
-    }
-    else return false;
-}
-
 function markActive(src, reason) {
     if (src === undefined) {
         return;
@@ -4822,15 +4700,10 @@ module.exports = {
             sendBotMessage(src,"You are tourmuted by "+tours.tourmutes[sys.ip(src)].auth+". This expires in "+time_handle(tours.tourmutes[sys.ip(src)].expiry-parseInt(sys.time(), 10))+". [Reason: "+tours.tourmutes[sys.ip(src)].reason+"]",tourschan,false);
             return true;
         }
-        else if (/f[uo]ck|assh[o0]le|arseh[o0]le|\bpussy\b|\bfck|nigga|\bcunt|pen[i1]s|vag|nigger|8=+d/i.test(message) && channel === tourschan && !utilities.is_command(message)) {
-            sys.sendMessage(src, sys.name(src)+": "+message, channel);
-            script.afterChatMessage(src, message, channel);
-            return true;
-        }
-        else return false;
+        return false;
     },
     afterChatMessage : function(src, message, channel) {
-        if (channel === tourschan && !usingBadWords(message) && !SESSION.users(src).smute.active && !sys.away(src)) {
+        if (channel === tourschan && !SESSION.users(src).smute.active && !sys.away(src)) {
             markActive(src, "post");
         }
     },
