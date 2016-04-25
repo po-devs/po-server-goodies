@@ -36,8 +36,8 @@
   <category displayOrder="1" name="Gen 1">
    <tier tableName="tier_redblue" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Red/Blue" abilities="" maxLevel="100" items="" subgen="0" moves="" numberOfPokemons="6" restrictedPokemons="" displayOrder="1"/>
    <tier tableName="tier_yellow" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Yellow" abilities="" maxLevel="100" items="" subgen="1" moves="" numberOfPokemons="6" restrictedPokemons="" displayOrder="2"/>
-   <tier tableName="tier_stadium" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Stadium" abilities="" maxLevel="100" items="" subgen="2" moves="" numberOfPokemons="6" restrictedPokemons="" displayOrder="3"/>
-   <tier tableName="tier_stadiumwtradebacks" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Stadium w/ Tradebacks" abilities="" maxLevel="100" items="" subgen="3" moves="" numberOfPokemons="6" restrictedPokemons="" displayOrder="4"/>
+   <tier tableName="tier_stadium" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Stadium" abilities="" maxLevel="100" items="" subgen="2" moves="" numberOfPokemons="6" restrictedPokemons="" clauses="Team Preview" displayOrder="3"/>
+   <tier tableName="tier_stadiumwtradebacks" minGen="-1" gen="1" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Stadium w/ Tradebacks" abilities="" maxLevel="100" items="" subgen="3" moves="" numberOfPokemons="6" restrictedPokemons="" clauses="Team Preview" displayOrder="4"/>
   </category>
   <category displayOrder="2" name="Gen 2">
    <tier tableName="tier_goldsilver" minGen="-1" gen="2" numberOfRestricted="1" allowIllegal="false" banMode="ban" mode="0" banParent="" pokemons="" name="Gold/Silver" abilities="" maxLevel="100" items="" subgen="0" moves="" numberOfPokemons="6" restrictedPokemons="" displayOrder="0"/>
