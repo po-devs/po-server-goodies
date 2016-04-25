@@ -2467,6 +2467,9 @@ function Safari() {
         var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
         var currentId = poke(currentPokemonDisplay);
 
+        if (currentDisplay === currentPokemon) {
+            disguise = false;
+        }
         var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
         if (amount > 1) {
