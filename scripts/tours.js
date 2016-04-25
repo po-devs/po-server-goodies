@@ -3334,9 +3334,13 @@ function removesubs(key) {
 // removes byes
 function removebyes(key) {
     try {
+        var currentround = tours.tour[key].round;
+        // if the round advances due to DQ, don't keep checking :x
+        if (!tours.tour.hasOwnProperty(key) || tours.tour[key].round !== currentround) {
+            return;
+        }
         var advanced = [];
         var playercycle = tours.tour[key].players.length;
-        var currentround = tours.tour[key].round;
         var opponent = null;
         for (var z=0;z<playercycle;z+=2) {
             opponent = null;
@@ -3353,13 +3357,6 @@ function removebyes(key) {
             }
             if (!isSub(opponent) && opponent != "~DQ~" && opponent != "~Bye~" && opponent !== null) {
                 advanced.push(html_escape(toCorrectCase(opponent)));
-            }
-            // if the round advances due to DQ, don't keep checking :x
-            if (!tours.tour.hasOwnProperty(key)) {
-                break;
-            }
-            if (tours.tour[key].round !== currentround) {
-                break;
             }
         }
         if (advanced.length > 0) {
