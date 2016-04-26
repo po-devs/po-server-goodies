@@ -9378,10 +9378,12 @@ function Safari() {
         
         var canMake = true, progress = [];
         for (var e in recipes[item].ingredients) {
-            if (player.balls[e] < recipes[item].ingredients[e]) {
+            var input = "@" + e;
+            var inShop = (input in player.shop);
+            if (player.balls[e] < recipes[item].ingredients[e] || (inShop && player.shop[input].limit > player.balls[e] - recipes[item].ingredients[e])) {
                 canMake = false;
             }
-            progress.push(player.balls[e] + "/" + plural(recipes[item].ingredients[e], e));
+            progress.push((inShop ? (player.balls[e] - player.shop[input].limit):player.balls[e])  + "/" + plural(recipes[item].ingredients[e], e));
         }
         if (!data[1] || data[1].toLowerCase() !== "finish") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: See those materials? Bring 'em back here so I can make you some shiny new items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
@@ -9396,7 +9398,7 @@ function Safari() {
         }
         
         if (!canMake) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")" + (inShop ? " (Check your shop!)":""), safchan);
             return;
         }
         
