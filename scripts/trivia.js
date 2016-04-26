@@ -25,6 +25,7 @@ var triviaCategories = ['Anagram: Pokémon', 'Anime/Manga', 'Animals', 'Art', 'C
 var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastUsedCats = [];
+var eventElimPlayers = [];
 
 var Trivia;
 try {
@@ -323,7 +324,6 @@ function TriviaGame() {
     this.lbDisabled = false;
     this.lastvote = 0;
     this.lastEventTime = sys.time();
-   // this.eventFlag = false;
     this.eventModeOn = true;
     this.votes = {};
     this.voting = true;
@@ -622,7 +622,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         this.resetTrivia();
         runUpdate();
         return;
-    }
+    }   
     /* Reset submittedAnswers */
     this.submittedAnswers = {};
     /* Advance round */
@@ -760,7 +760,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var correctNames = [];
     var totalPlayers = 0;
-    
     for (var id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing) {
             totalPlayers++;
@@ -783,6 +782,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 allCorrect = false;
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
+                    if(trivData.eventFlag === true){
+                        eventElimPlayers.push(this.triviaPlayers[id].name);
+                    }
                     this.unjoin(id);
                 }
             }
@@ -794,6 +796,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 if (this.player(name).points === 0) {
                     for (var id in this.triviaPlayers) {
                         if (this.triviaPlayers[id].name === name) break;
+                    }
+                    if(trivData.eventFlag === true){
+                        eventElimPlayers.push(this.triviaPlayers[id].name);
                     }
                     this.unjoin(id);
                 }
@@ -835,16 +840,18 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var leaderboard = [];
     var displayboard = [];
+    var displayboardNamesOnly = []; //for safari
     var winners = [];
+    var winnersNamesOnly = [];      //for safari
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing) {
             var regname = this.triviaPlayers[id].name;
             var numPoints = this.triviaPlayers[id].points;
             var nohtmlname = utilities.html_escape(regname);
             leaderboard.push([regname, numPoints]);
-            if (this.triviaPlayers[id].points >= this.maxPoints && this.scoreType != "elimination") {
+           /* if (this.triviaPlayers[id].points >= this.maxPoints && this.scoreType != "elimination") {
                 winners.push(nohtmlname + " (" + this.triviaPlayers[id].points + ")");
-            }
+            }*/ //This code was just causing winners to be out of order.
         }
     }
     leaderboard.sort(function (a, b) {
@@ -875,6 +882,20 @@ TriviaGame.prototype.finalizeAnswers = function () {
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
+    for (var p in leaderboard) {
+        displayboardNamesOnly.push(leaderboard[p][0]);
+    }
+    for (var y in leaderboard) {   //this sorts the winners
+        if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
+            winners.push(leaderboard[y][0] + " (" + leaderboard[y][1] + ")")
+        }
+    }
+    for (var z in leaderboard) {
+        if (leaderboard[z][1] >= this.maxPoints && this.scoreType !== "elimination"){
+            winnersNamesOnly.push(leaderboard[z][0])
+        }
+    }
+
     this.sendAll("Leaderboard: " + displayboard.join(", "), triviachan);
 
     if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath) {
@@ -884,6 +905,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     if (totalPlayers < 1) this.inactivity++;
     else this.inactivity = 0;
+    if (trivData.eventFlag === true && totalPlayers < 2) this.inactivity++; //to prevent only one person from playing events
     if (this.inactivity === 4) {       
         this.htmlAll("The game automatically ended due to a lack of players.");        
         this.resetTrivia();        
@@ -896,14 +918,23 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
         winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
+        winnersNamesOnly.push(utilities.html_escape(leaderboard[0][0]));
         if (!this.lbDisabled) extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
     }
-    if (winners.length > 0 || (this.scoreType === "elimination" && leaderboard.length === 0)) {
-        if (!this.lbDisabled) sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
-        var w = (winners.length == 1) ? "the winner!" : "our winners!";
-        winners.sort(function (a, b) {
-            return b[1] - a[1];
-        });
+
+    var neededWinners = 1;             //winners needed to end game
+    if (trivData.eventFlag === true && this.scoreType !== "elimination"){  //for event know and event speed, extend the game
+        if(totalPlayers > 3){neededWinners = 3;}
+        if(totalPlayers === 3){neededWinners = 2;}
+        //otherwise, it's just 1.
+    }
+     if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
+         if (!this.lbDisabled) sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
+         var w = (winners.length == 1) ? "the winner!" : "our winners!";
+         winners.sort(function (a, b) {
+             return b[1] - a[1];
+         });
+
         if (Object.keys(Trivia.suggestion).length !== 0) {
             this.sendAll(sys.name(Trivia.suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
         }
@@ -927,6 +958,29 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 lastCatGame++;
             }
         }
+        if(trivData.eventFlag === true && this.scoreType === "elimination" && leaderboard.length !== 0){
+            eventElimPlayers.push(winnersNamesOnly[0]);}
+
+        //winnersNamesOnly contains the names of the winners from first to last
+        //displayBoardNamesOnly, if you want to give consolation prizes, contains names of all players
+        //eventElimPlayers contains the list for event games
+        //if you want to post the scores also (example: player (5)) use winners or displayboard
+        //these loops are the ones I used to output the data for testing; I left them in case they would be helpful
+
+        if (trivData.eventFlag === true){
+            if (this.scoreType !== "elimination"){
+
+                /*for (var d = 0; d < winnersNamesOnly.length; d++){
+                    this.sendAll(winnersNamesOnly[d],triviachan);
+                }*/
+            }
+            else {
+                //****NOTE***** that the players are in this array backwards, so I looped backwards.
+                /*for (var e = (eventElimPlayers.length - 1); e >= 0; e--){
+                    this.sendAll(eventElimPlayers[e],triviachan);
+                }*/
+            }
+        }
         this.resetTrivia();
         runUpdate();
         this.lastvote++;
@@ -943,7 +997,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
             return;
         }*/
         return;
-    }
+    }//endif
+
     if (this.qSource.length === 0 && !(this.catGame && this.specialCatGame)) {
         this.catGame = true;
         this.usingCats = specialCategories;
@@ -1059,8 +1114,8 @@ TriviaGame.prototype.resetTrivia = function () {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
-  //  this.eventFlag = false;
     trivData.eventFlag = false;
+    eventElimPlayers = [];
 };
 
 TriviaGame.prototype.key = function (src) {
