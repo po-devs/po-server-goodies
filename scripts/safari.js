@@ -14849,6 +14849,10 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "safariadmins" || command === "safariauth" || command === "sas") {
+                script.beforeChatMessage(src, "/cauth", safchan);
+                return true;
+            }
             if (command === "info") {
                 var time = new Date(now()).toUTCString();
                 sys.sendMessage(src, separator, safchan);
