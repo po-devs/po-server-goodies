@@ -1197,7 +1197,7 @@ function Safari() {
             return false;
         }
         if (info.input in player.shop && player.shop[info.input].limit >= count) {
-            safaribot.sendMessage(src, "You need to remove this Pokémon from your shop before you can " + verb + " them!", safchan);
+            safaribot.sendMessage(src, "You need to remove " + info.name + " from your shop before you can " + verb + " it!", safchan);
             return false;
         }
         if (pokeInfo.forme(info.num) > 0 && isMega(info.num)) {
@@ -4080,10 +4080,11 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny, CanEvolve, FinalForm, CanMega or Duplicate) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny, CanEvolve, FinalForm, CanMega, Duplicate or Region) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
+            safaribot.sendMessage(src, "For Region: Select any valid region (" + readable(generations, "or") + ") to display all currently owned Pokémon from that region", safchan);
             safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
             safaribot.sendMessage(src, "-Exact value. e.g.: /find bst 500 (displays all Pokémon with BST of exactly 500)", safchan);
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
@@ -4137,6 +4138,9 @@ function Safari() {
                     break;
                 case "finalform":
                     crit = "finalform";
+                    break;
+                case "region":
+                    crit = "region";
                     break;
                 default:
                     crit = "abc";
@@ -4250,6 +4254,20 @@ function Safari() {
                 }
             });
             title = "Pokémon that can mega evolve";
+        } 
+        else if (crit == "region") {
+            val = cap(val.toLowerCase());
+            var pos = generations.indexOf(val);
+            if (pos < 1) { //"None" is 0 index, we don't want to include that. Both here and in the readable
+                safaribot.sendMessage(src, val + " is not a valid region! Valid regions are " + readable(generations.slice(1, generations.length)) + ".", safchan);
+                return;
+            }
+            player.pokemon.forEach(function(x){
+               if (generation(x) === pos) {
+                    list.push(x);
+               }               
+            });
+            title = "Pokémon from the " + val + " Region";
         }
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(list, title + " (" + list.length + ")", shopLink), safchan);
@@ -8081,9 +8099,9 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
             
-            // safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
-            // safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
+            //safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
+            //safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
             
@@ -9379,11 +9397,10 @@ function Safari() {
         var canMake = true, progress = [];
         for (var e in recipes[item].ingredients) {
             var input = "@" + e;
-            var inShop = (input in player.shop);
-            if (player.balls[e] < recipes[item].ingredients[e] || (inShop && player.shop[input].limit > player.balls[e] - recipes[item].ingredients[e])) {
+            if (player.balls[e] < recipes[item].ingredients[e]) {
                 canMake = false;
             }
-            progress.push((inShop ? (player.balls[e] - player.shop[input].limit):player.balls[e])  + "/" + plural(recipes[item].ingredients[e], e));
+            progress.push(player.balls[e] + "/" + plural(recipes[item].ingredients[e], e));
         }
         if (!data[1] || data[1].toLowerCase() !== "finish") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: See those materials? Bring 'em back here so I can make you some shiny new items! (If you have the required materials you can use " + link("/quest alchemist:" + item + ":finish") + " to create an item)", safchan);
@@ -9398,7 +9415,7 @@ function Safari() {
         }
         
         if (!canMake) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")" + (inShop ? " (Check your shop!)":""), safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
             return;
         }
         
@@ -9419,6 +9436,7 @@ function Safari() {
             for (var e in recipes[item].failUses) {
                 player.balls[e] -= recipes[item].failUses[e];
                 destroyed.push(plural(recipes[item].failUses[e], e));
+                this.updateShop(sys.name(src), e);
             }
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to smell like burnt marshmallows as you notice your ingredients ignite! You quickly douse the flames to prevent the whole place from burning down.", safchan);
             safaribot.sendMessage(src, "As the smoke clears you realize that your " + readable(destroyed) + " were burnt to a crisp!", safchan);
@@ -9426,6 +9444,7 @@ function Safari() {
         } else {
             for (var e in recipes[item].ingredients) {
                 player.balls[e] -= recipes[item].ingredients[e];
+                this.updateShop(sys.name(src), e);
             }
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with a sparkling mist but it quickly disappates to reveal " + plural(amt, fullItem) + ".", safchan);
             safaribot.sendMessage(src, "You received " + plural(amt, fullItem) + ".", safchan);
@@ -13351,7 +13370,7 @@ function Safari() {
                     player = {
                         name: e,
                         fullName: data.casedName || e,
-                        color: data.nameColor || "#00000",
+                        color: data.nameColor || "#000000",
                         value: 0
                     };
                     switch (i) {
@@ -13383,7 +13402,7 @@ function Safari() {
                     player = {
                         name: e,
                         fullName: data.casedName || e,
-                        color: data.nameColor || "#00000",
+                        color: data.nameColor || "#000000",
                         value: 0
                     };
                     player.value = monthlyLeaderboards[i].get(e) || 0;
@@ -16922,7 +16941,7 @@ function Safari() {
                 }
                 player.nextSpawn.disguise = appearAs;                
                 safari.saveGame(player);
-                var translated = plural(amount, info.name) + (appearAs.num !== info.num ? " disguised as " + appearAs.name : "") + ".";
+                var translated = plural(amount, info.name) + (appearAs.name !== info.name ? " disguised as " + appearAs.name : "") + ".";
                 safaribot.sendMessage(src, "The next spawn by " + data[0].toCorrectCase() + " will be " + translated, safchan);
                 sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + data[0].toCorrectCase() + "|||nextspawn|||had their next spawn changed to " + translated + "|||\n");
                 return true;                
