@@ -10653,19 +10653,20 @@ function Safari() {
             m = choices[p];
             
             res = calcDamage(m, opp, [15 + 15 * this.level, 80 + 20 * this.level]);
-            if (this.opponentHP > 0 && res.power[0] > 0) {
-                
-                this.opponentHP -= res.power[0];
+            if (this.opponentHP > 0) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
-                if (this.opponentHP <= 0) {
-                    this.opponentHP = 0;
-                    defeated = true;
-                    if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
-                        var reward = randomSampleObj(this.treasures);
-                        this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
-                        getTreasure(p, reward);
+                if (res.power[0] > 0) {
+                    this.opponentHP -= res.power[0];
+                    if (this.opponentHP <= 0) {
+                        this.opponentHP = 0;
+                        defeated = true;
+                        if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
+                            var reward = randomSampleObj(this.treasures);
+                            this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
+                            getTreasure(p, reward);
+                        }
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -10760,15 +10761,15 @@ function Safari() {
             m = choices[p];
             pow = sys.rand(130 + this.level * 15, 240 + this.level * 37);
             dmg = Math.round(pow * safari.checkEffective(sys.type(sys.pokeType1(m)), sys.type(sys.pokeType2(m)), this.types[0], this.types[1], this.types[2]));
+            if (!this.dealt.hasOwnProperty(p)) {
+                this.dealt[p] = 0;
+            }
+            turnDealt[p] = dmg;
+            this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the statue!".format(p.toCorrectCase(), poke(m), toColor(dmg, "blue")));
             if (dmg > 0) {
                 this.hp -= dmg;
-                if (!this.dealt.hasOwnProperty(p)) {
-                    this.dealt[p] = 0;
-                }
                 turnDamage += dmg;
                 this.dealt[p] += dmg;
-                turnDealt[p] = dmg;
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the statue!".format(p.toCorrectCase(), poke(m), toColor(dmg, "blue")));
                 if (this.hp <= 0) {
                     this.hp = 0;
                     defeated = true;
