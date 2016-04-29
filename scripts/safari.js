@@ -22,6 +22,7 @@ function Safari() {
     var saveFiles = "scriptdata/safarisaves.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
     var themesFile = "scriptdata/safari/themes.txt";
+    var decorationsFile = "scriptdata/safari/decorations.txt";
     var tradeLog = "scriptdata/safaritrades.txt";
     var shopLog = "scriptdata/safarishoplog.txt";
     var auctionLog = "scriptdata/safariauctions.txt";
@@ -117,8 +118,10 @@ function Safari() {
             water: 0,
             cherry: 0,
             blkapricorn: 0,
-            whtapricorn: 0
+            whtapricorn: 0,
+            coupon: 0
         },
+        decorations: {},
         records: {
             gachasUsed: 0,
             masterballsWon: 0,
@@ -197,6 +200,8 @@ function Safari() {
             rareHatched: 0,
             transmutations: 0
         },
+        secretBase: [],
+        secretBaseCache: [],
         costumes: [],
         savedParties: [],
         ninjaParty: [],
@@ -225,7 +230,8 @@ function Safari() {
             auction: 0,
             shopEdit: 0,
             lastBaits: [],
-            nubTaunt: 0
+            nubTaunt: 0,
+            baseView: 0
         },
         shop: {},
         quests: {
@@ -254,6 +260,9 @@ function Safari() {
                 bonusStamina: 0
             },
             alchemist: {
+                cooldown: 0
+            },
+            decor: {
                 cooldown: 0
             }
         },
@@ -305,6 +314,7 @@ function Safari() {
         
         silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
         entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
+        coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
 
         //Consumables (for useItem)
         rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
@@ -390,7 +400,8 @@ function Safari() {
         wonder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTIzRTMwQTlGNDdCMTFFNTg2MjdDNzEwNjcyQTIzRTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTIzRTMwQUFGNDdCMTFFNTg2MjdDNzEwNjcyQTIzRTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5MjNFMzBBN0Y0N0IxMUU1ODYyN0M3MTA2NzJBMjNFOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5MjNFMzBBOEY0N0IxMUU1ODYyN0M3MTA2NzJBMjNFOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pqi2bP0AAAAwUExURfjwaNCYcPj4+Ki40GAoIPjQuPig8NiYAIhIiNhwUHhIMCgoKLg4GPDAAAAAAAAAACeUxKwAAAAQdFJOU////////////////////wDgI10ZAAABAklEQVR42oSTC7KDIAxFTfhY8sH97/Zd1LYq8HoHNZAzkoSwbD+0PObaNAdUlyadAerNvU7/ILt/WVzGgLjvBD4yBU4NgYv/SnwAvQP6BNTMvn5MtAfKG9lN7bawUrDe1Ixui02kOU6ZSA+QfQgz6oFNibgSUa6cSQd1UEksKaUsnEWHlSS4i6Wcqa+kHHFSMkt0RChXQLAYY0TwqkgHJmC5AErMKEBcfcWIMJnPQM8tNAS0WvQAeYSJ+aPUenClHB7VYcsFDhjTlrPiDHmxMVCLe2Fu7zoGcNo4BgA2A1ZkihzXCQDilV8YV/89C7SlyK2nn1ev1uP55/L+vN2d/gQYAF8VM2lHYAE7AAAAAElFTkSuQmCC",
         tower: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAMFBMVEX///8AAAApQ08pcIFClKpJSU1Lq9BmLg9ubm5xSC2jycjPlm/cmhnork/u7vf3z7a4KRbKAAAAAXRSTlMAQObYZgAAASdJREFUKM9jYCAXMCkbKaDwVVxcnJBFlFOcTdyMEHxGsxRjY7dkAYQON5CKFIQeZbc0F5e0FIQeWZc0IHC5COMryZi4paWlOB9UgvI9dxqbOKk4G8+eAhZhMsvcZGysDcLTkkHmMroBBZT2/1YCCqSAbGZ0SVE0Wvz/v5WykJsL2CkizkbSD///l9uobOIIcaexkeR/IJiobAxxq5KhAqP07/0bBZiEIbYYAyUCJSeKApUag20BCrC2npwTEQBigZQIGzIwtp69EyEAYoH1CDBIxNy9e7SRgRHiX2UBzg7xs3cKOyYwQvyryDB/YaR44VSpnwxCUO9Kbwzt6AiV3ogIQtETHR09gQJIgRpz5sxRAeR4EJ0oGYgSUZIHZSaiCDAKMAoQG8sAZEpOkN/TuWMAAAAASUVORK5CYII=",
         pyramid: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAKlBMVEX///8AAAAuIhI0bC9KKRJLQyttZStxSC2JUC+mhS7EpUzPlm/UbjH3z7bDGGp+AAAAAXRSTlMAQObYZgAAAShJREFUKM+NkT9Lw0AYxu++Qd9W26Zbi36Ajo5KsWbooBCwZCrIYcZCByGT4J8TXYJp8LJ1zLuHFI7uDhm7Fb+Ld/R6yeDgs92P5/1z70PI3wKl+pumiFmjBhxUimqGqXYsK4tzK5Seo6rD10dZfr/ZLhQzDVK0NT1EIRBXtiRP9ZTMNw4K23yKuPQnsCfOaitzz/PlpBeZrSAEKaEAs1tbROGPUuGI2R4w1tmMF7s5YwcwO1psduPztgWtIYQFtIYGUOBnCUDwyc1Y0n11E86D+OHRbNp9EuL+RYgrAyhXIAkU4A0DXMaChLH4ANaXIkBMxN27AXLE9AnZSJop0HQ1iPs2ieaJLrno2yMf3wyUTq+rGLwBwMCrYqDlnJBOWYtOf4IC+Z9+Ab4jceSsepITAAAAAElFTkSuQmCC",
-        alchemist: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAtUExURXCYOOCoiPjQyPj4+ChQEHhIMKjIiLiwoOCImPjgyPCoqJBAUNBgYAAAAP///2PjC4AAAAAPdFJOU///////////////////ANTcmKEAAAEJSURBVHjavJPRcoUgDESDiEI22///3C7aVrTc6dyX7jiDuocQSLCPP2T/DeDQSwCoh27IACC8hlQ9MAO+/QcxAPUC6gSADLhHuEMgZoD8U5gAh794ba1qGIgRWJZoUizLFFCAw++EQjyAM4NI3U8xZmFXAI/MDjAfxAMA9TOjAxrciTtAejjal6APcgQ0XWtESS3pKWK1Cu8RVEoHWYpeddS4RxCB0CpmKZkpfoDPoyaMji3nDU778YdqrmbkJpFm6+9qsq0mJme5tjZOgETl4K4cmCaANqJOqiq2KkJOOorqmDj9fZ8Bfadd+75fe7i3PUtKZEqFry4O+wFinP+8WT058r27+SnAAFJzMLawCe3JAAAAAElFTkSuQmCC"
+        alchemist: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAtUExURXCYOOCoiPjQyPj4+ChQEHhIMKjIiLiwoOCImPjgyPCoqJBAUNBgYAAAAP///2PjC4AAAAAPdFJOU///////////////////ANTcmKEAAAEJSURBVHjavJPRcoUgDESDiEI22///3C7aVrTc6dyX7jiDuocQSLCPP2T/DeDQSwCoh27IACC8hlQ9MAO+/QcxAPUC6gSADLhHuEMgZoD8U5gAh794ba1qGIgRWJZoUizLFFCAw++EQjyAM4NI3U8xZmFXAI/MDjAfxAMA9TOjAxrciTtAejjal6APcgQ0XWtESS3pKWK1Cu8RVEoHWYpeddS4RxCB0CpmKZkpfoDPoyaMji3nDU778YdqrmbkJpFm6+9qsq0mJme5tjZOgETl4K4cmCaANqJOqiq2KkJOOorqmDj9fZ8Bfadd+75fe7i3PUtKZEqFry4O+wFinP+8WT058r27+SnAAFJzMLawCe3JAAAAAElFTkSuQmCC",
+        decor: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpQTFRFAAAARi1GbUtQLy4v98+2iXVrz5Zv7HV1rUxLcUgt7u73o8nIbS8rAAAARr4BKgAAAA50Uk5T/////////////////wBFwNzIAAAA70lEQVR42pyTgXLEIAhEV1Eiav7/d7vYa3s34nXaHaNkeAOSAO5fhL8BWDoCQMpUekGebLprTmtDBECWfxGCCEg/QAoASJL6maLSRAB4iCUGiAB49CUa2ABT8fxJHodaDEgp8gYQ+klIBPhX1g4H0BX7HW6BlC+gyA54lVYesqc6v08vzbQol3nJEeC3NPM7xoBgtKHKDbIDJNAz2hgNoyMh+JsjDzQK6B0WAD13tOtqoKnFdkBznxc1SZQQUMxrcnkMRD3JBAwxPcmhq3PzFC2fgcpX1CNAX4U/x8liVwIvU7GP3n2/Gb3/TfeHAAMAaGMlUpM6VNUAAAAASUVORK5CYII="
     };
     var gachaItems = {
         safari: 95, great: 50, ultra: 30, luxury: 35, myth: 12, quick: 12, heavy: 20, clone: 25,
@@ -440,6 +451,7 @@ function Safari() {
         stick: "Legendary Stick of the almighty Farfetch'd that provides a never ending wave of prods and pokes unto your enemies and other nefarious evil-doers. " + cdSeconds("stick") + " Use with \"/stick [Player]\".",
         salt: "A pile of salt that makes the holder increasingly unlucky the more they have.",
         entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
+        coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
         pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\". Obtained from Official Events.",
         fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
         materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
@@ -475,6 +487,9 @@ function Safari() {
         mono: "A monochromatic Pokéball that enhances the catch rate of single-type Pokémon. " + cdSeconds("mono") + " Obtained from Alchemy Quest."
     };
     var costumeHelp = {};
+    var decorations = {};
+    var SECRET_BASE_WIDTH = 7;
+    var SECRET_BASE_HEIGHT = 5;
 
 
     /* Wild Pokemon Variables */
@@ -1046,7 +1061,7 @@ function Safari() {
     };
     
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": true, "alchemist": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "decoration": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -1451,12 +1466,16 @@ function Safari() {
             }
         }
     }
-    function randomSampleObj(hash) {
+    function randomSampleObj(hash, returnId) {
         var sampled = {};
         for (var e in hash) {
             sampled[e] = hash[e].chance;
         }
-        return hash[randomSample(sampled)];
+        if (returnId) {
+            return randomSample(sampled);
+        } else {
+            return hash[randomSample(sampled)];
+        }
     }
     function getRange(input) {
         var range = input.split("-"), lower, upper;
@@ -1905,6 +1924,27 @@ function Safari() {
             return "<img src='trainer:" + id + "'>";
         } else {
             return "<img src='Themes/Classic/Trainer Sprites/" + id + ".png'>";
+        }
+    }
+    function decorationAlias(name, returnGarbage, full) {
+        if (decorations.hasOwnProperty(name)) {
+            return full ? decorations[name].name : name;
+        }
+        var n = name.toLowerCase(), dec;
+        for (var e in decorations) {
+            dec = decorations[e];
+            if (n === dec.name.toLowerCase() || (dec.aliases && dec.aliases.contains(n))) {
+                if (full) {
+                    return dec.name;
+                } else {
+                    return e;
+                }
+            }
+        }
+        if (returnGarbage || name === "none") {
+            return name;
+        } else {
+            return "error";
         }
     }
     function isBall(item) {
@@ -3921,7 +3961,7 @@ function Safari() {
         var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "dust", "rare", "spray", "mega", "bait", "rock"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "egg", "bright"];
         var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "stick"];
-        var line4 = ["pack", "water", "materia", "fragment", "cherry", "blkapricorn", "whtapricorn"];
+        var line4 = ["pack", "water", "materia", "fragment", "cherry", "blkapricorn", "whtapricorn", "coupon"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -6858,6 +6898,290 @@ function Safari() {
         this.sanitize(player);
     };
 
+    /* Secret Base */
+    this.viewDecorations = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var isAndroid = (sys.os(src) === "android");
+        var player = getAvatar(src), obj = player.decorations, info;
+        
+        var list = Object.keys(obj).filter(function(x) {
+            return obj[x] > 0;
+        }).sort();
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendMessage(src, "Your decorations:", safchan);
+        
+        var out = [];
+        for (var e = 0; e < list.length; e++) {
+            info = decorations[list[e]];
+            out.push(obj[list[e]] + "x " + info.name + " (" + info.width + "x" + info.height + ")");
+        }
+        if (isAndroid) {
+            safaribot.sendMessage(src, out.join(" | "), safchan);
+        } else {
+            if (out.length > 10) {
+                var rowsNumber = 12;
+                var rows = [];
+                for (e = 0; e < rowsNumber; e++) {
+                    rows.push([]);
+                }
+                for (e = 0; e < out.length; e++) {
+                    rows[e%rowsNumber].push(out[e]);
+                }
+                for (e = 0; e < rowsNumber; e++) {
+                    out.push("<tr><td>" + rows[e].join("</td><td> | </td><td>") + "</td></tr>");
+                }
+                sys.sendHtmlMessage(src, "<table border='0' cellpadding='0' cellspacing='0'>" + out.join("") + "</table>", safchan);
+            } else {
+                for (e = 0; e < out.length; e++) {
+                    safaribot.sendMessage(src, out[e], safchan);
+                }
+            }
+        }
+        
+        sys.sendMessage(src, "", safchan);
+    };
+    this.viewBase = function(src, data) {
+        if (data === "*") {
+            data = sys.name(src);
+        }
+        var id = sys.id(data);
+        if (!id) {
+            safaribot.sendMessage(src, "No such player!", safchan);
+            return;
+        }
+        var target = getAvatar(id);
+        if (!target) {
+            safaribot.sendMessage(src, "This person didn't enter the Safari!", safchan);
+            return;
+        }
+        // Possibly disable this. Adding this because printing Secret Base may end using a fair amount of bandwidth
+        var currentTime = now();
+        var lastView = SESSION.users(src).secretBaseView || 0;
+        if (lastView > currentTime) {
+            safaribot.sendMessage(src, "Please wait " + timeLeftString(lastView) + " before trying to visit another Secret Base!", safchan);
+            return;
+        }
+        SESSION.users(src).secretBaseView = now() + (src === id ? 30 : 60) * 1000;
+
+        safaribot.sendMessage(src, sys.name(id) + "'s Secret Base:", safchan);
+        this.printBase(src, target.secretBaseCache);
+    };
+    this.printBase = function(src, base) {
+        var isAndroid = (sys.os(src) === "android");
+        var out = [], e, rowData = [];
+        
+        if (isAndroid) {
+            var side = "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAwCAMAAAAfDRtEAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAA////pdmf3QAAAAJ0Uk5T/wDltzBKAAAAF0lEQVR42mJgZGAEIUYQOcoc8UyAAAMAjV8BgZdkvloAAAAASUVORK5CYII='>";
+            for (e = 0; e < base.length; e++) {
+                rowData.push(this.getDecorationPic(base[e]));
+                if (e % SECRET_BASE_WIDTH === SECRET_BASE_WIDTH-1) {
+                    out.push(rowData.join("") + side);
+                    rowData = [];
+                }
+            }
+            sys.sendHtmlMessage(src, "1↓ 1→ ______________________", safchan);
+            for (e = 0; e < out.length; e++) {
+                sys.sendHtmlMessage(src, out[e], safchan);
+            }
+            sys.sendHtmlMessage(src, "¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯", safchan);
+        } else {
+            for (e = 1; e <= SECRET_BASE_WIDTH; e++) {
+                rowData.push(e);
+            }
+            out.push("<tr><td></td><td align='center'>" + rowData.join("</td><td align='center'>") + "</td></tr>");
+            rowData = [];
+            for (e = 0; e < base.length; e++) {
+                rowData.push(this.getDecorationPic(base[e]));
+                if (e % SECRET_BASE_WIDTH === SECRET_BASE_WIDTH-1) {
+                    out.push("<tr><td valign='middle'>" + (out.length) + "</td><td>" + rowData.join("</td><td>") + "</td></tr>");
+                    rowData = [];
+                }
+            }
+            out = "<table border='1'><tr><td><table border='0' cellpadding='0' cellspacing='0'>" + out.join("") + "</table></td></tr></table>";
+            sys.sendHtmlMessage(src, out, safchan);
+        }
+    };
+    this.getDecorationPic = function(id) {
+        if (id === null) {
+            return "<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAMAAABg3Am1AAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRFAAAAAAAApWe5zwAAAAF0Uk5TAEDm2GYAAAAdSURBVHja7MGBAAAAAMOg+VPf4ARVAQDwTAABBgAJMAABIBu2IQAAAABJRU5ErkJggg=='>";
+        }
+        
+        var picId = id.substr(0, id.indexOf(":"));
+        var picIndex = parseInt(id.substr(id.indexOf(":")+1), 10);
+        return "<img src='" + decorations[picId].img[picIndex] + "'>";
+    };
+    this.editBase = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        var info = data.split(":");
+        var deco = decorationAlias(info[0].toLowerCase(), true);
+        if (info.length < 3 && deco !== "wipe") {
+            safaribot.sendMessage(src, "Invalid format! Use /editbase Decoration:PositionX:PositionY! To remove a decoration, use /editbase remove:PositionX:PositionY, or /editbase wipe to remove all decorations. Bases dimensions are " + SECRET_BASE_WIDTH + "x" + SECRET_BASE_HEIGHT + ".", safchan);
+            return;
+        }
+        var x = parseInt(info[1], 10) - 1;
+        var y = parseInt(info[2], 10) - 1;
+        var clearing = ["remove", "clear", "empty", "wipe"].contains(deco);
+        var current = this.getDecoAtPos(player.secretBase, x, y);
+        
+        if (clearing) {
+            if (deco === "wipe") {
+                player.secretBase = [];
+                player.secretBaseCache = this.cacheBase(player.secretBase);
+                this.saveGame(player);
+                safaribot.sendMessage(src, "Removed all decorations from your Secret Base!", safchan);
+                return;
+            }
+            if (!current) {
+                safaribot.sendMessage(src, "There's no decoration to remove from this position!", safchan);
+                return;
+            }
+            player.secretBase.splice(player.secretBase.indexOf(current), 1);
+            player.secretBaseCache = this.cacheBase(player.secretBase);
+            safaribot.sendMessage(src, "You removed the " + decorations[current.deco].name + " from the position " + (x+1) + "," + (y+1) + "!", safchan);
+            return;
+        } 
+        if (!decorations.hasOwnProperty(deco)) {
+            safaribot.sendMessage(src, "Invalid decoration!", safchan);
+            return;
+        }
+        if (!player.decorations.hasOwnProperty(deco) || player.decorations[deco] === 0) {
+            safaribot.sendMessage(src, "You do not have this decoration!", safchan);
+            return;
+        }
+        var e, count = 0;
+        for (e = 0; e < player.secretBase.length; e++) {
+            if (player.secretBase[e].deco === deco) {
+                count++;
+            }
+        }
+        if (player.decorations[deco] - count < 1) {
+            safaribot.sendMessage(src, "You do not have any more of this decoration available!", safchan);
+            return;
+        }
+        if (!this.canFitDeco(deco, player.secretBaseCache, x, y)) {
+            safaribot.sendMessage(src, "You cannot put this decoration at this position! Please check if there's enough space at this point.", safchan);
+            return;
+        }
+        player.secretBase.push({ deco: deco, x: x, y: y});
+        player.secretBaseCache = this.cacheBase(player.secretBase);
+        this.saveGame(player);
+        safaribot.sendMessage(src, "You added the " + decorations[deco].name + " to the position " + (x+1) + "," + (y+1) + "!", safchan);
+    };
+    this.canFitDeco = function(deco, base, x, y) {
+        var data = decorations[deco];
+        if (x < 0 || y < 0 || x + data.width > SECRET_BASE_WIDTH || y + data.height > SECRET_BASE_HEIGHT) {
+            return false;
+        }
+        var px, py, index;
+        for (py = y; py < y + data.height; py++) {
+            for (px = x; px < x + data.width; px++) {
+                index = py * SECRET_BASE_WIDTH + px;
+                if (base[index] !== null) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+    this.getDecoAtPos = function(data, x, y) {
+        var e, obj, info;
+        for (e = 0; e < data.length; e++) {
+            obj = data[e];
+            info = decorations[obj.deco];
+            if (x >= obj.x && x < obj.x + info.width && y >= obj.y && y < obj.y + info.height) {
+                return obj;
+            }
+        }
+        return null;
+    };
+    this.cacheBase = function(data) {
+        var out = [], e, slots = SECRET_BASE_WIDTH * SECRET_BASE_HEIGHT;
+        for (e = 0; e < slots; e++) {
+            out.push(null);
+        }
+        
+        var info, id, x, y, px, py, deco, part;
+        for (e in data) {
+            deco = data[e];
+            id = deco.deco;
+            info = decorations[id];
+            x = deco.x;
+            y = deco.y;
+            if (info.width > 1 || info.height > 1) {
+                part = 0;
+                for (py = 0; py < info.height; py++) {
+                    for (px = 0; px < info.width; px++) {
+                        out[Math.floor((y + py) * SECRET_BASE_WIDTH) + ((x + px) % SECRET_BASE_WIDTH)] = id + ":" + part;
+                        part++;
+                    }
+                }
+            } else {
+                out[Math.floor(y * SECRET_BASE_WIDTH) + (x % SECRET_BASE_WIDTH)] = id + ":" + 0;
+            }
+        }    
+        return out;
+    };
+    this.sanitizeBase = function(player) {
+        if (player) {
+            var decosCount = {}, e, data, diff, amt, i, d;
+            for (e = 0; e < player.secretBase.length; e++) {
+                data = player.secretBase[e];
+                if (!decosCount.hasOwnProperty(data.deco)) {
+                    decosCount[data.deco] = 0;
+                }
+                decosCount[data.deco]++;
+            }
+            for (e in decosCount) {
+                amt = player.decorations.hasOwnProperty(e) ? player.decorations[e] : 0;
+                if (amt < decosCount[e]) {
+                    diff = decosCount[e] - amt;
+                    for (i = 0; i < diff; i++) {
+                        for (d = 0; d < player.secretBase.length; d++) {
+                            if (player.secretBase[d].deco === e) {
+                                player.secretBase.splice(d, 1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            player.secretBaseCache = this.cacheBase(player.secretBase);
+        }
+    };
+    function printDecoration(src, id) {
+        var isAndroid = (sys.os(src) === "android");
+        var out = [], e, rowData = [], deco = decorations[id], imgset = deco.img, w = deco.width;
+        
+        if (isAndroid) {
+            for (e = 0; e < imgset.length; e++) {
+                rowData.push("<img src='" + imgset[e] + "'>");
+                if (e % w === w-1) {
+                    out.push(rowData.join(""));
+                    rowData = [];
+                }
+            }
+            for (e = 0; e < out.length; e++) {
+                sys.sendHtmlMessage(src, out[e], safchan);
+            }
+        } else {
+            for (e = 0; e < imgset.length; e++) {
+                rowData.push("<img src='" + imgset[e] + "'>");
+                if (e % w === w-1) {
+                    out.push("<tr><td>" + rowData.join("</td><td>") + "</td></tr>");
+                    rowData = [];
+                }
+            }
+            out = "<table border='0' cellpadding='0' cellspacing='0'>" + out.join("") + "</table>";
+            sys.sendHtmlMessage(src, out, safchan);
+        }
+    }
+    
     /* Battles */
     this.challengePlayer = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -8105,6 +8429,8 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
             
+            safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
+            
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -8145,6 +8471,10 @@ function Safari() {
             case "alchemy":
             case "alchemist":
                 this.alchemyQuest(src, args);
+            break;
+            case "decor":
+            case "decoration":
+                this.decorationQuest(src, args);
             break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
@@ -9452,6 +9782,69 @@ function Safari() {
             player.quests.alchemist.cooldown = now() + hours(recipes[item].cooldown);
             rewardCapCheck(player, item, amt, true);
         }
+        this.saveGame(player);
+    };
+    this.decorationQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        var trainerSprite = '<img src="' + base64trainers.decor + '">';
+        if (stopQuests.decor) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: I'm sorry but we are closed right now to revamp our stock for the next season!", safchan);
+            return;
+        }
+        
+        var moneyCost = 50000, silverCost = 50;
+        if (!data[0] || !["buy", "coupon"].contains(data[0].toLowerCase())) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Your face screams \"I need to decorate my home\", so you came to the right place! By paying $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + " you will receive some random but beautiful decoration for your Secret base!", safchan);
+            safaribot.sendHtmlMessage(src, "If I picked your interest, then you can type " + link("/quest decor:buy") + " to receive your new item right now! If you have a " + finishName("coupon") + ", you can trade it for a free decoration by typing " + link("/quest decor:coupon") + "!", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+        
+        var payment = data[0].toLowerCase();
+        if (payment === "buy") {
+            if (player.money < moneyCost || player.balls.silver < silverCost) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Wait a moment! Our goods are top quality stuff, so we cannot sell you anything by less than $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + "! Please come again when you have those", safchan);
+                return;
+            }
+        } else if (payment === "coupon") {
+            if (player.balls.coupon < 1) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Excuse me, but whatever you have in your hands is not a valid " + finishName("coupon") + "!", safchan);
+                return;
+            }
+        }
+        
+        if (player.quests.decor.cooldown >= now()) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: We are currently renewing our stock, please come back in " + timeLeftString(player.quests.decor.cooldown) + " to check our new goods!", safchan);
+            return;
+        }
+        
+        var paymsg = "";
+        if (payment === "buy") {
+            player.money -= moneyCost;
+            player.balls.silver -= silverCost;
+            paymsg = "You paid $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + " and received {0}!";
+        } else {
+            player.balls.coupon -= 1;
+            paymsg = "You gave your " + finishName("coupon") + " and received {0}!";
+        }
+        var out = randomSampleObj(decorations, true);
+        if (!player.decorations.hasOwnProperty(out)) {
+            player.decorations[out] = 0;
+        }
+        player.decorations[out] += 1;
+        
+        var decoName = decorationAlias(out, false, true);
+        safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: So you made up your mind? Good, you can now proudly declare that you are newest owner of a brand new " + decoName + "!", safchan);
+        safaribot.sendMessage(src, paymsg.format(an(decoName)), safchan);
+        printDecoration(src, out);
+        player.quests.decor.cooldown = now() + hours(payment == "buy" ? 3 : 1);
         this.saveGame(player);
     };
     function generateName() {
@@ -13967,7 +14360,7 @@ function Safari() {
                 } else {
                     if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
                         for (p in template[prop]) {
-                            if (p !== "shop") {
+                            if (!["shop", "decorations", "secretBase"].contains(p)) {
                                 toTemplate(obj[prop], p, template[prop]);
                             }
                         }
@@ -13979,7 +14372,7 @@ function Safari() {
                 if (!(prop in template)) {
                     delete obj[prop];
                 } else if (!Array.isArray(obj[prop]) && typeof obj[prop] == "object" && typeof template[prop] == "object") {
-                    if (prop !== "shop") {
+                    if (!["shop", "decorations", "secretBase"].contains(prop)) {
                         for (p in obj[prop]) {
                             removeInvalid(obj[prop], p, template[prop]);
                         }
@@ -14013,6 +14406,16 @@ function Safari() {
                 if (player.balls[clean] > cap) {
                     player.balls[clean] = cap;
                 }
+            }
+            var redoBase = false;
+            for (i in player.decorations) {
+                if (!decorations.hasOwnProperty(i)) {
+                    delete player.decorations[i];
+                    redoBase = true;
+                }
+            }
+            if (redoBase || player.secretBaseCache.length !== SECRET_BASE_WIDTH * SECRET_BASE_HEIGHT) {
+                this.sanitizeBase(player);
             }
 
             if (typeof player.money !== "number") {
@@ -14084,6 +14487,8 @@ function Safari() {
             }
             safari.sanitize(player);
             safari.sanitizePokemon(player);
+            safari.sanitizeBase(player);
+            safari.saveGame(player);
         }
     };
     this.trackMessage = function(mess, player) {
@@ -14335,13 +14740,14 @@ function Safari() {
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
             "/auction: To start an auction.",
-            "/getcostume: Checks your records to see if you earned any costumes!",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/quest: To view available quests.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
-            "/costumes: To view your current costumes.",
+            "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
             "/changecostume [costume]: To change your costume to a new one. Can also use /dressup [costume].",
+            "/base: To view another player's Secret Base.",
+            "/editbase [decoration]։[Coordinate X]։[Coordinate Y]: To edit your Secret Base. Use /decorations to check what you can decorate it with.",
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party/battles. Use /viewt for a text-only version of your data (excluding party).",
             "/challenge: To challenge another player to a battle.",
             "/watch: To watch someone else's battle.",
@@ -14353,7 +14759,7 @@ function Safari() {
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
             //seasonal change
-            "/snowball: To throw a snowball at another player.",
+            "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
             "/use: To use a consumable item.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
@@ -14711,6 +15117,18 @@ function Safari() {
                 } else {
                     safari.watchBattle(src, commandData);
                 }
+                return true;
+            }
+            if (["decoration", "decorations", "deco", "decos"].contains(command)) {
+                safari.viewDecorations(src, commandData);
+                return true;
+            }
+            if (command === "base") {
+                safari.viewBase(src, commandData);
+                return true;
+            }
+            if (command === "editbase") {
+                safari.editBase(src, commandData);
                 return true;
             }
             if (command === "quest" || command === "quests") {
@@ -16122,6 +16540,64 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "givedeco") {
+                var cmd = commandData.split(":");
+                if (cmd.length < 2) {
+                    safaribot.sendMessage(src, "Invalid format! Use /givedeco Player:Decoration:Amount.", safchan);
+                    return true;
+                }
+                var target = cmd[0];
+                var res, playerArray = [];
+
+                if (target.indexOf(",") !== -1) {
+                    res = target.split(",");
+                    for (var i = 0; i < res.length; i++) {
+                        playerArray.push(res[i].trim());
+                    }
+                } else {
+                    playerArray.push(target);
+                }
+
+                var item = decorationAlias(cmd[1].toLowerCase(), true);
+                var itemQty = cmd.length > 2 ? parseInt(cmd[2], 10) : 1;
+                if (isNaN(itemQty)) {
+                    itemQty = 1;
+                }
+
+                if (!decorations.hasOwnProperty(item)) {
+                    safaribot.sendMessage(src, "No such decoration!", safchan);
+                    return true;
+                }
+                var player, index, invalidPlayers = [];
+                for (var j = 0; j < playerArray.length; j++) {
+                    player = getAvatarOff(playerArray[j]);
+                    if (!player) {
+                        invalidPlayers.push(playerArray[j]);
+                        index = playerArray.indexOf(playerArray[j]);
+                        playerArray.splice(index, 1);
+                        continue;
+                    }
+                    if (!player.decorations.hasOwnProperty(item)) {
+                        player.decorations[item] = 0;
+                    }
+                    player.decorations[item] += itemQty;
+                    if (itemQty < 0) {
+                        this.sanitizeBase(player);
+                    }
+                    this.sanitize(player);
+                }
+                
+                var decoName = decorationAlias(item, false, true);
+                if (playerArray.length > 0) {
+                    var targets = readable(playerArray.map(function (x) { return x.toCorrectCase(); }), "and");
+                    safaribot.sendAll(targets + " has been awarded with " + plural(itemQty, decoName) + " by " + sys.name(src) + "!", safchan);
+                    sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + targets + "|||givedeco|||" + (itemQty < 0 ? "lost" : "received") + "|||" + plural(itemQty, decoName) + "\n");
+                }
+                if (invalidPlayers.length > 0) {
+                    safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
+                }
+                return true;
+            }
             if (command === "undo") {
                 var info = commandData.split(":");
                 if (info.length < 4) {
@@ -16205,7 +16681,7 @@ function Safari() {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
                     safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
-                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, collector, scientist, arena, tower, pyramid or wonder!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, baseView, collector, scientist, arena, tower, pyramid, wonder, alchemist or decor!", safchan);
                     return true;
                 }
                 var target = cmd[0];
@@ -16223,6 +16699,7 @@ function Safari() {
                     case "wonder":
                     case "pyramid":
                     case "alchemist":
+                    case "decor":
                         player.quests[type].cooldown = 0;
                     break;
                     case "ball":
@@ -16235,9 +16712,12 @@ function Safari() {
                     case "itemfinder":
                         player.cooldowns[type] = 0;
                     break;
+                    case "baseview":
+                        SESSION.users(src).secretBaseView = 0;
+                    break;
                     default:
                         safaribot.sendMessage(src, type + " is not a valid cooldown!", safchan);
-                        return;
+                        return true;
                 }
 
                 this.saveGame(player);
@@ -16803,6 +17283,33 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "loaddecorations" || command === "loaddecoration") {
+                var cThemes = decorations;
+                var url = commandData === "*" ? (permObj.get("decosurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading decorations from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            decorations = JSON.parse(resp);
+                            sys.write(decorationsFile, resp);
+                            permObj.add("decosurl", url);
+                            safaribot.sendMessage(src, "Decorations successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            decorations = cThemes;
+                            safaribot.sendMessage(src, "Couldn't load Decorations from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    decorations = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Contest Themes from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
             if (command === "showids") {
                 var list = [];
                 for (var e in idnumList.hash) {
@@ -17203,6 +17710,11 @@ function Safari() {
         try {
             var data = JSON.parse(sys.getFileContent(themesFile));
             contestThemes = data || contestThemes;
+        } catch (err) {
+        }
+        try {
+            var data = JSON.parse(sys.getFileContent(decorationsFile));
+            decorations = data || {};
         } catch (err) {
         }
         monthlyLeaderboards = {};
