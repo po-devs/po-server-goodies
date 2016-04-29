@@ -65,6 +65,7 @@ var configDir = "scriptdata/tourconfig/";
 var dataDir = "scriptdata/tourdata/";
 var utilities = require('utilities.js');
 var html_escape = require('utilities.js').html_escape;
+var AutoTeams = require("autoteams.js");
 var tstats = require("newtourstats.js");
 var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:";
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
@@ -2416,7 +2417,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (!sys.hasTier(src, tours.tour[key].tourtype)) {
                 try {
-                    require("autoteams.js").giveTeam(src, 0, tours.tour[key].tourtype);
+                    AutoTeams.giveTeam(src, 0, tours.tour[key].tourtype);
                     sendBotMessage(src, "Your first team was set to a random " + tours.tour[key].tourtype + " team.", tourschan, false);
                 } catch (error) {
                     var needsteam = ccbftiers.indexOf(tours.tour[key].tourtype) == -1;
@@ -2659,7 +2660,7 @@ function tourCommand(src, command, commandData, channel) {
             } else {
                 var tierName = tours.tour[inTour].tourtype;
                 try {
-                    require("autoteams.js").giveTeam(src, 0, tierName);
+                    AutoTeams.giveTeam(src, 0, tierName);
                     sendBotMessage(src, "Your first team was set to a random " + tierName + " team.", tourschan, false);
                 } catch (error) {
                     sendBotMessage(src, "No teams available for " + tierName + "!", tourschan, false);
@@ -3611,9 +3612,6 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
                 if (channels[x] == tourschan) {
                     sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
-                    if (require("autoteams.js").teamsAvailable(tier)) {
-                        sendChanHtmlAll("<timestamp/> Teams will be automatically assigned if you do not have one.", channels[x]);
-                    }
                 }
                 else {
                     sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
@@ -3623,6 +3621,9 @@ function tourstart(tier, starter, key, parameters) {
             else {
                 sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b><font color='Blue'>"+tier+"</font></b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups!", channels[x]);
                 sendChanHtmlAll("<timestamp/> Go to the <a href='po:join/Tournaments'>#Tournaments</a>  channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
+            }
+            if (AutoTeams.teamsAvailable(tier)) {
+                sendChanHtmlAll("<timestamp/> <b>Don't have a team? Don't worry the server will provide one when you join!</b>", channels[x]);
             }
             if (!parameters.event) {
                 sendChanAll(border, channels[x]);
