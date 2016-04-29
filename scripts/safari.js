@@ -9798,7 +9798,7 @@ function Safari() {
         var moneyCost = 50000, silverCost = 50;
         if (!data[0] || !["buy", "coupon"].contains(data[0].toLowerCase())) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Your face screams \"I need to decorate my home\", so you came to the right place! By paying $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + " you will receive some random but beautiful decoration for your Secret base!", safchan);
-            safaribot.sendHtmlMessage(src, "If I picked your interest, then you can type " + link("/quest decor:buy") + " to receive your new item right now! If you have a " + finishName("coupon") + ", you can trade it for a free decoration by typing " + link("/quest decor:coupon") + "!", safchan);
+            safaribot.sendHtmlMessage(src, "If I piqued your interest, then you can type " + link("/quest decor:buy") + " to receive your new item right now! If you have a " + finishName("coupon") + ", you can trade it for a free decoration by typing " + link("/quest decor:coupon") + "!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -9810,7 +9810,7 @@ function Safari() {
         var payment = data[0].toLowerCase();
         if (payment === "buy") {
             if (player.money < moneyCost || player.balls.silver < silverCost) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Wait a moment! Our goods are top quality stuff, so we cannot sell you anything by less than $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + "! Please come again when you have those", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Wait a moment! Our goods are top quality stuff, so we cannot sell you anything for less than $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + "! Please come again when you have those", safchan);
                 return;
             }
         } else if (payment === "coupon") {
