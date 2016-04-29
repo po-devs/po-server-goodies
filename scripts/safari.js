@@ -4084,7 +4084,7 @@ function Safari() {
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
-            safaribot.sendMessage(src, "For Region: Select any valid region (" + readable(generations, "or") + ") to display all currently owned Pokémon from that region", safchan);
+            safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
             safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
             safaribot.sendMessage(src, "-Exact value. e.g.: /find bst 500 (displays all Pokémon with BST of exactly 500)", safchan);
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
@@ -14906,7 +14906,7 @@ function Safari() {
                         }
                     }
                 }
-                safaribot.sendMessage(src, "Boost-of-the-Day: " + sys.pokemon(dailyBoost.pokemon) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
+                safaribot.sendHtmlMessage(src, "Boost-of-the-Day: " + link("/active " + sys.pokemon(dailyBoost.pokemon), sys.pokemon(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
                 if (rafflePrizeObj) {
                     var total = 0;
