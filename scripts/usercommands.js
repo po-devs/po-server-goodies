@@ -1035,7 +1035,7 @@ exports.help = [
     "*** Pokémon Info ***",
     "/ability [ability]: Displays basic information for that ability.",
     "/canlearn: Shows if a Pokémon can learn a certain move. Format is /canlearn [Pokémon]:[move].",
-    "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
+    // "/dwreleased [Pokémon]: Shows the released status of a Pokémon's Dream World Ability.",
     "/item [item]: Displays basic information for that item.",
     "/move [move]: Displays basic information for that move.",
     "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
