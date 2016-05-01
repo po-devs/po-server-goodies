@@ -232,7 +232,7 @@ function Safari() {
             lastBaits: [],
             nubTaunt: 0,
             baseView: 0,
-            unownMsg: 0
+            unown: 0
         },
         shop: {},
         quests: {
@@ -3241,7 +3241,7 @@ function Safari() {
             }
             var revealName = poke(currentDisplay) != poke(currentPokemon) ? "<b>" + pokeName + "</b> (who was disguised as "+ poke(currentDisplay) + ")" : "<b>" + pokeName + "</b>";
             var msg = "";
-            if (now() > player.cooldowns.unownMsg) {
+            if (now() > player.cooldowns.unown) {
                 for (var u = 0; u < player.party.length; u++) {
                     if (pokeInfo.species(player.party[u]) === 201) {
                         msg += "abcdefghijklmnopqrstuvwxyz!?".charAt(pokeInfo.forme(player.party[u]));
@@ -3249,7 +3249,9 @@ function Safari() {
                 }
                 msg = msg.length > 4 ? msg : "";
                 msg = /asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(msg) ? "" : msg;
-                player.cooldowns.unownMsg = now() + hours(0.33);
+                if (msg) {
+                    player.cooldowns.unown = now() + hours(0.33);
+                }
             }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
@@ -9821,7 +9823,7 @@ function Safari() {
         var payment = data[0].toLowerCase();
         if (payment === "buy") {
             if (player.money < moneyCost || player.balls.silver < silverCost) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Wait a moment! Our goods are top quality stuff, so we cannot sell you anything for less than $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + "! Please come again when you have those", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Home Designer: Wait a moment! Our goods are top quality stuff, so we cannot sell you anything for less than $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + "! Please come again when you have those!", safchan);
                 return;
             }
         } else if (payment === "coupon") {
