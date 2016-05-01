@@ -11605,14 +11605,14 @@ function Safari() {
         return this.usableCommands[id].contains(commandData.toLowerCase());
     };
     HazardRoom.prototype.advance = function() {
-        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, remaining = [], attackersNames, n, pId, move, cat, power, set, liveHazards, struggled, strugglers = {}, strugglemsg, stamina = {};
+        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, remaining = [], attackersNames, n, pId, move, cat, set, stamina = {};
         
         attackers = this.getChoices();
         attackersNames = Object.keys(attackers);
         
         this.sendAll("");
         for (p in attackers) {
-            if (attackers[p] == "struggle") continue;
+            if (attackers[p] == "struggle") {continue};
             move = sys.moveNum(attackers[p]);
             for (m in this.hazardMoves) {
                 if (this.hazardMoves[m].contains(move)) {
@@ -11634,7 +11634,7 @@ function Safari() {
             
             if (this.hazards.indexOf(cat) !== -1) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}!".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue")));
-                this.hazards.splice(this.hazards.indexOf(cat), 1)
+                this.hazards.splice(this.hazards.indexOf(cat), 1);
                 if (cat == this.treasureLocation) {
                     this.sendAll("After clearing the {1}, <b>{0}</b> found {2}!".format(addFlashTag(p.toCorrectCase()), this.hazardNames[cat], toColor(treasureName(this.hiddenTreasure), "blue")), true);
                     getTreasure(p, this.hiddenTreasure);
