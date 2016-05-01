@@ -11612,7 +11612,7 @@ function Safari() {
         
         this.sendAll("");
         for (p in attackers) {
-            if (attackers[p] == "struggle") {continue};
+            if (attackers[p] == "struggle") {continue;}
             move = sys.moveNum(attackers[p]);
             for (m in this.hazardMoves) {
                 if (this.hazardMoves[m].contains(move)) {
