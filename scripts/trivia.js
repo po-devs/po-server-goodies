@@ -25,7 +25,7 @@ var triviaCategories = ['Anagram: Pokémon', 'Anime/Manga', 'Animals', 'Art', 'C
 var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastUsedCats = [];
-
+var lastAdvertise = 0;
 var Trivia;
 try {
     Trivia = SESSION.global().Trivia;
@@ -356,9 +356,16 @@ TriviaGame.prototype.startGame = function (data, name) {
 TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     this.started = true;
     sys.saveVal("Stats/TriviaGamesPlayed", 1 + (+sys.getVal("Stats/TriviaGamesPlayed")));
-    sendChanAll("", 0);
     var lastCat;
     var catsLength;
+    var time = parseInt(sys.time(), 10);
+    var ad = "";
+    var autoJoin = function (n) {
+        if (n && !tadmin.isTAdmin(n) && !tsadmin.isTAdmin(n) && sys.auth(sys.id(n)) <= 0) {
+           Trivia.addPlayer(sys.id(n));
+           Trivia.sendAll(n + " joined the game!", triviachan);
+        }
+    }
     if (this.catGame){
         for (var q in triviaq.all()) {
             if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
@@ -378,61 +385,40 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         }
     }
     if (this.scoreType === "elimination" && this.catGame){
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        sendChanAll("", 0);
+        ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
         this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else if (this.scoreType === "speed" && this.catGame){
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        sendChanAll("", 0);
+        ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else if (this.catGame){
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        sendChanAll("", 0);
+        ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else if (this.scoreType === "speed"){
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        sendChanAll("", 0);
+        ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
-        if (name && !tadmin.isTAdmin(name) && !tsadmin.isTAdmin(name) && sys.auth(sys.id(name)) <= 0) {
-           this.addPlayer(sys.id(name));
-           Trivia.sendAll(name + " joined the game!", triviachan);
-        }
+        autoJoin(name);
     }
     else if (this.scoreType === "elimination") {
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!", 0);
-        sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        sendChanAll("", 0);
+        ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
         this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     }
     else {
+        ad = "A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+        this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+        autoJoin(name);
+    }
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);    
+    if (time > lastAdvertise + 60 * 10) {
+        lastAdvertise = time;
+        sendChanAll("", 0);    
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
-        this.sendAll("A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", 0);
+        this.sendAll(ad, 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         sendChanAll("", 0);
-        this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
-        if (name && !tadmin.isTAdmin(name) && !tsadmin.isTAdmin(name) && sys.auth(sys.id(name)) <= 0) {
-           this.addPlayer(sys.id(name));
-           Trivia.sendAll(name + " joined the game!", triviachan);
-        }
-    }
+    }  
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
     var player_id, player_ip;
