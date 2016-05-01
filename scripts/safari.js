@@ -3249,7 +3249,7 @@ function Safari() {
                 }
                 msg = msg.length > 4 ? msg : "";
                 msg = /asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(msg) ? "" : msg;
-                player.cooldowns.unownMsg = now + hours(0.33);
+                player.cooldowns.unownMsg = now() + hours(0.33);
             }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
