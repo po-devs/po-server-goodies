@@ -198,7 +198,8 @@ function Safari() {
             eggsHatched: 0,
             brightEggsHatched: 0,
             rareHatched: 0,
-            transmutations: 0
+            transmutations: 0,
+            transmutationsMade: 0
         },
         secretBase: [],
         secretBaseCache: [],
@@ -1059,7 +1060,8 @@ function Safari() {
             "ingredients": {
                 "blkapricorn": 10,
                 "whtapricorn": 10
-            }
+            },
+            "transmutation": true
         }
     };
     
@@ -3314,7 +3316,7 @@ function Safari() {
                 }
             }
             if (isRare(currentPokemon) || ball === "master") {
-                sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::caught::" + name + "'s " + finishName(ball) + "\n");
+                sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + "\n");
             }
             if (amt < 1) {
                 sendAll("", true, true);
@@ -4137,20 +4139,44 @@ function Safari() {
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
             safaribot.sendMessage(src, "-Less than. e.g.: /find bst 350 < (displays all Pokémon with BST of 350 or less)", safchan);
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
+            safaribot.sendMessage(src, "For Shiny, CanEvolve, FinalForm and CanMega: No additional parameter required.", safchan);
+            safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
+        
+        var multi = commandData.split("&&");
+        var str, info, crit, val, m, def, title = [], list, current = player.pokemon.concat();
+        
+        for (m = 0; m < multi.length; m++) {
+            list = [];
+            str = multi[m].trim();
+            info = str.split(":");
+            crit = "abc", val = "1";
+            if (info.length < 2) {
+                info = str.split(" ");
+            }
 
-        var info = commandData.split(":");
-        var crit = "abc", val = "1";
-        if (info.length < 2) {
-            info = commandData.split(" ");
+            crit = info[0].toLowerCase();
+            val = info.length > 1 ? info[1].toLowerCase() : "asc";
+            
+            def = applyFilterCriteria(src, info, crit, val, list, current);
+            if (!def) {
+                return;
+            }
+            title.push(def);
+            
+            current = list.concat();
         }
-
-        crit = info[0].toLowerCase();
-        val = info.length > 1 ? info[1].toLowerCase() : "asc";
-
-        var noparam = ["shiny", "canevolve", "finalform", "canmega"];
+        if (textOnly) {
+            sys.sendHtmlMessage(src, this.listPokemonText(list, "Pokémon " + readable(title) + " (" + list.length + ")", shopLink), safchan);
+        } else {
+            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")"), safchan);
+        }
+    };
+    function applyFilterCriteria(src, info, crit, val, list, current) {
+        var noparam = ["shiny", "canevolve", "finalform", "canmega"], def;
+        
         if (info.length >= 2) {
             switch (crit) {
                 case "number":
@@ -4197,21 +4223,29 @@ function Safari() {
             val = info[0].toLowerCase();
         }
 
-        var list = [], title = "Owned Pokémon", mode = "equal";
+        var mode = "equal";
         if (crit == "abc") {
             val = val.toLowerCase();
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (sys.pokemon(x).toLowerCase().indexOf(val) !== -1) {
                     list.push(x);
                 }
             });
-            title = "Pokémon with " + val + " in their name";
+            return "with " + val + " in their name";
         }
         else if (crit == "number") {
-            title = rangeFilter(src, player, list, val, mode, "Pokédex Number", info, crit);
+            def = rangeFilter(src, current, list, val, mode, "Pokédex Number", info, crit);
+            if (!def) {
+                return false;
+            }
+            return def;
         }
         else if (crit == "bst") {
-            title = rangeFilter(src, player, list, val, mode, "BST", info, crit);
+            def = rangeFilter(src, current, list, val, mode, "BST", info, crit);
+            if (!def) {
+                return false;
+            }
+            return def;
         }
         else if (crit == "type") {
             var type1 = cap(val.toLowerCase()),
@@ -4223,34 +4257,34 @@ function Safari() {
 
             if (!(type1 in effectiveness)) {
                 safaribot.sendMessage(src, type1 + " is not a valid type!", safchan);
-                return;
+                return false;
             }
             if (type2 && !(type2 in effectiveness)) {
                 safaribot.sendMessage(src, type2 + " is not a valid type!", safchan);
-                return;
+                return false;
             }
 
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (hasType(x, type1) && (!type2 || hasType(x, type2))) {
                     list.push(x);
                 }
             });
-            title = "Pokémon with " + type1 + (type2 ? "/" + type2 : "") + " type";
+            return "with " + type1 + (type2 ? "/" + type2 : "") + " type";
         }
         else if (crit == "shiny") {
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (typeof x === "string") {
                     list.push(x);
                 }
             });
-            title = "Shiny Pokémon";
+            return "shiny";
         }
         else if (crit == "duplicate") {
-            var pokeList = player.pokemon.concat().sort();
+            var pokeList = current.concat().sort();
             val = parseInt(val, 10);
             if (isNaN(val) || val < 2) {
                 safaribot.sendMessage(src, "Please specify a valid number higher than 1!", safchan);
-                return;
+                return false;
             }
             var normalCount = {}, shinyCount = {}, p, obj, e;
             for (var i = 0, l = pokeList.length; i < l; i++) {
@@ -4276,60 +4310,55 @@ function Safari() {
                     }
                 }
             }
-            title = "Pokémon with at least " + val + " duplicates";
+            return "with at least " + val + " duplicates";
         }
         else if (crit == "canevolve") {
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (pokeInfo.species(x) in evolutions) {
                     list.push(x);
                 }
             });
-            title = "Pokémon that can evolve";
+            return "that can evolve";
         }
         else if (crit == "finalform") {
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (!(pokeInfo.species(x) in evolutions) && !isMega(x)) {
                     list.push(x);
                 }
             });
-            title = "Fully evolved Pokémon";
+            return "fully evolved";
         }
         else if (crit == "canmega") {
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                 if (!isMega(x) && pokeInfo.species(x) in megaEvolutions) {
                     list.push(x);
                 }
             });
-            title = "Pokémon that can mega evolve";
+            return "that can mega evolve";
         } 
         else if (crit == "region") {
             val = cap(val.toLowerCase());
             var pos = generations.indexOf(val);
             if (pos < 1) { //"None" is 0 index, we don't want to include that. Both here and in the readable
                 safaribot.sendMessage(src, val + " is not a valid region! Valid regions are " + readable(generations.slice(1, generations.length)) + ".", safchan);
-                return;
+                return false;
             }
-            player.pokemon.forEach(function(x){
+            current.forEach(function(x){
                if (generation(x) === pos) {
                     list.push(x);
                }               
             });
-            title = "Pokémon from the " + val + " Region";
+            return "from the " + val + " Region";
         }
-        if (textOnly) {
-            sys.sendHtmlMessage(src, this.listPokemonText(list, title + " (" + list.length + ")", shopLink), safchan);
-        } else {
-            sys.sendHtmlMessage(src, this.listPokemon(list, title + " (" + list.length + ")"), safchan);
-        }
-    };
-    function rangeFilter(src, player, list, val, mode, paramName, info, type) {
+    }
+    function rangeFilter(src, current, list, val, mode, paramName, info, type) {
         val = parseInt(val, 10);
         var val2;
         if (isNaN(val)) {
             safaribot.sendMessage(src, "Please specify a valid number!", safchan);
-            return;
+            return false;
         }
-        var title = "Pokémon with " + paramName + " equal to " + val;
+        var title = "with " + paramName + " equal to " + val;
         if (info.length > 2) {
             val2 = parseInt(info[2], 10);
             if (isNaN(val2)) {
@@ -4341,7 +4370,7 @@ function Safari() {
                     case "+":
                     case "above":
                         mode = "greater";
-                        title = "Pokémon with " + paramName + " greater than " + val;
+                        title = "with " + paramName + " greater than " + val;
                         break;
                     case "<":
                     case "lower":
@@ -4349,20 +4378,20 @@ function Safari() {
                     case "-":
                     case "below":
                         mode = "less";
-                        title = "Pokémon with " + paramName + " less than " + val;
+                        title = "with " + paramName + " less than " + val;
                         break;
                 }
                 if (mode !== "greater" && mode !== "less") {
                     safaribot.sendMessage(src, "Invalid parameter! Use either >, < or another number.", safchan);
-                    return;
+                    return false;
                 }
             } else {
                 mode = "range";
-                title = "Pokémon with " + paramName + " between " + val + " and " + val2;
+                title = "with " + paramName + " between " + val + " and " + val2;
             }
         }
         var param;
-        player.pokemon.forEach(function(x){
+        current.forEach(function(x){
             switch (type) {
                 case "bst":
                     param = getBST(x);
@@ -4554,7 +4583,7 @@ function Safari() {
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests.".format(rec.consecutiveLogins, (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""),rec.contestsWon), safchan);
             sys.sendMessage(src, "±Game: Opened {0} and used {1}. Hatched {2} and {3} with {4} being a Rare Pokémon!".format(plural(rec.packsOpened, "pack"), plural(rec.gemsUsed, "gem"), plural(rec.eggsHatched, "egg"), plural(rec.brightEggsHatched, "bright"), rec.rareHatched), safchan);
             var given = rec.collectorGiven + rec.scientistGiven;
-            sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations, "Transmutation")), safchan);
+            sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutationsMade, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
             sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}. Scored a high of {7} and received a prize during a Quiz.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time"), plural(rec.topQuizScore, "point")), safchan);
             sys.sendMessage(src, "", safchan);
@@ -5028,31 +5057,29 @@ function Safari() {
             safaribot.sendMessage(src, "You just threw some " + bName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + plural(baitCooldown, "second") + "]" : ""), safchan);
             return;
         }
+        player.cooldowns.lastBaits.push(now());
+        if (player.cooldowns.lastBaits.length > 5) {
+            player.cooldowns.lastBaits.shift();
+        }
+        var list = player.cooldowns.lastBaits;
+        var l = list.length - 1;
+        var slip = 0;
+        if (l >= 4 && list[l] - list[l-4] < 5000) {
+            slip = 4;
+        } else if (l >= 3 && list[l] - list[l-3] < 3900) {
+            slip = 3;
+        } else if (l >= 2 && list[l] - list[l-2] < 2800) {
+            slip = 2;
+        } else if (l >= 1 && list[l] - list[l-1] < 1800) {
+            slip = 1;
+        }
+        if (slip) {
+            var n = now(), amt = sys.rand(2, 3 + slip) * 1000;
+            player.cooldowns.bait = (player.cooldowns.bait > n ? player.cooldowns.bait : n) + amt;
+            safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
+            return;
+        }
         if (baitCooldown > 0) {
-            player.cooldowns.lastBaits.push(now());
-            if (player.cooldowns.lastBaits.length > 5) {
-                player.cooldowns.lastBaits.shift();
-            }
-            if (baitCooldown <= 18) {
-                var list = player.cooldowns.lastBaits;
-                var l = list.length - 1;
-                var slip = 0;
-                if (list.length >= 5 && list[l] - list[l-4] < 5000) {
-                    slip = 4;
-                } else if (list.length >= 4 && list[l] - list[l-3] < 3900) {
-                    slip = 3;
-                } else if (list.length >= 3 && list[l] - list[l-2] < 2800) {
-                    slip = 2;
-                } else if (list.length >= 2 && list[l] - list[l-1] < 1800) {
-                    slip = 1;
-                }
-                if (slip) {
-                    var n = now(), amt = sys.rand(2, 3 + slip) * 1000;
-                    player.cooldowns.bait = (player.cooldowns.bait > n ? player.cooldowns.bait : n) + amt;
-                    safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
-                    return;
-                }
-            }
             safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + bName + "!", safchan);
             return;
         }
@@ -9791,7 +9818,7 @@ function Safari() {
             }
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with a sparkling mist but it quickly disappates to reveal " + plural(amt, fullItem) + ".", safchan);
             safaribot.sendMessage(src, "You received " + plural(amt, fullItem) + ".", safchan);
-            player.records.transmutations += recipes[item].transmutation;
+            player.records.transmutationsMade += recipes[item].transmutation || 0;
             player.quests.alchemist.cooldown = now() + hours(recipes[item].cooldown);
             rewardCapCheck(player, item, amt, true);
         }
@@ -10190,12 +10217,13 @@ function Safari() {
             reward = "nugget";
         } else if (p >= 1500) {
             reward = ["quick", "heavy", "clone", "premier"].random();
-            amt = 8;
+            amt = this.level * 3;
         } else if (this.finishMode === "cleared"){
             reward = "gem";
+            amt = 2;
         } else {
             reward = "gacha";
-            amt = this.level * 3;
+            amt = this.level * 2;
         }
         
         var e, name, player;
@@ -17216,6 +17244,7 @@ function Safari() {
 
                 sys.sendAll("", safchan);
                 sys.sendHtmlAll("<b><span style='font-size:15px;'>The winner of the raffle for " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + " is: " + html_escape(winner.toCorrectCase()) + "!</span></b>", safchan);
+                safaribot.sendMessage(src, "Raffle Entries bought: " + Object.keys(obj).map(function(x) { return x + ": " + obj[x]; }).join(" | "), safchan);
 
                 var playerId = sys.id(winner);
                 if (playerId) {
