@@ -283,19 +283,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "auth") {
-        var doNotShowIfOffline = ["loseyourself", "oneballjay"];
+        var doNotShow = ["[ld]jirachier"];
         var filterByAuth = function (level) {
             return function (name) {
                 return sys.dbAuth(name) === level;
             };
         };
         var printOnlineOffline = function (name) {
+            name = name.toLowerCase();
             if (sys.id(name) === undefined) {
-                if (doNotShowIfOffline.indexOf(name) === -1) {
-                    sys.sendMessage(src, name, channel);
-                }
+                sys.sendMessage(src, name, channel);
             } else {
-                sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
+                if (doNotShow.indexOf(name) === -1) {
+                    sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
+                }
             }
         };
         var authListArray = sys.dbAuths().sort();
