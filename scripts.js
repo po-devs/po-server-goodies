@@ -1516,7 +1516,7 @@ meoff: function(src, commandData) {
     var cid = sys.channelId(commandData);
     if (cid !== undefined) {
         SESSION.channels(cid).meoff = true;
-        normalbot.sendAll("" + sys.name(src) + " turned off /me in "+commandData+".", cid);
+        normalbot.sendAll("" + sys.name(src) + " turned /me off in "+commandData+".", cid);
     } else {
         normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
     }
@@ -1527,7 +1527,7 @@ meon: function(src, commandData) {
     var cid = sys.channelId(commandData);
     if (cid !== undefined) {
         SESSION.channels(cid).meoff = false;
-        normalbot.sendAll("" + sys.name(src) + " turned on /me in "+commandData+".", cid);
+        normalbot.sendAll("" + sys.name(src) + " turned /me on in "+commandData+".", cid);
         SESSION.global().channelManager.update(cid);
     } else {
         normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
