@@ -681,8 +681,6 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/ctoggleswear: Turns on/off the use of some common swear words.", channel);
         sys.sendMessage(src, "/cban: Bans someone from current channel (reason and time optional). Format name:reason:time", channel);
         sys.sendMessage(src, "/cunban: Unbans someone from current channel.", channel);
-        sys.sendMessage(src, "/enabletours: Allows tours to be run in the channel.", channel);
-        sys.sendMessage(src, "/disabletours: Stops tours being run in the channel.", channel);
         if (sys.auth(src) >= 2) {
             sys.sendMessage(src, "/deregister: Removes channel owner status from a user.", channel);
         }
