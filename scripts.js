@@ -28,7 +28,7 @@ var Config = {
         norepeat: 5,
         stats_file: "scriptdata/mafia_stats.json",
         max_name_length: 16,
-        notPlayingMsg: "±Game: The game is in progress. Please type /join to join the next mafia game."
+        notPlayingMsg: "±Game: A game is in progress. Please type /join to join the next mafia game."
     },
     DreamWorldTiers: ["All Gen Hackmons", "ORAS Hackmons", "ORAS Balanced Hackmons", "No Preview OU", "No Preview Ubers", "DW LC", "DW UU", "DW LU", "Gen 5 1v1 Ubers", "Gen 5 1v1", "Challenge Cup", "CC 1v1", "DW Uber Triples", "No Preview OU Triples", "No Preview Uber Doubles", "No Preview OU Doubles", "Shanai Cup", "Shanai Cup 1.5", "Shanai Cup STAT", "Original Shanai Cup TEST", "Monocolour", "Clear Skies DW"],
     superAdmins: ["Mahnmut", "Strudels"],
@@ -421,10 +421,10 @@ init : function() {
     lastCleared = +sys.getVal("Stats/LastCleared");
 
     mafiachan = SESSION.global().channelManager.createPermChannel("Mafia", "Use /help to get started!");
-    staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the Staff Channel! Discuss of all what users shouldn't hear here! Or more serious stuff...");
-    sachannel = SESSION.global().channelManager.createPermChannel("Victory Road","Welcome MAs and SAs!");
+    staffchannel = SESSION.global().channelManager.createPermChannel("Indigo Plateau", "Welcome to the main staff channel! Discuss things that other users shouldn't hear here!");
+    sachannel = SESSION.global().channelManager.createPermChannel("Victory Road", "Welcome to all channel staff!");
     tourchannel = SESSION.global().channelManager.createPermChannel("Tournaments", 'Useful commands are "/join" (to join a tournament), "/unjoin" (to leave a tournament), "/viewround" (to view the status of matches) and "/megausers" (for a list of users who manage tournaments). Please read the full Tournament Guidelines: http://pokemon-online.eu/forums/showthread.php?2079-Tour-Rules');
-    watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts displayed here");
+    watchchannel = SESSION.global().channelManager.createPermChannel("Watch", "Alerts are displayed here.");
     triviachan = SESSION.global().channelManager.createPermChannel("Trivia", "Play trivia here!");
     revchan = SESSION.global().channelManager.createPermChannel("TrivReview", "For Trivia Admins to review questions");
     //mafiarev = SESSION.global().channelManager.createPermChannel("Mafia Review", "For Mafia Admins to review themes");
@@ -474,16 +474,16 @@ init : function() {
     "",
     "1. Pokemon Online is an international server:",
     "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules.",
-    "2. No advertising, excessive messages or caps, inappropriate/obscene links, or text art:",
-    "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). We are not interested in your start-up community. Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. Do not advertise non-official channels without prior approval. Posting ASCII art is punishable with a ban, as is posting anything with any type of pornography. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
+    "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
+    "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
     "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
     "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
     "4. Do not ask for authority:",
-    "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member then a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, the wiki, or our YouTube channel (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
+    "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
     "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
     "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
     "6. Do not misuse the server nor its guidelines:",
-    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings and of tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
+    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
     ];
 
     if (typeof script.authStats == 'undefined')
@@ -666,7 +666,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             expires = secs + parseInt(sys.time(), 10);
         }
         if (reason === "" && sys.auth(src) < 3) {
-           banbot.sendMessage(src, "You need to give a reason to the " + nomi + "!", channel);
+           banbot.sendMessage(src, "You need to give a reason for the " + nomi + "!", channel);
            return;
         }
         var tarip = tar !== undefined ? sys.ip(tar) : sys.dbIp(commandData);
@@ -1034,7 +1034,7 @@ beforeChannelJoin : function(src, channel) {
         return;
     }
     if ((channel == staffchannel || channel == sachannel) && !this.canJoinStaffChannel(src)) {
-        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Sorry, access to that place is restricted!");
         sys.stopEvent();
         return;
     }
@@ -1055,7 +1055,7 @@ beforeChannelJoin : function(src, channel) {
         }
     }
     if (channel == watchchannel && sys.auth(src) < 1) {
-        sys.sendMessage(src, "±Guard: Sorry, the access to that place is restricted!");
+        sys.sendMessage(src, "±Guard: Sorry, access to that place is restricted!");
         sys.stopEvent();
         return;
     }
@@ -1182,7 +1182,7 @@ beforeLogIn : function(src) {
         return;
     }
     if (proxy_ips.hasOwnProperty(ip)) {
-        normalbot.sendMessage(src, 'You are banned for using proxy!');
+        normalbot.sendMessage(src, 'You are banned for using a proxy!');
         sys.stopEvent();
         return;
 
@@ -1342,7 +1342,7 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
-    sys.sendMessage(src, "*** Type in /Rules to see the rules and /commands to see the commands! ***");
+    sys.sendMessage(src, "*** Type in /rules to see the rules and /commands to see the commands! ***");
     sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
     maxPlayersOnline = Math.max(sys.numPlayers(), maxPlayersOnline);
@@ -1475,7 +1475,7 @@ silence: function(src, minutes, chanName) {
     if (duration !== "permanent") {
         delay = parseInt(minutes * 60, 10);
         if (isNaN(delay) || delay <= 0) {
-            channelbot.sendMessage(src, "Your minutes are not a valid number. The channel will be permanently silenced.", channel);
+            channelbot.sendMessage(src, "Your have not specified a valid number. The channel will be permanently silenced.", channel);
         } else {
             duration += " minutes of";
             doCall = true;
@@ -1518,7 +1518,7 @@ meoff: function(src, commandData) {
         SESSION.channels(cid).meoff = true;
         normalbot.sendAll("" + sys.name(src) + " turned /me off in "+commandData+".", cid);
     } else {
-        normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
+        normalbot.sendMessage(src, "Sorry, I couldn't find a channel with that name.", channel);
     }
     return;
 },
@@ -1530,7 +1530,7 @@ meon: function(src, commandData) {
         normalbot.sendAll("" + sys.name(src) + " turned /me on in "+commandData+".", cid);
         SESSION.global().channelManager.update(cid);
     } else {
-        normalbot.sendMessage(src, "Sorry, that channel is unknown to me.", channel);
+        normalbot.sendMessage(src, "Sorry, I couldn't find a channel with that name.", channel);
     }
 },
 
@@ -1619,7 +1619,7 @@ beforeChatMessage: function(src, message, chan) {
         if (poUser.talk === undefined || poUser.talk + message.length * MillisPerChar < now) {
             poUser.talk = now;
         } else {
-            bot.sendMessage(src, "Wait a moment before talking again.", channel);
+            bot.sendMessage(src, "Please wait a moment before talking again.", channel);
             sys.stopEvent();
             return;
         }
@@ -2065,15 +2065,6 @@ beforeBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2
     }
 },
 
-battleSetup: function(p1,p2,battle) {
-    if (sys.auth(p1) > 3 && sys.name(p1) != "Darkness") {
-        sys.prepareItems(battle,0,{"124":1});
-    }
-    if (sys.auth(p2) > 3 && sys.name(p2) != "Darkness") {
-        sys.prepareItems(battle,1,{"124":1});
-    }
-},
-
 afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2) {
     callplugins("afterBattleStarted", src, dest, clauses, rated, mode, bid, team1, team2);
     var tier = false;
@@ -2198,7 +2189,7 @@ beforeChallengeIssued : function (src, dest, clauses, rated, mode, team, destTie
     }
 
     if (SESSION.users(dest).sametier && (destTier != sys.tier(src,team))) {
-        battlebot.sendMessage(src, "That guy only wants to fight his/her own tier.");
+        battlebot.sendMessage(src, "That guy only wants to battle people in his/her own tier.");
         sys.stopEvent();
         return;
     }
