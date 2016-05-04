@@ -15,11 +15,11 @@ function YouTube() {
                 videoId = message.substr(message.indexOf("youtu.be/") + 9, 11).trim();
             }
             try {
-                sys.webCall("http://crystal.moe/youtube?id=" + videoId, function (response) {
+                sys.webCall("https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + sys.getFileContent(Config.dataDir + "ytApi.txt") + "&part=snippet,statistics,status,contentDetails", function (response) {
                     var x = JSON.parse(response).items[0],
                         title = x.snippet.localized.title,
                         length = x.contentDetails.duration
-                            .toLowerCase().substr(2).replace("h", "h ").replace("m", "m ").replace("s", "s"),
+                            .toLowerCase().substr(2).replace("h", "h ").replace("m", "m "),
                         uploader = x.snippet.channelTitle,
                         likes = parseInt(x.statistics.likeCount, 10),
                         dislikes = parseInt(x.statistics.dislikeCount, 10),
