@@ -2,7 +2,8 @@
 /*jslint sloppy: true, vars: true*/
 function YouTube() {
     var youtubeBot = new Bot("Rotom");
-
+    var ytApi = sys.getFileContent(Config.dataDir + "ytApi.txt");
+    
     this.afterChatMessage = function (src, message, channel) {
         if ((message.indexOf("youtube.com") > -1 && message.indexOf("watch?v=") > -1) || message.indexOf("youtu.be/") > -1) {
             var videoId;
@@ -15,7 +16,7 @@ function YouTube() {
                 videoId = message.substr(message.indexOf("youtu.be/") + 9, 11).trim();
             }
             try {
-                sys.webCall("https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + sys.getFileContent(Config.dataDir + "ytApi.txt") + "&part=snippet,statistics,status,contentDetails", function (response) {
+                sys.webCall("https://www.googleapis.com/youtube/v3/videos?id=" + videoId + "&key=" + ytApi + "&part=snippet,statistics,status,contentDetails", function (response) {
                     var x = JSON.parse(response).items[0],
                         title = x.snippet.localized.title,
                         length = x.contentDetails.duration
