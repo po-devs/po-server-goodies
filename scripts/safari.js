@@ -11580,7 +11580,8 @@ function Safari() {
             "ice":[498,257],
             "flame":[56,410],
             "electric":[50,300],
-            "dark":[430,497]
+            "dark":[430,497],
+            "web":[522,229]
         };
         this.validMoves = [];
         for (var c in this.hazardMoves) {
@@ -11595,22 +11596,10 @@ function Safari() {
             "ice": "Ice Pillar",
             "flame": "Flamethrowers",
             "electric": "Electric Fence",
-            "dark": "Darkness"
+            "dark": "Darkness",
+            "web": "Spider Web"
         };
-        this.hazards = {};
-        var pickedHazards = Object.keys(this.hazardMoves).shuffle();
-        var count = 100, index = 0, added, minVal = 7;
-        while (count > minVal && index < pickedHazards.length) {
-            added = sys.rand(minVal, count);
-            this.hazards[pickedHazards[index]] = added;
-            count -= added;
-            index++;
-        }
-        if (count > 0) {
-            this.hazards[pickedHazards[0]] += count;
-        }
-        var randomHazard = randomSample(this.hazards);
-        var randomHazard2 = randomSample(this.hazards);
+        this.hazards = Object.keys(this.hazardMoves).shuffle().splice(0,3);
         
         this.usableMoves = {};
         this.usableCommands = {};
@@ -11636,7 +11625,6 @@ function Safari() {
                     }
                 }
             }
-            this.usableMoves[p].push("165"); //Struggle
             this.usableCommands[p] = this.usableMoves[p].map(toLowerMove);
             
             this.individualmsg[p] = "Pick a move to clear the obstacles: " + this.usableMoves[p].map(toMoveCommand).join(", ");
@@ -11657,7 +11645,7 @@ function Safari() {
         }
         
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: Some hazards obstruct your path to the next door! You can identify some <b>{2}</b>, but there are more, so clear them!".format(level, roomNum, this.hazardNames[randomHazard] + (randomHazard !== randomHazard2 ? " and " + this.hazardNames[randomHazard2] : "")));
+        this.sendAll("Room {0}-{1}: Some hazards obstruct your path to the next door! Use your Pokémon to clear the <b>{2}</b!".format(level, roomNum, this.hazardNames[this.hazards[0]] + ", " + this.hazardNames[this.hazards[1]] + ", and " + this.hazardNames[this.hazards[2]]));
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -11666,108 +11654,76 @@ function Safari() {
         return this.usableCommands[id].contains(commandData.toLowerCase());
     };
     HazardRoom.prototype.advance = function() {
-        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, attackersNames, n, pId, move, cat, power, set, liveHazards, struggled, strugglers = {}, strugglemsg, stamina = {};
+        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, remaining = [], attackersNames, n, pId, move, cat, set, stamina = {};
         
         attackers = this.getChoices();
         attackersNames = Object.keys(attackers);
         
         this.sendAll("");
         for (p in attackers) {
+            if (attackers[p] == "struggle") {continue;}
             move = sys.moveNum(attackers[p]);
-            struggled = false;
-            
-            if (move === 165) {
-                liveHazards = [];
-                for (m in this.hazards) {
-                    if (this.hazards[m] > 0) {
-                        liveHazards.push(m);
-                    }
+            for (m in this.hazardMoves) {
+                if (this.hazardMoves[m].contains(move)) {
+                    cat = m;
+                    break;
                 }
-                if (liveHazards.length > 0) {
-                    cat = liveHazards.random();
-                    struggled = true;
-                } else {
-                    continue;
+            }
+            for (n in parties[p]) {
+                pId = parseInt(parties[p][n], 10);
+                set = pokedex.getAllMoves(pId);
+                if (!set) {
+                    set = pokedex.getAllMoves(pokeInfo.species(pId));
                 }
-            } else {
-                for (m in this.hazardMoves) {
-                    if (this.hazardMoves[m].contains(move)) {
-                        cat = m;
-                        break;
-                    }
+                if (set.contains(move + "")) {
+                    id = parties[p][n];
+                    break;
                 }
             }
             
-            strugglemsg = "";
-            if (struggled) {
-                id = parties[p].random();
-                strugglers[p] = 2 + 3 * this.level;
-                strugglemsg = p.toCorrectCase() + " lost " + strugglers[p] + " Stamina!";
-            } else {
-                for (n in parties[p]) {
-                    pId = parseInt(parties[p][n], 10);
-                    set = pokedex.getAllMoves(pId);
-                    if (!set) {
-                        set = pokedex.getAllMoves(pokeInfo.species(pId));
-                    }
-                    if (set.contains(move + "")) {
-                        id = parties[p][n];
-                        break;
-                    }
-                }
-            }
-            
-            if (cat in this.hazards && this.hazards[cat] > 0) {
-                if (struggled) {
-                    power = Math.min(sys.rand(8, 40 - this.level), this.hazards[cat]);
-                } else {
-                    power = Math.min(sys.rand(15 + this.level, 67 - this.level), this.hazards[cat]);
-                }
-                
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3} and clear <b>{4}%</b> of the room! {5}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), power, strugglemsg));
-                this.hazards[cat] -= power;
-                if (cat == this.treasureLocation && this.hazards[cat] <= 0) {
+            if (this.hazards.indexOf(cat) !== -1) {
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}!".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue")));
+                this.hazards.splice(this.hazards.indexOf(cat), 1);
+                if (cat == this.treasureLocation) {
                     this.sendAll("After clearing the {1}, <b>{0}</b> found {2}!".format(addFlashTag(p.toCorrectCase()), this.hazardNames[cat], toColor(treasureName(this.hiddenTreasure), "blue")), true);
                     getTreasure(p, this.hiddenTreasure);
                 }
             } else {
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}, but there was no {3}! {4}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), strugglemsg));
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}, but there was no {3}!".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue")));
             }
         }
         
-        var rest = 0, remaining = [];
-        for (p in this.hazards) {
-            m = this.hazards[p];
-            if (m > 0) {
-                rest += m;
-                remaining.push(m + "% " + this.hazardNames[p]);
+        for (var i = 0; i < this.hazards.length; i++) {
+            remaining.push(this.hazardNames[this.hazards[i]]);
+        }
+        var staminaStr = [];
+        for (p in members) {
+            id = members[p];
+            if (this.pyr.stamina[id] <= 0) {
+                continue;
+            }
+            if (!(id in stamina)) {
+                stamina[id] = 0;
+            }
+            if (this.hazards.length > 0) {
+                stamina[id] -= (((this.hazards.length * 2) - 1) * 4 * (this.level + 3));
             }
         }
-        for (p in strugglers) {
-            if (!(p in stamina)) {
-                stamina[p] = 0;
-            }
-            stamina[p] -= strugglers[p];
+        for (p in stamina) {
+            staminaStr.push(p.toCorrectCase() + " " + stamina[p]);
         }
+        
         this.sendAll("");
-        if (rest > 50) {
-            for (p in members) {
-                id = members[p];
-                if (this.pyr.stamina[id] <= 0) {
-                    continue;
-                }
-                if (!(id in stamina)) {
-                    stamina[id] = 0;
-                }
-                stamina[id] -= ((2 + 3 * this.level) * Math.ceil((rest-50)/5));
-            }
-            this.sendAll("Only {0}% of the hazards have been cleared, so you struggled to reach the door due to the remaining hazards ({1})!".format(100-rest, readable(remaining, "and")));
+        if (this.hazards.length > 0) {
+            this.sendAll("The {0} hazards have not been cleared, so you struggled to reach the door!".format(readable(remaining, "and")));
+            points = Math.round((1.2 - this.hazards.length) * 3 * this.level);
         } else {
-            this.sendAll("You cleared {0}% of the hazards, so reaching the door was piece of cake! Remaining hazards: {1}".format(100-rest, readable(remaining, "and")));
-            points = Math.round((5 + 3 * this.level) * Math.ceil((50-rest)/5));
+            this.sendAll("You cleared all of the hazards, so reaching the door was piece of cake!");
+            points = Math.round(5 * this.level);
         }
         
-        this.pyr.updateStatus(points, stamina, true);
+        this.sendAll("Points gained: " + points + (staminaStr.length > 0 ? " | Stamina lost: " +  staminaStr.join(", ") : ""));
+        this.pyr.updateStatus(points, stamina);
         this.sendAll("");
         
         this.passed = true;
