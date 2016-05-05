@@ -499,8 +499,9 @@ function Safari() {
     var shinyChance = 1024; //Chance for Shiny Pokémon
     var currentPokemon = null;
     var currentPokemonCount = 1;
+    var lastPokemonCount = 1;
     var currentDisplay = null;
-    var maxThrows = 20;
+    var maxThrows = 10;
     var currentThrows;
     var preparationPhase = 0;
     var preparationThrows = {};
@@ -1356,11 +1357,30 @@ function Safari() {
         currentDisplay = null;
         wildEvent = false;
         currentPokemonCount = 1;
+        lastPokemonCount = 1;
         isBaited = false;
         if (!saveContest) {
             currentTheme = null;
             contestVotes = null;
         }
+    }
+    function getMaxThrows(num, count, shiny) {
+        var amt = maxThrows;
+        var bst = getBST(num);
+        if (inclusive(bst, 0, 360)) {
+            amt += 7;
+        } else if (inclusive(bst, 360, 420)) {
+            amt += 5;
+        } else if (inclusive(bst, 420, 520)) {
+            amt += 3;
+        } else if (!isRare(num)) {
+            amt += 1;
+        } else {
+            amt -= 1;
+        }
+        amt += 2 * count;
+        amt -= 2 * shiny;
+        return Math.max(maxThrows, amt);
     }
     
     /* Message Functions */
@@ -1560,7 +1580,10 @@ function Safari() {
             return v1 === v2;
         }
     }
-
+    function inclusive(value, lower, upper) {
+        return lower <= value && value <= upper;
+    }
+    
     /* Formatting Functions */
     function cap(string) {
         return string.charAt(0).toUpperCase() + string.slice(1);
@@ -1844,18 +1867,16 @@ function Safari() {
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
-        var ret;
-        if (0 < num && num <= 151 || isNaN(num)) {
-            ret = 1;
-        } else if (151 < num && num <= 251) {
+        var ret = 1;
+        if (inclusive(num, 152, 251)) {
             ret = 2;
-        } else if (251 < num && num <= 386) {
+        } else if (inclusive(num, 252, 386)) {
             ret = 3;
-        } else if (386 < num && num <= 493) {
+        } else if (inclusive(num, 387, 493)) {
             ret = 4;
-        } else if (493 < num && num <= 649) {
+        } else if (inclusive(num, 494, 649)) {
             ret = 5;
-        } else {
+        } else if (inclusive(num, 650, 721)) {
             ret = 6;
         }
         if (wordy) {
@@ -2489,8 +2510,8 @@ function Safari() {
         }
         pokeId = poke(num + (shiny ? "" : 0));
         currentPokemon = shiny ? "" + num : num;
-        currentPokemonCount = amount;
-        currentThrows = Math.floor(((amount + 1) / 2 * maxThrows));
+        currentPokemonCount = lastPokemonCount = amount;
+        currentThrows = getMaxThrows(num, amount, shiny);
 
         var disguise, appearance, multiplier = 1;
         if (appearAs) {
@@ -3326,7 +3347,7 @@ function Safari() {
                 isBaited = false;
                 checkUpdate();
             } else {
-                currentThrows -= Math.floor(maxThrows/2 + 5); //each caught pokemon makes the horde more likely to flee by a large amount
+                currentThrows -= (lastPokemonCount > 4 ? 2 : 4) * (lastPokemonCount - amt);
                 if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
                     flee = true;
                 }
@@ -3385,7 +3406,7 @@ function Safari() {
             sys.sendAll("", safchan);
             currentPokemon = null;
             currentDisplay = null;
-            currentPokemonCount = 1;
+            currentPokemonCount = lastPokemonCount = 1;
             isBaited = false;
         }
 
