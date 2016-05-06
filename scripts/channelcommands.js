@@ -642,10 +642,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
 };
 exports.help = function (src, channel) {
     var poChannel = SESSION.channels(channel);
-    sys.sendMessage(src, "/cauth: Shows a list of channel auth.", channel);
-    sys.sendMessage(src, "/crules: To see a list of the current channels rules.", channel);
-    sys.sendMessage(src, "/register: To register the current channel you're on if it isn't registered already.", channel);
-    sys.sendMessage(src, "/topic [topic]: Displays current channel topic. Changing the topic however requires channel mod or higher.", channel);
+    sys.sendMessage(src, "/cauth: Shows the auth list for the current channel.", channel);
+    sys.sendMessage(src, "/crules: To see a list of the current channel's rules.", channel);
+    sys.sendMessage(src, "/register: To register the current channel you're in, if it isn't registered already.", channel);
+    sys.sendMessage(src, "/topic [topic]: Displays the current channel topic. Changing the topic requires channel mod or higher.", channel);
     sys.sendMessage(src, "/topicparts: Displays topic with number highlighted parts.", channel);
     if (poChannel.isChannelMember(src) || poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
         sys.sendMessage(src, "*** Channel Member commands ***", channel);
@@ -664,7 +664,7 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/uninvite: Kicks the user from the channel and removes their membership.", channel);
         sys.sendMessage(src, "/cmeon: Turns on /me for the channel.", channel);
         sys.sendMessage(src, "/cmeoff: Turns off /me for the channel.", channel);
-        sys.sendMessage(src, "/csilence: Prevents authless users from talking in current channel specified time.", channel);
+        sys.sendMessage(src, "/csilence [number]: Prevents authless users from talking in the current channel for the specified number of minutes.", channel);
         sys.sendMessage(src, "/csilenceoff: Allows users to talk in current channel.", channel);
         sys.sendMessage(src, "/cmute: Mutes someone in current channel (reason and time optional). Format name:reason:time", channel);
         sys.sendMessage(src, "/cunmute: Unmutes someone in current channel.", channel);
@@ -676,11 +676,11 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/op: Gives a user channel operator status.", channel);
         sys.sendMessage(src, "/deop: Removes channel operator status from a user.", channel);
         sys.sendMessage(src, "/inviteonly [on/off/level]: Makes a channel invite-only or public.", channel);
-        sys.sendMessage(src, "/ctogglecaps: Turns on/off the server anti-caps bot in current channel.", channel);
-        sys.sendMessage(src, "/ctoggleflood: Turns on/off the server anti-flood bot in current channel. Overactive still in effect.", channel);
+        sys.sendMessage(src, "/ctogglecaps: Turns on/off the server anti-caps bot in the current channel.", channel);
+        sys.sendMessage(src, "/ctoggleflood: Turns on/off the server anti-flood bot in the current channel. However, users can still be kicked for overactivity.", channel);
         sys.sendMessage(src, "/ctoggleswear: Turns on/off the use of some common swear words.", channel);
-        sys.sendMessage(src, "/cban: Bans someone from current channel (reason and time optional). Format name:reason:time", channel);
-        sys.sendMessage(src, "/cunban: Unbans someone from current channel.", channel);
+        sys.sendMessage(src, "/cban: Bans someone from the current channel (reason and time optional). Format name:reason:time", channel);
+        sys.sendMessage(src, "/cunban: Unbans someone from the current channel.", channel);
         if (sys.auth(src) >= 2) {
             sys.sendMessage(src, "/deregister: Removes channel owner status from a user.", channel);
         }
@@ -692,28 +692,28 @@ exports.help = function (src, channel) {
         sys.sendMessage(src, "/owner: Gives a user channel owner status.", channel);
         sys.sendMessage(src, "/deowner: Removes channel owner status from a user.", channel);
         sys.sendMessage(src, "/addrule [name]:[description]: Adds a rule to the current channel. Numbers are added automatically and there is a limit of 10 rules.", channel);
-        sys.sendMessage(src, "/removerule [number]: Remove a rule [number].", channel);
-        sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edit rule [number].", channel);
+        sys.sendMessage(src, "/removerule [number]: Removes the numbered rule.", channel);
+        sys.sendMessage(src, "/editrule [number]:[name]:[description]: Edits the numbered rule.", channel);
     }
     if (Array.isArray(SESSION.global().permaTours) && SESSION.global().permaTours.indexOf(channel) > -1) {
         sys.sendMessage(src, "*** Channel Tournaments commands ***", channel);
-        sys.sendMessage(src, "/join: Enters you to in a tournament.", channel);
-        sys.sendMessage(src, "/unjoin: Withdraws you from a tournament.", channel);
+        sys.sendMessage(src, "/join: Enters you to into the tournament.", channel);
+        sys.sendMessage(src, "/unjoin: Withdraws you from the tournament.", channel);
         sys.sendMessage(src, "/viewround: Shows the current pairings for the round.", channel);
         sys.sendMessage(src, "/viewqueue: Shows the current queue.", channel);
-        sys.sendMessage(src, "/touralerts [on/off]: Turn on/off your tour alerts (Shows list of Tour Alerts if on/off isn't specified)", channel);
-        sys.sendMessage(src, "/addtouralert: Adds a tour alert for the specified tier. Can add multiple by seperating tiers with *.", channel);
-        sys.sendMessage(src, "/removetouralert: Removes a tour alert for the specified tier. Can remove multiple by seperating tiers with *.", channel);
+        sys.sendMessage(src, "/touralerts [on/off]: Turn on/off your tour alerts (Shows your list of tour alerts if on/off isn't specified).", channel);
+        sys.sendMessage(src, "/addtouralert: Adds a tour alert for the specified tier. Add multiple by seperating tiers with *.", channel);
+        sys.sendMessage(src, "/removetouralert: Removes a tour alert for the specified tier. Remove multiple by seperating tiers with *.", channel);
         if (poChannel.isChannelOperator(src) || poChannel.isChannelAdmin(src) || poChannel.isChannelOwner(src)) {
             sys.sendMessage(src, "*** Channel Tournaments Admin commands ***", channel);
             sys.sendMessage(src, "/tour: Starts a tournament in set tier for the selected number of players. Format is /tour tier:number:type. Type is optional and can be set to Singles, Doubles or Triples.", channel);
             sys.sendMessage(src, "/queue: Schedules a tournament to automatically start after the current one. Format is /queue tier:number:type.", channel);
             sys.sendMessage(src, "/endtour: Ends the current tournament.", channel);
-            sys.sendMessage(src, "/dq: Disqualifies someone in the tournament.", channel);
+            sys.sendMessage(src, "/dq: Disqualifies someone from the tournament.", channel);
             sys.sendMessage(src, "/push: Adds a user to the tournament.", channel);
             sys.sendMessage(src, "/changecount: Changes the number of entrants during the signup phase.", channel);
             sys.sendMessage(src, "/sub: Replaces the first user with another in the tournament. Format /sub user1:user2", channel);
-            sys.sendMessage(src, "/cancelBattle: Allows the user or their opponent to forfeit without leaving the tournament their current battle so they can battle again with correct clauses.", channel);
+            sys.sendMessage(src, "/cancelBattle: Allows the user or their opponent to forfeit without being removed from the tournament. Use it so users can battle again with correct clauses.", channel);
             sys.sendMessage(src, "/rmqueue: Removes a specified tier from the tournament queue.", channel);
         }
     }
