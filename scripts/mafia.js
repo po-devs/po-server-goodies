@@ -2038,7 +2038,7 @@ function Mafia(mafiachan) {
             }).map(function(role) {
                 if (typeof role.actions.onlist === "string") {
                     var onlistRole = role.actions.onlist, 
-                        roleName = html_escape(this.theme.trrole(onlistRole)),,
+                        roleName = html_escape(this.theme.trrole(onlistRole)),
                         color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
                     return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 } else {
