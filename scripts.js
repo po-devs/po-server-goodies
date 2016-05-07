@@ -473,7 +473,7 @@ init : function() {
     "*** Pokémon Online Server Rules ***",
     "",
     "1. Pokemon Online is an international server:",
-    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules.",
+    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your language's text reads from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens.",
     "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
     "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
     "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
