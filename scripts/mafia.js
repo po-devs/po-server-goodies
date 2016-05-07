@@ -2037,10 +2037,14 @@ function Mafia(mafiachan) {
                     return 1;
             }).map(function(role) {
                 if (typeof role.actions.onlist === "string") {
-                    var onlistRole = role.actions.onlist;
-                    return "<font color='" + this.theme.sideColor[mafia.theme.roles[onlistRole].side] + "'>" + this.theme.trrole(onlistRole) + "</font>";
+                    var onlistRole = role.actions.onlist, 
+                        roleName = this.theme.trrole(onlistRole),
+                        color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
+                    return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 } else {
-                    return "<font color='" + this.theme.sideColor[role.side] + "'>" + role.translation + "</font>";
+                    var roleName = role.translation,
+                        color = this.theme.sideColor[role.side];
+                    return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 }
             }, mafia).join(", ");
     };
