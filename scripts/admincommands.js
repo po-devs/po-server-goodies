@@ -49,21 +49,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command === "indigodeinvite") {
-        var count = 0;
-        var players = sys.playerIds();
-        var players_length = players.length;
-        for (var i = 0; i < players_length; ++i) {
-            var current_player = players[i];
-            if (sys.isInChannel(current_player, staffchannel) && !script.canJoinStaffChannel(current_player)) {
-                sys.kick(current_player, staffchannel);
-                SESSION.channels(channel).takeAuth(src, sys.name(current_player), "member");
-                count = 1;
-            }
-        }
-        normalbot.sendAll("" + count + " unwanted visitors were kicked...", staffchannel);
-        return;
-    }
     if (command === "destroychan") {
         var ch = commandData;
         var chid = sys.channelId(ch);
@@ -446,7 +431,7 @@ exports.help = [
     "/destroychan [name]: Destroy a channel (official channels are protected).",
     "/nameban [name]: Adds a regexp ban on usernames. /nameunban to unban.",
     "/namewarn [name]: Adds a regexp namewarning. /nameunwarn to unwarn.",
-    "/indigoinvite [name]: To invite somebody to staff channels. /indigodeinvite to deinvite.",
+    "/indigoinvite [name]: To invite somebody to staff channels.",
 //  "/memorydump: Shows the state of the memory.",
     "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
     "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
