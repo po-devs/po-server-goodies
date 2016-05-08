@@ -2037,10 +2037,14 @@ function Mafia(mafiachan) {
                     return 1;
             }).map(function(role) {
                 if (typeof role.actions.onlist === "string") {
-                    var onlistRole = role.actions.onlist;
-                    return "<font color='" + this.theme.sideColor[mafia.theme.roles[onlistRole].side] + "'>" + this.theme.trrole(onlistRole) + "</font>";
+                    var onlistRole = role.actions.onlist, 
+                        roleName = html_escape(this.theme.trrole(onlistRole)),
+                        color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
+                    return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 } else {
-                    return "<font color='" + this.theme.sideColor[role.side] + "'>" + role.translation + "</font>";
+                    var roleName = html_escape(role.translation),
+                        color = this.theme.sideColor[role.side];
+                    return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 }
             }, mafia).join(", ");
     };
@@ -6397,7 +6401,7 @@ function Mafia(mafiachan) {
                 var filterRoles = [sep];
                 var roleTranslation = data[1].toLowerCase();
                 for (var i = 0; i < roles.length; ++i) {
-                    if (roles[i].search(/±role:/i) > -1 && roles[i].toLowerCase().search(roleTranslation) > -1) {
+                    if (roles[i].search(/±role:/i) > -1 && (roles[i].toLowerCase().search(roleTranslation) > -1 || roles[i].toLowerCase().search(decodeURIComponent(roleTranslation)) > -1 )) {
                         filterRoles.push(roles[i]);
                         filterRoles.push(roles[i + 1]);
                         if (roles[i + 2].substr(0, 9) === "±Players:") {
