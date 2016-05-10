@@ -468,6 +468,10 @@ function Hangman() {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
+        if (script.cmp(a, h)) {
+            hangbot.sendMessage(src, "You can't have your answer the same as the hint!");
+            return;
+        }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player " + sys.name(src) + " made the hint '" + h + "' in #Hangman", sys.channelId("Victory Road"));
