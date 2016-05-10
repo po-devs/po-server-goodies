@@ -99,7 +99,23 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, rules, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot;
+var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot;
+var rules = [ "",
+    "*** Pokémon Online Server Rules ***",
+    "",
+    "1. Pokémon Online is an international server:",
+    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your username is in a language that reads text from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens.",
+    "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
+    "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
+    "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
+    "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
+    "4. Do not ask for authority:",
+    "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
+    "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
+    "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
+    "6. Do not misuse the server nor its guidelines:",
+    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
+];
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -468,23 +484,6 @@ init : function() {
     var content = sys.getFileContent(PROXY_FILE);
     if (content) { addProxybans(content); }
     else sys.webCall(Config.base_url + PROXY_FILE, addProxybans);
-
-    rules = [ "",
-    "*** Pokémon Online Server Rules ***",
-    "",
-    "1. Pokemon Online is an international server:",
-    "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your username is in a language that reads text from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens.",
-    "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
-    "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
-    "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
-    "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
-    "4. Do not ask for authority:",
-    "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
-    "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
-    "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
-    "6. Do not misuse the server nor its guidelines:",
-    "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
-    ];
 
     if (typeof script.authStats == 'undefined')
         script.authStats = {};
