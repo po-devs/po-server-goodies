@@ -199,17 +199,17 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             require("mafia.js").showRules(src, channel);
             return;
         }
-        var norules = (rules.length - 1) / 2; //formula for getting the right amount of rules
+        var norules = (script.rules.length - 1) / 2; //formula for getting the right amount of rules
         if (commandData !== undefined && !isNaN(commandData) && commandData > 0 && commandData < norules) {
             var num = parseInt(commandData, 10);
             num = (2 * num) + 1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
-            sys.sendMessage(src, rules[num], channel);
-            sys.sendMessage(src, rules[num + 1], channel);
+            sys.sendMessage(src, script.rules[num], channel);
+            sys.sendMessage(src, script.rules[num + 1], channel);
             return;
         }
         var rule;
-        for (rule = 0; rule < rules.length; rule++) {
-            sys.sendMessage(src, rules[rule], channel);
+        for (rule = 0; rule < script.rules.length; rule++) {
+            sys.sendMessage(src, script.rules[rule], channel);
         }
         return;
     }
