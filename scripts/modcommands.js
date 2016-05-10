@@ -1,40 +1,48 @@
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "channelusers") {
-       if (commandData === undefined) {
-           normalbot.sendMessage(src, "Please give me a channelname!", channel);
-           return;
-       }
-       var chanid;
-       var isbot;
-       if (commandData[0] == "~") {
-           chanid = sys.channelId(commandData.substring(1));
-           isbot = true;
-       } else {
-           chanid = sys.channelId(commandData);
-           isbot = false;
-       }
-       if (chanid === undefined) {
-           channelbot.sendMessage(src, "Such a channel doesn't exist!", channel);
-           return;
-       }
-       var chanName = sys.channel(chanid);
-       var players = sys.playersOfChannel(chanid);
-       var objectList = [];
-       var names = [];
-       for (var i = 0; i < players.length; ++i) {
-            var name = sys.name(players[i]);
-            if (isbot)
-            objectList.push({'id': players[i], 'name': name});
-                else
-            names.push(name);
-       }
-       if (isbot) {
-           var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-           sys.sendMessage(src, ":"+JSON.stringify(channelData), channel);
-       } else {
-           channelbot.sendMessage(src, "Users of channel #" + chanName + " are: " + names.join(", "), channel);
-       }
-       return;
+        if (commandData === undefined) {
+            normalbot.sendMessage(src, "Please give me a channelname!", channel);
+            return;
+        }
+        var chanid, isBot;
+        var data = commandData.split(":");
+        var filterOS = data.length === 2;
+        if (data[0][0] == "~") {
+            chanid = sys.channelId(data[0].substring(1));
+            isbot = true;
+        } else {
+            chanid = sys.channelId(data[0]);
+            isbot = false;
+        }
+        if (chanid === undefined) {
+            channelbot.sendMessage(src, "Such a channel doesn't exist!", channel);
+            return;
+        }
+        if (filterOS && !["windows", "linux", "android", "mac", "webclient"].contains(data[1].toLowerCase())) {
+            channelbot.sendMessage(src, data[1] + " is not a valid OS!", channel);
+            return;
+        }
+        var chanName = sys.channel(chanid);
+        if (!isBot) {
+            var names = sys.playersOfChannel(chanid).filter(function (id) {
+                if (filterOS) {
+                    return sys.os(id) === data[1];
+                } else {
+                    return id;
+                }
+            }).map(sys.name);
+            channelbot.sendMessage(src, (filterOS ? data[1][0].toUpperCase() + data[1].slice(1).toLowerCase() + " " : "") + "Users of channel #" + chanName + " are: " + names.join(", "), channel);
+        } else {
+            var players = sys.playersOfChannel(chanid);
+            var objectList = [];
+            for (var i = 0; i < players.length; ++i) {
+                var name = sys.name(players[i]);
+                objectList.push({'id': players[i], 'name': name});
+            } 
+            var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+            sys.sendMessage(src, ":"+JSON.stringify(channelData), channel);
+        }
+        return;
     }
     if (command == "onrange") {
         var subip = commandData;
@@ -808,5 +816,5 @@ exports.help =
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
-        "/channelusers: Lists users on a channel."
+        "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system."
     ];
