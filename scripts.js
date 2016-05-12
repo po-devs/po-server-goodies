@@ -1212,9 +1212,9 @@ nameIsInappropriate: function(src)
         }
     }
 
-    var cyrillic = /\u0430|\u0410|\u0412|\u0435|\u0415|\u041c|\u041d|\u043e|\u041e|\u0440|\u0420|\u0441|\u0421|\u0422|\u0443|\u0445|\u0425|\u0456|\u0406/;
+    var cyrillic = /\u0455|\u04ae|\u04c0|\u04cf|\u050c|\u051a|\u051b|\u051c|\u051d|\u0405|\u0408|\u0430|\u0410|\u0412|\u0435|\u0415|\u041c|\u041d|\u043e|\u041e|\u0440|\u0420|\u0441|\u0421|\u0422|\u0443|\u0445|\u0425|\u0456|\u0406/;
     if (cyrillic.test(name)) {
-        reply('You are using cyrillic letters similar to latin letters in your name.');
+        reply('You are using Cyrillic letters similar to Latin letters in your name.');
         return true;
     }
     var greek = /[\u0370-\u03ff]/;
