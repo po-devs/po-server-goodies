@@ -13885,6 +13885,9 @@ function Safari() {
         }
         for (e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
+                if (e.toLowerCase() === "safari warden") {
+                    continue;
+                };
                 data = JSON.parse(rawPlayers.hash[e]);
                 for (i in leaderboardTypes) {
                     player = {
