@@ -5195,13 +5195,13 @@ function Safari() {
         var verb = "stunned"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! *THUD* A direct hit! " + targetName + " was " + verb + "!", safchan);
                 target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
                 player.records.rocksHit += 1;
                 target.records.rocksHitBy += 1;
             }
             else if (rng2 < 0.5) {
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(target.party[0]) + " got hit and " + verb + "!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their " + poke(target.party[0]) + " got hit and " + verb + "!", safchan);
                 target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + Math.floor(itemData.rock.targetCD/2) : currentTime + Math.floor(itemData.rock.targetCD/2);
                 player.records.rocksHit += 1;
                 target.records.rocksHitBy += 1;
@@ -5211,7 +5211,7 @@ function Safari() {
                 if (target.money < dropped) {
                     dropped = target.money || 1;
                 }
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but only hit their wallet! " + sys.name(src) + " then picked up the $" + dropped + " dropped by " + targetName + "!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but only hit their wallet! " + sys.name(src) + " then picked up the $" + dropped + " dropped by " + targetName + "!", safchan);
                 if (player.money + dropped> moneyCap) {
                     safaribot.sendMessage(src, "But you could only keep $" + (moneyCap - player.money) + "!", safchan);
                     player.money = moneyCap;
@@ -5228,7 +5228,7 @@ function Safari() {
             }
             else if (rng2 < 0.56) {
                 
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but only hit their Itemfinder, which caused the Itemfinder to get slightly discharged!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but only hit their Itemfinder, which caused the Itemfinder to get slightly discharged!", safchan);
                 if (target.balls.permfinder > 1) {
                     safaribot.sendMessage(targetId, "You lost " + plural(1, finishName("recharge")) + "!", safchan);
                     target.balls.permfinder -= 1;
@@ -5238,14 +5238,14 @@ function Safari() {
             }
             else {
                 var parts = ["right leg", "left leg", "right arm", "left arm", "back"];
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! The " + finishName(item) + " hit " + targetName + "'s " + parts[sys.rand(0, parts.length)] + "!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! The " + finishName(item) + " hit " + targetName + "'s " + parts[sys.rand(0, parts.length)] + "!", safchan);
                 player.records.rocksHit += 1;
                 target.records.rocksHitBy += 1;
             }
         } else {
             if (rng2 < itemData.rock.bounceRate + (preparationPhase > 0 ? 0.4 : 0)) {
                 //Seasonal change
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it hit a wall and bounced back at " + sys.name(src) + "! *THUD* That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
                 // safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it broke apart before it was thrown and covered " + sys.name(src) + " in snow! That will leave a mark on " + sys.name(src) + "'s face and pride!", safchan);
 
                 player.cooldowns.ball = currentTime + itemData.rock.bounceCD;
@@ -5254,7 +5254,7 @@ function Safari() {
             else if (rng2 < 0.25) {
                 //seasonal change
                 // safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their mitten-covered hands!", safchan);
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their bare hands!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but " + targetName + " saw it coming and caught the " + finishName(item) + " with their bare hands!", safchan);
                 if (target.balls.rock < getCap("rock")) {
                     target.balls.rock += 1;
                     safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
@@ -5269,7 +5269,7 @@ function Safari() {
                 if (player.money < dropped) {
                     dropped = player.money || 1;
                 }
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but missed and broke their house's window! " + sys.name(src) + " had to pay $" + dropped + " to " + targetName + "!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but missed and broke their house's window! " + sys.name(src) + " had to pay $" + dropped + " to " + targetName + "!", safchan);
                 if (target.money + dropped> moneyCap) {
                     safaribot.sendMessage(targetId, "But you could only keep $" + (moneyCap - target.money) + "!", safchan);
                     target.money = moneyCap;
@@ -5288,9 +5288,9 @@ function Safari() {
                 var onChannel = sys.playersOfChannel(safchan);
                 var randomTarget = onChannel[sys.rand(0, onChannel.length)];
                 if (randomTarget != src && randomTarget != targetId && getAvatar(randomTarget)) {
-                    safaribot.sendAll(sys.name(src) + " tried to throw " + an(finishName(item)) + " at " + targetName + ", but failed miserably and almost hit " + utilities.non_flashing(sys.name(randomTarget)) + "!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " tried to throw " + an(finishName(item)) + " at " + targetName + ", but failed miserably and almost hit " + utilities.non_flashing(sys.name(randomTarget)) + "!", safchan);
                 } else {
-                    safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
                 }
                 player.records.rocksMissed += 1;
                 target.records.rocksDodged += 1;
@@ -5298,17 +5298,17 @@ function Safari() {
             else if (rng2 < 0.5) {
                 var extraThrown = "safari";
                 if (player.balls[extraThrown] > 0) {
-                    safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it missed... To make things worse, " + sys.name(src) + " also dropped " + an(finishName(extraThrown)) + " that was stuck together with the " + finishName(item) + "!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + ", but it missed... To make things worse, " + sys.name(src) + " also dropped " + an(finishName(extraThrown)) + " that was stuck together with the " + finishName(item) + "!", safchan);
                     safaribot.sendMessage(src, "You lost 1 " + finishName(extraThrown) + "!", safchan);
                     player.balls[extraThrown] -= 1;
                 } else {
-                    safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
+                    safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
                 }
                 player.records.rocksMissed += 1;
                 target.records.rocksDodged += 1;
             }
             else if (rng2 < 0.53) {
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their Itemfinder got hit! The Itemfinder reacted to the impact and gained 1 extra charge!!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "! " + targetName + " evaded, but their Itemfinder got hit! The Itemfinder reacted to the impact and gained 1 extra charge!!", safchan);
                 safaribot.sendMessage(targetId, "You received " + plural(1, finishName("recharge")) + "!", safchan);
                     
                 target.balls.permfinder += 1;
@@ -5316,7 +5316,7 @@ function Safari() {
                 target.records.rocksChargesGained += 1;
             }
             else {
-                safaribot.sendAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
+                safaribot.sendHtmlAll(sys.name(src) + " threw " + an(finishName(item)) + " at " + targetName + "... but it missed!", safchan);
                 player.records.rocksMissed += 1;
                 target.records.rocksDodged += 1;
             }
@@ -17626,7 +17626,7 @@ function Safari() {
                     safaribot.sendMessage(src, "When editing a string, remember to include the quotation marks.", safchan);
                     return true;
                 }
-                var info = commandData.split(":");
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 var data, e, type, list, defaultData, customValues;
                 switch (info[0]) {
                     case "costume":
