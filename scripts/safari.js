@@ -5430,6 +5430,7 @@ function Safari() {
                     if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
                         ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
                     }
+                    this.trackMessage("[Track] " + sys.name(src) + " is using /gacha " + commandData, player);
                     safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName(reward)) + "!", safchan);
 
                     if (chance(0.15) || nextGachaSpawn > currentTime || player.cooldowns.bait > currentTime) {
@@ -5438,7 +5439,6 @@ function Safari() {
                     }
 
                     if (spawn) {
-                        this.trackMessage("[Track] " + sys.name(src) + " is using /gacha " + commandData, player);
                         var p = player.nextSpawn;
                         if (p.pokemon.num) {
                             safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
@@ -7655,7 +7655,6 @@ function Safari() {
             safaribot.sendMessage(src, "Please type a valid number for the minimum bid raise!", safchan);
             return;
         }
-        var reasonable = moneyCap;
         if (input.type == "poke") {
             if (!player.pokemon.contains(input.id)) {
                 safaribot.sendMessage(src, "You do not have " + an(input.name) + "!", safchan);
@@ -7668,18 +7667,6 @@ function Safari() {
                 safaribot.sendMessage(src, "Starting offer for " + input.name + " must be at least $" + addComma(getPrice(input.id, input.shiny)) + "!", safchan);
                 return;
             }
-            reasonable = getPrice(input.id, input.shiny) * getBST(input.id) / 5;
-            if (input.shiny) {
-                reasonable *= 3;
-            }
-            if (isLegendary(input.id)) {
-                reasonable *= 4;
-            }
-            var base = pokeInfo.species(input.id), form = pokeInfo.forme(input.id);
-            if (form > 0 && (!(base in wildForms) || form > wildForms[base] )) {
-                reasonable *= 4;
-            }
-            reasonable = Math.min(Math.round(reasonable), moneyCap);
         } else {
             if (!itemData[input.id].tradable) {
                 safaribot.sendMessage(src, "You can't auction this item!", safchan);
@@ -7693,7 +7680,6 @@ function Safari() {
                 safaribot.sendMessage(src, "This item cannot be auctioned unless you have more than " + itemData[input.id].tradeReq + " of those!", safchan);
                 return true;
             }
-            reasonable = Math.min(itemData[input.id].price * 20, moneyCap);
         }
         if (minBid > startingOffer / 2) {
             safaribot.sendMessage(src, "Minimum bid raise can't be more than half of the starting offer ($" + Math.floor(startingOffer/2) + ")!", safchan);
@@ -7703,36 +7689,10 @@ function Safari() {
             safaribot.sendMessage(src, "Please remove the " + input.name + " from your shop before auctioning it!", safchan);
             return;
         }
-        var multiplier = 1;
-        if (startingOffer >= reasonable) {
-            if (now() > player.auctionWarnCooldown) {
-                safaribot.sendMessage(src, "Please don't create auctions with absurd starting offers! This is your only warning!", safchan);
-                player.auctionWarnCooldown = now() + hours(2);
-                this.saveGame(player);
-                return;
-            }
-            player.auctionWarns += 1;
-            var warns = player.auctionWarns;
-            var lost = Math.round(player.money * (0.03 + 0.02 * warns));
-            lost = Math.min(Math.max(lost, 2000), player.money);
-            player.money -= lost;
-            if (player.money < 0) {
-                player.money = 0;
-            }
-            multiplier = 5 + warns * 5;
-            player.balls.salt += 1;
-            
-            sys.sendAll("", safchan);
-            safaribot.sendHtmlAll(toColor("<b>DERP, look at " + sys.name(src) + " trying to start an auction starting at $" + addComma(startingOffer) + "! Everyone should use " + link("/rock " + sys.name(src)) + " to make fun of them!</b>", "tomato"), safchan);
-            safaribot.sendMessage(src, "Auction Officer: Hey, you! The auction is not your playground! I'm going to take $" + addComma(lost) + " from you and give you some " + finishName("salt") + " for abusing the system!", safchan);
-            this.applyTradeban("Safari Warden", sys.name(src), player, (6 + warns * 6) * 60 * 60);
-            sys.sendAll("", safchan);
-        } else {
-            var auction = new Auction(src, input.input, startingOffer, minBid);
-            currentAuctions.push(auction);
-        }
+        var auction = new Auction(src, input.input, startingOffer, minBid);
+        currentAuctions.push(auction);
 
-        player.cooldowns.auction = now() + 15 * 60 * 1000 * multiplier;
+        player.cooldowns.auction = now() + 15 * 60 * 1000;
         this.saveGame(player);
     };
     this.joinAuction = function(src, data) {
@@ -9830,7 +9790,7 @@ function Safari() {
             return;
         }
         
-        if (item === "master" && player.balls.master > 0) {
+        if (item === "master" && player.balls.master >= getCap("master")) {
             safaribot.sendHtmlMessage(src, trainerSprite + an(fullItem) + " mus' be your favoritest item or sumthin' cuz you already gots one!", safchan);
             return;
         }
@@ -12144,7 +12104,7 @@ function Safari() {
         return signupsLower.contains(name.toLowerCase());
     };
 
-    function FactionWar(src, reward, team1, team2, inverted) {
+    function FactionWar(src, reward, team1, team2, inverted, reward2) {
         SafariEvent.call(this, src);
         this.eventName = (inverted ? "Inverted " : "") + "Faction War";
 
@@ -12163,7 +12123,10 @@ function Safari() {
         this.playerTeams = {};
 
         this.reward = reward;
+        this.diffRewards = reward !== reward2;
+        this.reward2 = this.diffRewards ? reward2 : reward;
         this.rewardName = translateStuff(reward);
+        this.reward2Name = translateStuff(this.reward2);
         this.hasReward = true;
 
         this.team1Defeated = 0;
@@ -12171,11 +12134,15 @@ function Safari() {
         this.suddenDeath = false;
         this.allowRejoin = true;
 
-        this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! Winners will receive <b>" + this.rewardName + "</b>!";
+        this.joinmsg = "Type " + link("/signup " + this.team1Name) + ", " + link("/signup " + this.team2Name) + " or " + link("/signup") + " "  + " to participate! " + (this.diffRewards ? "Members of " + this.team1Name + " will receive <b>" + this.rewardName + "</b> if winning, members of " + this.team2Name + " will receive <b>" + this.reward2Name + "</b> if winning" : "Winners will receive <b>" + this.rewardName + "</b>") + "!";
 
         var joinCommand = "/signup";
         sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + this.rewardName + "</b>!", safchan);
+        if (this.diffRewards) {
+            safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " (Reward: <b>" + this.rewardName + "</b>) and " + toColor(team2, this.team2Color) + " (Reward: <b>" + this.reward2Name + "</b>)!", safchan);
+        } else {
+            safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event! The teams are " + toColor(team1, this.team1Color) + " and " + toColor(team2, this.team2Color) + ", and each player from the winning team will receive <b>" + this.rewardName + "</b>!", safchan);
+        }
         safaribot.sendHtmlAll("Type " + link(joinCommand + " " + team1) + " or " + link(joinCommand + " " + team2) + " to join a side, or " + link(joinCommand) + " to join a random side (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
         sys.sendAll("", safchan);
     }
@@ -12373,7 +12340,9 @@ function Safari() {
     };
     FactionWar.prototype.finish = function() {
         var winner, loser;
-        var rewardmsg = this.hasReward ? "Each player will receive " + this.rewardName + "!" : "";
+        var rewName = this.team1Defeated > this.team2Defeated ? this.reward2Name : this.rewardName;
+        var reward = this.team1Defeated > this.team2Defeated ? this.reward2 : this.reward;
+        var rewardmsg = this.hasReward ? "Each player will receive " + rewName + "!" : "";
         if (this.team1Defeated > this.team2Defeated) {
             winner = this.team2;
             loser = this.team1;
@@ -12412,7 +12381,7 @@ function Safari() {
         if (!this.hasReward) {
             this.sendToViewers("No records or rewards will be given due to the low number of participants!");
         } else {
-            var name, len = winner.length, reward = this.reward, stuff, out;
+            var name, len = winner.length, stuff, out;
 
             for (e = 0; e < len; e++) {
                 name = winner[e];
@@ -12421,7 +12390,7 @@ function Safari() {
                     if (player) {
                         id = sys.id(name);
                         if (id) {
-                            safaribot.sendMessage(id, "You received " + this.rewardName + " for winning the event!", safchan);
+                            safaribot.sendMessage(id, "You received " + rewName + " for winning the event!", safchan);
                         }
                         
                         stuff = toStuffObj(reward.replace(/,/g, ":")),
@@ -12454,6 +12423,7 @@ function Safari() {
                 }
             }
         }
+        this.rewardName = rewName;
         this.log(true, winner, "Teams: " + this.team1Name + (winner == this.team1 ? " (Winner)" : "") + " x " + this.team2Name + (winner == this.team2 ? " (Winner)" : "") + " / MVP: " + readable(mvp.map(function(obj) { return obj.owner + "'s " + poke(obj.id); })) + " with " + plural(mvpPoints, "Point"));
         this.finished = true;
     };
@@ -12496,7 +12466,11 @@ function Safari() {
         safaribot.sendMessage(src, "You are watching the " + this.eventName + "! The teams are: ", safchan);
         safaribot.sendHtmlMessage(src, toColor(this.team1Name, this.team1Color) + ": " + readable(this.team1, "and"), safchan);
         safaribot.sendHtmlMessage(src, toColor(this.team2Name, this.team2Color) + ": " + readable(this.team2, "and"), safchan);
-        safaribot.sendMessage(src, "Winners will receive " + this.rewardName + "!", safchan);
+        if (this.diffRewards) {
+            safaribot.sendMessage(src, "Rewards for " + this.team1Name + ": " + this.rewardName + " | Rewards for " + this.team2Name + ": " + this.reward2Name, safchan);
+        } else {
+            safaribot.sendMessage(src, "Winners will receive " + this.rewardName + "!", safchan);
+        }
     };
 
     function BFactory(src, reward1, reward2, reward3) {
@@ -13887,7 +13861,7 @@ function Safari() {
             if (rawPlayers.hash.hasOwnProperty(e)) {
                 if (e.toLowerCase() === "safari warden") {
                     continue;
-                };
+                }
                 data = JSON.parse(rawPlayers.hash[e]);
                 for (i in leaderboardTypes) {
                     player = {
@@ -15708,7 +15682,7 @@ function Safari() {
                     case "help":
                     case "info":
                         safaribot.sendHtmlMessage(src, "To start an event, use one of the following commands (parameters in red are optional):", safchan);
-                        safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]", "orangered"), safchan);
+                        safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]:[Team2Reward]", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true) + toColor(" (everything is optional)", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
@@ -15720,7 +15694,7 @@ function Safari() {
 
                 if (type == "factionwar" || type == "invertedwar") {
                     if (param.length < 1) {
-                        safaribot.sendMessage(src, "Use /startevent [FactionWar/InvertedWar]:Reward:Team1:Team2 to start a Faction War!", safchan);
+                        safaribot.sendMessage(src, "Use /startevent [FactionWar/InvertedWar]:Reward:Team1:Team2:Reward2 to start a Faction War!", safchan);
                         return true;
                     }
                     
@@ -15741,7 +15715,17 @@ function Safari() {
                         } while (name1 === name2);
                     }
                     
-                    var ev = new FactionWar(src, reward, name1, name2, type == "invertedwar");
+                    var reward2 = null;
+                    if (param.length > 3 && param[3]) {
+                        reward2 = param[3];
+                        var valid = validateStuff(reward2);
+                        if (valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid reward2 found: " + readable(valid) + "!", safchan);
+                            return true;
+                        }
+                    }
+                    
+                    var ev = new FactionWar(src, reward, name1, name2, type == "invertedwar", reward2);
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
@@ -16495,7 +16479,7 @@ function Safari() {
                     wildEvent = true;
                 } else if (command === "wild2" && contestCount === 0) {
                     var bName = finishName("bait").toLowerCase();
-                    if (amount > 1 || chance(0.3)) {
+                    if (amount > 1 || baitCooldown > 28 || chance(0.3)) {
                         safaribot.sendAll("Some stealthy person goes to grab their item from the Gachapon Machine but the noise lured " + an(finishName("wild")) + "!", safchan);
                     } else {
                         safaribot.sendAll("Some stealthy person left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
