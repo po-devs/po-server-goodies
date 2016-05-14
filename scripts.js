@@ -2006,7 +2006,7 @@ afterChatMessage : function(src, message, chan)
         user.timecount = parseInt(sys.time(), 10);
     }
     var linecount = sys.auth(src) === 0 ? 9 : 21;
-    if (!poChannel.ignoreflood && userMayGetPunished && message !== ".") {
+    if (!poChannel.ignoreflood && userMayGetPunished && !(message === "." || message === "t")) {
         user.floodcount += 1;
         var time = parseInt(sys.time(), 10);
         if (time > user.timecount + 7) {
