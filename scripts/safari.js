@@ -9583,6 +9583,10 @@ function Safari() {
                     safaribot.sendMessage(src, "You cannot invite yourself to the Pyramid!", safchan);
                     return;
                 }
+                if (n1 === n2) {
+                    safaribot.sendMessage(src, "You cannot invite the same person twice!", safchan);
+                    return;
+                }
                 safaribot.sendMessage(src, "You invited " + n1.toCorrectCase() + " and " + n2.toCorrectCase() + " to join you in the Pyramid!", safchan);
                 safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
                 
