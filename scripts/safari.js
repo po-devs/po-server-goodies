@@ -2897,7 +2897,7 @@ function Safari() {
         if (rules.nerfDual) {
             nerfed.push("Dual-type Pokémon");
         } else if (rules.buffDual) {
-            nerfed.push("Dual-type Pokémon");
+            buffed.push("Dual-type Pokémon");
         }
         if (rules.noLegendaries) {
             nerfed.push("Legendaries");
