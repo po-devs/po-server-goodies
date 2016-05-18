@@ -6228,6 +6228,7 @@ function Safari() {
                     out.push(plural(amount, item));
                 }
                 remaining.push(plural(player.balls[item], item));
+                this.updateShop(sys.name(src), item);
             }
         }
         if (skipped.length > 0) {
@@ -6240,7 +6241,6 @@ function Safari() {
             safaribot.sendMessage(src, "Huh? You didn't actually sell anything... If you change your mind, I'll be happy to buy from you! You still have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
         }
         
-        this.updateShop(sys.name(src), item);
         this.saveGame(player);
     };
     this.sellPokemon = function(src, data) {
