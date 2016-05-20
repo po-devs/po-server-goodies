@@ -248,7 +248,7 @@ function Hangman() {
             this.applyPoints(src, p);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
-            this.countPoints();
+            var w = this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (isEventGame) {
@@ -257,7 +257,7 @@ function Hangman() {
             if (!pendingEvent) {
                 hangbot.sendAll("Type /start answer:hint to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
-            this.concludeGame();
+            this.concludeGame(w);
         } else {
             if (!correct) {
                 this.addMiss(src);
@@ -374,7 +374,7 @@ function Hangman() {
 
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " answered correctly and got " + p + " points!", hangchan);
-            this.countPoints();
+            var w = this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (isEventGame) {
@@ -383,7 +383,7 @@ function Hangman() {
             if (!pendingEvent) {
                 hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
-            this.concludeGame();
+            this.concludeGame(w);
         } else {
             hangbot.sendAll("" + sys.name(src) + " answered " + ans + "! " + thing, hangchan);               
             this.addMiss(src);
@@ -482,11 +482,20 @@ function Hangman() {
         this.createGame(sys.name(src), a, h, src, gameMode);
     };
 
-    this.concludeGame = function () {
-        if (sys.isInChannel(sys.id(hostName), hangchan)) {
+    this.concludeGame = function (winner) {
+        if (winner && !script.cmp(winner, hostName)) {
+            if (sys.isInChannel(sys.id(winner), hangchan)) {
+                this.setWinner(winner, false);
+            } 
+            else {
+                this.setWinner(undefined, true);
+            }
+        } 
+        else if (sys.isInChannel(sys.id(hostName), hangchan)) {
             this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-        } else if (!pendingEvent) {
-            hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);                
+        }
+        else if (!pendingEvent) {
+            hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);                
             this.setWinner(undefined, true);
         }
         if (gameMode === suddenDeath) {
@@ -790,7 +799,7 @@ function Hangman() {
             leaderboards.current[w] = lbScore + 1;
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
         }
-        return;
+        return w;
     };
     this.getPropCase = function (obj, prop) {
         var key;
