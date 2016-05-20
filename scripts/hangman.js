@@ -141,7 +141,7 @@ function Hangman() {
             sendChanHtmlAll(" ", hangchan);
             if (sys.isInChannel(sys.id(hostName), hangchan)) {
                 this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-            } else {
+            } else if (!pendingEvent) {
                 hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);               
                 this.setWinner(undefined, true);
             }
@@ -298,11 +298,11 @@ function Hangman() {
                 if (isEventGame) {
                     sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
                 }
-                if (sys.isInChannel(sys.id(hostName), hangchan)) { // IF HOST WINS AND STILL IN CHANNEL
+                if (sys.isInChannel(sys.id(hostName), hangchan)) {
                     this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-                } else { // IF HOST WINS AND NOT IN CHANNEL
+                } else if (!pendingEvent) { // collapse into function?
                     hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);                
-                    this.setWinner(undefined, true); // TRUE SO PLAYER CAN INSTANT START
+                    this.setWinner(undefined, true);
                 }
                 if (isEventGame) {
                     eventCount = eventLimit;
