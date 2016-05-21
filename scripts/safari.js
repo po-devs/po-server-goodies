@@ -6737,6 +6737,9 @@ function Safari() {
             sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
             sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + ":::" + isSilver + "|||" + sys.name(src) + "\n");
+            if (input.type == "poke" && isRare(input.id)) {
+                sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + " bought " + plural(amount, input.input) + " from " + sys.name(sellerId) + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(shop[input.input].price) + " each)" : "") + "\n");
+            }
         } else {
             this.buyBonus(src, input.id, amount, cap);
             if (limitChanged) {
@@ -7966,11 +7969,12 @@ function Safari() {
         winner.money -= this.currentOffer;
         host.money += this.currentOffer;
 
+        var input;
         if (this.type == "item") {
             host.balls[this.product] -= 1;
             winner.balls[this.product] += 1;
         } else {
-            var input = getInputPokemon(this.product);
+            input = getInputPokemon(this.product);
 
             safari.removePokemon2(host, input.id);
             winner.pokemon.push(input.id);
@@ -7990,6 +7994,9 @@ function Safari() {
         this.finished = true;
 
         sys.appendToFile(auctionLog, now() + "|||" + this.hostName + "::" + 1 + "::" + this.productName + "::" + this.currentOffer + "|||" + this.currentBidder.toCorrectCase() + "\n");
+        if (this.type == "poke" && isRare(input.id)) {
+            sys.appendToFile(rareTradeLog, now() + "|||" + this.currentBidder.toCorrectCase() + " won " + this.hostName + "'s auction for " + this.productName + " by paying $" + addComma(this.currentOffer) + "\n");
+        }
     };
     Auction.prototype.join = function(src) {
         if (!safari.isBelowCap(src, this.product, 1, this.type)) {
@@ -8327,7 +8334,7 @@ function Safari() {
                 delete tradeRequests[targetName];
                 sys.appendToFile(tradeLog, now() + "|||" + sys.name(src) + "::" + out2 + "|||" + sys.name(targetId) + "::" + out1 + "\n");
                 if (hasRare) {
-                    sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + "::" + out2 + "|||" + sys.name(targetId) + "::" + out1 + "\n");
+                    sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + "'s " + out2 + " <--> " + sys.name(targetId) + "'s " + out1 + "\n");
                 }
             }
             else {
@@ -16387,12 +16394,9 @@ function Safari() {
                 safari.showLog(src, command, commandData, rareTradeLog, "rare trade", function(x) {
                     var info = x.split("|||");
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
-                    var p1 = info[1].split("::")[0];
-                    var p1offer = info[1].split("::")[1];
-                    var p2 = info[2].split("::")[0];
-                    var p2offer = info[2].split("::")[1];
+                    var data = info[1];
 
-                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")";
+                    return data + " - (" + time + ")";
                 });
                 return true;
             }
