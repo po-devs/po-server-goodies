@@ -202,7 +202,9 @@ function Safari() {
             brightEggsHatched: 0,
             rareHatched: 0,
             transmutations: 0,
-            transmutationsMade: 0
+            transmutationsMade: 0,
+            burnReceived: 0,
+            burnGiven: 0
         },
         secretBase: [],
         secretBaseCache: [],
@@ -5388,6 +5390,9 @@ function Safari() {
         }
         player.balls[item] -= 1;
         target.balls[item] += 1;
+        
+        player.records.burnGiven += 1;
+        target.records.burnReceived += 1;
         
         this.saveGame(player);
         this.saveGame(target);
