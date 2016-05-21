@@ -5374,7 +5374,7 @@ function Safari() {
         }
         var currentTime = now();
         if (player.cooldowns.burn > currentTime) {
-            safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.burn) + " before using giving someone " + an(sName) + "!", safchan);
+            safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.burn) + " before giving someone " + an(sName) + "!", safchan);
             return;
         }
 
@@ -11042,6 +11042,9 @@ function Safari() {
                 hints.push("Can have the move '{0}'".format(moves[h]));
             }
         }
+        h = generation(this.answerId, true);
+        hints.push("Is from the " + h + " region");
+        
         h = getBST(this.answerId);
         hints.push("BST is between {0} and {1}".format(h - sys.rand(0, 45), h + sys.rand(1, 45)));
         if (this.answerId in evolutions) {
@@ -13146,13 +13149,14 @@ function Safari() {
             "move": 28,
             "type": 16,
             "bst": 3,
+            "gen": 6,
             "height": 3,
             "weight": 3,
             "evolve": 2,
             "evolved": 2
         };
         do {
-            type = ["start", "start", "end", "move", "type", "bst", "height", "weight", "evolve", "evolved"].random();
+            type = ["start", "start", "end", "move", "type", "bst", "gen", "height", "weight", "evolve", "evolved"].random();
             type = randomSample(types);
             
         } while (type !== "move" && typesUsed.contains(type));
@@ -13186,6 +13190,13 @@ function Safari() {
                     return hasType(x, val);
                 });
                 desc = "has " + val + " type";
+            break;
+            case "gen":
+                val = generations.slice(1).random();
+                list = list.filter(function(x){
+                    return generation(x, true) === val;
+                });
+                desc = "is from the " + val + " region";
             break;
             case "bst":
                 val = sys.rand(200, 515);
