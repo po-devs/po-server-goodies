@@ -884,7 +884,7 @@ banList: function (src, command, commandData) {
     return;
 },
 
-importable : function(id, team, compactible) {
+importable : function(id, team, compactible, extras) {
 /*
 Tyranitar (M) @ Choice Scarf
 Lvl: 100
@@ -903,6 +903,9 @@ Jolly Nature (+Spd, -SAtk)
     var stat = {0: 'HP', 1: 'Atk', 2: 'Def', 3: 'SAtk', 4: 'SDef', 5:'Spd'};
     var hpnum = sys.moveNum("Hidden Power");
     var ret = [];
+    if (extras) {
+        ret.push("Gen: {0}, Subgen: {1}".format(sys.gen(team), sys.subgen(team)));
+    }    
     for (var i = 0; i < 6; ++i) {
       var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)

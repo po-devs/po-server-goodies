@@ -144,7 +144,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             index.push(i);
         }
         var teams = index.map(function(index) {
-            return script.importable(tar, index);
+            return script.importable(tar, index, false, true);
         }, this).filter(function(data) {
             return data.length > 0;
         }).map(function(team) {
