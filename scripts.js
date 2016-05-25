@@ -904,7 +904,7 @@ Jolly Nature (+Spd, -SAtk)
     var hpnum = sys.moveNum("Hidden Power");
     var ret = [];
     if (extras) {
-        ret.push("Gen: {0}, Subgen: {1}".format(sys.gen(team), sys.subgen(team)));
+        ret.push("Gen: {0}, Subgen: {1}".format(sys.gen(id, team), sys.subgen(id, team)));
     }    
     for (var i = 0; i < 6; ++i) {
       var poke = sys.teamPoke(id, team, i);
