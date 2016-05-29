@@ -540,7 +540,7 @@ function Safari() {
         // pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
         // bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
         contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
-        earnings: { desc: "by money earned", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
+        earnings: { desc: "by money earned from NPC, quests, events and Luxury Balls", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
         // money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
         // pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
         // luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
@@ -14112,7 +14112,7 @@ function Safari() {
                             player.value = add(data.pokemon.map(getBST));
                         break;
                         case "earnings":
-                            player.value = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
+                            player.value = (rec.pokeSoldEarnings || 0) + (rec.luxuryEarnings || 0) + (rec.pawnEarnings || 0) + (rec.collectorEarnings || 0) + (rec.rocksWalletEarned || 0) + (rec.rocksWindowEarned || 0) - (rec.rocksWindowLost || 0) - (rec.rocksWalletLost || 0) + (rec.pokeRaceEarnings || 0) + (rec.pyramidMoney || 0);
                         break;
                         case "money":
                             player.value = data.money;
@@ -17716,7 +17716,7 @@ function Safari() {
                     safaribot.sendMessage(src, "No one has entered this raffle yet!", safchan);
                     return true;
                 }
-                safaribot.sendMessage(src, "Raffle Entries bought: " + Object.keys(obj).map(function(x) { return x + ": " + obj[x]; }).join(" | "), safchan);
+                safaribot.sendMessage(src, "Raffle Entries bought: " + Object.keys(obj).filter(function(x) { return obj[x] > 0; }).map(function(x) { return x + ": " + obj[x]; }).join(" | "), safchan);
                 return true;
             }
             if (command === "drawraffle") {
