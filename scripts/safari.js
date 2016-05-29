@@ -454,7 +454,7 @@ function Safari() {
     var itemHelp = {
         silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
         bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
-        golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and a better chance to bait rare Pokémon. Can be used more often than normal Baits. Use with \"/gbait\".",
+        golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
         gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
         rock: "A small rock that can be thrown to potentially stun another player for a short period of time. " + cdSeconds("rock", "throwCD") + " Use with \"/snowball [Player]\".",
         rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder.",
@@ -535,27 +535,28 @@ function Safari() {
     //Adding a variable that already exists on player.records here will automatically make it available as a leaderboard
     //To add stuff not on player.records, you must add an exception on this.updateLeaderboards()
     var leaderboardTypes = {
-        totalPokes: { desc: "by Pokémon owned", alts: ["totalpokes"], alias: "owned" },
+        // totalPokes: { desc: "by Pokémon owned", alts: ["totalpokes"], alias: "owned" },
         pokesCaught: { desc: "by successful catches", alts: ["caught", "pokescaught"], alias: "caught" },
-        pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
-        bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
+        // pokesEvolved: { desc: "by successful evolutions", alts: ["evolve", "evolved", "pokesevolved"], alias: "evolved" },
+        // bst: { desc: "by total BST of Pokémon owned", alts: [], alias: "bst" },
         contestsWon: { desc: "by contests won", alts: ["contest", "contests", "contestswon"], alias: "contest" },
-        money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
-        pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
-        luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
-        consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins", "consecutivelogins"], alias: "login" },
+        earnings: { desc: "by money earned", alts: ["earned", "earnings", "money", "$"], alias: "earnings", isMoney: true },
+        // money: { desc: "by money", alts: ["$"], alias: "money", isMoney: true },
+        // pokeSoldEarnings: { desc: "by money gained with selling Pokémon", alts: ["sold", "sell", "pokesoldearnings"], alias: "sold", isMoney: true },
+        // luxuryEarnings: { desc: "by money gained with Luxury Balls", alts: ["luxury", "luxuryball", "luxury ball", "luxuryearnings"], alias: "luxury", isMoney: true },
+        // consecutiveLogins: { desc: "by longest streak of consecutive days login", alts: ["login", "logins", "consecutivelogins"], alias: "login" },
         pokesCloned: { desc: "by successful clones", alts: ["clone", "clones", "cloned", "clone ball", "pokescloned"], alias: "cloned" },
-        gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha", "gachasused"], alias: "gacha" },
-        itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
-        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector money", isMoney: true },
-        collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke", "collectorgiven"], alias: "collector" },
+        // gachasUsed: { desc: "by tickets used for Gachapon", alts: ["gacha", "gachasused"], alias: "gacha" },
+        // itemsFound: { desc: "by items found with Itemfinder", alts: ["found", "itemsfound", "items found"], alias: "found" },
+        collectorEarnings: { desc: "by money received from the Collector", alts: ["collector", "collector money", "collectormoney", "collector $", "collectorearnings"], alias: "collector", isMoney: true },
+        // collectorGiven: { desc: "by Pokémon given to the Collector", alts: ["collector", "collector pokémon", "collectorpokémon", "collector pokemon", "collector poke", "collectorpoke", "collectorgiven"], alias: "collector" },
         towerHighest: { desc: "by best Battle Tower run", alts: ["tower", "battletower", "battle tower", "towerhighest"], alias: "tower" },
         arenaPoints: { desc: "by arena points", alts: ["points", "arena", "arenapoints"], alias: "arenapoints" },
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
         pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesstolen"], alias: "stolen" },
-        topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
+        // topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
         pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score"], alias: "pyramid" },
-        pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
+        // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
         pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" }
     };
     var monthlyLeaderboardTypes = {
@@ -1641,7 +1642,7 @@ function Safari() {
     }
     function toCommandData(str, props) {
         var out = {};
-        var data = str.split(str.indexOf(":::") !== -1 ? ":::" : ":");
+        var data = str.split(str.indexOf(":::") !== -1 && str.indexOf(":::") <= str.search(/:(?!:)/) ? ":::" : ":");
         for (var p = 0; p < props.length; p++) {
             out[props[p]] = data.length > p && data[p].trim() !== "" ? data[p].trim() : null;
         }
@@ -3317,7 +3318,11 @@ function Safari() {
         }
 
         if (preparationPhase > 0) {
-            safaribot.sendMessage(src, "You are preparing to throw your " + ballName + "!", safchan);
+            if (ball === "master") {
+                safaribot.sendHtmlMessage(src, toColor("You are preparing to throw your " + ballName + "!", "red") + " [" + link("/catch cancel", "Cancel") + "]", safchan);
+            } else {
+                safaribot.sendMessage(src, "You are preparing to throw your " + ballName + "!", safchan);
+            }
             preparationThrows[sys.name(src).toLowerCase()] = ball;
             return;
         }
@@ -9964,6 +9969,15 @@ function Safari() {
             return;
         }
         
+        for (e in rec.ingredients) {
+            asset = translateAsset(e);
+            if (asset.type == "poke") {
+                if (!canLosePokemon(src, asset.input, "give", false, rec.ingredients[e])) {
+                    return;
+                }
+            }
+        }
+        
         var cantHold = [], pokeRew = 0, ing;
         for (e in rec.reward) {
             asset = translateAsset(e);
@@ -14063,7 +14077,7 @@ function Safari() {
     this.updateLeaderboards = function() {
         leaderboards = {};
 
-        var player, data, e, i;
+        var player, data, e, i, rec;
         for (e in leaderboardTypes) {
             leaderboards[e] = [];
         }
@@ -14089,12 +14103,16 @@ function Safari() {
                     if (data.hideLB && data.hideLB.contains(i)) {
                         continue;
                     }
+                    rec = data.records;
                     switch (i) {
                         case "totalPokes":
                             player.value = data.pokemon.length;
                         break;
                         case "bst":
                             player.value = add(data.pokemon.map(getBST));
+                        break;
+                        case "earnings":
+                            player.value = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
                         break;
                         case "money":
                             player.value = data.money;
@@ -14112,7 +14130,7 @@ function Safari() {
                             player.value = "records" in data ? (data.records[i] || 0 ): 0;
                         break;
                     }
-                    if (player.value === 0) {
+                    if (player.value === 0 || isNaN(player.value)) {
                         continue;
                     }
                     leaderboards[i].push(player);
@@ -15559,7 +15577,7 @@ function Safari() {
                         }
                     }
                     if (!found) {
-                        rec = recName = "totalPokes";
+                        rec = recName = "pokesCaught";
                         desc = lbData[rec].desc;
                     }
                 }
@@ -16819,11 +16837,10 @@ function Safari() {
                 recipeData[data.name] = rec;
                 permObj.add("alchemistRecipes", JSON.stringify(recipeData));
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, "Recipe <b>" + cap(data.name) + "</b> added to Alchemist quest!", safchan);
+                safaribot.sendHtmlMessage(src, "Recipe <b>" + cap(data.name, true) + "</b> added to Alchemist quest!", safchan);
                 safaribot.sendMessage(src, "Ingredients: " + translateStuff(rec.ingredients), safchan);
                 safaribot.sendMessage(src, "Reward: " + translateStuff(rec.reward), safchan);
-                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.immediate, safchan);
-                safaribot.sendMessage(src, "Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
+                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
@@ -16833,7 +16850,7 @@ function Safari() {
                 for (var e in recipes) {
                     rec = recipes[e];
                     l = "/addrecipe " + e + ":" + toStuffInput(rec.reward) + ":" + toStuffInput(rec.ingredients) + ":" + rec.cooldown + ":" + rec.failChance + ":" + toStuffInput(rec.failUses) + ":" + rec.transmutation + ":" + rec.immediate;
-                    safaribot.sendHtmlMessage(src, "<b>" + link(l, cap(e, true), true) + "</b>: " + translateStuff(rec.ingredients) + " --> "+ translateStuff(rec.reward) + " --- Cooldown: " + rec.cooldown + "h | Transmutation: " + rec.transmutation + " | Immediate: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? ", uses " + (translateStuff(rec.failUses) || "nothing") + " at failure" : "") + " --- [" + link("/removerecipe " + e, "Remove", true) + "]", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>" + link(l, cap(e, true), true) + "</b>: " + toColor(translateStuff(rec.ingredients, true), "red") + " --> "+ toColor(translateStuff(rec.reward, true), "blue") + " --- Cooldown: " + rec.cooldown + "h | Transmutation: " + rec.transmutation + " | Immediate: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? ", uses " + (translateStuff(rec.failUses) || "nothing") + " at failure" : "") + " --- [" + link("/removerecipe " + e, "Remove", true) + "]", safchan);
                 }
                 sys.sendMessage(src, "", safchan);
                 return true;
@@ -17848,6 +17865,53 @@ function Safari() {
                 safaribot.sendMessage(src, target.toCorrectCase() + " was disqualified from the current raffle.", safchan);
                 return true;
             }
+            if (["gachaload", "finderload", "packload"].contains(command)) {
+                var setName = ["Gachapon", "Itemfinder", "Prize Pack"][["gachaload", "finderload", "packload"].indexOf(command)];
+                if (commandData === "*") {
+                    switch (command) {
+                        case "gachaload":
+                            safaribot.sendMessage(src, setName + " set: " + JSON.stringify(gachaItems), safchan);
+                        break;
+                        case "finderload":
+                            safaribot.sendMessage(src, setName + " set: " + JSON.stringify(finderItems), safchan);
+                        break;
+                        case "packload":
+                            safaribot.sendMessage(src, setName + " set: " + JSON.stringify(packItems), safchan);
+                        break;
+                    }
+                    return true;
+                }
+                var data;
+                try {
+                    data = JSON.parse(commandData);
+                } catch (err) {
+                    safaribot.sendMessage(src, "Invalid JSON format!", safchan);
+                    return true;
+                }
+                for (var e in data) {
+                    if (allItems.indexOf(e) !== -1 || e === "wild" || e === "nothing" || e === "recharge") {
+                        continue;
+                    }
+                    safaribot.sendMessage(src, e + " is not a valid item!", safchan);
+                    return true;
+                }
+                switch (command) {
+                    case "gachaload":
+                        gachaItems = data;
+                        permObj.add("gachaRates", JSON.stringify(data));
+                    break;
+                    case "finderload":
+                        finderItems = data;
+                        permObj.add("finderRates", JSON.stringify(data));
+                    break;
+                    case "packload":
+                        packItems = data;
+                        permObj.add("packRates", JSON.stringify(data));
+                    break;
+                }
+                safaribot.sendMessage(src, "Successfully loaded " + setName + " chances!", safchan);
+                return true;
+            }
             if (command === "loadthemes" || command === "loadtheme") {
                 var cThemes = contestThemes;
                 var url = commandData === "*" ? (permObj.get("themesurl") || commandData) : commandData;
@@ -18220,6 +18284,19 @@ function Safari() {
         } catch (err) {
             recipeData = {};
         }
+        var temp;
+        try {
+            temp = JSON.parse(permObj.get("gachaRates"));
+            gachaItems = temp;
+        } catch (err) {}
+        try {
+            temp = JSON.parse(permObj.get("finderRates"));
+            finderItems = temp;
+        } catch (err) {}
+        try {
+            temp = JSON.parse(permObj.get("packRates"));
+            packItems = temp;
+        } catch (err) {}
         try {
             dailyBoost = JSON.parse(permObj.get("dailyBoost"));
         } catch (err) {
