@@ -643,6 +643,30 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return commandData;
     }
+    function tierBans(commandData) {
+        var stone = 0, aforme;
+        if (commandData.indexOf(" ") !== -1) {
+            stone = sys.stoneForForme(pokeId);
+            aforme = commandData.split(" ");
+            pokeId = sys.pokeNum(aforme[1]);
+        } else {
+            aforme = commandData.split("-");
+            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
+                pokeId = sys.pokeNum(aforme[0]);
+            }
+        }
+        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
+        var allowed = [];
+        for (var x = 0; x < tiers.length; x++) {
+            if (sys.isItemBannedFromTier(stone, tiers[x])) {
+                break;
+            }
+            if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
+                allowed.push(tiers[x]);
+            }
+        }
+        return allowed.join(", ");
+    }
     
     if (command === "pokemon") {
         if (commandData === undefined) {
@@ -654,19 +678,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         commandData = commandData[0];
         var pokeId;
         if (isNaN(commandData)) {
-            switch (commandData.toLowerCase()) {
-                case ("darmanitan-z") :
-                    commandData = "Darmanitan-D";
-                    break;
-                case ("meloetta-p") :
-                    commandData = "Meloetta-S";
-                    break;
-                case ("hoopa-u") :
-                    commandData = "Hoopa-B";
-                    break;
-                default:
-                    commandData=commandData;
-            }
             pokeId = sys.pokeNum(commandData);
         } else {
             if (commandData < 1 || commandData > 721) {
@@ -729,28 +740,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
 
-        var stone = 0, aforme;
-        if (commandData.indexOf(" ") !== -1) {
-            stone = sys.stoneForForme(pokeId);
-            aforme = commandData.split(" ");
-            pokeId = sys.pokeNum(aforme[1]);
-        } else {
-            aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId)) {
-                pokeId = sys.pokeNum(aforme[0]);
-            }
-        }
-        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
-        var allowed = [];
-        for (var x = 0; x < tiers.length; x++) {
-            if (sys.isItemBannedFromTier(stone, tiers[x])) {
-                break;
-            }
-            if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
-                allowed.push(tiers[x]);
-            }
-        }
-        sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed.join(", "), channel);
+        var allowed = tierBans(commandData);
+        sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed, channel);
         return;
     }
     if (command === "tier") {
@@ -761,28 +752,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
 
-        var stone = 0, aforme;
-        if (commandData.indexOf(" ") !== -1) {
-            stone = sys.stoneForForme(pokeId);
-            aforme = commandData.split(" ");
-            pokeId = sys.pokeNum(aforme[1]);
-        } else {
-            aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId)) {
-                pokeId = sys.pokeNum(aforme[0]);
-            }
-        }
-        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
-        var allowed = [];
-        for (var x = 0; x < tiers.length; x++) {
-            if (sys.isItemBannedFromTier(stone, tiers[x])) {
-                break;
-            }
-            if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
-                allowed.push(tiers[x]);
-            }
-        }
-        sys.sendHtmlMessage(src, "<b>" + sys.pokemon(sys.pokeNum(commandData)) + " is allowed in tiers: </b>" + allowed.join(", "), channel);
+        var allowed = tierBans(commandData);
+        sys.sendHtmlMessage(src, "<b>" + sys.pokemon(sys.pokeNum(commandData)) + " is allowed in tiers: </b>" + allowed, channel);
         return;
     }
     if (command === "move") {
