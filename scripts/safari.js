@@ -5210,7 +5210,7 @@ function Safari() {
         player.balls[item] -= 1;
         player.records[golden ? "goldenBaitUsed" : "baitUsed"] += 1;
 
-        var perkBonus = golden ? 0 : Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
+        var perkBonus = Math.min(itemData.honey.bonusRate * player.balls.honey, itemData.honey.maxRate);
         if (player.truesalt < now() && chance(itemData[item].successRate + perkBonus)) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
             if (golden) {
@@ -6453,7 +6453,7 @@ function Safari() {
             input = getInputPokemon(i);
             if (info.silver) {
                 if (input.num) {
-                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: " + plural(info.price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
+                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: " + plural(info.price, silverName) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
@@ -6462,7 +6462,7 @@ function Safari() {
                 }
             } else {
                 if (input.num) {
-                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + ":1\">" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
+                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: $" + addComma(info.price) + (info.limit === -1 ? "" : (info.limit === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")), sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
@@ -6696,10 +6696,17 @@ function Safari() {
         }
 
         var amount = 1;
-        if (input.type == "item" && info.length > 2) {
+        if (info.length > 2) {
             amount = parseInt(info[2], 10);
-            if (isNaN(amount) || amount < 1 || input.id == "box") {
-                amount = 1;
+            if (input.type == "poke") {
+                if (amount > 1) {
+                    safaribot.sendHtmlMessage(src, "You cannot buy multiples Pokémon at once! Changing amount to 1!", safchan);
+                    amount = 1;
+                }
+            } else {
+                if (isNaN(amount) || amount < 1 || input.id == "box") {
+                    amount = 1;
+                }
             }
         }
 
@@ -6742,7 +6749,12 @@ function Safari() {
 
         var boxPrice = itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)];
         var cost = input.id == "box" ? boxPrice : shop[input.input].price * amount;
-
+        
+        var discount = false, discountRate = 0.5;
+        if (discount) {
+            cost = Math.ceil(cost * discountRate);
+        }
+        
         if (isSilver) {
             if (player.balls.silver < cost) {
                 if (fromNPC) {
@@ -17813,7 +17825,7 @@ function Safari() {
                     for (i in obj.stamina) {
                         list.push(i.toCorrectCase() + " (" + obj.stamina[i] + ")");
                     }
-                    out.push(readable(list, "and") + " at Room " + obj.level + "-" + obj.room);
+                    out.push(readable(list, "and") + " at Room " + obj.level + "-" + obj.room + " (" + plural(obj.points, "Point") + ")");
                 }
                 if (out.length > 0) {
                     nothingFound = false;
@@ -17844,10 +17856,10 @@ function Safari() {
                 checkUpdate();
                 return true;
             }
-            if (command === "dqraffle") {
+            if (command === "dqraffle" || command === "sdqraffle") {
                 var cmd = commandData.split(":");
                 var target = cmd[0];
-                var playerId = sys.id(target);
+                var playerId = command === "sdqraffle" ? null : sys.id(target);
                 var player = getAvatarOff(target);
                 if (!player) {
                     safaribot.sendMessage(src, "No such player!", safchan);
