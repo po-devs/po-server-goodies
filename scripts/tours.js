@@ -3609,7 +3609,7 @@ function tourstart(tier, starter, key, parameters) {
             if (channels[x] == tourschan || parameters.event) {
                 var arr = sys.playersOfChannel(tourschan);
                 for (var y in arr) {
-                    sendChanHtmlAll("<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b>" + (sys.os(arr[y]) === "android" ? "<font color='Blue'>" + tier + "</font>":"<a href='po:send//changetier " + tier + "'>" + tier + "</a>") + "</b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
+                    sys.sendHtmlMessage(arr[y], "<timestamp/> " + (startsWithVowel(tier) ? "An " : "A ") + "<b>" + (sys.os(arr[y]) === "android" ? "<font color='Blue'>" + tier + "</font>":"<a href='po:send//changetier " + tier + "'>" + tier + "</a>") + "</b> "+(!tours.tour[key].event ? "tournament" : "event")+" has opened for signups! (Started by <b>"+html_escape(starter)+"</b>)", channels[x]);
                 }
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
