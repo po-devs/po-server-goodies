@@ -223,6 +223,8 @@ function Safari() {
         consecutiveLogins: 1,
         lastViewedRules : 0,
         visible: true,
+        trading: true,
+        tradeBlacklist: [],
         flashme: false,
         altlog: [],
         tradeban: 0,
@@ -2489,6 +2491,13 @@ function Safari() {
         }
         out.result = out.missing.length === 0;
         return out;
+    }
+    function mapAssetName(x) {
+        var asset = translateAsset(x);
+        if (asset.type === "money") {
+            return "Money";
+        }
+        return asset.name;
     }
     
     /* Wild Pokemon & Contests */
@@ -8245,13 +8254,27 @@ function Safari() {
             return;
         }
         var userName = sys.name(src).toLowerCase();
-        if (data.toLowerCase() === "cancel") {
+        var lData = data.toLowerCase();
+        if (lData === "cancel") {
             if (userName in tradeRequests) {
                 safaribot.sendMessage(src, "You cancelled your trade request with " + tradeRequests[userName].target.toCorrectCase() + "!", safchan);
                 delete tradeRequests[userName];
             } else {
                 safaribot.sendMessage(src, "You have no pending trades initiated by you!", safchan);
             }
+            return;
+        } else if (["on", "off"].contains(lData)) {
+            if (lData === "on") {
+                player.trading = true;
+            } else {
+                player.trading = false;
+            }
+            safaribot.sendMessage(src, "You " + (lData === "on" ? "enabled" : "disabled") + " trades!", safchan);
+            this.saveGame(player);
+            return;
+        }
+        if (!player.trading) {
+            safaribot.sendHtmlMessage(src, "You currently have trades disabled! Use " + link("/trade on") + " to enable them!", safchan);
             return;
         }
 
@@ -8289,6 +8312,15 @@ function Safari() {
             safaribot.sendMessage(src, "You can't trade with yourself!", safchan);
             return;
         }
+        if (target.records.pokesCaught < 4) {
+            safaribot.sendMessage(src, "This person cannot trade yet!", safchan);
+            return;
+        }
+        if (!target.trading) {
+            safaribot.sendMessage(src, "This person is not accepting any trade right now!", safchan);
+            return;
+        }
+        
 
         var offer = info[1].toLowerCase();
         var request = info[2].toLowerCase();
@@ -8341,6 +8373,26 @@ function Safari() {
                 rejected.push(translateAsset(identical[i]).name);
             }
             safaribot.sendMessage(src, "You cannot request the same Pokémon/Item/Money that you offer! Please remove " + readable(rejected) + " from the offer or from the request!", safchan);
+            return;
+        }
+        var blacklisted = [];
+        for (i in offerObj) {
+            if (i !== "$" && player.tradeBlacklist.contains(i)) {
+                blacklisted.push(mapAssetName(i));
+            }
+        }
+        if (blacklisted.length > 0) {
+            safaribot.sendHtmlMessage(src, "You need to remove " + readable(blacklisted.map(tradeblockRemove)) + " from your trade blacklist before you can trade them!", safchan);//TODO: Add links for this
+            return;
+        }
+        blacklisted = [];
+        for (i in requestObj) {
+            if (i !== "$" && target.tradeBlacklist.contains(i)) {
+                blacklisted.push(mapAssetName(i));
+            }
+        }
+        if (blacklisted.length > 0) {
+            safaribot.sendMessage(src, sys.name(targetId) + " does not want to trade " + readable(blacklisted) + "!", safchan);
             return;
         }
 
@@ -8608,7 +8660,57 @@ function Safari() {
         }
         return warns.length === 0;
     };
-
+    this.blacklistTrade = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src), list;
+        if (data === "*") {
+            list = player.tradeBlacklist;
+            if (list.length > 0) {
+                safaribot.sendHtmlMessage(src, "You currently have the following items/Pokémon tradeblocked: " + readable(list.map(tradeblockRemove)), safchan); //TODO: Add links to unblock
+            }
+            safaribot.sendMessage(src, "Use /tradeblock [Item/Pokémon] to add an Item/Pokémon from this list and automatically reject trade offers for that. Use the command again to remove it.", safchan);
+            return;
+        }
+        var info = toStuffObj(data);
+        list = player.tradeBlacklist.concat();
+        var added = [], removed = [];
+        for (var e in info) {
+            if (e !== "$") {
+                if (list.contains(e)) {
+                    list.splice(list.indexOf(e), 1);
+                    removed.push(e);
+                } else {
+                    list.push(e);
+                    added.push(e);
+                }
+            }
+        }
+        if (list.length > 20) {
+            safaribot.sendMessage(src, "You can only add up to 20 Items/Pokémon to your Tradeblocked list.", safchan);
+            return;
+        }
+        player.tradeBlacklist = list;
+        var changed = [], toFrom = "to";
+        if (added.length > 0) {
+            changed.push("added " + readable(added.map(mapAssetName)));
+        }
+        if (removed.length > 0) {
+            changed.push("removed " + readable(removed.map(mapAssetName)));
+            toFrom = "from";
+        }
+        if (changed.length === 0) {
+            safaribot.sendMessage(src, "No changes made to your Tradeblocked list!", safchan);
+            return;
+        }
+        safaribot.sendMessage(src, "You " + readable(changed) + " " + toFrom + " your Tradeblocked list! Current list: " + (readable(list.map(mapAssetName)) || "Empty"), safchan);
+        this.saveGame(player);
+    };
+    function tradeblockRemove(x) {
+        return link("/tradeblock " + x, mapAssetName(x));
+    }
+    
     /* Quests */
     this.questNPC = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -14282,6 +14384,7 @@ function Safari() {
             expires: now() + hours(24)
         };
         permObj.add("dailyBoost", JSON.stringify(dailyBoost));
+        permObj.remove("nextDailyBoost");
         permObj.save();
         sys.sendAll(separator, safchan);
         safaribot.sendAll("The Boost-of-the-Day is now " + sys.pokemon(randomNum) + ", who will give a bonus catch rate of " + bonus.toFixed(2) + "x if used as your active Pokémon!", safchan);
@@ -15099,6 +15202,7 @@ function Safari() {
             "/exchange: To exchange one of your Pokémon for Raffle Entries!",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
+            "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. To reject all trades, use /trade off.",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
@@ -15363,8 +15467,11 @@ function Safari() {
                 return true;
             }
             if (command === "trade") {
-                // safari.tradePokemon(src, commandData);
                 safari.offerTrade(src, commandData);
+                return true;
+            }
+            if (command === "tradeblock") {
+                safari.blacklistTrade(src, commandData);
                 return true;
             }
             if (command === "auction") {
@@ -15538,13 +15645,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
                     for (e in leaderboardTypes) {
-                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + leaderboardTypes[e].alias + "'>" + cap(leaderboardTypes[e].alias) + "</a> : Leaderboard " + leaderboardTypes[e].desc, safchan);
-                    }
-                    for (e in monthlyLeaderboardTypes) {
-                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + monthlyLeaderboardTypes[e].alias + "'>" + cap(monthlyLeaderboardTypes[e].alias) + "</a> : Leaderboard " + monthlyLeaderboardTypes[e].desc, safchan);
-                    }
-                    for (e in monthlyLeaderboardTypes) {
-                        safaribot.sendHtmlMessage(src, "<a href='po:send//lb " + monthlyLeaderboardTypes[e].lastAlias + "'>" + cap(monthlyLeaderboardTypes[e].lastAlias) + "</a> : Leaderboard " + monthlyLeaderboardTypes[e].lastDesc, safchan);
+                        safaribot.sendHtmlMessage(src, link("/lb " + leaderboardTypes[e].alias, cap(leaderboardTypes[e].alias)) + ": Leaderboard " + leaderboardTypes[e].desc + (monthlyLeaderboardTypes.hasOwnProperty(e) ? " | " + link("/lb " + monthlyLeaderboardTypes[e].alias, cap(monthlyLeaderboardTypes[e].alias)) + " | " + link("/lb " + monthlyLeaderboardTypes[e].lastAlias, cap(monthlyLeaderboardTypes[e].lastAlias)) : ""), safchan);
                     }
                     sys.sendMessage(src, "", safchan);
                     return true;
@@ -17461,6 +17562,16 @@ function Safari() {
                 safari.changeDailyBoost(commandData);
                 return true;
             }
+            if (command === "nextboost") {
+                var info = getInputPokemon(commandData);
+                if (!info.num) {
+                    safaribot.sendMessage(src, commandData + " is not a valid Pokémon!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, info.name + " will be the next Boost of the Day!", safchan);
+                permObj.add("nextDailyBoost", info.input);
+                return true;
+            }
             if (command === "changescientist") {
                 safari.changeScientistQuest(commandData);
                 safaribot.sendMessage(src, "You changed the scientist quest to request for " + poke(scientistQuest.pokemon) + ".", safchan);
@@ -18793,7 +18904,8 @@ function Safari() {
                     safari.changeScientistQuest();
                 }
                 if (today >= getDay(dailyBoost.expires)) {
-                    safari.changeDailyBoost();
+                    var next = permObj.get("nextDailyBoost");
+                    safari.changeDailyBoost(next);
                     safari.checkNewMonth();
                 }
                 checkUpdate();
