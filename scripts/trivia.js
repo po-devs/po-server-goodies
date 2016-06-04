@@ -2612,6 +2612,12 @@ addAdminCommand(["passta"], function (src, commandData, channel) {
     return;
 }, "To give your Trivia Admin powers to an alt.");
 
+addOwnerCommand(["saybold"], function (src, commandData, channel) {
+    if (commandData === "")
+        return;
+    triviabot.sendHtmlAll("(" + utilities.html_escape(sys.name(src)) + "): <b>" + utilities.html_escape(commandData) + "</b>", channel);
+}, "Allows you to talk in bold during the answer period.");
+
 addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
     if (tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
