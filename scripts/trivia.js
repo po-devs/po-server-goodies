@@ -654,6 +654,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                             triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", sys.channelId("Victory Road"));
                         }
                         triviabot.sendAll("Warning: Player " + name + " answered '" + tanswer + "' to the question '" + triviaq.get(this.roundQuestion).question + "' in #Trivia", revchan);
+                        break;
                     }
                 }
             }
