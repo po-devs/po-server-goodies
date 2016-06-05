@@ -6321,7 +6321,13 @@ function Safari() {
 
         var pawning = [], item, amount, pawnAll;
         if (data.toLowerCase() === "all") {
-            pawning = validItems;
+            var valuablesExcludingRock = [];
+            for (var e in validItems) {
+                if (itemData[e].price !== itemData[rock].price) {
+                    valuablesExcludingRock.push(itemData[e].name);
+                }
+            }
+            pawning = valuablesExcludingRock;
             pawnAll = true;
         } else {
             var info = data.split(":");
@@ -15097,7 +15103,7 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon.",
             "/exchange: To exchange one of your Pokémon for Raffle Entries!",
-            "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
+            "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once, except rocks!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
