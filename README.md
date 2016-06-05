@@ -1,4 +1,4 @@
-This repository contains scripts.js and tiers.xml used in Pokemon Online Server.
+This repository contains scripts.js and tiers.xml as used in the Pokemon Online Server.
 
 *** Installation instructions ***
 
