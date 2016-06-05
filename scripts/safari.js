@@ -6323,7 +6323,7 @@ function Safari() {
         if (data.toLowerCase() === "all") {
             var valuablesExcludingRock = [];
             for (var e in validItems) {
-                if (itemData[e].price !== itemData[rock].price) {
+                if (itemData[e].price !== itemData.rock.price) {
                     valuablesExcludingRock.push(itemData[e].name);
                 }
             }
