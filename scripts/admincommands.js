@@ -326,7 +326,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         if (command == "cookiemute") {
-            SESSION.users(tar).activate("smute", Config.kickbot, 0, "Cookie", true);
+            SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
             kickbot.sendAll(commandData + " was smuted by cookie", staffchannel);
         }
         var type = (command === "cookieban" ? "banned" : "muted");
@@ -388,7 +388,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.idBans.add(id, JSON.stringify(banInfo));
         normalbot.sendAll(commandData.toCorrectCase() + " was ID " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + ", v" + sys.version(tar) + "]", staffchannel);
         if (type == "muted") {
-            SESSION.users(tar).activate("smute", Config.kickbot, 0, "ID", true);
+            SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
         } else {
             sys.kick(tar);
         }
