@@ -6321,13 +6321,7 @@ function Safari() {
 
         var pawning = [], item, amount, pawnAll;
         if (data.toLowerCase() === "all") {
-            var valuablesExcludingRock = [];
-            for (var e in validItems) {
-                if (itemData[e].price !== itemData.rock.price) {
-                    valuablesExcludingRock.push(itemData[e].name);
-                }
-            }
-            pawning = valuablesExcludingRock;
+            pawning = validItems;
             pawnAll = true;
         } else {
             var info = data.split(":");
@@ -6357,6 +6351,9 @@ function Safari() {
             item = pawning[i];
             if (player.balls[item] > 0) {
                 if (pawnAll) {
+                    if (item === "rock") {
+                        continue;
+                    }
                     amount = player.balls[item];
                 }
                 cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
