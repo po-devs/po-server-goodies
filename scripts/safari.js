@@ -16663,7 +16663,7 @@ function Safari() {
                 }
                 player.locked = command === "lock";
                 safari.saveGame(player);
-                safaribot.sendMessage(src, "You " + (command === "unlock" ? "un" : "") + "locked " + player.id + " save! " + (command === "unlock" ? "Their save will be loaded normally by joining the channel or using /start." : ""), safchan);
+                safaribot.sendMessage(src, "You " + (command === "unlock" ? "un" : "") + "locked " + player.id.toCorrectCase() + "'s save! " + (command === "unlock" ? "Their save will be loaded normally by joining the channel or using /start." : ""), safchan);
                 return true;
             }
             if (command === "analyze" || command === "analyzer") {
@@ -18570,6 +18570,7 @@ function Safari() {
             var id = sys.name(src).toLowerCase();
             if (!sys.dbRegistered(id)) {
                 player.locked = true;
+                safaribot.sendAll(sys.name(src) + "'s Safari save was locked because they left the channel while unregistered!", staffchannel);
             }
             this.saveGame(player);
         }
@@ -18581,8 +18582,9 @@ function Safari() {
             if (player) {
                 if (sys.name(src).toLowerCase() !== player.id) {
                     this.clearPlayer(src);
-                    if (!sys.dbRegistered(sys.name(src).toLowerCase())) {
+                    if (!sys.dbRegistered(player.id)) {
                         player.locked = true;
+                        safaribot.sendAll(player.id.toCorrectCase() + "'s Safari save was locked because unregistered their alt and changed names!", staffchannel);
                     }
                     this.saveGame(player);
 
