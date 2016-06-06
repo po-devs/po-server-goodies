@@ -317,7 +317,7 @@ function Safari() {
 
         //Other Items
         //Seasonal change. Rock icon is 206, Snowball is 334
-        rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+        rock: {name: "rock", fullName: "Rock", type: "valuables", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: true},
         bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
         golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
         gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -463,7 +463,7 @@ function Safari() {
         dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
         spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs.",
         mega: "A mysterious stone that allows certain Pokémon to undergo a powerful transformation. It is said to wear off in approximately " + itemData.mega.duration + " days. Use with \"/mega [Pokémon]\". Obtained from Official Events and Prize Packs.",
-        valuables: "The items Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
+        valuables: "The items Rock, Pearl, Stardust, Big Pearl, Star Piece, Nugget and Big Nugget can be sold for a varying amount of money. Sell with \"/pawn [Item]\". Obtained from Gachapon, found with Itemfinder, and rewarded from Contests.",
         itemfinder: "Itemfinder: An experimental machine that can help find rare items! By default, it can only hold " + itemData.itemfinder.charges + " charges. These charges are reset every day. Use with \"/finder\".",
         gem: "An electrically charged gem created by a famous Ampharos in Olivine City. It is said to be able to recharge the Itemfinder, giving it " + itemData.gem.charges + " more uses for the day! Use with \"/use gem\". Obtained from Gachapon and quests.",
         box: "Increases number of Pokémon that can be owned by " + itemData.box.bonusRate + " each. Can only acquire by purchasing.",
@@ -6330,7 +6330,13 @@ function Safari() {
 
         var pawning = [], item, amount, pawnAll;
         if (data.toLowerCase() === "all") {
-            pawning = validItems;
+            var valuablesExcludingRock = [];
+            for (var e in validItems) {
+                if (itemData[e].price !== itemData.rock.price) {
+                    valuablesExcludingRock.push(itemData[e].name);
+                }
+            }
+            pawning = valuablesExcludingRock;
             pawnAll = true;
         } else {
             var info = data.split(":");
@@ -15200,7 +15206,7 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/sell: To sell one of your Pokémon.",
             "/exchange: To exchange one of your Pokémon for Raffle Entries!",
-            "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
+            "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once, except rocks!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. To reject all trades, use /trade off.",
             "/buy: To buy items or Pokémon from an NPC.",
