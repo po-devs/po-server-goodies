@@ -6713,12 +6713,12 @@ function Safari() {
             amount = parseInt(info[2], 10);
             if (input.type == "poke") {
                 if (amount > 1) {
-                    safaribot.sendHtmlMessage(src, "You cannot buy multiples Pokémon at once! Changing amount to 1!", safchan);
+                    safaribot.sendHtmlMessage(src, "You cannot buy multiple Pokémon at once! Changing amount to 1!", safchan);
                     amount = 1;
-                }
-            } else {
-                if (isNaN(amount) || amount < 1 || input.id == "box") {
-                    amount = 1;
+                } else {
+                    if (isNaN(amount) || amount < 1 || input.id == "box") {
+                        amount = 1;
+                    }
                 }
             }
         }
