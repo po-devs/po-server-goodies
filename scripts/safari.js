@@ -3331,7 +3331,7 @@ function Safari() {
         }
         
         if (baitThrow) {
-            safaribot.sendMessage(src, "You quickly scramble to put your " + finishName("bait") + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
+            safaribot.sendMessage(src, "You quickly scramble to put your " + finishName(command === "gbait" ? "golden" : "bait") + " away in order to try to catch the wild Pokémon lured by someone else!", safchan);
         }
 
         if (preparationPhase > 0) {
@@ -11025,7 +11025,7 @@ function Safari() {
         
         this.sendAll("");
         if (["run", "runaway", "run away", "flee"].contains(choices[this.pyr.leader])) {
-            var pointsLost = 9 + 5 * this.level;
+            var pointsLost = 8 + 5 * this.level;
             this.sendAll(toColor("Party leader {0} decided to run away from the {1}! {0} lost {2} Stamina!".format(this.pyr.leader.toCorrectCase(), (this.isRevealed ? poke(opp) : "hidden Pokémon"), pointsLost), "crimson"));
             stamina[this.pyr.leader] = -pointsLost;
             this.pyr.updateStatus(0, stamina);
