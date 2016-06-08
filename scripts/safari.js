@@ -20,6 +20,8 @@ function Safari() {
     var separator = "*** *********************************************************** ***";
 
     var saveFiles = "scriptdata/safarisaves.txt";
+    var saveBackupFile1 = "scriptdata/safari/savesBackup1.txt";
+    var saveBackupFile2 = "scriptdata/safari/savesBackup2.txt";
     var deletedSaveFiles = "scriptdata/safari/deletedsafarisaves.txt";
     var themesFile = "scriptdata/safari/themes.txt";
     var decorationsFile = "scriptdata/safari/decorations.txt";
@@ -45,6 +47,8 @@ function Safari() {
     var tradeBans;
     var saltBans;
     var rawPlayers;
+    var backupPlayers1;
+    var backupPlayers2;
     var cookedPlayers;
     var rafflePlayers;
     var npcShop;
@@ -4693,7 +4697,7 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "*** Player Records ***", safchan);
             sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(rec.pokesCaught, rec.pokesNotCaught, percentage(rec.pokesCaught, rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
-            sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden")), safchan);
+            sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney;
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver;
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
@@ -6666,6 +6670,12 @@ function Safari() {
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
+        if (isNaN(parseInt(player.money), 10) || player.money < 0) {
+            sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||had the invalid value " + JSON.stringify(player.money) + " for their money\n");
+            this.sanitize(player);
+            safaribot.sendMessage(src, "You found a hole in your pocket! All your money is gone! Contact a Safari Auth for clarification.", safchan);
+            return;
+        }
 
         input = getInput(product);
         if (!input) {
@@ -8190,6 +8200,12 @@ function Safari() {
             safaribot.sendMessage(src, "You must offer a minimum of $" + addComma(this.currentOffer + this.minBid) + "!", safchan);
             return;
         }
+        if (isNaN(parseInt(player.money), 10) || player.money < 0) {
+            sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||had the invalid value " + JSON.stringify(player.money) + " for their money\n");
+            safari.sanitize(player);
+            safaribot.sendMessage(src, "You found a hole in your pocket! All your money is gone! Contact a Safari Auth for clarification.", safchan);
+            return;
+        }
         if (player.money < offer) {
             safaribot.sendMessage(src, "You do not have $" + addComma(offer) + "!", safchan);
             return;
@@ -8351,6 +8367,12 @@ function Safari() {
         }
         var requestType = this.isValidTrade(src, requestObj, "request", offerObj);
         if (!requestType) {
+            return;
+        }
+        if (isNaN(parseInt(player.money), 10) || player.money < 0) {
+            sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||had the invalid value " + JSON.stringify(player.money) + " for their money\n");
+            this.sanitize(player);
+            safaribot.sendMessage(src, "You found a hole in your pocket! All your money is gone! Contact a Safari Auth for clarification.", safchan);
             return;
         }
         if (!this.canTrade(src, offerObj)) {
@@ -14169,6 +14191,7 @@ function Safari() {
             if (!sys.dbRegistered(player.id)) {
                 player.locked = true;
                 safaribot.sendAll(sys.name(src) + "'s Safari save was locked because they loaded their save while unregistered!", staffchannel);
+                sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||was locked for loading their save while unregistered\n");
                 this.saveGame(player);
             }
             if (player.locked) {
@@ -14831,6 +14854,14 @@ function Safari() {
             return parseInt(obj.get(e), 10) === 0 || parseInt(obj.get(e), 10) < now();
         });
         tradeBans.save();
+    };
+    this.backupSaves = function() {
+        rawPlayers.save();
+        sys.write(saveBackupFile2, sys.getFileContent(saveBackupFile1));
+        sys.write(saveBackupFile1, sys.getFileContent(rawPlayers.fname));
+        
+        backupPlayers1 = new MemoryHash(saveBackupFile1);
+        backupPlayers2 = new MemoryHash(saveBackupFile2);
     };
     this.sanitize = function(player) {
         if (player) {
@@ -16668,9 +16699,14 @@ function Safari() {
                     safaribot.sendMessage(src, "This person doesn't have a Safari save!", safchan);
                     return true;
                 }
-                player.locked = command === "lock";
+                var locking = command === "lock";
+                if (!locking && !sys.dbRegistered(player.id)) {
+                    safaribot.sendMessage(src, "You cannot unlock this person's save as this alt is still unregistered!", safchan);
+                    return true;
+                }
+                player.locked = locking;
                 safari.saveGame(player);
-                safaribot.sendMessage(src, "You " + (command === "unlock" ? "un" : "") + "locked " + player.id.toCorrectCase() + "'s save! " + (command === "unlock" ? "Their save will be loaded normally by joining the channel or using /start." : ""), safchan);
+                safaribot.sendMessage(src, "You " + (!locking ? "un" : "") + "locked " + player.id.toCorrectCase() + "'s save! " + (!locking ? "Their save will be loaded normally by joining the channel or using /start." : ""), safchan);
                 return true;
             }
             if (command === "analyze" || command === "analyzer") {
@@ -16710,6 +16746,47 @@ function Safari() {
                     }
                 }
                 safaribot.sendMessage(src, (target ? sys.name(target) : player.id) + "." + propName.join(".") + ": " + JSON.stringify(attr, null, spc), safchan);
+                return true;
+            }
+            if (command === "checkbackup") {
+                var info = commandData.split(":");
+                var target = info[0].toLowerCase();
+                
+                if (info.length < 2) {
+                    safaribot.sendMessage(src, "Searching Safari Save for name '" + target + "' on backup files:", safchan);
+                    safaribot.sendHtmlMessage(src, "Backup File 1: " + (backupPlayers1.get(target) ? link("/checkbackup " + target + ":backup1") : "Not found"), safchan);
+                    safaribot.sendHtmlMessage(src, "Backup File 2: " + (backupPlayers2.get(target) ? link("/checkbackup " + target + ":backup2") : "Not found"), safchan);
+                    safaribot.sendHtmlMessage(src, "Deleted Saves: " + (cookedPlayers.get(target) ? link("/checkbackup " + target + ":deleted") : "Not found"), safchan);
+                    return true;
+                }
+                
+                var filename = info[1].toLowerCase();
+                var hash;
+                switch (filename) {
+                    case "backup1":
+                        hash = backupPlayers1;
+                    break;
+                    case "backup2":
+                        hash = backupPlayers2;
+                    break;
+                    case "deleted":
+                        hash = cookedPlayers;
+                    break;
+                    default:
+                        safaribot.sendMessage(src, filename + " is not a valid backup file! Try 'backup1', 'backup2' or 'deleted'!", safchan);
+                        return true;
+                }
+                
+                var data = hash.get(target);
+                if (!data) {
+                    safaribot.sendMessage(src, "There's no Safari save with the name '{0}' in the {1} file!".format(target, filename), safchan);
+                    return true;
+                }
+                if (typeof data === "object") {
+                    data = JSON.stringify(data, null, 0);
+                }
+                
+                safaribot.sendMessage(src, target + "'s backup save from " + filename + " file: " + data, safchan);
                 return true;
             }
 
@@ -18432,6 +18509,8 @@ function Safari() {
         SESSION.channels(safchan).perm = true;
         rawPlayers = new MemoryHash(saveFiles);
         cookedPlayers = new MemoryHash(deletedSaveFiles);
+        backupPlayers1 = new MemoryHash(saveBackupFile1);
+        backupPlayers2 = new MemoryHash(saveBackupFile2);
         rafflePlayers = new MemoryHash(rafflePlayersFile);
         tradeBans = new MemoryHash(tradebansFile);
         saltBans = new MemoryHash(saltbansFile);
@@ -18578,6 +18657,7 @@ function Safari() {
             if (!sys.dbRegistered(id)) {
                 player.locked = true;
                 safaribot.sendAll(sys.name(src) + "'s Safari save was locked because they left the channel while unregistered!", staffchannel);
+                sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||was locked for leaving channel while unregistered\n");
             }
             this.saveGame(player);
         }
@@ -18592,6 +18672,7 @@ function Safari() {
                     if (!sys.dbRegistered(player.id)) {
                         player.locked = true;
                         safaribot.sendAll(player.id.toCorrectCase() + "'s Safari save was locked because unregistered their alt and changed names!", staffchannel);
+                        sys.appendToFile(miscLog, now() + "|||" + player.id + "|||was locked for changing names while unregistered\n");
                     }
                     this.saveGame(player);
 
@@ -18960,6 +19041,7 @@ function Safari() {
                     var next = permObj.get("nextDailyBoost");
                     safari.changeDailyBoost(next);
                     safari.checkNewMonth();
+                    safari.backupSaves();
                 }
                 checkUpdate();
             } else {
