@@ -6715,12 +6715,14 @@ function Safari() {
                 if (amount > 1) {
                     safaribot.sendHtmlMessage(src, "You cannot buy multiple Pokémon at once! Changing amount to 1!", safchan);
                     amount = 1;
-                } else {
-                    if (isNaN(amount) || amount < 1 || input.id == "box") {
-                        amount = 1;
-                    }
                 }
+            } else if (input.id == "box") {
+                amount = 1;
             }
+        }
+        if (isNaN(amount) || amount < 1 || !amount) {
+            safaribot.sendHtmlMessage(src, "Please choose a valid amount!", safchan);
+            return;
         }
 
         if (shop[input.input].limit !== -1 && shop[input.input].limit - amount < 0) {
@@ -14164,6 +14166,11 @@ function Safari() {
         var data = rawPlayers.get(sys.name(src).toLowerCase());
         if (data) {
             var player = JSON.parse(data);
+            if (!sys.dbRegistered(player.id)) {
+                player.locked = true;
+                safaribot.sendAll(sys.name(src) + "'s Safari save was locked because they loaded their save while unregistered!", staffchannel);
+                this.saveGame(player);
+            }
             if (player.locked) {
                 safaribot.sendHtmlMessage(src, toColor("Your Safari save is currently locked! Contact a Safari Auth to unlock it!", "red"), safchan);
                 SESSION.users(src).safari = null;
