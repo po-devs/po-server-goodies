@@ -28,7 +28,7 @@ var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1",
 //Tiers with Team Preview state that can't be modified
 var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles", "Flash Clash"];
 //Tiers used when queue is empty
-var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "ORAS 1v1", "Flash Clash", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
+var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "ORAS 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
 
 //Clause List
 var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
@@ -2052,7 +2052,7 @@ function tourCommand(src, command, commandData, channel) {
                     else {
                         tours.queue.push({'tier': tourtier, 'starter': sys.name(src), 'parameters': parameters});
                     }
-                    sendBotAll(sys.name(src)+" added a "+tourtier+" tournament into the "+(command == "shift" ? "front of" : "")+" queue! Type /queue to see what is coming up next.",tourschan, false);
+                    sendBotAll(sys.name(src)+" added " + (startsWithVowel(tourtier) ? "an " : "a ") + tourtier + " tournament into the "+(command == "shift" ? "front of" : "")+" queue! Type /queue to see what is coming up next.",tourschan, false);
                 }
                 else {
                     tourstart(tourtier, sys.name(src), tours.key, parameters);
@@ -3536,8 +3536,24 @@ function tourstart(tier, starter, key, parameters) {
                 activeAuthCount++;
                 sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
             }
+        }        
+        sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 2 random tiers."), staffchan, true);
+
+        var tourarray = autotiers.shuffle();        
+        var checked = 0;
+        var toursAdded = 0;
+        while (checked < tourarray.length && toursAdded < 2) {            
+            var tourtier = tourarray[checked];
+            var lasttours = getListOfTours(tourconfig.norepeat);
+            var lastindex = lasttours.indexOf(tourtier);
+            if (lastindex === -1) {
+                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
+                tours.queue.push({'tier': tourtier, 'starter': "Autostarter", 'parameters': parameters});
+                sendBotAll((startsWithVowel(tourtier) ? "An " : "A ") + tourtier + " tournament was automatically placed into the queue!",tourschan, false);
+                toursAdded++;
+            } 
+            checked++;
         }
-        sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : "."), staffchan, true);
     }
     try {
         var channels = tourschan === 0 ? [0] : [0, tourschan];
