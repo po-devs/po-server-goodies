@@ -14188,7 +14188,7 @@ function Safari() {
         var data = rawPlayers.get(sys.name(src).toLowerCase());
         if (data) {
             var player = JSON.parse(data);
-            if (!sys.dbRegistered(player.id)) {
+            if (!sys.dbRegistered(player.id) && !player.locked) {
                 player.locked = true;
                 safaribot.sendAll(sys.name(src) + "'s Safari save was locked because they loaded their save while unregistered!", staffchannel);
                 sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||was locked for loading their save while unregistered\n");
