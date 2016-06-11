@@ -1913,6 +1913,10 @@ addAdminCommand(["search"], function (src, commandData, channel) {
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
     if (commandData === undefined) return;
+    if (Trivia.started) {
+       Trivia.sendPM(src, "You can't use this during a game!", channel);
+       return;
+    }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [];
