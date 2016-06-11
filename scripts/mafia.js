@@ -1322,12 +1322,22 @@ function Mafia(mafiachan) {
             for (var c in data) {
                 if (data[c].hasOwnProperty("macro")) {
                     if (data[c].macro) {
-                        cmds.push(htmlLink("/" + c));
+                        if (sys.os(player) === "android") {
+                            cmds.push("/" + c);
+                        }
+                        else {
+                            cmds.push(htmlLink("/" + c));
+                        }
                     }
                     continue;
                 }
                 if (mafia.theme.macro) {
-                    cmds.push(htmlLink("/" + c));
+                    if (sys.os(player) === "android") {
+                        cmds.push("/" + c);
+                    }
+                    else {
+                        cmds.push(htmlLink("/" + c));
+                    }
                 }
             }
         }
@@ -2056,7 +2066,7 @@ function Mafia(mafiachan) {
             });
         for (var i = 0; i < channelUsers.length; i++) {
             var name = sys.name(channelUsers[i]);
-            if (this.isInGame(name)) {
+            if (this.isInGame(name) && (sys.os(channelUsers[i]) !== "android")) {
                 var n = players.indexOf(name);
                 list[n] = "<a href=\"po:appendmsg/" + name + "\" style=\"color:" + script.getColor(channelUsers[i]) + "\">" + html_escape(name) + "</a><ping/>";
                 gamemsg(name, list.join(", ") + ".", "±Current Players", undefined, true);
