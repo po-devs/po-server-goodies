@@ -1658,6 +1658,13 @@ function Safari() {
         }
         return out;
     }
+    function toUserNames(str) {
+        var data = str.split(",");
+        for (var p = 0; p < data.length; p++) {
+            data[p] = data[p].trim();
+        }
+        return data;
+    }
     
     /* Formatting Functions */
     function cap(string, sentence) {
@@ -10477,9 +10484,7 @@ function Safari() {
         if (stamina) {
             for (var e in stamina) {
                 this.stamina[e] += stamina[e];
-                if (this.stamina[e] < 0) {
-                    this.stamina[e] = 0;
-                }
+                this.stamina[e] = Math.max(0, Math.min(this.stamina[e], this.maxStamina[e]));
             }
         }
         var stm = this.stamina;
@@ -17357,6 +17362,49 @@ function Safari() {
                 if (invalidPlayers.length > 0) {
                     safaribot.sendMessage(src, readable(invalidPlayers, "and") + (invalidPlayers.length > 1 ? " were" : " was") + "  not given anything because their name did not match any current save file.", safchan);
                 }
+                return true;
+            }
+            if (command === "reward" || command === "sreward") {
+                var data = toCommandData(commandData, ["players", "assets"]);
+                if (!data.players || !data.assets) {
+                    safaribot.sendMessage(src, "Format is '/reward Player1,Player2,etc:Asset1,Asset2,etc'.", safchan);
+                    return true;
+                }
+                
+                var players = toUserNames(data.players), player, p, id, invalid = [];
+                for (p = 0; p < players.length; p++) {
+                    id = players[p];
+                    if (!getAvatarOff(id)) {
+                        invalid.push(id);
+                    }
+                }
+                if (invalid.length > 0) {
+                    safaribot.sendMessage(src, "The following names do not have a Safari save: " + readable(invalid), safchan);
+                    return true;
+                }
+                
+                var stuff = toStuffObj(data.assets.replace(/,/g, ":"));
+                invalid = validateStuff(data.assets);
+                if (invalid.length > 0) {
+                    safaribot.sendMessage(src, "Invalid assets found: " + readable(invalid) + " !", safchan);
+                    return true;
+                }
+                
+                var out;
+                for (p = 0; p < players.length; p++) {
+                    id = players[p];
+                    player = getAvatarOff(id);
+                    out = giveStuff(player, stuff);
+                    if (sys.id(id)) {
+                        safaribot.sendMessage(sys.id(id), "You " + out + "!", safchan);
+                    }
+                    safari.sanitize(player);
+                }
+                if (command === "reward") {
+                    safaribot.sendAll(sys.name(src) + " rewarded " + readable(players) + " with " + translateStuff(stuff) + "!", safchan);
+                }
+                
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + readable(players) + "|||" + command +"|||received|||" + translateStuff(stuff) + "\n");
                 return true;
             }
             if (command === "givedeco") {
