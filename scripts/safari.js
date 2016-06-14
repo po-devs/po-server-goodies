@@ -17436,6 +17436,7 @@ function Safari() {
                 if (command === "reward") {
                     safaribot.sendAll(sys.name(src) + " rewarded " + readable(players) + " with " + translateStuff(stuff) + "!", safchan);
                 }
+                safaribot.sendMessage(src, "You rewarded " + readable(players) + " with " + translateStuff(stuff) + "!", safchan);
                 
                 sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + readable(players) + "|||" + command +"|||received|||" + translateStuff(stuff) + "\n");
                 return true;
