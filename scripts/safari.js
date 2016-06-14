@@ -15322,7 +15322,9 @@ function Safari() {
             "/lbban [player]: Removes a player from all leaderboards.",
             "/analyze [player]։[lookup]: Returns the value of a specified property relating to a person's save. Lookup follows object notation, leave blank to return the entire save's data.",
             "/track [player]: Adds a tracker to a player that sends a message every time they attempt to bait and throw a ball. Useful to catch botters.",
-            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing.",            
+            "/trick [player]։[pokemon]։[message]: Sends the designated player a fake wild Pokémon. Pokémon is optional, defaults to random. Message is an optional message such as \"Don't throw!\", defaults to nothing.",
+            "/offmsg [players]։[message]: Sets a message that will be sent to these players next time they join the channel.",
+            
             "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
             "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), showids (saves created with their idnum), misclog (other stuff)"
         ];
@@ -16712,6 +16714,37 @@ function Safari() {
                 player.locked = locking;
                 safari.saveGame(player);
                 safaribot.sendMessage(src, "You " + (!locking ? "un" : "") + "locked " + player.id.toCorrectCase() + "'s save! " + (!locking ? "Their save will be loaded normally by joining the channel or using /start." : ""), safchan);
+                return true;
+            }
+            if (command === "offmsg") {
+                var data = toCommandData(commandData, ["names", "message"]);
+                if (!data.names || !data.message) {
+                    safaribot.sendMessage(src, "Format is '/offmsg Player1,Player2,etc:::Message'.", safchan);
+                    return true;
+                }
+                
+                var players = toUserNames(data.names), player, p, id, invalid = [];
+                for (p = 0; p < players.length; p++) {
+                    id = players[p];
+                    if (!getAvatarOff(id)) {
+                        invalid.push(id);
+                    }
+                }
+                if (invalid.length > 0) {
+                    safaribot.sendMessage(src, "The following names do not have a Safari save: " + readable(invalid), safchan);
+                    return true;
+                }
+                
+                var out;
+                for (p = 0; p < players.length; p++) {
+                    id = players[p];
+                    player = getAvatarOff(id);
+                    
+                    player.pendingMessages.push(data.message);
+                    safari.saveGame(player);
+                }
+                
+                safaribot.sendMessage(src, readable(players) + " will receive the following message next time they load their save: " + data.message, safchan);
                 return true;
             }
             if (command === "analyze" || command === "analyzer") {
