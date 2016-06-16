@@ -1305,6 +1305,18 @@ function mafiaChecker() {
             }
         }
         
+        /* onDeath.detoxRoles related attributes */
+        if (checkType(action.detoxRoles, ["array"], comm + ".detoxRoles")) {
+            for (var i = 0; i < action.detoxRoles.length; ++i) {
+                checkValidRole(action.detoxRoles[i], comm + ".detoxRoles");
+            }
+        }
+        if (checkType(action.detoxMsg, ["string"], comm + ".detoxMsg")) {
+            if (!("detoxRoles" in action)) {
+                addMinorError("'detoxMsg' found at " + comm + ", but there's no 'detoxRoles'");
+            }
+        }
+        
         /* onDeath.convertRoles related attributes */
         if (checkType(action.convertRoles, ["object"], comm + ".convertRoles")) {
             for (e in action.convertRoles) {
