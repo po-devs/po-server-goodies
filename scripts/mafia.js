@@ -2188,8 +2188,8 @@ function Mafia(mafiachan) {
             if ("detoxRoles" in onDeath) {
                 targetRoles = onDeath.detoxRoles;
                 singleAffected = [];
-                for (r in targetRoles) {
-                    targetPlayers = this.getPlayersForRole(r);
+                for (var i = 0; i < targetRoles.length; ++i) {
+                    targetPlayers = this.getPlayersForRole(targetRoles[i]);
                     affected = [];
                     for (k = 0; k < targetPlayers.length; ++k) {
                         target = this.players[targetPlayers[k]];
