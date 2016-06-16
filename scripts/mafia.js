@@ -2185,6 +2185,27 @@ function Mafia(mafiachan) {
                     gamemsgAll(onDeath.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")));
                 }
             }
+            if ("detoxRoles" in onDeath) {
+                targetRoles = onDeath.detoxRoles;
+                singleAffected = [];
+                for (r in targetRoles) {
+                    targetPlayers = this.getPlayersForRole(r);
+                    affected = [];
+                    for (k = 0; k < targetPlayers.length; ++k) {
+                        target = this.players[targetPlayers[k]];
+                        if (target.poisoned !== undefined) {
+                            target.poisoned = undefined;
+                            affected.push(targetPlayers[k]);
+                        }
+                    }
+                    if (affected.length > 0) {
+                        if ("detoxmsg" in onDeath) {
+                            actionMessage = (onDeath.detoxmsg || "Because ~Self~ "+verb+", the ~Role~ was detoxed!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r));
+                            gamemsgAll(actionMessage);
+                        }
+                    }
+                }
+            }
             if ("convertRoles" in onDeath) {
                 targetRoles = onDeath.convertRoles;
                 singleAffected = [];
