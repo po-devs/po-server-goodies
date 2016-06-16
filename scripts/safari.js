@@ -10152,10 +10152,15 @@ function Safari() {
         }
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less blow stuff up Princess Fluffybutt!", safchan);
+        var lostPoke = false;
         if (chance(recipes[item].failChance)) {
-            var failUses = {};
+            var failUses = {}, lostStuff = {};
             for (var e in rec.failUses) {
                 failUses[e] = -rec.failUses[e];
+                if (translateAsset(e).type === "poke") {
+                    lostPoke = true;
+                    lostStuff[e] = rec.failUses[e];
+                }
             }
             var out = giveStuff(player, failUses, true);
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to smell like burnt marshmallows as you notice your ingredients ignite! You quickly douse the flames to prevent the whole place from burning down.", safchan);
@@ -10163,17 +10168,33 @@ function Safari() {
                 safaribot.sendMessage(src, "As the smoke clears you realize that your " + readable(out.lost) + " were burnt to a crisp!", safchan);
             }
             player.quests.alchemist.cooldown = now() + hours(0.25); //about 15 minutes
+            if (lostPoke) {
+                this.logLostCommand(sys.name(src), "quest alchemist:" + data.join(":"), "failed, lost " + translateStuff(lostStuff));
+            }
         } else {
             var ingUsed = {};
             for (var e in rec.ingredients) {
                 ingUsed[e] = -rec.ingredients[e];
+                if (translateAsset(e).type === "poke") {
+                    lostPoke = true;
+                }
+            }
+            for (e in rec.reward) {
+                if (translateAsset(e).type === "poke" && rec.reward[e] < 0) {
+                    lostPoke = true;
+                }
             }
             giveStuff(player, ingUsed, true);
             var rew = giveStuff(player, rec.reward, true);
             safaribot.sendMessage(src, "A bright circle appears in the room. The room starts to fill with a sparkling mist but it quickly disappates to reveal " + readable(rew.gained) + ".", safchan);
             safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
             player.records.transmutationsMade += recipes[item].transmutation || 0;
-            player.quests.alchemist.cooldown = now() + hours(recipes[item].cooldown);
+            if (recipes[item].cooldown > 0) {
+                player.quests.alchemist.cooldown = now() + hours(recipes[item].cooldown);
+            }
+            if (lostPoke) {
+                this.logLostCommand(sys.name(src), "quest alchemist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
+            }
         }
         this.saveGame(player);
     };
