@@ -146,6 +146,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.writeToFile(Config.dataDir+"nameBans.json", JSON.stringify(serialized));
         normalbot.sendMessage(src, "You banned: " + regex.toString(), channel);
+        script.refreshNamebans();
         return;
     }
     if (command === "nameunban") {
@@ -358,9 +359,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var banned = sys.getFileContent("bans.txt").split("\n").filter(function(s) {
-            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1;
+            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1 + " ";
         });
-        normalbot.sendMessage(src, banned, channel);
+        normalbot.sendMessage(src, banned.length > 1 ? banned : commandData + " has no current bans", channel);
         return;
     }
     if (command == "idban" || command == "idmute") {

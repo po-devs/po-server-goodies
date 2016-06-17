@@ -430,7 +430,7 @@ init : function() {
         "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
         "6. Do not misuse the server nor its guidelines:",
         "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
-    ];    
+    ];
     lastMemUpdate = 0;
     bannedUrls = [];
     battlesFought = +sys.getVal("Stats/BattlesFought");
@@ -489,15 +489,7 @@ init : function() {
         script.authStats = {};
 
     if (typeof nameBans == 'undefined') {
-        nameBans = [];
-        try {
-            var serialized = JSON.parse(sys.getFileContent("scriptdata/nameBans.json"));
-            for (var i = 0; i < serialized.nameBans.length; ++i) {
-                nameBans.push(new RegExp(serialized.nameBans[i], "i"));
-            }
-        } catch (e) {
-            // ignore
-        }
+        script.refreshNamebans();
     }
     if (typeof nameWarns == 'undefined') {
         nameWarns = [];
@@ -884,6 +876,18 @@ banList: function (src, command, commandData) {
     return;
 },
 
+refreshNamebans: function() {
+    nameBans = [];
+    try {
+        var serialized = JSON.parse(sys.getFileContent("scriptdata/nameBans.json"));
+        for (var i = 0; i < serialized.nameBans.length; ++i) {
+            nameBans.push(new RegExp(serialized.nameBans[i], "i"));
+        }
+    } catch (e) {
+        // ignore
+    }
+},
+
 importable : function(id, team, compactible, extras) {
 /*
 Tyranitar (M) @ Choice Scarf
@@ -905,7 +909,7 @@ Jolly Nature (+Spd, -SAtk)
     var ret = [];
     if (extras) {
         ret.push("Gen: {0}, Subgen: {1}".format(sys.gen(id, team), sys.subgen(id, team)));
-    }    
+    }
     for (var i = 0; i < 6; ++i) {
       var poke = sys.teamPoke(id, team, i);
         if (poke === undefined)

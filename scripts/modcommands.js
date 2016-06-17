@@ -464,7 +464,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (isBanned && !tempBanned) bans.push("normal ban");
         if (nameBanned) bans.push("nameban");
         if (rangeBanned) bans.push("rangeban");
-        if (tempBanned) bans.push("tempban " + getTimeString(sys.dbTempBanTime(name)));
+        if (tempBanned) bans.push("tempban (" + getTimeString(sys.dbTempBanTime(name)) + ")");
         if (ipBanned) bans.push("ip ban");
         if (isSmuted) bans.push("smuted");
 
@@ -599,7 +599,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var bans = [];
         if (sys.banned(ip) && !script.isTempBanned(ip)) { bans.push("Normal Ban"); }
         if (script.isRangeBanned(ip)) { bans.push("Range Ban"); }
-        if (script.isTempBanned(ip)) { bans.push("Temporary Ban"); }
+        if (script.isTempBanned(ip)) { bans.push("Temporary Ban (" + getTimeString(sys.dbTempBanTime(commandData)) + ")"); }
         if (script.isIpBanned(ip)) { bans.push("IP Ban"); }
         if (script.smutes.get(ip)) { bans.push("Smuted"); }
         if (bans.length > 0) {
