@@ -545,13 +545,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (resp !== "") {
                 sys.writeToFile(Config.dataDir + "notice.html", resp);
                 normalbot.sendMessage(src, "Notice updated!", channel);
+                if (command === "updatenotice") {
+                    sendNotice();
+                }         
             } else {
                 normalbot.sendAll("Failed to update notice!", staffchannel);
             }
         });
-        if (command === "updatenotice") {
-            sendNotice();
-        }
         return;
     }
     if (command == "updatebansites") {
