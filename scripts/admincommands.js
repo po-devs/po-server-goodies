@@ -168,6 +168,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 serialized.nameBans.push(nameBans[i].source);
             }
             sys.writeToFile(Config.dataDir+"nameBans.json", JSON.stringify(serialized));
+            script.refreshNamebans();
         }
         return;
     }
