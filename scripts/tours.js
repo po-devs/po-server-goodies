@@ -32,7 +32,7 @@ var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS O
 
 //Clause List
 var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
-    
+
 if (typeof tourschan !== "string") {
     tourschan = sys.channelId("Tournaments");
 }
@@ -190,7 +190,7 @@ function sendBotMessage(user, message, chan, html) {
 function sendBotAll(message, chan, html) {
     var staffchan = sys.channelId("Indigo Plateau");
     var tachan = sys.channelId("Victory Road");
-    
+
     switch (chan) {
         case "all": chan = [-1]; break;
         case "~mt": chan = [tourschan, 0]; break;
@@ -198,7 +198,7 @@ function sendBotAll(message, chan, html) {
         case "~tr": chan = [tourschan, tachan]; break;
         default: chan = [chan]; break;
     }
-    
+
     if (html) {
         for (var x in chan) {
             sendChanHtmlAll("<font color="+tourconfig.tourbotcolour+"><timestamp/><b>"+tourconfig.tourbot+"</b></font>"+message,chan[x]);
@@ -1963,7 +1963,7 @@ function tourCommand(src, command, commandData, channel) {
                     if (tours.tour[x].state == "signups") {
                         isSignups = true;
                     }
-                }         
+                }
                 var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
                 if (data[1] !== false) {
                     var parameterdata = data[1].split(":");
@@ -3536,22 +3536,22 @@ function tourstart(tier, starter, key, parameters) {
                 activeAuthCount++;
                 sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
             }
-        }        
+        }
         sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 2 random tiers."), staffchan, true);
 
-        var tourarray = autotiers.shuffle();        
+        var tourarray = autotiers.shuffle();
         var checked = 0;
         var toursAdded = 0;
-        while (checked < tourarray.length && toursAdded < 2) {            
+        while (checked < tourarray.length && toursAdded < 2) {
             var tourtier = tourarray[checked];
             var lasttours = getListOfTours(tourconfig.norepeat);
             var lastindex = lasttours.indexOf(tourtier);
-            if (lastindex === -1) {
-                var parameters = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
-                tours.queue.push({'tier': tourtier, 'starter': "Autostarter", 'parameters': parameters});
+            if (lastindex === -1 && tourtier !== tier) {
+                var parameters2 = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
+                tours.queue.push({'tier': tourtier, 'starter': "Autostarter", 'parameters': parameters2});
                 sendBotAll((startsWithVowel(tourtier) ? "An " : "A ") + tourtier + " tournament was automatically placed into the queue!",tourschan, false);
                 toursAdded++;
-            } 
+            }
             checked++;
         }
     }
