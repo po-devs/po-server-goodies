@@ -41,7 +41,7 @@ function Mafia(mafiachan) {
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
         border,
-        globalDefaultSideColors = ["#0099ff", "#cc00ff", "red", "#33cc33", "#ff00ff", "#660066", "#ff9933", "#0099cc", "#cc9900", "#cc0066", "#006666"],
+        globalDefaultSideColors = ["#0099ff", "#cc00ff", "red", "#33cc33", "#ff00ff", "#660066", "#ff9933", "#0099cc", "#cc9900", "#cc0066", "#006666", "#666699", "#990033", "#663300", "#6666ff"],
         noPlayer = '*',
         CurrentGame,
         PreviousGames,
