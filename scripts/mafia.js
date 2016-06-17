@@ -2200,7 +2200,7 @@ function Mafia(mafiachan) {
                     }
                     if (affected.length > 0) {
                         if ("detoxmsg" in onDeath) {
-                            actionMessage = (onDeath.detoxmsg || "Because ~Self~ "+verb+", the ~Role~ was detoxed!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Role~/g, mafia.theme.trrole(r));
+                            actionMessage = (onDeath.detoxmsg || "Because ~Self~ "+verb+", ~Target~ was detoxed!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and"));
                             gamemsgAll(actionMessage);
                         }
                     }
@@ -3937,7 +3937,8 @@ function Mafia(mafiachan) {
                             }
                             else if (command == "redirect") {
                                 var redirectmsg;
-                                this.changeTargets( target,targetRedirect );
+                                var redirectActions = ("redirectActions" in Action ? Action.redirectActions : "*" );
+                                this.changeTargets( target,targetRedirect,redirectActions );
                                 redirectmsg = formatArgs(("redirectMsg" in Action ? Action.redirectMsg : "Your target (~Target~) was redirected to ~RedirectTarget~!"), nightargs);
                                 gamemsg(player.name, redirectmsg);
                                 redirectmsg = formatArgs(("redirectTargetMsg" in Action ? Action.redirectTargetMsg : "You were redirected to ~RedirectTarget~!"), nightargs);
