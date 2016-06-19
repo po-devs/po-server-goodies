@@ -17130,7 +17130,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Recipe <b>" + cap(data.name, true) + "</b> added to Alchemist quest!", safchan);
                 safaribot.sendMessage(src, "Ingredients: " + translateStuff(rec.ingredients), safchan);
                 safaribot.sendMessage(src, "Reward: " + translateStuff(rec.reward), safchan);
-                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
+                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.transmutation + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
