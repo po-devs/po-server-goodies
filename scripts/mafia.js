@@ -135,7 +135,7 @@ function Mafia(mafiachan) {
         if (channel === undefined) {
             channel = mafiachan;
         }
-        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
+        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 2).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
             sys.sendMessage(id, mess, channel);
         } else {
             var colon = mess.indexOf(":");
@@ -157,7 +157,7 @@ function Mafia(mafiachan) {
         if (channel === undefined) {
             channel = mafiachan;
         }
-        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 1).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
+        if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 2).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
             sys.sendAll(mess, channel);
         } else {
             var colon = mess.indexOf(":");
