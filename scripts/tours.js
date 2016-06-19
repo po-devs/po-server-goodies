@@ -3221,9 +3221,7 @@ function removesubs(key) {
 // removes byes
 function removebyes(key) {
     try {
-        var currentround = tours.tour[key].round;
-        // if the round advances due to DQ, don't keep checking :x
-        if (!tours.tour.hasOwnProperty(key) || tours.tour[key].round !== currentround) {
+        if (!tours.tour.hasOwnProperty(key)) {
             return;
         }
         var advanced = [];
