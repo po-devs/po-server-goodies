@@ -415,22 +415,92 @@ serverStartUp : function() {
 
 init : function() {
     script.superAdmins = ["Mahnmut", "Strudels"];
-    script.rules = [ "",
-        "*** Pokémon Online Server Rules ***",
-        "",
-        "1. Pokémon Online is an international server:",
-        "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your username is in a language that reads text from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens.",
-        "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
-        "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable.",
-        "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
-        "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable.",
-        "4. Do not ask for authority:",
-        "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished.",
-        "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
-        "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment.",
-        "6. Do not misuse the server nor its guidelines:",
-        "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
-    ];
+    script.rules = {
+        "1": {
+            "english": [
+                "1. Pokémon Online is an international server:",
+                "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your username is in a language that reads text from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens."
+            ],
+            "spanish": [
+                "1. Pokémon Online es un servidor internacional:",
+                "- Respeta las culturas ajenas y no demandes que hablen inglés o algun otro idioma que entiendas. Todos estan bienvenidos en Pokémon Online, siempre y cuando sigan las reglas, si tu nombre de usuario esta en un idioma que se lee de derecha a izquierda, te sugerimos que no hables en el chat, ya que esto puede revertir todo el cuadro de chat. Te silenciaremos o te pediremos que cambies de nombre si esto llega a pasar."
+            ],
+            "chinese": [
+                "1.PO官服是一个国际服务器:",
+                "尊重其他民族的文化，不要歧视其他的语种。PO欢迎每一个遵守相关规定的玩家，无论他们来自何方，说着何种语言。但请注意，如果您的语言系统是自右向左读取文本，我们要求您不要在主频道聊天，因为这可能使整个聊天室混乱。如果发生这种情况，我们可能会对您禁言或要求您改变您的名字。"
+            ]         
+        },
+        "2": {
+            "english": [
+                "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
+                "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable."         
+            ],
+            "spanish": [
+                "2. Nada de publicidad, mensajes excesivamente largos y sin sentido o abuso de mayusculas, nada de contenido inapropiado u obsceno:",
+                "- No publiques ningun enlace a menos que haga referencia a sitios conocidos y seguros (Youtube, Smogon, Serebii, etc). No trates de invadir el chat con mensajes extremadamente largos, o con mensajes cortos publicados de forma muy rápida. Puedes publicar tu canal siempre y cuando no lo hagas en exceso. Publicar contenido pornográfico o contenido obsceno se castiga con un ban. Publicar páginas de redes sociales que no sean de Pokémon Online (Facebook/Twitter/Kik) también esta prohibido y se castiga con un ban."               
+            ],
+            "chinese": [
+                "2. 不要发送广告、冗余信息、大写刷屏、淫秽信息:",
+                "不要在主聊天频道内发送链接，除非他们来自著名的网站（YouTube，Smogon，Serebii等）。不要试图以自我为中心，左右整个聊天室的话题；不要发送无意义的信息如连续发送省略号和无规则无意义的一串字母（测试网络情使用一个小写字母t 不要使用多个ttt也不是大写的T）你可以适当的宣传PO的某个频道，让大家参与其中，但要有度。发布色情或淫秽内容的将会被封禁。发布社交媒体账号/服务器地址（微博/ Facebook/QQ群号等/其他PO服务器地址 ）也将受到处理。"
+            ]
+        },
+        "3": {
+            "english": [
+                "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
+                "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable."
+            ],
+            "spanish": [
+                "3. Usa el botón de buscar batalla, unete a los torneos en lugar de estar constantemente solicitando batallas en el chat:",
+                "- Los canales oficiales en Pokémon Online tienen demasiada actividad como para permitir que cualquiera solicite batallas en el chat. Utiliza el boton de buscar batallas o únete a los torneos en el canal oficial de torneos. La única excepción es si no eres capaz de encontrar una batalla a través del buscador debido a estar en una categoria poco jugada, entonces se te permite solicitar batallas una vez cada 5 minutos, y de forma educada."
+            ],
+            "chinese": [
+                "3. 使用寻找对战按钮，或加入Tournaments频道的比赛，而不要问在主聊天频道求战:",
+                "出于PO主聊天频道的聊天内容繁杂，求战不被允许；请使用find battle寻找对战按钮，或者参与Tournaments频道的比赛；不过，如果你在一个没什么人的分级（如LC）可以允许每隔5分钟左右求战一下。"
+            ]            
+        },
+        "4": {
+            "english": [
+                "4. Do not ask for authority:",
+                "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished."
+            ],
+            "spanish": [
+                "4. No solicites autoridad:",
+                "- Al preguntar, es posible que hayas eliminado completamente tus oportunidades de ser una autoridad en el futuro. Si estas interesado en volverte parte del Staff, entonces una buena forma de empezar es ser un miembro activo en la comunidad. Motiva a otros a tener conversaciones inteligentes o productivas, ofrece tu ayuda si tienes habilidad con el arte, programación, las tiers (entre otras cosas) es lo que puedes hacer para que te tomemos en cuenta. El constante acoso a las autoridades para pedir ser tal será sancionado."
+            ],
+            "chinese": [
+                "4.不要索取权限:",
+                "向管理索取权限很可能将让你失去未来成为权限的机会。如果你对成为一名PO管理真正感兴趣的话，最好的方式是积极的帮助他人，让管理们注意到你对他人的帮助。活跃聊天气氛、帮助PO客户端的编程或者参与平衡分级的讨论等等，是得到注意的好方法。不断地索要权限将会被处罚。"
+            ]
+        },
+        "5": {
+            "english": [
+                "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
+                "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment."
+            ],
+            "spanish": [
+                "5. Nada de Trollear, insultar o acosar a otros jugadores. No te quejes constantemente del hax en el chat, no más allá de una linea:",
+                "- Incitar a otros jugadores con comentarios provocativos, usar el abuso verbal contra otros jugadores, o spammearlos a traves del chat/Mensajes Privados/Solicitudes de batalla no será tolerado. Acosar a otros jugadores al revelar su información personal será severamente penalizado. Una linea de comentario concerniente al hax luego de perder para deshagoarte esta bien, pero las quejas constantes no son aceptadas. La vulgaridad excesiva tampoco sera tolerada. Desperdiciar el tiempo de las autoridades también resultará en una sanción."
+            ],
+            "chinese": [
+                "5.禁止钓鱼，恶言相向，或骚扰其他玩家。在主聊天室抱怨被Hax时，最多不要超出一句话:",
+                "通过煽动性的言语激起他人的回复、对他人进行辱骂等人身攻击、持续对他人发出不受欢迎的评论/挑战/私信都是禁止的行为。持续骚扰、恶意激怒、甚至人肉其他玩家将遭到严厉惩处；在被因为脸黑被hax以后发送一句抱怨的话是可以理解的，但是持续不断的抱怨和过分粗鲁的行为是不被允许的；恶意浪费管理的时间同样会受到处理。"
+            ]
+        },
+        "6": {
+            "english": [
+                "6. Do not misuse the server nor its guidelines:",
+                "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
+            ],
+            "spanish": [
+                "6. No hagas un uso inadecuado de las reglas o las normativas:",
+                "- Robar cuentas o canales esta prohibido. Cualquier intento de alterar los rankings del servidor en general o los rankings del torneo, o los del foro también cuenta como un uso inadecuado. DDoS o cualquier otro \"ataque cibernético\" no será tolerado. Evadir las sanciones y tratar de buscar cualquier hueco o excusa dentro de las mismas reglas para fines maliciosos también violan las normativas. Todas las apelaciones para remover un ban se deben hacer directamente en el Comité Disciplinario (Disciplinary Committee) en el foro. El uso del servidor como un sitio de citas o cualquier otro servicio web también cuenta como un abuso de las reglas."
+            ],
+            "chinese": [
+                "6. 其他常规的禁止事项:",
+                "严禁盗取他人账号和频道；禁止任何试图通过不公平的手段进行ladder刷分或赚取Tournaments积分；DDoS以及其他任何对服务器的网络攻击都将遭到严惩；通过改变IP等手段避开封禁、禁言将遭到进一步处罚；所有对于封禁的申诉请直接反馈到论坛专门的帖子里；将PO视作约会工具或是其他并非PO本意的功能也是被禁止的。"
+            ]
+        }
+    };
     lastMemUpdate = 0;
     bannedUrls = [];
     battlesFought = +sys.getVal("Stats/BattlesFought");
