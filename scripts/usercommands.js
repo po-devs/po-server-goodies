@@ -218,7 +218,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                     break;
             }
             return ret;
-        }
+        };
         if (commandData) {
             var data = commandData.indexOf(":") > -1 ? commandData.split(":"):commandData;
             if (!isNaN(data) && script.rules.hasOwnProperty(data)) {
