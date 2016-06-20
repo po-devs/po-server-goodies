@@ -199,17 +199,58 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             require("mafia.js").showRules(src, channel);
             return;
         }
-        var norules = (script.rules.length - 1) / 2; //formula for getting the right amount of rules
-        if (commandData !== undefined && !isNaN(commandData) && commandData > 0 && commandData < norules) {
-            var num = parseInt(commandData, 10);
-            num = (2 * num) + 1; //gets the right rule from the list since it isn't simply y=x it's y=2x+1
-            sys.sendMessage(src, script.rules[num], channel);
-            sys.sendMessage(src, script.rules[num + 1], channel);
+        var language = "english";
+        var num;
+        var translateLang = function(str) {
+            var ret;
+            switch (str.toLowerCase()) {
+                case "spanish":
+                case "espanol":
+                case "español":
+                    ret = "spanish";
+                    break;
+                case "chinese":
+                case "中文":
+                    ret = "chinese";
+                    break;
+                default:
+                    ret = "english";
+                    break;
+            }
+            return ret;
+        };
+        if (commandData) {
+            var data = commandData.indexOf(":") > -1 ? commandData.split(":"):commandData;
+            if (!isNaN(data) && script.rules.hasOwnProperty(data)) {
+                num = data;
+            }
+            else if (!Array.isArray(data)) {
+                language = translateLang(data);
+            }
+            else {
+                if (data[0]) {
+                    language = translateLang(data[0]);
+                }
+                if (data[1]) {
+                    if (script.rules.hasOwnProperty(data[1])) {
+                        num = data[1];
+                    }
+                }
+            }
+        }
+        if (num) {
+            for (var e in script.rules[num][language]) {
+                sys.sendMessage(src, script.rules[num][language][e], channel);
+            }
             return;
         }
-        var rule;
-        for (rule = 0; rule < script.rules.length; rule++) {
-            sys.sendMessage(src, script.rules[rule], channel);
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** Pokémon Online Server Rules ***", channel);
+        sys.sendMessage(src, "", channel);  
+        for (var num in script.rules) {
+            for (var e in script.rules[num][language]) {
+                sys.sendMessage(src, script.rules[num][language][e], channel);
+            }
         }
         return;
     }
