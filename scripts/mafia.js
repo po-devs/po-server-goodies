@@ -2812,6 +2812,7 @@ function Mafia(mafiachan) {
                 act = delimSplit(":", this.roleTargetsData[target.role.role][action]);
                 newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
                 newTar3[action] = [newData];
+            }
         }
         target.targetsData = newTar;
         this.teamTargetsData[target.role.side] = newTar2;
