@@ -2785,22 +2785,33 @@ function Mafia(mafiachan) {
     this.changeTargets = function (target, redirectTarget, redirectActions) {
         var newTar = {}, newTar2 = {}, newTar3 = {}, act, newData;
         for (var action in target.targetsData) {
-            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
-            act = delimSplit(":", target.targetsData[action]);
-            newData = (redirectTarget + ":" + act[1] + "@*" + "/" + target.name );
-            newTar[action] = [newData];
+            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) {
+                newTar[action] = target.targetsData[action]
+            };
+            else {
+                act = delimSplit(":", target.targetsData[action]);
+                newData = (redirectTarget + ":" + act[1] + "@*" + "/" + target.name );
+                newTar[action] = [newData];
+            }
         }
         for (var action in this.teamTargetsData[target.role.side]) {
-            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
-            act = delimSplit(":", this.teamTargetsData[target.role.side][action]);
-            newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
-            newTar2[action] = [newData];
+            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) {
+                newTar2[action] = this.teamTargetsData[target.role.side][action];
+            }
+            else {
+                act = delimSplit(":", this.teamTargetsData[target.role.side][action]);
+                newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
+                newTar2[action] = [newData];
+            }
         }
         for (var action in this.roleTargetsData[target.role.role]) {
-            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) continue;
-            act = delimSplit(":", this.roleTargetsData[target.role.role][action]);
-            newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
-            newTar3[action] = [newData];
+            if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) {
+                newTar3[action] = this.roleTargetsData[target.role.role][action];
+            }
+            else {
+                act = delimSplit(":", this.roleTargetsData[target.role.role][action]);
+                newData = (redirectTarget + ":" + act[1] + "@*"  + "/" + target.name );
+                newTar3[action] = [newData];
         }
         target.targetsData = newTar;
         this.teamTargetsData[target.role.side] = newTar2;
