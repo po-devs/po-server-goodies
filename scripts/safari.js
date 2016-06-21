@@ -2416,6 +2416,7 @@ function Safari() {
                 }
                 if (asset === "entry") {
                     rafflePlayers.add(player.id, player.balls.entry);
+                    safari.sanitizeRaffle();
                 }
                 safari.updateShop(player, asset);
                 
@@ -7146,6 +7147,13 @@ function Safari() {
         }
         this.sanitize(player);
     };
+    this.sanitizeRaffle = function() {
+        rafflePlayers.removeIf(function(hash, index) {
+            var val = parseInt(hash.get(index), 10);
+            return isNaN(val) || val <= 0;
+        });
+        rafflePlayers.save();
+    };
 
     /* Secret Base */
     this.viewDecorations = function(src) {
@@ -10126,7 +10134,7 @@ function Safari() {
                 }
             }
         }
-        
+        hasRaffle = false;
         var cantHold = [], pokeRew = 0, ing;
         for (e in rec.reward) {
             asset = translateAsset(e);
@@ -10134,6 +10142,9 @@ function Safari() {
             if (asset.type == "item") {
                 if (player.balls[asset.id] - ing + rec.reward[e] > getCap(asset.id)) {
                     cantHold.push(asset.name);
+                }
+                if (asset.id === "entry") {
+                    hasRaffle = true;
                 }
             } else if (asset.type == "money") {
                 if (player.money - ing + rec.reward[e] > moneyCap) {
@@ -10148,6 +10159,10 @@ function Safari() {
         }
         if (cantHold.length > 0) {
             safaribot.sendHtmlMessage(src, trainerSprite + readable(cantHold) + " mus' be your favoritest thing" + (cantHold.length > 1 ? "s" : "") + " or sumthin' cuz you are already full of " + (cantHold.length > 1 ? "those" : "that") + "!", safchan);
+            return;
+        }
+        if (hasRaffle && !rafflePrizeObj) {
+            safaribot.sendMessage(src, "There is no raffle going on right now so any entry that you obtain now would be invalid!", safchan);
             return;
         }
         
@@ -10274,7 +10289,7 @@ function Safari() {
 
         return out;
     }
-    function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved) {
+    function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup) {
         var out = [], p, legendCount = 0, bst;
         size = size || 6;
         maxLegends = maxLegends || 1;
@@ -10289,6 +10304,8 @@ function Safari() {
                 continue;
             }
             if (onlyEvolved && p in evolutions) {
+                continue;
+            } else if (littlecup && (!(p in evolutions) || (p in devolutions))) {
                 continue;
             }
 
@@ -10395,15 +10412,16 @@ function Safari() {
         else if (this.currentRoom === null) {
             var type = randomSample({
                 horde: 11,
-                riddle: 12,
-                hazard: 13,
+                riddle: 11,
+                hazard: 12,
                 blocked: 13,
                 trainer: 13,
                 defense: 13,
-                empty: 6,
+                empty: 9,
                 strong: 13
             });
             this.room++;
+            var roomDuration = 2;
             switch (type) {
                 case "horde":
                     this.currentRoom = new HordeRoom(this, this.level, this.room);
@@ -10416,6 +10434,7 @@ function Safari() {
                 break;
                 case "hazard":
                     this.currentRoom = new HazardRoom(this, this.level, this.room);
+                    roomDuration = this.level > 3 ? 4 : 3;
                 break;
                 case "blocked":
                     this.currentRoom = new BlockedRoom(this, this.level, this.room);
@@ -10430,7 +10449,7 @@ function Safari() {
                     this.currentRoom = new EmptyRoom(this, this.level, this.room);
                 break;
             }
-            this.currentRoom.turnToAdvance = this.turn + 2;
+            this.currentRoom.turnToAdvance = this.turn + roomDuration;
         }
         else {
             if (this.turn < this.currentRoom.turnToAdvance) {
@@ -10669,7 +10688,7 @@ function Safari() {
     }
     function getTreasure(id, reward) {
         var player = getAvatarOff(id);
-        if (player) {
+        if (player && reward.item !== "stamina") {
             if (reward.item === "money") {
                 player.money += reward.amount;
                 player.records.pyramidMoney += reward.amount;
@@ -10685,6 +10704,8 @@ function Safari() {
     function treasureName(reward) {
         if (reward.item === "money") {
             return "$" + addComma(reward.amount);
+        } else if (reward.item === "stamina") {
+            return "a potion that restores " + reward.amount + " Stamina";
         } else {
             return plural(reward.amount, reward.item);
         }
@@ -11006,10 +11027,43 @@ function Safari() {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ") + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
         }
         
-        this.opponent = [149, 248, 289, 373, 376, 445, 609, 635, 681, 697, 706, 66256, 66184,66028].concat(legendaries).concat(megaPokemon).random();
+        this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 66256, 66184,66028].concat(legendaries).concat(megaPokemon);
+        this.opponent = this.opponentList.random();
         this.opponentHP = 220 + 170 * level;
         this.opponentPower = 9 + 6 * level;
         this.isRevealed = false;
+        if ([151, 571].contains(this.opponent)) {
+            this.disguise = this.opponentList.random();
+            if (this.disguise === this.opponent) {
+                this.disguise = null;
+            }
+        }
+        
+        var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"];
+        var usedStats = stats.concat().shuffle().slice(0, 2);
+        var pokeStats = sys.pokeBaseStats(this.opponent);
+        var s, val, hints = [], lower, upper, steps;
+        for (p = 0; p < usedStats.length; p++) {
+            s = usedStats[p];
+            val = pokeStats[stats.indexOf(s)];
+            steps = sys.rand(0, 2);
+            lower = val - steps*5;
+            upper = val + (2 - steps)*5;
+            if (lower % 5 !== 0) {
+                lower -= lower % 5;
+            }
+            if (upper % 5 !== 0) {
+                upper += 5-(upper % 5);
+            }
+            if (upper-lower > 10) {
+                if (upper-val > val-lower) {
+                    upper -= 5;
+                } else {
+                    lower += 5;
+                }
+            }
+            hints.push(s + " is between " + lower + "~" + upper);
+        }
         
         this.treasures = {
             egg: { chance: 1 * level, item: "egg", amount: 1 },
@@ -11024,17 +11078,17 @@ function Safari() {
         
         this.sendAll("");
         this.sendAll("Pokémon: " + pokeInfo.sprite(0));
-        this.sendAll("Room " + level + "-" + roomNum + ": A strong Pokémon stands in your way, but it's too dark to identify them! Defeat them, unless the leader decided to flee!");
+        this.sendAll("Room " + level + "-" + roomNum + ": A strong Pokémon stands in your way, but it's too dark to identify them (" + readable(hints) + ")! Defeat them, unless the leader decided to flee!");
         this.sendIndividuals();
         this.sendAll("");
     }
     StrongRoom.prototype = new PyramidRoom();
     StrongRoom.prototype.midturn = function() {
-        this.sendToAlive("Choose a Pokémon to defeat the {0}!".format(this.isRevealed ? poke(this.opponent) : "hidden Pokémon"));
+        this.sendToAlive("Choose a Pokémon to defeat the {0}!".format(this.isRevealed ? poke(this.revealAgain ? this.revealAgain : this.opponent) : "hidden Pokémon"));
         this.sendIndividuals();
     };
     StrongRoom.prototype.validInput = function(id, commandData) {
-        return ["run", "runaway", "run away", "flee"].contains(commandData) || this.pokeInParty(id, commandData);
+        return (["run", "runaway", "run away", "flee"].contains(commandData) && id === this.pyr.leader) || this.pokeInParty(id, commandData);
     };
     StrongRoom.prototype.postInput = function(src, commandData) {
         if (sys.name(src).toLowerCase() === this.pyr.leader && ["run", "runaway", "run away", "flee"].contains(commandData)) {
@@ -11085,8 +11139,14 @@ function Safari() {
             }
         }
         this.attacks++;
-        if (!this.isRevealed) {
-            this.sendAll("The hidden Pokémon is revealed to be <b>{0}</b>! {1}".format(poke(opp), pokeInfo.sprite(opp)));
+        var display = this.disguise && !defeated ? this.disguise : opp;
+        if (!this.isRevealed || this.revealAgain) {
+            this.sendAll("The " + (this.isRevealed ? poke(this.revealAgain) : "hidden Pokémon") + " is revealed to be <b>{0}</b>! {1}".format(poke(display), pokeInfo.sprite(display)));
+            this.revealAgain = null;
+            if (this.disguise) {
+                this.revealAgain = this.disguise;
+            }
+            this.disguise = null;
             this.isRevealed = true;
         }
         
@@ -11102,10 +11162,10 @@ function Safari() {
             var dmg = Math.round(this.opponentPower * safari.checkEffective(sys.type(sys.pokeType1(opp)), sys.type(sys.pokeType2(opp)), sys.type(sys.pokeType1(m)), sys.type(sys.pokeType2(m))));
             stamina[target] = -(dmg);
             
-            this.sendAll("<b>{0}</b>'s HP is now at {1}! The {0} attacks <b>{2}'s {3}</b>! {2} loses {4} stamina!".format(poke(opp), toColor(this.opponentHP, "blue"), target.toCorrectCase(), poke(m), toColor(dmg, "red")));
+            this.sendAll("<b>{0}</b>'s HP is now at {1}! The {0} attacks <b>{2}'s {3}</b>! {2} loses {4} stamina!".format(poke(display), toColor(this.opponentHP, "blue"), target.toCorrectCase(), poke(m), toColor(dmg, "red")));
             this.sendAll("");
             this.pyr.updateStatus(0, stamina);
-            this.sendAll("You may try to attack them again or run away!".format(poke(opp), this.opponentHP));
+            this.sendAll("You may try to attack them again or run away!");
             
             this.sendIndividuals();
             this.turnToAdvance += 2;
@@ -11628,22 +11688,36 @@ function Safari() {
     function TrainerRoom(pyramidRef, level, roomNum) {
         PyramidRoom.call(this, pyramidRef);
         this.trainerName = "Trainer " + generateName();
-        this.midmsg = "Choose a Pokémon to fight the {0}!".format(this.trainerName);
+        this.defaultChoice = pyramidRef.leader;
+        this.midmsg = "Choose a player to battle against {0}!".format(this.trainerName);
         this.horde = [];
+        
+        this.battler = this.defaultChoice;
+        this.pickedByLeader = false;
         
         this.level = level;
         
         var parties = pyramidRef.parties;
+        var options = Object.keys(parties).map(function(x) {
+            return link("/pyr " + x.toCorrectCase());
+        });
         for (var p in parties) {
-            this.individualmsg[p] = "Send one of your Pokémon to help: " + parties[p].map(pyrLink).join(", ");
+            if (p == pyramidRef.leader) {
+                this.individualmsg[p] = "Choose who will battle by typing " + readable(options, "or") + "!";
+            } else {
+                this.individualmsg[p] = "Nominate yourself to battle by typing " + link("/pyr me") + "!";
+            }
         }
         this.trainerPower = [9 + level * 7, 85 + level * 15];
         
         this.trainerTeam = [];
-        var num, bst = 285 + 30 * level, maxLegend = Math.floor((level-1)/3) + 1;
-        while (this.trainerTeam.length < 3) {
+        var num, bst = 285 + 25 * level, maxLegend = Math.floor((level-1)/3) + 1;
+        var main = Object.keys(effectiveness).random();
+        var mono = chance(0.4);
+        var m = mono ? 3 : 2;
+        while (this.trainerTeam.length < m) {
             num = sys.rand(1, 722);
-            if (getBST(num) >= bst) {
+            if (getBST(num) >= bst && hasType(num, main)) {
                 if (isLegendary(num)) {
                     if (maxLegend <= 0) {
                         continue;
@@ -11653,6 +11727,21 @@ function Safari() {
                 this.trainerTeam.push(num);
             }
         }
+        if (!mono) {
+            while (this.trainerTeam.length < 3) {
+                num = sys.rand(1, 722);
+                if (getBST(num) >= bst) {
+                    if (isLegendary(num)) {
+                        if (maxLegend <= 0) {
+                            continue;
+                        }
+                        maxLegend--;
+                    }
+                    this.trainerTeam.push(num);
+                }
+            }
+        }
+        this.trainerTeam = this.trainerTeam.shuffle();
         
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
@@ -11671,52 +11760,54 @@ function Safari() {
         this.inverted = chance(0.35 + 0.05 * this.level);
         
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: {2} challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : ""));
+        this.sendAll("Room {0}-{1}: {2}, {4}-type user, challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : "", an(main)));
         this.sendIndividuals();
         this.sendAll("");
     }
     TrainerRoom.prototype = new PyramidRoom();
     TrainerRoom.prototype.validInput = function(id, commandData) {
-        return this.pokeInParty(id, commandData);
+        var target = commandData.toLowerCase();
+        if (this.pyr.leader === id) {
+            if (this.pyr.parties.hasOwnProperty(target) && this.pyr.stamina[target] > 0) {
+                return true;
+            } else {
+                this.send(id, "You cannot choose this person to the battle!");
+                return false;
+            }
+        } else {
+            if (target === "me") {
+                if (!this.pickedByLeader) {
+                    return true;
+                } else {
+                    this.send(id, "The leader has already chosen who will battle!");
+                }
+            } else {
+                this.send(id, "To nominate yourself, use " + link("/pyr me") + "!");
+            }
+        }
+        return false;
+    };
+    TrainerRoom.prototype.postInput = function(src, commandData) {
+        if (sys.name(src).toLowerCase() === this.pyr.leader) {
+            this.battler = commandData.toLowerCase();
+            this.sendAll(toColor("{0} has decided that {1} will battle {2}!".format(sys.name(src), commandData.toCorrectCase(), this.trainerName), "crimson"));
+            this.pickedByLeader = true;
+        } else {
+            this.battler = sys.name(src).toLowerCase();
+            this.sendAll(toColor("{0} has nominated themselves to battle {1}!".format(sys.name(src), this.trainerName), "blue"));
+        }
+        return true;
     };
     TrainerRoom.prototype.advance = function() {
-        var id, m, p, opp, res, points = 0, stamina = {}, choices = {}, attackers = [], attackersNames = [];
+        var id = this.battler, name = id.toCorrectCase(), m, p, opp, res, points = 0, stamina = {};
         
-        choices = this.getChoices();
-        for (m in choices) {
-            attackers.push(choices[m]);
-            attackersNames.push(m);
-        }
-        var leaderParty = this.pyr.parties[this.pyr.leader].concat(), c = 0;
-        leaderParty.splice(leaderParty.indexOf(choices[this.pyr.leader]), 1);
-        for (c = 0; c < leaderParty.length && attackers.length < 3; c++) {
-            m = leaderParty[c];
-            attackers.push(m);
-            attackersNames.push(this.pyr.leader);
-        }
+        var party = this.pyr.parties[id].concat().shuffle();
+        stamina[id] = 0;
         this.sendAll("");
-        if (attackers.length === 0) {
-            this.sendAll("Wait! No one in your party has any Pokémon able to battle! You lose by default!");
-            
-            points = -15 - 15 * this.level;
-            for (m in this.pyr.stamina) {
-                stamina[m] = -(15 * this.level);
-            }
         
-            this.pyr.updateStatus(points, stamina, true);
-            this.sendAll("");
-            this.passed = true;
-            return;
-        }
-        while (attackers.length < 3) {
-            attackers.push(attackers[0]);
-            attackersNames.push(this.pyr.leader);
-        }
-        
-        var score = 0, oppScore = 0, result, status, n1, n2, treasureTo, treasurePoke;
+        var score = 0, oppScore = 0, result, status, n1, n2;
         for (p = 0; p < 3; p++) {
-            id = attackersNames[p];
-            m = attackers[p];
+            m = party[p];
             opp = this.trainerTeam[p];
             
             res = calcDamage(m, opp, null, this.trainerPower, this.inverted);
@@ -11727,7 +11818,7 @@ function Safari() {
             }
             status = "Details ({0}/Power/Type) | {1} ({3}/{5}/{7}x) x {2} ({4}/{6}/{8}x)";
             
-            n1 = id.toCorrectCase() + "'s " + poke(m);
+            n1 = name + "'s " + poke(m);
             n1 = res.power[0] > res.power[1] ? "<b>" + n1 + "</b>" : n1;
             
             n2 = this.trainerName + "'s " + poke(opp);
@@ -11738,34 +11829,30 @@ function Safari() {
             
             if (res.power[0] > res.power[1]) {
                 score++;
-                if (res.power[0] >= 750 && !treasureTo) {
-                    treasureTo = id;
-                    treasurePoke = poke(m);
-                }
             } else {
                 if (res.power[0] < res.power[1]) {
                     oppScore++;
                 }
-                if (!stamina.hasOwnProperty(id)) {
-                    stamina[id] = 0;
-                }
-                stamina[id] -= 5 + 7 * this.level;
+                stamina[id] -= 1 + this.level;
             }
         }
         
         if (score > oppScore) {
-            this.sendAll("Your party defeated {0}! Final score {1} x {2}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>"));
-            if (treasureTo) {
+            this.sendAll("{3} defeated {0}! Final score {1} x {2}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
+            if (score - oppScore >= 3) {
                 var reward = randomSampleObj(this.treasures);
                 this.sendAll("");
-                this.sendAll("{0} was really impressed by <b>{1}</b>'s <b>{2}</b>! {0} gives {3} to {1}!".format(this.trainerName, addFlashTag(treasureTo.toCorrectCase()), treasurePoke, toColor(treasureName(reward), "blue")), true);
-                getTreasure(treasureTo, reward);
+                this.sendAll("{0} was really impressed by <b>{1}</b>'s battling skills! {0} gives {2} to {1}!".format(this.trainerName, addFlashTag(name), toColor(treasureName(reward), "blue")), true);
+                getTreasure(id, reward);
             }
         } else {
-            this.sendAll("Your party couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>"));
+            stamina[id] -= 5 * this.level;
+            this.sendAll("{3} couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
         }
         points = [-6 - 4 * this.level, 0, 30 + 20 * this.level, 48 + 32 * this.level][score];
-        
+        if (stamina[id] === 0) {
+            delete stamina[id];
+        }
         this.pyr.updateStatus(points, stamina, true);
         this.sendAll("");
         
@@ -11800,11 +11887,17 @@ function Safari() {
             type = sys.type(sys.moveType(this.firstAtk));
             count++;
         } while (count < 1 + level * 2 && type === "Normal");
-        this.firstAtk = sys.move(this.firstAtk);
-        
         do {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
+            count++;
+        } while (this.firstAtk === this.secondAtk && count < 1 + level * 2 && type === "Normal");
+        this.firstAtk = sys.move(this.firstAtk);
+        this.secondAtk = sys.move(this.secondAtk);
+        
+        do {
+            this.thirdAtk = damaging.random();
+            type = sys.type(sys.moveType(this.thirdAtk));
             count++;
         } while (count < 2 + level * 2 && type === "Normal");
         
@@ -11829,8 +11922,8 @@ function Safari() {
         this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes, "or") + " will give bonus points!)!";
         
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue")));
-        this.sendAll("Using a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + toColor(readable(this.bonusTypes, "or"), "red") + " will give bonus points!");
+        this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
+        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + toColor(readable(this.bonusTypes, "or"), "red") + " will give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -11845,9 +11938,9 @@ function Safari() {
         members = Object.keys(choices);
         
         this.sendAll("");
-        this.sendAll(toColor("{0} {1} used {2}!".format(pokeInfo.icon(this.opponent), poke(this.opponent), sys.move(this.secondAtk)), "blue"));
+        this.sendAll(toColor("{0} {1} used {2}!".format(pokeInfo.icon(this.opponent), poke(this.opponent), sys.move(this.thirdAtk)), "blue"));
         
-        atk = sys.type(sys.moveType(this.secondAtk));
+        atk = sys.type(sys.moveType(this.thirdAtk));
         for (p in choices) {
             m = choices[p];
             
@@ -11864,7 +11957,7 @@ function Safari() {
                 eff = toColor("It's super-effective ({0}x)!".format(dmg), "red");
             }
             
-            this.sendAll("<b>{0}</b>'s <b>{1}</b> was hit by {2}'s {3}! {4}".format(p.toCorrectCase(), poke(m), poke(this.opponent), sys.move(this.secondAtk), eff));
+            this.sendAll("<b>{0}</b>'s <b>{1}</b> was hit by {2}'s {3}! {4}".format(p.toCorrectCase(), poke(m), poke(this.opponent), sys.move(this.thirdAtk), eff));
             if (dmg < 1) {
                 defended.push(p.toCorrectCase());
                 if (!treasureTo && dmg <= 0.25 && chance(0.2 + 0.5 * this.level)) {
@@ -11927,9 +12020,10 @@ function Safari() {
     
     function HazardRoom(pyramidRef, level, roomNum) {
         PyramidRoom.call(this, pyramidRef);
-        this.midmsg = "Choose a move to clear the obstacles!";
+        this.midmsg = "Choose which moves to use clear the obstacles!";
         this.defaultChoice = "struggle";
         this.level = level;
+        this.movesChosen = {};
         
         this.hazardMoves = {
             "plants":[163,13],
@@ -11947,34 +12041,51 @@ function Safari() {
             this.validMoves = this.validMoves.concat(this.hazardMoves[c]);
         }
         this.hazardNames = {
-            "plants": "Plants",
+            "plants": "Plant",
             "water": "Water Stream",
-            "boulder": "Boulders",
+            "boulder": "Boulder",
             "toxic": "Toxic Gas",
             "pit": "Pit",
             "ice": "Ice Pillar",
-            "flame": "Flamethrowers",
+            "flame": "Flamethrower",
             "electric": "Electric Fence",
             "dark": "Darkness"
         };
-        this.hazards = {};
-        var pickedHazards = Object.keys(this.hazardMoves).shuffle();
-        var count = 100, index = 0, added, minVal = 7;
-        while (count > minVal && index < pickedHazards.length) {
-            added = sys.rand(minVal, count);
-            this.hazards[pickedHazards[index]] = added;
-            count -= added;
-            index++;
-        }
-        if (count > 0) {
-            this.hazards[pickedHazards[0]] += count;
-        }
-        var randomHazard = randomSample(this.hazards);
-        var randomHazard2 = randomSample(this.hazards);
+        this.hazardPlural = {
+            "plants": "Plants",
+            "water": "Water Streams",
+            "boulder": "Boulders",
+            "toxic": "Toxic Gas",
+            "pit": "Pits",
+            "ice": "Ice Pillars",
+            "flame": "Flamethrowers",
+            "electric": "Electric Fences",
+            "dark": "Darkness"
+        };
+        var e, val, max = sys.rand(3 + level, 6 + level), order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max;
+        do {
+            this.hazards = {};
+            count = 0;
+            for (e = 0; e < order.length; e++) {
+                val = sys.rand(0, 7);
+                if (max - val < 0) {
+                    val = max;
+                }
+                if (val > 0) {
+                    this.hazards[order[e]] = val;
+                    max -= val;
+                    count += val;
+                    if (max <= 0) {
+                        break;
+                    }
+                }
+            }
+        } while (count < total);
         
         this.usableMoves = {};
         this.usableCommands = {};
-        var parties = pyramidRef.parties, p, m, move, set, id;
+        this.moveUsers = {};
+        var parties = pyramidRef.parties, p, m, move, set, id, list, hazList, formatted;
         var toMoveCommand = function(x) {
             return link("/pyr " + sys.move(x));
         };
@@ -11983,6 +12094,7 @@ function Safari() {
         };
         for (p in parties) {
             this.usableMoves[p] = [];
+            this.moveUsers[p] = {};
             for (m = parties[p].length; m--; ) {
                 id = parseInt(parties[p][m], 10);
                 set = pokedex.getAllMoves(id);
@@ -11993,13 +12105,31 @@ function Safari() {
                     move = this.validMoves[c] + "";
                     if (set.contains(move) && !this.usableMoves[p].contains(move)) {
                         this.usableMoves[p].push(move);
+                        this.moveUsers[p][sys.move(move).toLowerCase()] = poke(parties[p][m]);
                     }
                 }
             }
             this.usableMoves[p].push("165"); //Struggle
+            this.moveUsers[p].struggle = poke(parties[p][0]);
             this.usableCommands[p] = this.usableMoves[p].map(toLowerMove);
+            list = this.usableMoves[p];
+            formatted = [];
+            for (m in this.hazardMoves) {
+                hazList = [];
+                move = this.hazardMoves[m];
+                for (e = 0; e < move.length; e++) {
+                    if (list.contains(move[e] + "")) {
+                        hazList.push(move[e]);
+                    }
+                }
+                if (hazList.length > 0) {
+                    formatted.push(this.hazardNames[m] + ": " + hazList.map(toMoveCommand).join(", "));
+                }
+            }
+            formatted.push("Any: " + toMoveCommand(165) + " (costs extra stamina)");
             
-            this.individualmsg[p] = "Pick a move to clear the obstacles: " + this.usableMoves[p].map(toMoveCommand).join(", ");
+            this.individualmsg[p] = "Pick moves to clear the obstacles: " + formatted.join(" | ");
+            this.movesChosen[p] = [];
         }
         
         this.treasures = {
@@ -12016,115 +12146,281 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
         
+        var known = sys.rand(3, Math.ceil(count*0.75)), unknown = sys.rand(Math.ceil(level/2), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        hazList = Object.keys(display);
+        var revealed = {};
+        total = 0;
+        for (p in display) {
+            total += display[p];
+        }
+        while (known > 0) {
+            h = hazList.random();
+            if (display[h] > 0) {
+                if (!revealed.hasOwnProperty(h)) {
+                    revealed[h] = 0;
+                }
+                val = sys.rand(1, display[h]+1);
+                val = Math.min(known, val);
+                revealed[h] += val;
+                display[h] -= val;
+                known -= val;
+            }
+        }
+        var hidden = {};
+        unknown = Math.min(unknown, total - k);
+        while (unknown > 0) {
+            h = hazList.random();
+            if (display[h] > 0) {
+                if (!hidden.hasOwnProperty(h)) {
+                    hidden[h] = 0;
+                }
+                val = sys.rand(1, display[h]+1);
+                val = Math.min(unknown, val);
+                hidden[h] += val;
+                display[h] -= val;
+                unknown -= val;
+                n += val;
+            }
+        }
+        var notrevealed = {};
+        for (p in display) {
+            val = display[p];
+            if (val > 0) {
+                if ((hidden.hasOwnProperty(p) && hidden[p] > 0) || (revealed.hasOwnProperty(p) && revealed[p] > 0)) {
+                    if (!hidden.hasOwnProperty(p)) {
+                        hidden[p] = 0;
+                    }
+                    hidden[p] += val;
+                } else {
+                    notrevealed[p] = val;
+                }
+                n += val;
+            }
+        }
+        
+        this.wasteCap = n > 5 ? (n > 9 ? 3 : 2) : (n === 0 ? 0 : 1);
+        
+        hazList = [];
+        for (p in revealed) {
+            if (revealed[p] > 0) {
+                hazList.push(this.plural(revealed[p], p));
+            }
+        }
+        for (p in notrevealed) {
+            if (notrevealed[p] > 0) {
+                hazList.push(this.plural("??", p));
+            }
+        }
+        count = 0;
+        for (p in hidden) {
+            count += hidden[p];
+        }
+        if (count > 0) {
+            hazList.push(count + " other unknown hazard" + (count === 1 ? "" : "s"));
+        }
+        
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: Some hazards obstruct your path to the next door! You can identify some <b>{2}</b>, but there are more, so clear them!".format(level, roomNum, this.hazardNames[randomHazard] + (randomHazard !== randomHazard2 ? " and " + this.hazardNames[randomHazard2] : "")));
+        this.sendAll("Room {0}-{1}: Some hazards obstruct your path to the next door! You find <b>{2}</b>!".format(level, roomNum, readable(hazList)));
         this.sendIndividuals();
         this.sendAll("");
     }
     HazardRoom.prototype = new PyramidRoom();
     HazardRoom.prototype.validInput = function(id, commandData) {
-        return this.usableCommands[id].contains(commandData.toLowerCase());
+        if (this.usableCommands[id].contains(commandData.toLowerCase())) {
+            return true;
+        }
+        this.send(id, "You cannot use that move!");
+        return false;
+    };
+    HazardRoom.prototype.postInput = function(src, commandData) {
+        var id = sys.name(src).toLowerCase();
+        var list = this.movesChosen[id];
+        var move = commandData.toLowerCase();
+        var mName = sys.move(sys.moveNum(move));
+        
+        if (list.contains(move)) {
+            list.splice(list.indexOf(move), 1);
+            this.send(id, "You cancelled the " + mName + "!");
+        } else {
+            list.push(move);
+            this.send(id, "You are going to use " + mName + "!");
+        }
+        var listName = list.map(function(x) { return sys.move(sys.moveNum(x)); });
+        
+        if (listName.length > 0) {
+            this.sendAll(toColor("{0} is going to use {1}!".format(sys.name(src), readable(listName)), "crimson"));
+        }
+        return true;
+    };
+    HazardRoom.prototype.plural = function(num, id) {
+        if (num === 1) {
+            return num + " " + this.hazardNames[id];
+        }
+        return num + " " + this.hazardPlural[id];
     };
     HazardRoom.prototype.advance = function() {
-        var parties = this.pyr.parties, members = this.pyr.names, id, m, p, points = 0, attackers = {}, attackersNames, n, pId, move, cat, power, set, liveHazards, struggled, strugglers = {}, strugglemsg, stamina = {};
+        var moves = this.movesChosen;
+        var hazards = this.hazardMoves;
+        var obstacles = this.hazards;
+        var users = this.moveUsers;
+        var pyr = this.pyr;
+        var wasted = {};
+        var struggled = [];
+        var struggleUsers = [];
+        var cleared = {}, found;
+        var alive = Object.keys(this.pyr.parties).filter(function(x) { return pyr.stamina[x] > 0; });
+        alive = alive.concat(alive);
+        var effective = {};
+        var ineffective = [];
+        var treasureTo;
+        var points = 0, stamina = {};
+        var list, e, p, id, m, mv, mid, total = 0;
         
-        attackers = this.getChoices();
-        attackersNames = Object.keys(attackers);
-        
-        this.sendAll("");
-        for (p in attackers) {
-            move = sys.moveNum(attackers[p]);
-            struggled = false;
-            
-            if (move === 165) {
-                liveHazards = [];
-                for (m in this.hazards) {
-                    if (this.hazards[m] > 0) {
-                        liveHazards.push(m);
+        for (e in hazards) {
+            list = hazards[e];
+            if (obstacles.hasOwnProperty(e)) {
+                cleared[e] = 0;
+                total += obstacles[e];
+            }
+            for (p = 0; p < alive.length; p++) {
+                id = alive[p];
+                m = moves[id].indexOf(sys.move(list[0]).toLowerCase());
+                if (m === -1) {
+                    m = moves[id].indexOf(sys.move(list[1]).toLowerCase());
+                }
+                if (m >= 0) {
+                    mid = moves[id][m];
+                    mv = sys.move(sys.moveNum(mid));
+                    moves[id].splice(m, 1);
+                    if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
+                        obstacles[e] -= 1;
+                        cleared[e]++;
+                        if (obstacles[e] === 0 && e === this.treasureLocation) {
+                            treasureTo = id;
+                        }
+                        if (!effective.hasOwnProperty(e)) {
+                            effective[e] = [];
+                        }
+                        effective[e].push(users[id][mid] + "'s " + mv);
+                    } else {
+                        if (!wasted.hasOwnProperty(id)) {
+                            wasted[id] = 0;
+                        }
+                        wasted[id] += 1;
+                        ineffective.push(users[id][mid] + "'s " + mv);
                     }
                 }
-                if (liveHazards.length > 0) {
-                    cat = liveHazards.random();
-                    struggled = true;
-                } else {
-                    continue;
-                }
-            } else {
-                for (m in this.hazardMoves) {
-                    if (this.hazardMoves[m].contains(move)) {
-                        cat = m;
+            }
+        }
+        alive = Object.keys(this.pyr.parties).filter(function(x) { return pyr.stamina[x] > 0; });
+        for (p in alive) {
+            id = alive[p];
+            if (moves[id].contains("struggle")) {
+                struggled.push(id);
+                struggleUsers.push(users[id].struggle + "'s Struggle");
+                found = false;
+                for (m in obstacles) {
+                    if (obstacles[m] > 0) {
+                        obstacles[m] -= 1;
+                        if (!cleared.hasOwnProperty(m)) {
+                            cleared[m] = 0;
+                        }
+                        cleared[m]++;
+                        found = true;
+                        if (obstacles[m] === 0 && m === this.treasureLocation) {
+                            treasureTo = id;
+                        }
+                        if (!effective.hasOwnProperty(m)) {
+                            effective[m] = [];
+                        }
+                        effective[m].push(users[id].struggle + "'s Struggle");
                         break;
                     }
                 }
-            }
-            
-            strugglemsg = "";
-            if (struggled) {
-                id = parties[p].random();
-                strugglers[p] = 2 + 3 * this.level;
-                strugglemsg = p.toCorrectCase() + " lost " + strugglers[p] + " Stamina!";
-            } else {
-                for (n in parties[p]) {
-                    pId = parseInt(parties[p][n], 10);
-                    set = pokedex.getAllMoves(pId);
-                    if (!set) {
-                        set = pokedex.getAllMoves(pokeInfo.species(pId));
+                if (!found) {
+                    if (!wasted.hasOwnProperty(id)) {
+                        wasted[id] = 0;
                     }
-                    if (set.contains(move + "")) {
-                        id = parties[p][n];
-                        break;
-                    }
+                    wasted[id] += 1;
+                    ineffective.push(users[id].struggle + "'s Struggle");
                 }
-            }
-            
-            if (cat in this.hazards && this.hazards[cat] > 0) {
-                if (struggled) {
-                    power = Math.min(sys.rand(8, 40 - this.level), this.hazards[cat]);
-                } else {
-                    power = Math.min(sys.rand(15 + this.level, 67 - this.level), this.hazards[cat]);
-                }
-                
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3} and clear <b>{4}%</b> of the room! {5}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), power, strugglemsg));
-                this.hazards[cat] -= power;
-                if (cat == this.treasureLocation && this.hazards[cat] <= 0) {
-                    this.sendAll("After clearing the {1}, <b>{0}</b> found {2}!".format(addFlashTag(p.toCorrectCase()), this.hazardNames[cat], toColor(treasureName(this.hiddenTreasure), "blue")), true);
-                    getTreasure(p, this.hiddenTreasure);
-                }
-            } else {
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> used <b>{2}</b> to pass through the {3}, but there was no {3}! {4}".format(p.toCorrectCase(), poke(id), toColor(sys.move(move), "blue"), toColor(this.hazardNames[cat], "blue"), strugglemsg));
             }
         }
         
-        var rest = 0, remaining = [];
-        for (p in this.hazards) {
-            m = this.hazards[p];
-            if (m > 0) {
-                rest += m;
-                remaining.push(m + "% " + this.hazardNames[p]);
+        var notCleared = [], count = 0;
+        for (e in obstacles) {
+            if (obstacles[e] > 0) {
+                notCleared.push(this.plural(obstacles[e], e));
+                count += obstacles[e];
             }
         }
-        for (p in strugglers) {
-            if (!(p in stamina)) {
-                stamina[p] = 0;
-            }
-            stamina[p] -= strugglers[p];
-        }
+        
+        var blue = function(x) {
+            return toColor(x, "blue");
+        };
         this.sendAll("");
-        if (rest > 50) {
-            for (p in members) {
-                id = members[p];
-                if (this.pyr.stamina[id] <= 0) {
-                    continue;
+        for (p in cleared) {
+            if (cleared[p] > 0) {
+                this.sendAll("<b>" + this.plural(cleared[p], p) + "</b> have been cleared by " + readable(effective[p].map(blue)) + "!");
+                if (treasureTo && p === this.treasureLocation) {
+                    this.sendAll("After clearing the {1}, <b>{0}</b> found {2}!".format(addFlashTag(treasureTo.toCorrectCase()), this.hazardNames[p], toColor(treasureName(this.hiddenTreasure), "blue")), true);
+                    getTreasure(treasureTo, this.hiddenTreasure);
                 }
-                if (!(id in stamina)) {
+            }
+        }
+        if (ineffective.length > 0) {
+            this.sendAll("No hazard was cleared by " + readable(ineffective.map(blue)) + "!");
+            for (p in wasted) {
+                if (!stamina.hasOwnProperty(p)) {
+                    stamina[p] = 0;
+                }
+                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * this.level * (count === 0 ? 0.5 : 1));
+            }
+        }
+        if (struggled.length > 0) {
+            var struggleStm = 2 + 3 * this.level;
+            this.sendAll(readable(struggled.map(function(x){ return x.toCorrectCase(); })) + " lost " + struggleStm + " stamina because of " + readable(struggleUsers) + "!");
+            for (p = struggled.length; p--; ) {
+                id = struggled[p];
+                if (!stamina.hasOwnProperty(id)) {
                     stamina[id] = 0;
                 }
-                stamina[id] -= ((2 + 3 * this.level) * Math.ceil((rest-50)/5));
+                stamina[id] -= struggleStm;
             }
-            this.sendAll("Only {0}% of the hazards have been cleared, so you struggled to reach the door due to the remaining hazards ({1})!".format(100-rest, readable(remaining, "and")));
-        } else {
-            this.sendAll("You cleared {0}% of the hazards, so reaching the door was piece of cake! Remaining hazards: {1}".format(100-rest, readable(remaining, "and")));
-            points = Math.round((5 + 3 * this.level) * Math.ceil((50-rest)/5));
+        }
+        
+        if (notCleared.length > 0) {
+            var stmLost = (count + 1) * this.level;
+            this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
+            for (var p = alive.length; p--; ) {
+                id = alive[p];
+                if (!stamina.hasOwnProperty(id)) {
+                    stamina[id] = 0;
+                }
+                stamina[id] -= stmLost;
+            }
+        }
+        points = Math.round((9 + 3 * this.level) * (total - count));
+        
+        this.sendAll("");
+        var perc = Math.round(count / total * 100);
+        if (perc === 0) {
+            this.sendAll("All hazards have been cleared, so nothing could stop you from going forward!");
+        }
+        else if (perc <= 20) {
+            this.sendAll("You cleared most of the hazards, so reaching the door was piece of cake!");
+        }
+        else if (perc <= 50) {
+            this.sendAll("Some of the hazards haven't been cleared, so you struggled to reach the door!");
+        }
+        else if (perc <= 75) {
+            this.sendAll("Still a fair number hazards remains, so it takes some time to reach the door!");
+        }
+        else if (perc === 100) {
+            this.sendAll("Literally no hazard cleared at all! Are you even trying?");
+        }
+        else {
+            this.sendAll("Too many hazards left, so it took a good amount of effort to pass through the room!");
         }
         
         this.pyr.updateStatus(points, stamina, true);
@@ -12136,19 +12432,18 @@ function Safari() {
     function EmptyRoom(pyramidRef, level, roomNum) {
         PyramidRoom.call(this, pyramidRef);
         this.midmsg = "Choose a Pokémon to help you explore the room to find the door.";
-        this.defaultChoice = "ignore";
         this.level = level;
         
         var parties = pyramidRef.parties;
         for (var p in parties) {
-            this.individualmsg[p] = "Send one of your Pokémon to explore the room: " + parties[p].map(pyrLink).join(", ") + " | Or do nothing with " + link("/pyr ignore");
+            this.individualmsg[p] = "Send one of your Pokémon to explore the room: " + parties[p].map(pyrLink).join(", ");
         }
         
         var types = Object.keys(effectiveness).shuffle();
         this.traps = {};
         for (p = 0; p < 3; p++) {
             this.traps[types.shift()] = {
-                stamina: -(8 + this.level * 8)
+                stamina: -(3 + this.level * 5)
             };
         }
         this.treasures = {};
@@ -12168,44 +12463,84 @@ function Safari() {
             heavy: { chance: 14, item: "heavy", amount: 2 * level },
             premier: { chance: 11, item: "premier", amount: 3 * level },
             pearl: { chance: 10, item: "pearl", amount: 2 + level },
-            bigpearl: { chance: 8, item: "bigpearl", amount: 1 * level }
+            bigpearl: { chance: 8, item: "bigpearl", amount: 1 * level },
+            stamina: { chance: 6, item: "stamina", amount: 3 + level }
         };
         for (p = 0; p < 3; p++) {
             this.treasures[types.shift()] = randomSampleObj(rew);
         }
         
-        var target, t1, t2, badTypes = Object.keys(this.traps);
-        while (true) {
-            target = sys.rand(1, 722);
+        var target, t1, t2, badTypes = Object.keys(this.traps), goodTypes = Object.keys(this.treasures), badList = [], goodList = [];
+        for (p = 1; p < 722; p++) {
+            t1 = sys.type(sys.pokeType1(p));
+            t2 = sys.type(sys.pokeType2(p));
+            if (badTypes.contains(t1) && (t2 === "???") || badTypes.contains(t2)) {
+                badList.push(p);
+                continue;
+            }
+            if (goodTypes.contains(t1) && (t2 === "???") || goodTypes.contains(t2)) {
+                goodList.push(p);
+            }
+        }
+        badList = badList.shuffle();
+        goodList = goodList.shuffle();
+        
+        var list = [], used = [];
+        for (p = badList.length; p--; ) {
+            target = badList[p];
             t1 = sys.type(sys.pokeType1(target));
             t2 = sys.type(sys.pokeType2(target));
             
-            if (t2 !== "???" && (badTypes.contains(t1) || badTypes.contains(t2))) {
-                break;
+            if (!used.contains(t1) && (t2 === "???" || !used.contains(t2))) {
+                used.push(t1);
+                if (t2 !== "???") {
+                    used.push(t2);
+                }
+                list.push(target);
+                if (list.length >= 2) {
+                    break;
+                }
             }
         }
+        badList = list.map(poke);
+        
+        list = [];
+        used = [];
+        for (p = goodList.length; p--; ) {
+            target = goodList[p];
+            t1 = sys.type(sys.pokeType1(target));
+            t2 = sys.type(sys.pokeType2(target));
+            
+            if (!used.contains(t1) && (t2 === "???" || !used.contains(t2))) {
+                used.push(t1);
+                if (t2 !== "???") {
+                    used.push(t2);
+                }
+                list.push(target);
+                if (list.length >= 2) {
+                    break;
+                }
+            }
+        }
+        goodList = list.map(poke);
         
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: Other than a sign saying \"Pokémon like {2} are not recommended in this room\", there's nothing of interest in this room. Or is there?".format(level, roomNum, toColor(poke(target), "blue")));
+        badList = badList.join("").split("").shuffle().join("");
+        goodList = goodList.join("").split("").shuffle().join("");
+        this.sendAll("Room {0}-{1}: Other than a sign saying \"Pokémon like {2} are not recommended in this room, but {3} may be useful\", there's nothing of interest in this room. Or is there?".format(level, roomNum, toColor(badList, "red"), toColor(goodList, "blue")));
         this.sendIndividuals();
         this.sendAll("");
     }
     EmptyRoom.prototype = new PyramidRoom();
     EmptyRoom.prototype.validInput = function(id, commandData) {
-        return ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(commandData.toLowerCase()) || this.pokeInParty(id, commandData);
+        return this.pokeInParty(id, commandData);
     };
     EmptyRoom.prototype.advance = function() {
-        var choices = this.getChoices(), id, p, points = 0, stamina = {}, t1, t2, hasTrap, hasTreasure, trapType, treasureType, out, reward, foundTreasure = {}, c, lazyPlayers = 0, players = 0;
+        var choices = this.getChoices(), id, p, points = 0, stamina = {}, t1, t2, hasTrap, hasTreasure, trapType, treasureType, out, reward, foundTreasure = {}, c;
         
         this.sendAll("");
         for (p in choices) {
             c = choices[p];
-            players++;
-            if (typeof c === "string" && ["ignore", "nothing", "none", "go ahead", "keep going", "walk", "walk away"].contains(c.toLowerCase())) {
-                this.sendAll("<b>{0}</b> ignored the room and took a break!".format(p.toCorrectCase()));
-                lazyPlayers++;
-                continue;
-            }
             id = c;
             t1 = sys.type(sys.pokeType1(id));
             t2 = sys.type(sys.pokeType2(id));
@@ -12229,7 +12564,7 @@ function Safari() {
                 }
             }
             if (hasTrap && hasTreasure) {
-                if (sys.rand(0, 2) === 0) {
+                if (chance(0.5)) {
                     hasTreasure = false;
                 } else {
                     hasTrap = false;
@@ -12245,20 +12580,15 @@ function Safari() {
                 reward = this.treasures[treasureType];
                 foundTreasure[p] = 16 + 16 * this.level;
                 out = "{0}'s {1} {3}! <b>{0}</b> received <b>{2}</b>!".format(addFlashTag(p.toCorrectCase()), poke(c), treasureName(reward), toColor("found a treasure", "blue"));
-            } else {
-                stamina[p] = -2 * this.level - 1;
+                if (reward.item === "stamina") {
+                    stamina[p] = reward.amount;
+                }
             }
             
             this.sendAll("<b>{0}</b> asked for their <b>{1}</b> to explore the room! {2}".format(p.toCorrectCase(), poke(c), out), true);
             if (reward) {
                 getTreasure(p, reward);
             }
-        }
-        if (lazyPlayers >= players) {
-            for (p in choices) {
-                stamina[p] = -4 * this.level - 4;
-            }
-            this.sendAll("After arguing why no one went to look for the door, the entire team decided to split up in order to find it at the cost of {0} Stamina each.".format(-stamina[p]), true);
         }
         for (p in foundTreasure) {
             points += foundTreasure[p];
@@ -12860,10 +13190,11 @@ function Safari() {
         }
     };
 
-    function BFactory(src, reward1, reward2, reward3) {
+    function BFactory(src, reward1, reward2, reward3, lc) {
         SafariEvent.call(this, src);
-        this.eventName = "Battle Factory";
+        this.eventName = (lc ? "LC " : "") + "Battle Factory";
         this.minPlayers = 4;
+        this.lc = lc;
 
         this.playerTeams = {};
         this.survivors = [];
@@ -12913,7 +13244,11 @@ function Safari() {
         this.thirdPrize = this.signups.length > 6;
         
         for (var e = 0; e < this.signups.length; e++) {
-            this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 450, 600, 1, null, true);
+            if (this.lc) {
+                this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 179, 480, 1, null, false, true);
+            } else {
+                this.playerTeams[this.signups[e].toLowerCase()] = generateTeam(8, 450, 600, 1, null, true, false);
+            }
             this.survivors.push(this.signups[e].toLowerCase());
         }
         
@@ -13182,6 +13517,10 @@ function Safari() {
         var choices = this.choices[name];
         if (!choices) {
             this.sendMessage(name, "Please wait for an opponent to choose your Pokémon!");
+            return;
+        }
+        if (this.phase !== "input") {
+            this.sendMessage(name, "You can't choose your Pokémon after the round begins!");
             return;
         }
         var team = this.playerTeams[name];
@@ -14641,7 +14980,7 @@ function Safari() {
             
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.add(target.id, target.balls.entry);
-            rafflePlayers.save();
+            safari.sanitizeRaffle();
 
             if (saltBans.hash.hasOwnProperty(player.id) || saltBans.hash.hasOwnProperty(target.id)) {
                 saltBans.add(player.id, player.truesalt);
@@ -14707,7 +15046,7 @@ function Safari() {
             
             rafflePlayers.add(player.id, player.balls.entry);
             rafflePlayers.remove(name1.toLowerCase());
-            rafflePlayers.save();
+            safari.sanitizeRaffle();
             
             if (contestVotes) {
                 var pVote = contestVotes[targetId];
@@ -16173,6 +16512,12 @@ function Safari() {
                     case "battlefactory":
                         type = "bfactory";
                     break;
+                    case "lcbf":
+                    case "lcfactory":
+                    case "lcbfactory":
+                    case "lcbattlefactory":
+                        type = "lcbfactory";
+                    break;
                     case "quiz":
                         type = "quiz";
                     break;
@@ -16183,7 +16528,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]:[Team2Reward]", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true) + toColor(" (everything is optional)", "orangered"), safchan);
-                        safaribot.sendHtmlMessage(src, "Battle Factory: /startevent factory:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
+                        safaribot.sendHtmlMessage(src, "Battle Factory: /startevent [factory/lcfactory]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
                         safaribot.sendHtmlMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
                         return true;
                 }
@@ -16343,7 +16688,7 @@ function Safari() {
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
-                else if (type == "bfactory") {
+                else if (type == "bfactory" || type == "lcbfactory") {
                     var r1 = "", r2 = "", r3 = "", pLen = param.length;
 
                     if (pLen > 0) {
@@ -16381,7 +16726,7 @@ function Safari() {
                         }
                     }
                     
-                    var ev = new BFactory(src, r1, r2, r3);
+                    var ev = new BFactory(src, r1, r2, r3, type == "lcbfactory");
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
@@ -18204,6 +18549,7 @@ function Safari() {
                 var refund = parseInt(cmd[1], 10) || 0;
                 this.refundRaffle(player, playerId, refund);
                 rafflePlayers.remove(target);
+                safari.sanitizeRaffle();
 
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + " was disqualified from the current raffle.", safchan);
