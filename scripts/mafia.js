@@ -2787,7 +2787,7 @@ function Mafia(mafiachan) {
         for (var action in target.targetsData) {
             if ((redirectActions !== "*") && (redirectActions.indexOf(action) === -1)) {
                 newTar[action] = target.targetsData[action]
-            };
+            }
             else {
                 act = delimSplit(":", target.targetsData[action]);
                 newData = (redirectTarget + ":" + act[1] + "@*" + "/" + target.name );
