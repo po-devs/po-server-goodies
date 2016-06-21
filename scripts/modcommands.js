@@ -149,20 +149,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendAll(commandData + " was mysteriously kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
             sys.kick(tar);
         } else {
-            if (isSuperAdmin(src) || sys.auth(src) > 2) {
+            if (sys.auth(src) > 1) {
                 sys.dbAuths().map(sys.id).filter(function (authId) {
                     return authId !== undefined;
                 }).forEach(function (authId) {
-                    normalbot.sendMessage(authId, commandData + " was silent kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
+                    normalbot.sendMessage(authId, commandData + " was silently kicked by " + nonFlashing(sys.name(src)) + "! [Channel: " + sys.channel(channel) + "]");
                 });
                 sys.kick(tar);
             } else {
-                normalbot.sendMessage(src, "Only super admins or owners can use this.", channel);
+                normalbot.sendMessage(src, "Only admins and owners can use this.", channel);
                 return;
             }
         }
         var authName = sys.name(src).toLowerCase();
-        script.authStats[authName] =  script.authStats[authName] || {};
+        script.authStats[authName] = script.authStats[authName] || {};
         script.authStats[authName].latestKick = [commandData, parseInt(sys.time(), 10)];
         return;
     }
