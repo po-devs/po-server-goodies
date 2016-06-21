@@ -350,7 +350,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         var type = (command === "cookieunban" ? "unbanned" : "unmuted");
         script.namesToUnban.add(commandData.toLowerCase(), "true");
-        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type, staffchannel);
+        normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src) + ".", staffchannel);
         return;
     }
     if (command === "whobanned") {
