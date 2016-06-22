@@ -225,6 +225,7 @@ function Safari() {
         starter2: [],
         lastLogin: null,
         consecutiveLogins: 1,
+        lastStreak: 1,
         lastViewedRules : 0,
         visible: true,
         trading: true,
@@ -7054,60 +7055,33 @@ function Safari() {
         }
         
         if (today > player.lastLogin) {
-            if (today !== player.lastLogin + 1) {
+            var daysdown = parseInt(permObj.get("loginDaysDown"), 10);
+            if (isNaN(daysdown) || daysdown < 0) {
+                daysdown = 0;
+            }
+            var days = today - player.lastLogin;
+            if (today > player.lastLogin + 1 + daysdown) {
+                player.lastStreak = player.consecutiveLogins;
                 player.consecutiveLogins = 0;
+                days = 1;
             }
             player.consecutiveLogins += 1;
             player.lastLogin = today;
             var logins = player.consecutiveLogins;
-
-            var gained = [];
-            var moneyGained = 250 + 25 * logins;
-            if (moneyGained > 1000) {
-                moneyGained = 1000;
-            }
-            gained.push("$" + moneyGained);
-            player.money += moneyGained;
-            if (player.money > moneyCap) {
-                player.money = moneyCap;
-            }
-
-            var safariGained = logins;
-            if (safariGained > 30) {
-                safariGained = 30;
-            }
-            player.balls.safari += safariGained;
-            if (player.balls.safari > getCap("safari")) {
-                player.balls.safari = getCap("safari");
-            }
-            gained.push( plural(safariGained, "safari"));
-
-            var milestone = logins % 32;
-            var milestoneRewards = {
-                "31": { reward: "master", amount: 1 },
-                "27": { reward: "gacha", amount: 30 },
-                "24": { reward: "clone", amount: 5 },
-                "21": { reward: "luxury", amount: 5 },
-                "18": { reward: "gacha", amount: 15 },
-                "15": { reward: "rare", amount: 1, repeatAmount: 2 },
-                "12": { reward: "bait", amount: 10 },
-                "9": { reward: "ultra", amount: 5, repeatAmount: 15},
-                "6": { reward: "great", amount: 8, repeatAmount: 25},
-                "3": { reward: "rock", amount: 5, repeatAmount: 25}
-            };
-
-            var frag;
-            if (milestone in milestoneRewards) {
-                var reward = milestoneRewards[milestone];
-                var item = reward.reward;
-                var amount = logins > 30 && "repeatAmount" in reward? reward.repeatAmount : reward.amount;
-
-                if (item === "master" && player.balls.master >= getCap("master")) {
-                    frag = true;
+            
+            var hasMaster = player.balls.master >= getCap("master");
+            
+            var reward = {}, temp, t, e;
+            for (e = days-1; e >= 0; e--) {
+                temp = this.getDailyReward(logins-e, hasMaster);
+                for (t in temp) {
+                    if (!reward.hasOwnProperty(t)) {
+                        reward[t] = 0;
+                    }
+                    reward[t] += temp[t];
                 }
-                rewardCapCheck(player, item, amount, null, true);
-                gained.push(plural(amount, item));
             }
+            
             if (logins > player.records.consecutiveLogins) {
                 player.records.consecutiveLogins = logins;
             }
@@ -7115,10 +7089,12 @@ function Safari() {
             var perkBonus = Math.min(itemData.battery.bonusRate * player.balls.battery, itemData.battery.maxRate);
             var recharges = 30 + perkBonus;
             player.balls.itemfinder = recharges;
+            
+            var out = giveStuff(player, reward, true);
 
-            safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + gained.join(", "), safchan);
+            safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
-            if (frag) {
+            if (hasMaster) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
             }
             if (logins % 32 === 30) {
@@ -7126,6 +7102,91 @@ function Safari() {
             }
         }
         this.saveGame(player);
+    };
+    this.getDailyReward = function(logins, masterLimit) {
+        var out = {};
+        
+        var moneyGained = 250 + 25 * logins;
+        if (moneyGained > 1000) {
+            moneyGained = 1000;
+        }
+        out.$ = moneyGained;
+        
+        var safariGained = logins;
+        if (safariGained > 30) {
+            safariGained = 30;
+        }
+        out["@safari"] = safariGained;
+        
+        var milestone = logins % 32;
+        var milestoneRewards = {
+            "31": { reward: "master", amount: 1 },
+            "27": { reward: "gacha", amount: 30 },
+            "24": { reward: "clone", amount: 5 },
+            "21": { reward: "luxury", amount: 5 },
+            "18": { reward: "gacha", amount: 15 },
+            "15": { reward: "rare", amount: 1, repeatAmount: 2 },
+            "12": { reward: "bait", amount: 10 },
+            "9": { reward: "ultra", amount: 5, repeatAmount: 15},
+            "6": { reward: "great", amount: 8, repeatAmount: 25},
+            "3": { reward: "rock", amount: 5, repeatAmount: 25}
+        };
+
+        var frag;
+        if (milestone in milestoneRewards) {
+            var reward = milestoneRewards[milestone];
+            var item = reward.reward;
+            var amount = logins > 30 && "repeatAmount" in reward? reward.repeatAmount : reward.amount;
+
+            if (item === "master" && masterLimit) {
+                frag = true;
+                item = "fragment";
+            }
+            
+            out["@" +item] = amount;
+        }
+        
+        return out;
+    };
+    this.refundLogin = function(src, commandData) {
+        var data = toCommandData(commandData, ["target", "base", "additional"]);
+        
+        var player = getAvatarOff(data.target);
+        if (!player) {
+            safaribot.sendMessage(src, "No such player!", safchan);
+            return;
+        }
+        var base = parseInt(data.base, 10);
+        var add = parseInt(data.additional, 10);
+        if (isNaN(base) || base < 1 || isNaN(add) || add < 1) {
+            safaribot.sendMessage(src, "Invalid syntax! Use /refundlogin Player:PreviousLoginStreak:DaysToAdd.", safchan);
+            return;
+        }
+        var reward = {}, temp, e, t, hasMaster = player.balls.master >= getCap("master");
+        for (e = 1; e <= add; e++) {
+            temp = this.getDailyReward(base+e, hasMaster);
+            for (t in temp) {
+                if (!reward.hasOwnProperty(t)) {
+                    reward[t] = 0;
+                }
+                reward[t] += temp[t];
+            }
+        }
+        
+        var out = giveStuff(player, reward, true);
+        var gainedmsg = readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : "");
+        
+        player.consecutiveLogins = base + add;
+        if (player.consecutiveLogins > player.records.consecutiveLogins) {
+            player.records.consecutiveLogins = player.consecutiveLogins;
+        }
+        this.saveGame(player);
+        
+        if (sys.id(data.target)) {
+            safaribot.sendMessage(sys.id(data.target), "Your logins have been refunded! Your login streak was set to " + player.consecutiveLogins + " and you received " + gainedmsg + "!", safchan);
+        }
+        safaribot.sendMessage(src, "You refunded " + data.target.toCorrectCase() + " logins! Their login streak was set to " + player.consecutiveLogins + " and they received " + gainedmsg + "!", safchan);
+        sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + data.target.toCorrectCase() + "|||refundlogin|||was login-refunded|||to " + base + " until " + (base+add) + " days and received " + gainedmsg + "\n");
     };
     this.refundRaffle = function(player, id, refund) {
         if (!player) {
@@ -10134,7 +10195,7 @@ function Safari() {
                 }
             }
         }
-        hasRaffle = false;
+        var hasRaffle = false;
         var cantHold = [], pokeRew = 0, ing;
         for (e in rec.reward) {
             asset = translateAsset(e);
@@ -11833,7 +11894,7 @@ function Safari() {
                 if (res.power[0] < res.power[1]) {
                     oppScore++;
                 }
-                stamina[id] -= 1 + this.level;
+                stamina[id] -= 2 * this.level;
             }
         }
         
@@ -11846,7 +11907,7 @@ function Safari() {
                 getTreasure(id, reward);
             }
         } else {
-            stamina[id] -= 5 * this.level;
+            stamina[id] -= 4 + 5 * this.level;
             this.sendAll("{3} couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
         }
         points = [-6 - 4 * this.level, 0, 30 + 20 * this.level, 48 + 32 * this.level][score];
@@ -14608,7 +14669,7 @@ function Safari() {
                     continue;
                 }
                 data = JSON.parse(rawPlayers.hash[e]);
-                if (data.removedFromLB) {
+                if (data.removedFromLB || data.isInTutorial) {
                     continue;
                 }
                 for (i in leaderboardTypes) {
@@ -15693,7 +15754,7 @@ function Safari() {
             "/contest[soft]: Force starts a Safari contest. Use /contestsoft to skip broadcasting to Tohjo Falls.",
             "/precontest: Enter the pre-contest phase. Use /skipcontest to cancel the pre-contest phase and skip the contest.",
             "/wild[event] [pokemon (optional)]։[amount]։[disguise]: Spawns a random or designated wild Pokémon with no restrictions. Use /wildevent for a spawn that cannot be caught with Master Balls. Amount must be between 1 and 4, else defaults to 1. Disguise is optional and makes the spawned Pokémon appear as something it is not.",
-            "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
+            // "/horde: Spawns a group of random wild Pokémon with no restrictions. Use a valid dex number to spawn a specific Pokémon.",
             "/checkrate [item]: Displays the rate of obtaining that item from Gachapon, Itemfinder, and Prize Pack.",
             "/editdata [type]։[item]։[property]։[value]: Changes a property from an item/costume.",
             "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
@@ -15719,7 +15780,9 @@ function Safari() {
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
             "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests.",
             "/updateafter [abort/cancel/stop]: Updates Safari at next available opportunity. Use any of the command data listed to cancel the pending update.",
-            "/nextspawn [player]։[pokemon]։[amount]։[disguise]: Makes a player's next spawn equal to [amount] of [pokemon] diguised as [disguise]. Amount and Disguse are optional. Affects Bait and Gacha."
+            "/nextspawn [player]։[pokemon]։[amount]։[disguise]: Makes a player's next spawn equal to [amount] of [pokemon] diguised as [disguise]. Amount and Disguse are optional. Affects Bait and Gacha.",
+            "/loginmercy [number]: Sets a number of days that will not break the player's consecutive login if they miss it (use when server is down for too long).",
+            "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -17475,7 +17538,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Recipe <b>" + cap(data.name, true) + "</b> added to Alchemist quest!", safchan);
                 safaribot.sendMessage(src, "Ingredients: " + translateStuff(rec.ingredients), safchan);
                 safaribot.sendMessage(src, "Reward: " + translateStuff(rec.reward), safchan);
-                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.transmutation + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
+                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
@@ -18892,6 +18955,24 @@ function Safari() {
                 updateItemHelp();
                 return true;
             }
+            if (command === "refundlogin") {
+                safari.refundLogin(src, commandData);
+                return true;
+            }
+            if (command === "loginmercy") {
+                var info = parseInt(commandData, 10);
+                if (isNaN(info) || info < 0) {
+                    safaribot.sendMessage(src, "Please choose a valid number of days!", safchan);
+                    return true;
+                }
+                permObj.add("loginDaysDown", info);
+                if (info === 0) {
+                    safaribot.sendMessage(src, "Resetting login mercy value!", safchan);
+                } else {
+                    safaribot.sendMessage(src, "Players who didn't log in in the last " + plural(info, "day") + " won't lose their consecutive login streak!", safchan);
+                }
+                return true;
+            }
             if (command === "config") {
                 var info = commandData.split(":"), editable = ["arena_pink", "arena_teal", "arena_mustard", "arena_cyan", "arena_crimson", "arena_rainbow", "tier_chances"], prop, val;
                 if (commandData.toLowerCase() === "current") {
@@ -19491,6 +19572,10 @@ function Safari() {
                     safari.changeDailyBoost(next);
                     safari.checkNewMonth();
                     safari.backupSaves();
+                    var mercy = parseInt(permObj.get("loginDaysDown"), 10);
+                    if (mercy > 0) {
+                        permObj.add("loginDaysDown", mercy-1);
+                    }
                 }
                 checkUpdate();
             } else {
