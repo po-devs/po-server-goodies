@@ -7065,7 +7065,7 @@ function Safari() {
                 player.consecutiveLogins = 0;
                 days = 1;
             }
-            player.consecutiveLogins += 1;
+            player.consecutiveLogins += days;
             player.lastLogin = today;
             var logins = player.consecutiveLogins;
             
@@ -7094,7 +7094,7 @@ function Safari() {
 
             safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
-            if (hasMaster) {
+            if (hasMaster && reward.hasOwnProperty("@fragment") && reward["@fragment"] > 0) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
             }
             if (logins % 32 === 30) {
@@ -7132,14 +7132,12 @@ function Safari() {
             "3": { reward: "rock", amount: 5, repeatAmount: 25}
         };
 
-        var frag;
         if (milestone in milestoneRewards) {
             var reward = milestoneRewards[milestone];
             var item = reward.reward;
             var amount = logins > 30 && "repeatAmount" in reward? reward.repeatAmount : reward.amount;
 
             if (item === "master" && masterLimit) {
-                frag = true;
                 item = "fragment";
             }
             
@@ -19574,7 +19572,7 @@ function Safari() {
                     safari.backupSaves();
                     var mercy = parseInt(permObj.get("loginDaysDown"), 10);
                     if (mercy > 0) {
-                        permObj.add("loginDaysDown", mercy-1);
+                        permObj.add("loginDaysDown", 0);
                     }
                 }
                 checkUpdate();
