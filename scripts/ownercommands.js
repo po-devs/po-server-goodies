@@ -874,7 +874,7 @@ exports.help =
         "/updatecommands: To update command files. Update scripts afterwards for full effect.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
         "/[un]loadstats: Loads the usage stats plugin.",
-        "/[un]loadreplay: Loads the replay plugin.",
+        "/[un]loadreplays: Loads the replay plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",
