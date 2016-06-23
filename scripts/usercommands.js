@@ -462,7 +462,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var team = script.importable(src, teamNumber, true).join("\n");
         var fileName = sys.time() + "-" + sys.rand(1000, 10000) + ".txt";
         sys.writeToFile("usage_stats/formatted/team/" + fileName, team);
-        normalbot.sendMessage(src, "You team can be found here: http://server.pokemon-online.eu/team/" + fileName + " Remember this will be deleted in 24 hours", channel);
+        normalbot.sendMessage(src, "Your team can be found here: http://server.pokemon-online.eu/team/" + fileName + " Remember this will be deleted in 24 hours", channel);
         return;
     }
     if (command === "cjoin") {

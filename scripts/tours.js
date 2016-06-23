@@ -2687,7 +2687,7 @@ function tourCommand(src, command, commandData, channel) {
                     roundtable = "<div style='margin-left: 50px'><b>Round " + tours.tour[y].round + " of the " + tours.tour[y].tourtype + " Tournament</b><table><br/>";
                 }
                 else {
-                    data.push("<b>Round " + tours.tour[y].round + " if the " + tours.tour[y].tourtype + " Tournaments</b>");
+                    data.push("<b>Round " + tours.tour[y].round + " of the " + tours.tour[y].tourtype + " Tournaments</b>");
                 }
                 for (var x=0; x<tours.tour[y].players.length; x+=2) {
                     if (winners.indexOf(tours.tour[y].players[x]) != -1 && tours.tour[y].players[x] != "~Bye~" && tours.tour[y].players[x] != "~DQ~") {
