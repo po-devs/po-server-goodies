@@ -475,7 +475,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
 exports.help = [
     "/ban [ip/name]: Bans a user. /unban to unban.",
     "/cookieban [name]: Bans an online target by cookie. /cookieunban to unban.",
-    "/cookiemute [name]: Puts an online android target on an autosmute list by cookie. /cookiemute to unmute.",
+    "/cookiemute [name]: Puts an online target on an autosmute list by cookie. /cookieunmute to unmute.",
+    "/idban [name]: Bans an online target by ID. /idunban [id] to unban.",
+    "/idmute [name]: Puts an online target on an autosmute list by ID. /idunmute [id] to unmute.",
+    "/ultraban [name]: Bans an online target by IP, cookie and ID.",
     "/channelnameban [name]: Adds a regexp ban on channel names. /channelnameunban to unban.",
     "/destroychan [name]: Destroy a channel (official channels are protected).",
     "/nameban [name]: Adds a regexp ban on usernames. /nameunban to unban.",
