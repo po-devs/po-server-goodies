@@ -887,7 +887,7 @@ function mafiaChecker() {
                 
                 //Defensive Modes
                 for (e in possibleNightActions) {
-                    if (possibleNightActions[e] in role.actions && typeof role.actions[possibleNightActions[e]] !== "function") {
+                    if (possibleNightActions[e] in role.actions && typeof role.actions[possibleNightActions[e]] !== "function" && checkType(role.actions[possibleNightActions[e]], ["object"], act + "." + possibleNightActions[e])) {
                         command = possibleNightActions[e];
                         action = role.actions[command];
                         comm = act + "." + command;
