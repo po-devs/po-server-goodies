@@ -2515,7 +2515,7 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 if (tours.tour[key].maxplayers === "default") {
-                    if (SESSION.users(src).smute.active) {
+                    if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                         sendBotMessage(src, "<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time(), 10))+" second"+(tours.tour[key].time - parseInt(sys.time(), 10) == 1 ? "" : "s")+" remaining!", tourschan, true);
                     } else {
                         sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].time - parseInt(sys.time(), 10))+" second"+(tours.tour[key].time - parseInt(sys.time(), 10) == 1 ? "" : "s")+" remaining!", tourschan, true);
@@ -2526,7 +2526,7 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
                 else {
-                    if (SESSION.users(src).smute.active) {
+                    if ((SESSION.users(src).smute.active  && sys.auth(src) < 1)) {
                         sendBotMessage(src, "<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true);
                     } else {
                         sendBotAll("<b>"+html_escape(sys.name(src))+"</b> is player #"+tours.tour[key].players.length+" to join the "+html_escape(getFullTourName(key))+" tournament! "+(tours.tour[key].maxplayers - tours.tour[key].cpt)+" place"+(tours.tour[key].maxplayers - tours.tour[key].cpt == 1 ? "" : "s")+" remaining!", tourschan, true);
@@ -2542,7 +2542,7 @@ function tourCommand(src, command, commandData, channel) {
                 else {
                     tours.tour[key].numjoins[sys.ip(src)] = 1;
                 }
-                if (SESSION.users(src).smute.active) {
+                if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                     var index = tours.tour[key].players.indexOf(src);
                     tours.tour[key].players.splice(index, 1);
                     tours.tour[key].cpt -= 1;
@@ -2569,7 +2569,7 @@ function tourCommand(src, command, commandData, channel) {
                 }
             }
 
-            if (oldname === null || SESSION.users(src).smute.active) { // prevent users from joining tours whilst smuted
+            if (oldname === null || (SESSION.users(src).smute.active && sys.auth(src) < 1)) { // prevent users from joining tours whilst smuted
                 sendBotMessage(src, "There are no subs remaining in the "+getFullTourName(key)+" tournament!",tourschan, false);
                 return true;
             }
