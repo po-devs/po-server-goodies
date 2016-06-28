@@ -214,7 +214,7 @@ function hasReviewAccess(name) {
 
 function getSpecialQuestion(category) {
     var q = {};
-    
+
     category = category.toLowerCase();
     if (category === "who's that pokémon?") {
 
@@ -224,12 +224,12 @@ function getSpecialQuestion(category) {
 
     } else if (category === "mental math") {
         var num1 = Math.floor(Math.random() * (13 - 1)) + 1;
-        var op1 = Math.random() < .5;
+        var op1 = Math.random() < 0.5;
         if (op1) var num2 = Math.floor(Math.random() * (26 - 1)) + 1;
         else var num2 = Math.floor(Math.random() * (11 - 1)) + 1;
-        var op2 = Math.random() < .5;
+        var op2 = Math.random() < 0.5;
         if (op2) var num3 = Math.floor(Math.random() * (21 - 1)) + 1;
-        else var num3 = Math.floor(Math.random() * 
+        else var num3 = Math.floor(Math.random() *
             ((op1 ? num1 + num2 : num1 * num2) - 1)) + 1;
 
         q.question = String(num1) + (op1 ? '+' : '*') + String(num2)
@@ -267,7 +267,7 @@ function PMcheckq(src, channel) {
             Trivia.sendPM(src, "Submitted By: " + questionInfo.name, channel);
         }
     }
-    
+
     if (questionInfo.notes !== undefined){
         Trivia.sendPM(src, "Notes: " + questionInfo.notes, channel);
     } else {
@@ -410,15 +410,15 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
         autoJoin(name);
     }
-    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);    
+    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
     if (time > lastAdvertise + 60 * 10) {
         lastAdvertise = time;
-        sendChanAll("", 0);    
+        sendChanAll("", 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         this.sendAll(ad, 0);
         sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", 0);
         sendChanAll("", 0);
-    }  
+    }
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
     var player_id, player_ip;

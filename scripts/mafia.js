@@ -1870,7 +1870,7 @@ function Mafia(mafiachan) {
             sendBorder();
             sendChanAll("", mafiachan);
         }
-        
+
         var playerson = sys.playerIds();
         for (var x = 0; x < playerson.length; ++x) {
             var id = playerson[x];
@@ -1923,7 +1923,7 @@ function Mafia(mafiachan) {
             else {
                 this.numjoins[sys.ip(src)] = 1;
             }
-            if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
+            if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
                 gamemsg(srcname, name + " joined the game!");
                 mafia.shoveUser(mafiabot.name, sys.name(src), true);
             } else {
@@ -2047,7 +2047,7 @@ function Mafia(mafiachan) {
                     return 1;
             }).map(function(role) {
                 if (typeof role.actions.onlist === "string") {
-                    var onlistRole = role.actions.onlist, 
+                    var onlistRole = role.actions.onlist,
                         roleName = html_escape(this.theme.trrole(onlistRole)),
                         color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
                     return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
@@ -4448,8 +4448,8 @@ function Mafia(mafiachan) {
                         act = player.role.actions.standby[k];
                         charges = mafia.getCharges(player, "standby", k);
                         if (act.msg && (charges === undefined || charges > 0)) {
-                            var msg = html_escape(act.msg), 
-                                colon = msg.indexOf(":"), 
+                            var msg = html_escape(act.msg),
+                                colon = msg.indexOf(":"),
                                 botName = "";
                             if (colon !== -1) {
                                 botName = msg.substring(0, colon);
@@ -7339,7 +7339,7 @@ function Mafia(mafiachan) {
             } else {
                 this.signups.push(name);
             }
-            
+
             gamemsgAll(name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")");
             sys.sendAll("±Game: " + name + " joined the game! (pushed by " + nonFlashing(sys.name(src)) + ")", sachannel);
             if (name in this.usersToShove) {
