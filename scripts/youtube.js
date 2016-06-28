@@ -5,7 +5,7 @@ function YouTube() {
     var ytApi = sys.getFileContent(Config.dataDir + "ytApi.txt");
     
     this.afterChatMessage = function (src, message, channel) {
-        if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
+        if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
             youtubeBot.sendMessage(src, "Loading YouTube data failed.", channel);
             return;
         }
