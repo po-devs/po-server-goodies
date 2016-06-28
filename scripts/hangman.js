@@ -196,7 +196,7 @@ function Hangman() {
                 break;
             }
         }
-        if (SESSION.users(src).smute.active) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
@@ -338,7 +338,7 @@ function Hangman() {
                 break;
             }
         }   
-        if (SESSION.users(src).smute.active) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
@@ -415,7 +415,7 @@ function Hangman() {
             hangbot.sendMessage(src, "An event game is about to start!", hangchan);
             return;
         }
-        if (SESSION.users(src).smute.active || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1) || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
             hangbot.sendMessage(src, "Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
             return;
         }
