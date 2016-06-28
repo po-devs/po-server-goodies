@@ -285,22 +285,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return "no command";
     }
 
-    if (command === "lt" || command === "lovetap") {
-        if (tar === undefined) {
-            normalbot.sendMessage(src, "Choose a valid target for your love!", channel);
-            return;
-        }
-        var colour = script.getColor(src);
-        sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
-        sys.kick(tar, channel);
-        return;
-    }
-    if (command === "ck" || command === "chankick") {
+    if (["ck", "chankick", "lt", "lovetap"].contains(command)) {
         if (tar === undefined || !sys.isInChannel(tar, channel)) {
             normalbot.sendMessage(src, "Choose a valid target to kick", channel);
             return;
         }
-        normalbot.sendAll(sys.name(src) + " kicked " + commandData + " from the channel!", channel);
+        if (!sys.isInChannel(tar, channel)) {
+            normalbot.sendMessage(src, "Your target is not in the channel.", channel);
+            return;
+        }
+        if (command === "lt" || command === "lovetap") {
+            var colour = script.getColor(src);
+            sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> love taps " + commandData + ".</font>", channel);
+        } else {
+            normalbot.sendAll(sys.name(src) + " kicked " + commandData + " from the channel!", channel);
+        }
         sys.kick(tar, channel);
         return;
     }
