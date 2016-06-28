@@ -106,7 +106,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             sys.stopEvent();
             return;
         }
-        if (SESSION.users(src).smute.active) {
+        if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             sys.playerIds().forEach(function (id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active && sys.isInChannel(src, channel)) {
                     var colour = script.getColor(src);
