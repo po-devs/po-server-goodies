@@ -582,7 +582,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if (command === "isbanned") {
+    if (command === "isbanned" || command === "checkbantime") {
         if (!commandData) {
             querybot.sendMessage(src, "Please use a valid name/ip", channel);
             return;
@@ -705,12 +705,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
            normalbot.sendMessage(src, "Can't do that to higher auth!", channel);
            return;
         }
-        if (sys.banned(ip)) {
+        if (sys.banned(ip) && !script.isTempBanned(ip)) {
             normalbot.sendMessage(src, "He/she's already banned!", channel);
             return;
         }
-        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);
-        sys.sendHtmlAll('<b><font color=red>' + targetName + ' was banned by ' + nonFlashing(sys.name(src)) + ' for ' + getTimeString(minutes) + '!</font></b>');
+        if (sys.dbTempBanTime(targetName) > 86400 && sys.auth(src) < 2) {
+            normalbot.sendMessage(src, "You cannot change the ban time on people who are banned for longer than a day!", channel);
+            return;
+        }
+        if (script.isTempBanned(ip)) {
+            normalbot.sendAll(targetName + " was initially tempbanned for another " + getTimeString(sys.dbTempBanTime(targetName)) + ".", staffchannel);
+            sys.unban(targetName);
+        }
+        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);        
+        sys.sendHtmlAll("<b><font color=red>" + targetName + " was banned by " + nonFlashing(sys.name(src)) + " for " + getTimeString(minutes) + "!</font></b>");
         sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
         var authName = sys.name(src);
@@ -730,23 +738,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         normalbot.sendAll(sys.name(src) + " unbanned " + commandData, staffchannel);
         sys.unban(commandData);
-        return;
-    }
-    if (command == "checkbantime") {
-        var ip = sys.dbIp(commandData);
-        if (ip === undefined) {
-            normalbot.sendMessage(src, "No such user!", channel);
-            return;
-        }
-        if (sys.banned(ip)) {
-            normalbot.sendMessage(src, commandData + " is permanently banned.", channel);
-            return;
-        }
-        if (!script.isTempBanned(ip)) {
-            normalbot.sendMessage(src, commandData + " is not tempbanned", channel);
-            return;
-        }
-        normalbot.sendMessage(src, commandData + " is banned for another " + getTimeString(sys.dbTempBanTime(commandData)), channel);
         return;
     }
     if (command == "passauth" || command == "passauths") {
@@ -793,7 +784,7 @@ exports.help =
         "/aliases: Shows the aliases of an IP or name.",
         "/tempban: Bans someone for 24 hours or less. Format is /tempban name:time Time is optional and defaults to 1 day",
         "/tempunban: Unbans a temporary banned user (standard unban doesn't work).",
-        "/checkbantime: Checks how long a user is banned for.",
+        "/isbanned: Checks how long a user is banned for.",
         "/passauth: Passes your mods to an online alt of yours.",
         "/passauths: Passes your mods silently.",
         "/bans: Searches the banlist for a string, shows full list if no search term is entered.",
