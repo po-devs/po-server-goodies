@@ -9719,7 +9719,7 @@ function Safari() {
                     }
                 }
                 for (var e = 0; e < viewers.length; e++) {
-                    if (viewers[e] !== name.toLowerCase()) {
+                    if (viewers[e] !== name.toLowerCase() && sys.id(viewers[e])) {
                         safaribot.sendMessage(sys.id(viewers[e]), "Tower Clerk: " + name + " has defeated " + count + " trainers!", safchan);
                     }
                 }
@@ -14537,7 +14537,7 @@ function Safari() {
 
     /* System Functions */
     this.startGame = function(src, data) {
-        if (getAvatar(src) || SESSION.users(src).smute.active) {
+        if (getAvatar(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             safaribot.sendMessage(src, "You already have a starter pokémon!", safchan);
             return;
         }
