@@ -2620,6 +2620,9 @@ addOwnerCommand(["saybold"], function (src, commandData, channel) {
 }, "Allows you to talk in bold during the answer period.");
 
 addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, channel, command) {
+    if (!commandData) {
+        return;
+    }
     if (tadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Trivia Admin.", channel);
         return;
@@ -2633,6 +2636,9 @@ addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, cha
 }, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
 
 addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
+    if (!commandData) {
+        return;
+    }
     if (!tadmin.isTAdmin(commandData) && !tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Trivia auth.", channel);
         return;
@@ -2910,6 +2916,9 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
 
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
+    if (!commandData) {
+        return;
+    }
     if (tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person is already a Super Trivia Admin.", channel);
         return;
@@ -2923,6 +2932,9 @@ addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, 
 }, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
 
 addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
+    if (!commandData) {
+        return;
+    }
     if (!tsadmin.isTAdmin(commandData)) {
         Trivia.sendPM(src, "That person isn't a Super Trivia Admin.", channel);
         return;
