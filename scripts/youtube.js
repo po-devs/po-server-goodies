@@ -5,6 +5,10 @@ function YouTube() {
     var ytApi = sys.getFileContent(Config.dataDir + "ytApi.txt");
     
     this.afterChatMessage = function (src, message, channel) {
+        if (SESSION.users(src).smute.active) {
+            youtubeBot.sendMessage(src, "Loading YouTube data failed.", channel);
+            return;
+        }
         if ((message.indexOf("youtube.com") > -1 && message.indexOf("watch?v=") > -1) || message.indexOf("youtu.be/") > -1) {
             var videoId;
             // PC LINK
