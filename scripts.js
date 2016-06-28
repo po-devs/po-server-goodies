@@ -736,7 +736,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             return;
         }
         var maxAuth = (tar ? sys.auth(tar) : sys.maxAuth(tarip));
-        if (maxAuth>=sys.auth(src) && maxAuth > 0) {
+        if ((maxAuth>=sys.auth(src) && maxAuth > 0) || (type === "smute" && getMaxAuth(tar) > 0))  {
             banbot.sendMessage(src, "You don't have sufficient auth to " + nomi + " " + commandData + ".", channel);
             return;
         }
@@ -1341,6 +1341,13 @@ getColor: function(src) {
     return colour;
 },
 
+getMaxAuth: function(targetId) {
+    if (targetId) {
+        return sys.maxAuth(sys.ip(targetId));
+    }
+    return 0;
+},
+
 nameWarnTest : function(src) {
     if (sys.auth(src) > 0)
         return;
@@ -1619,7 +1626,7 @@ beforeNewMessage : function(msg) {
 
 beforeNewPM: function(src){
     var user = SESSION.users(src);
-    if (sys.auth(src) === 0 && user.smute.active){
+    if (user.smute.active && getMaxAuth(src) < 1)){
         sys.stopEvent();
         return;
     }
@@ -1814,7 +1821,7 @@ beforeChatMessage: function(src, message, chan) {
                 }
             }
         }
-        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "╬═╬"];
+        var BanList = [".tk", "nimp.org", "drogendealer", /\u0E49/, /\u00AD/, "nobrain.dk", /\bn[1i]gg+ers*\b/i,  "¦¦", "¦¦", "__", "¯¯", "___", "……", ".....", "¶¶", "¯¯", "----", "╬═╬", "fukov"];
         for (var i = 0; i < BanList.length; ++i) {
             var filter = BanList[i];
             if (typeof filter == "string" && m.indexOf(filter) != -1 || typeof filter == "function" && filter.test(m)) {
@@ -1876,7 +1883,7 @@ beforeChatMessage: function(src, message, chan) {
             return;
         }
         //Topic can be way to communicate while muted
-        if (command === "topic" && (!poChannel.canTalk(src) || SESSION.users(src).smute.active || SESSION.users(src).mute.active)) {
+        if (command === "topic" && (!poChannel.canTalk(src) || (SESSION.users(src).smute.active && sys.auth(src) < 1) || SESSION.users(src).mute.active)) {
             commandData = undefined;
         }
         commands.handleCommand(src, command, commandData, tar, chan);
@@ -1942,17 +1949,21 @@ beforeChatMessage: function(src, message, chan) {
     }
     */
     // Secret mute
-    if (sys.auth(src) === 0 && SESSION.users(src).smute.active) {
-        if (SESSION.users(src).expired("smute")) {
+    if (SESSION.users(src).smute.active) {
+        if (SESSION.users(src).expired("smute") || getMaxAuth(src) > 0) {
             SESSION.users(src).un("smute");
         } else {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
                     if(isAndroid(id)) {
                         var color = sys.getColor(id);
-                        sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+":</b></font> "+ utilities.html_escape(message), channel);
+                        if (sys.isInChannel(id, channel) {
+                            sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+":</b></font> "+ utilities.html_escape(message), channel);
+                        }
                     } else {
-                        sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+                        if (sys.isInChannel(id, channel) {
+                            sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+                        }
                     }
                 }
             });
