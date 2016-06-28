@@ -71,6 +71,7 @@ var border = "»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»
 var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 var blueborder = "<font color=#0044BB><b>"+border+"</b></font>";
 var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
+var signupMessageDelay = 0;
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
@@ -933,6 +934,9 @@ function tourStep() {
     if (tours.eventticks > 0) {
         tours.eventticks -= 1;
     }
+    if (signupMessageDelay > 0) {
+        signupMessageDelay -= 1;
+    }
     for (var x in tours.tour) {
         var rtime = tours.tour[x].time-systime;
         if ((rtime <= 10 && rtime >= 0) || rtime%30 === 0) {
@@ -945,9 +949,11 @@ function tourStep() {
             }
             if (tours.tour[x].time-systime == 60) {
                 sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 1 minute.", "~mt", false);
+                signupMessageDelay = 10; //prevents double messages
             }
             else if (tours.tour[x].time-systime == 30 && tours.tour[x].parameters.event) {
                 sendBotAll("Signups for the "+getFullTourName(x)+" tournament close in 30 seconds.", "~mt", false);
+                signupMessageDelay = 10; //prevents double messages
             }
             continue;
         }
