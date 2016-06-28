@@ -1923,7 +1923,7 @@ function Mafia(mafiachan) {
             else {
                 this.numjoins[sys.ip(src)] = 1;
             }
-            if (SESSION.users(src).smute.active) {
+            if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                 gamemsg(srcname, name + " joined the game!");
                 mafia.shoveUser(mafiabot.name, sys.name(src), true);
             } else {
@@ -4833,7 +4833,7 @@ function Mafia(mafiachan) {
                 gamemsgAll(mafia.signups.join(", ") + " joined the game!");
                 for (var x = 0; x < mafia.signups.length; x++) {
                     if (SESSION.users(sys.id(mafia.signups[x]))) {
-                        if (SESSION.users(sys.id(mafia.signups[x])).smute.active) {
+                        if (SESSION.users(sys.id(mafia.signups[x])).smute.active && sys.auth(sys.id(mafia.signups[x])) < 1)) {
                             mafia.shoveUser(mafiabot.name, mafia.signups[x], true);
                         }
                     }
@@ -5061,11 +5061,15 @@ function Mafia(mafiachan) {
                 }
             }
             if (name in this.usersToShove) {
-                msg(src, name + " is already going to be shoved if they attempt to join!");
+                if (src) {
+                    msg(src, name + " is already going to be shoved if they attempt to join!");
+                }
                 return;
             }
             this.usersToShove[name] = shover;
-            msg(src, "Your target " + name + " will be shoved if they attempt to join!");
+            if (src) {
+                msg(src, "Your target " + name + " will be shoved if they attempt to join!");
+            }
         } else {
             msg(src, "A game is currently in progress. Use /slay to remove the player.");
         }
@@ -5661,7 +5665,7 @@ function Mafia(mafiachan) {
                 else {
                     this.numjoins[sys.ip(src)] = 1;
                 }
-                if (SESSION.users(src).smute.active) {
+                if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                     gamemsg(srcname, name + " joined the game!");
                     mafia.shoveUser(mafiabot.name, sys.name(src), true);
                 } else {
@@ -7506,7 +7510,7 @@ this.beforeChatMessage = function (src, message, channel) {
         if (channel !== 0 && channel == mafiachan && mafia.ticks > 0 && mafia.gameInProgress()) {
             if (mafia.dead.indexOf(sys.name(src).toLowerCase()) !== -1) {
                 if (!(is_command(message) && message.substr(1, 2).toLowerCase() != "me")) {
-                    if (SESSION.users(src).smute.active) {
+                    if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                         sys.sendMessage(src, sys.name(src) + ": [Dead] " + message, mafiachan);
                     } else {
                         for (var x in mafia.dead) {
