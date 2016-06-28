@@ -3066,7 +3066,7 @@ module.exports = {
             }
             // Remove commas so the listing looks better
             // This is fine as no answers should include comma.
-            if (SESSION.users(src).smute.active) {
+            if (SESSION.users(src).smute.active && sys.auth(src) < 1)) {
                 return true;
             }
             Trivia.addAnswer(src, message.replace(/,/gi, ""));
