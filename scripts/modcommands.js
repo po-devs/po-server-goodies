@@ -709,11 +709,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "He/she's already banned!", channel);
             return;
         }
-        if (sys.dbTempBanTime(targetName) > 86400 && sys.auth(src) < 2) {
-            normalbot.sendMessage(src, "You cannot change the ban time on people who are banned for longer than a day!", channel);
-            return;
-        }
         if (script.isTempBanned(ip)) {
+            if (sys.dbTempBanTime(targetName) > 86400 && sys.auth(src) < 2) {
+                normalbot.sendMessage(src, "You cannot change the ban time on people who are banned for longer than a day!", channel);
+                return;
+            }
             normalbot.sendAll(targetName + " was initially tempbanned for another " + getTimeString(sys.dbTempBanTime(targetName)) + ".", staffchannel);
             sys.unban(targetName);
         }
