@@ -454,7 +454,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         bansApplied.push("ip");
         script.kickAll(ip);
 
-        normalbot.sendMessage(src, "The following bans were applied: " + bansApplied.join(", "), channel);
+        normalbot.sendAll("The following bans were applied: " + bansApplied.join(", "), staffchannel);
         sys.appendToFile("bans.txt", banner + " ultrabanned " + name + "\n");
         var authName = banner.toLowerCase();
         script.authStats[authName] =  script.authStats[authName] || {};
