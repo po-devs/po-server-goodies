@@ -63,7 +63,8 @@ function Hangman() {
     var tossUpOrder = [];
     var usedTossUps = []; 
     var validFills = [];
-    var vowels = ["a", "e", "i", "o", "u"];    
+    var vowels = ["a", "e", "i", "o", "u"];
+    var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     
     var hint = "";
     var parts;
@@ -178,7 +179,7 @@ function Hangman() {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
-        if ("abcdefghijklmnopqrstuvwxyz".indexOf(letter) === -1) {
+        if (alphabet.indexOf(letter) === -1) {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
@@ -523,7 +524,7 @@ function Hangman() {
     };
 
     this.validateAnswer = function(a) {
-        var validCharacters = "abcdefghijklmnopqrstuvwxyz",
+        var validCharacters = alphabet,
             validLetters = 0,
             l,
             result = {
@@ -541,16 +542,24 @@ function Hangman() {
         }
 
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ").toLowerCase();
-        if (a.length > 60 || a.length < 4) {
+        if ((a.length > 60 || a.length < 4) && result.errors.push.length === 0) {
             result.errors.push("Your answer cannot be longer than 60 characters or shorter than 4 characters!");
         }
-
+        var unlosable = function(a, b) {
+            return b.every(function(e) {
+                return a.indexOf(e) > -1;
+            });
+        }
+        if (unlosable(a.replace(/ /g, "").split(""), alphabet)) {
+            result.errors.push("Your answer cannot contain every letter of the alphabet!");
+        }
+        
         result.answer = a;
         return result;
     };
 
     this.createGame = function (name, a, h, src, mode) {
-        var validCharacters = "abcdefghijklmnopqrstuvwxyz";
+        var validCharacters = alphabet;
         sys.saveVal("Stats/HangmanGamesPlayed", 1 + (+sys.getVal("Stats/HangmanGamesPlayed")));
         hint = h;
         word = a;
