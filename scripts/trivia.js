@@ -2019,8 +2019,16 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
     }
     commandData = commandData.split(":");
     var gameType = commandData[0],
-        newGoal = commandData[1];
-
+        newGoal = commandData[1],
+        goalCheck = parseInt(newGoal, 10);
+    if (isNaN(goalCheck)) {
+        Trivia.sendPM(src, "The goal must be a valid number.", channel);
+        return;
+    }
+    if (goalCheck < 1 || goalCheck > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
+        return;
+    }
     if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
        defaultKnowEventGoal = newGoal;
        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
@@ -2036,6 +2044,7 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
        return;
     }
+    triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
 }, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
