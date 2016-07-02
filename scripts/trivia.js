@@ -27,6 +27,9 @@ var lastCatGame = 0;
 var lastUsedCats = [];
 var eventElimPlayers = [];
 var lastAdvertise = 0;
+var defaultKnowEventGoal = '12';
+var defaultSpeedEventGoal = '25';
+var defaultElimEventGoal = '3';
 
 var Trivia;
 try {
@@ -72,7 +75,7 @@ for (var i = 0; i < neededData.length; ++i) {
             trivData[data] = 5;
         }
         else if (data === "eventCooldown"){
-            trivData[data] = 1440;          //1440 would be every 4 hours
+            trivData[data] = 14400;          //14400 would be every 4 hours
         }
         else if (data === "eventFlag")      //used to determine if game should be normal or event
             trivData[data] = false;
@@ -366,7 +369,6 @@ TriviaGame.prototype.startGame = function (data, name) {
 TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     this.started = true;
     sys.saveVal("Stats/TriviaGamesPlayed", 1 + (+sys.getVal("Stats/TriviaGamesPlayed")));
-   // sendChanAll("", 0);
     var lastCat;
     var catsLength;
     var time = parseInt(sys.time(), 10);
@@ -994,15 +996,15 @@ TriviaGame.prototype.event = function() {
     switch (eventType){
         case 1:
             this.scoreType = "knowledge";
-            Trivia.startGame("12");
+            Trivia.startGame(defaultKnowEventGoal);
             break;
         case 2:
             this.scoreType = "speed";
-            Trivia.startGame("25");
+            Trivia.startGame(defaultSpeedEventGoal);
             break;
         default:
             this.scoreType = "elimination";
-            Trivia.startGame("3");
+            Trivia.startGame(defaultElimEventGoal);
             break;
     }
     this.lastEventTime = sys.time(); //current time in seconds
@@ -2009,6 +2011,40 @@ addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
+addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
+    if (commandData === undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: game type:new goal", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var gameType = commandData[0],
+        newGoal = commandData[1],
+        goalCheck = parseInt(newGoal, 10);
+    if (isNaN(goalCheck)) {
+        Trivia.sendPM(src, "The goal must be a valid number.", channel);
+        return;
+    }
+    if (goalCheck < 1 || goalCheck > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
+        return;
+    }
+    if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
+       defaultKnowEventGoal = newGoal;
+       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+       return;
+    }
+    if (gameType.toLowerCase() === "speed"){
+       defaultSpeedEventGoal = newGoal;
+       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+       return;
+    }
+    if (gameType.toLowerCase() === "elimination" || gameType.toLowerCase() === "elim"){
+       defaultElimEventGoal = newGoal;
+       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+       return;
+    }
+    triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
+}, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
 }, "Allows you to end a current trivia game.");
