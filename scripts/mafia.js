@@ -5962,6 +5962,24 @@ function Mafia(mafiachan) {
                                 return;
                             }
                             return;
+                        } else if (typeof target.role.actions.daykill.mode == "object" && "ignoreChance" in target.role.actions.daykill.mode) {
+                            var attackerRole = player.role.role;
+                            var evChance = 0;
+                            for (var ignoreNumber in target.role.actions.daykill.mode.ignoreChance) {
+                                var rr = target.role.actions.daykill.mode.ignoreChance[ignoreNumber];
+                                if (rr.indexOf(attackerRole) != -1) {
+                                    evChance = ignoreNumber;
+                                    break;
+                                }
+                            }
+                            if (evChance > sys.rand(0, 100) / 100) {
+                                var targetMode = target.role.actions.daykill;
+                                var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, target.role.translation).replace(/~Action~/g, commandName);
+                                var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, player.role.translation).replace(/~Action~/g, commandName);
+                                gamemsg(player.name, pmsg);
+                                gamemsg(target.name, tmsg);
+                                return;
+                            }
                         }
 
                     }
