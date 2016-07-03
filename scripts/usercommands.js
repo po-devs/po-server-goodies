@@ -985,15 +985,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (commandData[1] && commandData[1] < sys.teamCount(src) - 1) {
             team = commandData[1];
         }
-        if (tier && tier_checker.has_legal_team_for_tier(src, team, tier)) {
-            sys.changeTier(src, team, tier);
-            if (tier === "Battle Factory" || tier === "Battle Factory 6v6") {
-                require("battlefactory.js").generateTeam(src, team);
+        if (tier) {
+            if (!tier_checker.has_legal_team_for_tier(src, team, tier)) {
+                normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
             }
-            normalbot.sendMessage(src, "You switched to " + tier, channel);
+            else {
+                sys.changeTier(src, team, tier);
+                if (tier === "Battle Factory" || tier === "Battle Factory 6v6") {
+                    require("battlefactory.js").generateTeam(src, team);
+                }
+                normalbot.sendMessage(src, "You switched to " + tier, channel);
+            }
             return;
         }
-        normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
+        normalbot.sendMessage(src, commandData[0] + " is not a valid tier.", channel);
         return;
     }
     if (command === "invitespec") {
