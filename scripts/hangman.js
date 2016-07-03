@@ -547,7 +547,7 @@ function Hangman() {
         }
         var unlosable = function(ans) {
             return alphabet.every(function(e) {
-                return a.indexOf(e) > -1;
+                return ans.indexOf(e) > -1;
             });
         }
         var _a = a.replace(/ /g, "").split("");
