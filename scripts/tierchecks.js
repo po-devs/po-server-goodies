@@ -72,7 +72,6 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent, returncomp) {
     if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || tier == "Inverted Challenge Cup" || tier == "Hackmons Challenge Cup" || tier == "Hackmons CC 1v1" || tier == "Hackmons Wifi CC 1v1" || tier == "Hackmons Inverted CC" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 6) return true;
-    if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
     for (var i = 0; i < this.checkers.length; ++i) {
@@ -91,6 +90,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
             checkbot.sendMessage(src, complaints[j]);
         }
     }
+    if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
     if (returncomp) {
         return complaints;
     }
