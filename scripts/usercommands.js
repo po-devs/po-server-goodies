@@ -993,7 +993,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "You switched to " + tier, channel);
             return;
         }
-        normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
+        normalbot.sendMessage(src, "You cannot switch to " + commandData[0] + " | " + tier_checker.has_legal_team_for_tier(src, team, tier, true, true), channel);
         return;
     }
     if (command === "invitespec") {
