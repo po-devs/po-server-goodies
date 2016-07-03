@@ -994,7 +994,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         normalbot.sendMessage(src, "You cannot switch to " + commandData[0], channel);
-        normalbot.sendAll(tier_checker.has_legal_team_for_tier(src, team, tier, false, true), staffchannel);
+        normalbot.sendAll(tier_checker.has_legal_team_for_tier(src, team, tier), staffchannel);
         return;
     }
     if (command === "invitespec") {
