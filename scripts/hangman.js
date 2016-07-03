@@ -545,15 +545,18 @@ function Hangman() {
         if ((a.length > 60 || a.length < 4) && result.errors.push.length === 0) {
             result.errors.push("Your answer cannot be longer than 60 characters or shorter than 4 characters!");
         }
-        var unlosable = function(a, b) {
-            return b.every(function(e) {
+        var unlosable = function(ans) {
+            return alphabet.every(function(e) {
                 return a.indexOf(e) > -1;
             });
         }
-        if (unlosable(a.replace(/ /g, "").split(""), alphabet)) {
+        var _a = a.replace(/ /g, "").split("");
+        if (unlosable(_a)) {
             result.errors.push("Your answer cannot contain every letter of the alphabet!");
         }
-        
+        else if ((this.removeDupes(_a).length + defaultParts - 1) >= 26) {
+            result.errors.push("Your game is impossible to lose given " + defaultParts + " chances. Please change your answer!");
+        }
         result.answer = a;
         return result;
     };
@@ -1011,6 +1014,13 @@ function Hangman() {
         } else {
             sys.sendHtmlMessage(src, "<font color='red'>Current " + (gameMode === regular ? "":(gameMode === suddenDeath ? "Sudden Death":"Toss Up")) + " game started by " + hostName + "</font>", hangchan);
         }
+    };
+    this.removeDupes = function (arr) {
+        var result = {};
+        for (var x in arr) {
+            result[arr[x]] = 1;
+        }
+        return Object.keys(result);
     };
     this.showRules = function (src) {
         var x, rules = [
