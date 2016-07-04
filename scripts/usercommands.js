@@ -987,15 +987,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         if (tier) {
             if (!tier_checker.has_legal_team_for_tier(src, team, tier)) {
-                normalbot.sendMessage(src, "You cannot switch to " + commandData[0] + ".", channel);
-                normalbot.sendMessage(src, tier_checker.has_legal_team_for_tier(src, team, tier, false, true), channel);
+                normalbot.sendMessage(src, "You cannot switch to " + tier + ".", channel);
+                tier_checker.has_legal_team_for_tier(src, team, tier, false, true);
             }
             else {
                 sys.changeTier(src, team, tier);
                 if (tier === "Battle Factory" || tier === "Battle Factory 6v6") {
                     require("battlefactory.js").generateTeam(src, team);
                 }
-                normalbot.sendMessage(src, "You switched to " + tier, channel);
+                normalbot.sendMessage(src, "You switched to " + tier + ".", channel);
             }
             return;
         }
