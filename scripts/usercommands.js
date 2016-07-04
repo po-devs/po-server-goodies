@@ -988,7 +988,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (tier) {
             if (!tier_checker.has_legal_team_for_tier(src, team, tier)) {
                 normalbot.sendMessage(src, "You cannot switch to " + tier + ".", channel);
-                tier_checker.has_legal_team_for_tier(src, team, tier, false, true);
             }
             else {
                 sys.changeTier(src, team, tier);
