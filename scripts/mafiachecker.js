@@ -659,7 +659,7 @@ function mafiaChecker() {
                     }
                 }
                 if (checkType(role.actions.standby, ["object"], act + ".standby")) {
-                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg" ];
+                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg", "macro" ];
                     for (e in role.actions.standby) {
                         action = role.actions.standby[e];
                         comm = act + ".standby." + e;
@@ -986,9 +986,16 @@ function mafiaChecker() {
                         } else {
                             checkAttributes(action, ["mode"], ["msg", "targetmsg", "expend"], comm);
                             if (checkType(action.mode, ["object"], comm + ".mode")) {
-                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "revenge", "evasionmsg"], comm + ".mode");
+                                checkAttributes(action.mode, [], ["evadeCharges", "evadeChance", "ignore", "ignoreChance", "revenge", "evasionmsg"], comm + ".mode");
                                 
                                 checkType(action.mode.evadeChance, ["number"], comm + ".mode.evadeChance");
+                                
+                                if (checkType(action.mode.ignoreChance, ["object"], comm + ".mode.ignoreChance")) {
+                                    for (var rr in action.mode.ignoreChance) {
+                                        checkType(rr, ["number"], comm + ".mode.ignoreChance." + rr);
+                                        checkType(action.mode.ignoreChance[rr], ["array"], comm + ".mode.ignoreChance." + action.mode.ignoreChance[rr]);
+                                    }
+                                }
                                 
                                 if (checkType(action.mode.evadeCharges, ["number", "string"], comm + ".mode.evadeCharges")) {
                                     if (typeof action.mode.evadeCharges == "string") {
