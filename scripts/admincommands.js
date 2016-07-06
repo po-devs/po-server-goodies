@@ -17,11 +17,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
     }*/
-    if (command == "addwatch") {
+    if (command === "addwatch") {
         var i = commandData.split(":");
         var name = i[0];
         var comment = i[1] || '-';
-        if (i.length != 2) {
+        if (i.length !== 2) {
             normalbot.sendMessage(src, "The format is (user):(comment)", channel);
             return;
         }
