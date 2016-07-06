@@ -17,6 +17,35 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
     }*/
+    if (command == "addwatch") {
+        var i = commandData.split(":");
+        var name = i[0];
+        var comment = i[1] || '-';
+        if (i.length != 2) {
+            normalbot.sendMessage(src, "The format is (user):(comment)", channel);
+            return;
+        }
+        if (sys.dbIp(name) === undefined) {
+            normalbot.sendMessage(src, name + " is not a valid user.", channel);
+            return;
+        }
+        script.namesToWatch.add(name.toLowerCase(), comment + " ~ " + sys.name(src));
+        normalbot.sendAll(name + " was added to the watch list by " + sys.name(src) + ".", staffchannel);
+        return;
+    }
+    if (command == "removewatch") {
+        var name = commandData;
+        if (script.namesToWatch.get(name.toLowerCase()) !== undefined) {
+            script.namesToWatch.remove(name.toLowerCase());
+            normalbot.sendAll(name + " was removed from the watch list by " + sys.name(src) + ".", staffchannel);
+            return;
+        }
+        else {
+            normalbot.sendMessage(src, name + " is not in the watch list.", channel);
+            return;
+        }
+        return;
+    }
     if (command === "toggleweblinks") {
         if (commandData === "off") {
             SESSION.global().blockWebLinks = true;
@@ -486,5 +515,6 @@ exports.help = [
     "/forceinvite [name]: To force a user to join a specific channel.",
 //  "/memorydump: Shows the state of the memory.",
     "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
+    "/[add/remove]watch: Adds a user to a watch list to track their battle activity. Format is /addwatch user:comment.",
     "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
 ];
