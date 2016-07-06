@@ -17,15 +17,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "You turned rainbow on!", channel);
         return;
     }*/
-    if (command === "addwatch") {
+    if (command == "addwatch") {
         var i = commandData.split(":");
         var name = i[0];
         var comment = i[1] || '-';
-        if (i.length !== 2) {
+        if (i.length != 2) {
             normalbot.sendMessage(src, "The format is (user):(comment)", channel);
             return;
         }
-        if (!sys.dbIp(name)) {
+        if (sys.dbIp(name) === undefined) {
             normalbot.sendMessage(src, name + " is not a valid user.", channel);
             return;
         }
@@ -33,7 +33,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendAll(name + " was added to the watch list by " + sys.name(src) + ".", staffchannel);
         return;
     }
-    if (command === "removewatch") {
+    if (command == "removewatch") {
         var name = commandData;
         if (script.namesToWatch.get(name.toLowerCase()) !== undefined) {
             script.namesToWatch.remove(name.toLowerCase());
