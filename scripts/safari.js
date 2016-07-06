@@ -1228,7 +1228,7 @@ function Safari() {
         }
         return true;
     }
-    function canLosePokemon(src, data, verb, cantBecause, loseCount) {
+    function canLosePokemon(src, data, verb, cantBecause, loseCount, ignoreShop) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -1282,7 +1282,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can't " + verb + " your starter Pokémon!", safchan);
             return false;
         }
-        if (info.input in player.shop && player.shop[info.input].limit >= count) {
+        if (!ignoreShop && info.input in player.shop && player.shop[info.input].limit >= count) {
             safaribot.sendMessage(src, "You need to remove " + info.name + " from your shop before you can " + verb + " it!", safchan);
             return false;
         }
@@ -1975,7 +1975,15 @@ function Safari() {
             return ret;
         }
     }
-
+    function hasPureNormal(party) {
+        for (var p = party.length; p--; ) {
+            if (hasType(party[p], "Normal") && hasType(party[p], "???")) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     /* Item & Costume Functions */
     function itemAlias(name, returnGarbage, full) {
         name = name.toLowerCase();
@@ -3420,10 +3428,18 @@ function Safari() {
                     clonedAmount = 1;
                 }
                 if (clonedAmount > 0) {
+                    var boxLimit = player.balls.box * itemData.box.bonusRate, discarded = 0;
                     for (var i = 0; i < clonedAmount; i++) {
-                        player.pokemon.push(currentPokemon);
+                        if (player.pokemon.length >= boxLimit) {
+                            discarded++;
+                        } else {
+                            player.pokemon.push(currentPokemon);
+                        }
                     }
                     player.records.pokesCloned += clonedAmount;
+                    if (discarded > 0) {
+                        safaribot.sendMessage(src, "Oh damn! You didn't have enough space in your boxes for the clone Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
+                    }
                 }
             }
 
@@ -6869,7 +6885,7 @@ function Safari() {
             sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
             sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + ":::" + isSilver + "|||" + sys.name(src) + "\n");
-            if (input.type == "poke" && isRare(input.id)) {
+            if (shop[input.input].price >= 10000 || (input.type == "poke" && isRare(input.id))) {
                 sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + " bought " + plural(amount, input.input) + " from " + sys.name(sellerId) + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(shop[input.input].price) + " each)" : "") + "\n");
             }
         } else {
@@ -6932,7 +6948,7 @@ function Safari() {
 
             if (!editNPCShop) {
                 if (productType == "poke") {
-                    if (!canLosePokemon(src, input.input, "sell")) {
+                    if (!canLosePokemon(src, input.input, "sell", null, limit, true)) {
                         return true;
                     }
                     if (limit > countRepeated(player.pokemon, input.id)) {
@@ -6954,7 +6970,7 @@ function Safari() {
                         return true;
                     }
                 }
-                if (Object.keys(player.shop).length >= 22) {
+                if (Object.keys(player.shop).length >= 22 && !player.shop.hasOwnProperty(input.input)) {
                     safaribot.sendMessage(src, "Your shop is too large! Please remove something before adding a new item!", safchan);
                     return true;
                 }
@@ -7569,6 +7585,10 @@ function Safari() {
             if (target.party.length < 3) {
                 safaribot.sendMessage(src, "Battle not started because " + sys.name(targetId) + " has less than 3 Pokémon in their party!", safchan);
                 safaribot.sendMessage(targetId, "Your party must have at least 3 Pokémon to battle!", safchan);
+                return;
+            }
+            if (player.party.length !== target.party.length) {
+                safaribot.sendMessage(src, "Battle not started because both players have a different number of Pokémon in their party!", safchan);
                 return;
             }
             var battle = new Battle(targetId, src);
@@ -8191,7 +8211,7 @@ function Safari() {
         this.finished = true;
 
         sys.appendToFile(auctionLog, now() + "|||" + this.hostName + "::" + 1 + "::" + this.productName + "::" + this.currentOffer + "|||" + this.currentBidder.toCorrectCase() + "\n");
-        if (this.type == "poke" && isRare(input.id)) {
+        if (this.currentOffer >= 10000 || (this.type == "poke" && isRare(input.id))) {
             sys.appendToFile(rareTradeLog, now() + "|||" + this.currentBidder.toCorrectCase() + " won " + this.hostName + "'s auction for " + this.productName + " by paying $" + addComma(this.currentOffer) + "\n");
         }
     };
@@ -8563,6 +8583,8 @@ function Safari() {
                         if (isRare(asset.id)) {
                             hasRare = true;
                         }
+                    } else if (asset.type === "money" && offerObj[e] >= 10000) {
+                        hasRare = true;
                     }
                 }
                 for (e in requestObj) {
@@ -8573,6 +8595,8 @@ function Safari() {
                         if (isRare(asset.id)) {
                             hasRare = true;
                         }
+                    } else if (asset.type === "money" && requestObj[e] >= 10000) {
+                        hasRare = true;
                     }
                 }
 
@@ -8951,7 +8975,7 @@ function Safari() {
                         return;
                     }
                     safaribot.sendHtmlMessage(src, trainerSprite + "Collector: I love to collect Pokémon, but I'm not good at catching them. Therefore, I buy them!", safchan);
-                    safaribot.sendMessage(src, "Collector: If you want to help me, type /quest collector:start:difficulty, and I will request some Pokémon for you to bring me.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: If you want to help me, type " + link("/quest collector:start:difficulty") + ", and I will request some Pokémon for you to bring me.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: Once you have them, type " + link("/quest collector:finish") + ", and I will pay about from 2.4x to 4.8x their normal value. After that, I will need some time to organize my collection, so I won't make any new request until I finish.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: If you wish to give up on my request, type " + link("/quest collector:abort") + ".", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: To learn more about the difficulty levels, type " + link("/quest collector:difficulty") + ".", safchan);
@@ -10506,6 +10530,7 @@ function Safari() {
                 break;
                 case "empty":
                     this.currentRoom = new EmptyRoom(this, this.level, this.room);
+                    roomDuration = 3;
                 break;
             }
             this.currentRoom.turnToAdvance = this.turn + roomDuration;
@@ -11946,6 +11971,7 @@ function Safari() {
             type = sys.type(sys.moveType(this.firstAtk));
             count++;
         } while (count < 1 + level * 2 && type === "Normal");
+        count = 0;
         do {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
@@ -11953,7 +11979,8 @@ function Safari() {
         } while (this.firstAtk === this.secondAtk && count < 1 + level * 2 && type === "Normal");
         this.firstAtk = sys.move(this.firstAtk);
         this.secondAtk = sys.move(this.secondAtk);
-
+        
+        count = 0;
         do {
             this.thirdAtk = damaging.random();
             type = sys.type(sys.moveType(this.thirdAtk));
@@ -12121,7 +12148,7 @@ function Safari() {
             "electric": "Electric Fences",
             "dark": "Darkness"
         };
-        var e, val, max = sys.rand(3 + level, 6 + level), order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max;
+        var e, val, max = sys.rand(3 + level, 5 + level), order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max;
         do {
             this.hazards = {};
             count = 0;
@@ -12204,8 +12231,8 @@ function Safari() {
             this.hiddenTreasure = randomSampleObj(this.treasures);
             this.treasureLocation = Object.keys(this.hazards).random();
         }
-
-        var known = sys.rand(3, Math.ceil(count*0.75)), unknown = sys.rand(Math.ceil(level/2), level + 1), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        
+        var known = sys.rand(3, Math.ceil(count*0.75)), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -12437,7 +12464,7 @@ function Safari() {
             }
         }
         if (struggled.length > 0) {
-            var struggleStm = 2 + 3 * this.level;
+            var struggleStm = 1 + 5 * this.level;
             this.sendAll(readable(struggled.map(function(x){ return x.toCorrectCase(); })) + " lost " + struggleStm + " stamina because of " + readable(struggleUsers) + "!");
             for (p = struggled.length; p--; ) {
                 id = struggled[p];
@@ -12449,18 +12476,27 @@ function Safari() {
         }
 
         if (notCleared.length > 0) {
-            var stmLost = (count + 1) * this.level;
-            this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
-            for (var p = alive.length; p--; ) {
-                id = alive[p];
-                if (!stamina.hasOwnProperty(id)) {
-                    stamina[id] = 0;
+            var mercy = Math.round(total * 0.25);
+            if (count > mercy) {
+                var stmLost = (count + 2 - mercy) * (this.level + 2);
+                if (stmLost > 0) {
+                    this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
+                    for (var p = alive.length; p--; ) {
+                        id = alive[p];
+                        if (!stamina.hasOwnProperty(id)) {
+                            stamina[id] = 0;
+                        }
+                        stamina[id] -= stmLost;
+                    }
+                } else {
+                    this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>!");
                 }
-                stamina[id] -= stmLost;
+            } else {
+                this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>!");
             }
         }
-        points = Math.round((9 + 3 * this.level) * (total - count));
-
+        points = Math.round((16 + 3 * this.level) * (total - count));
+        
         this.sendAll("");
         var perc = Math.round(count / total * 100);
         if (perc === 0) {
@@ -12881,7 +12917,6 @@ function Safari() {
     function FactionWar(src, reward, team1, team2, inverted, reward2) {
         SafariEvent.call(this, src);
         this.eventName = (inverted ? "Inverted " : "") + "Faction War";
-
         this.team1Name = team1;
         this.team2Name = team2;
         this.team1Color = "red";
@@ -12996,10 +13031,14 @@ function Safari() {
                 this.playerTeams[name].push(member);
             }
         }
-
+        
+        var inver = this.inverted;
         var createFillerPlayer = function() {
             var name = "[NPC] " + generateName();
             var party = generateTeam();
+            if (inver && hasPureNormal(party)) {
+                return createFillerPlayer();
+            }
             return { name: name, party: party };
         };
 
@@ -13212,13 +13251,9 @@ function Safari() {
         if (hasPokeInShop(src, true)) {
             return false;
         }
-        if (this.inverted) {
-            for (var e = 0; e < player.party.length; e++) {
-                if (hasType(player.party[e], "Normal") && hasType(player.party[e], "???")) {
-                    safaribot.sendMessage(src, "You cannot use a pure Normal-type Pokémon on " + an(this.eventName) + "!", safchan);
-                    return false;
-                }
-            }
+        if (this.inverted && hasPureNormal(player.party)) {
+            safaribot.sendMessage(src, "You cannot use a pure Normal-type Pokémon on " + an(this.eventName) + "!", safchan);
+            return false;
         }
         return true;
     };
@@ -13990,68 +14025,97 @@ function Safari() {
     };
     Quiz.prototype.finish = function() {
         var ordered = Object.keys(this.points);
-        var pts = this.points, ans = this.answered;
+        var pts = this.points;
         ordered = ordered.sort(function(a, b) {
-            if (pts[b] !== pts[a]) {
-                return pts[b] - pts[a];
-            } else {
-                return ans[b] - ans[a];
-            }
+            return pts[b] - pts[a];
         });
-
+        var bestScores = [];
+        for (var p in this.points) {
+            if (!bestScores.contains(this.points[p])) {
+                bestScores.push(this.points[p]);
+            }
+        }
+        bestScores = bestScores.sort(function(a, b){return b-a;});
+        bestScores.push(0, 0);
+        
         this.sendToViewers("");
         this.sendToViewers("<b>Final Score</b>: " + ordered.map(function(x) { return addFlashTag(x.toCorrectCase()) + " (" + plural(pts[x], "point") + ")"; }).join(", "), true);
-
-        var winner = ordered[0];
-        var runnerup = ordered[1];
-        var thirdplace = ordered.length > 2 ? ordered[2] : "";
-
-        var winnerName = winner.toCorrectCase();
-        var runnerupName = runnerup.toCorrectCase();
-        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
-
+        
+        if (bestScores[0] === 0) {
+            safaribot.sendHtmlAll("No one got any point in the <b>" + this.eventName + "</b>, so no rewards will be given!", safchan);
+            this.log(true, "No winners");
+            this.finished = true;
+            return;
+        }
+        
+        var winner = ordered.filter(function(x) { return pts[x] === bestScores[0]; });
+        var runnerup = ordered.filter(function(x) { return pts[x] === bestScores[1]; });
+        var thirdplace = ordered.filter(function(x) { return pts[x] === bestScores[2]; });
+        
+        var toCC = function(x) {
+            return x.toCorrectCase();
+        };
+        
+        var winnerName = readable(winner.map(toCC));
+        var runnerupName = readable(runnerup.map(toCC));
+        var thirdplaceName = readable(thirdplace.map(toCC));
+        
         safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
-        var player = getAvatarOff(winner), out, stuff;
-        if (player) {
-            stuff = toStuffObj(this.reward1.replace(/,/g, ":")),
-            out = giveStuff(player, stuff);
-
-            player.records.quizFirst += 1;
-            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[winner]);
-            safari.saveGame(player);
-            this.sendMessage(winner, "You " + out + "!");
-        }
-
-        safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
-        player = getAvatarOff(runnerup);
-        if (player) {
-            stuff = toStuffObj(this.reward2.replace(/,/g, ":")),
-            out = giveStuff(player, stuff);
-
-            player.records.quizSecond += 1;
-            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[runnerup]);
-            safari.saveGame(player);
-            this.sendMessage(runnerup, "You " + out + "!");
-        }
-
-        if (thirdplace && this.thirdPrize && this.reward3) {
-            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
-            player = getAvatarOff(thirdplace);
+        var player, id, out, stuff;
+        for (p = 0; p < winner.length; p++) {
+            id = winner[p];
+            player = getAvatarOff(id);
             if (player) {
-                stuff = toStuffObj(this.reward3.replace(/,/g, ":")),
+                stuff = toStuffObj(this.reward1.replace(/,/g, ":")),
                 out = giveStuff(player, stuff);
-
-                player.records.quizThird += 1;
-                player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[thirdplace]);
+                
+                player.records.quizFirst += 1;
+                player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
                 safari.saveGame(player);
-                this.sendMessage(thirdplace, "You " + out + "!");
+                this.sendMessage(id, "You " + out + "!");
+            }
+        }
+        
+        if (runnerup.length > 0) {
+            safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
+            for (p = 0; p < runnerup.length; p++) {
+                id = runnerup[p];
+                player = getAvatarOff(id);
+                if (player) {
+                    stuff = toStuffObj(this.reward2.replace(/,/g, ":")),
+                    out = giveStuff(player, stuff);
+                    
+                    player.records.quizSecond += 1;
+                    player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                    safari.saveGame(player);
+                    this.sendMessage(id, "You " + out + "!");
+                }
+            }
+        }
+        
+        if (this.thirdPrize && this.reward3) {
+            if (thirdplace.length > 0) {
+                safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
+                for (p = 0; p < thirdplace.length; p++) {
+                    id = thirdplace[p];
+                    player = getAvatarOff(id);
+                    if (player) {
+                        stuff = toStuffObj(this.reward3.replace(/,/g, ":")),
+                        out = giveStuff(player, stuff);
+                        
+                        player.records.quizThird += 1;
+                        player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                        safari.saveGame(player);
+                        this.sendMessage(id, "You " + out + "!");
+                    }
+                }
             }
         } else {
             this.sendToViewers("No third place prize will be given due to the low number of participants!");
         }
         this.sendToViewers("");
-
-        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
+        
+        this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplaceName ? ", 3rd: " + thirdplaceName : ""));
         this.finished = true;
     };
     Quiz.prototype.canJoin = function(src) {
@@ -19199,7 +19263,7 @@ function Safari() {
                     this.clearPlayer(src);
                     if (!sys.dbRegistered(player.id)) {
                         player.locked = true;
-                        safaribot.sendAll(player.id.toCorrectCase() + "'s Safari save was locked because unregistered their alt and changed names!", staffchannel);
+                        safaribot.sendAll(player.id.toCorrectCase() + "'s Safari save was locked because they unregistered their alt and changed names!", staffchannel);
                         sys.appendToFile(miscLog, now() + "|||" + player.id + "|||was locked for changing names while unregistered\n");
                     }
                     this.saveGame(player);
