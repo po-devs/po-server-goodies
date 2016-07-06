@@ -9418,7 +9418,7 @@ function Safari() {
             }
             safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + sys.name(src), sys.name(src)) + ": Entry Fee: $" + addComma(price.copycat)  + ". Reward: " + plural(copycat.postArgs.rewardAmt, copycat.postArgs.reward) + ". Cooldown: " + utilities.getTimeString(1.2 * 60 * 60) + ". ", safchan);
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:yellow).", safchan);
+            safaribot.sendMessage(src, "Arena Clerk: Once you decide on your challenge, type /quest arena:[name] (e.g.: /quest arena:nub).", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
