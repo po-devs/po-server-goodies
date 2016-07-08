@@ -355,7 +355,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         //steal from rangebans
         var TABLE_HEADER, TABLE_LINE, TABLE_END;
         var text = commandData === "-text";
-        if (!commandData || !text) {
+        if (!text) {
             if (sys.auth(src) > 1) {
                 TABLE_HEADER = '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="5"><center><strong>ID Bans</strong></center></td></tr><tr><th>ID</th><th>Type</th><th>Name</th><th>IP</th><th>By</th></tr>';
                 TABLE_LINE = '<tr><td>{0}</td><td>{1}</td><td>{2}</td><td>{3}</td><td>{4}</td></tr>';
