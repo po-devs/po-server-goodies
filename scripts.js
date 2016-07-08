@@ -1123,6 +1123,9 @@ beforeChannelJoin : function(src, channel) {
             var hash = script[bans[x] + "s"].hash;
             for (var ip in hash) {
                 found = script.cmp(hash[ip].split(":")[3], sys.name(src));
+                if (found) {
+                    break;
+                }
             }
             if (poUser[bans[x]].active || found) {
                 if (poUser.expired(bans[x])) {
