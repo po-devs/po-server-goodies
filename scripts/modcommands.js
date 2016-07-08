@@ -364,7 +364,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
            TABLE_END = '</table>';
         } else {
-           TABLE_HEADER = 'Range banned: IP subaddress, Comment on rangeban';
+           TABLE_HEADER = (sys.auth(src) > 1 ? 'ID banned: ID, type' : 'ID banned: type, name');
            TABLE_LINE = ' || {0} / {1}';
            TABLE_END = '';
         }
@@ -374,10 +374,20 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         for (var key in script.idBans.hash) {
             if (script.idBans.hash.hasOwnProperty(key)) {
                 var comment = JSON.parse(script.idBans.get(key));
+                var toPush = [comment.type, comment.name, comment.ip, comment.banner];
                 if (sys.auth(src) > 1) {
-                    tmp.push([key, comment.type, comment.name, comment.ip, comment.banner]);
-                } else {
-                    tmp.push([comment.type, comment.name, comment.ip, comment.banner]);
+                    toPush.unshift(key);
+                }
+                if (commandData) {
+                    if (comment.name.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+                        tmp.push(toPush);
+                    }
+                    else {
+                        continue;
+                    }
+                }
+                else {
+                    tmp.push(toPush);
                 }
             }
         }
