@@ -1966,15 +1966,16 @@ beforeChatMessage: function(src, message, chan) {
         } else {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    if(isAndroid(id)) {
-                        var color = sys.getColor(id);
-                        if (sys.isInChannel(id, channel)) {
+                    var color = sys.getColor(id);
+                    if (sys.isInChannel(id, channel)) {
+                        if (isAndroid(id)) {
                             sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+":</b></font> "+ utilities.html_escape(message), channel);
-                        }
-                    } else {
-                        if (sys.isInChannel(id, channel)) {
+                        } else {
                             sys.sendMessage(id,  sys.name(src)+": "+message, channel);
                         }
+                    }
+                    if (sys.existChannel("Watch")) {
+                        sys.sendHtmlAll("<timestamp/><font color =" + color + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message) + "[Channel: " + sys.channel(channel) + "]", watchchannel);
                     }
                 }
             });
