@@ -1976,9 +1976,7 @@ beforeChatMessage: function(src, message, chan) {
                     }
                 }
             });
-            if (sys.existChannel("Watch")) {
-                sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + color + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
-            }
+            sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + sys.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
             sys.stopEvent();
             this.afterChatMessage(src, message, channel);
         }
