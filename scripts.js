@@ -1969,16 +1969,16 @@ beforeChatMessage: function(src, message, chan) {
                     var color = sys.getColor(id);
                     if (sys.isInChannel(id, channel)) {
                         if (isAndroid(id)) {
-                            sys.sendHtmlMessage(id, "<font color="+color+"><timestamp/><b>"+sys.name(src)+":</b></font> "+ utilities.html_escape(message), channel);
+                            sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
                         } else {
-                            sys.sendMessage(id,  sys.name(src)+": "+message, channel);
+                            sys.sendMessage(id,  sys.name(src) + ": " + message, channel);
                         }
-                    }
-                    if (sys.existChannel("Watch")) {
-                        sys.sendHtmlAll("<font color =" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message) + " [Channel: " + sys.channel(channel) + "]", watchchannel);
                     }
                 }
             });
+            if (sys.existChannel("Watch")) {
+                sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + color + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
+            }
             sys.stopEvent();
             this.afterChatMessage(src, message, channel);
         }
