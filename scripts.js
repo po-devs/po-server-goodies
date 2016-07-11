@@ -1966,7 +1966,7 @@ beforeChatMessage: function(src, message, chan) {
         } else {
             sys.playerIds().forEach(function(id) {
                 if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    var color = sys.getColor(id);
+                    var color = script.getColor(id);
                     if (sys.isInChannel(id, channel)) {
                         if (isAndroid(id)) {
                             sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
@@ -1976,7 +1976,7 @@ beforeChatMessage: function(src, message, chan) {
                     }
                 }
             });
-            sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + sys.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
+            sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + script.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
             sys.stopEvent();
             this.afterChatMessage(src, message, channel);
         }
