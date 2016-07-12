@@ -1397,7 +1397,7 @@ cookieBanned: function(src) {
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        kickbot.sendAll(sys.name(src) + " was banned by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
+        kickbot.sendAll(nonFlashing(sys.name(src)) + " was banned by cookie" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
         normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
         sys.kick(src);
         return true;
@@ -1407,7 +1407,7 @@ cookieBanned: function(src) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
-        kickbot.sendAll(sys.name(src) + " was smuted by cookie" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
+        kickbot.sendAll(nonFlashing(sys.name(src)) + " was smuted by cookie" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
     }
     if (!sys.uniqueId(src)) {
         return;
@@ -1418,7 +1418,7 @@ cookieBanned: function(src) {
         idInfo = JSON.parse(idInfo);
         var name = idInfo.name;
         var type = idInfo.type;
-        kickbot.sendAll(sys.name(src) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + name + "]." : "."), watchchannel);
+        kickbot.sendAll(nonFlashing(sys.name(src)) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
         if (type == "muted") {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
             return;
