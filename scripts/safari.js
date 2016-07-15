@@ -12569,11 +12569,11 @@ function Safari() {
         for (p = 1; p < 722; p++) {
             t1 = sys.type(sys.pokeType1(p));
             t2 = sys.type(sys.pokeType2(p));
-            if (badTypes.contains(t1) && (t2 === "???") || badTypes.contains(t2)) {
+            if (badTypes.contains(t1) && (t2 === "???" || badTypes.contains(t2))) {
                 badList.push(p);
                 continue;
             }
-            if (goodTypes.contains(t1) && (t2 === "???") || goodTypes.contains(t2)) {
+            if (goodTypes.contains(t1) && (t2 === "???" || goodTypes.contains(t2))) {
                 goodList.push(p);
             }
         }
