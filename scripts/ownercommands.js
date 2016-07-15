@@ -327,7 +327,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         autosmute.push(name);
         if (sys.id(name) !== undefined) {
-            SESSION.users(sys.id(name)).activate("smute", "Script", 0, "Evader", true);
+            SESSION.users(sys.id(name)).activate("smute", "Script", parseInt(sys.time(), 10) + 86400, "Evader", true);
         }
         sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         normalbot.sendAll(commandData + " was added to the autosmute list", staffchannel);
