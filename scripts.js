@@ -1182,7 +1182,7 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
-    if (sys.aliases(sys.ip(player)).length < 2 && !sys.dbRegistered(sys.name(player)) && chan === 0) {
+    if (sys.aliases(sys.ip(player)).length < 2 && !sys.dbRegistered(sys.name(player)) && script.userGuides(sys.os(player)) && chan === 0) {
         sys.sendHtmlMessage(player, "<font size=5><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!</b></font>", chan);
     }
     callplugins("afterChannelJoin", player, chan);
@@ -1293,7 +1293,7 @@ userGuides: function(os) {
         "android": {
             "English": "http://pokemon-online.eu/threads/pokemon-online-android-guide-v2-6-1.30992/",
             "Español": "http://pokemon-online.eu/threads/guia-para-usuarios-de-pokemon-online-android-v2-6-1.26525/",
-            "中文": "http://tieba.baidu.com/p/4324437820",
+            "中文": "http://tieba.baidu.com/p/4302246727",
             "Français": "http://pokemon-online.eu/threads/guide-dutilisation-pok%C3%A9mon-online-android-2-6-1-fr.31584/"
         },
         "webclient": {
