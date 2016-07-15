@@ -694,8 +694,8 @@ issueBan : function(type, src, tar, commandData, maxTime) {
             }
         }[type];
 
-        var expires = (type === "smute" ? parseInt(sys.time(), 10) + 86400 : 0);
-        var defaultTime = {"mute": "24h", "mban": "1d", "smute": "0", "hmute": "1d", "safban": "1d"}[type];
+        var expires = 0;
+        var defaultTime = {"mute": "1d", "mban": "1d", "smute": "1d", "hmute": "1d", "safban": "1d"}[type];
         var reason = "";
         var timeString = "";
         var data = commandData;
