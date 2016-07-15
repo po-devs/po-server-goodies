@@ -1182,6 +1182,9 @@ afterChannelJoin : function(player, chan) {
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
         sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
+    if (sys.aliases(sys.ip(player)).length < 2 && !sys.dbRegistered(sys.name(player)) && chan === 0) {
+        sys.sendHtmlMessage(player, "<font size=5><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!</b></font>", chan);
+    }
     callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
 
@@ -1278,6 +1281,39 @@ beforeLogIn : function(src) {
     }
 },
 
+userGuides: function(os) {
+    var ret = [];
+    var guides = {
+        "windows": {
+            "English": "http://pokemon-online.eu/threads/a-new-guide-to-pok%C3%A9mon-online-for-windows-version-2-6.34171/",
+            "Español": "http://pokemon-online.eu/threads/gu%C3%ADa-de-pok%C3%A9mon-online-windows-actualizado.34234/",
+            "中文": "http://tieba.baidu.com/p/4324437820",
+            "Português": "http://pokemon-online.eu/threads/tutorial-portugues-po.34370/"
+        },
+        "android": {
+            "English": "http://pokemon-online.eu/threads/pokemon-online-android-guide-v2-6-1.30992/",
+            "Español": "http://pokemon-online.eu/threads/guia-para-usuarios-de-pokemon-online-android-v2-6-1.26525/",
+            "中文": "http://tieba.baidu.com/p/4324437820",
+            "Français": "http://pokemon-online.eu/threads/guide-dutilisation-pok%C3%A9mon-online-android-2-6-1-fr.31584/"
+        },
+        "webclient": {
+            "English": "http://pokemon-online.eu/threads/pok%C3%A9mon-online-webclient-guide.34372/",
+            "Español": "http://pokemon-online.eu/threads/guia-de-pokemon-web.34379/",
+            "中文": "http://tieba.baidu.com/p/4324437820"
+        }
+    };
+    if (!guides.hasOwnProperty(os)) {
+        return;
+    }
+    for (var p in guides) {
+        if (os === p) {
+            for (var l in guides[p]) {
+                ret.push("<a href='" + guides[p][l] + "'>" + l + "</a>");
+            }
+        }
+    }
+    return ret.join(" | ");
+},
 
 nameIsInappropriate: function(src)
 {

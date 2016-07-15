@@ -60,6 +60,19 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         callplugins("onHelp", src, commandData, channel);
         return;
     }
+    if (command === "guide" || command === "guides") {
+        var os = commandData;
+        if (!os) {
+            os = sys.os(src);
+        }
+        os = os.toLowerCase();
+        if (!script.userGuides(os)) {
+            normalbot.sendMessage(src, "No guides found for \"" + os + "\"!", channel);
+            return;
+        }
+        normalbot.sendHtmlMessage(src, "User guides for " + os + ": " + script.userGuides(os), channel);
+        return;
+    }
     if (command === "intier") {
         if (commandData === undefined) {
             battlebot.sendMessage(src, "Please enter a tier.", channel);
@@ -85,7 +98,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             battlebot.sendMessage(src, "No unidled players found in that tier.", channel);
         } else {
             var sliceAmount = 10,
-                users = arraySlice(usersFoundArray.shuffle(), sliceAmount).join(", ");
+            users = arraySlice(usersFoundArray.shuffle(), sliceAmount).join(", ");
             battlebot.sendMessage(src, "Found " + usersFoundArray.length + "/" + sliceAmount + " unidled random players in " + tierInput + ": " + users, channel);
         }
         return;
