@@ -40,7 +40,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 objectList.push({'id': players[i], 'name': name});
             }
             var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
-            sys.sendMessage(src, ":"+JSON.stringify(channelData), channel);
+            sys.sendMessage(src, "+ChannelUsers:"+JSON.stringify(channelData), channel);
         }
         return;
     }
@@ -495,7 +495,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'client' : tar ? sys.os(tar) : "Unknown",
                 'version' : tar? sys.version(tar) : "Unknown"
             };
-            sys.sendMessage(src, "UserInfo: "+JSON.stringify(userJson), channel);
+            sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
             querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
