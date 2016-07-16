@@ -4,7 +4,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, "Please give me a channelname!", channel);
             return;
         }
-        var chanid, isBot;
+        var chanid, isbot;
         var data = commandData.split(":");
         var filterOS = data.length === 2;
         if (data[0][0] == "~") {
@@ -23,7 +23,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var chanName = sys.channel(chanid);
-        if (!isBot) {
+        if (!isbot) {
             var names = sys.playersOfChannel(chanid).filter(function (id) {
                 if (filterOS) {
                     return sys.os(id) === data[1];
