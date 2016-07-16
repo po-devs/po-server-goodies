@@ -337,7 +337,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "auth") {
-        var doNotShow = ["[ld]jirachier"];
+        var doNotShow = ["[ld]jirachier", "blinky"];
         var filterByAuth = function (level) {
             return function (name) {
                 return sys.dbAuth(name) === level;
