@@ -206,8 +206,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
 
     if (command === "topicadd") {
-        if (commandData !== undefined && SESSION.channels(channel).topic.length > 0) {
-            SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+        if (commandData !== undefined) {
+            if (SESSION.channels(channel).topic.length > 0) {
+                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+            } else {
+                SESSION.channels(channel).setTopic(src, commandData);
+            }
             return;
         }
         channelbot.sendMessage(src, "Please enter a topic to add after.", channel);
