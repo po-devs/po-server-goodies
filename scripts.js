@@ -1280,16 +1280,7 @@ beforeLogIn : function(src) {
         sys.stopEvent();
     }
     
-    /*if (sys.os(src) !== "android" && sys.version(src) < 2500) {
-        sys.sendMessage(src, "Your client version is no longer compatible with the current server version as it is completely missing Generation 6. Please download a more recent update at http://pokemon-online.eu/pages/download/");
-        sys.stopEvent();        
-    }
-    /* Right now its useless with a Gen 6 cut off... */
-    /*if (sys.os(src) === "android" && sys.version(src) > 45 && sys.version(src) < 46) {
-            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at ?????");
-            sys.stopEvent();
-        }
-    }*/
+
 },
 
 userGuides: function(os) {
@@ -1482,6 +1473,18 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
+    if (sys.os(src) !== "android" && sys.version(src) < 2500) {
+        sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
+        sys.kick(src);
+        return;
+    }
+    /* Right now its useless with a Gen 6 cut off... */
+    /*if (sys.os(src) === "android" && sys.version(src) > 45 && sys.version(src) < 46) {
+            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at ?????");
+            sys.kick(src);
+            return;
+        }
+    }*/
     sys.sendMessage(src, "*** Type in /rules to see the rules and /commands to see the commands! ***");
     sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
