@@ -1280,7 +1280,7 @@ beforeLogIn : function(src) {
         sys.stopEvent();
     }
     
-    if (sys.os(src) !== "android" && sys.version(src) < 2500) {
+    /*if (sys.os(src) !== "android" && sys.version(src) < 2500) {
         sys.sendMessage(src, "Your client version is no longer compatible with the current server version as it is completely missing Generation 6. Please download a more recent update at http://pokemon-online.eu/pages/download/");
         sys.stopEvent();        
     }
