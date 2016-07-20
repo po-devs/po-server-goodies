@@ -16605,6 +16605,10 @@ function Safari() {
 
         //Staff Commands
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
+            if (command === "safaribans") {
+                require("modcommands.js").handleCommand(src, "safaribans", commandData, -1);
+                return true;
+            }
             if (command === "startevent") {
                 if (currentEvent) {
                     safaribot.sendMessage(src, "There's already an event going on!", safchan);

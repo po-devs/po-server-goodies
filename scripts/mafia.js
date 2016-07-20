@@ -5625,7 +5625,7 @@ function Mafia(mafiachan) {
         if (channel != mafiachan) {
             if (["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "spawn", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg"].indexOf(command) === -1) {
                 if (channel == staffchannel || channel == sachannel) {
-                    if (["mafiaban", "mafiaunban", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "updatestats", "themes"].indexOf(command) === -1) {
+                    if (["mafiaban", "mafiaunban", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "updatestats", "themes", "aliases"].indexOf(command) === -1) {
                         return;
                     }
                 } else {
@@ -7145,6 +7145,10 @@ function Mafia(mafiachan) {
             mafia.themeManager.enable(src, commandData);
             return;
         }
+        if (command === "mafiabans") {
+            require("modcommands.js").handleCommand(src, "mafiabans", commandData, -1);
+            return true;
+        }
         if (command === "mafiaban") {
             var bantime;
             if (sys.auth(src) > 0 || this.isMafiaSuperAdmin(src)) {
@@ -7290,6 +7294,10 @@ function Mafia(mafiachan) {
             }
             msgAll(nonFlashing(sys.name(src)) + " promoted " + commandData.toCorrectCase() + " to " + (sMA ? "Super " : "") + "Mafia Admin.", sachannel);
             return;
+        }        
+        if (command === "aliases") {
+            require("modcommands.js").handleCommand(src, "aliases", commandData, -1);
+            return true;
         }
         if (command === "mafiaadminoff" || command === "smafiaadminoff") {
             var ma = commandData.toLowerCase();
