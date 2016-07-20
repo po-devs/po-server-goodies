@@ -1475,6 +1475,8 @@ afterLogIn : function(src) {
     }
     if (sys.os(src) !== "android" && sys.version(src) < 2500) {
         sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
+        sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
+        sys.sendMessage(src, "po2.62（PC自带计算器）： http://tieba.baidu.com/p/4210534593?share=9105&fr=share");
         sys.kick(src);
         return;
     }

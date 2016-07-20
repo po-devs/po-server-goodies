@@ -1,3 +1,4 @@
+/*global exports, require, SESSION, sys, script, commandbot*/
 var userCommands, modCommands, adminCommands, ownerCommands, channelCommands;
 
 exports.handleCommand = function(src, command, commandData, tar, channel) {
@@ -10,7 +11,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (modCommands === undefined) {
         modCommands = require("modcommands.js");
     }
-    if (sys.auth(src) > 0 || SESSION.users(src).tempMod || (script.isMafiaAdmin(src) || script.isMafiaSuperAdmin(src)) && command === "mafiabans" || script.isMafiaSuperAdmin(src) && command === "aliases" || script.isSafariAdmin(src) && command === "safaribans") {
+    if (sys.auth(src) > 0 || SESSION.users(src).tempMod || (script.isMafiaAdmin(src) && command === "mafiabans") || (script.isMafiaSuperAdmin(src) && command === "aliases") || (script.isSafariAdmin(src) && command === "safaribans")) {
         if (modCommands.handleCommand(src, command, commandData, tar, channel) != "no command") {
             return;
         }
