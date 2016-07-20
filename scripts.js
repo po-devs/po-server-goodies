@@ -601,9 +601,9 @@ init : function() {
     script.cmp = function(a, b) {
         return a.toLowerCase() == b.toLowerCase();
     };
-    script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
-    script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
-    script.isSafariAdmin = require('safari.js').isChannelAdmin;
+    //script.isMafiaAdmin = require('mafia.js').isMafiaAdmin;
+    //script.isMafiaSuperAdmin = require('mafia.js').isMafiaSuperAdmin;
+    //script.isSafariAdmin = require('safari.js').isChannelAdmin;
     isSuperAdmin = function(id) {
         if (typeof script.superAdmins != "object" || script.superAdmins.length === undefined) return false;
         if (sys.auth(id) != 2) return false;
