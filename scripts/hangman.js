@@ -996,7 +996,6 @@ function Hangman() {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
-        sys.sendMessage(src, " ", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'><b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>[Hint: " + hint + "]  [Letters used: " + usedLetters.map(function (x) {
             return x.toUpperCase();
