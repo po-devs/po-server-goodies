@@ -15823,7 +15823,7 @@ function Safari() {
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
             "/bestow [player]։[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
             "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
-            "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish.",
+            "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish. Use /swipesafari or /wipesafaris to do it silently.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
             "/checksaves [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
@@ -17738,7 +17738,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "wipesafari") {
+            if (command === "wipesafari" || command === "wipesafaris" || command === "swipesafari") {
                 var name = commandData.toLowerCase();
                 var playerId = sys.id(name);
 
@@ -17751,7 +17751,11 @@ function Safari() {
                     rafflePlayers.remove(name);
                     rawPlayers.remove(name);
                     idnumList.remove(player.idnum);
-                    safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+                    if (command === "wipesafari") {
+                        safaribot.sendAll(commandData + "'s safari has been reset!", safchan);
+                    } else {
+                        safaribot.sendMessage(src, commandData + "'s safari has been reset!", safchan);
+                    }
                 } else {
                     safaribot.sendMessage(src, "No such person!", safchan);
                 }
