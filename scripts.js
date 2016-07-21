@@ -2195,7 +2195,7 @@ afterChatMessage : function(src, message, chan)
                     user.activate("mute", Config.kickbot, endtime, "Flooding", true);
                 }
                 callplugins("onKick", src);
-                sys.kick(src);
+                script.kickAll(sys.ip(src));
                 return;
             }
             else {
