@@ -428,7 +428,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak")) {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels")) {
         if (command === "eval") {
             if (commandData === undefined) {
                 normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
