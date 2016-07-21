@@ -15,7 +15,7 @@ var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
 function Mafia(mafiachan) {
-    this.version = "2012-12-15";
+    this.version = "2016-07-21";
     var mafia = this;
     var defaultThemeName = "default"; //stored as lowercase
 
