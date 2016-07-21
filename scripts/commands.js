@@ -1,4 +1,3 @@
-/*global exports, require, SESSION, sys, commandbot*/
 var userCommands, modCommands, adminCommands, ownerCommands, channelCommands;
 
 exports.handleCommand = function(src, command, commandData, tar, channel) {
