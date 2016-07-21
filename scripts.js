@@ -414,7 +414,7 @@ serverStartUp : function() {
 },
 
 init : function() {
-    script.superAdmins = ["Mahnmut", "Strudels"];
+    script.superAdmins = ["Mahnmut"];
     script.rules = {
         "1": {
             "english": [
@@ -595,7 +595,12 @@ init : function() {
     };
 
     script.getKey = function(thing, id) {
-        return sys.getVal(key(thing,id));
+        var temp = key(thing,id);
+        if (temp) {
+            return sys.getVal(temp);
+        } else {
+            return false;
+        }
     };
 
     script.cmp = function(a, b) {
@@ -1511,7 +1516,7 @@ afterLogIn : function(src) {
         }
     }*/
 
-    if (SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
+    if (SESSION.users(src).hostname && SESSION.users(src).hostname.toLowerCase().indexOf('tor') !== -1) {
         sys.sendAll('Possible TOR user: ' + sys.name(src), staffchannel);
     }
 
@@ -1574,6 +1579,9 @@ afterChangeTeam : function(src)
     var new_name = sys.name(src);
     if (POuser.name != new_name) {
         var now = parseInt(sys.time(), 10);
+        if (!POuser.namehistory) {
+            POuser.namehistory = [];
+        }
         POuser.namehistory.push([new_name, now]);
         POuser.name = new_name;
         var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
