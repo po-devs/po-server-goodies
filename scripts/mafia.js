@@ -7146,6 +7146,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "mafiabans") {
+            commandData = commandData === "*" ? "" : commandData;
             require("modcommands.js").handleCommand(src, "mafiabans", commandData, -1);
             return true;
         }
