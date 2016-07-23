@@ -1106,7 +1106,7 @@ beforeChannelJoin : function(src, channel) {
     if (this.isChannelStaff(src) && sachannel === channel) { // Allows game staff to enter VR without member
         return;
     }
-    if (channel === staffchannel && isContrib(src) && !sys.dbRegistered(sys.name(src))) {
+    if (channel === staffchannel && script.isContrib(src) && !sys.dbRegistered(sys.name(src))) {
         var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
         normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
         script.contributors.remove(contribName);
@@ -1610,12 +1610,13 @@ afterChangeTeam : function(src)
             return;
         }
     }
-    if (isContrib(src)) {
+    if (script.isContrib(src)) {
         if (sys.dbRegistered(sys.name(src))) {
             var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
             POuser.contributions = script.contributors.get(contribName);
         }
         else {
+            normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
             script.contributors.remove(contribName);
         }
     }
