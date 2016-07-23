@@ -1106,6 +1106,17 @@ beforeChannelJoin : function(src, channel) {
     if (this.isChannelStaff(src) && sachannel === channel) { // Allows game staff to enter VR without member
         return;
     }
+    if (channel === staffchannel) {
+        var n = sys.name(src);
+        for (var c in script.contributors.hash) {
+            if (script.cmp(c, n) && !sys.dbRegistered(n)) {
+                sys.stopEvent();
+                normalbot.sendAll(c + " was removed from contributors due to their alt expiring. [Contribution: " + script.contributors.hash[c] + "]" , staffchannel);
+                delete script.contributors.hash[c];
+                return;
+            }
+        }
+    }
     if (poChannel.canJoin(src) == "allowed") {
         return;
     }
