@@ -1106,16 +1106,12 @@ beforeChannelJoin : function(src, channel) {
     if (this.isChannelStaff(src) && sachannel === channel) { // Allows game staff to enter VR without member
         return;
     }
-    if (channel === staffchannel) {
-        var n = sys.name(src);
-        for (var c in script.contributors.hash) {
-            if (script.cmp(c, n) && !sys.dbRegistered(n)) {
-                sys.stopEvent();
-                normalbot.sendAll(c + " was removed from contributors due to their alt expiring. [Contribution: " + script.contributors.hash[c] + "]", staffchannel);
-                script.contributors.remove(c);
-                return;
-            }
-        }
+    if (channel === staffchannel && isContrib(src) && !sys.dbRegistered(sys.name(src))) {
+        var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
+        normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
+        script.contributors.remove(contribName);
+        sys.stopEvent();
+        return;
     }
     if (poChannel.canJoin(src) == "allowed") {
         return;
@@ -1297,6 +1293,19 @@ beforeLogIn : function(src) {
     }
     
 
+},
+
+isContrib: function(id) {
+    var name = sys.name(id);
+    if (!name) {
+        return;
+    }
+    for (var contrib in script.contributors.hash) {
+        if (script.cmp(name, contrib)) {
+            return true;
+        }
+    }
+    return false;
 },
 
 userGuides: function(os) {
@@ -1601,8 +1610,16 @@ afterChangeTeam : function(src)
             return;
         }
     }
+    if (isContrib(src)) {
+        if (sys.dbRegistered(sys.name(src))) {
+            var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
+            POuser.contributions = script.contributors.get(contribName);
+        }
+        else {
+            script.contributors.remove(contribName);
+        }
+    }
 
-    POuser.contributions = script.contributors.hash.hasOwnProperty(sys.name(src)) && sys.dbRegistered(sys.name(src)) ? script.contributors.get(sys.name(src)) : undefined;
     POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
     if (!authChangingTeam) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
