@@ -1109,6 +1109,7 @@ beforeChannelJoin : function(src, channel) {
     if (channel === staffchannel && script.isContrib(src) && !sys.dbRegistered(sys.name(src))) {
         var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
         normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
+        sys.sendMessage(src, "±Guard: Sorry, access to that place is restricted!");
         script.contributors.remove(contribName);
         sys.stopEvent();
         return;
@@ -1611,8 +1612,8 @@ afterChangeTeam : function(src)
         }
     }
     if (script.isContrib(src)) {
+        var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
         if (sys.dbRegistered(sys.name(src))) {
-            var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
             POuser.contributions = script.contributors.get(contribName);
         }
         else {
