@@ -1111,8 +1111,8 @@ beforeChannelJoin : function(src, channel) {
         for (var c in script.contributors.hash) {
             if (script.cmp(c, n) && !sys.dbRegistered(n)) {
                 sys.stopEvent();
-                normalbot.sendAll(c + " was removed from contributors due to their alt expiring. [Contribution: " + script.contributors.hash[c] + "]" , staffchannel);
-                delete script.contributors.hash[c];
+                normalbot.sendAll(c + " was removed from contributors due to their alt expiring. [Contribution: " + script.contributors.hash[c] + "]", staffchannel);
+                script.contributors.remove(c);
                 return;
             }
         }
