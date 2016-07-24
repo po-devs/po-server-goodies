@@ -1197,7 +1197,12 @@ afterChannelJoin : function(player, chan) {
     }
     if (sys.aliases(sys.ip(player)).length < 2 && !sys.dbRegistered(sys.name(player)) && script.userGuides(sys.os(player)) && chan === 0) {
         var unsupported = sys.os(player) === "android" && sys.version(player) < 52;
-        sys.sendHtmlMessage(player, "<font size=5><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player), unsupported) + "!</b></font>", chan);
+        if (unsupported) {
+            sys.sendMessage(player, "New to PO? Check out our user guides: " + script.userGuides(sys.os(player), unsupported) + "!", chan);
+        }
+        else {
+            sys.sendHtmlMessage(player, "<font size=5><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!", chan);
+        }
     }
     callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
@@ -1337,7 +1342,7 @@ userGuides: function(os, unsupported) {
     for (var p in guides) {
         if (os === p) {
             for (var l in guides[p]) {
-                ret.push(unsupported ? l + ": " + guides[p][l]: "<a href='" + guides[p][l] + "'>" + l + "</a>");
+                ret.push(unsupported ? l + ": " + guides[p][l] : "<a href='" + guides[p][l] + "'>" + l + "</a>");
             }
         }
     }
