@@ -73,6 +73,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         if (unsupported) {
             normalbot.sendMessage(src, "User guides for " + os + ": " + script.userGuides(os, unsupported), channel);
+            return;
         }
         normalbot.sendHtmlMessage(src, "User guides for " + os + ": " + script.userGuides(os), channel);
         return;
