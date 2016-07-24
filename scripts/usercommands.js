@@ -61,12 +61,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "guide" || command === "guides") {
-        var os = commandData;
+        var os = commandData, unsupported;
         if (!os) {
             os = sys.os(src);
+            unsupported = os === "android" && sys.version(src) < 52;
         }
         os = os.toLowerCase();
-        var unsupported = os === "android" && sys.version(src) < 52;
         if (!script.userGuides(os)) {
             normalbot.sendMessage(src, "No guides found for \"" + os + "\"!", channel);
             return;

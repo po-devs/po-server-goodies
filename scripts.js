@@ -1201,7 +1201,7 @@ afterChannelJoin : function(player, chan) {
             sys.sendMessage(player, "New to PO? Check out our user guides: " + script.userGuides(sys.os(player), unsupported) + "!", chan);
         }
         else {
-            sys.sendHtmlMessage(player, "<font size=5><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!", chan);
+            sys.sendHtmlMessage(player, "<font size=4><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!</b></font>", chan);
         }
     }
     callplugins("afterChannelJoin", player, chan);
