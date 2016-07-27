@@ -959,11 +959,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
             
             if (wasElim) {
                 var rewarding = eventElimPlayers.reverse();
-                for (var r = 0; r < 3; r++) {
+                for (var r = 0; r < 3 && r < rewarding.length; r++) {
                     Safari.triviaPromo(rewarding[r], r+1);
                 }
             } else {            
-                for (var r = 0; r < 3; r++) {
+                for (var r = 0; r < 3 && r < winnersNamesOnly.length; r++) {
                    Safari.triviaPromo(winnersNamesOnly[r], r+1);
                 }
             }
