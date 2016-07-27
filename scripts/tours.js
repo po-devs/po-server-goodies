@@ -2402,9 +2402,6 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You are server muted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
-            if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
-                return true;
-            }
             if (isTourMuted(src)) {
                 sendBotMessage(src, "You are tourmuted so you are prohibited from playing!", tourschan, false);
                 return true;
