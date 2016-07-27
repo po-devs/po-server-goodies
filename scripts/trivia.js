@@ -950,7 +950,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             wasElim = true;
         }        
         var Safari = require('safari.js');
-        if (Safari) {
+        if (Safari && trivData.eventFlag) {
             var safchan = sys.channelId("Safari");
             sendChanAll("", safchan);
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
