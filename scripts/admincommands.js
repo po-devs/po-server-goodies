@@ -431,7 +431,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var type = (command === "idunban" ? "unbanned" : "unmuted");
         var banInfo = script.idBans.get(commandData);
         if (banInfo) {
-            var tar = banInfo.name;
+            var tar = JSON.parse(banInfo).name;
             script.idBans.remove(commandData);
             if (banInfo.type == "muted") {
                 script.unban("smute", Config.kickbot, tar, commandData);
