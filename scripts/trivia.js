@@ -11,7 +11,6 @@
         - trivialeaderboard.txt
         - questiondata.txt
 */
-/*jshint "laxbreak":true,"shadow":true,"undef":true,"evil":true,"trailing":true,"proto":true,"withstmt":true*/
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
 var Bot = require("bot.js").Bot;
 var utilities = require("utilities.js");
@@ -227,20 +226,22 @@ function getSpecialQuestion(category) {
     var q = {};
 
     category = category.toLowerCase();
-    if (category === "who's that pokémon?") {
+    /*if (category === "who's that pokémon?") {
 
     } else if (category === "pokémon without vowels") {
 
     } else if (category === "anagram: pokémon") {
 
-    } else if (category === "mental math") {
+    } else */
+    if (category === "mental math") {
         var num1 = Math.floor(Math.random() * (13 - 1)) + 1;
+        var num2, num3;
         var op1 = Math.random() < 0.5;
-        if (op1) var num2 = Math.floor(Math.random() * (26 - 1)) + 1;
-        else var num2 = Math.floor(Math.random() * (11 - 1)) + 1;
+        if (op1) num2 = Math.floor(Math.random() * (26 - 1)) + 1;
+        else num2 = Math.floor(Math.random() * (11 - 1)) + 1;
         var op2 = Math.random() < 0.5;
-        if (op2) var num3 = Math.floor(Math.random() * (21 - 1)) + 1;
-        else var num3 = Math.floor(Math.random() *
+        if (op2) num3 = Math.floor(Math.random() * (21 - 1)) + 1;
+        else num3 = Math.floor(Math.random() *
             ((op1 ? num1 + num2 : num1 * num2) - 1)) + 1;
 
         q.question = String(num1) + (op1 ? '+' : '*') + String(num2)
@@ -375,11 +376,11 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     var ad = "";
     var eventMessage = "";
     var autoJoin = function (n) {
-    if (n && !tadmin.isTAdmin(n) && !tsadmin.isTAdmin(n) && sys.auth(sys.id(n)) <= 0) {
-        Trivia.addPlayer(sys.id(n));
-        Trivia.sendAll(n + " joined the game!", triviachan);
+        if (n && !tadmin.isTAdmin(n) && !tsadmin.isTAdmin(n) && sys.auth(sys.id(n)) <= 0) {
+            Trivia.addPlayer(sys.id(n));
+            Trivia.sendAll(n + " joined the game!", triviachan);
         }
-    }
+    };
     if (this.catGame){
         for (var q in triviaq.all()) {
             if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
@@ -477,23 +478,27 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         }
     }
    else {
-        sendChanAll("", 0);
-        sendChanAll("", triviachan);
-        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", triviachan);
-        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", 0);
-        this.sendAll(ad, 0);
-        this.sendAll(eventMessage, triviachan);
-        sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
-        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", triviachan);
-        sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", 0);
-        sendChanAll("", 0);
-        sendChanAll("", triviachan);
+        var channelsToAd = [0, triviachan, sys.channelId("Safari")];
+        for (var d in channelsToAd) {
+            var c = channelsToAd[d];
+            sendChanAll("", c);
+            sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", c);
+            if (c === triviachan) {
+                this.sendAll(eventMessage, triviachan);
+                sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            } else {
+                this.sendAll(ad, c);
+            }
+            sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", c);
+            sendChanAll("", c);
+        }
     }
     var players = sys.playersOfChannel(triviachan);
     // Flash players who have it enabled
     var player_id, player_ip;
     for (var p in players) {
-        player_id = players[p], player_ip = sys.ip(player_id);
+        player_id = players[p];
+        player_ip = sys.ip(player_id);
         if (trivData.toFlash[player_ip])
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
@@ -608,19 +613,20 @@ TriviaGame.prototype.startTriviaRound = function () {
     /* Advance round */
     this.round++;
 
+    var category, usingSpecialCats, question;
     if (this.catGame) {
-        var category = Math.floor(Math.random() * this.usingCats.length);
-        var usingSpecialCats = this.usingCats.filter(function(n) { return specialCategories.indexOf(n) > -1; });
+        category = Math.floor(Math.random() * this.usingCats.length);
+        usingSpecialCats = this.usingCats.filter(function(n) { return specialCategories.indexOf(n) > -1; });
         if (usingSpecialCats.length) this.specialCatGame = true;
     }
     else {
-        var category = Math.floor(Math.random() * (orderedCategories().length + specialCategories.length + trivData.specialChance));
-        var usingSpecialCats = specialCategories;
+        category = Math.floor(Math.random() * (orderedCategories().length + specialCategories.length + trivData.specialChance));
+        usingSpecialCats = specialCategories;
     }
     if (Trivia.suggestion.id === undefined && category < usingSpecialCats.length) {
         category = usingSpecialCats[category];
         this.specialQuestion = getSpecialQuestion(category);
-        var question = this.specialQuestion.question;
+        question = this.specialQuestion.question;
         this.roundQuestion = 0;
     } else {
         /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
@@ -646,7 +652,6 @@ TriviaGame.prototype.startTriviaRound = function () {
         /* Get the category, question, and answer */
         var q = triviaq.get(questionNumber);
         category = q.category;
-        var question;
         if (category.indexOf("Anagram") === -1){
             question = q.question;
         } else {
@@ -773,15 +778,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
                 var name = answeredCorrectly[answeredCorrectly.length - 1].name;
                 this.player(name).points--;
-                this.sendAll(name + " was the last player to answer the question, so they lose a life!")
+                this.sendAll(name + " was the last player to answer the question, so they lose a life!");
                 if (this.player(name).points === 0) {
-                    for (var id in this.triviaPlayers) {
-                        if (this.triviaPlayers[id].name === name) break;
+                    for (var id2 in this.triviaPlayers) {
+                        if (this.triviaPlayers[id2].name === name) break;
                     }
                     if(trivData.eventFlag){
-                        eventElimPlayers.push(this.triviaPlayers[id].name);
+                        eventElimPlayers.push(this.triviaPlayers[id2].name);
                     }
-                    this.unjoin(id);
+                    this.unjoin(id2);
                 }
             }
         }
@@ -868,12 +873,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     for (var y in leaderboard) {   //this sorts the winners
         if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
-            winners.push(leaderboard[y][0] + " (" + leaderboard[y][1] + ")")
+            winners.push(leaderboard[y][0] + " (" + leaderboard[y][1] + ")");
         }
     }
     for (var z in leaderboard) {
         if (leaderboard[z][1] >= this.maxPoints && this.scoreType !== "elimination"){
-            winnersNamesOnly.push(leaderboard[z][0])
+            winnersNamesOnly.push(leaderboard[z][0]);
         }
     }
 
@@ -939,29 +944,51 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 lastCatGame++;
             }
         }
-        if(trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0){
-            eventElimPlayers.push(winnersNamesOnly[0]);}
-
+        var wasElim = false;
+        if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
+            eventElimPlayers.push(winnersNamesOnly[0]);
+            wasElim = true;
+        }        
+        var Safari = require('safari.js');
+        if (Safari) {
+            var safchan = sys.channelId("Safari");
+            sendChanAll("", safchan);
+            sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
+            this.sendAll("The EVENT Trivia game is over! Congratulations to the winners!", safchan);
+            sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
+            
+            if (wasElim) {
+                var rewarding = eventElimPlayers.reverse();
+                for (var r = 0; r < 3; r++) {
+                    Safari.triviaPromo(rewarding[r], r+1);
+                }
+            } else {            
+                for (var r = 0; r < 3; r++) {
+                   Safari.triviaPromo(winnersNamesOnly[r], r+1);
+                }
+            }
+            sendChanAll("", safchan);
+        }
+        
         //winnersNamesOnly contains the names of the winners from first to last
         //displayBoardNamesOnly, if you want to give consolation prizes, contains names of all players
         //eventElimPlayers contains the list for event games
         //if you want to post the scores also (example: player (5)) use winners or displayboard
         //these loops are the ones I used to output the data for testing; I left them in case they would be helpful
 
-        if (trivData.eventFlag){
-            if (this.scoreType !== "elimination"){
-
+        //if (trivData.eventFlag){
+        //    if (this.scoreType !== "elimination"){
                 /*for (var d = 0; d < winnersNamesOnly.length; d++){
                     this.sendAll(winnersNamesOnly[d],triviachan);
                 }*/
-            }
-            else {
+        //    }
+        //    else {
                 //****NOTE***** that the players are in this array backwards, so I looped backwards.
                 /*for (var e = (eventElimPlayers.length - 1); e >= 0; e--){
                     this.sendAll(eventElimPlayers[e],triviachan);
                 }*/
-            }
-        }
+        //    }
+        //}
         this.resetTrivia();
         runUpdate();
         this.lastvote++;
@@ -1024,7 +1051,7 @@ TriviaGame.prototype.startVoting = function () {
 
     this.phase = "countvotes";
     this.ticks = 30; 
-}
+};
 
 TriviaGame.prototype.countVotes = function () {
 
@@ -1036,7 +1063,7 @@ TriviaGame.prototype.countVotes = function () {
     var indexes = [], i = -1;
 
     if (max === 0) {
-        if (Math.random() < .5) {
+        if (Math.random() < 0.5) {
             this.scoreType = "knowledge";
             Trivia.startGame("12");
         }
@@ -1053,7 +1080,7 @@ TriviaGame.prototype.countVotes = function () {
 
     var winner = indexes[Math.floor(Math.random() * indexes.length)];
 
-    if ((Math.random() < .5) && (triviaCategories[winner] !== "Mental Math")) {
+    if ((Math.random() < 0.5) && (triviaCategories[winner] !== "Mental Math")) {
         this.scoreType = "knowledge";
         Trivia.startGame("14*" + triviaCategories[winner]);
     } 
@@ -1066,7 +1093,7 @@ TriviaGame.prototype.countVotes = function () {
 TriviaGame.prototype.voteCat = function (src, cat) {
     if (this.votes.hasOwnProperty(this.key(src))) {
         if (this.votes[this.key(src)] === cat) {
-            Trivia.sendPM(src, "You already voted for " + triviaCategories[cat] + "!", channel);
+            Trivia.sendPM(src, "You already voted for " + triviaCategories[cat] + "!", triviachan);
         } else {
             Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + "!", triviachan);
         }
@@ -2097,9 +2124,10 @@ addAdminCommand(["search"], function (src, commandData, channel) {
     var all = triviaq.all(),
         b, q, output = [];
     var re = new RegExp("\\b" + commandData + "\\b", "i");
+    var answer;
     for (b in all) {
         q = triviaq.get(b);
-        var answer = String(q.answer);
+        answer = String(q.answer);
         if (re.test(q.question) || re.test(answer)) {
             output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
         }
@@ -2107,7 +2135,7 @@ addAdminCommand(["search"], function (src, commandData, channel) {
     all = trivreview.all();
     for (b in all) {
         q = trivreview.get(b);
-        var answer = String(q.answer);
+        answer = String(q.answer);
         if (re.test(q.question) || re.test(answer)) {
             output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
         }
@@ -2127,10 +2155,10 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
     if (commandData === undefined) return;
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
-        b, q, output = [];
+        b, q, output = [], answer;
     for (b in all) {
         q = triviaq.get(b);
-        var answer = String(q.answer);
+        answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
             output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
         }
@@ -2138,7 +2166,7 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
     all = trivreview.all();
     for (b in all) {
         q = trivreview.get(b);
-        var answer = String(q.answer);
+        answer = String(q.answer);
         if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
             output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
         }
@@ -2390,7 +2418,7 @@ addAdminCommand(["showreview"], function (src, commandData, channel) {
         var ids = Object.keys(tr).sort(function (a, b) {
             return a - b;
         });
-        for (id in ids) {
+        for (var id in ids) {
             var q = trivreview.get(ids[id]);
             Trivia.sendPM(src, "Question #" + (parseInt(id) + 1) + " under review: '" +
                 q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'", channel);
@@ -2418,7 +2446,7 @@ addAdminCommand(["review"], function (src, commandData, channel) {
     }
     triviabot.sendAll(sys.name(src) + " jumped to question #" + commandData + " in review", revchan);
     trivreview.checkq(commandData - 1);
-}, "Jumps to the question with specified id in review")
+}, "Jumps to the question with specified id in review");
 
 addAdminCommand(["accept"], function (src, commandData, channel) {
     var tr = trivreview.all();
@@ -3023,7 +3051,7 @@ addOwnerCommand(["removeequivalentans","rea"], function (src, commandData, chann
 }, "Removes synonyms for an answer.");
 
 addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
-    if (commandData == ""){
+    if (commandData === ""){
         for (var i in trivData.equivalentAns) {
            Trivia.sendPM(src, i + ": " + trivData.equivalentAns[i], channel);
         }

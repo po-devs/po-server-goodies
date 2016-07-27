@@ -15547,6 +15547,34 @@ function Safari() {
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
     };
+    this.triviaPromo = function (name, placing) {
+        var player = getAvatarOff(name);
+        if (!player) {
+            return;
+        }
+        var rew;
+        switch (placing) {
+            case 1:
+                player.balls.ultra += 1;
+                rew = plural(1, "ultra");
+            break;
+            case 2:
+                player.balls.great += 1;
+                rew = plural(1, "great");
+            break;
+            case 3:
+                player.balls.safari += 1;
+                rew = plural(1, "safari");
+            break;
+            default:
+                return; //Only top 3 get. Nothing more than 3 should be passed anyway
+        }
+        if (!sys.id(name)) {
+            this.offlineMessage(player, "You won " + rew + " from an Event Trivia Game!");
+        }
+        this.sanitize(player);
+        safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
+    };
     this.isChannelAdmin = function (src) {
         return SESSION.channels(safchan).isChannelAdmin(src);
     };
