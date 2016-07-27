@@ -61,13 +61,18 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "guide" || command === "guides") {
-        var os = commandData;
+        var os = commandData, unsupported;
         if (!os) {
             os = sys.os(src);
+            unsupported = os === "android" && sys.version(src) < 52;
         }
         os = os.toLowerCase();
         if (!script.userGuides(os)) {
             normalbot.sendMessage(src, "No guides found for \"" + os + "\"!", channel);
+            return;
+        }
+        if (unsupported) {
+            normalbot.sendMessage(src, "User guides for " + os + ": " + script.userGuides(os, unsupported), channel);
             return;
         }
         normalbot.sendHtmlMessage(src, "User guides for " + os + ": " + script.userGuides(os), channel);
