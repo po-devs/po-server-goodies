@@ -2278,7 +2278,7 @@ function tourCommand(src, command, commandData, channel) {
                 var tar = data[0];
                 var reason = data[1];
                 var time = 900;
-                if (data.length > 2) {
+                if (data[2]) {
                     time = utilities.getSeconds(data[2]);
                 }
                 var ip = sys.dbIp(tar);
