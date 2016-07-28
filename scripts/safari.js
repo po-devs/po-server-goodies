@@ -15555,16 +15555,16 @@ function Safari() {
         var rew;
         switch (placing) {
             case 1:
-                player.balls.ultra += 1;
-                rew = plural(1, "ultra");
+                player.balls.golden += 3;
+                rew = plural(3, "golden");
             break;
             case 2:
-                player.balls.great += 1;
-                rew = plural(1, "great");
+                player.balls.golden += 2;
+                rew = plural(2, "golden");
             break;
             case 3:
-                player.balls.safari += 1;
-                rew = plural(1, "safari");
+                player.balls.golden += 1;
+                rew = plural(1, "golden");
             break;
             default:
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
