@@ -754,6 +754,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (this.scoreType !== "speed") {
         if (this.scoreType === "elimination") {
             var allCorrect = true;
+            var sortArray = [];
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
                 var found = false;
@@ -769,11 +770,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
                     if(trivData.eventFlag){
-                        eventElimPlayers.push(this.triviaPlayers[id].name);
+                        sortArray.push(this.triviaPlayers[id].name);
                     }
                     this.unjoin(id);
                 }
-            }
+            }           
             if (allCorrect && this.suddenDeath && answeredCorrectly.length) {
                 answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
                 var name = answeredCorrectly[answeredCorrectly.length - 1].name;
@@ -784,10 +785,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
                         if (this.triviaPlayers[id2].name === name) break;
                     }
                     if(trivData.eventFlag){
-                        eventElimPlayers.push(this.triviaPlayers[id2].name);
+                        sortArray.push(this.triviaPlayers[id2].name);
                     }
                     this.unjoin(id2);
                 }
+            }
+            //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
+            sortArray.sort(function(a, b){return 0.5 - Math.random()});
+            for(var z = 0; z < sortArray.length; z++){
+                eventElimPlayers.push(sortArray[z]);
             }
         }
         else if (answeredCorrectly.length !== 0) {
@@ -892,11 +898,11 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (totalPlayers < 1) this.inactivity++;
     else this.inactivity = 0;
     if (trivData.eventFlag && totalPlayers < 2) this.inactivity++; //to prevent only one person from playing events
-    if (this.inactivity === 4) {       
-        this.htmlAll("The game automatically ended due to a lack of players.");        
-        this.resetTrivia();        
-        runUpdate();       
-        return;        
+    if (this.inactivity === 4) {
+        this.htmlAll("The game automatically ended due to a lack of players.");
+        this.resetTrivia();
+        runUpdate();
+        return;
     }
 
     if ((totalPlayers === 1) && (leaderboard[0]) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
@@ -948,7 +954,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
             eventElimPlayers.push(winnersNamesOnly[0]);
             wasElim = true;
-        }        
+        }
         var Safari = require('safari.js');
         if (Safari && trivData.eventFlag) {
             var safchan = sys.channelId("Safari");
@@ -956,39 +962,39 @@ TriviaGame.prototype.finalizeAnswers = function () {
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
             this.sendAll("The EVENT Trivia game is over! Congratulations to the winners!", safchan);
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
-            
+
             if (wasElim) {
                 var rewarding = eventElimPlayers.reverse();
                 for (var r = 0; r < 3 && r < rewarding.length; r++) {
                     Safari.triviaPromo(rewarding[r], r+1);
                 }
-            } else {            
+            } else {
                 for (var r = 0; r < 3 && r < winnersNamesOnly.length; r++) {
                    Safari.triviaPromo(winnersNamesOnly[r], r+1);
                 }
             }
             sendChanAll("", safchan);
         }
-        
+
         //winnersNamesOnly contains the names of the winners from first to last
         //displayBoardNamesOnly, if you want to give consolation prizes, contains names of all players
         //eventElimPlayers contains the list for event games
         //if you want to post the scores also (example: player (5)) use winners or displayboard
         //these loops are the ones I used to output the data for testing; I left them in case they would be helpful
 
-        //if (trivData.eventFlag){
-        //    if (this.scoreType !== "elimination"){
-                /*for (var d = 0; d < winnersNamesOnly.length; d++){
+       /* if (trivData.eventFlag){
+            if (this.scoreType !== "elimination"){
+                for (var d = 0; d < winnersNamesOnly.length; d++){
                     this.sendAll(winnersNamesOnly[d],triviachan);
-                }*/
-        //    }
-        //    else {
+                }
+           }
+            else {
                 //****NOTE***** that the players are in this array backwards, so I looped backwards.
-                /*for (var e = (eventElimPlayers.length - 1); e >= 0; e--){
+                for (var e = (eventElimPlayers.length - 1); e >= 0; e--){
                     this.sendAll(eventElimPlayers[e],triviachan);
-                }*/
-        //    }
-        //}
+                }
+            }
+        }*/
         this.resetTrivia();
         runUpdate();
         this.lastvote++;
@@ -1050,7 +1056,7 @@ TriviaGame.prototype.startVoting = function () {
     this.votes = {};
 
     this.phase = "countvotes";
-    this.ticks = 30; 
+    this.ticks = 30;
 };
 
 TriviaGame.prototype.countVotes = function () {
@@ -1083,7 +1089,7 @@ TriviaGame.prototype.countVotes = function () {
     if ((Math.random() < 0.5) && (triviaCategories[winner] !== "Mental Math")) {
         this.scoreType = "knowledge";
         Trivia.startGame("14*" + triviaCategories[winner]);
-    } 
+    }
     else {
         this.scoreType = "speed";
         Trivia.startGame("30*" + triviaCategories[winner]);
@@ -2433,7 +2439,7 @@ addAdminCommand(["review"], function (src, commandData, channel) {
     var ids = Object.keys(tr).sort(function (a, b) {
         return a - b;
     });
-    if (commandData.length === 0 || isNaN(commandData) || commandData < 1 || 
+    if (commandData.length === 0 || isNaN(commandData) || commandData < 1 ||
         commandData > ids.length) {
         triviabot.sendMessage(src, "Specified review id is invalid", channel);
         return;
@@ -2730,7 +2736,7 @@ addAdminCommand(["triviamute"], function (src, commandData, channel) {
         }
         time = "forever";
     }
-    
+
     var already = false;
     if (isTrivia("muted", tarip)) {
         if (sys.time() - trivData.mutes[tarip].issued < 15) {
@@ -3364,7 +3370,7 @@ module.exports = {
         }
         //Trivia.sendAll("Trivia is now running!");
     },
-    
+
     stepEvent: function trivia_step() {
         SESSION.global().Trivia = Trivia;
         Trivia.stepHandler();
@@ -3373,6 +3379,6 @@ module.exports = {
     isChannelAdmin: function(src) {
         return tadmin.isTAdmin(sys.name(src)) ? true : tsadmin.isTAdmin(sys.name(src));
     },
-    
+
     "help-string": ["trivia: To know the trivia commands"]
 };
