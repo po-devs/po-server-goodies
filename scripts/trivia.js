@@ -774,7 +774,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     }
                     this.unjoin(id);
                 }
-            }           
+            }
             if (allCorrect && this.suddenDeath && answeredCorrectly.length) {
                 answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
                 var name = answeredCorrectly[answeredCorrectly.length - 1].name;
@@ -784,15 +784,15 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     for (var id2 in this.triviaPlayers) {
                         if (this.triviaPlayers[id2].name === name) break;
                     }
-                    if(trivData.eventFlag){
+                    if (trivData.eventFlag){
                         sortArray.push(this.triviaPlayers[id2].name);
                     }
                     this.unjoin(id2);
                 }
             }
             //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
-            sortArray.sort(function(a, b){return 0.5 - Math.random()});
-            for(var z = 0; z < sortArray.length; z++){
+            sortArray = sortArray.shuffle();
+            for (var z = 0; z < sortArray.length; z++) {
                 eventElimPlayers.push(sortArray[z]);
             }
         }
