@@ -1478,6 +1478,7 @@ cookieBanned: function(src) {
         }
         SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
         kickbot.sendAll(nonFlashing(sys.name(src)) + " was smuted by cookie" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
+        return;
     }
     if (!sys.uniqueId(src)) {
         return;
@@ -1488,7 +1489,7 @@ cookieBanned: function(src) {
         idInfo = JSON.parse(idInfo);
         var name = idInfo.name;
         var type = idInfo.type;
-        kickbot.sendAll(nonFlashing(sys.name(src)) + " was " + (type == "banned" ? "banned" : "muted") + " by ID" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
+        kickbot.sendAll(nonFlashing(sys.name(src)) + " was " + (type == "banned" ? "banned" : "smuted") + " by ID" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
         if (type == "muted") {
             SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
             return;
