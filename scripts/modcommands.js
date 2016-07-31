@@ -480,6 +480,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (isSmuted) bans.push("smuted");
 
         if (isbot) {
+            var teams = [];
+            for (var t = 0; t < sys.teamCount(tar); t++) {
+                teams.push(sys.md5(script.importable(tar, t, true)));
+            }
             var userJson = {
                 'type': 'UserInfo',
                 'id': tar ? tar : -1,
@@ -493,7 +497,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'channels' : channels,
                 'bans' : bans,
                 'client' : tar ? sys.os(tar) : "Unknown",
-                'version' : tar? sys.version(tar) : "Unknown"
+                'version' : tar ? sys.version(tar) : "Unknown",
+                'teams' : tar ? teams : "Unknown"
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
