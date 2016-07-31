@@ -428,7 +428,11 @@ init : function() {
             "chinese": [
                 "1.PO官服是一个国际服务器:",
                 "尊重其他民族的文化，不要歧视其他的语种。PO欢迎每一个遵守相关规定的玩家，无论他们来自何方，说着何种语言。但请注意，如果您的语言系统是自右向左读取文本，我们要求您不要在主频道聊天，因为这可能使整个聊天室混乱。如果发生这种情况，我们可能会对您禁言或要求您改变您的名字。"
-            ]         
+            ],
+            "french": [
+                "1. Pokémon est un serveur international:",
+                "Il faut respecter la culture des autres et ne pas demander s'ils parlent Anglais. Tout le monde est bienvenue à Pokémon Online, tant que vous respectez les règles. Cependant, si votre nom d'utilisateur est un nom qui se lit de droite à gauche, on vous demandera de le changer parce qu'il amène la discussion entière à se renverser. On peut vous rendre muet ou vous demander de changer de nom si cela arrive."
+            ]
         },
         "2": {
             "english": [
@@ -442,6 +446,10 @@ init : function() {
             "chinese": [
                 "2. 不要发送广告、冗余信息、大写刷屏、淫秽信息:",
                 "不要在主聊天频道内发送链接，除非他们来自著名的网站（YouTube，Smogon，Serebii等）。不要试图以自我为中心，左右整个聊天室的话题；不要发送无意义的信息如连续发送省略号和无规则无意义的一串字母（测试网络情使用一个小写字母t 不要使用多个ttt也不是大写的T）你可以适当的宣传PO的某个频道，让大家参与其中，但要有度。发布色情或淫秽内容的将会被封禁。发布社交媒体账号/服务器地址（微博/ Facebook/QQ群号等/其他PO服务器地址 ）也将受到处理。"
+            ],
+            "french": [
+                "2. Pas de publicité , des messages ou des lettres capitales excessives, ou du contenu inapproprié/obscène:",
+                "Ne pas publier des liens à moins qu'ils soient notables (Youtube, Smogon, Serebii, etc). Ne pas prendre le monopole de la discussion avec beaucoup de messages, ou de courts messages rapidement. Vous pouvez faire la publicité à votre chaîne tant que ce n'est pas excessif. Tout contenu pornographique ou obscène peut vous faire banir. Partager des réseaux sociaux (Twitter/Facebook/kik) est également interdit."
             ]
         },
         "3": {
@@ -456,7 +464,11 @@ init : function() {
             "chinese": [
                 "3. 使用寻找对战按钮，或加入Tournaments频道的比赛，而不要问在主聊天频道求战:",
                 "出于PO主聊天频道的聊天内容繁杂，求战不被允许；请使用find battle寻找对战按钮，或者参与Tournaments频道的比赛；不过，如果你在一个没什么人的分级（如LC）可以允许每隔5分钟左右求战一下。"
-            ]            
+            ],
+            "french": [
+                "3. Utilisez Find Battle, ou rejoignez les tournois au lieu de demander dans la discussion:",
+                "Les chaînes officielles de Pokémon Online ont beaucoup d'activités pour autoriser de faire ces demandes dans la discussion. Utilisez Find Battle ou rejoignez la chaîne des tournois et participer. La seule exception est si vous jouez un tiers peu joué, à ce moment là demander chaque 5 minutes est acceptable."
+            ]
         },
         "4": {
             "english": [
@@ -470,6 +482,10 @@ init : function() {
             "chinese": [
                 "4.不要索取权限:",
                 "向管理索取权限很可能将让你失去未来成为权限的机会。如果你对成为一名PO管理真正感兴趣的话，最好的方式是积极的帮助他人，让管理们注意到你对他人的帮助。活跃聊天气氛、帮助PO客户端的编程或者参与平衡分级的讨论等等，是得到注意的好方法。不断地索要权限将会被处罚。"
+            ],
+            "french": [
+                "4. Ne pas demander à recevoir l'autorité:",
+                "En demandant, vous perdez vos chances d'en devenir un dans le future. Si vous êtes vraiment interessés de faire parti de l'équipe, une bonne façon de se faire remarquer est devenir un membre actif dans la communauté. Lancer des discussions intelligentes et offrir des aides graphiques, de programmation, ou encore nous aider à rendre nos tiers meilleurs est une bonne façon de se faire remarquer. L'harcèlement continue aux autorités sera punie."
             ]
         },
         "5": {
@@ -484,6 +500,10 @@ init : function() {
             "chinese": [
                 "5.禁止钓鱼，恶言相向，或骚扰其他玩家。在主聊天室抱怨被Hax时，最多不要超出一句话:",
                 "通过煽动性的言语激起他人的回复、对他人进行辱骂等人身攻击、持续对他人发出不受欢迎的评论/挑战/私信都是禁止的行为。持续骚扰、恶意激怒、甚至人肉其他玩家将遭到严厉惩处；在被因为脸黑被hax以后发送一句抱怨的话是可以理解的，但是持续不断的抱怨和过分粗鲁的行为是不被允许的；恶意浪费管理的时间同样会受到处理。"
+            ],
+            "french": [
+                "5. Ne pas troller, provoquer ou harceler les autres joueurs. Ne vous plaignez pas dans la discussion générale, à part une ligne:",
+                "Les réponses provocatives, les insultes à l'égard d'autres joueurs, ou le spammage par discussion/message privé/challenges ne sera pas accepter. Harceler les autres de façon exagérée ou réveler des informations personelles sera sévèrement puni. Une ligne pour se plaindre de la malchance est passable, mais ne pas en abuser. Trop de vulgarités ne sera pas permis. Ne faites pas perdre le temps des autorités."
             ]
         },
         "6": {
@@ -498,6 +518,10 @@ init : function() {
             "chinese": [
                 "6. 其他常规的禁止事项:",
                 "严禁盗取他人账号和频道；禁止任何试图通过不公平的手段进行ladder刷分或赚取Tournaments积分；DDoS以及其他任何对服务器的网络攻击都将遭到严惩；通过改变IP等手段避开封禁、禁言将遭到进一步处罚；所有对于封禁的申诉请直接反馈到论坛专门的帖子里；将PO视作约会工具或是其他并非PO本意的功能也是被禁止的。"
+            ],
+            "french": [
+                "6. Ne pas mal utiliser le serveur ni ses règles:",
+                "Voler des comptes ou des chaînes est interdit. Toute tentatives de devier la légitimité du rang ou des tournois (serveur et forum) compte comme mal utilisation. DDos et autres "cyber attaques" ne sont pas tolérées. Ne pas contourner un ban et ne pas tenter de trouver des échapatoires pour mal utiliser et violer les règles. Pour demander à être débanni, vous devez le faire sur les forums dans l'espace Disciplinary Committee. Le serveur n'est pas un site de rencontre ou autre services alors ne pas abuser de ceci."
             ]
         }
     };

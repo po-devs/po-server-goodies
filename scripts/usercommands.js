@@ -231,6 +231,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 case "中文":
                     ret = "chinese";
                     break;
+                case "french":
+                case "francais":
+                case "français":
+                    ret = "french";
+                    break;
                 default:
                     ret = "english";
                     break;
