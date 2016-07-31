@@ -1,6 +1,6 @@
 {	
 	"1-8-2016": {"tier": "ORAS Ubers", "settings": {}},
-	"2-8-2016": {"tier": "ORAS Monogen", "settings": {}},
+	"2-8-2016": {"tier": "Monogen", "settings": {}},
 	"3-8-2016": {"tier": "ORAS LU", "settings": {}},
 	"4-8-2016": {"tier": "Inverted Battle", "settings": {}},
 	"5-8-2016": {"tier": "ORAS LC", "settings": {}},
@@ -8,7 +8,7 @@
 	"7-8-2016": {"tier": "Monotype", "settings": {}},
 	"8-8-2016": {"tier": "Challenge Cup", "settings": {}},
 	"9-8-2016": {"tier": "ORAS UU", "settings": {}},
-	"10-8-2016": {"tier": "HGSS UU", "settings": {}},
+	"10-8-2016": {"tier": "HGSS OU", "settings": {}},
 	"11-8-2016": {"tier": "Battle Factory 6v6", "settings": {}},
 	"12-8-2016": {"tier": "3v3 Singles", "settings": {}},
 	"13-8-2016": {"tier": "ORAS OU", "settings": {}},
