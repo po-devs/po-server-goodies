@@ -22,11 +22,11 @@ var allgentiers = cctiers.concat("Metronome");
 //Tiers that are BF or CC. These also allow others to watch
 var ccbftiers = cctiers.concat("Battle Factory", "Battle Factory 6v6");
 //Tiers with double elim by default
-var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Flash Clash"];
+var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
 //Tiers that are locked to Singles Mode
-var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers", "Flash Clash", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
+var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
 //Tiers with Team Preview state that can't be modified
-var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles", "Flash Clash"];
+var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles"];
 //Tiers used when queue is empty
 var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "ORAS 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
 

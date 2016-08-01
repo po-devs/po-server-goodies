@@ -536,7 +536,7 @@ function awardTourPoints(player, size, tier, delim, place) {
     var tiers_b = []; // default
     var tiers_c = ["Battle Factory", "Battle Factory 6v6", "ORAS 1v1", "Challenge Cup",
                    "Inverted Challenge Cup", "Wifi CC 1v1", "Hackmons Wifi CC 1v1",
-                   "Hackmons Challenge Cup", "Hackmons Inverted CC", "Flash Clash"];
+                   "Hackmons Challenge Cup", "Hackmons Inverted CC"];
     var tiers_d = ["CC 1v1", "Hackmons CC 1v1", "Metronome",
                    "Anything Goes", "Random Battle", "Red/Blue", "Yellow", "Stadium",
                    "Stadium w/ Tradebacks", "Gold/Silver", "Crystal", "Stadium 2",
@@ -642,7 +642,7 @@ function detEventPoints(size, ranking, tier) {
     }
     else if (["Battle Factory", "Battle Factory 6v6", "ORAS 1v1", "Challenge Cup",
               "Inverted Challenge Cup", "Wifi CC 1v1", "Hackmons Wifi CC 1v1",
-              "Hackmons Challenge Cup", "Hackmons Inverted CC", "Flash Clash"].indexOf(tier) > -1) {
+              "Hackmons Challenge Cup", "Hackmons Inverted CC"].indexOf(tier) > -1) {
         mag -= 1;
     }
     else if (["CC 1v1", "Hackmons CC 1v1", "Metronome",
