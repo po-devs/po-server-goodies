@@ -23,6 +23,8 @@ var triviabot = new Bot("Metagross");
 var triviaCategories = ['Anagram: Pokémon', 'Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Mental Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
 var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
+var lastEventType = 'None.';
+var lastEventTime = sys.time();
 var lastUsedCats = [];
 var eventElimPlayers = [];
 var lastAdvertise = 0;
@@ -293,6 +295,16 @@ function time() {
     return Date.now() / 1000;
 }
 
+function convertTime(time) {
+    var hours, mins, secs;
+    var displayMessage = "";
+    hours = time / 3600;
+    mins = (hours - Math.floor(hours)) * 60;
+    secs = (mins - Math.floor(mins)) * 60;
+    displayMessage = (Math.floor(hours) + " hours, " + Math.floor(mins) + " minutes, " + Math.round(secs) + " seconds");
+    return displayMessage;
+}
+
 function trivia_onMute(src) {
     if (!Trivia.started) {
         return;
@@ -328,7 +340,6 @@ function TriviaGame() {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.lastvote = 0;
-    this.lastEventTime = sys.time();
     this.eventModeOn = true;
     this.votes = {};
     this.voting = true;
@@ -486,6 +497,9 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             if (c === triviachan) {
                 this.sendAll(eventMessage, triviachan);
                 sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+                if (this.scoreType !== 'elimination'){
+                    sendChanHtmlAll("<font color='#318739'><timestamp/> <b>±" + triviabot.name + ":</b></font> <b>The game can continue until up to 3 players reach the goal!</b>", triviachan);
+                }
             } else {
                 this.sendAll(ad, c);
             }
@@ -791,6 +805,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 }
             }
             //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
+            eventElimPlayers = eventElimPlayers.concat(sortArray).shuffle();
             sortArray = sortArray.shuffle();
             for (var z = 0; z < sortArray.length; z++) {
                 eventElimPlayers.push(sortArray[z]);
@@ -859,7 +874,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (!this.lbDisabled) {
         var lastPoints; //points = leaderboard points
         var minPoints = (this.scoreType === "knowledge" ? extLB.minLB : extLB.minSpeedLB);
-        if (this.maxPoints >= minPoints && this.scoreType !== "elimination"){
+        if (this.maxPoints >= minPoints && this.scoreType !== "elimination" && !trivData.eventFlag){
             while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
                 var points = totalPlayers - i;
                 if (this.catGame) {points = points / 2;}
@@ -921,6 +936,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
         //otherwise, it's just 1.
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
+         if (trivData.eventFlag){
+             while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+                 var points = totalPlayers - i;
+                 if (this.catGame) {points = points / 2;}
+                 if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
+                 extLB.updateLeaderboard(utilities.html_escape(leaderboard[i][0]), ((points) > 0 ? points : 1));
+                 lastPoints = points;
+                 i++;
+             }
+         }
          if (!this.lbDisabled) sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
          var w = (winners.length == 1) ? "the winner!" : "our winners!";
          winners.sort(function (a, b) {
@@ -1029,18 +1054,21 @@ TriviaGame.prototype.event = function() {
     switch (eventType){
         case 1:
             this.scoreType = "knowledge";
+            lastEventType = 'knowlegde';
             Trivia.startGame(defaultKnowEventGoal);
             break;
         case 2:
             this.scoreType = "speed";
+            lastEventType = 'speed';
             Trivia.startGame(defaultSpeedEventGoal);
             break;
         default:
             this.scoreType = "elimination";
+            lastEventType = 'elimination';
             Trivia.startGame(defaultElimEventGoal);
             break;
     }
-    this.lastEventTime = sys.time(); //current time in seconds
+    lastEventTime = sys.time(); //current time in seconds
 };
 
 
@@ -1263,7 +1291,7 @@ TriviaGame.prototype.addAnswer = function (src, answer) {
 
 TriviaGame.prototype.stepHandler = function () {
     if (isNaN(this.ticks) || this.ticks < 0) {
-        if (this.eventModeOn && ((this.lastEventTime + trivData.eventCooldown) <= sys.time())){
+        if (this.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
             this.phase = "event";
             this.phaseHandler();
         }
@@ -1933,6 +1961,24 @@ addUserCommand(["vote"], function (src, commandData, channel) {
     Trivia.voteCat(src, cat);
 }, "Vote for a category game.");
 
+addUserCommand(["nextevent"], function (src, commandData, channel) {
+    if (trivData.eventFlag) {
+        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        return;
+    }
+    var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
+    Trivia.sendPM(src, "The next event will be " + convertTime(nextEventTime) + " from now.", channel);
+}, "Allows you to see when the next event game will be.");
+
+addAdminCommand(["lastevent"], function (src, commandData, channel) {
+    if (trivData.eventFlag) {
+        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        return;
+    }
+    var lastEventOutputTime = sys.time() - lastEventTime;
+    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + convertTime(lastEventOutputTime) + " ago.", channel);
+}, "Allows you to see what the last event type was and how long ago it was played.");
+
 addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
     if (commandData.length === 0 || isNaN(commandData)){
         triviabot.sendMessage(src, trivData.votingCooldown + " rounds is the current vote cooldown", channel);
@@ -2158,6 +2204,10 @@ addAdminCommand(["search"], function (src, commandData, channel) {
 }, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
+    if (trivData.eventFlag) {
+        Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
+        return;
+    }
     if (commandData === undefined) return;
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
