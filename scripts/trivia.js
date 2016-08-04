@@ -295,16 +295,6 @@ function time() {
     return Date.now() / 1000;
 }
 
-function convertTime(time) {
-    var hours, mins, secs;
-    var displayMessage = "";
-    hours = time / 3600;
-    mins = (hours - Math.floor(hours)) * 60;
-    secs = (mins - Math.floor(mins)) * 60;
-    displayMessage = (Math.floor(hours) + " hours, " + Math.floor(mins) + " minutes, " + Math.round(secs) + " seconds");
-    return displayMessage;
-}
-
 function trivia_onMute(src) {
     if (!Trivia.started) {
         return;
@@ -1053,18 +1043,15 @@ TriviaGame.prototype.event = function() {
 
     switch (eventType){
         case 1:
-            this.scoreType = "knowledge";
-            lastEventType = 'knowlegde';
+            this.scoreType = lastEventType = "knowledge";
             Trivia.startGame(defaultKnowEventGoal);
             break;
         case 2:
-            this.scoreType = "speed";
-            lastEventType = 'speed';
+            this.scoreType = lastEventType = "speed";
             Trivia.startGame(defaultSpeedEventGoal);
             break;
         default:
-            this.scoreType = "elimination";
-            lastEventType = 'elimination';
+            this.scoreType = lastEventType = "elimination";
             Trivia.startGame(defaultElimEventGoal);
             break;
     }
@@ -1967,7 +1954,7 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
         return;
     }
     var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
-    Trivia.sendPM(src, "The next event will be " + convertTime(nextEventTime) + " from now.", channel);
+    Trivia.sendPM(src, "The next event will be " + utilities.getTimeString(nextEventTime) + " from now.", channel);
 }, "Allows you to see when the next event game will be.");
 
 addAdminCommand(["lastevent"], function (src, commandData, channel) {
@@ -1976,7 +1963,7 @@ addAdminCommand(["lastevent"], function (src, commandData, channel) {
         return;
     }
     var lastEventOutputTime = sys.time() - lastEventTime;
-    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + convertTime(lastEventOutputTime) + " ago.", channel);
+    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + utilities.getTimeString(lastEventOutputTime) + " ago.", channel);
 }, "Allows you to see what the last event type was and how long ago it was played.");
 
 addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
