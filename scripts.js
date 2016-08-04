@@ -521,7 +521,7 @@ init : function() {
             ],
             "french": [
                 "6. Ne pas mal utiliser le serveur ni ses règles:",
-                "Voler des comptes ou des chaînes est interdit. Toute tentatives de devier la légitimité du rang ou des tournois (serveur et forum) compte comme mal utilisation. DDos et autres "cyber attaques" ne sont pas tolérées. Ne pas contourner un ban et ne pas tenter de trouver des échapatoires pour mal utiliser et violer les règles. Pour demander à être débanni, vous devez le faire sur les forums dans l'espace Disciplinary Committee. Le serveur n'est pas un site de rencontre ou autre services alors ne pas abuser de ceci."
+                "Voler des comptes ou des chaînes est interdit. Toute tentatives de devier la légitimité du rang ou des tournois (serveur et forum) compte comme mal utilisation. DDos et autres \"cyber attaques\" ne sont pas tolérées. Ne pas contourner un ban et ne pas tenter de trouver des échapatoires pour mal utiliser et violer les règles. Pour demander à être débanni, vous devez le faire sur les forums dans l'espace Disciplinary Committee. Le serveur n'est pas un site de rencontre ou autre services alors ne pas abuser de ceci."
             ]
         }
     };
