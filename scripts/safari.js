@@ -15897,7 +15897,7 @@ function Safari() {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== safchan && ["safariban", "safariunban"].indexOf(command) === -1) {
+        if (channel !== safchan && ["safariban", "safariunban", "aliases"].indexOf(command) === -1) {
             return false;
         }
         if (SESSION.channels(safchan).muteall && !SESSION.channels(safchan).isChannelOwner(src)) {
@@ -17529,6 +17529,10 @@ function Safari() {
         }
 
         if (SESSION.channels(safchan).isChannelOwner(src)) {
+            if (command === "aliases") {
+                require("modcommands.js").handleCommand(src, "aliases", commandData, -1, channel);
+                return true;
+            }
             var shopCommands = ["npcadd", "addnpc", "npcremove", "removenpc", "closenpc", "npcclose", "npcclean", "cleannpc", "silveradd", "addsilver"];
             if (shopCommands.contains(command)) {
                 var action = "remove";
