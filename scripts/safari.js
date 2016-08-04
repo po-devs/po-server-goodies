@@ -16634,7 +16634,7 @@ function Safari() {
         //Staff Commands
         if (SESSION.channels(safchan).isChannelAdmin(src)) {
             if (command === "safaribans") {
-                require("modcommands.js").handleCommand(src, "safaribans", commandData, -1);
+                script.banList(src, "safaribans", commandData);
                 return true;
             }
             if (command === "startevent") {

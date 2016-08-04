@@ -7297,7 +7297,7 @@ function Mafia(mafiachan) {
             return;
         }        
         if (command === "aliases") {
-            require("modcommands.js").handleCommand(src, "aliases", commandData, channel);
+            require("modcommands.js").handleCommand(src, "aliases", commandData, -1, channel);
             return true;
         }
         if (command === "mafiaadminoff" || command === "smafiaadminoff") {
