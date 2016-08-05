@@ -24,7 +24,7 @@ var triviaCategories = ['Anagram: Pokémon', 'Anime/Manga', 'Animals', 'Art', 'C
 var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastEventType = 'None.';
-var lastEventTime = sys.time();
+var lastEventTime = Date.now() / 1000;
 var lastUsedCats = [];
 var eventElimPlayers = [];
 var lastAdvertise = 0;
@@ -773,7 +773,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 allCorrect = false;
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
-                    if(trivData.eventFlag){
+                    if(trivData.eventFlag && (this.round > this.maxPoints)){
                         sortArray.push(this.triviaPlayers[id].name);
                     }
                     this.unjoin(id);
@@ -796,10 +796,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }
             //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
             eventElimPlayers = eventElimPlayers.concat(sortArray).shuffle();
-            sortArray = sortArray.shuffle();
-            for (var z = 0; z < sortArray.length; z++) {
-                eventElimPlayers.push(sortArray[z]);
-            }
         }
         else if (answeredCorrectly.length !== 0) {
             var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
@@ -837,9 +833,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var leaderboard = [];
     var displayboard = [];
-    var displayboardNamesOnly = []; //for safari
+    var validParticipants = []; //for safari participation prizes
     var winners = [];
-    var winnersNamesOnly = [];      //for safari
+    var winnersNamesOnly = [];      //for safari prizes
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing) {
             var regname = this.triviaPlayers[id].name;
@@ -880,7 +876,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
     for (var p in leaderboard) {
-        displayboardNamesOnly.push(leaderboard[p][0]);
+        if (leaderboard[p][1] >= 1){// if they get at least one question right
+            validParticipants.push(leaderboard[p][0]);
+        }
     }
     for (var y in leaderboard) {   //this sorts the winners
         if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
@@ -992,21 +990,25 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
 
         //winnersNamesOnly contains the names of the winners from first to last
-        //displayBoardNamesOnly, if you want to give consolation prizes, contains names of all players
-        //eventElimPlayers contains the list for event games
+        //validParticipants, if you want to give consolation prizes, contains names of all players
+        //eventElimPlayers contains the list for event games, used for all prizes
         //if you want to post the scores also (example: player (5)) use winners or displayboard
         //these loops are the ones I used to output the data for testing; I left them in case they would be helpful
 
-       /* if (trivData.eventFlag){
+      /*  if (trivData.eventFlag){
             if (this.scoreType !== "elimination"){
                 for (var d = 0; d < winnersNamesOnly.length; d++){
                     this.sendAll(winnersNamesOnly[d],triviachan);
                 }
+                this.sendAll("Participation reward list",triviachan);
+                for (var d2 = 0; d2 < validParticipants.length; d2++){
+                    this.sendAll(validParticipants[d2],triviachan);
+                }
            }
             else {
-                //****NOTE***** that the players are in this array backwards, so I looped backwards.
-                for (var e = (eventElimPlayers.length - 1); e >= 0; e--){
-                    this.sendAll(eventElimPlayers[e],triviachan);
+                //****NOTE***** that the players are in this array backwards (unless you've used .reverse() already)
+                for (var d3 = 0; d3 < eventElimPlayers.length; d3++){
+                    this.sendAll(eventElimPlayers[d3],triviachan);
                 }
             }
         }*/
@@ -2191,7 +2193,7 @@ addAdminCommand(["search"], function (src, commandData, channel) {
 }, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
-    if (trivData.eventFlag) {
+    if (trivData.eventFlag && Trivia.playerPlaying(src)) {
         Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
         return;
     }
