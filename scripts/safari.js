@@ -3295,14 +3295,23 @@ function Safari() {
             }
         }
 
+        var name = sys.name(src);
         if (!suppress && !bypass) {
-            var mess = "[Track] " + sys.name(src) + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
+            var mess = "[Track] " + name + " is using /" + (command || "catch") + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
             this.trackMessage(mess, player);
         }
 
-        if (preparationPhase > 0 && data === "cancel") {
-            safaribot.sendMessage(src, "You cancelled your throw!", safchan);
-            delete preparationThrows[sys.name(src).toLowerCase()];
+        if (data === "cancel") {
+            if (preparationPhase > 0) {
+                if (preparationThrows.hasOwnProperty(name.toLowerCase())) {
+                    safaribot.sendMessage(src, "You cancelled your throw!", safchan);
+                    delete preparationThrows[name.toLowerCase()];
+                } else {
+                    safaribot.sendMessage(src, "You weren't preparing to throw a ball...", safchan);
+                }
+            } else {
+                safaribot.sendMessage(src, "You can't cancel a throw outside of the preparation phase!", safchan);
+            }
             return;
         }
 
@@ -3327,7 +3336,7 @@ function Safari() {
             return;
         }
         var currentTime = now();
-        if (!bypass && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst) && player.cooldowns.ball > currentTime) {
+        if (!bypass && (!preparationFirst || name.toLowerCase() !== preparationFirst) && player.cooldowns.ball > currentTime) {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.ball) + " before throwing a ball!", safchan);
             return;
         }
@@ -3342,7 +3351,6 @@ function Safari() {
             return;
         }
 
-        var name = sys.name(src);
         if (contestCount > 0 && contestantsWild.indexOf(name.toLowerCase()) === -1) {
             contestantsWild.push(name.toLowerCase());
         }
@@ -3357,7 +3365,7 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, "You are preparing to throw your " + ballName + "!", safchan);
             }
-            preparationThrows[sys.name(src).toLowerCase()] = ball;
+            preparationThrows[name.toLowerCase()] = ball;
             return;
         }
 
@@ -3403,7 +3411,7 @@ function Safari() {
             } else {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
-            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! You still have " + plural(player.balls[ball], ballName) + " left!", safchan);
+            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! You have " + plural(player.balls[ball], ballName) + " left!", safchan);
             player.pokemon.push(currentPokemon);
             player.records.pokesCaught += 1;
             if (isBaited) {
@@ -3491,7 +3499,7 @@ function Safari() {
                 }
             }*/
             pokeName = poke(currentDisplay);
-            safaribot.sendMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You still have " + plural(player.balls[ball], ballName) + " left!", safchan);
+            safaribot.sendMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!" : "") + " You have " + plural(player.balls[ball], ballName) + " left!", safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -3993,7 +4001,7 @@ function Safari() {
         }
 
         if (toLoad.length === 0) {
-            safaribot.sendMessage(src, "Couldn't load party don't have any of those Pokémon!", safchan);
+            safaribot.sendMessage(src, "Couldn't load party because you don't have any of those Pokémon!", safchan);
             return;
         }
 
@@ -4728,7 +4736,7 @@ function Safari() {
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
             sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
-            sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(rec.rocksHit, "hit"), plural(rec.rocksBounced, "time")), safchan);
+            sys.sendMessage(src, "±{0}: Threw {1} ({2} accuracy, {3}). Embarassed {4}.".format(finishName("rock"), plural(rec.rocksThrown, "rock"), percentage(onOthers, rec.rocksThrown), plural(onOthers, "hit"), plural(rec.rocksBounced, "time")), safchan);
             var onMe = rec.rocksHitBy + rec.rocksWalletHit + rec.rocksDodgedWindow + rec.rocksChargesLost;
             sys.sendMessage(src, "±{0}: Hit by {1} ({2} evasion, {3}). Caught {4}.".format(finishName("rock"), plural(onMe, "rock"), percentage(rec.rocksDodged, rec.rocksDodged + onMe), plural(rec.rocksDodged, "dodge"), plural(rec.rocksCaught, "throw")), safchan);
             sys.sendMessage(src, "±Game: {0} Consecutive Logins{1}. Won {2} Contests.".format(rec.consecutiveLogins, (player.consecutiveLogins !== rec.consecutiveLogins ? " (currently " + player.consecutiveLogins + ")" : ""),rec.contestsWon), safchan);
@@ -5035,7 +5043,7 @@ function Safari() {
         player.balls[ball] -= 1;
 
         sys.sendMessage(src, "", safchan);
-        safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(fullBall) + "! You still have " + plural(player.balls[ball], fullBall) + " left!", safchan);
+        safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(fullBall) + "! You have " + plural(player.balls[ball], fullBall) + " left!", safchan);
         sys.sendMessage(src, "", safchan);
 
         player.pokemon.push(pokeNum);
@@ -5294,7 +5302,7 @@ function Safari() {
             sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
             player.records.baitNothing += 1;
         }
-        safaribot.sendMessage(src, "You still have " + plural(player.balls[item], baitName) + " remaining.", safchan);
+        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
         this.saveGame(player);
     };
     this.throwRock = function (src, commandData) {
@@ -8229,7 +8237,7 @@ function Safari() {
         if (this.currentBidder) {
             safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
         } else {
-            safaribot.sendMessage(src, "No offer has been made yet, so you can bid the starting offer ($" + addComma(this.currentOffer + this.minBid) + "). Further offers must at least $" + addComma(this.minBid) + " higher than the current one.", safchan);
+            safaribot.sendMessage(src, "No offer has been made yet, so you can bid the starting offer ($" + addComma(this.currentOffer + this.minBid) + "). Further offers must be at least $" + addComma(this.minBid) + " higher than the current one.", safchan);
         }
         sys.sendMessage(src, "", safchan);
     };
@@ -9456,7 +9464,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Sorry, we need to clean out the stadium before we can host more battles. Please return at a later point in time!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -9556,7 +9564,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
             return;
         }
         if (opt !== "start") {
@@ -9955,7 +9963,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
-                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
                     return;
                 }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
@@ -10012,7 +10020,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
-                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
                     return;
                 }
                 var invites = [];
