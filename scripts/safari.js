@@ -9275,7 +9275,7 @@ function Safari() {
             researching += " and " + typeResearch[type];
 
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you want to help me, bring them until then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -18925,7 +18925,7 @@ function Safari() {
                 var info = getInputPokemon(data[1]);
                 if (!info.num) {
                     safaribot.sendMessage(src, "Invalid Actual Pokémon!", safchan);
-                    return;
+                    return true;
                 }
 
                 player.nextSpawn.pokemon = info;
