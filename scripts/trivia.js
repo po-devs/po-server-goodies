@@ -2198,6 +2198,12 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
         return;
     }
     if (commandData === undefined) return;
+    if (Trivia.playerPlaying(src)){
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + " used /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + " used /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+    }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [], answer;
