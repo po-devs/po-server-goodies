@@ -2219,7 +2219,7 @@ function Safari() {
     function ballMacro(src, override) {
         var player = getAvatar(src);
         var name = sys.name(src);
-        if (!player || sys.os(src) === "android" || (currentEvent && currentEvent.isInEvent(name)) || (player.tutorial.inTutorial && !override)) {
+        if (!player || sys.os(src) === "android" || (currentEvent && currentEvent.isInEvent(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
             return;
         }
         for (var p in currentPyramids) {
@@ -8267,14 +8267,15 @@ function Safari() {
         if (this.phase === "preview") {
             var cmdData = data.toLowerCase().replace(/[^abcdef]/,"").split("");
             var letters = { a: 0, b: 1, c: 2, d: 3, e:4, f: 5 };
-            var picked = [], p;
+            var picked = [], p, i;
             var team = isP1 ? this.team1 : this.team2;
             
             for (var e = 0; e < 3 && e < cmdData.length; e++) {
                 p = cmdData[e];
-                if (!picked.contains(letters[p])) {
-                    if (team[letters[p]].hp > 0) {
-                        picked.push(letters[p]);
+                i = letters[p];
+                if (!picked.contains(i)) {
+                    if (team.length > i && team[i].hp > 0) {
+                        picked.push(i);
                     }
                 }
             }
@@ -8327,13 +8328,13 @@ function Safari() {
     Battle2.prototype.getHPColor = function(current, max) {
         var val = current/max;
         if (val < 0.2) {
-            return toColor(current + " HP", "red");
+            return toColor(current, "red") + "/" + max + " HP";
         }
         else if (val < 0.5) {
-            return toColor(current + " HP", "goldenrod");
+            return toColor(current, "goldenrod") + "/" + max + " HP";
         }
         else {
-            return toColor(current + " HP", "darkgreen");
+            return toColor(current, "darkgreen") + "/" + max + " HP";
         }
     };
     Battle2.prototype.getStatValue = function(user, stat, extraMod) {
@@ -11539,9 +11540,6 @@ function Safari() {
         var player = getAvatar(src);
         
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
-        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
-            return;
-        }
         var trainerSprite = '<img src="' + base64trainers.alchemist + '">';
         
         var info = getInputPokemon(opt);
@@ -11562,6 +11560,9 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " I guess I will need " + plural(morph.cost, "philosopher") + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
                 return;
             } else {
+                if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+                    return;
+                }
                 if (player.balls.philosopher < morph.cost) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Did you listen to what I said? I can't transform " + info.name + " without " + plural(morph.cost, "philosopher") + ", so don't use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " until you got them all!", safchan);
                     return;
