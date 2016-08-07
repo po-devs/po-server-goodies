@@ -1952,8 +1952,16 @@ addUserCommand(["vote"], function (src, commandData, channel) {
 }, "Vote for a category game.");
 
 addUserCommand(["nextevent"], function (src, commandData, channel) {
+    if (!Trivia.eventModeOn){
+        Trivia.sendPM(src, "No events scheduled.", channel);
+        return;
+    }
     if (trivData.eventFlag) {
         Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        return;
+    }
+    if (Trivia.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
+        Trivia.sendPM(src, "Starts after this game.", channel);
         return;
     }
     var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
@@ -3252,12 +3260,13 @@ addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
 
 addOwnerCommand(["enableevents"], function (src, commandData, channel) {
     Trivia.eventModeOn = true;
-    triviabot.sendAll("Event elimination games are enabled!", revchan);
+    lastEventTime = sys.time(); // reset timer
+    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
 }, "Enables event elimination games.");
 
 addOwnerCommand(["disableevents"], function (src, commandData, channel) {
     Trivia.eventModeOn = false;
-    triviabot.sendAll("Event elimination games are disabled!", revchan);
+    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
 }, "Disable event elimination games.");
 
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
@@ -3387,6 +3396,29 @@ module.exports = {
     afterChannelJoin: function trivia_afterChannelJoin(src, channel) {
         if (channel === revchan) {
             PMcheckq(src, channel);
+        }
+        if (channel === triviachan || channel === revchan){
+            var border = "<font color='#3daa68'><timestamp/><b>»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:</b></font>";
+            sys.sendHtmlMessage(src, border, channel);
+            sys.sendMessage(src, "*** NEXT TRIVIA EVENT ***", channel);
+            if (Trivia.eventModeOn) {
+                if (trivData.eventFlag) {
+                    Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+                    sys.sendHtmlMessage(src, border, channel);
+                    return;
+                }
+                if (Trivia.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
+                    Trivia.sendPM(src, "Starts after this game.", channel);
+                    sys.sendHtmlMessage(src, border, channel);
+                    return;
+                }
+                var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
+                Trivia.sendPM(src, "Starts in " + utilities.getTimeString(nextEventTime), channel);
+            }
+            else {
+                Trivia.sendPM(src, "No events scheduled.", channel);
+            }
+            sys.sendHtmlMessage(src, border, channel);
         }
     },
 
