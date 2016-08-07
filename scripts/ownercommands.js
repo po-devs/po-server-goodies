@@ -497,6 +497,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "clearpass") {
+        if (!commandData || !sys.dbRegistered(commandData)) {
+            return;
+        }
         var mod = sys.name(src);
 
         if (sys.dbAuth(commandData) > 2) {
