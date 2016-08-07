@@ -797,7 +797,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 }
             }
             //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
-            eventElimPlayers = eventElimPlayers.concat(sortArray).shuffle();
+            eventElimPlayers = eventElimPlayers.concat(sortArray.shuffle());
         }
         else if (answeredCorrectly.length !== 0) {
             var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
