@@ -8003,7 +8003,7 @@ function Safari() {
                 var fillTeam = function(picked, team, size) {
                     var out = picked.concat();
                     var rest = [0, 1, 2, 3, 4, 5].filter(function(x) {
-                        return !out.contains(x) && team[x].hp > 0;
+                        return !out.contains(x) && team.length > x && team[x].hp > 0;
                     }).shuffle();
                     while (out.length < size && rest.length) {
                         out.push(rest.shift());
@@ -11744,6 +11744,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You cannot battle right before a contest is about to start!", safchan);
                 return;
             }
+            if (player.party.length < 3) {
+                safaribot.sendMessage(src, "League Guide: You need at least 3 Pokémon in your party to challenge the Elite Four!", safchan);
+                return;
+            }
 
             this.fightElite(src);
             return;
@@ -11819,6 +11823,10 @@ function Safari() {
         }
         if (quest.badges.contains(gym.badge.toLowerCase())) {
             safaribot.sendMessage(src, "League Guide: You already cleared this gym!", safchan);
+            return;
+        }
+        if (player.party.length < 3) {
+            safaribot.sendMessage(src, "League Guide: You need at least 3 Pokémon in your party to challenge a gym!", safchan);
             return;
         }
         
