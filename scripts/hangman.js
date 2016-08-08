@@ -487,17 +487,19 @@ function Hangman() {
         if (winner && !script.cmp(winner, hostName)) {
             if (sys.isInChannel(sys.id(winner), hangchan)) {
                 this.setWinner(winner, false);
-            } 
+            }
             else {
                 this.setWinner(undefined, true);
             }
         } 
         else if (sys.isInChannel(sys.id(hostName), hangchan)) {
-            this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
+            this.setWinner(hostName, (hostIpArray.indexOf(null) > -1 && hostName == hangbot.name));
         }
-        else if (!pendingEvent) {
-            hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);                
-            this.setWinner(undefined, true);
+        else 
+            if (!pendingEvent) {
+                hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);
+            }
+            this.setWinner(undefined, !pendingEvent);
         }
         if (gameMode === suddenDeath) {
             suddenDeathTime = suddenDeathLimit;
