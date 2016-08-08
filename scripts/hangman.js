@@ -495,7 +495,7 @@ function Hangman() {
         else if (sys.isInChannel(sys.id(hostName), hangchan)) {
             this.setWinner(hostName, (hostIpArray.indexOf(null) > -1 && hostName == hangbot.name));
         }
-        else 
+        else {
             if (!pendingEvent) {
                 hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);
             }
