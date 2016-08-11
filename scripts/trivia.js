@@ -25,6 +25,7 @@ var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastEventType = 'None.';
 var lastEventTime = Date.now() / 1000;
+var eventTimeChangeFlag = true; //for when Trivia restarts or the time is manually adusted
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
 var lastUsedCats = [];
@@ -849,9 +850,59 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }*/ //This code was just causing winners to be out of order.
         }
     }
+    if (answeredCorrectly.length === totalPlayers && this.scoreType !== "elimination") {
+        var allRight = true;
+        for (var z2 = 0; z2 < leaderboard.length; z2++) {
+            leaderboard[z2][0] = answeredCorrectly[z2].name;
+            leaderboard[z2][1] = this.player(answeredCorrectly[z2].name).points;
+        }
+    }
     leaderboard.sort(function (a, b) {
         return b[1] - a[1];
     });
+    var n = 1;
+    var n2 = 1;
+    var z3 = 1;
+    var noTies = true;
+    while (z3 < leaderboard.length && this.scoreType !== "elimination") {
+        if (!answeredCorrectly.length || allRight) { break; }
+        if (leaderboard[z3][1] === leaderboard[z3-n][1]) {
+            noTies = false;
+            for (var z4 = 0; z4 < answeredCorrectly.length; z4++) {
+                if (leaderboard[z3-n][0] === answeredCorrectly[z4].name) {
+                    z3++;
+                    n++;
+                    break; //tiebreak matches a speed tiebreak
+                }
+                if (leaderboard[z3][0] === answeredCorrectly[z4].name) {
+                    var nameHolder,pointHolder;
+                    nameHolder = leaderboard[z3-n][0];
+                    pointHolder = leaderboard[z3-n][1];
+                    leaderboard[z3-n][0] = leaderboard[z3][0];
+                    leaderboard[z3-n][1] = leaderboard[z3][1];
+                    leaderboard[z3][0] = nameHolder;
+                    leaderboard[z3][1] = pointHolder;
+                    z3++;
+                    n++;
+                    break; //tiebreak changed to match a speed tiebreak
+                }
+                if (z4 === (answeredCorrectly.length - 1)) {
+                    z3++; //a tie was detected, but neither player answered correctly this round
+                    n++;
+                }
+            }
+        }
+        if (noTies) {
+            z3++;
+            n++;
+        }
+        noTies = true;
+        if (n === leaderboard.length) {
+            n2++;
+            z3 = n2;
+            n = 1;
+        }
+    }
     var i = 0;
     var newMonth = new Date().getMonth();
     if (month !== newMonth){
@@ -1059,6 +1110,7 @@ TriviaGame.prototype.event = function() {
         }
     }
     lastEventTime = sys.time(); //current time in seconds
+    eventTimeChangeFlag = false;
 };
 
 
@@ -1965,7 +2017,7 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
         return;
     }
     var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
-    Trivia.sendPM(src, "The next event will be " + utilities.getTimeString(nextEventTime) + " from now.", channel);
+    Trivia.sendPM(src, "The next event will be " + getTimeString(nextEventTime) + " from now.", channel);
 }, "Allows you to see when the next event game will be.");
 
 addAdminCommand(["lastevent"], function (src, commandData, channel) {
@@ -1974,7 +2026,14 @@ addAdminCommand(["lastevent"], function (src, commandData, channel) {
         return;
     }
     var lastEventOutputTime = sys.time() - lastEventTime;
-    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + utilities.getTimeString(lastEventOutputTime) + " ago.", channel);
+    if (lastEventType === "None.") {
+        Trivia.sendPM(src, "No events have been played since Trivia was restarted.", channel);
+    }
+    if (eventTimeChangeFlag) {
+        Trivia.sendPM(src, "The event cooldown was last set " + getTimeString(lastEventOutputTime) + " ago.", channel);
+        return;
+    }
+    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(lastEventOutputTime) + " ago.", channel);
 }, "Allows you to see what the last event type was and how long ago it was played.");
 
 addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
@@ -3250,17 +3309,25 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
 
 addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
-    if (commandData.length === 0 || isNaN(commandData)){
-        Trivia.sendPM(src, trivData.eventCooldown/3600 + " hours is the current event cooldown", channel);
-    } else {
-        trivData.eventCooldown = commandData*3600; //convert to seconds
-        Trivia.sendPM(src, trivData.eventCooldown/3600 + " hours is the new event cooldown", channel);
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
+        return;
     }
-}, "Set the time in hours between each event.");
+    var cooldown = getSeconds(commandData);
+    if (isNaN(cooldown)) {
+        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s")
+        return;
+    }
+    trivData.eventCooldown = cooldown;
+    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
+    lastEventTime = sys.time(); //reset timer
+    eventTimeChangeFlag = true;
+}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
 
 addOwnerCommand(["enableevents"], function (src, commandData, channel) {
     Trivia.eventModeOn = true;
     lastEventTime = sys.time(); // reset timer
+    eventTimeChangeFlag = true;
     Trivia.sendPM(src, "Event elimination games are enabled!", channel);
 }, "Enables event elimination games.");
 
@@ -3413,7 +3480,7 @@ module.exports = {
                     return;
                 }
                 var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
-                Trivia.sendPM(src, "Starts in " + utilities.getTimeString(nextEventTime), channel);
+                Trivia.sendPM(src, "Starts in " + getTimeString(nextEventTime), channel);
             }
             else {
                 Trivia.sendPM(src, "No events scheduled.", channel);
