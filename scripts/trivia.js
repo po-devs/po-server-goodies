@@ -3315,7 +3315,7 @@ addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
     }
     var cooldown = getSeconds(commandData);
     if (isNaN(cooldown)) {
-        Trivia.sendPM(src, "The correct usage is no arguemnts or something such as 3h 30m 45s")
+        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s")
         return;
     }
     trivData.eventCooldown = cooldown;
