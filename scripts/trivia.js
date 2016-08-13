@@ -839,6 +839,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var validParticipants = []; //for safari participation prizes
     var winners = [];
     var winnersNamesOnly = [];      //for safari prizes
+    var allRight = false;
     for (id in this.triviaPlayers) {
         if (this.triviaPlayers[id].playing) {
             var regname = this.triviaPlayers[id].name;
@@ -851,7 +852,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
     }
     if (answeredCorrectly.length === totalPlayers && this.scoreType !== "elimination") {
-        var allRight = true;
+        allRight = true;
         for (var z2 = 0; z2 < leaderboard.length; z2++) {
             leaderboard[z2][0] = answeredCorrectly[z2].name;
             leaderboard[z2][1] = this.player(answeredCorrectly[z2].name).points;
@@ -861,46 +862,40 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return b[1] - a[1];
     });
     var n = 1;
-    var n2 = 1;
     var z3 = 1;
     var noTies = true;
-    while (z3 < leaderboard.length && this.scoreType !== "elimination") {
+    while (n < leaderboard.length && this.scoreType !== "elimination") {
         if (!answeredCorrectly.length || allRight) { break; }
-        if (leaderboard[z3][1] === leaderboard[z3-n][1]) {
+        if (leaderboard[z3][1] === leaderboard[z3-1][1]) {
             noTies = false;
             for (var z4 = 0; z4 < answeredCorrectly.length; z4++) {
-                if (leaderboard[z3-n][0] === answeredCorrectly[z4].name) {
+                if (leaderboard[z3-1][0] === answeredCorrectly[z4].name) {
                     z3++;
-                    n++;
                     break; //tiebreak matches a speed tiebreak
                 }
                 if (leaderboard[z3][0] === answeredCorrectly[z4].name) {
                     var nameHolder,pointHolder;
-                    nameHolder = leaderboard[z3-n][0];
-                    pointHolder = leaderboard[z3-n][1];
-                    leaderboard[z3-n][0] = leaderboard[z3][0];
-                    leaderboard[z3-n][1] = leaderboard[z3][1];
+                    nameHolder = leaderboard[z3-1][0];
+                    pointHolder = leaderboard[z3-1][1];
+                    leaderboard[z3-1][0] = leaderboard[z3][0];
+                    leaderboard[z3-1][1] = leaderboard[z3][1];
                     leaderboard[z3][0] = nameHolder;
                     leaderboard[z3][1] = pointHolder;
                     z3++;
-                    n++;
                     break; //tiebreak changed to match a speed tiebreak
                 }
                 if (z4 === (answeredCorrectly.length - 1)) {
                     z3++; //a tie was detected, but neither player answered correctly this round
-                    n++;
                 }
             }
         }
         if (noTies) {
             z3++;
-            n++;
         }
         noTies = true;
-        if (n === leaderboard.length) {
-            n2++;
-            z3 = n2;
-            n = 1;
+        if (z3 === leaderboard.length) {
+            n++;
+            z3 = 1;
         }
     }
     var i = 0;
@@ -1100,7 +1095,7 @@ TriviaGame.prototype.event = function() {
         Trivia.startGame(defaultKnowEventGoal);
     }
     else {
-        if (eventType >= (eventKnowRate+1) && eventType <= (eventKnowRate + eventSpeedRate)){
+        if (eventType >= (eventKnowRate + 1) && eventType <= (eventKnowRate + eventSpeedRate)){
             this.scoreType = lastEventType = "speed";
             Trivia.startGame(defaultSpeedEventGoal);
         }
