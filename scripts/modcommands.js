@@ -498,7 +498,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'bans' : bans,
                 'client' : tar ? sys.os(tar) : "Unknown",
                 'version' : tar ? sys.version(tar) : "Unknown",
-                'teams' : tar && (sys.auth(src) > 2 || script.isSuperAdmin(src)) ? teams : "Unknown"
+                'teams' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) ? teams : "Unknown"
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
