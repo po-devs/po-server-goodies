@@ -478,13 +478,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 if (banType === "muted") {
                     SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
                 }
+            }            
+            if (sys.os(tar) === "webclient" && command === "ultramute") { 
+                SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Ultramute", true); 
+                bansApplied.push("silent");
             }
         }
-        os = os.charAt(0).toUpperCase() + os.slice(1);
-        normalbot.sendAll("Target: " + name + ", IP: " + ip + ", OS: " + os + ", Version: " + version, staffchannel);
         if (banType === "banned") {
             if (command === "ultraban") {
-                sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>",-1);
+                sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>", -1);
             }
             if (script.isTempBanned(ip)) {
                 sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
@@ -496,10 +498,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             var authName = banner.toLowerCase();
             script.authStats[authName] =  script.authStats[authName] || {};
             script.authStats[authName].latestBan = [name, parseInt(sys.time(), 10)];
-            normalbot.sendAll("The following bans were applied: " + bansApplied.join(", "), staffchannel);
+        }
+        
+        if (bansApplied > 0) {
+            os = os.charAt(0).toUpperCase() + os.slice(1);
+            normalbot.sendAll("Target: " + name + ", IP: " + ip + ", OS: " + os + ", Version: " + version, staffchannel);      
+            normalbot.sendAll(nonFlashing(banner) + " applied the following " +  (command === "ultramute" ? "mutes" : "bans") + ": " + bansApplied.join(", "), staffchannel);      
         } else {
-            normalbot.sendAll("The following mutes were applied: " + bansApplied.join(", "), staffchannel);
-        }    
+            normalbot.sendMessage(src, "You used " + command + "! But nothing happened!", channel);
+        }
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
