@@ -7938,7 +7938,7 @@ function Safari() {
 
         if (isNPC) {
             this.name2 = player2.name;
-            this.powerBoost = player2.powerBoost || 1;
+            this.powerBoost = player2.powerBoost || 0;
             this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party);
             
             this.postBattle = player2.postBattle;
@@ -8167,7 +8167,7 @@ function Safari() {
                     }
                     if (user.condition === "sleep") {
                         if (user.conditionDuration <= 0 || chance(0.1)) {
-                            this.sendToViewers(toColor(name + " wake up!", sColor));
+                            this.sendToViewers(toColor(name + " woke up!", sColor));
                             user.condition = "none";
                         } else {
                             this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is fast asleep!", sColor));
@@ -8835,6 +8835,9 @@ function Safari() {
                     return out;
                 }
                 val = factor > 0 ? Math.random() * 0.75 * factor + 0.25 : Math.random() * (1+factor) / 4;
+                if (val <= 0.01) {
+                    return out;
+                }
                 out.flinch = Math.min(1, val);
                 out.type = eff;
             break;
@@ -8843,11 +8846,18 @@ function Safari() {
                     return out;
                 }
                 val = factor > 0 ? Math.random() * 0.65 * factor + 0.35 : Math.random() * (1+factor) / 4;
+                if (val <= 0.01) {
+                    return out;
+                }
                 out.critical = Math.min(1, val);
                 out.type = eff;
             break;
             case "status":
-                out.statusChance = factor > 0.5 ? 1 : (factor > 0 ? Math.random() * factor + 0.3 : Math.random() * (1+factor) / 4) ;
+                val = factor > 0.5 ? 1 : (factor > 0 ? Math.random() * factor + 0.3 : Math.random() * (1+factor) / 4) ;
+                if (val <= 0.01) {
+                    return out;
+                }
+                out.statusChance = val;
                 out.status = ["sleep", "paralyzed", "burn", "freeze", "poison"].random();
                 out.type = eff;
             break;
@@ -8882,6 +8892,9 @@ function Safari() {
                 } else {
                     buff.buffChance = 1;
                 }
+                if (buff.buffChance <= 0.01) {
+                    return out;
+                }
                 out.buff = buff;
                 out.type = "buff" + buff.buffStat;
             break;
@@ -8915,6 +8928,9 @@ function Safari() {
                     }
                 } else {
                     nerf.nerfChance = 1;
+                }
+                if (nerf.nerfChance <= 0.01) {
+                    return out;
                 }
                 out.nerf = nerf;
                 out.type = "nerf" + nerf.nerfStat;
@@ -11835,7 +11851,7 @@ function Safari() {
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
-                var gym = gymData[args.gym];
+                var gym = args.gym;
                 var next = args.index + 1;
                 if (next === gym.trainers.length) {
                     var reward = [
@@ -11855,7 +11871,7 @@ function Safari() {
                     
                     player.quests.league.badges.push(gym.badge.toLowerCase());
                     player.quests.league.cooldown = now() + hours(1);
-                    if (player.quests.league.badges.length === 8) {
+                    if (player.quests.league.badges.length >= 8) {
                         player.quests.league.eliteNext = true;
                         player.records.allGymsCleared += 1;
                     }
@@ -11906,7 +11922,7 @@ function Safari() {
         
         npc.postArgs = {
             name: npc.name,
-            gym: opt,
+            gym: gym,
             heal: 0.15,
             index: 0
         };
@@ -11925,7 +11941,7 @@ function Safari() {
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
                 var next = args.index + 1;
-                if (next === eliteData.length) {
+                if (next === args.elite.length) {
                     eliteHall.push({
                         name: name,
                         color: player.nameColor,
@@ -11946,7 +11962,7 @@ function Safari() {
                     rewardCapCheck(player, "philosopher", 1, true);
                     sys.sendAll("", safchan);
                 } else {
-                    var npc = JSON.parse(JSON.stringify(eliteData[next]));
+                    var npc = JSON.parse(JSON.stringify(args.elite[next]));
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> That was a great battle! I will heal your party a bit, then you can head to battle " + npc.name + "!", safchan);
                     
                     if (!id) {
@@ -11965,6 +11981,7 @@ function Safari() {
                     npc.postBattle = postBattle;
                     npc.postArgs = {
                         name: npc.name,
+                        elite: args.elite,
                         heal: 0.2,
                         index: next
                     };
@@ -11991,6 +12008,7 @@ function Safari() {
         
         npc.postArgs = {
             name: npc.name,
+            elite: eliteData,
             heal: 0.2,
             index: 0
         };
@@ -13413,7 +13431,7 @@ function Safari() {
             }
             this.pyr.updateStatus(0, stamina);
             this.sendAll("");
-            this.sendAll("Look for more clues or input the password to open the door! The password is a Pokémon " + this.answerType + "! You only have {0} turns left!".format(this.turns));
+            this.sendAll("Look for more clues or input the password to open the door! The password is a Pokémon " + this.answerType + "! You only have {0} left!".format(plural(this.turns, "turn")));
             this.sendIndividuals();
             this.sendAll("");
             this.turnToAdvance += 2;
@@ -16543,7 +16561,7 @@ function Safari() {
         var gyms = {}, elite = [], name, badge, trainers, party, i, l, t, n, trainer, namesUsed = [], badgesUsed = [], trainersUsed = [], baseName = [];
         var trainerClasses = ["Actor", "Actress", "Aroma Lady", "Artist", "Athlete", "Backpacker", "Baker", "Baron", "Baroness", "Battle Girl", "Beauty", "Big Star", "Biker", "Bird Keeper", "Blackbelt", "Boarder", "Bodybuilder", "Boss", "Bug Catcher", "Bug Maniac", "Burglar", "Butler", "Cameraman", "Camper", "Casual Dude", "Casual Guy", "Celebrity", "Channeler", "Chaser", "Chef", "Child Star", "Clerk", "Clown", "Collector", "Comedian", "Commander", "Cool Beauty", "Cool Trainer", "Countess", "Cowgirl", "Crush Girl", "Cue Ball", "Cute Maniac", "Cyclist", "Dancer", "Delinquent", "Depot Agent", "Doctor", "Dragon Tamer", "Driver", "Duchess", "Duke", "Elder", "Electrifying Guy", "Engineer", "Expert", "Fairy Tale Girl", "Fare Prince", "Firebreather", "Fisherman", "Free Diver", "Fun Old Lady", "Fun Old Man", "Furisode Girl", "Future Girl", "Gambler", "Garçon", "Gardener", "Gentleman", "Glasses Man", "Grand Duchess", "Guitarist", "Hardheaded Girl", "Hex Maniac", "High-Tech Maniac", "Hiker", "Hiking Girl", "Hoopster", "Hunter", "Icy Guy", "Idol", "Infielder", "Interviewer", "Janitor", "Jogger", "Juggler", "Kimono Girl", "Kindler", "Lady", "Lass", "Linebacker", "Lone Wolf", "Lorekeeper", "Maid", "Marchioness", "Marquis", "Medium", "Monsieur", "Motorcyclist", "Movie Star", "Muddy Boy", "Musician", "Navigator", "Newscaster", "Ninja Boy", "Nurse", "Nursery Aide", "Officer", "Ordinary Guy", "Ordinary Lady", "Painter", "Parasol Lady", "Passionate Man", "Passionate Rider", "Picnic Girl", "Picnicker", "Pikachu Fan", "Pilot", "Poké Kid", "Pokéfan", "PokéManiac", "Pokémon Breeder", "Pokémon Ranger", "Preschooler", "Proprietor", "Psychic", "Punk Girl", "Punk Guy", "Rancher", "Reporter", "Rich Boy", "Rider", "Rising Star", "Rocker", "Rogue", "Roller Boy", "Roller Skater", "Rotation Girl", "Ruin Maniac", "Sage", "Sailor", "Schoolboy", "Schoolgirl", "Sci-Fi Maniac", "Scientist", "Scuba Diver", "Shady Guy", "Shocking Girl", "Sightseer", "Sim Trainer", "Skier", "Smasher", "Snagem Head", "Socialite", "Sootopolitan", "Spy", "Star Actor", "Steel Spirit", "Street Thug", "Striker", "Stubborn Boy", "Successor", "Suit Actor", "Super Nerd", "Suspicious Child", "Suspicious Lady", "Suspicious Woman", "Swimmer♀", "Swimmer", "Tamer", "Teacher", "The Riches", "Thug", "Tomboy", "Tourist", "Traveling Guy", "Traveling Lady", "Triathlete", "Tuber", "Unique Star", "Veteran", "Veteran Star", "Viscount", "Viscountess", "Waiter", "Waitress", "Wanderer", "Winstrate", "Worker", "Youngster"];
         
-        while (Object.keys(gyms).length < 8) {
+        while (Object.keys(gyms).length < 7) {
             badge = sys.ability(sys.rand(1, 192)).split(" ").random() + " Badge";
             name = sys.move(sys.rand(1, 622)).split(" ").concat(sys.move(sys.rand(1, 622)).split(" ")).shuffle().join("").toLowerCase().replace("-", "");
             l = name.length;
@@ -16552,7 +16570,6 @@ function Safari() {
             if (name.length > 10) {
                 name = cap(name.substr(0, 10));
             }
-            
             trainers = [];
             baseName = [];
             for (t = 0; t < 3; t++) {
@@ -16560,12 +16577,12 @@ function Safari() {
                 n = generateComplexName();
                 trainer.name = (t === 2 ? "Gym Leader" : trainerClasses.random()) + " " + n;
                 trainer.desc = "Gym NPC";
-                trainer.party = generateTeam(9, 300 + t*60, 590 + t*10, t, null, t === 2);
+                trainer.party = generateTeam(9, 340 + t*75, 595 + t*10, t+1, null, t === 2);
                 if (t === 2) {
                     i = sys.rand(0, 9);
                     trainer.party[i] = trainer.party[i] + "";
                 }
-                trainer.powerBoost = 0.038 + t/18;
+                trainer.powerBoost = 0.05 + t/16;
                 trainers.push(trainer);
                 baseName.push(n);
             }
@@ -16583,7 +16600,7 @@ function Safari() {
             };
         }
         
-        var big, small, base, b, strong = [65922, 131458, 196994, 66015, 131551, 197087, 262623, 328159, 66023, 66028, 66091, 66177, 66178, 66181, 66182, 131718, 66183, 66184, 328350, 66217, 66256].concat(legendaries);
+        var big, small, base, b, strong = [131458, 196994, 66015, 131551, 197087, 262623, 328159, 66023, 66028, 66091, 66177, 66178, 66181, 66182, 131718, 66183, 66184, 328350, 66217, 66256].concat(legendaries);
         var getArceus = function() {
             return [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605].random();
         };
@@ -16656,7 +16673,7 @@ function Safari() {
                 name: name,
                 desc: "Elite Four NPC",
                 party: party.shuffle(),
-                powerBoost: 0.13 + 0.04*(elite.length+1)
+                powerBoost: 0.15 + 0.04*(elite.length+1)
             });
         }
         
@@ -19542,11 +19559,12 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "newleague") {
+            //Enable if necessary. Kind of dangerous to leave this floating around.
+            /* if (command === "newleague") {
                 safari.renewLeague();
                 safaribot.sendHtmlMessage(src, "League was renewed! Check with " + link("/viewgyms") + " and " + link("/viewelite") + ".", safchan);
                 return true;
-            }
+            } */
             if (command === "viewgyms") {
                 var e, gym, t, trainer;
                 sys.sendMessage(src, "", safchan);
