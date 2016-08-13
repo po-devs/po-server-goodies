@@ -442,7 +442,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, "ID not found", channel);
         return;
     }
-    if (command === "ultraban") {
+    if (command === "ultraban" || command === "sultraban" || command === "ultramute") {
+        var banType = command === "ultramute" ? "muted" : "banned";
         if (!commandData) {
             normalbot.sendMessage(src, "No player exists by this name!", channel);
             return;
@@ -454,7 +455,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         if (sys.maxAuth(ip) > 0) {
-            normalbot.sendMessage(src, "Ultraban doesn't work on auth.", channel);
+            normalbot.sendMessage(src, "You cannot use " + command + " on auth.", channel);
             return;
         }
         var id = sys.id(name);
@@ -464,30 +465,41 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var bansApplied = [];
         if (sys.loggedIn(id)) {
             if (sys.os(tar) !== "android" && sys.version(tar) > 2402 || sys.os(tar) === "android" && sys.version(tar) > 37) {
-                sys.setCookie(tar, "banned " + name);
+                sys.setCookie(tar, banType + " " + name);
                 bansApplied.push("cookie");
+                if (banType === "muted") {
+                    SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
+                }
             }
             if (sys.uniqueId(id)) {
-                var banInfo = {"name": name, "ip": ip, "banner": banner, "type": "banned", "psuedo": !sys.uniqueId(id).isUnique };
+                var banInfo = {"name": name, "ip": ip, "banner": banner, "type": banType, "psuedo": !sys.uniqueId(id).isUnique };
                 script.idBans.add(id, JSON.stringify(banInfo));
                 bansApplied.push("id");
+                if (banType === "muted") {
+                    SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
+                }
             }
         }
         os = os.charAt(0).toUpperCase() + os.slice(1);
         normalbot.sendAll("Target: " + name + ", IP: " + ip + ", OS: " + os + ", Version: " + version, staffchannel);
-        sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>",-1);
-        if (script.isTempBanned(ip)) {
-            sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
-        }
-        sys.ban(commandData);
-        bansApplied.push("ip");
-        script.kickAll(ip);
-
-        normalbot.sendAll("The following bans were applied: " + bansApplied.join(", "), staffchannel);
-        sys.appendToFile("bans.txt", banner + " ultrabanned " + name + "\n");
-        var authName = banner.toLowerCase();
-        script.authStats[authName] =  script.authStats[authName] || {};
-        script.authStats[authName].latestBan = [name, parseInt(sys.time(), 10)];
+        if (banType === "banned") {
+            if (command === "ultraban") {
+                sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>",-1);
+            }
+            if (script.isTempBanned(ip)) {
+                sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
+            }
+            sys.ban(commandData);
+            bansApplied.push("ip");
+            script.kickAll(ip);
+            sys.appendToFile("bans.txt", banner + " ultrabanned " + name + "\n");
+            var authName = banner.toLowerCase();
+            script.authStats[authName] =  script.authStats[authName] || {};
+            script.authStats[authName].latestBan = [name, parseInt(sys.time(), 10)];
+            normalbot.sendAll("The following bans were applied: " + bansApplied.join(", "), staffchannel);
+        } else {
+            normalbot.sendAll("The following mutes were applied: " + bansApplied.join(", "), staffchannel);
+        }    
         return;
     }
     // hack, for allowing some subset of the owner commands for super admins
@@ -507,7 +519,7 @@ exports.help = [
     "/cookiemute [name]: Puts an online target on an autosmute list by cookie. /cookieunmute to unmute.",
     "/idban [name]: Bans an online target by ID. /idunban [id] to unban.",
     "/idmute [name]: Puts an online target on an autosmute list by ID. /idunmute [id] to unmute.",
-    "/ultraban [name]: Bans an online target by IP, cookie and ID.",
+    "/ultraban [name]: Bans an online target by IP, cookie and ID. Use /ultramute for mutes, /sultraban to skip the red ban message.",
     "/channelnameban [name]: Adds a regexp ban on channel names. /channelnameunban to unban.",
     "/destroychan [name]: Destroy a channel (official channels are protected).",
     "/nameban [name]: Adds a regexp ban on usernames. /nameunban to unban.",
