@@ -485,9 +485,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
         if (banType === "banned") {
-            if (command === "ultraban") {
-                sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>", -1);
-            }
             if (script.isTempBanned(ip)) {
                 sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
             }
@@ -503,7 +500,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (bansApplied.length > 0) {
             os = os.charAt(0).toUpperCase() + os.slice(1);
             normalbot.sendAll("Target: " + name + ", IP: " + ip + ", OS: " + os + ", Version: " + version, staffchannel);      
-            normalbot.sendAll(nonFlashing(banner) + " applied the following " +  (command === "ultramute" ? "mutes" : "bans") + ": " + bansApplied.join(", "), staffchannel);      
+            normalbot.sendAll(nonFlashing(banner) + " applied the following " +  (command === "ultramute" ? "mutes" : "bans") + ": " + bansApplied.join(", "), staffchannel);
+            if (command === "ultraban") {
+                sendChanHtmlAll("<b><font color=red>" + name + " was banned by " + nonFlashing(banner) + "!</font></b>", -1);
+            }
         } else {
             normalbot.sendMessage(src, "You used " + command + "! But nothing happened!", channel);
         }
