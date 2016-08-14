@@ -400,8 +400,8 @@ AutoTeams.handleCommand = function(player, message, channel) {
         commandData = "";
     }
 
-    if (!(reviewCommands.indexOf(command) > 0 && this.isAutoTeamsReviewer(player)) &&
-        !(authCommands.indexOf(command) > 0 && this.isAutoTeamsAuth(player))) {
+    if (!(reviewCommands.indexOf(command) > -1 && this.isAutoTeamsReviewer(player)) &&
+        !(authCommands.indexOf(command) > -1 && this.isAutoTeamsAuth(player))) {
         return false;
     }
 
