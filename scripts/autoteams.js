@@ -503,21 +503,19 @@ AutoTeams.reviewHelp = [
 // AutoTeams["help-string"] = ["autoteams: To know the autoteams commands"];
 
 AutoTeams.onHelp = function(player, topic, channel) {
-    var help = [""];
-    if (topic !== "autoteams") {
+    if (topic !== "autoteams" || !this.isAutoTeamsReviewer(player)) {
         return false;
     }
-    if (this.isAutoTeamsReviewer(player)) {
-        help.concat(this.reviewHelp);
-    } else {
-        return false;
-    }
+
+    var help = [""].concat(this.reviewHelp);
     if (this.isAutoTeamsAuth(player)) {
         help.concat(this.authHelp);
     }
+
     help.forEach(function(line) {
         sys.sendMessage(player, line, channel);
     });
+
     return true;
 };
 
