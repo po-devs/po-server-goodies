@@ -98,7 +98,7 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot, autoteamsAuth;
+var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot;
 
 var pokeDir = "db/pokes/";
 var moveDir = "db/moves/6G/";
@@ -125,7 +125,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"safbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"watchNamesLog.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt", Config.dataDir+"league.json", Config.dataDir + "autoteamsauth.txt"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"safbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"watchNamesLog.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt", Config.dataDir+"league.json"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -559,7 +559,6 @@ init : function() {
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
-    script.autoteamsAuth = new MemoryHash(Config.dataDir + "autoteamsauth.txt");
     try {
         script.league = JSON.parse(sys.read(Config.dataDir+"league.json")).league;
     } catch (e) {
