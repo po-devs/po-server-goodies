@@ -374,8 +374,8 @@ AutoTeams.changeReviewers = function(name, remove) {
 
 AutoTeams.handleCommand = function(player, message, channel) {
     var authCommands = [
-        "addreviewer",
-        "removereviewer",
+        "addautoreviewer",
+        "removeautoreviewer",
         "addautotier",
         "removeautotier"
     ];
@@ -408,8 +408,8 @@ AutoTeams.handleCommand = function(player, message, channel) {
     commandData = commandData.split(":");
     var team, tier;
     try {
-        if (command === "addreviewer" || command === "removereviewer") {
-            teamsbot.sendMessage(player, this.changeReviewers(commandData[0], command === "removereviewer"), channel);   
+        if (command === "addautoreviewer" || command === "removeautoreviewer") {
+            teamsbot.sendMessage(player, this.changeReviewers(commandData[0], command === "removeautoreviewer"), channel);   
         } else if (command === "autoteamsreview") {
             var reviewers = [], x;
             for (x in script.autoteamsAuth.hash) {
@@ -486,7 +486,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
 
 AutoTeams.authHelp = [
     "*** AutoTeams Auth Commands ***",
-    "/[add/remove]reviewer [user]: Adds/removes a user from autoteam reviewers.",
+    "/[add/remove]autoreviewer [user]: Adds/removes a user from autoteam reviewers.",
     "/[add/remove]autotier [tier]: Adds/removes a tier for autoteams."
 ];
 
