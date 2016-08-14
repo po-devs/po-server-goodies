@@ -339,7 +339,33 @@ AutoTeams.giveTeam = function(player, slot, tier) {
 };
 
 AutoTeams.isAutoTeamsAuth = function(player) {
-    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player)));
+    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
+};
+
+AutoTeams.changeAuth = function(name, remove) {
+    if (!name) {
+        throw "Enter a valid user!";
+    }
+    if (!sys.dbIp(name)) {
+        throw "This user doesn't exist.";
+    }
+    if (!sys.dbRegistered(name)) {
+        throw "This user isn't registered!";
+    }
+    
+    var hasName = script.autoteamsAuth.has(name.toLowerCase());
+    if (remove) {
+        if (!hasName) {
+            throw "This user is not autoteams auth.";
+        }
+        script.autoteamsAuth.remove(name.toLowerCase());
+        return "Removed " + name.toCorrectCase() + " from autoteams auth.";
+    }
+    if (hasName) {
+        throw "This user is already autoteams auth.";
+    }
+    script.autoteamsAuth.add(name.toLowerCase(), "");
+    return "Added " + name.toCorrectCase() + " to autoteams auth.";
 };
 
 AutoTeams.handleCommand = function(player, message, channel) {
@@ -359,7 +385,9 @@ AutoTeams.handleCommand = function(player, message, channel) {
     var team;
     var tier;
     try {
-        if (command === "addautoteam") {
+        if (command === "addauth" || command === "removeauth") {
+            teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
+        } else if (command === "addautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /addautoteam [team name]:[tier]";
             }
@@ -430,6 +458,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
 AutoTeams.help = [
     "",
     "*** AutoTeams Commands ***",
+    "/[add/remove]auth [user]: Adds/removes a user from autoteams auth.",
     "/addautoteam [team name]:[tier]: Adds an autoteam.",
     "/removeautoteam [team name]:[tier]: Removes an autoteam.",
     "/addautotier [tier]: Adds a tier for autoteams.",
