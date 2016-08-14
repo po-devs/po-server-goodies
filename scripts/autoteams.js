@@ -339,7 +339,7 @@ AutoTeams.giveTeam = function(player, slot, tier) {
 };
 
 AutoTeams.isAutoTeamsAuth = function(player) {
-    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.hash.hasOwnProperty(sys.name(player).toLowerCase());
+    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.get(sys.name(player).toLowerCase());
 };
 
 AutoTeams.changeAuth = function(name, remove) {
@@ -353,7 +353,7 @@ AutoTeams.changeAuth = function(name, remove) {
         throw "This user isn't registered!";
     }
     
-    var hasName = script.autoteamsAuth.hash.hasOwnProperty(name.toLowerCase());
+    var hasName = script.autoteamsAuth.get(name.toLowerCase());
     if (remove) {
         if (!hasName) {
             throw "This user is not autoteams auth.";
