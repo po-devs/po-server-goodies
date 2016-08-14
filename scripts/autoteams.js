@@ -386,7 +386,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
     var tier;
     try {
         if (command === "addauth" || command === "removeauth") {
-            teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
+            teamsbot.sendMessage(player, this.changeAuth(commandData[0], command === "removeauth"), channel);   
         } else if (command === "autoteamsauth") {
             var tmp = [], x;
             for (x in script.autoteamsAuth.hash) {
