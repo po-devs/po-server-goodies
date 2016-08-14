@@ -339,7 +339,7 @@ AutoTeams.giveTeam = function(player, slot, tier) {
 };
 
 AutoTeams.isAutoTeamsAuth = function(player) {
-    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.get(sys.name(player).toLowerCase());
+    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
 };
 
 AutoTeams.changeAuth = function(name, remove) {
@@ -353,7 +353,7 @@ AutoTeams.changeAuth = function(name, remove) {
         throw "This user isn't registered!";
     }
     
-    var hasName = script.autoteamsAuth.get(name.toLowerCase());
+    var hasName = script.autoteamsAuth.has(name.toLowerCase());
     if (remove) {
         if (!hasName) {
             throw "This user is not autoteams auth.";
@@ -386,10 +386,8 @@ AutoTeams.handleCommand = function(player, message, channel) {
     var tier;
     try {
         if (command === "addauth" || command === "removeauth") {
-            var remove = command === "removeauth";
-            teamsbot.sendMessage(player, this.changeAuth(commandData, remove), channel);   
-        }
-        else if (command === "addautoteam") {
+            teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
+        } else if (command === "addautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /addautoteam [team name]:[tier]";
             }
