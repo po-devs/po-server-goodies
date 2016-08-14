@@ -8337,7 +8337,7 @@ function Safari() {
             return toColor(current, "darkgreen") + "/" + max + " HP";
         }
     };
-    Battle2.prototype.getStatValue = function(user, stat, extraMod) {
+    Battle2.prototype.getStatValue = function(user, stat, extraMod, crit) {
         var base = user.stats[stat];
         var val = user.boosts[stat];
         var boost = 1;
@@ -8345,6 +8345,9 @@ function Safari() {
             boost = (2 + boost) / 2;
         } else if (val < 0) {
             boost = 2 / (2 + boost);
+        }
+        if (crit && ((crit > 0 && val < 0) || (crit < 0 && val > 0))) {
+            boost = 1;
         }
         extraMod = extraMod || 1;
         
@@ -8444,9 +8447,9 @@ function Safari() {
                 return out;
             }
             
-            var atk = move.category === "physical" ? this.getStatValue(user, "atk") : this.getStatValue(user, "satk");
-            var def = move.category === "physical" ? this.getStatValue(target, "def") : this.getStatValue(target, "sdef");
             var crit = chance(0.0625 + (move.critical || 0));
+            var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
+            var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
             var burn = user.condition === "burn" && move.category === "physical";
             var dmg = atk * move.power / def;
             var rng = sys.rand(85, 100) / 100;
@@ -11675,8 +11678,8 @@ function Safari() {
         }
         
         var quest = player.quests.league;
-        var week = Math.floor((getDay(now())-3)/7);
-        if (quest.week !== week) {
+        var week = parseInt(permObj.get("currentWeek"), 10);
+        if (quest.week != week) {
             quest.badges = [];
             quest.registered = false;
             quest.eliteCurrent = quest.week + 1 === week ? quest.eliteNext : false;
@@ -11692,10 +11695,10 @@ function Safari() {
         var cost = 5000;
         if (opt === "help") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Welcome to the Pokémon League! The goal here is to defeat the 8 gyms to obtain their badges, which grants you a chance to challenge the Elite Four!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Welcome to the Pokémon League! The goal here is to defeat the 7 gyms to obtain their badges, which grants you a chance to challenge the Elite Four!", safchan);
             safaribot.sendMessage(src, "League Guide: To be eligible to challenge the gyms, you must first pay a registration fee of $" + addComma(cost) + ", which is valid for the current period only.", safchan);
             safaribot.sendMessage(src, "League Guide: Each period lasts for one week, starting on Sunday. Once it finishes, all previous badges are void, and the gyms are renewed.", safchan);
-            safaribot.sendHtmlMessage(src, "League Guide: If you clear all the 8 gyms within a single period, you get a chance to challenge the Elite Four during the next period by using " + link("/quest league:elite") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "League Guide: If you clear all the 7 gyms within a single period, you get a chance to challenge the Elite Four during the next period by using " + link("/quest league:elite") + ".", safchan);
             safaribot.sendHtmlMessage(src, "League Guide: You can see the Hall of Fame of all players who defeated the Elite Four by typing " + link("/quest league:hall") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -11742,11 +11745,11 @@ function Safari() {
         }
         else if (["elite", "elite 4", "elite four", "elitefour", "elite4", "e4", "e 4"].contains(opt)) {
             if (quest.eliteCurrentUsed) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You already challenged the Elite Four during the current period! Clear the 8 gyms again during this period to get a new chance next week!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You already challenged the Elite Four during the current period! Clear the 7 gyms again during this period to get a new chance next week!", safchan);
                 return;
             }
             if (!quest.eliteCurrent) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You didn't obtain the 8 badges during the last period, so you cannot challenge the Elite Four! Clear the 8 gyms during this period to get a chance next week!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You didn't obtain the 7 badges during the last period, so you cannot challenge the Elite Four! Clear the 7 gyms during this period to get a chance next week!", safchan);
                 return;
             }
             if (stopQuests.league) {
@@ -11780,7 +11783,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You do not have $" + addComma(cost) + " to register!", safchan);
                 }
             } else {
-                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Do you wish to battle in the Pokémon League? Then you first need to register for the current week to be able to challenge the eight gyms!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Do you wish to battle in the Pokémon League? Then you first need to register for the current week to be able to challenge the seven gyms!", safchan);
                 safaribot.sendHtmlMessage(src, "League Guide: Registration costs $" + addComma(cost) + " and is valid until Saturday, 23:59 GMT. To register, type " + link("/quest league:register") + ". For more information, type " + link("/quest league:help") + ". ", safchan);
                 if (quest.eliteCurrent && !quest.eliteCurrentUsed) {
                     safaribot.sendHtmlMessage(src, "League Guide: It seems that you cleared all gyms during the last period, so you can challenge the Elite Four by typing " + link("/quest league:elite") + "!", safchan);
@@ -11859,7 +11862,6 @@ function Safari() {
                         ["luxury", 7],
                         ["gacha", 10],
                         ["dust", 80],
-                        ["silver", 10],
                         ["golden", 2],
                         ["fragment", 1],
                         ["pack", 1]
@@ -11870,8 +11872,8 @@ function Safari() {
                     rewardCapCheck(player, reward[0], reward[1], true);
                     
                     player.quests.league.badges.push(gym.badge.toLowerCase());
-                    player.quests.league.cooldown = now() + hours(1);
-                    if (player.quests.league.badges.length >= 8) {
+                    player.quests.league.cooldown = now() + hours(2);
+                    if (player.quests.league.badges.length >= 7) {
                         player.quests.league.eliteNext = true;
                         player.records.allGymsCleared += 1;
                     }
@@ -11883,7 +11885,7 @@ function Safari() {
                     
                     if (!id) {
                         player.records.gymsLost += 1;
-                        player.quests.league.cooldown = now() + hours(1);
+                        player.quests.league.cooldown = now() + hours(2);
                         safari.saveGame(player);
                         for (var e = 0; e < viewers.length; e++) {
                             safaribot.sendMessage(sys.id(viewers[e]), "League Guide: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
@@ -11911,7 +11913,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
                 
                 player.records.gymsLost += 1;
-                player.quests.league.cooldown = now() + hours(1);
+                player.quests.league.cooldown = now() + hours(2);
                 safari.saveGame(player);
             }
         };
