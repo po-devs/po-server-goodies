@@ -339,7 +339,11 @@ AutoTeams.giveTeam = function(player, slot, tier) {
 };
 
 AutoTeams.isAutoTeamsAuth = function(player) {
-    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player))) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
+    return require("tours.js").isTourOwner(player) || (sys.auth(player) >= 2 && sys.dbRegistered(sys.name(player)));
+};
+
+AutoTeams.isAutoTeamsReviewer = function(player) {
+    return this.isAutoTeamsAuth(player) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
 };
 
 AutoTeams.changeAuth = function(name, remove) {
@@ -369,9 +373,23 @@ AutoTeams.changeAuth = function(name, remove) {
 };
 
 AutoTeams.handleCommand = function(player, message, channel) {
-    if (!this.isAutoTeamsAuth(player)) {
-        return false;
-    }
+    var authCommands = [
+        "addauth",
+        "removeauth",
+        "addautotier",
+        "removeautotier"
+    ];
+
+    var reviewCommands = [
+        "autoteamsreview",
+        "autotiers",
+        "autoteams",
+        "addautoteam",
+        "removeautoteam",
+        "viewautoteam",
+        "setautoteam"
+    ];
+
     var command, commandData;
     var split = message.indexOf(" ");
     if (split > -1) {
@@ -381,12 +399,23 @@ AutoTeams.handleCommand = function(player, message, channel) {
         command = message.toLowerCase();
         commandData = "";
     }
+
+    if (!(reviewCommands.indexOf(command) > 0 && this.isAutoTeamsReviewer(player)) &&
+        !(authCommands.indexOf(command) > 0 && this.isAutoTeamsAuth(player))) {
+        return false;
+    }
+
     commandData = commandData.split(":");
-    var team;
-    var tier;
+    var team, tier;
     try {
         if (command === "addauth" || command === "removeauth") {
-            teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
+            teamsbot.sendMessage(player, this.changeAuth(commandData[0], command === "removeauth"), channel);   
+        } else if (command === "autoteamsauth") {
+            var tmp = [], x;
+            for (x in script.autoteamsAuth.hash) {
+                tmp.push(x);
+            }
+            teamsbot.sendMessage(player, tmp.sort().join(", "), channel);
         } else if (command === "addautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /addautoteam [team name]:[tier]";
@@ -455,16 +484,18 @@ AutoTeams.handleCommand = function(player, message, channel) {
     return true;
 };
 
-AutoTeams.help = [
-    "",
-    "*** AutoTeams Commands ***",
+AutoTeams.authHelp = [
+    "*** AutoTeams Auth Commands ***",
     "/[add/remove]auth [user]: Adds/removes a user from autoteams auth.",
-    "/addautoteam [team name]:[tier]: Adds an autoteam.",
-    "/removeautoteam [team name]:[tier]: Removes an autoteam.",
-    "/addautotier [tier]: Adds a tier for autoteams.",
-    "/removeautotier [tier]: Removes a tier for autoteams (keeps data files intact).",
+    "/[add/remove]autotier [tier]: Adds/removes a tier for autoteams."
+];
+
+AutoTeams.reviewHelp = [
+    "*** AutoTeams Reviewer Commands ***",
+    "/autoteamsreview: Lists users who may add autoteams.",
     "/autotiers: Lists tiers with autoteams.",
     "/autoteams [tier]: Lists autoteams for a tier. Includes all tiers when no tier is specified.",
+    "/[add/remove]autoteam [team name]:[tier]: Adds/removes an autoteam.",
     "/viewautoteam [team name]:[tier]: Displays an autoteam as an importable.",
     "/setautoteam [tier]: Sets a random autoteam to your first team slot (debug use)."
 ];
@@ -472,11 +503,20 @@ AutoTeams.help = [
 // AutoTeams["help-string"] = ["autoteams: To know the autoteams commands"];
 
 AutoTeams.onHelp = function(player, topic, channel) {
-    if (topic !== "autoteams" || !this.isAutoTeamsAuth(player)) {
+    var help = [""];
+    if (topic !== "autoteams") {
         return false;
     }
-    for (var i = 0; i < this.help.length; i++) {
-        sys.sendMessage(player, this.help[i], channel);
+    if (this.isAutoTeamsReviewer(player)) {
+        help.concat(this.reviewHelp);
+    } else {
+        return false;
+    }
+    if (this.isAutoTeamsAuth(player)) {
+        help.concat(this.authHelp);
+    }
+    for (var i = 0; i < help.length; i++) {
+        sys.sendMessage(player, help, channel);
     }
     return true;
 };
