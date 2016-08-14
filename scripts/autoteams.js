@@ -410,7 +410,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
     try {
         if (command === "addauth" || command === "removeauth") {
             teamsbot.sendMessage(player, this.changeAuth(commandData[0], command === "removeauth"), channel);   
-        } else if (command === "autoteamsauth") {
+        } else if (command === "autoteamsreview") {
             var tmp = [], x;
             for (x in script.autoteamsAuth.hash) {
                 tmp.push(x);
@@ -508,12 +508,12 @@ AutoTeams.onHelp = function(player, topic, channel) {
         return false;
     }
     if (this.isAutoTeamsReviewer(player)) {
-        help.concat(this.reviewHelp);
+        help = help.concat(this.reviewHelp);
     } else {
         return false;
     }
     if (this.isAutoTeamsAuth(player)) {
-        help.concat(this.authHelp);
+        help = help.concat(this.authHelp);
     }
     help.forEach(function(line) {
         sys.sendMessage(player, line, channel);
