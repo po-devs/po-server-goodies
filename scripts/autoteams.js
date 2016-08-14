@@ -486,7 +486,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
 
 AutoTeams.authHelp = [
     "*** AutoTeams Auth Commands ***",
-    "/[add/remove]auth [user]: Adds/removes a user from autoteams auth.",
+    "/[add/remove]reviewer [user]: Adds/removes a user from autoteam reviewers.",
     "/[add/remove]autotier [tier]: Adds/removes a tier for autoteams."
 ];
 
