@@ -346,7 +346,7 @@ AutoTeams.isAutoTeamsReviewer = function(player) {
     return this.isAutoTeamsAuth(player) || script.autoteamsAuth.has(sys.name(player).toLowerCase());
 };
 
-AutoTeams.changeAuth = function(name, remove) {
+AutoTeams.changeReviewers = function(name, remove) {
     if (!name) {
         throw "Enter a valid user!";
     }
@@ -360,22 +360,22 @@ AutoTeams.changeAuth = function(name, remove) {
     var hasName = script.autoteamsAuth.has(name.toLowerCase());
     if (remove) {
         if (!hasName) {
-            throw "This user is not autoteams auth.";
+            throw "This user is not an autoteam reviewer.";
         }
         script.autoteamsAuth.remove(name.toLowerCase());
-        return "Removed " + name.toCorrectCase() + " from autoteams auth.";
+        return "Removed " + name.toCorrectCase() + " from autoteam reviewers.";
     }
     if (hasName) {
-        throw "This user is already autoteams auth.";
+        throw "This user is already an autoteam reviewer.";
     }
     script.autoteamsAuth.add(name.toLowerCase(), "");
-    return "Added " + name.toCorrectCase() + " to autoteams auth.";
+    return "Added " + name.toCorrectCase() + " to autoteam reviewers.";
 };
 
 AutoTeams.handleCommand = function(player, message, channel) {
     var authCommands = [
-        "addauth",
-        "removeauth",
+        "addreviewer",
+        "removereviewer",
         "addautotier",
         "removeautotier"
     ];
@@ -408,14 +408,14 @@ AutoTeams.handleCommand = function(player, message, channel) {
     commandData = commandData.split(":");
     var team, tier;
     try {
-        if (command === "addauth" || command === "removeauth") {
-            teamsbot.sendMessage(player, this.changeAuth(commandData[0], command === "removeauth"), channel);   
+        if (command === "addreviewer" || command === "removereviewer") {
+            teamsbot.sendMessage(player, this.changeReviewers(commandData[0], command === "removereviewer"), channel);   
         } else if (command === "autoteamsreview") {
-            var tmp = [], x;
+            var reviewers = [], x;
             for (x in script.autoteamsAuth.hash) {
-                tmp.push(x);
+                reviewers.push(x);
             }
-            teamsbot.sendMessage(player, tmp.sort().join(", "), channel);
+            sys.sendMessage(player, "±Reviewers: " + reviewers.sort().join(", "), channel);
         } else if (command === "addautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /addautoteam [team name]:[tier]";
@@ -503,18 +503,15 @@ AutoTeams.reviewHelp = [
 // AutoTeams["help-string"] = ["autoteams: To know the autoteams commands"];
 
 AutoTeams.onHelp = function(player, topic, channel) {
-    var help = [""];
-    if (topic !== "autoteams") {
+    if (topic !== "autoteams" || !this.isAutoTeamsReviewer(player)) {
         return false;
     }
-    if (this.isAutoTeamsReviewer(player)) {
-        help = help.concat(this.reviewHelp);
-    } else {
-        return false;
-    }
+    
+    var help = [""].concat(this.reviewHelp);
     if (this.isAutoTeamsAuth(player)) {
         help = help.concat(this.authHelp);
     }
+    
     help.forEach(function(line) {
         sys.sendMessage(player, line, channel);
     });
