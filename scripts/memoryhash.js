@@ -44,7 +44,10 @@ MemoryHash.prototype.add = function(key, value)
 
 MemoryHash.prototype.get = function(key)
 {
-    return this.hash[key];
+    if (this.hash.hasOwnProperty(key)) {
+        return this.hash[key];
+    }
+    return undefined;
 }
 
 MemoryHash.prototype.remove = function(key)
