@@ -386,7 +386,13 @@ AutoTeams.handleCommand = function(player, message, channel) {
     var tier;
     try {
         if (command === "addauth" || command === "removeauth") {
-            teamsbot.sendMessage(player, this.changeAuth(commandData, command === "removeauth"), channel);   
+            teamsbot.sendMessage(player, this.changeAuth(commandData[0], command === "removeauth"), channel);   
+        } else if (command === "autoteamsauth") {
+            var tmp = [], x;
+            for (x in script.autoteamsAuth.hash) {
+                tmp.push(x);
+            }
+            teamsbot.sendMessage(player, tmp.sort().join(", "), channel);
         } else if (command === "addautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /addautoteam [team name]:[tier]";
@@ -459,6 +465,7 @@ AutoTeams.help = [
     "",
     "*** AutoTeams Commands ***",
     "/[add/remove]auth [user]: Adds/removes a user from autoteams auth.",
+    "/autoteamsauth: Lists users who may add autoteams.",
     "/addautoteam [team name]:[tier]: Adds an autoteam.",
     "/removeautoteam [team name]:[tier]: Removes an autoteam.",
     "/addautotier [tier]: Adds a tier for autoteams.",
