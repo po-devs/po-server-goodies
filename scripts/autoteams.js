@@ -515,9 +515,9 @@ AutoTeams.onHelp = function(player, topic, channel) {
     if (this.isAutoTeamsAuth(player)) {
         help.concat(this.authHelp);
     }
-    for (var i = 0; i < help.length; i++) {
-        sys.sendMessage(player, help, channel);
-    }
+    help.forEach(function(line) {
+        sys.sendMessage(player, line, channel);
+    });
     return true;
 };
 
