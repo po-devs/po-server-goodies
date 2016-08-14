@@ -500,7 +500,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             script.authStats[authName].latestBan = [name, parseInt(sys.time(), 10)];
         }
         
-        if (bansApplied > 0) {
+        if (bansApplied.length > 0) {
             os = os.charAt(0).toUpperCase() + os.slice(1);
             normalbot.sendAll("Target: " + name + ", IP: " + ip + ", OS: " + os + ", Version: " + version, staffchannel);      
             normalbot.sendAll(nonFlashing(banner) + " applied the following " +  (command === "ultramute" ? "mutes" : "bans") + ": " + bansApplied.join(", "), staffchannel);      
