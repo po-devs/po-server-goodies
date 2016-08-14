@@ -26,6 +26,8 @@ var lastCatGame = 0;
 var lastEventType = 'None.';
 var lastEventTime = Date.now() / 1000;
 var eventTimeChangeFlag = true; //for when Trivia restarts or the time is manually adusted
+var manualEventFlag = false;
+var manualEventTime = Date.now() / 1000;
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
 var lastUsedCats = [];
@@ -1021,7 +1023,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
             var safchan = sys.channelId("Safari");
             sendChanAll("", safchan);
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
-            this.sendAll("The EVENT Trivia game is over! Congratulations to the winners!", safchan);
+            if (leaderboard.length !== 0){
+                this.sendAll("The EVENT Trivia game is over! Congratulations to the winners!", safchan);
+            } else {
+                this.sendAll("The EVENT Trivia game is over! Unfortunately, everyone died!", safchan);
+                this.sendAll("The prizes have been donated to the orphanage!", safchan);
+            }
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
 
             if (wasElim) {
@@ -1355,6 +1362,7 @@ TriviaGame.prototype.phaseHandler = function () {
         this.countVotes();
     }
     else if (this.phase === "event") {
+        manualEventFlag = false;
         this.event();
     }
     else { //game probably stopped or error, so stopping repeated attempts
@@ -2020,6 +2028,11 @@ addAdminCommand(["lastevent"], function (src, commandData, channel) {
         Trivia.sendPM(src, "A trivia event game is currently running.", channel);
         return;
     }
+    if (manualEventFlag){
+        var manualEventOutputTime = sys.time() - manualEventTime;
+        Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(manualEventOutputTime) + " ago.", channel);
+        return;
+    }
     var lastEventOutputTime = sys.time() - lastEventTime;
     if (lastEventType === "None.") {
         Trivia.sendPM(src, "No events have been played since Trivia was restarted.", channel);
@@ -2079,6 +2092,9 @@ addUserCommand(["start"], function (src, commandData) {
 
 addOwnerCommand(["eventstart"], function (src, commandData) {
     trivData.eventFlag = true;
+    manualEventFlag = true;
+    manualEventTime = sys.time();
+    lastEventType = "knowledge";
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start an Event trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -2088,6 +2104,9 @@ addUserCommand(["speed"], function (src, commandData) {
 
 addOwnerCommand(["eventspeed"], function (src, commandData) {
     trivData.eventFlag = true;
+    manualEventFlag = true;
+    manualEventTime = sys.time();
+    lastEventType = "speed";
     Trivia.startTrivia(src, commandData, "speed");
 }, "Allows you to start an Event speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -2139,6 +2158,9 @@ addAdminCommand(["elimination", "elim"], function (src, commandData) {
 
 addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
     trivData.eventFlag = true;
+    manualEventFlag = true;
+    manualEventTime = sys.time();
+    lastEventType = "elimination";
     Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
