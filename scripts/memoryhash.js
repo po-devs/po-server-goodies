@@ -50,6 +50,11 @@ MemoryHash.prototype.get = function(key)
     return undefined;
 }
 
+MemoryHash.prototype.has = function(key)
+{
+    return this.hash.hasOwnProperty(key);
+}
+
 MemoryHash.prototype.remove = function(key)
 {
     delete this.hash[key];
