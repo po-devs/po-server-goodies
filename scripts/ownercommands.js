@@ -335,13 +335,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "removeautosmute") {
         var name = commandData.toLowerCase();
-        autosmute = autosmute.filter(function(list_name) {
-            if (list_name == name) {
-                normalbot.sendAll(commandData + " was removed from the autosmute list", staffchannel);
-                return true;
-            }
-        });
-        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
+        var i = autosmute.indexOf(name);
+        if (i > -1) {
+            normalbot.sendAll(autosmute[i] + " was removed from the autosmute list.", staffchannel);
+            autosmute.splice(i, 1);
+            sys.writeToFile(Config.dataDir + "secretsmute.txt", autosmute.join(":::"));
+            return;
+        }
+        normalbot.sendMessage(src, "No such user in the autosmute list!"); 
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
