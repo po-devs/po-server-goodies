@@ -2178,7 +2178,12 @@ function Safari() {
                         ret += "item:" + item.icon;
                     }
 
-                    ret += "' title='" + item.fullName.replace("'", "’") + "'></td>";
+                    ret += "' title='";
+                    if (item.fullName.indexOf("<") > -1 && item.fullName.indexOf(">") > -1) { //Probably HTML with this
+                        ret += defaultItemData[item.name].fullName + "'></td>";
+                    } else {
+                        ret += item.fullName + "'></td>";
+                    }
                 }
                 ret += "</tr><tr>";
                 if (first) {
@@ -4415,7 +4420,7 @@ function Safari() {
         if (crit == "abc") {
             val = val.toLowerCase();
             current.forEach(function(x){
-                if (sys.pokemon(x).toLowerCase().indexOf(val) !== -1) {
+                if (sys.pokemon(x).toLowerCase().replace(/é/g, "e").indexOf(val) !== -1) {
                     list.push(x);
                 }
             });
@@ -10239,7 +10244,7 @@ function Safari() {
                         tutorMsg(src, "Please start the quest with " + link("/quest collector:start"));
                         return;
                     }
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: My requests are organized into 4 different levels:", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: My requests are organized into different levels:", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 180 and 320. Reward is 2.4x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 599. Reward is 4.8x their price.", safchan);
