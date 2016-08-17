@@ -32,6 +32,7 @@ var eventKnowRate = 30;
 var eventSpeedRate = 30;
 var lastUsedCats = [];
 var eventElimPlayers = [];
+var answeredCorrectlyEver = [];
 var lastAdvertise = 0;
 var defaultKnowEventGoal = '12';
 var defaultSpeedEventGoal = '25';
@@ -853,6 +854,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }*/ //This code was just causing winners to be out of order.
         }
     }
+    leaderboard.sort(function (a, b) {
+        return b[1] - a[1];
+    });
     if (answeredCorrectly.length === totalPlayers && this.scoreType !== "elimination") {
         allRight = true;
         for (var z2 = 0; z2 < leaderboard.length; z2++) {
@@ -860,22 +864,24 @@ TriviaGame.prototype.finalizeAnswers = function () {
             leaderboard[z2][1] = this.player(answeredCorrectly[z2].name).points;
         }
     }
-    leaderboard.sort(function (a, b) {
-        return b[1] - a[1];
-    });
+    /* Store order of players who answered correctly for each round so that ties
+      will still be broken even if neither player answered correctly for the current
+      round. Overflow shouldn't be a concern for individual games, and this gets
+      cleared after each game.*/
+    answeredCorrectlyEver = answeredCorrectly.concat(answeredCorrectlyEver);
     var n = 1;
     var z3 = 1;
     var noTies = true;
     while (n < leaderboard.length && this.scoreType !== "elimination") {
-        if (!answeredCorrectly.length || allRight) { break; }
-        if (leaderboard[z3][1] === leaderboard[z3-1][1]) {
+        if (!answeredCorrectlyEver.length || allRight) { break; }
+        if (leaderboard[z3][1] === leaderboard[z3-1][1] && leaderboard[z3][1] !== 0) {
             noTies = false;
-            for (var z4 = 0; z4 < answeredCorrectly.length; z4++) {
-                if (leaderboard[z3-1][0] === answeredCorrectly[z4].name) {
+            for (var z4 = 0; z4 < answeredCorrectlyEver.length; z4++) {
+                if (leaderboard[z3-1][0] === answeredCorrectlyEver[z4].name) {
                     z3++;
                     break; //tiebreak matches a speed tiebreak
                 }
-                if (leaderboard[z3][0] === answeredCorrectly[z4].name) {
+                if (leaderboard[z3][0] === answeredCorrectlyEver[z4].name) {
                     var nameHolder,pointHolder;
                     nameHolder = leaderboard[z3-1][0];
                     pointHolder = leaderboard[z3-1][1];
@@ -886,14 +892,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     z3++;
                     break; //tiebreak changed to match a speed tiebreak
                 }
-                if (z4 === (answeredCorrectly.length - 1)) {
-                    z3++; //a tie was detected, but neither player answered correctly this round
+                if (z4 === (answeredCorrectlyEver.length - 1)) {
+                    z3++; //infinite loop insurance. shouldn't be needed though.
                 }
             }
         }
-        if (noTies) {
-            z3++;
-        }
+        if (noTies) { z3++; }
         noTies = true;
         if (z3 === leaderboard.length) {
             n++;
@@ -1202,6 +1206,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.suddenDeath = false;
     trivData.eventFlag = false;
     eventElimPlayers = [];
+    answeredCorrectlyEver = [];
 };
 
 TriviaGame.prototype.key = function (src) {
