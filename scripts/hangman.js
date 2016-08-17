@@ -1756,7 +1756,7 @@ function Hangman() {
             hangman.flashlist(src);
             return true;
         }
-        if (hangman.authLevel(src) < 1 && !(command === "end" && hostIpArray.indexOf(sys.ip(src)) !== -1)) {
+        if (hangman.authLevel(src) < 1 && !(command === "end" && script.cmp(sys.name(src), hostName))) {
             return false;
         }
         var id;
