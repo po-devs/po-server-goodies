@@ -854,9 +854,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }*/ //This code was just causing winners to be out of order.
         }
     }
-    leaderboard.sort(function (a, b) {
-        return b[1] - a[1];
-    });
     if (answeredCorrectly.length === totalPlayers && this.scoreType !== "elimination") {
         allRight = true;
         for (var z2 = 0; z2 < leaderboard.length; z2++) {
@@ -864,6 +861,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             leaderboard[z2][1] = this.player(answeredCorrectly[z2].name).points;
         }
     }
+    leaderboard.sort(function (a, b) {
+        return b[1] - a[1];
+    });
     /* Store order of players who answered correctly for each round so that ties
       will still be broken even if neither player answered correctly for the current
       round. Overflow shouldn't be a concern for individual games, and this gets
