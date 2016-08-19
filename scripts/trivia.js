@@ -30,13 +30,14 @@ var manualEventFlag = false;
 var manualEventTime = Date.now() / 1000;
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
+var eventElimSignUp = 90;
 var lastUsedCats = [];
 var eventElimPlayers = [];
 var answeredCorrectlyEver = [];
 var lastAdvertise = 0;
 var defaultKnowEventGoal = '12';
 var defaultSpeedEventGoal = '25';
-var defaultElimEventGoal = '3';
+var defaultElimEventGoal = '5';
 
 var Trivia;
 try {
@@ -53,6 +54,7 @@ var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
 var questionData = new MemoryHash("questiondata.txt");
+var eventSets = new eventSettings("triviaeventsettings.txt");
 var trivData;
 var month = new Date().getMonth();
 try {
@@ -165,6 +167,7 @@ function showTrivia(src, channel, what) {
 }
 
 function runUpdate() {
+    eventSets.updateEventSettings();
     if (!Trivia.needsUpdating) return;
     var POglobal = SESSION.global();
     var index, source;
@@ -408,58 +411,58 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
     if (this.scoreType === "elimination" && this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
-          eventMessage = (name ? name + " opened signups for an EVENT elimination game " : "An EVENT elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds.";
+            ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
+            eventMessage = (name ? name + " opened signups for an EVENT elimination game " : "An EVENT elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds.";
         }
         else {
-          ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
-          this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
+            this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed" && this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " has started an EVENT Speed Category Game! " : "An EVENT Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " has started an EVENT Speed Category Game! " : "An EVENT Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " has started an EVENT Category Game! " : "An EVENT Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " has started an EVENT Category Game! " : "An EVENT Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed"){
         if (trivData.eventFlag){
-          ad = "An EVENT speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " started an EVENT Speed Trivia game! " : "An EVENT speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " started an EVENT Speed Trivia game! " : "An EVENT speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
-          autoJoin(name);
+            ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            autoJoin(name);
         }
     }
     else if (this.scoreType === "elimination") {
         if (trivData.eventFlag){
-          ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
-          eventMessage = (name ? name + " opened signups for an EVENT elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds!";
+            ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
+            eventMessage = (name ? name + " opened signups for an EVENT elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds!";
         }
         else {
-          ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
-          this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
+            this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else {
@@ -515,7 +518,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     if (this.scoreType === "elimination") {
         this.phase = "signups";
         if (trivData.eventFlag){
-            this.ticks = 60;
+            this.ticks = eventElimSignUp;
         }
         else{
             this.ticks = 45;
@@ -1675,6 +1678,40 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "", id);
 };
 
+function eventSettings(file) {
+    this.file = file;
+    this.settings = [];
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "") {
+        sys.writeToFile(file, "[]");
+    }
+    try {
+        this.settings = JSON.parse(fileContent);
+    }
+    catch (e) {
+        sys.sendAll("Error loading saved event settings: " + e, revchan);
+    }
+}
+
+eventSettings.prototype.loadEventSettings = function () {
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "" || fileContent === "[]") { break; }
+    lastEventType = this.settings.lastEventType;
+    lastEventTime = this.settings.lastEventTime;
+    trivData.eventCooldown = this.settings.lastEventCooldown;
+    eventKnowRate = this.settings.eventKnowRate;
+    eventSpeedRate = this.settings.eventSpeedRate;
+    defaultKnowEventGoal = this.settings.defaultKnowEventGoal;
+    defaultSpeedEventGoal = this.settings.defaultSpeedEventGoal;
+    defaultElimEventGoal = this.settings.defaultElimEventGoal;
+    eventElimSignUp = this.settings.eventElimSignUp;
+};
+
+eventSettings.prototype.updateEventSettings = function () {
+    this.settings = {'lastEventType' : lastEventType, 'lastEventTime' : lastEventTime, 'lastEventCooldown' : trivData.eventCooldown, 'eventKnowRate' : eventKnowRate, 'eventSpeedRate' : eventSpeedRate, 'defaultKnowEventGoal' : defaultKnowEventGoal, 'defaultSpeedEventGoal' : defaultSpeedEventGoal, 'defaultElimEventGoal' : defaultElimEventGoal, 'eventElimSignUp' : eventElimSignUp};
+    sys.writeToFile(this.file, JSON.stringify(this.settings));
+};
+
 function pointsLB(file) {
     this.file = file;
     this.minLB = 7;
@@ -1949,8 +1986,25 @@ addUserCommand(["join"], function (src, commandData, channel) {
         return;
     }
     if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
-        Trivia.sendPM(src, "You can't join an elimination game other than during signups!", channel);
-        return;
+        if (Trivia.round > Trivia.maxPoints) {
+            Trivia.sendPM(src, "It is too late to join this game!", channel);
+            return;
+        } else {
+            for (var q = 0; q <= Trivia.maxPoints; q++) {
+                if (q === Trivia.round) {
+                    Trivia.addPlayer(src);
+                    Trivia.triviaPlayers[src].points = Trivia.maxPoints - Trivia.round;
+                    if (Trivia.phase === "answer") { Trivia.triviaPlayers[src].points++; } // no need to penalize them twice if the don't answer correctly
+                    if (!Trivia.triviaPlayers[src].points) {
+                        Trivia.removePlayer(src);
+                        Trivia.sendPM(src, "It is too late to join this game!", channel);
+                        return;
+                    }
+                    Trivia.sendAll(sys.name(src) + " joined the game late with " + Trivia.triviaPlayers[src].points + (Trivia.triviaPlayers[src].points === 1 ? " life!" : " lives!"), triviachan);
+                    return;
+                }
+            }
+        }
     }
     if (Trivia.suggestion.suggester === src) {
         Trivia.sendPM(src, "You can't join the game right after suggesting a question, you cheater!", channel);
@@ -2187,19 +2241,22 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
         return;
     }
     if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
-       defaultKnowEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultKnowEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     if (gameType.toLowerCase() === "speed"){
-       defaultSpeedEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultSpeedEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     if (gameType.toLowerCase() === "elimination" || gameType.toLowerCase() === "elim"){
-       defaultElimEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultElimEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
 }, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
@@ -2232,10 +2289,59 @@ addOwnerCommand(["eventrates"], function (src, commandData, channel) {
     eventKnowRate = knowRateCheck;
     eventSpeedRate = speedRateCheck;
     var elimRate = 100 - (eventKnowRate + eventSpeedRate);
+    eventSets.updateEventSettings();
     Trivia.sendPM(src, "New Event Knowledge Rate: " + eventKnowRate + " %", channel);
     Trivia.sendPM(src, "New Event Speed Rate: " + eventSpeedRate + " %", channel);
     Trivia.sendPM(src, "New Event Elimination Rate: " + elimRate + " %", channel);
 }, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is know rate:speed rate.");
+
+addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
+        return;
+    }
+    var cooldown = getSeconds(commandData);
+    if (isNaN(cooldown)) {
+        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s");
+        return;
+    }
+    trivData.eventCooldown = cooldown;
+    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
+    lastEventTime = sys.time(); //reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
+
+addOwnerCommand(["enableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = true;
+    lastEventTime = sys.time(); // reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
+}, "Enables event elimination games.");
+
+addOwnerCommand(["disableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = false;
+    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
+}, "Disable event elimination games.");
+
+addOwnerCommand(["seteventelimsignup"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, "The current signup duration is " + eventElimSignUp + " seconds.", channel);
+        return;
+    }
+    if (isNaN(commandData)) {
+        Trivia.sendPM(src, "Please enter a valid number.", channel);
+        return;
+    }
+    if (commandData < 45 || commandData > 600) {
+        Trivia.sendPM(src, "The duration must be at least 45 seconds and no more than 600 seconds.", channel);
+        return;
+    }
+    eventElimSignUp = parseInt(commandData);
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "The new signup duration is " + eventElimSignUp + " seconds.", channel);
+}, "Set the signup duration for event elimination games. Using no command fields allows you to view the current duration.");
 
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
@@ -3330,34 +3436,6 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
     }
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
 
-addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
-    if (commandData.length === 0) {
-        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
-        return;
-    }
-    var cooldown = getSeconds(commandData);
-    if (isNaN(cooldown)) {
-        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s")
-        return;
-    }
-    trivData.eventCooldown = cooldown;
-    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
-    lastEventTime = sys.time(); //reset timer
-    eventTimeChangeFlag = true;
-}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
-
-addOwnerCommand(["enableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = true;
-    lastEventTime = sys.time(); // reset timer
-    eventTimeChangeFlag = true;
-    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
-}, "Enables event elimination games.");
-
-addOwnerCommand(["disableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = false;
-    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
-}, "Disable event elimination games.");
-
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (!commandData) {
         return;
@@ -3568,7 +3646,9 @@ module.exports = {
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
             extLB = new pointsLB("trivialeaderboard.txt");
+            eventSets = new eventSettings("triviaeventsettings.txt");
         }
+        eventSets.loadEventSettings();
         //Trivia.sendAll("Trivia is now running!");
     },
 
