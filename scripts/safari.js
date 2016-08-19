@@ -7923,6 +7923,19 @@ function Safari() {
             }
         }
     };
+    Battle.prototype.abort = function(src, loser) {
+        var winner = "Tie";
+        if (loser.toLowerCase() == this.name1.toLowerCase()) {
+            winner = this.name2;
+        } else if (loser.toLowerCase() == this.name2.toLowerCase()) {
+            winner = this.name1;
+        }
+        this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        if (this.npcBattle && this.postBattle) {
+            this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs, this.viewers);
+        }
+        this.finished = true;
+    };
     Battle.prototype.isInBattle = function(name) {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
@@ -9168,6 +9181,19 @@ function Safari() {
             }
         }
     };
+    Battle2.prototype.abort = function(src, loser) {
+        var winner = "Tie";
+        if (loser.toLowerCase() == this.name1.toLowerCase()) {
+            winner = this.name2;
+        } else if (loser.toLowerCase() == this.name2.toLowerCase()) {
+            winner = this.name1;
+        }
+        this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        if (this.npcBattle && this.postBattle) {
+            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers);
+        }
+        this.finished = true;
+    };
     Battle2.prototype.isInBattle = function(name) {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
@@ -9551,15 +9577,15 @@ function Safari() {
         this.sendToViewers(sys.name(src) + " left the auction!");
         safaribot.sendMessage(src, "You left " + this.hostName + "'s auction!", safchan);
     };
-    Auction.prototype.removePlayer = function(src) {
+    Auction.prototype.removePlayer = function(src, reason) {
         var name = sys.name(src).toLowerCase();
         if (this.isInAuction(name)) {
             if (this.host == name) {
-                this.sendToViewers("This auction was cancelled because the host was trade banned!");
+                this.sendToViewers("This auction was cancelled because the host " + reason + "!");
                 this.finished = true;
             } else {
                 if (this.currentBidder == name) {
-                    this.sendToViewers("This auction was cancelled because the current highest bidder was trade banned!!");
+                    this.sendToViewers("This auction was cancelled because the current highest bidder " + reason + "!");
                     safaribot.sendMessage(sys.id(this.host), "Your auction was cancelled, but you can start a new one immediately!", safchan);
                     this.finished = true;
                     var player = getAvatarOff(this.host);
@@ -10793,29 +10819,31 @@ function Safari() {
         npc = JSON.parse(JSON.stringify(npc));
         npc.postBattle = postBattle;
         var rep = false, count = 0, list = player.party.map(function(x) { var arr = [sys.type(sys.pokeType1(x)), sys.type(sys.pokeType2(x))].sort(); return arr.join("|"); });
-        for (var e = 0; e < 6; e++) {
-            count = countRepeated(list, list[e]);
-            if (count > 3) {
-                rep = player.party[e];
-                break;
-            }
-        }
-        if (rep) {
-            var oppTeam = npc.party.concat().shuffle(), result = [], rest = [], t1 = sys.type(sys.pokeType1(rep)), t2 = sys.type(sys.pokeType2(rep)), p1, p2;
-            for (e = 0; e < oppTeam.length; e++) {
-                p1 = sys.type(sys.pokeType1(oppTeam[e]));
-                p2 = sys.type(sys.pokeType2(oppTeam[e]));
-                if (result.length < count && this.checkEffective(p1, p2, t1, t2) >= this.checkEffective(t1, t2, p1, p2)) {
-                    result.push(oppTeam[e]);
-                } else {
-                    rest.push(oppTeam[e]);
+        if (npc.name !== "Trainer Nub") {
+            for (var e = 0; e < 6; e++) {
+                count = countRepeated(list, list[e]);
+                if (count > 3) {
+                    rep = player.party[e];
+                    break;
                 }
             }
-            rest = rest.shuffle();
-            while (result.length < 6) {
-                result.push(rest.shift());
+            if (rep) {
+                var oppTeam = npc.party.concat().shuffle(), result = [], rest = [], t1 = sys.type(sys.pokeType1(rep)), t2 = sys.type(sys.pokeType2(rep)), p1, p2;
+                for (e = 0; e < oppTeam.length; e++) {
+                    p1 = sys.type(sys.pokeType1(oppTeam[e]));
+                    p2 = sys.type(sys.pokeType2(oppTeam[e]));
+                    if (result.length < count && this.checkEffective(p1, p2, t1, t2) >= this.checkEffective(t1, t2, p1, p2)) {
+                        result.push(oppTeam[e]);
+                    } else {
+                        rest.push(oppTeam[e]);
+                    }
+                }
+                rest = rest.shuffle();
+                while (result.length < 6) {
+                    result.push(rest.shift());
+                }
+                npc.party = result;
             }
-            npc.party = result;
         }
 
         npc.postArgs.name = npc.name;
@@ -12509,6 +12537,11 @@ function Safari() {
             this.sendMessage(list[e], msg, flashing, colored);
         }
     };
+    Pyramid.prototype.abort = function(src, name) {
+        this.finishMode = "aborted";
+        this.sendToViewers("This Pyramid run was aborted because " + sys.name(src) + " shoved " + name + " from it!");
+        this.finished = true;
+    };
     Pyramid.prototype.isInPyramid = function(name) {
         return this.stamina.hasOwnProperty(name.toLowerCase()) && this.stamina[name.toLowerCase()] > 0;
     };
@@ -12699,7 +12732,7 @@ function Safari() {
             this.possibleBattlers[p] = pt;
             if (pt.length > 0) {
                 this.noBattlers = false;
-                this.shortcuts[p] = toShortcut(pt.map(poke));
+                this.shortcuts[p] = this.toShortcut(pt.map(poke));
                 this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]);
             } else {
                 this.individualmsg[p] = "None of your Pokémon can participate in this battle!";
@@ -14148,7 +14181,7 @@ function Safari() {
         var struggleUsers = [];
         var cleared = {}, found;
         var alive = Object.keys(this.pyr.parties).filter(function(x) { return pyr.stamina[x] > 0; });
-        alive = alive.concat(alive);
+        alive = alive.concat(alive).concat(alive);
         var effective = {};
         var ineffective = [];
         var treasureTo;
@@ -14166,6 +14199,9 @@ function Safari() {
                 m = moves[id].indexOf(sys.move(list[0]).toLowerCase());
                 if (m === -1) {
                     m = moves[id].indexOf(sys.move(list[1]).toLowerCase());
+                    if (m === -1) {
+                        m = moves[id].indexOf(sys.move(list[2]).toLowerCase());
+                    }
                 }
                 if (m >= 0) {
                     mid = moves[id][m];
@@ -17287,7 +17323,7 @@ function Safari() {
             var id = sys.id(name);
             if (id) {
                 for (var b in currentAuctions) {
-                    currentAuctions[b].removePlayer(id);
+                    currentAuctions[b].removePlayer(id, "was trade banned");
                 }
             }
             tradeBans.add(player.id, player.tradeban);
@@ -17840,7 +17876,7 @@ function Safari() {
             "/showids [amount]։[lookup]: Shows all players by their idnum. Use /reloadids to recreate the list if necessary.",
             "/updatelb: Manually updates the leaderboards.",
             "/newmonth: Manually verifies if the month changed to reset monthly leaderboards.",
-            "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari). Use /stopongoing to cancel all ongoing Battles and Auctions.",
+            "/ongoing: To verify ongoing NPC Battles and Auction (use before updating Safari). Use /stopongoing to cancel all ongoing Battles and Auctions, or /stopplayer [player] to only stop activities from a specific player.",
             "/clearcd [player]։[type]: To clear a player's cooldown on a quest/ball throw/auction.",
             "/scare: Scares the wild Pokemon away. Use /glare for a silent action.",
             "/npc[add/remove] [item/pokemon]։[price]։[limit]: Adds or removes an item to the NPC shop with the provided arguments. Use /npcclose to clear the NPC shop or /npcclean to remove items out of stock.",
@@ -20747,6 +20783,43 @@ function Safari() {
                 currentEvent = null;
                 safaribot.sendAll("All ongoing battles, auctions and events have been stopped.", safchan);
                 checkUpdate();
+                return true;
+            }
+            if (command === "stopplayer") {
+                var target = sys.id(commandData);
+                if (!target) {
+                    safaribot.sendMessage(src, "No such person!", safchan);
+                    return true;
+                }
+                var player = getAvatar(target);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+                
+                for (var b in currentAuctions) {
+                    currentAuctions[b].removePlayer(target, "was shoved from it");
+                }
+                var battle;
+                for (b = currentBattles.length; b--;) {
+                    battle = currentBattles[b];
+                    if (battle.isInBattle(commandData)) {
+                        battle.abort(src, commandData);
+                        currentBattles.splice(b, 1);
+                    }
+                }
+                if (currentEvent && currentEvent.isInEvent(commandData)) {
+                    currentEvent.shove(src, commandData);
+                }
+                for (var p = currentPyramids.length; p--;) {
+                    if (currentPyramids[p].isInPyramid(commandData)) {
+                        currentPyramids[p].abort(src, commandData.toCorrectCase());
+                        currentPyramids.splice(p, 1);
+                    }
+                }
+                
+                safaribot.sendMessage(target, "All of your Safari activities have been aborted!", safchan);
+                safaribot.sendMessage(src, "You aborted all of " + sys.name(target) + "'s Safari activities!", safchan);
                 return true;
             }
             if (command === "dqraffle" || command === "sdqraffle") {
