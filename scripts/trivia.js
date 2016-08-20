@@ -768,6 +768,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (this.scoreType === "elimination") {
             var allCorrect = true;
             var sortArray = [];
+            var sortArrayBySpeed = [];
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
                 var found = false;
@@ -803,8 +804,19 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     this.unjoin(id2);
                 }
             }
-            //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
-            eventElimPlayers = eventElimPlayers.concat(sortArray.shuffle());
+            if (sortArray.length !== 0) {
+                for (var j = 0; j < answeredCorrectlyEver.length; j++) {
+                    for (var k = 0; k < sortArray.length; k++) {
+                        if (sortArray[k] === answeredCorrectlyEver[j].name) {
+                            sortArrayBySpeed.push(sortArray[k]);
+                            sortArray.splice(k,1);
+                            break;
+                        }
+                    }
+                    if (!sortArray.length) { break; }
+                }
+                eventElimPlayers = eventElimPlayers.concat(sortArrayBySpeed.reverse());
+            }
         }
         else if (answeredCorrectly.length !== 0) {
             var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
