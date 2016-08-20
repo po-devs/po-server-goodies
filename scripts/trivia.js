@@ -1695,7 +1695,7 @@ function eventSettings(file) {
 
 eventSettings.prototype.loadEventSettings = function () {
     var fileContent = sys.getFileContent(this.file);
-    if (fileContent === undefined || fileContent === "" || fileContent === "[]") { break; }
+    if (fileContent === undefined || fileContent === "" || fileContent === "[]") { return; }
     lastEventType = this.settings.lastEventType;
     lastEventTime = this.settings.lastEventTime;
     trivData.eventCooldown = this.settings.lastEventCooldown;
@@ -1988,7 +1988,6 @@ addUserCommand(["join"], function (src, commandData, channel) {
     if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
         if (Trivia.round > Trivia.maxPoints) {
             Trivia.sendPM(src, "It is too late to join this game!", channel);
-            return;
         } else {
             for (var q = 0; q <= Trivia.maxPoints; q++) {
                 if (q === Trivia.round) {
