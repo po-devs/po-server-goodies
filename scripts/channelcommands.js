@@ -125,7 +125,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (!isNaN(commandData)) {
             var num = parseInt(commandData, 10);
             if (num <= rules.length && num > 0) {
-                var rule = rule[num - 1].split("\n");
+                var rule = rules[num - 1].split("\n");
                 sys.sendMessage(src, rule[0], channel);
                 if (rule[1].length > 0) {
                     sys.sendMessage(src, rule[1], channel);
