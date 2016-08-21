@@ -30,13 +30,15 @@ var manualEventFlag = false;
 var manualEventTime = Date.now() / 1000;
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
+var eventElimSignUp = 90;
 var lastUsedCats = [];
 var eventElimPlayers = [];
+var roundEliminated = [];
 var answeredCorrectlyEver = [];
 var lastAdvertise = 0;
 var defaultKnowEventGoal = '12';
 var defaultSpeedEventGoal = '25';
-var defaultElimEventGoal = '3';
+var defaultElimEventGoal = '5';
 
 var Trivia;
 try {
@@ -53,6 +55,7 @@ var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
 var questionData = new MemoryHash("questiondata.txt");
+var eventSets = new eventSettings("triviaeventsettings.txt");
 var trivData;
 var month = new Date().getMonth();
 try {
@@ -165,6 +168,7 @@ function showTrivia(src, channel, what) {
 }
 
 function runUpdate() {
+    eventSets.updateEventSettings();
     if (!Trivia.needsUpdating) return;
     var POglobal = SESSION.global();
     var index, source;
@@ -408,58 +412,58 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
     if (this.scoreType === "elimination" && this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
-          eventMessage = (name ? name + " opened signups for an EVENT elimination game " : "An EVENT elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds.";
+            ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
+            eventMessage = (name ? name + " opened signups for an EVENT elimination game " : "An EVENT elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds.";
         }
         else {
-          ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
-          this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
+            this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed" && this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " has started an EVENT Speed Category Game! " : "An EVENT Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " has started an EVENT Speed Category Game! " : "An EVENT Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.catGame){
         if (trivData.eventFlag){
-          ad = "An EVENT Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " has started an EVENT Category Game! " : "An EVENT Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " has started an EVENT Category Game! " : "An EVENT Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed"){
         if (trivData.eventFlag){
-          ad = "An EVENT speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          eventMessage = (name ? name + " started an EVENT Speed Trivia game! " : "An EVENT speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            ad = "An EVENT speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            eventMessage = (name ? name + " started an EVENT Speed Trivia game! " : "An EVENT speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
-          ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
-          this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
-          autoJoin(name);
+            ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            autoJoin(name);
         }
     }
     else if (this.scoreType === "elimination") {
         if (trivData.eventFlag){
-          ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
-          eventMessage = (name ? name + " opened signups for an EVENT elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 60 seconds!";
+            ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
+            eventMessage = (name ? name + " opened signups for an EVENT elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds!";
         }
         else {
-          ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
-          this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
-          sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
+            this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
         }
     }
     else {
@@ -515,7 +519,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     if (this.scoreType === "elimination") {
         this.phase = "signups";
         if (trivData.eventFlag){
-            this.ticks = 60;
+            this.ticks = eventElimSignUp;
         }
         else{
             this.ticks = 45;
@@ -761,10 +765,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
             totalPlayers++;
         }
     }
+    answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
     if (this.scoreType !== "speed") {
         if (this.scoreType === "elimination") {
             var allCorrect = true;
             var sortArray = [];
+            var sortArrayBySpeed = [];
             for (var id in this.triviaPlayers) {
                 var name = this.triviaPlayers[id].name;
                 var found = false;
@@ -781,12 +787,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 if (this.player(name).points === 0) {
                     if(trivData.eventFlag && (this.round > this.maxPoints)){
                         sortArray.push(this.triviaPlayers[id].name);
+                        roundEliminated.push(this.round);
                     }
                     this.unjoin(id);
                 }
             }
             if (allCorrect && this.suddenDeath && answeredCorrectly.length) {
-                answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
                 var name = answeredCorrectly[answeredCorrectly.length - 1].name;
                 this.player(name).points--;
                 this.sendAll(name + " was the last player to answer the question, so they lose a life!");
@@ -796,12 +802,24 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     }
                     if (trivData.eventFlag){
                         sortArray.push(this.triviaPlayers[id2].name);
+                        roundEliminated.push(this.round);
                     }
                     this.unjoin(id2);
                 }
             }
-            //Add players to sort array as eliminated, then randomize listing so that it isn't based on join order when ties happen.
-            eventElimPlayers = eventElimPlayers.concat(sortArray.shuffle());
+            if (sortArray.length !== 0) {
+                for (var j = 0; j < answeredCorrectlyEver.length; j++) {
+                    for (var k = 0; k < sortArray.length; k++) {
+                        if (sortArray[k] === answeredCorrectlyEver[j].name) {
+                            sortArrayBySpeed.push(sortArray[k]);
+                            sortArray.splice(k,1);
+                            break;
+                        }
+                    }
+                    if (!sortArray.length) { break; }
+                }
+                eventElimPlayers = eventElimPlayers.concat(sortArrayBySpeed.reverse());
+            }
         }
         else if (answeredCorrectly.length !== 0) {
             var pointAdd = +(1.65 * Math.log(totalPlayers / answeredCorrectly.length) + 1).toFixed(0);
@@ -817,8 +835,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
     }
     else {
-        answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
-
         if (answeredCorrectly.length !== 0) {
             var points = 5;
             for (var i = 0; i < answeredCorrectly.length; i++) {
@@ -854,9 +870,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }*/ //This code was just causing winners to be out of order.
         }
     }
-    leaderboard.sort(function (a, b) {
-        return b[1] - a[1];
-    });
     if (answeredCorrectly.length === totalPlayers && this.scoreType !== "elimination") {
         allRight = true;
         for (var z2 = 0; z2 < leaderboard.length; z2++) {
@@ -864,6 +877,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             leaderboard[z2][1] = this.player(answeredCorrectly[z2].name).points;
         }
     }
+    leaderboard.sort(function (a, b) {
+        return b[1] - a[1];
+    });
     /* Store order of players who answered correctly for each round so that ties
       will still be broken even if neither player answered correctly for the current
       round. Overflow shouldn't be a concern for individual games, and this gets
@@ -928,11 +944,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
-    }
-    for (var p in leaderboard) {
-        if (leaderboard[p][1] >= 1){// if they get at least one question right
-            validParticipants.push(leaderboard[p][0]);
-        }
     }
     for (var y in leaderboard) {   //this sorts the winners
         if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
@@ -1017,9 +1028,69 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 lastCatGame++;
             }
         }
+        if (trivData.eventFlag && leaderboard.length !== 0) {
+            var user, score;
+            var loop = leaderboard.length;
+            var sTierReq = this.maxPoints;
+            var aTierReq = this.maxPoints * 0.9;
+            var bTierReq = this.maxPoints * 0.7;
+            var cTierReq = this.maxPoints * 0.5;
+            var dTierReq = this.maxPoints * 0.3;
+            var eTierReq = this.maxPoints * 0.1;
+            if (this.scoreType === "elimination") {
+                eventElimPlayers.push(winnersNamesOnly[0]);
+                eventElimPlayers.reverse();
+                roundEliminated.push(this.round);
+                roundEliminated.reverse();
+                loop = eventElimPlayers.length;
+                aTierReq = parseInt(this.maxPoints) + 6;
+                bTierReq = parseInt(this.maxPoints) + 5;
+                cTierReq = parseInt(this.maxPoints) + 4;
+                dTierReq = parseInt(this.maxPoints) + 3;
+                eTierReq = parseInt(this.maxPoints) + 2;
+            }
+            for (var p = 0; p < loop; p++) {
+                if (this.scoreType === "elimination") {
+                    user = eventElimPlayers[p];
+                    score = roundEliminated[p];
+                    if (p < 3 && p < (eventElimPlayers.length - 1)) {
+                        validParticipants.push([eventElimPlayers[p], "S"]);
+                        continue;
+                    }
+                } else {
+                    user = leaderboard[p][0];
+                    score = leaderboard[p][1];
+                    if (!score) { continue; }
+                    if (score >= sTierReq && p < 3) {
+                        validParticipants.push([user, "S"]);
+                        continue;
+                    }
+                }
+                if (score >= aTierReq) {
+                    validParticipants.push([user, "A"]);
+                    continue;
+                }
+                if (score >= bTierReq) {
+                    validParticipants.push([user, "B"]);
+                    continue;
+                }
+                if (score >= cTierReq) {
+                    validParticipants.push([user, "C"]);
+                    continue;
+                }
+                if (score >= dTierReq) {
+                    validParticipants.push([user, "D"]);
+                    continue;
+                }
+                if (score >= eTierReq) {
+                    validParticipants.push([user, "E"]);
+                } else {
+                    validParticipants.push([user, "F"]); // answered at least one question correctly
+                }
+            }
+        }
         var wasElim = false;
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
-            eventElimPlayers.push(winnersNamesOnly[0]);
             wasElim = true;
         }
         var Safari = require('safari.js');
@@ -1036,7 +1107,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
 
             if (wasElim) {
-                var rewarding = eventElimPlayers.reverse();
+                var rewarding = eventElimPlayers;
                 for (var r = 0; r < 3 && r < rewarding.length; r++) {
                     Safari.triviaPromo(rewarding[r], r+1);
                 }
@@ -1059,16 +1130,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 for (var d = 0; d < winnersNamesOnly.length; d++){
                     this.sendAll(winnersNamesOnly[d],triviachan);
                 }
-                this.sendAll("Participation reward list",triviachan);
-                for (var d2 = 0; d2 < validParticipants.length; d2++){
-                    this.sendAll(validParticipants[d2],triviachan);
-                }
            }
             else {
                 //****NOTE***** that the players are in this array backwards (unless you've used .reverse() already)
                 for (var d3 = 0; d3 < eventElimPlayers.length; d3++){
                     this.sendAll(eventElimPlayers[d3],triviachan);
                 }
+            }
+            this.sendAll("Participation reward list",triviachan);
+            for (var d2 = 0; d2 < validParticipants.length; d2++){
+                this.sendAll(validParticipants[d2][0] + ", " + validParticipants[d2][1], triviachan);
             }
         }*/
         this.resetTrivia();
@@ -1206,6 +1277,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.suddenDeath = false;
     trivData.eventFlag = false;
     eventElimPlayers = [];
+    roundEliminated = [];
     answeredCorrectlyEver = [];
 };
 
@@ -1675,6 +1747,40 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "", id);
 };
 
+function eventSettings(file) {
+    this.file = file;
+    this.settings = [];
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "") {
+        sys.writeToFile(file, "[]");
+    }
+    try {
+        this.settings = JSON.parse(fileContent);
+    }
+    catch (e) {
+        sys.sendAll("Error loading saved event settings: " + e, revchan);
+    }
+}
+
+eventSettings.prototype.loadEventSettings = function () {
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "" || fileContent === "[]") { return; }
+    lastEventType = this.settings.lastEventType;
+    lastEventTime = this.settings.lastEventTime;
+    trivData.eventCooldown = this.settings.lastEventCooldown;
+    eventKnowRate = this.settings.eventKnowRate;
+    eventSpeedRate = this.settings.eventSpeedRate;
+    defaultKnowEventGoal = this.settings.defaultKnowEventGoal;
+    defaultSpeedEventGoal = this.settings.defaultSpeedEventGoal;
+    defaultElimEventGoal = this.settings.defaultElimEventGoal;
+    eventElimSignUp = this.settings.eventElimSignUp;
+};
+
+eventSettings.prototype.updateEventSettings = function () {
+    this.settings = {'lastEventType' : lastEventType, 'lastEventTime' : lastEventTime, 'lastEventCooldown' : trivData.eventCooldown, 'eventKnowRate' : eventKnowRate, 'eventSpeedRate' : eventSpeedRate, 'defaultKnowEventGoal' : defaultKnowEventGoal, 'defaultSpeedEventGoal' : defaultSpeedEventGoal, 'defaultElimEventGoal' : defaultElimEventGoal, 'eventElimSignUp' : eventElimSignUp};
+    sys.writeToFile(this.file, JSON.stringify(this.settings));
+};
+
 function pointsLB(file) {
     this.file = file;
     this.minLB = 7;
@@ -1949,8 +2055,25 @@ addUserCommand(["join"], function (src, commandData, channel) {
         return;
     }
     if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
-        Trivia.sendPM(src, "You can't join an elimination game other than during signups!", channel);
-        return;
+        if (Trivia.round > Trivia.maxPoints) {
+            Trivia.sendPM(src, "It is too late to join this game!", channel);
+            return; //without this, it tells them that they can't join, but then lets them join anyway
+        } else {
+            for (var q = 0; q <= Trivia.maxPoints; q++) {
+                if (q === Trivia.round) {
+                    Trivia.addPlayer(src);
+                    Trivia.triviaPlayers[src].points = Trivia.maxPoints - Trivia.round;
+                    if (Trivia.phase === "answer") { Trivia.triviaPlayers[src].points++; } // no need to penalize them twice if the don't answer correctly
+                    if (!Trivia.triviaPlayers[src].points) {
+                        Trivia.removePlayer(src);
+                        Trivia.sendPM(src, "It is too late to join this game!", channel);
+                        return;
+                    }
+                    Trivia.sendAll(sys.name(src) + " joined the game late with " + Trivia.triviaPlayers[src].points + (Trivia.triviaPlayers[src].points === 1 ? " life!" : " lives!"), triviachan);
+                    return;
+                }
+            }
+        }
     }
     if (Trivia.suggestion.suggester === src) {
         Trivia.sendPM(src, "You can't join the game right after suggesting a question, you cheater!", channel);
@@ -2187,19 +2310,22 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
         return;
     }
     if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
-       defaultKnowEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultKnowEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     if (gameType.toLowerCase() === "speed"){
-       defaultSpeedEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultSpeedEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     if (gameType.toLowerCase() === "elimination" || gameType.toLowerCase() === "elim"){
-       defaultElimEventGoal = newGoal;
-       triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-       return;
+        defaultElimEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
     }
     triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
 }, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
@@ -2232,10 +2358,59 @@ addOwnerCommand(["eventrates"], function (src, commandData, channel) {
     eventKnowRate = knowRateCheck;
     eventSpeedRate = speedRateCheck;
     var elimRate = 100 - (eventKnowRate + eventSpeedRate);
+    eventSets.updateEventSettings();
     Trivia.sendPM(src, "New Event Knowledge Rate: " + eventKnowRate + " %", channel);
     Trivia.sendPM(src, "New Event Speed Rate: " + eventSpeedRate + " %", channel);
     Trivia.sendPM(src, "New Event Elimination Rate: " + elimRate + " %", channel);
 }, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is know rate:speed rate.");
+
+addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
+        return;
+    }
+    var cooldown = getSeconds(commandData);
+    if (isNaN(cooldown)) {
+        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s");
+        return;
+    }
+    trivData.eventCooldown = cooldown;
+    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
+    lastEventTime = sys.time(); //reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
+
+addOwnerCommand(["enableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = true;
+    lastEventTime = sys.time(); // reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
+}, "Enables event elimination games.");
+
+addOwnerCommand(["disableevents"], function (src, commandData, channel) {
+    Trivia.eventModeOn = false;
+    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
+}, "Disable event elimination games.");
+
+addOwnerCommand(["seteventelimsignup"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, "The current signup duration is " + eventElimSignUp + " seconds.", channel);
+        return;
+    }
+    if (isNaN(commandData)) {
+        Trivia.sendPM(src, "Please enter a valid number.", channel);
+        return;
+    }
+    if (commandData < 45 || commandData > 600) {
+        Trivia.sendPM(src, "The duration must be at least 45 seconds and no more than 600 seconds.", channel);
+        return;
+    }
+    eventElimSignUp = parseInt(commandData);
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "The new signup duration is " + eventElimSignUp + " seconds.", channel);
+}, "Set the signup duration for event elimination games. Using no command fields allows you to view the current duration.");
 
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
@@ -3330,34 +3505,6 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
     }
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
 
-addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
-    if (commandData.length === 0) {
-        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
-        return;
-    }
-    var cooldown = getSeconds(commandData);
-    if (isNaN(cooldown)) {
-        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s")
-        return;
-    }
-    trivData.eventCooldown = cooldown;
-    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
-    lastEventTime = sys.time(); //reset timer
-    eventTimeChangeFlag = true;
-}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
-
-addOwnerCommand(["enableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = true;
-    lastEventTime = sys.time(); // reset timer
-    eventTimeChangeFlag = true;
-    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
-}, "Enables event elimination games.");
-
-addOwnerCommand(["disableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = false;
-    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
-}, "Disable event elimination games.");
-
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (!commandData) {
         return;
@@ -3568,7 +3715,9 @@ module.exports = {
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
             extLB = new pointsLB("trivialeaderboard.txt");
+            eventSets = new eventSettings("triviaeventsettings.txt");
         }
+        eventSets.loadEventSettings();
         //Trivia.sendAll("Trivia is now running!");
     },
 

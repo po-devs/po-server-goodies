@@ -3241,10 +3241,16 @@ function removebyes(key) {
             else if (tours.tour[key].players[z] == "~Bye~") {
                 opponent = tours.tour[key].players[z+1];
                 disqualify("~Bye~",key,true,false);
+                if (!tours.tour.hasOwnProperty(key)) {
+                    break;
+                }
             }
             else if (tours.tour[key].players[z+1] == "~Bye~") {
                 opponent = tours.tour[key].players[z];
                 disqualify("~Bye~",key,true,false);
+                if (!tours.tour.hasOwnProperty(key)) {
+                    break;
+                }
             }
             if (!isSub(opponent) && opponent != "~DQ~" && opponent != "~Bye~" && opponent !== null) {
                 advanced.push(html_escape(toCorrectCase(opponent)));
