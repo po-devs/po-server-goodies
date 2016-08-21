@@ -1050,54 +1050,45 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 eTierReq = parseInt(this.maxPoints) + 2;
             }
             for (var p = 0; p < loop; p++) {
-                    if (this.scoreType === "elimination") {
-                        user = eventElimPlayers[p];
-                        score = roundEliminated[p];
-                        if (p < 3 && p < (eventElimPlayers.length - 1)) {
-                            validParticipants.push([eventElimPlayers[p], "S"]);
-                            continue;
-                        }
-                        if (score >= aTierReq) {
-                            validParticipants.push([user, "A"]);
-                            continue;
-                        }
-                    } else {
-                        user = leaderboard[p][0];
-                        score = leaderboard[p][1];
-                        if (!score) { continue; }
-                        if (score >= sTierReq) {
-                            if (p < 3) {
-                                validParticipants.push([user, "S"]);
-                                continue;
-                            } else {
-                                validParticipants.push([user, "A"]); //for ties
-                                continue;
-                            }
-                        }
-                    }
-                    if (score < sTierReq && score >= aTierReq && this.scoreType !== "elimination") {
-                        validParticipants.push([user, "A"]);
+                if (this.scoreType === "elimination") {
+                    user = eventElimPlayers[p];
+                    score = roundEliminated[p];
+                    if (p < 3 && p < (eventElimPlayers.length - 1)) {
+                        validParticipants.push([eventElimPlayers[p], "S"]);
                         continue;
                     }
-                    if (score < aTierReq && score >= bTierReq) {
-                        validParticipants.push([user, "B"]);
+                } else {
+                    user = leaderboard[p][0];
+                    score = leaderboard[p][1];
+                    if (!score) { continue; }
+                    if (score >= sTierReq && p < 3) {
+                        validParticipants.push([user, "S"]);
                         continue;
-                    }
-                    if (score < bTierReq && score >= cTierReq) {
-                        validParticipants.push([user, "C"]);
-                        continue;
-                    }
-                    if (score < cTierReq && score >= dTierReq) {
-                        validParticipants.push([user, "D"]);
-                        continue;
-                    }
-                    if (score < dTierReq && score >= eTierReq) {
-                        validParticipants.push([user, "E"]);
-                    } else {
-                        validParticipants.push([user, "F"]); // answered at least one question correctly
                     }
                 }
+                if (score >= aTierReq) {
+                    validParticipants.push([user, "A"]);
+                    continue;
+                }
+                if (score >= bTierReq) {
+                    validParticipants.push([user, "B"]);
+                    continue;
+                }
+                if (score >= cTierReq) {
+                    validParticipants.push([user, "C"]);
+                    continue;
+                }
+                if (score >= dTierReq) {
+                    validParticipants.push([user, "D"]);
+                    continue;
+                }
+                if (score >= eTierReq) {
+                    validParticipants.push([user, "E"]);
+                } else {
+                    validParticipants.push([user, "F"]); // answered at least one question correctly
+                }
             }
+        }
         var wasElim = false;
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
             wasElim = true;
@@ -2066,7 +2057,7 @@ addUserCommand(["join"], function (src, commandData, channel) {
     if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
         if (Trivia.round > Trivia.maxPoints) {
             Trivia.sendPM(src, "It is too late to join this game!", channel);
-            return;
+            return; //without this, it tells them that they can't join, but then lets them join anyway
         } else {
             for (var q = 0; q <= Trivia.maxPoints; q++) {
                 if (q === Trivia.round) {
