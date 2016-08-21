@@ -707,12 +707,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return commandData;
     }
-    function tierBans(commandData) {
+    function tierBans(commandData, pokeId) {
         var stone = 0, aforme;
         if (commandData.indexOf(" ") !== -1) {
-            stone = sys.stoneForForme(pokeId);
             aforme = commandData.split(" ");
             pokeId = sys.pokeNum(aforme[1]);
+            stone = sys.stoneForForme(pokeId);
         } else {
             aforme = commandData.split("-");
             if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
@@ -804,7 +804,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
 
-        var allowed = tierBans(commandData);
+        var allowed = tierBans(commandData, pokeId);
         sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed, channel);
         return;
     }
@@ -816,7 +816,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
 
-        var allowed = tierBans(commandData);
+        var allowed = tierBans(commandData, pokeId);
         sys.sendHtmlMessage(src, "<b>" + sys.pokemon(sys.pokeNum(commandData)) + " is allowed in tiers: </b>" + allowed, channel);
         return;
     }
