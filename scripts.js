@@ -865,7 +865,7 @@ unban: function(type, src, tar, commandData) {
             return;
         }
         var ip = sys.dbIp(commandData);
-        if(ip !== undefined && memoryhash.get(ip)) {
+        if (ip !== undefined && memoryhash.get(ip)) {
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
             memoryhash.remove(ip);
             return;
@@ -877,11 +877,15 @@ unban: function(type, src, tar, commandData) {
         banbot.sendMessage(src, "He/she's not " + past, channel);
         return;
     }
-    if(SESSION.users(src)[type].active && tar == src) {
+    if (SESSION.users(src)[type].active && tar == src) {
        banbot.sendMessage(src, "You may not " + nomi + " yourself!", channel);
        return;
     }
-    SESSION.users(tar).un(type);
+    sys.playerIds().forEach(function(id) {
+        if (sys.loggedIn(id) && sys.ip(id) === sys.ip(tar) && SESSION.users(id).mute.active) {
+            SESSION.users(id).un(type);
+        }
+    });
     sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
 },
 
