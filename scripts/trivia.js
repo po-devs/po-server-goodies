@@ -33,6 +33,7 @@ var eventSpeedRate = 30;
 var eventElimSignUp = 90;
 var lastUsedCats = [];
 var eventElimPlayers = [];
+var roundEliminated = [];
 var answeredCorrectlyEver = [];
 var lastAdvertise = 0;
 var defaultKnowEventGoal = '12';
@@ -764,6 +765,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             totalPlayers++;
         }
     }
+    answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
     if (this.scoreType !== "speed") {
         if (this.scoreType === "elimination") {
             var allCorrect = true;
@@ -785,12 +787,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 if (this.player(name).points === 0) {
                     if(trivData.eventFlag && (this.round > this.maxPoints)){
                         sortArray.push(this.triviaPlayers[id].name);
+                        roundEliminated.push(this.round);
                     }
                     this.unjoin(id);
                 }
             }
             if (allCorrect && this.suddenDeath && answeredCorrectly.length) {
-                answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
                 var name = answeredCorrectly[answeredCorrectly.length - 1].name;
                 this.player(name).points--;
                 this.sendAll(name + " was the last player to answer the question, so they lose a life!");
@@ -800,6 +802,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     }
                     if (trivData.eventFlag){
                         sortArray.push(this.triviaPlayers[id2].name);
+                        roundEliminated.push(this.round);
                     }
                     this.unjoin(id2);
                 }
@@ -832,8 +835,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll("Answered correctly: " + correctNames.join(", "), triviachan);
     }
     else {
-        answeredCorrectly = answeredCorrectly.sort(function (a, b) { return a.time - b.time; });
-
         if (answeredCorrectly.length !== 0) {
             var points = 5;
             for (var i = 0; i < answeredCorrectly.length; i++) {
@@ -944,11 +945,6 @@ TriviaGame.prototype.finalizeAnswers = function () {
     for (var x in leaderboard) {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
-    for (var p in leaderboard) {
-        if (leaderboard[p][1] >= 1){// if they get at least one question right
-            validParticipants.push(leaderboard[p][0]);
-        }
-    }
     for (var y in leaderboard) {   //this sorts the winners
         if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
             winners.push(leaderboard[y][0] + " (" + leaderboard[y][1] + ")");
@@ -1032,9 +1028,78 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 lastCatGame++;
             }
         }
+        if (trivData.eventFlag && leaderboard.length !== 0) {
+            var user, score;
+            var loop = leaderboard.length;
+            var sTierReq = this.maxPoints;
+            var aTierReq = this.maxPoints * 0.9;
+            var bTierReq = this.maxPoints * 0.7;
+            var cTierReq = this.maxPoints * 0.5;
+            var dTierReq = this.maxPoints * 0.3;
+            var eTierReq = this.maxPoints * 0.1;
+            if (this.scoreType === "elimination") {
+                eventElimPlayers.push(winnersNamesOnly[0]);
+                eventElimPlayers.reverse();
+                roundEliminated.push(this.round);
+                roundEliminated.reverse();
+                loop = eventElimPlayers.length;
+                aTierReq = parseInt(this.maxPoints) + 6;
+                bTierReq = parseInt(this.maxPoints) + 5;
+                cTierReq = parseInt(this.maxPoints) + 4;
+                dTierReq = parseInt(this.maxPoints) + 3;
+                eTierReq = parseInt(this.maxPoints) + 2;
+            }
+            for (var p = 0; p < loop; p++) {
+                    if (this.scoreType === "elimination") {
+                        user = eventElimPlayers[p];
+                        score = roundEliminated[p];
+                        if (p < 3 && p < (eventElimPlayers.length - 1)) {
+                            validParticipants.push([eventElimPlayers[p], "S"]);
+                            continue;
+                        }
+                        if (score >= aTierReq) {
+                            validParticipants.push([user, "A"]);
+                            continue;
+                        }
+                    } else {
+                        user = leaderboard[p][0];
+                        score = leaderboard[p][1];
+                        if (!score) { continue; }
+                        if (score >= sTierReq) {
+                            if (p < 3) {
+                                validParticipants.push([user, "S"]);
+                                continue;
+                            } else {
+                                validParticipants.push([user, "A"]); //for ties
+                                continue;
+                            }
+                        }
+                    }
+                    if (score < sTierReq && score >= aTierReq && this.scoreType !== "elimination") {
+                        validParticipants.push([user, "A"]);
+                        continue;
+                    }
+                    if (score < aTierReq && score >= bTierReq) {
+                        validParticipants.push([user, "B"]);
+                        continue;
+                    }
+                    if (score < bTierReq && score >= cTierReq) {
+                        validParticipants.push([user, "C"]);
+                        continue;
+                    }
+                    if (score < cTierReq && score >= dTierReq) {
+                        validParticipants.push([user, "D"]);
+                        continue;
+                    }
+                    if (score < dTierReq && score >= eTierReq) {
+                        validParticipants.push([user, "E"]);
+                    } else {
+                        validParticipants.push([user, "F"]); // answered at least one question correctly
+                    }
+                }
+            }
         var wasElim = false;
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
-            eventElimPlayers.push(winnersNamesOnly[0]);
             wasElim = true;
         }
         var Safari = require('safari.js');
@@ -1051,7 +1116,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", safchan);
 
             if (wasElim) {
-                var rewarding = eventElimPlayers.reverse();
+                var rewarding = eventElimPlayers;
                 for (var r = 0; r < 3 && r < rewarding.length; r++) {
                     Safari.triviaPromo(rewarding[r], r+1);
                 }
@@ -1074,16 +1139,16 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 for (var d = 0; d < winnersNamesOnly.length; d++){
                     this.sendAll(winnersNamesOnly[d],triviachan);
                 }
-                this.sendAll("Participation reward list",triviachan);
-                for (var d2 = 0; d2 < validParticipants.length; d2++){
-                    this.sendAll(validParticipants[d2],triviachan);
-                }
            }
             else {
                 //****NOTE***** that the players are in this array backwards (unless you've used .reverse() already)
                 for (var d3 = 0; d3 < eventElimPlayers.length; d3++){
                     this.sendAll(eventElimPlayers[d3],triviachan);
                 }
+            }
+            this.sendAll("Participation reward list",triviachan);
+            for (var d2 = 0; d2 < validParticipants.length; d2++){
+                this.sendAll(validParticipants[d2][0] + ", " + validParticipants[d2][1], triviachan);
             }
         }*/
         this.resetTrivia();
@@ -1221,6 +1286,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.suddenDeath = false;
     trivData.eventFlag = false;
     eventElimPlayers = [];
+    roundEliminated = [];
     answeredCorrectlyEver = [];
 };
 
@@ -2000,6 +2066,7 @@ addUserCommand(["join"], function (src, commandData, channel) {
     if (Trivia.scoreType === "elimination" && Trivia.phase != "signups") {
         if (Trivia.round > Trivia.maxPoints) {
             Trivia.sendPM(src, "It is too late to join this game!", channel);
+            return;
         } else {
             for (var q = 0; q <= Trivia.maxPoints; q++) {
                 if (q === Trivia.round) {
