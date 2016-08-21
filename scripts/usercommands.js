@@ -269,7 +269,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** Pokémon Online Server Rules ***", channel);
-        sys.sendMessage(src, "", channel);  
+        sys.sendMessage(src, "", channel); 
         for (var num in script.rules) {
             for (var e in script.rules[num][language]) {
                 sys.sendMessage(src, script.rules[num][language][e], channel);
@@ -682,6 +682,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     function translate(commandData) {
         switch (commandData.toLowerCase()) {
             case "darmanitan-z": commandData = "Darmanitan-D"; break;
+            case "mr mime": commandData = "Mr. Mime"; break;
+            case "mime jr": commandData = "Mime Jr."; break;
             case "meloetta-p": commandData = "Meloetta-S"; break;
             case "hoopa-u": commandData = "Hoopa-B"; break;
             case "rotom-wash": commandData = "Rotom-W"; break;
@@ -709,10 +711,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     }
     function tierBans(commandData, pokeId) {
         var stone = 0, aforme;
-        if (commandData.indexOf(" ") !== -1) {
+        if (commandData.indexOf(".") !== -1) {
+            //Intentionally Empty. Like the vocabulary of a Mime.
+        } else if (commandData.indexOf(" ") !== -1 && commandData.indexOf("-") === -1) {
+            stone = sys.stoneForForme(pokeId); //needs to inherit from function before id is replaced below
             aforme = commandData.split(" ");
             pokeId = sys.pokeNum(aforme[1]);
-            stone = sys.stoneForForme(pokeId);
         } else {
             aforme = commandData.split("-");
             if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
@@ -722,7 +726,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
         for (var x = 0; x < tiers.length; x++) {
-            if (sys.isItemBannedFromTier(stone, tiers[x])) {
+            if (stone > 0 && sys.isItemBannedFromTier(stone, tiers[x])) {
                 break;
             }
             if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
