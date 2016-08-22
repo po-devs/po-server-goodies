@@ -504,10 +504,11 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         var mod = sys.name(src);
 
         if (sys.dbAuth(commandData) > 2) {
+            normalbot.sendMessage(src, commandData + "'s password could not be cleared as it is an owner account!", channel);
             return;
         }
         sys.clearPass(commandData);
-        normalbot.sendMessage(src, "" + commandData + "'s password was cleared!", channel);
+        normalbot.sendMessage(src, commandData + "'s password was cleared!", channel);
         if (tar !== undefined) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
             sys.sendNetworkCommand(tar, 14); // make the register button active again
