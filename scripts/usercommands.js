@@ -710,6 +710,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return commandData;
     }
     function tierBans(commandData, pokeId) {
+        if (pokeId == sys.pokeNum("Mega Rayquaza")) {
+            return "None"; //lazy way of doing it
+        }
         var stone = 0, aforme;
         if (commandData.indexOf(".") !== -1) {
             //Intentionally Empty. Like the vocabulary of a Mime.
