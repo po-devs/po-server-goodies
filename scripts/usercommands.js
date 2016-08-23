@@ -355,10 +355,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         };
         var printOnlineOffline = function (name) {
             name = name.toLowerCase();
-            if (sys.id(name) === undefined) {
-                sys.sendMessage(src, name, channel);
-            } else {
-                if (doNotShow.indexOf(name) === -1) {
+            if (doNotShow.indexOf(name) === -1) {
+                if (sys.id(name) === undefined) {
+                    sys.sendMessage(src, name, channel);
+                } else {
                     sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
                 }
             }
