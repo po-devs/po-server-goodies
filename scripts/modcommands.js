@@ -664,7 +664,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (!allowedToAlias(alias)) {
                 return;
             }
-            var status = (sys.id(alias) !== undefined) ? "online" : "Last Login: " + last_login;
+            var status = (sys.id(alias) !== undefined) ? "online, " + sys.os(sys.id(alias)) : "Last Login: " + last_login;
             smessage = smessage + alias + (noDates ? "" : " ("+status+")") + ", ";
             if (smessage.length > max_message_length) {
                 querybot.sendMessage(src, prefix + smessage + " ...", channel);
