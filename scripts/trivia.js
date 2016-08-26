@@ -513,13 +513,14 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     for (var p in players) {
         player_id = players[p];
         player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip] || trivData.eventFlag) //should probably flash for events regardless
+        if (trivData.toFlash[player_ip] || trivData.eventFlag) { //should probably flash for events regardless
             // Lazy way to flash Webclient people since saying their name should flash.
             // Probably a better way to do this.
             if (sys.os(player_id) === "webclient") {
                 Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
             }
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+        }
     }
     if (this.scoreType === "elimination") {
         this.phase = "signups";
