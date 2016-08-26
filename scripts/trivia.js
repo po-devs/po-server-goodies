@@ -516,7 +516,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         if (trivData.toFlash[player_ip] || trivData.eventFlag) //should probably flash for events regardless
             // Lazy way to flash Webclient people since saying their name should flash.
             // Probably a better way to do this.
-            if (sys.os(player_id) === "Webclient") {
+            if (sys.os(player_id) === "webclient") {
                 Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
             }
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
