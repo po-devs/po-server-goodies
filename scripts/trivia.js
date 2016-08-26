@@ -418,7 +418,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
             this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed" && this.catGame){
@@ -429,7 +429,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else if (this.catGame){
@@ -440,7 +440,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed"){
@@ -451,7 +451,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
     }
@@ -463,7 +463,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
             this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else {
@@ -474,7 +474,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
         else {
             ad = "A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
     }
@@ -496,7 +496,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", c);
             if (c === triviachan) {
                 this.sendAll(eventMessage, triviachan);
-                sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b>/join</b> to join!", triviachan);
+                sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
                 if (this.scoreType !== 'elimination'){
                     sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> <b>The game can continue until up to 3 players reach the goal!</b>", triviachan);
                 }
@@ -513,7 +513,12 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     for (var p in players) {
         player_id = players[p];
         player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip])
+        if (trivData.toFlash[player_ip] || trivData.eventFlag) //should probably flash for events regardless
+            // Lazy way to flash Webclient people since saying their name should flash.
+            // Probably a better way to do this.
+            if (sys.os(player_id) === "Webclient") {
+                Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
+            }
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
     }
     if (this.scoreType === "elimination") {
@@ -1896,7 +1901,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
         sys.sendMessage(src, "", id);
         sys.sendMessage(src, "*** Trivia Leaderboard (" + scoreType + ") ***", id);
         for (i = 0; i < lb.length; i++) {
-            if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()){
+            if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()) {
                 var x = i + 1;
                 if (scoreType === "knowledge"){
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point(s) and " + lb[i].regWins + " wins!", id);
@@ -1904,6 +1909,22 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point(s) and " + lb[i].speedWins + " wins!", id);
                 } else if (scoreType === "elimination"){
                     Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
+                }
+            }
+        }
+        sys.sendMessage(src, "", id);
+        var y = input.length - 1; //allow maxLength to still be optional
+        if (input[y] !== "" || input[y] !== undefined) {
+            for (i = 0; i < lb.length; i++) {
+                if (lb[i].name === input[y].toLowerCase()) {
+                    x = i + 1;
+                    if (scoreType === "knowledge"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point(s) and " + lb[i].regWins + " wins!", id);
+                    } else if (scoreType === "speed"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point(s) and " + lb[i].speedWins + " wins!", id);
+                    } else if (scoreType === "elimination"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
+                    }
                 }
             }
         }
@@ -2208,11 +2229,11 @@ addUserCommand(["qamount"], function (src, commandData, channel) {
 addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
     tsadmin.tAdminList(src, channel, "Trivia Super Admins");
     tadmin.tAdminList(src, channel, "Trivia Admins");
-}, "Gives a list of current trivia admins");
+}, "Gives a list of current trivia admins. /tas and /tadmins also work.");
 
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
-}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement.");
+}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
 
 addUserCommand(["start"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "knowledge");
