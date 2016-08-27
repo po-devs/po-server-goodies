@@ -10,6 +10,7 @@
         - tsadmins.txt
         - trivialeaderboard.txt
         - questiondata.txt
+        - triviaeventsettings.txt
 */
 /*global updateModule, script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, module, sachannel, staffchannel*/
 var Bot = require("bot.js").Bot;
@@ -85,12 +86,12 @@ for (var i = 0; i < neededData.length; ++i) {
         else if (data === "votingCooldown" && data !== "eventCooldown") {
             trivData[data] = 5;
         }
-        else if (data === "eventCooldown"){
+        else if (data === "eventCooldown") {
             trivData[data] = 14400;          //14400 would be every 4 hours
         }
-        else if (data === "eventFlag")      //used to determine if game should be normal or event
+        else if (data === "eventFlag") {     //used to determine if game should be normal or event
             trivData[data] = false;
-
+        }
         else {
             trivData[data] = {};
         }
@@ -410,75 +411,96 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             }
         }
     }
+    var players = sys.playersOfChannel(triviachan);
+    // Flash players who have it enabled
+    var player_id, player_ip;
+    for (var p in players) {
+        player_id = players[p];
+        player_ip = sys.ip(player_id);
+        if (trivData.toFlash[player_ip]) {
+            // Lazy way to flash Webclient people since saying their name should flash.
+            // Probably a better way to do this.
+            if (sys.os(player_id) === "webclient") {
+                Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
+            }
+            sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
+        }
+    }
     if (this.scoreType === "elimination" && this.catGame){
-        if (trivData.eventFlag){
+        if (trivData.eventFlag) {
             ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
             eventMessage = (name ? name + " opened signups for an EVENT elimination game " : "An EVENT elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds.";
         }
         else {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ".";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else if (this.scoreType === "speed" && this.catGame){
-        if (trivData.eventFlag){
+        if (trivData.eventFlag) {
             ad = "An EVENT speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             eventMessage = (name ? name + " has started an EVENT Speed Category Game! " : "An EVENT Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
             ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
-    else if (this.catGame){
+    else if (this.catGame) {
         if (trivData.eventFlag){
             ad = "An EVENT Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             eventMessage = (name ? name + " has started an EVENT Category Game! " : "An EVENT Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
             ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
-    else if (this.scoreType === "speed"){
+    else if (this.scoreType === "speed") {
         if (trivData.eventFlag){
             ad = "An EVENT speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             eventMessage = (name ? name + " started an EVENT Speed Trivia game! " : "An EVENT speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
             ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
     }
     else if (this.scoreType === "elimination") {
-        if (trivData.eventFlag){
+        if (trivData.eventFlag) {
             ad = "An EVENT elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
             eventMessage = (name ? name + " opened signups for an EVENT elimination game! " : "An EVENT elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in " + eventElimSignUp + " seconds!";
         }
         else {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
     else {
-        if (trivData.eventFlag){
+        if (trivData.eventFlag) {
             ad = "An EVENT #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             eventMessage = (name ? name + " started an EVENT Trivia game! " : "An EVENT trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
         }
         else {
             ad = "A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
+            sendChanAll("",triviachan);
             this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
-            sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+            triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
     }
-    if (!trivData.eventFlag){
+    if (!trivData.eventFlag) {
         if (time > lastAdvertise + 60 * 10) {
             lastAdvertise = time;
             sendChanAll("", 0);
@@ -496,9 +518,9 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             sendChanHtmlAll("<font color='#232FCF'><timestamp/>? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?:</font>", c);
             if (c === triviachan) {
                 this.sendAll(eventMessage, triviachan);
-                sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
+                triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
                 if (this.scoreType !== 'elimination'){
-                    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> <b>The game can continue until up to 3 players reach the goal!</b>", triviachan);
+                    triviabot.sendHtmlAll("<b>The game can continue until up to 3 players reach the goal!</b>", triviachan);
                 }
             } else {
                 this.sendAll(ad, c);
@@ -507,27 +529,12 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             sendChanAll("", c);
         }
     }
-    var players = sys.playersOfChannel(triviachan);
-    // Flash players who have it enabled
-    var player_id, player_ip;
-    for (var p in players) {
-        player_id = players[p];
-        player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip]) {
-            // Lazy way to flash Webclient people since saying their name should flash.
-            // Probably a better way to do this.
-            if (sys.os(player_id) === "webclient") {
-                Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
-            }
-            sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
-        }
-    }
     if (this.scoreType === "elimination") {
         this.phase = "signups";
         if (trivData.eventFlag){
             this.ticks = eventElimSignUp;
         }
-        else{
+        else {
             this.ticks = 45;
         }
     }
@@ -762,7 +769,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     }
     sendChanAll("", triviachan);
     var incorrectAnswers = wrongAnswers.length > 0 ? " Incorrect answers: " + wrongAnswers.join(", ") : "";
-    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Time's up!" + incorrectAnswers, triviachan);
+    triviabot.sendHtmlAll("Time's up!" + incorrectAnswers, triviachan);
 
     var correctNames = [];
     var totalPlayers = 0;
@@ -857,7 +864,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
 
     var x = answers.length != 1 ? "answers were" : "answer was";
-    sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
+    triviabot.sendHtmlAll("The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
 
     var leaderboard = [];
     var displayboard = [];
@@ -990,13 +997,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     var neededWinners = 1;             //winners needed to end game
     if (trivData.eventFlag && this.scoreType !== "elimination"){  //for event know and event speed, extend the game
-        if(totalPlayers > 3){neededWinners = 3;}
-        if(totalPlayers === 3){neededWinners = 2;}
+        if(totalPlayers > 3) { neededWinners = 3; }
+        if(totalPlayers === 3) { neededWinners = 2; }
         //otherwise, it's just 1.
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
          if (trivData.eventFlag) {
-             while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
+             while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints) {
                  var points = totalPlayers - i;
                  if (this.catGame) {points = points / 2;}
                  if (i > 0 && leaderboard[i][1] === leaderboard[i-1][1]){points = lastPoints;}
@@ -1021,10 +1028,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
         else {
             this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         }
-        sendChanHtmlAll("<font size=5><font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b> <font color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font></font></font>", triviachan);
-        sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
-        sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
-        sendChanHtmlAll("<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> Type /start [goal] to start a new game!", triviachan);
+        triviabot.sendHtmlAll("<font size=5 color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font>", triviachan);
+        triviabot.sendHtmlAll("We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
+        triviabot.sendHtmlAll("Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
+        triviabot.sendHtmlAll("Type /start [goal] to start a new game!", triviachan);
         if (this.catGame) {
             lastCatGame = 1;
             lastUsedCats = this.usingCats;
@@ -2482,7 +2489,7 @@ addAdminCommand(["flashtas"], function (src, commandData, channel) {
     for (var auth = 0; auth < admins.length; auth++) {
         for (var i = 0; i < admins[auth].admins.length; i++) {
             if (sys.id(admins[auth].admins[i]) !== undefined) {
-                sys.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<font color='#3daa68'><timestamp/> <b>±" + triviabot.name + ":</b></font> <b>You're needed in this channel!</b><ping/>", channel);
+                triviabot.sendHtmlMessage(sys.id(admins[auth].admins[i]), "<b>You're needed in this channel!</b><ping/>", channel);
             }
         }
     }
@@ -2684,7 +2691,7 @@ addAdminCommand(["changea"], function (src, commandData) {
         trivreview.checkq(id);
         return;
     }
-    triviabot.sendMessage(src, "No question");
+    triviabot.sendMessage(src, "No question", revchan);
 }, "Allows you to change an answer to a question in review, format /changea newanswer");
 
 addAdminCommand(["changeq"], function (src, commandData) {
@@ -2705,7 +2712,7 @@ addAdminCommand(["changeq"], function (src, commandData) {
         trivreview.checkq(id);
         return;
     }
-    triviabot.sendMessage(src, "No question");
+    triviabot.sendMessage(src, "No question", revchan);
 }, "Allows you to change the question to a question in review, format /changeq newquestion");
 
 addAdminCommand(["changec"], function (src, commandData) {
@@ -2726,7 +2733,7 @@ addAdminCommand(["changec"], function (src, commandData) {
         trivreview.checkq(id);
         return;
     }
-    triviabot.sendMessage(src, "No question");
+    triviabot.sendMessage(src, "No question", revchan);
 }, "Allows you to change the category to a question in review, format /changec newcategory");
 
 addAdminCommand(["changenotes"], function (src, commandData) {
