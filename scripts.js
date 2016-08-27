@@ -882,7 +882,7 @@ unban: function(type, src, tar, commandData) {
        return;
     }
     sys.playerIds().forEach(function(id) {
-        if (sys.loggedIn(id) && sys.ip(id) === sys.ip(tar) && SESSION.users(id).mute.active) {
+        if (sys.loggedIn(id) && sys.ip(id) === sys.ip(tar) && SESSION.users(id)[type].active) {
             SESSION.users(id).un(type);
         }
     });
