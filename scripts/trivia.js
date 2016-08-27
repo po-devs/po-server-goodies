@@ -1028,7 +1028,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         else {
             this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         }
-        triviabot.sendHtmlAll("<font size=5><font color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font></font>", triviachan);
+        triviabot.sendHtmlAll("<font size=5 color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font>", triviachan);
         triviabot.sendHtmlAll("We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
         triviabot.sendHtmlAll("Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
         triviabot.sendHtmlAll("Type /start [goal] to start a new game!", triviachan);
