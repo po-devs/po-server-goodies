@@ -31,6 +31,7 @@ var manualEventTime = Date.now() / 1000;
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
 var eventElimSignUp = 90;
+var eventModeOn = true;
 var lastUsedCats = [];
 var eventElimPlayers = [];
 var roundEliminated = [];
@@ -340,7 +341,6 @@ function TriviaGame() {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.lastvote = 0;
-    this.eventModeOn = true;
     this.votes = {};
     this.voting = true;
 }
@@ -513,7 +513,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     for (var p in players) {
         player_id = players[p];
         player_ip = sys.ip(player_id);
-        if (trivData.toFlash[player_ip] || trivData.eventFlag) { //should probably flash for events regardless
+        if (trivData.toFlash[player_ip]) {
             // Lazy way to flash Webclient people since saying their name should flash.
             // Probably a better way to do this.
             if (sys.os(player_id) === "webclient") {
@@ -995,7 +995,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         //otherwise, it's just 1.
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
-         if (trivData.eventFlag){
+         if (trivData.eventFlag) {
              while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints){
                  var points = totalPlayers - i;
                  if (this.catGame) {points = points / 2;}
@@ -1418,9 +1418,11 @@ TriviaGame.prototype.addAnswer = function (src, answer) {
 
 TriviaGame.prototype.stepHandler = function () {
     if (isNaN(this.ticks) || this.ticks < 0) {
-        if (this.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
+        if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
             this.phase = "event";
             this.phaseHandler();
+        } else {
+            trivData.eventFlag = false; //if somehow the flag gets set when it shouldn't, fix it.
         }
         return;
     }
@@ -2157,7 +2159,7 @@ addUserCommand(["vote"], function (src, commandData, channel) {
 }, "Vote for a category game.");
 
 addUserCommand(["nextevent"], function (src, commandData, channel) {
-    if (!Trivia.eventModeOn){
+    if (!eventModeOn) {
         Trivia.sendPM(src, "No events scheduled.", channel);
         return;
     }
@@ -2165,7 +2167,7 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
         Trivia.sendPM(src, "A trivia event game is currently running.", channel);
         return;
     }
-    if (Trivia.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
+    if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
         Trivia.sendPM(src, "Starts after this game.", channel);
         return;
     }
@@ -2241,10 +2243,12 @@ addUserCommand(["start"], function (src, commandData) {
 }, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
 
 addOwnerCommand(["eventstart"], function (src, commandData) {
-    trivData.eventFlag = true;
-    manualEventFlag = true;
-    manualEventTime = sys.time();
-    lastEventType = "knowledge";
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        lastEventType = "knowledge";
+    }
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start an Event trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -2253,10 +2257,12 @@ addUserCommand(["speed"], function (src, commandData) {
 }, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
 
 addOwnerCommand(["eventspeed"], function (src, commandData) {
-    trivData.eventFlag = true;
-    manualEventFlag = true;
-    manualEventTime = sys.time();
-    lastEventType = "speed";
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        lastEventType = "speed";
+    }
     Trivia.startTrivia(src, commandData, "speed");
 }, "Allows you to start an Event speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -2307,10 +2313,12 @@ addAdminCommand(["elimination", "elim"], function (src, commandData) {
 }, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
-    trivData.eventFlag = true;
-    manualEventFlag = true;
-    manualEventTime = sys.time();
-    lastEventType = "elimination";
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        lastEventType = "elimination";
+    }
     Trivia.startTrivia(src, commandData, "elimination");
 }, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
@@ -2404,7 +2412,7 @@ addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
 }, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
 
 addOwnerCommand(["enableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = true;
+    eventModeOn = true;
     lastEventTime = sys.time(); // reset timer
     eventTimeChangeFlag = true;
     eventSets.updateEventSettings();
@@ -2412,7 +2420,7 @@ addOwnerCommand(["enableevents"], function (src, commandData, channel) {
 }, "Enables event elimination games.");
 
 addOwnerCommand(["disableevents"], function (src, commandData, channel) {
-    Trivia.eventModeOn = false;
+    eventModeOn = false;
     Trivia.sendPM(src, "Event elimination games are disabled!", channel);
 }, "Disable event elimination games.");
 
@@ -3659,13 +3667,13 @@ module.exports = {
             var border = "<font color='#3daa68'><timestamp/><b>»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:</b></font>";
             sys.sendHtmlMessage(src, border, channel);
             sys.sendMessage(src, "*** NEXT TRIVIA EVENT ***", channel);
-            if (Trivia.eventModeOn) {
+            if (eventModeOn) {
                 if (trivData.eventFlag) {
                     Trivia.sendPM(src, "A trivia event game is currently running.", channel);
                     sys.sendHtmlMessage(src, border, channel);
                     return;
                 }
-                if (Trivia.eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())){
+                if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
                     Trivia.sendPM(src, "Starts after this game.", channel);
                     sys.sendHtmlMessage(src, border, channel);
                     return;
