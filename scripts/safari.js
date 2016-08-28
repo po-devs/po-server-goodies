@@ -14105,7 +14105,7 @@ function Safari() {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
             count++;
-        } while (this.firstAtk === this.secondAtk || count < 1 + level * 2 || type === "Normal");
+        } while (this.firstAtk === this.secondAtk && count < 1 + level * 2 && type === "Normal");
         this.firstAtk = sys.move(this.firstAtk);
         this.secondAtk = sys.move(this.secondAtk);
 
