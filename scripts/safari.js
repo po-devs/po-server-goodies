@@ -13048,7 +13048,7 @@ function Safari() {
             this.possibleBattlers[p] = pt;
             if (pt.length > 0) {
                 this.noBattlers = false;
-                this.shortcuts[p] = this.toShortcut(pt.map(poke));
+                this.shortcuts[p] = toShortcut(pt.map(poke));
                 this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]);
             } else {
                 this.individualmsg[p] = "None of your Pokémon can participate in this battle!";
