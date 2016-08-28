@@ -133,6 +133,8 @@ function Safari() {
             blkapricorn: 0,
             whtapricorn: 0,
             coupon: 0,
+            fossil: 0,
+            form: 0,
             burn: 0,
             soda: 0
         },
@@ -233,6 +235,7 @@ function Safari() {
         removedFromLB: false,
         secretBase: [],
         secretBaseCache: [],
+        baseValue: 0,
         costumes: [],
         savedParties: [],
         ninjaParty: [],
@@ -339,7 +342,7 @@ function Safari() {
 
         myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
         heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
+        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
         luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
         premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
         spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
@@ -364,6 +367,7 @@ function Safari() {
         silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
         entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
         coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
+        fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
 
         //Consumables (for useItem)
         rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
@@ -373,7 +377,8 @@ function Safari() {
         bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 50000, shinyChance: 32, legendaryChance: 128, aliases:["bright", "bright egg", "brightegg"], tradable: true},
         water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
         cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 5000, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
-        soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 130, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true},
+        soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true},
+        form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
 
         //Alchemy related items
         materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -506,6 +511,8 @@ function Safari() {
             burn: "A potion used to heal burns. Use /burn to give it to someone who may need it.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
+            fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\".",
+            form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\". Obtained from Official Events and Pyramid.",
             fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
@@ -596,7 +603,8 @@ function Safari() {
         pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score"], alias: "pyramid" },
         // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
         pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
-        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared",], alias: "elite cleared" }
+        eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared",], alias: "elite cleared" },
+        baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" }
     };
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this month", alts: ["caught monthly"], alias: "caught monthly", lastAlias: "caught last", file: "scriptdata/safari/monthlyPokesCaught.txt", lastDesc: "by successful catches during the last month"  },
@@ -4172,7 +4180,7 @@ function Safari() {
         var line1 = [/*money*/ "silver", "box", "entry", "gacha", "itemfinder", "gem", "dust", "rare", "spray", "mega", "bait", "rock"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "egg", "bright"];
         var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "philosopher"];
-        var line4 = ["pack", "water", "soda", "materia", "fragment", "cherry", "blkapricorn", "whtapricorn", "coupon", "burn", "golden", "stick"];
+        var line4 = ["pack", "water", "soda", "form", "materia", "fragment", "cherry", "blkapricorn", "whtapricorn", "coupon", "fossil", "burn", "golden", "stick"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -6200,7 +6208,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        var info = toCommandData(data, ["item", "target"]);
+        var info = toCommandData(data, ["item", "target", "reward", "extra1", "extra2"]);
         var item = itemAlias(info.item, true);
 
         if (!allItems.contains(item)) {
@@ -6380,6 +6388,192 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You drank some " + finishName("soda") + "! Your cooldown for the " + cap(id) + " quest changed from " + toColor(timeLeftString(n + remaining), "red") + " to " + toColor(timeLeftString(quest.cooldown), "blue") + "!", safchan);
             sys.sendMessage(src, "", safchan);
             this.saveGame(player);
+            return;
+        }
+        if (item === "form") {
+            var evType = getEventId(info.target);
+            if (!evType) {
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, "To start an event, use " + link("/use form:EventType:RewardSet", null, true) + ". You can learn about each event by typing " + link("/eventhelp") + ".", safchan);
+                safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory or Quiz.", safchan);
+                safaribot.sendMessage(src, "Reward Set is the number for the reward you wish to set for the event. Each event type has a set of pre-defined rewards. You can check the available sets by setting the Reward Set to 0.", safchan);
+                safaribot.sendHtmlMessage(src, "When starting a Faction War or Inverted War, you can type " + link("/use form:EventType:RewardSet:Team1:Team2", null, true) + " to choose the factions' names.", safchan);
+                sys.sendMessage(src, "", safchan);
+                return;
+            }
+            var sets = {
+                factionwar: [ //If 2 entries, each team gets a different reward. If only 1 entry, then same reward for both teams
+                    ["5@gacha"],
+                    ["3@silver"],
+                    ["1@gem"],
+                    ["10@rock"],
+                    ["3@pearl"],
+                    ["50@dust"],
+                    ["2@blkapricorn", "2@whtapricorn"],
+                    ["3@quick", "3@heavy"],
+                    ["3@myth", "3@clone"],
+                    ["4@clone", "4@premier"],
+                    ["5@luxury", "5@spy"],
+                    ["5@gacha", "1@gem"]
+                ],
+                race: [ //'reward' is required, rewardUnderdog and rewardFavorite are optional
+                    { reward: "5@gacha", rewardUnderdog: "8@gacha", rewardFavorite: "3@gacha" },
+                    { reward: "10@rock", rewardUnderdog: "13@rock", rewardFavorite: "7@rock" },
+                    { reward: "3@pearl", rewardUnderdog: "4@pearl", rewardFavorite: "2@pearl" },
+                    { reward: "50@dust", rewardUnderdog: "70@dust", rewardFavorite: "40@dust" },
+                    { reward: "4@silver", rewardUnderdog: "6@silver", rewardFavorite: "3@silver" },
+                    { reward: "4@luxury", rewardUnderdog: "6@luxury", rewardFavorite: "3@luxury" },
+                    { reward: "4@spy", rewardUnderdog: "6@spy", rewardFavorite: "3@spy" },
+                    { reward: "4@clone", rewardUnderdog: "6@clone", rewardFavorite: "3@clone" },
+                    { reward: "4@luxury", rewardUnderdog: "6@luxury", rewardFavorite: "3@luxury" },
+                    { reward: "3@quick", rewardUnderdog: "5@quick", rewardFavorite: "2@quick" },
+                    { reward: "3@myth", rewardUnderdog: "5@myth", rewardFavorite: "2@myth" },
+                    { reward: "6@gacha"}
+                ],
+                betrace: [ //Only underdog and favorite are optional, everything else is required
+                    { minBet: 100, maxBet: 1000, favorite: 2, underdog: 5, normal: 3, bet: "$", reward: "$" },
+                    { minBet: 2, maxBet: 10, favorite: 1.5, underdog: 3, normal: 2, bet: "silver", reward: "silver" },
+                    { minBet: 5, maxBet: 10, favorite: 200, underdog: 600, normal: 400, bet: "silver", reward: "$" },
+                    { minBet: 5, maxBet: 200, favorite: 20, underdog: 60, normal: 40, bet: "safari", reward: "$" },
+                    { minBet: 10, maxBet: 50, favorite: 0.1, underdog: 0.3, normal: 0.2, bet: "safari", reward: "silver" },
+                    { minBet: 10, maxBet: 50, favorite: 0.1, underdog: 0.3, normal: 0.2, bet: "safari", reward: "gacha" },
+                    { minBet: 1, maxBet: 50, favorite: 2, underdog: 6, normal: 4, bet: "rock", reward: "dust" },
+                    { minBet: 1, maxBet: 100, favorite: 35, underdog: 80, normal: 55, bet: "rock", reward: "$" },
+                    { minBet: 3, maxBet: 50, favorite: 0.33, underdog: 0.75, normal: 0.5, bet: "bait", reward: "gacha" }
+                ],
+                bfactory: [ //Must have 2 or 3 entries.
+                    ["10@gacha", "6@gacha"],
+                    ["2@gem", "1@gem"],
+                    ["8@gacha", "5@gacha", "2@gacha"],
+                    ["7@pearl", "5@pearl", "3@pearl"],
+                    ["7@silver", "5@silver", "3@silver"],
+                    ["100@dust", "60@dust", "30@dust"],
+                    ["7@luxury", "4@luxury", "2@luxury"],
+                    ["7@spy", "4@spy", "2@spy"],
+                    ["7@clone", "4@clone", "2@clone"],
+                    ["5@quick", "3@quick", "1@quick"],
+                    ["5@myth", "3@myth", "1@myth"],
+                    ["7@luxury", "4@luxury", "2@luxury"],
+                    ["1@burn,$800", "$500", "$250"]
+                ]
+            };
+            
+            var rewardSet = parseInt(info.reward || "0", 10);
+            var sub, p = evType;
+            if (evType === "invertedwar") {
+                p = "factionwar";
+            } else if (["lcbfactory", "quiz"].contains(evType)) {
+                p = "bfactory";
+            }
+            var picked = sets[p], rew;
+            if (isNaN(rewardSet) || rewardSet < 1 || rewardSet > picked.length) {
+                safaribot.sendHtmlMessage(src, "<b>Reward sets for " + getEventName(evType) + ": </b>", safchan);
+                var betRange = function(min, max, asset) {
+                    if (asset === "$") {
+                        return "$" + addComma(min)+"~$" + addComma(max);
+                    } else {
+                        return min+"~"+plural(max, translateAsset(asset).id);
+                    }
+                };
+                var getPayout = function(value, reward, bet) {
+                    if (value >= 1) {
+                        return (reward !== "$" ? plural(value, reward) : "$" + addComma(value)) + " for each " + mapAssetName(bet);
+                    } else {
+                        var val = Math.round(1/value);
+                        return (reward !== "$" ? plural(1, reward) : "$" + addComma(1)) + " for each " + (bet === "$" ? "$" + addComma(val) : plural(val, mapAssetName(bet)));
+                    }
+                };
+                for (var r = 0; r < picked.length; r++) {
+                    rew = picked[r];
+                    if (p === "factionwar") {
+                        if (rew.length === 1) {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew[0]), safchan);
+                        } else {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew[0]) + " for Team 1, " + translateStuff(rew[1]) + " for Team 2", safchan);
+                        }
+                    }
+                    else if (p === "race") {
+                        if (rew.rewardUnderdog || rew.rewardFavorite) {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + (rew.rewardUnderdog ? translateStuff(rew.rewardUnderdog) + " for Underdog, " : "") + (rew.rewardFavorite ? translateStuff(rew.rewardFavorite) + " for Favorite, " : "") + translateStuff(rew.reward) + " for others", safchan);
+                        } else {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew.reward), safchan);
+                        }
+                    }
+                    else if (p === "betrace") {
+                        sub = [];
+                        if (rew.reward === rew.bet) {
+                            if (rew.underdog) {
+                                sub.push(rew.underdog + "x if Underdog");
+                            }
+                            if (rew.favorite) {
+                                sub.push(rew.favorite + "x if Favorite");
+                            }
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": Bet: " + betRange(rew.minBet, rew.maxBet, rew.bet) + " | Payout: " + rew.normal+"x the bet" + (sub.length ? " (" + sub.join(", ") + ")": ""), safchan);
+                        } else {
+                            sub.push(getPayout(rew.normal, rew.reward, rew.bet));
+                            if (rew.underdog) {
+                                sub.push(getPayout(rew.underdog, rew.reward, rew.bet) + " if Underdog");
+                            }
+                            if (rew.favorite) {
+                                sub.push(getPayout(rew.favorite, rew.reward, rew.bet) + " if Favorite");
+                            }
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": Bet: " + betRange(rew.minBet, rew.maxBet, rew.bet) + " | Payout: " + sub.join(", "), safchan);
+                        }
+                    }
+                    else if (p === "bfactory") {
+                        safaribot.sendMessage(src, "Set " + (r+1) + ": 1st place: " + translateStuff(rew[0]) + " | 2nd place: " + translateStuff(rew[1]) + (rew.length > 2 ? " | 3rd place: " + translateStuff(rew[2]): ""), safchan);
+                    }
+                }
+                return;
+            }
+            var reward = picked[rewardSet-1];
+            if (currentEvent) {
+                safaribot.sendMessage(src, "There's already an event going on!", safchan);
+                return;
+            }
+            if (contestCooldown <= 181) {
+                safaribot.sendMessage(src, "You can't start an event with less than 3 minutes before the next contest starts!", safchan);
+                return;
+            }
+            if (["factionwar", "invertedwar"].contains(evType) && info.extra1 !== null && info.extra2 !== null && info.extra1.toLowerCase() === info.extra2.toLowerCase()) {
+                safaribot.sendMessage(src, "Please choose different names for each faction!", safchan);
+                return;
+            }
+            
+            var ev;
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendMessage(src, "You filled all details required and submitted the " + finishName("form") + "! Your event was approved and will start now!", safchan);
+            switch (evType) {
+                case "factionwar":
+                case "invertedwar":
+                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, 722));
+                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, 722));
+                    
+                    while (extra1.toLowerCase() === extra2.toLowerCase()) {
+                        extra2 = sys.pokemon(sys.rand(1, 722));
+                    }
+                    
+                    ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1]);
+                break;
+                case "race":
+                    ev = new PokeRace(src, "normal", reward);
+                break;
+                case "betrace":
+                    ev = new PokeRace(src, "bet", reward);
+                break;
+                case "bfactory":
+                case "lcbfactory":
+                    ev = new BFactory(src, reward[0], reward[1], reward[2], evType == "lcbfactory");
+                break;
+                case "quiz":
+                    ev = new Quiz(src, reward[0], reward[1], reward[2]);
+                break;
+            }
+            
+            player.balls.form -= 1;
+            safari.saveGame(player);
+            currentEvent = ev;
+            safari.flashPlayers();
             return;
         }
         if (item === "cherry") {
@@ -6566,6 +6760,9 @@ function Safari() {
         }
 
         this.logLostCommand(sys.name(src), "sell " + data, theft);
+        if (isRare(id)) {
+            sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + "::\n");
+        }
         this.saveGame(player);
     };
     this.showPrices = function(src, shop, command, seller) {
@@ -6841,6 +7038,15 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Please choose a valid amount!", safchan);
             return;
         }
+        if (input.type === "item" && !fromNPC) {
+            var iData = itemData[input.id];
+            if (iData.tradeReq && seller.balls[input.id] - amount < iData.tradeReq) {
+                safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + plural(sys.rand(1, 10), "second") + " ago!", safchan);
+                safaribot.sendMessage(sellerId, "You can't sell " + input.name + " unless you have more than " + iData.tradeReq + " of those! Removing them from your shop!", safchan);
+                delete seller.shop[input.input];
+                return;
+            }
+        }
 
         if (shop[input.input].limit !== -1 && shop[input.input].limit - amount < 0) {
             if (fromNPC) {
@@ -6996,7 +7202,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You can only set a shop after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                 return;
             }
-            if (cantBecause(src, reason, ["contest", "auction", "battle", "event"])) {
+            if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid"])) {
                 return;
             }
         }
@@ -7198,6 +7404,26 @@ function Safari() {
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
             }
+            
+            reward = {};
+            for (e = player.secretBase.length; e--; ) {
+                temp = randomSample(decorations[player.secretBase[e].deco].drops);
+                if (temp !== "none") {
+                    temp = toStuffObj(temp);
+                    for (t in temp) {
+                        if (!reward.hasOwnProperty(t)) {
+                            reward[t] = 0;
+                        }
+                        reward[t] = temp[t];
+                    }
+                }
+            }
+            out = giveStuff(player, reward, true);
+            if (out.gained.length > 0) {
+                safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", safchan);
+            } else if (out.discarded.length > 0) {
+                safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", safchan);
+            }
         }
         this.saveGame(player);
     };
@@ -7383,7 +7609,7 @@ function Safari() {
         }
         SESSION.users(src).secretBaseView = now() + (src === id ? 30 : 60) * 1000;
 
-        safaribot.sendMessage(src, sys.name(id) + "'s Secret Base:", safchan);
+        safaribot.sendMessage(src, sys.name(id) + "'s Secret Base (Value: " + addComma(target.baseValue) + "):", safchan);
         this.printBase(src, target.secretBaseCache, src === id);
     };
     this.printBase = function(src, base, isSelf) {
@@ -7492,6 +7718,10 @@ function Safari() {
         }
         player.secretBase.push({ deco: deco, x: x, y: y});
         player.secretBaseCache = this.cacheBase(player.secretBase);
+        player.baseValue = 0;
+        for (e = player.secretBase.length; e--; ) {
+            player.baseValue += decorations[player.secretBase[e].deco].points;
+        }
         this.saveGame(player);
         safaribot.sendMessage(src, "You added the " + decorations[deco].name + " to the position " + (x+1) + "," + (y+1) + "!", safchan);
     };
@@ -7995,6 +8225,11 @@ function Safari() {
         
         this.p1MoveCodes = {};
         this.p2MoveCodes= {};
+        
+        this.protectCount1 = 0;
+        this.protectCount2 = 0;
+        this.usedProtect1 = false;
+        this.usedProtect2 = false;
 
         if (isNPC) {
             this.name2 = player2.name;
@@ -8255,6 +8490,15 @@ function Safari() {
                 }
             }
             
+            if (!this.usedProtect1) {
+                this.protectCount1 = 0;
+            }
+            this.usedProtect1 = false;
+            if (!this.usedProtect2) {
+                this.protectCount2 = 0;
+            }
+            this.usedProtect2 = false;
+            
             var checkWin = function() {
                 var defeated = true;
                 for (i = 0; i < self.team1.length; i++) {
@@ -8418,7 +8662,8 @@ function Safari() {
             name = user.owner + "'s " + poke(user.id),
             tname = target.owner + "'s " + poke(target.id),
             party = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.team1 : this.team2,
-            oppparty = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.team2 : this.team1;
+            oppparty = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.team2 : this.team1,
+            protectUses = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.protectCount1 : this.protectCount2;
         
         if (move.restore) {
             if (user.hp < user.maxhp) {
@@ -8528,8 +8773,20 @@ function Safari() {
             }
         }
         if (move.protect) {
-            user.protect = true;
-            out.push(name + " protects itself!");
+            protectUses++;
+            if (chance(3/Math.pow(3, protectUses))) {
+                user.protect = true;
+                out.push(name + " protects itself!");
+            } else {
+                protectUses = 0;
+            }
+            if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
+                this.protectCount1 = protectUses;
+                this.usedProtect1 = true;
+            } else {
+                this.protectCount2 = protectUses;
+                this.usedProtect2 = true;
+            }
         }
         
         if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
@@ -9019,7 +9276,7 @@ function Safari() {
         return isImmune;
     };
     Battle2.prototype.chooseNPCMove = function(moves, team, opponent) {
-        var moveChance = {}, move, user, e, o, opp, val, c, m, eff;
+        var moveChance = {}, move, user, e, o, opp, val, c, m, eff, alive = 0;
         for (e in moves) {
             c = 0;
             move = moves[e];
@@ -9074,9 +9331,6 @@ function Safari() {
                     }
                 }
             }
-            if (move.protect) {
-                c += 30;
-            }
             if (move.buff) {
                 for (m = move.buff.length; m--; ) {
                     eff = move.buff[m];
@@ -9096,7 +9350,27 @@ function Safari() {
             if (move.restore) {
                 c += move.restore * 280 * (1 - (user.hp / user.maxhp));
             }
+            if (move.protect) {
+                c += 30;
+                if (this.protectCount2 > 0) {
+                    c = c / (this.protectCount2+1);
+                }
+            }
             moveChance[e] = Math.max(Math.round(c * c / 100), 0);
+        }
+        for (e = team.length; e--; ) {
+            if (team[e].hp > 0) {
+                alive++;
+            }
+        }
+        var exclude = [0, 1, 3][alive-1];
+        var ordered = Object.keys(moveChance).sort(function(a, b){
+            return moveChance[a] - moveChance[b];
+        });
+        while (exclude) {
+            e = ordered.shift();
+            delete moveChance[e];
+            exclude--;
         }
         
         return randomSample(moveChance);
@@ -11270,6 +11544,7 @@ function Safari() {
 
         switch (action) {
             case "start":
+            case "fossil":
                 var name = sys.name(src);
                 if (player.records.pokesCaught < 4) {
                     safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
@@ -11279,9 +11554,17 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: You need to wait " + timeLeftString(quest.cooldown) + " before starting another Pyramid quest (you can join someone else's meanwhile)!", safchan);
                     return;
                 }
-                if (player.money < cost) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: You need $" + addComma(cost) + " to enter the Pyramid!", safchan);
-                    return;
+                var isVoucher = action === "fossil";
+                if (isVoucher) {
+                    if (player.balls.fossil < 1) {
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: You need " + plural(1, "fossil") + " to enter the Pyramid!", safchan);
+                        return;
+                    }
+                } else {
+                    if (player.money < cost) {
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: You need $" + addComma(cost) + " to enter the Pyramid!", safchan);
+                        return;
+                    }
                 }
                 if (stopQuests.pyramid) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
@@ -11334,7 +11617,8 @@ function Safari() {
 
                 pyramidRequests[player.id] = {
                     invites: {},
-                    deadline: now() + 60*1000
+                    deadline: now() + 60*1000,
+                    usingVoucher: isVoucher
                 };
                 pyramidRequests[player.id].invites[n1] = false;
                 pyramidRequests[player.id].invites[n2] = false;
@@ -11409,6 +11693,7 @@ function Safari() {
 
                 safaribot.sendMessage(src, "You joined " + leader.toCorrectCase() + " on their Pyramid quest!", safchan);
                 safaribot.sendMessage(sys.id(leader), sys.name(src) + " accepted your invitation to the Pyramid quest!", safchan);
+                var isVoucher = req.usingVoucher;
 
                 if (isReady) {
                     var players = [leader].concat(Object.keys(req.invites));
@@ -11435,22 +11720,35 @@ function Safari() {
                                 unavailable.push(n + " is already participating in a Pyramid quest");
                             }
                         }
-                        if (n == leader && p.money < cost) {
-                            unavailable.push(n + " doesn't have $" + addComma(cost) + " for the entry fee");
+                        if (n == leader) {
+                            if (!isVoucher && p.money < cost) {
+                                unavailable.push(n + " doesn't have $" + addComma(cost) + " for the entry fee");
+                            } else if (isVoucher && p.balls.fossil < 1) {
+                                unavailable.push(n + " doesn't have " + plural(1, "fossil") + " for the entry fee");
+                            }
                         }
                     }
                     if (unavailable.length > 0) {
-                        for (e = players.length-1; e--;) {
+                        for (e = players.length; e--;) {
                             safaribot.sendMessage(sys.id(players[e]), "Pyramid Quest couldn't be started due to the following reasons: " + unavailable.join(", "), safchan);
                         }
                         return;
                     }
                     var leaderPlayer = getAvatarOff(leader);
-                    leaderPlayer.money -= cost;
+                    if (isVoucher) {
+                        leaderPlayer.balls.fossil -= 1;
+                    } else {
+                        leaderPlayer.money -= cost;
+                    }
                     this.saveGame(leaderPlayer);
 
                     players = players.map(getAvatarOff);
-                    currentPyramids.push(new Pyramid(players[0], players[1], players[2]));
+                    if (isVoucher) {
+                        safaribot.sendHtmlMessage(sys.id(leader), trainerSprite + "Pyramid Guide: Hey, you need to pay $" + addComma(cost) + " if you want to... Oh, that's a nice " + finishName("fossil") + " you have there! Oh, you are giving it to me? Superb! If anyone asks, I didn't see you entering the Pyramid.", safchan);
+                    } else {
+                        safaribot.sendHtmlMessage(sys.id(leader), trainerSprite + "Pyramid Guide: You paid $" + addComma(cost) + " to enter the Pyramid!", safchan);
+                    }
+                    currentPyramids.push(new Pyramid(players[0], players[1], players[2], req.usingVoucher));
 
                     delete pyramidRequests[leader];
                 }
@@ -11468,6 +11766,7 @@ function Safari() {
             default:
                 safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Welcome to the Pyramid, a place for those looking for a thrilling challenge!", safchan);
                 safaribot.sendHtmlMessage(src, "Pyramid Guide: To learn more about the Pyramid, type " + link("/quest pyramid:help") + "! To enter the Pyramid, pay $" + addComma(cost) + " and invite 2 other players with " + link("/quest pyramid:start:Name1:Name2", null, true) + " to join you!", safchan);
+                safaribot.sendHtmlMessage(src, "Pyramid Guide: If you have " + an(finishName("fossil")) + ", you can type " + link("/quest pyramid:fossil:Name1:Name2", null, true) + " to use it instead of paying $" + addComma(cost) + ". ", safchan);
                 sys.sendMessage(src, "", safchan);
         }
     };
@@ -11593,13 +11892,17 @@ function Safari() {
         }
 
         safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Yo yo yo yo yo. Less blow stuff up Princess Fluffybutt!", safchan);
-        var lostPoke = false;
+        var lostPoke = false, lostRare = [];
         if (chance(recipes[item].failChance)) {
             var failUses = {}, lostStuff = {};
             for (var e in rec.failUses) {
                 failUses[e] = -rec.failUses[e];
-                if (translateAsset(e).type === "poke") {
+                asset = translateAsset(e);
+                if (asset.type === "poke") {
                     lostPoke = true;
+                    if (isRare(asset.id)) {
+                        lostRare.push(poke(asset.id));
+                    }
                     lostStuff[e] = rec.failUses[e];
                 }
             }
@@ -11616,13 +11919,21 @@ function Safari() {
             var ingUsed = {};
             for (var e in rec.ingredients) {
                 ingUsed[e] = -rec.ingredients[e];
-                if (translateAsset(e).type === "poke") {
+                asset = translateAsset(e);
+                if (asset.type === "poke") {
                     lostPoke = true;
+                    if (isRare(asset.id)) {
+                        lostRare.push(poke(asset.id));
+                    }
                 }
             }
             for (e in rec.reward) {
-                if (translateAsset(e).type === "poke" && rec.reward[e] < 0) {
+                asset = translateAsset(e);
+                if (asset.type === "poke" && rec.reward[e] < 0) {
                     lostPoke = true;
+                    if (isRare(asset.id)) {
+                        lostRare.push(poke(asset.id));
+                    }
                 }
             }
             giveStuff(player, ingUsed, true);
@@ -11635,6 +11946,9 @@ function Safari() {
             }
             if (lostPoke) {
                 this.logLostCommand(sys.name(src), "quest alchemist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
+                if (lostRare.length > 0) {
+                    sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Alchemist by " + sys.name(src) + "::\n");
+                }
             }
         }
         this.saveGame(player);
@@ -11658,16 +11972,17 @@ function Safari() {
             }
             var morph = eligible[base];
             var confirmation = data.length > 1 && ["confirm", "finish"].contains(data[1].toLowerCase());
+            var cost = morph.cost + (info.shiny ? 1 : 0);
             
             if (!confirmation) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " I guess I will need " + plural(morph.cost, "philosopher") + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " I guess I will need " + plural(cost, "philosopher") + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
                 return;
             } else {
                 if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
                     return;
                 }
-                if (player.balls.philosopher < morph.cost) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Did you listen to what I said? I can't transform " + info.name + " without " + plural(morph.cost, "philosopher") + ", so don't use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " until you got them all!", safchan);
+                if (player.balls.philosopher < cost) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Did you listen to what I said? I can't transform " + info.name + " without " + plural(cost, "philosopher") + ", so don't use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " until you got them all!", safchan);
                     return;
                 }
                 if (!canLosePokemon(src, info.input, "give")) {
@@ -11681,15 +11996,15 @@ function Safari() {
                     result = result + "";
                 }
                 
-                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(morph.cost, "philosopher") + ", so let's start this!", safchan);
-                player.balls.philosopher -= morph.cost;
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(cost, "philosopher") + ", so let's start this!", safchan);
+                player.balls.philosopher -= cost;
                 this.evolvePokemon(src, info, result, "was transmutated into");
                 safaribot.sendHtmlMessage(src, "Alchemist: We did it! Your " + info.name + " is now a " + poke(result) + "!", safchan);
                 player.records.philosopherTransmutations += 1;
-                player.records.philosopherTransmutationsCost += morph.cost;
+                player.records.philosopherTransmutationsCost += cost;
                 this.saveGame(player);
-                if (isRare(result)) {
-                    sys.appendToFile(mythLog, now() + "|||" + poke(result) + "::was transmuted from " + info.name + " by " + sys.name(src) + " using " + plural(morph.cost, "philosopher") + "::\n");
+                if (isRare(result) || isRare(info.id)) {
+                    sys.appendToFile(mythLog, now() + "|||" + poke(result) + "::was transmuted from " + info.name + " by " + sys.name(src) + " using " + plural(cost, "philosopher") + "::\n");
                 }
             }
         }
@@ -12185,7 +12500,7 @@ function Safari() {
     }
 
     /* Pyramid */
-    function Pyramid(p1, p2, p3) {
+    function Pyramid(p1, p2, p3, usingVoucher) {
         this.finished = false;
 
         this.leader = p1.id;
@@ -12193,6 +12508,7 @@ function Safari() {
         this.names = [p1.id, p2.id, p3.id];
         this.fullNames = this.names.map(function(x) { return x.toCorrectCase(); });
         this.viewers = [p1.id, p2.id, p3.id];
+        this.usingVoucher = usingVoucher;
 
         this.level = 1;
         this.room = 0;
@@ -12290,7 +12606,7 @@ function Safari() {
                 break;
                 case "hazard":
                     this.currentRoom = new HazardRoom(this, this.level, this.room);
-                    roomDuration = this.level > 3 ? 4 : 3;
+                    roomDuration = this.level > 3 ? 5 : 4;
                 break;
                 case "blocked":
                     this.currentRoom = new BlockedRoom(this, this.level, this.room);
@@ -12480,7 +12796,7 @@ function Safari() {
             name = this.names[e];
             player = getAvatarOff(name);
             if (name === this.leader) {
-                player.quests.pyramid.cooldown = now() + 45*60*1000;
+                player.quests.pyramid.cooldown = now() + (this.usingVoucher ? 15 : 45)*60*1000;
                 if (this.points > player.records.pyramidLeaderScore) {
                     player.records.pyramidLeaderScore = this.points;
                 }
@@ -12493,7 +12809,7 @@ function Safari() {
                 }
             } else {
                 if (player.quests.pyramid.cooldown < now()) {
-                    player.quests.pyramid.cooldown = now() + 15*60*1000;
+                    player.quests.pyramid.cooldown = now() + (this.usingVoucher ? 0 : 15)*60*1000;
                 }
                 if (this.points > player.records.pyramidHelperScore) {
                     player.records.pyramidHelperScore = this.points;
@@ -12732,7 +13048,7 @@ function Safari() {
             this.possibleBattlers[p] = pt;
             if (pt.length > 0) {
                 this.noBattlers = false;
-                this.shortcuts[p] = toShortcut(pt.map(poke));
+                this.shortcuts[p] = this.toShortcut(pt.map(poke));
                 this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]);
             } else {
                 this.individualmsg[p] = "None of your Pokémon can participate in this battle!";
@@ -13789,7 +14105,7 @@ function Safari() {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
             count++;
-        } while (this.firstAtk === this.secondAtk && count < 1 + level * 2 && type === "Normal");
+        } while (this.firstAtk === this.secondAtk || count < 1 + level * 2 || type === "Normal");
         this.firstAtk = sys.move(this.firstAtk);
         this.secondAtk = sys.move(this.secondAtk);
 
@@ -14526,6 +14842,67 @@ function Safari() {
     };
 
     /* Events */
+    function getEventName(id) {
+        switch (id) {
+            case "factionwar":
+                return "Faction War";
+            case "invertedwar":
+                return "Inverted Faction War";
+            case "race":
+                return "Pokémon Race";
+            case "betrace":
+                return "Pokémon Bet Race";
+            case "bfactory":
+                return "Battle Factory";
+            case "lcbfactory":
+                return "LC Battle Factory";
+            case "quiz":
+                return "Quiz";
+            default:
+                return "No Event";
+        }
+    }
+    function getEventId(name) {
+        if (!name) {
+            return null;
+        }
+        switch (name.toLowerCase()) {
+            case "war":
+            case "factionwar":
+            case "faction war":
+            case "faction":
+                return "factionwar";
+            case "inverwar":
+            case "invertedwar":
+            case "inverted war":
+            case "inverted faction war":
+                return "invertedwar";
+            case "race":
+            case "pokerace":
+                return "race";
+            case "betrace":
+            case "bet race":
+                return "betrace";
+            case "bf":
+            case "factory":
+            case "bfactory":
+            case "battlefactory":
+            case "battle factory":
+                return "bfactory";
+            case "lcbf":
+            case "lc bf":
+            case "lcfactory":
+            case "lcbfactory":
+            case "lcbattlefactory":
+            case "lc battlefactory":
+            case "lc battle factory":
+                return "lcbfactory";
+            case "quiz":
+                return "quiz";
+            default:
+                return null;
+        }
+    }
     function SafariEvent(src) {
         this.hostName = sys.name(src);
         this.eventName = "Safari Event";
@@ -16006,7 +16383,6 @@ function Safari() {
         }
 
         if (type === "bet") {
-
             this.minBet = data.minBet || 10;
             this.maxBet = data.maxBet || 1000;
 
@@ -16618,6 +16994,9 @@ function Safari() {
                         case "pyramidScore":
                             player.value = Math.max(data.records.pyramidLeaderScore, data.records.pyramidHelperScore) || 0;
                         break;
+                        case "baseValue":
+                            player.value = data.baseValue || 0;
+                        break;
                         default:
                             player.value = "records" in data ? (data.records[i] || 0 ): 0;
                         break;
@@ -16744,7 +17123,7 @@ function Safari() {
                 n = generateComplexName();
                 trainer.name = (t === 2 ? "Gym Leader" : trainerClasses.random()) + " " + n;
                 trainer.desc = "Gym NPC";
-                trainer.party = generateTeam(9, 340 + t*75, 595 + t*10, t+1, null, t === 2);
+                trainer.party = generateTeam(9, 340 + t*75, 595 + t*10, t+1, null, true);
                 if (t === 2) {
                     i = sys.rand(0, 9);
                     trainer.party[i] = trainer.party[i] + "";
@@ -17573,16 +17952,16 @@ function Safari() {
         var rew;
         switch (placing) {
             case 1:
-                player.balls.golden += 3;
-                rew = plural(3, "golden");
+                player.balls.soda += 3;
+                rew = plural(3, "soda");
             break;
             case 2:
-                player.balls.golden += 2;
-                rew = plural(2, "golden");
+                player.balls.soda += 2;
+                rew = plural(2, "soda");
             break;
             case 3:
-                player.balls.golden += 1;
-                rew = plural(1, "golden");
+                player.balls.soda += 1;
+                rew = plural(1, "soda");
             break;
             default:
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
@@ -17756,7 +18135,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** EVENTS INFORMATION ***", safchan);
         sys.sendMessage(src, "", safchan);
-        sys.sendMessage(src, "Faction War: Players join one of the two teams to battle each other. Pokémon defeated are eliminated from the battle. The team that defeats the all Pokémon from the other side first wins.", safchan);
+        sys.sendMessage(src, "Faction War/Inverted Faction War: Players join one of the two teams to battle each other. Pokémon defeated are eliminated from the battle. The team that defeats the all Pokémon from the other side first wins.", safchan);
         sys.sendMessage(src, "Requirements: A full party (6 Pokémon). Minimum of 1 player for event to start, and 4 players for rewards. If Inverted Faction War, pure Normal-type Pokémon cannot be used.", safchan);
 
         sys.sendMessage(src, "", safchan);
@@ -17768,7 +18147,7 @@ function Safari() {
         sys.sendMessage(src, "Requirements: Money, Silver Coins or Items to place the bet.", safchan);
 
         sys.sendMessage(src, "", safchan);
-        sys.sendMessage(src, "Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match (they are sent in the order picked; if not enough Pokémon are selected, the rest will be picked randomly). Rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Battle Factory/LC Battle Factory: Each player is given 8 rental Pokémon. Players then battle each other in a tournament using 3 of those 8 Pokémon on each match (they are sent in the order picked; if not enough Pokémon are selected, the rest will be picked randomly). Rewards are given to the 1st, 2nd and 3rd place.", safchan);
         sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 4 players to start, and 7 for the 3rd place reward.", safchan);
 
         sys.sendMessage(src, "", safchan);
@@ -17869,7 +18248,7 @@ function Safari() {
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
             "/bestow [player]։[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
             "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
-            "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish. Use /swipesafari or /wipesafaris to broadcast the wipe message.",
+            "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish. Use /bwipesafari or /wipesafarib to broadcast the wipe message.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
             "/checksaves [user1, user2, etc.]: Checks a list of users to see if they have a save file.",
@@ -18680,51 +19059,15 @@ function Safari() {
                     return true;
                 }
                 var info = commandData.split(":");
-                var type;
-                switch (info[0].toLowerCase()) {
-                    case "war":
-                    case "factionwar":
-                    case "faction war":
-                    case "faction":
-                        type = "factionwar";
-                    break;
-                    case "inverwar":
-                    case "invertedwar":
-                    case "inverted war":
-                        type = "invertedwar";
-                    break;
-                    case "race":
-                    case "pokerace":
-                        type = "race";
-                    break;
-                    case "betrace":
-                        type = "betrace";
-                    break;
-                    case "bf":
-                    case "factory":
-                    case "bfactory":
-                    case "battlefactory":
-                        type = "bfactory";
-                    break;
-                    case "lcbf":
-                    case "lcfactory":
-                    case "lcbfactory":
-                    case "lcbattlefactory":
-                        type = "lcbfactory";
-                    break;
-                    case "quiz":
-                        type = "quiz";
-                    break;
-                    default:
-                    case "help":
-                    case "info":
-                        safaribot.sendHtmlMessage(src, "To start an event, use one of the following commands (parameters in red are optional):", safchan);
-                        safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]:[Team2Reward]", "orangered"), safchan);
-                        safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]", "orangered"), safchan);
-                        safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true) + toColor(" (everything is optional)", "orangered"), safchan);
-                        safaribot.sendHtmlMessage(src, "Battle Factory: /startevent [factory/lcfactory]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
-                        safaribot.sendHtmlMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
-                        return true;
+                var type = getEventId(info[0]);
+                if (type === null) {
+                    safaribot.sendHtmlMessage(src, "To start an event, use one of the following commands (parameters in red are optional):", safchan);
+                    safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]:[Team2Reward]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true) + toColor(" (everything is optional)", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Battle Factory: /startevent [factory/lcfactory]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
+                    return true;
                 }
 
                 var param = info.slice(1);
@@ -19854,7 +20197,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "wipesafari" || command === "swipesafari" || command === "wipesafaris") {
+            if (command === "wipesafari" || command === "bwipesafari" || command === "wipesafarib") {
                 var name = commandData.toLowerCase();
                 var playerId = sys.id(name);
 
@@ -21495,15 +21838,21 @@ function Safari() {
             preparationPhase--;
             if (preparationPhase <= 0) {
                 resolvingThrows = true;
-                var name, i;
-                var list = Object.keys(preparationThrows);
+                var name, i, throwChances = {}, size = Object.keys(preparationThrows).length, throwers = [], alreadyThrow = [], n = now(), p;
+                
                 for (i in preparationThrows) {
-                    if (preparationThrows[i] == "quick") {
-                        list.push(i);
-                        list.push(i);
+                    p = getAvatarOff(i);
+                    if (p && p.truesalt >= n) {
+                        throwChances[i] = 0.1;
+                    } else {
+                        throwChances[i] = size * (preparationThrows[i] == "quick" ? itemData.quick.bonusRate : 1);
                     }
                 }
-                var throwers = list.shuffle(), alreadyThrow = [];
+                while (Object.keys(throwChances).length) {
+                    n = randomSample(throwChances);
+                    throwers.push(n);
+                    delete throwChances[n];
+                }
                 if (preparationFirst) {
                     if (throwers.indexOf(preparationFirst) !== -1) {
                         throwers.splice(throwers.indexOf(preparationFirst), 1);
