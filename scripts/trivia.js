@@ -26,21 +26,28 @@ var specialCategories = ['Mental Math'];
 var lastCatGame = 0;
 var lastEventType = 'None.';
 var lastEventTime = Date.now() / 1000;
+var manualEventTime = Date.now() / 1000;
+var lastEventTimeStamp = "";
+var manualEventTimeStamp = "";
+var eventDuration = "";
 var eventTimeChangeFlag = true; //for when Trivia restarts or the time is manually adusted
 var manualEventFlag = false;
-var manualEventTime = Date.now() / 1000;
 var eventKnowRate = 30;
 var eventSpeedRate = 30;
 var eventElimSignUp = 90;
 var eventModeOn = true;
 var lastUsedCats = [];
 var eventElimPlayers = [];
+var playersForStats = [];
 var roundEliminated = [];
 var answeredCorrectlyEver = [];
 var lastAdvertise = 0;
 var defaultKnowEventGoal = '12';
 var defaultSpeedEventGoal = '25';
 var defaultElimEventGoal = '5';
+var firstGoalR = "N/A";
+var secondGoalR = "N/A";
+var thirdGoalR = "N/A";
 
 var Trivia;
 try {
@@ -51,13 +58,14 @@ try {
 if (!Trivia || !Trivia.started) {
     Trivia = new TriviaGame();
 }
-var extLB = new pointsLB("trivialeaderboard.txt");
+var extLB = new PointsLB("trivialeaderboard.txt");
 var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
 var questionData = new MemoryHash("questiondata.txt");
-var eventSets = new eventSettings("triviaeventsettings.txt");
+var eventSets = new EventSettings("triviaeventsettings.txt");
+var eventStats = new EventStatistics("eventstats.txt");
 var trivData;
 var month = new Date().getMonth();
 try {
@@ -307,6 +315,14 @@ function time() {
     return Date.now() / 1000;
 }
 
+function getStatsTimeStamp() {
+    var x = "";
+    var d = new Date(); // Day Month DayOfMonth Year hh:mm:ss GMT-[timeZone] ([NameOfTimezone])
+    d = d.toString().split(" ");
+    x = "(" + d[4] + ")" + " " + d[0] + " " + d[5];
+    return x;
+}
+
 function trivia_onMute(src) {
     if (!Trivia.started) {
         return;
@@ -321,6 +337,7 @@ function trivia_onMute(src) {
 function TriviaGame() {
     this.id = triviachan;
     this.round = 0;
+    this.iteration = 0;
     this.started = false;
     this.maxPoints = 0;
     this.scoreType = "";
@@ -421,7 +438,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             // Lazy way to flash Webclient people since saying their name should flash.
             // Probably a better way to do this.
             if (sys.os(player_id) === "webclient") {
-                Trivia.sendPM(player_id, sys.name(player_id) + " a game is starting!", triviachan);
+                Trivia.sendPM(player_id, sys.name(player_id) + ", a game is starting!", triviachan);
             }
             sys.sendHtmlMessage(player_id, "<ping/>", triviachan);
         }
@@ -798,9 +815,12 @@ TriviaGame.prototype.finalizeAnswers = function () {
                 allCorrect = false;
                 this.player(name).points--;
                 if (this.player(name).points === 0) {
-                    if(trivData.eventFlag && (this.round > this.maxPoints)){
-                        sortArray.push(this.triviaPlayers[id].name);
-                        roundEliminated.push(this.round);
+                    if (trivData.eventFlag) {
+                        playersForStats.push(this.triviaPlayers[id].name);
+                        if(this.round > this.maxPoints){
+                            sortArray.push(this.triviaPlayers[id].name);
+                            roundEliminated.push(this.round);
+                        }
                     }
                     this.unjoin(id);
                 }
@@ -816,6 +836,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     if (trivData.eventFlag){
                         sortArray.push(this.triviaPlayers[id2].name);
                         roundEliminated.push(this.round);
+                        playersForStats.push(this.triviaPlayers[id2].name);
                     }
                     this.unjoin(id2);
                 }
@@ -995,6 +1016,32 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (!this.lbDisabled) extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
     }
 
+    if (trivData.eventFlag && this.iteration < 3 && this.scoreType !== "elimination") {
+        var xx = "";
+        var yy = "";
+        var zz = "";
+        if (winnersNamesOnly.length >= 1 && this.iteration === 0) {
+            firstGoalR = winnersNamesOnly[this.iteration] + ", Round: " + this.round;
+            this.iteration++;
+        }
+        if (winnersNamesOnly.length >= 2 && this.iteration === 1) {
+            secondGoalR = winnersNamesOnly[this.iteration] + ", Round: " + this.round;
+            xx = firstGoalR.split(", ");
+            yy = secondGoalR.split(", ");
+            if (xx[0] === yy[0]) { secondGoalR = winnersNamesOnly[this.iteration - 1] + ", Round: " + this.round; }
+            this.iteration++;
+        }
+        if (winnersNamesOnly.length >= 3 && this.iteration === 2) {
+            thirdGoalR = winnersNamesOnly[this.iteration] + ", Round: " + this.round;
+            xx = firstGoalR.split(", ");
+            yy = secondGoalR.split(", ");
+            zz = thirdGoalR.split(", ");
+            if (xx[0] === zz[0]) { thirdGoalR = winnersNamesOnly[this.iteration - 2] + ", Round: " + this.round; }
+            if (yy[0] === zz[0]) { thirdGoalR = winnersNamesOnly[this.iteration - 1] + ", Round: " + this.round; }
+            this.iteration++;
+        }
+    }
+
     var neededWinners = 1;             //winners needed to end game
     if (trivData.eventFlag && this.scoreType !== "elimination"){  //for event know and event speed, extend the game
         if(totalPlayers > 3) { neededWinners = 3; }
@@ -1052,6 +1099,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             var eTierReq = this.maxPoints * 0.1;
             if (this.scoreType === "elimination") {
                 eventElimPlayers.push(winnersNamesOnly[0]);
+                playersForStats.push(winnersNamesOnly[0]);
                 eventElimPlayers.reverse();
                 roundEliminated.push(this.round);
                 roundEliminated.reverse();
@@ -1101,6 +1149,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
                     validParticipants.push([user, "F"]); // answered at least one question correctly
                 }
             }
+        }
+        if (trivData.eventFlag) {
+            eventDuration = (manualEventFlag ? getTimeString(sys.time() - manualEventTime) : getTimeString(sys.time() - lastEventTime));
+            eventStats.updateEventStats((this.scoreType === 'elimination' ? playersForStats.reverse() : displayboard), (leaderboard.length !== 0 ? false : true));
         }
         var wasElim = false;
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
@@ -1159,6 +1211,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         runUpdate();
         this.lastvote++;
 
+        if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) { return; }
         if (this.voting && this.lastvote >= trivData.votingCooldown) {
             this.phase = "voting";
             this.ticks = 5;
@@ -1184,6 +1237,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
 TriviaGame.prototype.event = function() {
     trivData.eventFlag = true;
+    lastEventTimeStamp = getStatsTimeStamp();
     var eventType = sys.rand(1,101);
     if (eventType >= 1 && eventType <= eventKnowRate){
         this.scoreType = lastEventType = "knowledge";
@@ -1272,6 +1326,7 @@ TriviaGame.prototype.voteCat = function (src, cat) {
 TriviaGame.prototype.resetTrivia = function () {
     this.started = false;
     this.round = 0;
+    this.iteration = 0;
     this.maxPoints = 0;
     this.scoreType = "";
     this.qSource = [];
@@ -1292,6 +1347,8 @@ TriviaGame.prototype.resetTrivia = function () {
     eventElimPlayers = [];
     roundEliminated = [];
     answeredCorrectlyEver = [];
+    playersForStats = [];
+    firstGoalR = secondGoalR = thirdGoalR = "N/A";
 };
 
 TriviaGame.prototype.key = function (src) {
@@ -1762,7 +1819,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "", id);
 };
 
-function eventSettings(file) {
+function EventSettings(file) {
     this.file = file;
     this.settings = [];
     var fileContent = sys.getFileContent(this.file);
@@ -1777,7 +1834,7 @@ function eventSettings(file) {
     }
 }
 
-eventSettings.prototype.loadEventSettings = function () {
+EventSettings.prototype.loadEventSettings = function () {
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "" || fileContent === "[]") { return; }
     lastEventType = this.settings.lastEventType;
@@ -1791,12 +1848,64 @@ eventSettings.prototype.loadEventSettings = function () {
     eventElimSignUp = this.settings.eventElimSignUp;
 };
 
-eventSettings.prototype.updateEventSettings = function () {
+EventSettings.prototype.updateEventSettings = function () {
     this.settings = {'lastEventType' : lastEventType, 'lastEventTime' : lastEventTime, 'lastEventCooldown' : trivData.eventCooldown, 'eventKnowRate' : eventKnowRate, 'eventSpeedRate' : eventSpeedRate, 'defaultKnowEventGoal' : defaultKnowEventGoal, 'defaultSpeedEventGoal' : defaultSpeedEventGoal, 'defaultElimEventGoal' : defaultElimEventGoal, 'eventElimSignUp' : eventElimSignUp};
     sys.writeToFile(this.file, JSON.stringify(this.settings));
 };
 
-function pointsLB(file) {
+function EventStatistics(file) {
+    this.file = file;
+    this.stats = [];
+    this.recordedGames = [];
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "") {
+        sys.writeToFile(file, "[]");
+    }
+    try {
+        this.recordedGames = JSON.parse(fileContent);
+    }
+    catch (e) {
+        sys.sendAll("Error loading saved event settings: " + e, revchan);
+    }
+}
+
+EventStatistics.prototype.loadEventStats = function () {
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "" || fileContent === "[]") {
+        return "No Stats.";
+    }
+    return this.recordedGames;
+};
+
+EventStatistics.prototype.updateEventStats = function (playerArray, noWinners) {
+    eventStats.removeOldData();
+    var eventTime = (manualEventFlag ? manualEventTime : lastEventTime);
+    var timeStamp = (manualEventFlag ? manualEventTimeStamp : lastEventTimeStamp);
+    if (Trivia.scoreType !== 'elimination') {
+        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'scoreBoard' : playerArray, 'firstGoalR' : firstGoalR, 'secondGoalR' : secondGoalR, 'thirdGoalR' : thirdGoalR};
+    } else {
+        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'participants' : playerArray, 'noWinners' : noWinners};
+    }
+    this.recordedGames.unshift(this.stats);
+    sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
+};
+
+EventStatistics.prototype.removeOldData = function() {
+    for (var i = 0; i < this.recordedGames.length; i++) {
+        var lastGame = sys.time() - this.recordedGames[i].lastGame;
+        if (lastGame > getSeconds("30d")) {
+            this.recordedGames.splice(i, 1);
+        }
+    }
+    sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
+};
+
+EventStatistics.prototype.reset = function() {
+    this.recordedGames = [];
+    sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
+};
+
+function PointsLB(file) {
     this.file = file;
     this.minLB = 7;
     this.minSpeedLB = 25;
@@ -1813,7 +1922,7 @@ function pointsLB(file) {
     }
 }
 
-pointsLB.prototype.updateLeaderboard = function (name, points){
+PointsLB.prototype.updateLeaderboard = function (name, points){
     var player;
     if (Trivia.scoreType === "elimination"){
         player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'regPoints': 0, 'speedPoints' : 0, 'regWins' : 0, 'speedWins' : 0};
@@ -1846,7 +1955,7 @@ pointsLB.prototype.updateLeaderboard = function (name, points){
     }
 };
 
-pointsLB.prototype.showLeaders = function (src, commandData, id) {
+PointsLB.prototype.showLeaders = function (src, commandData, id) {
     var scoreTypes = ["elimination", "knowledge", "speed"];
     var lb = [];
     var i, maxPlace;
@@ -1944,7 +2053,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
     }
 };
 
-pointsLB.prototype.reset = function(){
+PointsLB.prototype.reset = function(){
     this.leaderboard = [];
     sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
 };
@@ -2203,6 +2312,88 @@ addAdminCommand(["lastevent"], function (src, commandData, channel) {
     Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(lastEventOutputTime) + " ago.", channel);
 }, "Allows you to see what the last event type was and how long ago it was played.");
 
+addAdminCommand(["eventstats"], function (src, commandData, channel) {
+    var stats = eventStats.loadEventStats();
+    if (stats === "No Stats.") {
+        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
+        return;
+    } else {
+        var gameMode = "";
+        var bookMark = 0;
+        if (commandData.length > 0) {
+            if (commandData.indexOf(":") === -1) {
+                if (isNaN(commandData)) {
+                    gameMode = commandData;
+                    if (gameMode === "know") { commandData = gameMode = "knowledge"; }
+                    if (gameMode === "elim") { commandData = gameMode = "elimination"; }
+                } else {
+                    bookMark = commandData;
+                }
+            } else {
+                commandData = commandData.split(":");
+                if (commandData[0] === "know") { commandData[0] = gameMode = "knowledge"; }
+                if (commandData[0] === "elim") { commandData[0] = gameMode = "elimination"; }
+                gameMode = commandData[0];
+                if (isNaN(commandData[1])) {
+                    triviabot.sendMessage(src, "The book mark must be a number.", channel);
+                    return;
+                }
+                bookMark = commandData[1];
+            }
+        }
+        if (gameMode !== "knowledge" && gameMode !== "speed" && gameMode !== "elimination" && gameMode !== "" && commandData.length !== 0) {
+            triviabot.sendMessage(src, "Please enter a valid game type.", channel);
+            return;
+        }
+        sys.sendMessage(src, "***Event Stats***", channel);
+        var i = 0;
+        var j = 0;
+        var x = 1;
+        var z = "";
+        if (!commandData.length) {
+            j = 0;
+        } else if (commandData === bookMark) {
+            j = parseInt(bookMark);
+        } else if (commandData === gameMode) {
+            j = 0;
+            z = gameMode;
+        } else {
+            j = parseInt(bookMark);
+            z = gameMode;
+        }
+            for (i = j; i < stats.length; i++) {
+                if (x > 5) { break; }
+                if (z !== stats[i].gameType && z !== "") { continue; }
+                x++;
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + stats[i].duration, channel);
+                if (stats[i].gameType !== 'elimination') {
+                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Score Board: </b></font>" + stats[i].scoreBoard.join(", "), channel);
+                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>First Player past Goal: </b></font>" + stats[i].firstGoalR + ", <font color='#3daa68'><b>Second Player past Goal: </b></font>" + stats[i].secondGoalR + ", <font color='#3daa68'><b>Third Player past Goal: </b></font>" + stats[i].thirdGoalR, channel);
+                } else {
+                    if (stats[i].noWinners) {
+                        sys.sendHtmlMessage(src, "<font color='red'><b>Everyone Lost!</b></font>", channel);
+                    } else {
+                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Participants: </b></font>" + stats[i].participants.join(", "), channel);
+                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Winner: </b></font>" + stats[i].participants[0], channel);
+                    }
+                }
+                sys.sendMessage(src, "", channel);
+            }
+            if ((!commandData.length || commandData === bookMark) && i < stats.length) {
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + i + "\">Show next page</a></b>", channel);
+                return;
+            }
+            if ((commandData === gameMode || z === gameMode) && i < stats.length) {
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + gameMode + ":" + i + "\">Show next page</a></b>", channel);
+            }
+    }
+}, "For viewing event statistics. Usage is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex]");
+
+addOwnerCommand(["cleareventstats"], function (src, commandData, channel) {
+    eventStats.reset();
+    triviabot.sendMessage(src, "The event stats were cleared.", channel);
+}, "Clears all data from the event stats.");
+
 addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
     if (commandData.length === 0 || isNaN(commandData)){
         triviabot.sendMessage(src, trivData.votingCooldown + " rounds is the current vote cooldown", channel);
@@ -2254,6 +2445,7 @@ addOwnerCommand(["eventstart"], function (src, commandData) {
         trivData.eventFlag = true;
         manualEventFlag = true;
         manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
         lastEventType = "knowledge";
     }
     Trivia.startTrivia(src, commandData, "knowledge");
@@ -2268,6 +2460,7 @@ addOwnerCommand(["eventspeed"], function (src, commandData) {
         trivData.eventFlag = true;
         manualEventFlag = true;
         manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
         lastEventType = "speed";
     }
     Trivia.startTrivia(src, commandData, "speed");
@@ -2324,6 +2517,7 @@ addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
         trivData.eventFlag = true;
         manualEventFlag = true;
         manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
         lastEventType = "elimination";
     }
     Trivia.startTrivia(src, commandData, "elimination");
@@ -3751,8 +3945,9 @@ module.exports = {
             triviaq = new QuestionHolder("triviaq.txt");
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
-            extLB = new pointsLB("trivialeaderboard.txt");
-            eventSets = new eventSettings("triviaeventsettings.txt");
+            extLB = new PointsLB("trivialeaderboard.txt");
+            eventSets = new EventSettings("triviaeventsettings.txt");
+            eventStats = new EventStatistics("triviaeventstats.txt");
         }
         eventSets.loadEventSettings();
         //Trivia.sendAll("Trivia is now running!");
