@@ -7672,8 +7672,8 @@ function Safari() {
             safaribot.sendMessage(src, "Invalid format! Use /editbase Decoration:PositionX:PositionY! To remove a decoration, use /editbase remove:PositionX:PositionY, or /editbase wipe to remove all decorations. Bases dimensions are " + SECRET_BASE_WIDTH + "x" + SECRET_BASE_HEIGHT + ".", safchan);
             return;
         }
-        var x = parseInt(info[1], 10) - 1;
-        var y = parseInt(info[2], 10) - 1;
+        var x = parseInt(info[1], 10) - 1 || 0;
+        var y = parseInt(info[2], 10) - 1 || 0;
         var clearing = ["remove", "clear", "empty", "wipe"].contains(deco);
         var current = this.getDecoAtPos(player.secretBase, x, y);
 
