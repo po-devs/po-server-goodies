@@ -58,14 +58,14 @@ try {
 if (!Trivia || !Trivia.started) {
     Trivia = new TriviaGame();
 }
-var extLB = new pointsLB("trivialeaderboard.txt");
+var extLB = new PointsLB("trivialeaderboard.txt");
 var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
 var tsadmin = new TriviaAdmin("tsadmins.txt");
 var questionData = new MemoryHash("questiondata.txt");
-var eventSets = new eventSettings("triviaeventsettings.txt");
-var eventStats = new eventStatistics("eventstats.txt");
+var eventSets = new EventSettings("triviaeventsettings.txt");
+var eventStats = new EventStatistics("eventstats.txt");
 var trivData;
 var month = new Date().getMonth();
 try {
@@ -1819,7 +1819,7 @@ TriviaAdmin.prototype.tAdminList = function (src, id, type) {
     sys.sendMessage(src, "", id);
 };
 
-function eventSettings(file) {
+function EventSettings(file) {
     this.file = file;
     this.settings = [];
     var fileContent = sys.getFileContent(this.file);
@@ -1834,7 +1834,7 @@ function eventSettings(file) {
     }
 }
 
-eventSettings.prototype.loadEventSettings = function () {
+EventSettings.prototype.loadEventSettings = function () {
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "" || fileContent === "[]") { return; }
     lastEventType = this.settings.lastEventType;
@@ -1848,12 +1848,12 @@ eventSettings.prototype.loadEventSettings = function () {
     eventElimSignUp = this.settings.eventElimSignUp;
 };
 
-eventSettings.prototype.updateEventSettings = function () {
+EventSettings.prototype.updateEventSettings = function () {
     this.settings = {'lastEventType' : lastEventType, 'lastEventTime' : lastEventTime, 'lastEventCooldown' : trivData.eventCooldown, 'eventKnowRate' : eventKnowRate, 'eventSpeedRate' : eventSpeedRate, 'defaultKnowEventGoal' : defaultKnowEventGoal, 'defaultSpeedEventGoal' : defaultSpeedEventGoal, 'defaultElimEventGoal' : defaultElimEventGoal, 'eventElimSignUp' : eventElimSignUp};
     sys.writeToFile(this.file, JSON.stringify(this.settings));
 };
 
-function eventStatistics(file) {
+function EventStatistics(file) {
     this.file = file;
     this.stats = [];
     this.recordedGames = [];
@@ -1869,7 +1869,7 @@ function eventStatistics(file) {
     }
 }
 
-eventStatistics.prototype.loadEventStats = function () {
+EventStatistics.prototype.loadEventStats = function () {
     var fileContent = sys.getFileContent(this.file);
     if (fileContent === undefined || fileContent === "" || fileContent === "[]") {
         return "No Stats.";
@@ -1877,7 +1877,7 @@ eventStatistics.prototype.loadEventStats = function () {
     return this.recordedGames;
 };
 
-eventStatistics.prototype.updateEventStats = function (playerArray, noWinners) {
+EventStatistics.prototype.updateEventStats = function (playerArray, noWinners) {
     eventStats.removeOldData();
     var eventTime = (manualEventFlag ? manualEventTime : lastEventTime);
     var timeStamp = (manualEventFlag ? manualEventTimeStamp : lastEventTimeStamp);
@@ -1890,7 +1890,7 @@ eventStatistics.prototype.updateEventStats = function (playerArray, noWinners) {
     sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
 };
 
-eventStatistics.prototype.removeOldData = function() {
+EventStatistics.prototype.removeOldData = function() {
     for (var i = 0; i < this.recordedGames.length; i++) {
         var lastGame = sys.time() - this.recordedGames[i].lastGame;
         if (lastGame > getSeconds("30d")) {
@@ -1900,12 +1900,12 @@ eventStatistics.prototype.removeOldData = function() {
     sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
 };
 
-eventStatistics.prototype.reset = function() {
+EventStatistics.prototype.reset = function() {
     this.recordedGames = [];
     sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
 };
 
-function pointsLB(file) {
+function PointsLB(file) {
     this.file = file;
     this.minLB = 7;
     this.minSpeedLB = 25;
@@ -1922,7 +1922,7 @@ function pointsLB(file) {
     }
 }
 
-pointsLB.prototype.updateLeaderboard = function (name, points){
+PointsLB.prototype.updateLeaderboard = function (name, points){
     var player;
     if (Trivia.scoreType === "elimination"){
         player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'regPoints': 0, 'speedPoints' : 0, 'regWins' : 0, 'speedWins' : 0};
@@ -1955,7 +1955,7 @@ pointsLB.prototype.updateLeaderboard = function (name, points){
     }
 };
 
-pointsLB.prototype.showLeaders = function (src, commandData, id) {
+PointsLB.prototype.showLeaders = function (src, commandData, id) {
     var scoreTypes = ["elimination", "knowledge", "speed"];
     var lb = [];
     var i, maxPlace;
@@ -2053,7 +2053,7 @@ pointsLB.prototype.showLeaders = function (src, commandData, id) {
     }
 };
 
-pointsLB.prototype.reset = function(){
+PointsLB.prototype.reset = function(){
     this.leaderboard = [];
     sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
 };
@@ -3945,9 +3945,9 @@ module.exports = {
             triviaq = new QuestionHolder("triviaq.txt");
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
-            extLB = new pointsLB("trivialeaderboard.txt");
-            eventSets = new eventSettings("triviaeventsettings.txt");
-            eventStats = new eventStatistics("triviaeventstats.txt");
+            extLB = new PointsLB("trivialeaderboard.txt");
+            eventSets = new EventSettings("triviaeventsettings.txt");
+            eventStats = new EventStatistics("triviaeventstats.txt");
         }
         eventSets.loadEventSettings();
         //Trivia.sendAll("Trivia is now running!");
