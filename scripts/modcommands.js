@@ -45,14 +45,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "onrange") {
-        var subip = commandData;
+        var subip = commandData.replace("::ffff:", "");
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             if (!sys.loggedIn(current_player)) continue;
-            var ip = sys.ip(current_player);
+            var ip = sys.ip(current_player).replace("::ffff:", "");
             if (ip.substr(0, subip.length) == subip) {
                 names.push(current_player);
             }
