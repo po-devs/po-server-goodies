@@ -740,7 +740,8 @@ function initTours() {
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('metrics')) tours.metrics = {};
         if (!tours.hasOwnProperty('eventticks')) tours.eventticks = -1;
-        if (!tours.hasOwnProperty('working')) tours.working = true;
+        if (!tours.hasOwnProperty('working')) tours.working = !script.battlesStopped;
+        if (!tours.hasOwnProperty('paused')) tours.paused = false;
     }
     tours.metrics = {'failedstarts': 0};
     try {
@@ -909,6 +910,12 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
+    if (tours.paused) { tours.working = !script.battlesStopped; }
+    if (script.battlesStopped) {
+        tours.paused = true;
+    } else {
+        tours.paused = false;
+    }
     SESSION.global().tours = tours;
     var canstart = true;
     var canautostart = true;
@@ -1253,7 +1260,7 @@ function tourCommand(src, command, commandData, channel) {
                     sendBotMessage(src,"Tournaments are already enabled!",tourschan,false);
                     return true;
                 }
-                tours.working = true;
+                tours.working = !script.battlesStopped;
                 sendChanAll(border, tourschan);
                 sendBotAll(sys.name(src)+" re-enabled the tournaments system.",tourschan,false);
                 sendChanAll(border, tourschan);
