@@ -740,8 +740,8 @@ function initTours() {
         if (!tours.hasOwnProperty('tourmutes')) tours.tourmutes = {};
         if (!tours.hasOwnProperty('metrics')) tours.metrics = {};
         if (!tours.hasOwnProperty('eventticks')) tours.eventticks = -1;
-        if (!tours.hasOwnProperty('working')) tours.working = !script.battlesStopped;
-        if (!tours.hasOwnProperty('paused')) tours.paused = false;
+        if (!tours.hasOwnProperty("working")) { tours.working = !script.battlesStopped; }
+        if (!tours.hasOwnProperty("paused")) { tours.paused = false; }
     }
     tours.metrics = {'failedstarts': 0};
     try {
