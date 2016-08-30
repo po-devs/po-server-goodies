@@ -3221,13 +3221,9 @@ function Safari() {
         }
         return val;
     };
-    this.computeCatchRate = function(src, data) {
+    this.computeCatchRate = function(src, ball) {
         var player = getAvatar(src);
-        var ball = itemAlias(data);
-        if (!isBall(ball)) {
-            ball = "safari";
-        }
-
+        
         var ballBonus = itemData[ball].ballBonus;
         var isShiny = typeof currentPokemon == "string";
         var wild = isShiny ? parseInt(currentPokemon, 10) : currentPokemon;
@@ -3423,7 +3419,7 @@ function Safari() {
         player.balls[ball] -= 1;
         this.updateShop(player, ball);
 
-        var finalChance = safari.computeCatchRate(src, data);
+        var finalChance = safari.computeCatchRate(src, ball);
 
         var ballBonus = itemData[ball].ballBonus;
         var cooldown = itemData[ball].cooldown;
@@ -14105,7 +14101,7 @@ function Safari() {
             this.secondAtk = damaging.random();
             type = sys.type(sys.moveType(this.secondAtk));
             count++;
-        } while (this.firstAtk === this.secondAtk && count < 1 + level * 2 && type === "Normal");
+        } while (count < 1 + level * 2 && (this.firstAtk === this.secondAtk || type === "Normal"));
         this.firstAtk = sys.move(this.firstAtk);
         this.secondAtk = sys.move(this.secondAtk);
 
