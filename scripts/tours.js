@@ -914,7 +914,9 @@ function tourStep() {
     if (tours.paused) {
         tours.working = !script.battlesStopped;
         for (var y1 in tours.tour) {
-            tours.tour[y1].time += 1;
+            if (tours.tour[y1].time > systime) {
+                tours.tour[y1].time += 1;
+            }
         }
     }
     if (script.battlesStopped) {
