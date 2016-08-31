@@ -72,7 +72,6 @@ var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 var blueborder = "<font color=#0044BB><b>"+border+"</b></font>";
 var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 var signupMessageDelay = 0;
-var pausedTime = 0;
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
@@ -915,7 +914,7 @@ function tourStep() {
     if (tours.paused) {
         tours.working = !script.battlesStopped;
         for (var y1 in tours.tour) {
-            tours.tour[y1].time = systime + pausedTime;
+            tours.tour[y1].time += 1;
         }
     }
     if (script.battlesStopped) {
@@ -923,11 +922,6 @@ function tourStep() {
         return;
     } else {
         tours.paused = false;
-        for (var y2 in tours.tour) {
-            if (tours.tour[y2].time > systime) {
-                pausedTime = tours.tour[y2].time - systime;
-            }
-        }
     }
     SESSION.global().tours = tours;
     var canstart = true;
