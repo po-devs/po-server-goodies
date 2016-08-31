@@ -72,6 +72,7 @@ var htmlborder = "<font color=#3DAA68><b>"+border+"</b></font>";
 var blueborder = "<font color=#0044BB><b>"+border+"</b></font>";
 var flashtag = "<!--f-->"; // This is used to check for flashes in the html code
 var signupMessageDelay = 0;
+var pausedTime = 0;
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
@@ -910,17 +911,28 @@ Used for things such as
 - disqualifying/reminding inactive players
 - removing subs */
 function tourStep() {
-    if (tours.paused) { tours.working = !script.battlesStopped; }
+    var systime = parseInt(sys.time(), 10);
+    if (tours.paused) {
+        tours.working = !script.battlesStopped;
+        for (var y1 in tours.tour) {
+            tours.tour[y1].time = systime + pausedTime;
+        }
+    }
     if (script.battlesStopped) {
         tours.paused = true;
+        return;
     } else {
         tours.paused = false;
+        for (var y2 in tours.tour) {
+            if (tours.tour[y2].time > systime) {
+                pausedTime = tours.tour[y2].time - systime;
+            }
+        }
     }
     SESSION.global().tours = tours;
     var canstart = true;
     var canautostart = true;
-    var now = new Date();
-    var systime = parseInt(sys.time(), 10);
+    var now = new Date();    
     if (systime%3600 === 0) {
         var comment = now + " ~ " + tours.activetas.join(", ");
         tours.activehistory.unshift(comment);
