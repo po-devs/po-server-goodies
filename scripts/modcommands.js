@@ -502,7 +502,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
-            querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
+            querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip.replace("::ffff:", "") + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
             var whois = function(resp) {
                 /* May have dced, this being an async call */
