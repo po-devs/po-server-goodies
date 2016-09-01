@@ -738,7 +738,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return allowed.join(", ");
     }
-    
     if (command === "pokemon") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);

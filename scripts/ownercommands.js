@@ -132,6 +132,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     if (command == "rangeban") {
         var subip;
         var comment;
+        /*Temporary work around for IP issue*/
+        var ffff = commandData.indexOf("::ffff:");
+        var prepend = "";
+        if (ffff != -1) {
+            commandData = commandData.replace("::ffff:", "");
+            prepend = "::ffff:";
+        }
         var space = commandData.indexOf(' ');
         if (space != -1) {
             subip = commandData.substring(0,space);
@@ -168,8 +175,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         /* add rangeban */
-        script.rangebans.add(subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
-        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel);
+        script.rangebans.add(prepend + subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
+        normalbot.sendAll("Rangeban added successfully for IP subrange: " + prepend + subip, staffchannel);
         /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
@@ -342,7 +349,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir + "secretsmute.txt", autosmute.join(":::"));
             return;
         }
-        normalbot.sendMessage(src, "No such user in the autosmute list!"); 
+        normalbot.sendMessage(src, "No such user in the autosmute list!");
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
@@ -523,7 +530,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 normalbot.sendMessage(src, "Notice updated!", channel);
                 if (command === "updatenotice") {
                     sendNotice();
-                }         
+                }
             } else {
                 normalbot.sendAll("Failed to update notice!", staffchannel);
             }

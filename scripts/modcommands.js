@@ -61,7 +61,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (names.length > 0) {
             var msgs = [];
             for (var i = 0; i < names.length; i++) {
-                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]).replace("::ffff:", "") + ")");
             }
             sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
         } else {
@@ -538,7 +538,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 var logintime = false;
                 if (online) logintime = SESSION.users(tar).logintime;
                 var data = [
-                    "User: " + name + " @ " + ip,
+                    "User: " + name + " @ " + ip.replace("::ffff:", ""),
                     "Auth: " + authName,
                     "Online: " + (online ? "yes" : "no"),
                     "Registered name: " + (registered ? "yes" : "no"),
@@ -648,13 +648,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return !(myAuth < 3 && sys.dbAuth(target) > myAuth);
         };
 
-        /* Higher auth: don't give the alias list */
+        /* Higher auth: don't give the alias list 
+        Literally bypassable by using /whois or /showip then using the IP in /aliases
         if (!allowedToAlias(commandData)) {
             querybot.sendMessage(src, "Not allowed to alias higher auth: " + commandData, channel);
             return;
-        }
+        }*/
 
-        var smessage = "The aliases for the IP " + ip + " are: ";
+        ip = ip.indexOf("::ffff:") > -1 ? ip : "::ffff:" + ip; //allows using IP to search aliases again
+        var smessage = "The aliases for the IP " + ip.replace("::ffff:", "") + " are: ";
         var prefix = "";
         sys.aliases(ip).map(function(name) {
             return [sys.dbLastOn(name), name];
@@ -664,7 +666,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (!allowedToAlias(alias)) {
                 return;
             }
-            var status = (sys.id(alias) !== undefined) ? "online, " + sys.os(sys.id(alias)) : "Last Login: " + last_login;
+            var status = (sys.id(alias) !== undefined) ? "online, " + sys.os(sys.id(alias)) : /*"Last Login: " +*/ last_login;
             smessage = smessage + alias + (noDates ? "" : " ("+status+")") + ", ";
             if (smessage.length > max_message_length) {
                 querybot.sendMessage(src, prefix + smessage + " ...", channel);
@@ -685,7 +687,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             querybot.sendMessage(src, "This user does not have a valid IP.", channel);
             return;
         }
-        querybot.sendMessage(src, "User: " + name + " | IP: " + ip + ".", channel);
+        querybot.sendMessage(src, "User: " + name + " | IP: " + ip.replace("::ffff:", "") + ".", channel);
         return;
     }
     if (command === "tempban") {
