@@ -363,6 +363,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src) + ". [" + sys.os(tar) + " " + sys.version(tar) + "]", staffchannel);
         if (type == "banned") {
             sys.kick(tar);
+            sys.appendToFile("bans.txt", sys.name(src) + " cookiebanned " + commandData + "\n");
         }
         return;
     }
@@ -378,6 +379,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var type = (command === "cookieunban" ? "unbanned" : "unmuted");
         script.namesToUnban.add(commandData.toLowerCase(), "true");
         normalbot.sendAll(commandData.toCorrectCase() + " was cookie " + type + " by " + sys.name(src) + ".", staffchannel);
+        if (type === "unbanned") {
+            sys.appendToFile('bans.txt', sys.name(src) + ' cookieunbanned ' + commandData + "\n");
+        }
         return;
     }
     if (command === "whobanned") {
@@ -386,9 +390,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var banned = sys.getFileContent("bans.txt").split("\n").filter(function(s) {
-            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1 + " ";
+            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1;
         });
-        normalbot.sendMessage(src, banned.length > 1 ? banned : commandData + " has no current bans", channel);
+        normalbot.sendMessage(src, banned.length > 1 ? banned.join(", ") : commandData + " has no current bans", channel);
         return;
     }
     if (command == "idban" || command == "idmute") {
@@ -419,6 +423,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
         } else {
             sys.kick(tar);
+            sys.appendToFile("bans.txt", sys.name(src) + " idbanned " + commandData + "\n");
         }
         return;
     }
@@ -433,6 +438,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             script.idBans.remove(commandData);
             if (banInfo.type == "muted") {
                 script.unban("smute", Config.kickbot, tar, commandData);
+            } else {
+                sys.appendToFile('bans.txt', sys.name(src) + ' idunbanned ' + commandData + "\n");
             }
             normalbot.sendAll(tar.toCorrectCase() + " was ID " + type + " by " + sys.name(src) + ".", staffchannel);
             return;
