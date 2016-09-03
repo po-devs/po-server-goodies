@@ -490,7 +490,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'username': name,
                 'auth': authLevel,
                 'contributor': contribution,
-                'ip': ip + (tar ? " (" + SESSION.users(tar).hostname + ")" : ""),
+                'ip': ip.replace("::ffff:", "") + (tar ? " (" + SESSION.users(tar).hostname + ")" : ""),
                 'online': online,
                 'registered': registered,
                 'lastlogin': lastLogin,
