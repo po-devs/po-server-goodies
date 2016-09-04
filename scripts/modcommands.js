@@ -786,6 +786,27 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.unban("smute", src, tar, commandData);
         return;
     }
+    if (command == "showteam") {
+        var teamCount = sys.teamCount(tar);
+        var index = [];
+        for (var i = 0; i < teamCount; i++) {
+            index.push(i);
+        }
+        var teams = index.map(function(index) {
+            return script.importable(tar, index, false, true);
+        }, this).filter(function(data) {
+            return data.length > 0;
+        }).map(function(team) {
+            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
+        }).join("");
+        if (teams) {
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
+            normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
+        } else {
+            normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
+        }
+        return;
+    }
     return "no command";
 };
 exports.help =
@@ -820,5 +841,6 @@ exports.help =
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
-        "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system."
+        "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system.",      
+        "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams)."
     ];
