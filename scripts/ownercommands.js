@@ -799,6 +799,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    if (command === "whoviewed") {
+        if (!commandData) {
+            normalbot.sendMessage(src, "No name entered", channel);
+            return;
+        }
+        var banned = sys.getFileContent("scriptdata/showteamlog.txt").split("\n").filter(function(s) {
+            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1;
+        });
+        normalbot.sendMessage(src, banned.length > 1 ? banned.join(", ") : commandData + " has no current teamviews", channel);
+        return;
+    }
     return "no command";
 };
 exports.help = 
@@ -842,5 +853,6 @@ exports.help =
         "/detempauth: Removes temporary auth given to a user",
         "/testannouncement: Test the current announcement on Github (only shows for the command user)",
         "/setannouncement: Sets the announcement to the one on Github",
-        "/updateleague: Updates the league data from Github"
+        "/updateleague: Updates the league data from Github",
+        "/whoviewed: Lists who viewed the team of another player and when it was done."
     ];

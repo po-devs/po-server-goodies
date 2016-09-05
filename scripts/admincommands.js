@@ -540,5 +540,6 @@ exports.help = [
 //  "/memorydump: Shows the state of the memory.",
     "/toggleweblinks [on/off]: Allows or disallows webclient users to send clickable urls.",
     "/[add/remove]watch: Adds a user to a watch list to track their battle activity. Format is /addwatch user:comment.",
-    "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word)."
+    "/watchlog: Search the watch log. Accepts /watch 15 (last 15 entries), /watch 10-20 (last 10 to 20) and /watch 10:[Word] (entries that contain that word).",
+    "/whobanned: Lists who has banned and unbanned a particular user."
 ];

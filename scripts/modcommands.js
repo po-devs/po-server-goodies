@@ -648,7 +648,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return !(myAuth < 3 && sys.dbAuth(target) > myAuth);
         };
 
-        /* Higher auth: don't give the alias list 
+        /* Higher auth: don't give the alias list
         Literally bypassable by using /whois or /showip then using the IP in /aliases
         if (!allowedToAlias(commandData)) {
             querybot.sendMessage(src, "Not allowed to alias higher auth: " + commandData, channel);
@@ -735,7 +735,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendAll(targetName + " was initially tempbanned for another " + getTimeString(sys.dbTempBanTime(targetName)) + ".", staffchannel);
             sys.unban(targetName);
         }
-        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);        
+        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);
         sys.sendHtmlAll("<b><font color=red>" + targetName + " was banned by " + nonFlashing(sys.name(src)) + " for " + getTimeString(minutes) + "!</font></b>");
         sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
@@ -786,6 +786,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.unban("smute", src, tar, commandData);
         return;
     }
+    //Make sure to move this function as well if showteam gets moved
+    function now() {
+        return new Date().getTime();
+    }
     if (command == "showteam") {
         var teamCount = sys.teamCount(tar);
         var index = [];
@@ -802,9 +806,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (teams) {
             sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
             normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
+            if (sys.auth(src) < 2) {
+                normalbot.sendMessage(tar, sys.name(src) + " just viewed your currently loaded teams."); //all channels so they dont miss it hopefully
+            }
         } else {
             normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
         }
+        sys.appendToFile("scriptdata/showteamlog.txt", "{0} viewed the team of {1} -- ({2})\n".format(sys.name(src), sys.name(tar), now()));
         return;
     }
     return "no command";
