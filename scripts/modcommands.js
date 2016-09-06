@@ -786,10 +786,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.unban("smute", src, tar, commandData);
         return;
     }
-    //Make sure to move this function as well if showteam gets moved
-    function now() {
-        return new Date().getTime();
-    }
     if (command == "showteam") {
         var teamCount = sys.teamCount(tar);
         var index = [];
@@ -812,7 +808,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         } else {
             normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
         }
-        sys.appendToFile("scriptdata/showteamlog.txt", "{0} viewed the team of {1} -- ({2})\n".format(sys.name(src), sys.name(tar), now()));
+        sys.appendToFile("scriptdata/showteamlog.txt", "{0} viewed the team of {1} -- ({2})\n".format(sys.name(src), sys.name(tar), new Date().toUTCString()));
         return;
     }
     return "no command";
