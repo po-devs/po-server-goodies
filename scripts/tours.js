@@ -2421,6 +2421,10 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You are tourmuted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
+            if (sys.os(src) === "android" && sys.version(src) < 39) { // if ORAS unsupported
+                sendBotMessage(src, "Your client does not support the latest generation! Please update your client at http://pokemon-online.eu/pages/download/ before participating in tournaments.", tourschan, false);
+                return true;
+            }
             var key = null;
             for (var x in tours.tour) {
                 if (tours.tour[x].state == "subround" || tours.tour[x].state == "signups") {
