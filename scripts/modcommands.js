@@ -735,7 +735,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendAll(targetName + " was initially tempbanned for another " + getTimeString(sys.dbTempBanTime(targetName)) + ".", staffchannel);
             sys.unban(targetName);
         }
-        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);
+        normalbot.sendAll("Target: " + targetName + ", IP: " + ip.replace("::ffff:", ""), staffchannel);
         sys.sendHtmlAll("<b><font color=red>" + targetName + " was banned by " + nonFlashing(sys.name(src)) + " for " + getTimeString(minutes) + "!</font></b>");
         sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
