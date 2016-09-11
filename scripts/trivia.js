@@ -2417,20 +2417,20 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
                     avgKnowDurationT += stats[i].duration;
                     knowDurationCount++;
                 }
-                justRound = stats[i].firstGoalR;
-                justRound = justRound.charAt(justRound.length - 1);
-                avgKnow1stRoundsT += parseInt(justRound);
+                justRound = stats[i].firstGoalR; //This is a string in the form "Player, Round: #"
+                justRound = justRound.split("Round: ")
+                avgKnow1stRoundsT += parseInt(justRound[1]);
                 if (stats[i].secondGoalR !== "N/A") {
                     justRound = stats[i].secondGoalR;
-                    justRound = justRound.charAt(justRound.length - 1);
-                    avgKnow2ndRoundsT += parseInt(justRound);
+                    justRound = justRound.split("Round: ");
+                    avgKnow2ndRoundsT += parseInt(justRound[1]);
                 } else {
                     know2ndCount++;
                 }
                 if (stats[i].thirdGoalR !== "N/A") {
                     justRound = stats[i].thirdGoalR;
-                    justRound = justRound.charAt(justRound.length - 1);
-                    avgKnow3rdRoundsT += parseInt(justRound);
+                    justRound = justRound.split("Round: ");
+                    avgKnow3rdRoundsT += parseInt(justRound[1]);
                 } else {
                     know3rdCount++;
                 }
@@ -2444,19 +2444,19 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
                     speedDurationCount++;
                 }
                 justRound = stats[i].firstGoalR;
-                justRound = justRound.charAt(justRound.length - 1)
-                avgSpeed1stRoundsT += parseInt(justRound);
+                justRound = justRound.split("Round: ");
+                avgSpeed1stRoundsT += parseInt(justRound[1]);
                 if (stats[i].secondGoalR !== "N/A") {
                     justRound = stats[i].secondGoalR;
-                    justRound = justRound.charAt(justRound.length - 1)
-                    avgSpeed2ndRoundsT += parseInt(justRound);
+                    justRound = justRound.split("Round: ");
+                    avgSpeed2ndRoundsT += parseInt(justRound[1]);
                 } else {
                     speed2ndCount++;
                 }
                 if (stats[i].thirdGoalR !== "N/A") {
                     justRound = stats[i].thirdGoalR;
-                    justRound = justRound.charAt(justRound.length - 1)
-                    avgSpeed3rdRoundsT += parseInt(justRound);
+                    justRound = justRound.split("Round: ");
+                    avgSpeed3rdRoundsT += parseInt(justRound[1]);
                 } else {
                     speed3rdCount++;
                 }
