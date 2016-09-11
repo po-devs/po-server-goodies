@@ -1151,7 +1151,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             }
         }
         if (trivData.eventFlag) {
-            eventDuration = (manualEventFlag ? getTimeString(sys.time() - manualEventTime) : getTimeString(sys.time() - lastEventTime));
+            eventDuration = (manualEventFlag ? sys.time() - manualEventTime : sys.time() - lastEventTime);
             eventStats.updateEventStats((this.scoreType === 'elimination' ? playersForStats.reverse() : displayboard), (leaderboard.length !== 0 ? false : true));
         }
         var wasElim = false;
@@ -2116,7 +2116,7 @@ addUserCommand(["triviarules"], function (src, commandData, channel) {
 addUserCommand(["categories", "cats"], function (src, commandData, channel) {
     if (typeof (triviaCategories) != "object") return;
     triviabot.sendMessage(src, triviaCategories.join(", "), channel);
-    triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel);
+    /*triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel); Rip Wiki*/
 }, "Allows you to view the trivia categories");
 
 addUserCommand(["flashme"], function (src, commandData, channel) {
@@ -2365,7 +2365,7 @@ addAdminCommand(["eventstats"], function (src, commandData, channel) {
                 if (x > 5) { break; }
                 if (z !== stats[i].gameType && z !== "") { continue; }
                 x++;
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + stats[i].duration, channel);
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + (isNaN(stats[i].duration) ? stats[i].duration : getTimeString(stats[i].duration)), channel);
                 if (stats[i].gameType !== 'elimination') {
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Score Board: </b></font>" + stats[i].scoreBoard.join(", "), channel);
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><b>First Player past Goal: </b></font>" + stats[i].firstGoalR + ", <font color='#3daa68'><b>Second Player past Goal: </b></font>" + stats[i].secondGoalR + ", <font color='#3daa68'><b>Third Player past Goal: </b></font>" + stats[i].thirdGoalR, channel);
@@ -2388,6 +2388,132 @@ addAdminCommand(["eventstats"], function (src, commandData, channel) {
             }
     }
 }, "For viewing event statistics. Usage is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex]");
+
+addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
+    var stats = eventStats.loadEventStats();
+    if (stats === "No Stats.") {
+        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
+        return;
+    } else {
+        var avgKnowGoalT = 0, avgKnowPlayersT = 0, avgKnowRoundsT = 0, avgKnowDurationT = 0,
+                avgKnow1stRoundsT = 0, avgKnow2ndRoundsT = 0, avgKnow3rdRoundsT = 0,
+                knowCount = 0, know2ndCount = 0, know3rdCount = 0, knowDurationCount = 0;
+
+        var avgSpeedGoalT = 0, avgSpeedPlayersT = 0, avgSpeedRoundsT = 0, avgSpeedDurationT = 0,
+                avgSpeed1stRoundsT = 0, avgSpeed2ndRoundsT = 0, avgSpeed3rdRoundsT = 0,
+                speedCount = 0, speed2ndCount = 0, speed3rdCount = 0, speedDurationCount = 0;
+
+        var avgElimGoalT = 0, avgElimPlayersT = 0, avgElimRoundsT = 0, avgElimDurationT = 0,
+                elimCount = 0, noWinnersCount = 0, elimDurationCount = 0;
+
+        var justRound = "";
+
+        for (var i = 0; i < stats.length; i++) {
+            if (stats[i].gameType === "knowledge") {
+                avgKnowGoalT += parseInt(stats[i].goal);
+                avgKnowPlayersT += stats[i].players;
+                avgKnowRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgKnowDurationT += stats[i].duration;
+                    knowDurationCount++;
+                }
+                justRound = stats[i].firstGoalR;
+                justRound = justRound.charAt(justRound.length - 1);
+                avgKnow1stRoundsT += parseInt(justRound);
+                if (stats[i].secondGoalR !== "N/A") {
+                    justRound = stats[i].secondGoalR;
+                    justRound = justRound.charAt(justRound.length - 1);
+                    avgKnow2ndRoundsT += parseInt(justRound);
+                } else {
+                    know2ndCount++;
+                }
+                if (stats[i].thirdGoalR !== "N/A") {
+                    justRound = stats[i].thirdGoalR;
+                    justRound = justRound.charAt(justRound.length - 1);
+                    avgKnow3rdRoundsT += parseInt(justRound);
+                } else {
+                    know3rdCount++;
+                }
+                knowCount++;
+            } else if (stats[i].gameType === "speed") {
+                avgSpeedGoalT += parseInt(stats[i].goal);
+                avgSpeedPlayersT += stats[i].players;
+                avgSpeedRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgSpeedDurationT += stats[i].duration;
+                    speedDurationCount++;
+                }
+                justRound = stats[i].firstGoalR;
+                justRound = justRound.charAt(justRound.length - 1)
+                avgSpeed1stRoundsT += parseInt(justRound);
+                if (stats[i].secondGoalR !== "N/A") {
+                    justRound = stats[i].secondGoalR;
+                    justRound = justRound.charAt(justRound.length - 1)
+                    avgSpeed2ndRoundsT += parseInt(justRound);
+                } else {
+                    speed2ndCount++;
+                }
+                if (stats[i].thirdGoalR !== "N/A") {
+                    justRound = stats[i].thirdGoalR;
+                    justRound = justRound.charAt(justRound.length - 1)
+                    avgSpeed3rdRoundsT += parseInt(justRound);
+                } else {
+                    speed3rdCount++;
+                }
+                speedCount++;
+            } else {
+                avgElimGoalT += parseInt(stats[i].goal);
+                if (stats[i].noWinners) {
+                    noWinnersCount++;
+                } else {
+                    avgElimPlayersT += stats[i].players;
+                }
+                avgElimRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgElimDurationT += stats[i].duration;
+                    elimDurationCount++;
+                }
+                elimCount++;
+            }
+        }
+        sys.sendMessage(src, "***Average Event Stats***", channel);
+        if (knowCount !== 0) {
+            var avgKnowGoal = avgKnowGoalT / knowCount;
+            var avgKnowPlayers = avgKnowPlayersT / knowCount;
+            var avgKnowRounds = avgKnowRoundsT / knowCount;
+            var xKnow = avgKnowDurationT / (knowCount - knowDurationCount);
+            var avgKnowDuration = (xKnow === 0 ? "Not enough data." : getTimeString(parseInt(xKnow)));
+            var avgKnow1stRounds = avgKnow1stRoundsT / knowCount;
+            var avgKnow2ndRounds = "N/A";
+            var avgKnow3rdRounds = "N/A";
+            if ((knowCount - know2ndCount) !== 0) { avgKnow2ndRounds = avgKnow2ndRoundsT / (knowCount - know2ndCount); }
+            if ((knowCount - know3rdCount) !== 0) { avgKnow3rdRounds = avgKnow3rdRoundsT / (knowCount - know3rdCount); }
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Know Averages<br>Average Goal: </b></font>" + avgKnowGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + avgKnowPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgKnowRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgKnowDuration + "<br><font color='#3daa68'><b>Average Round 1st Player Reached Goal: </b></font>" + avgKnow1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgKnow2ndRounds) ? avgKnow2ndRounds : avgKnow2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Average Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgKnow3rdRounds) ? avgKnow3rdRounds : avgKnow3rdRounds.toFixed(2)) + "<br>", channel);
+        }
+        if (speedCount !== 0) {
+            var avgSpeedGoal = avgSpeedGoalT / speedCount;
+            var avgSpeedPlayers = avgSpeedPlayersT / speedCount;
+            var avgSpeedRounds = avgSpeedRoundsT / speedCount;
+            var xSpeed = avgSpeedDurationT / (speedCount - speedDurationCount);
+            var avgSpeedDuration = (xSpeed === 0 ? "Not enough data." : getTimeString(parseInt(xSpeed)));
+            var avgSpeed1stRounds = avgSpeed1stRoundsT / speedCount;
+            var avgSpeed2ndRounds = "N/A";
+            var avgSpeed3rdRounds = "N/A";
+            if ((speedCount - speed2ndCount) !== 0) { avgSpeed2ndRounds = avgSpeed2ndRoundsT / (speedCount - speed2ndCount); }
+            if ((speedCount - speed3rdCount) !== 0) { avgSpeed3rdRounds = avgSpeed3rdRoundsT / (speedCount - speed3rdCount); }
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Speed Averages<br>Average Goal: </b></font>" + avgSpeedGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + avgSpeedPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgSpeedRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgSpeedDuration + "<br><font color='#3daa68'><b>Average Round 1st Player Reached Goal: </b></font>" + avgSpeed1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgSpeed2ndRounds) ? avgSpeed2ndRounds : avgSpeed2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Average Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgSpeed3rdRounds) ? avgSpeed3rdRounds : avgSpeed3rdRounds.toFixed(2)) + "<br>", channel);
+        }
+        if (elimCount !== 0) {
+            var avgElimGoal = avgElimGoalT / elimCount;
+            var avgElimPlayers = "No player data because no games were won.";
+            if ((elimCount - noWinnersCount) !== 0) { avgElimPlayers = avgElimPlayersT / (elimCount - noWinnersCount); }
+            var avgElimRounds = avgElimRoundsT / elimCount;
+            var xElim = avgElimDurationT / (elimCount - elimDurationCount);
+            var avgElimDuration = (xElim === 0 ? "Not enough data." : getTimeString(parseInt(xElim)));
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Elimination Averages<br>Average Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgElimDuration + "<br>", channel);
+        }
+    }
+}, "Displays event stat averages.");
 
 addOwnerCommand(["cleareventstats"], function (src, commandData, channel) {
     eventStats.reset();
