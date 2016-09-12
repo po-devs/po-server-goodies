@@ -2481,7 +2481,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgKnowGoal = avgKnowGoalT / knowCount;
             var avgKnowPlayers = avgKnowPlayersT / knowCount;
             var avgKnowRounds = avgKnowRoundsT / knowCount;
-            var xKnow = avgKnowDurationT / (knowCount - knowDurationCount);
+            var xKnow = (!knowDurationCount ? 0 : avgKnowDurationT / knowDurationCount);
             var avgKnowDuration = (xKnow === 0 ? "Not enough data." : getTimeString(parseInt(xKnow)));
             var avgKnow1stRounds = avgKnow1stRoundsT / knowCount;
             var avgKnow2ndRounds = "N/A";
@@ -2494,7 +2494,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgSpeedGoal = avgSpeedGoalT / speedCount;
             var avgSpeedPlayers = avgSpeedPlayersT / speedCount;
             var avgSpeedRounds = avgSpeedRoundsT / speedCount;
-            var xSpeed = avgSpeedDurationT / (speedCount - speedDurationCount);
+            var xSpeed = (!speedDurationCount ? 0 : avgSpeedDurationT / speedDurationCount);
             var avgSpeedDuration = (xSpeed === 0 ? "Not enough data." : getTimeString(parseInt(xSpeed)));
             var avgSpeed1stRounds = avgSpeed1stRoundsT / speedCount;
             var avgSpeed2ndRounds = "N/A";
@@ -2508,7 +2508,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgElimPlayers = "No player data because no games were won.";
             if ((elimCount - noWinnersCount) !== 0) { avgElimPlayers = avgElimPlayersT / (elimCount - noWinnersCount); }
             var avgElimRounds = avgElimRoundsT / elimCount;
-            var xElim = avgElimDurationT / (elimCount - elimDurationCount);
+            var xElim = (!elimDurationCount ? 0 : avgElimDurationT / elimDurationCount);
             var avgElimDuration = (xElim === 0 ? "Not enough data." : getTimeString(parseInt(xElim)));
             sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Elimination Averages<br>Average Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgElimDuration + "<br>", channel);
         }
