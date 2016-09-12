@@ -360,6 +360,7 @@ function Hangman() {
                 thing = "The time limit was restored to " + suddenDeathTime / 60 + " minute(s)!";
             }
         }        
+        usedAnswers.push(ans.toLowerCase());      
         if (ans.toLowerCase() === word.toLowerCase()) {
             hangbot.sendAll("" + sys.name(src) + " answered " + ans + "!", hangchan);            
             var p = 0,
