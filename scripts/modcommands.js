@@ -88,10 +88,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendMessage(src, commandData + " is not a valid version number", channel);
             return;
         }
+        var isAndroid = commandData < 2000;
         var output;
         if (lt) {
            output = sys.playerIds().filter(function (id) {
-                return sys.version(id) <= commandData && sys.loggedIn(id);
+                var ver = sys.version(id);
+                //Ignore webclient (ver 1) and try to filter based on Android or PC.
+                return  ver <= commandData && ver > 1 && sys.loggedIn(id) && (isAndroid ? ver < 2000 : ver >= 2000);
             }).map(sys.name); 
         } else {
             output = sys.playerIds().filter(function (id) {
