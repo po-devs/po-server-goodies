@@ -82,14 +82,23 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "onversion") {
-        commandData = parseInt(commandData, 10);
+        var lt = commandData.indexOf("<") > -1;
+        commandData = parseInt(commandData.replace(/</g, ""), 10);
         if (isNaN(commandData)) {
+            normalbot.sendMessage(src, commandData + " is not a valid version number", channel);
             return;
         }
-        var output = sys.playerIds().filter(function (id) {
-            return sys.version(id) === commandData && sys.loggedIn(id);
-        }).map(sys.name);
-        querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
+        var output;
+        if (lt) {
+           output = sys.playerIds().filter(function (id) {
+                return sys.version(id) <= commandData && sys.loggedIn(id);
+            }).map(sys.name); 
+        } else {
+            output = sys.playerIds().filter(function (id) {
+                return sys.version(id) === commandData && sys.loggedIn(id);
+            }).map(sys.name);
+        }
+        querybot.sendMessage(src, "Players on version " + commandData + (lt ? " or earlier " : "") + " are: " + output.join(", "), channel);
         return;
     }
     if (command === "tiers") {
@@ -843,6 +852,7 @@ exports.help =
         "/watchlist: Lists users having their battle activity tracked.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
+        "/onversion: Lists players on a certain version. Use \"<\" to include users on previous versions too.",
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
         "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system.",      
