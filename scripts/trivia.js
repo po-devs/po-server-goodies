@@ -21,8 +21,8 @@ var MemoryHash = require('memoryhash.js').MemoryHash;
 var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
-var triviaCategories = ['Anagram: Pokémon', 'Anime/Manga', 'Animals', 'Art', 'Comics', 'Food/Drink', 'Games', 'Geography', 'History', 'Internet', 'Language', 'Literature', 'Math', 'Mental Math', 'Miscellaneous', 'Movies', 'Music', 'Mythology', 'Pokémon', 'Pokémon Online', 'Politics', 'Religion', 'Science', 'Social Science', 'Society', 'Space', 'Sports', 'Technology', 'Television', 'Video Games'];
-var specialCategories = ['Mental Math'];
+var triviaCategories = ["Anagram: Pokémon", "Anime/Manga", "Animals", "Art", "Comics", "Food/Drink", "Games", "Geography", "History", "Internet", "Language", "Literature", "Math", "Mental Math", "Miscellaneous", "Movies", "Music", "Mythology", "Pokémon", "Pokémon Online", "Politics", "Pop Quiz", "Religion", "Science", "Social Science", "Society", "Space", "Sports", "Technology", "Television", "Video Games"];
+var specialCategories = ["Mental Math"];
 var lastCatGame = 0;
 var lastEventType = 'None.';
 var lastEventTime = Date.now() / 1000;
@@ -391,6 +391,13 @@ TriviaGame.prototype.startGame = function (data, name) {
     if (this.catGame) {
         for (var x in this.usingCats) {
             cats.push(this.usingCats[x]);
+        }
+    }
+    if (trivData.eventFlag) {
+        for (var i = 0; i < trivData.hiddenCategories.length; i++) {
+            if (trivData.hiddenCategories[i].toLowerCase() === "pop quiz") {
+                trivData.hiddenCategories.splice(i, 1);
+            }
         }
     }
     this.startNormalGame(this.maxPoints, cats, name);
@@ -883,6 +890,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.sendAll(correctNames.join(", "), triviachan);
     }
     questionData.log(this.roundQuestion, totalPlayers, answeredCorrectly.length);
+    if (this.roundQuestion) { // Want to avoid mental math
+        var q = triviaq.get(this.roundQuestion);
+        if (q.category.toLowerCase() === "pop quiz") {
+            triviaq.remove(this.roundQuestion);
+            questionData.remove(this.roundQuestion);
+        }
+    }
 
     var x = answers.length != 1 ? "answers were" : "answer was";
     triviabot.sendHtmlAll("The correct " + x + ": <b>" + utilities.html_escape(answers.join(", ")) + "</b>", triviachan);
@@ -996,10 +1010,10 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.suddenDeath = true;
         this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
     }
-
-    if (totalPlayers < 1) this.inactivity++;
-    else this.inactivity = 0;
-    if (trivData.eventFlag && totalPlayers < 2) this.inactivity++; //to prevent only one person from playing events
+    var needed = 1;
+    if (trivData.eventFlag) { needed = 2; } // to cancel events if only 1 person
+    if (totalPlayers < needed) { this.inactivity++; }
+    else { this.inactivity = 0; }
     if (this.inactivity === 4) {
         this.htmlAll("The game automatically ended due to a lack of players.");
         this.resetTrivia();
@@ -1343,6 +1357,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
+    if (trivData.eventFlag) { trivData.hiddenCategories.push("Pop Quiz"); }
     trivData.eventFlag = false;
     eventElimPlayers = [];
     roundEliminated = [];
@@ -2176,6 +2191,30 @@ addUserCommand(["submitq"], function (src, commandData, channel) {
         trivreview.checkq(id);
     }
 }, "Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
+
+addAdminCommand(["submitpopq"], function (src, commandData, channel) {
+    commandData = commandData.split("*");
+    if (commandData.length != 2) {
+        Trivia.sendPM(src, "Oops! Usage of this command is: /submitpopq question*answer(s)", channel);
+        Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
+        return;
+    }
+    var category = "Pop Quiz";
+    var question = utilities.html_escape(commandData[0]).trim();
+    var fixAnswer = commandData[1].replace(/ *, */gi, ",").replace(/^ +/, "");
+    var answer = fixAnswer.split(",");
+    triviaq.add(category, question, answer);
+
+    var all = triviaq.all(),
+            qid;
+    for (var b in all) {
+        var qu = triviaq.get(b);
+        if (qu.question === question) {
+            qid = b;
+        }
+    }
+    Trivia.sendPM(src, "Your question was submitted with the id: " + qid, channel);
+},"Allows you to submit a pop quiz question for review, format /submitpopq Question*Answer1,Answer2,etc")
 
 addUserCommand(["join"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -3277,6 +3316,23 @@ addAdminCommand(["decline"], function (src, commandData, channel) {
     }
     triviabot.sendMessage(src, "No more questions!", channel);
 }, "Allows you to decline the current question in review");
+
+addOwnerCommand(["declinecatqs"], function (src, commandData, channel) {
+    var counter = 0;
+    for (var i in triviaq.all()) {
+        var q = triviaq.get(i);
+        if (commandData.toLowerCase() === q.category.toLowerCase()) {
+            triviaq.remove(i);
+            questionData.remove(i);
+            counter++;
+        }
+    }
+    if (!counter) {
+        triviabot.sendMessage(src, "The " + commandData + " category contains no questions to be deleted.", channel);
+    } else {
+        triviabot.sendMessage(src, "The questions (" + counter + " total) in the " + commandData + " category have been deleted.", channel);
+    }
+}, "Delete all of the questions for a given category.");
 
 addAdminCommand(["submitban"], function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
