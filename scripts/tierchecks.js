@@ -434,7 +434,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
 });
 
 tier_checker.add_new_check(EXCLUDING, ["ORAS LC"], function haxCheck(src, team, tier) {
-    var bannedItems = ["King's Rock", "Quick Claw"];
+    var bannedItems = ["King's Rock", "Quick Claw", "Razor Fang"];
     for (var slot = 0; slot < 6; slot++) {
         var item_id = sys.teamPokeItem(src, team, slot);
         if (item_id && bannedItems.contains(sys.item(item_id))) {
