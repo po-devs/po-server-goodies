@@ -2878,7 +2878,17 @@ addAdminCommand(["flashtas"], function (src, commandData, channel) {
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
 
 addAdminCommand(["search"], function (src, commandData, channel) {
-    if (commandData === undefined) return;
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /search during event games!", channel);
+            return;
+        }
+    }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [];
@@ -2911,16 +2921,16 @@ addAdminCommand(["search"], function (src, commandData, channel) {
 }, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
-    if (trivData.eventFlag && Trivia.playerPlaying(src)) {
-        Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
-        return;
-    }
-    if (commandData === undefined) return;
-    if (Trivia.playerPlaying(src)){
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
         var z1 = Trivia.roundQuestion;
         var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + " used /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + " used /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
+            return;
+        }
     }
     Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
     var all = triviaq.all(),
@@ -2967,8 +2977,17 @@ addAdminCommand(["searchcount"], function (src, commandData, channel) {
 }, "Counts how many questions fit a /search query");
 
 addAdminCommand(["searchcategory"], function (src, commandData, channel) {
-    if (commandData === undefined)
-        return;
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /searchcategory during event games!", channel);
+            return;
+        }
+    }
     Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
     var count = 0;
     for (var i in triviaq.all()) {
