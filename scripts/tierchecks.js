@@ -433,7 +433,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     return ret;
 });
 
-tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function haxCheck(src, team, tier) {
+/*tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function haxCheck(src, team, tier) {
     var bannedItems = ["King's Rock", "Quick Claw", "Razor Fang"];
     for (var slot = 0; slot < 6; slot++) {
         var item_id = sys.teamPokeItem(src, team, slot);
@@ -441,7 +441,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
             return ["You are not allowed to use the item " + bannedItems[bannedItems.indexOf(sys.item(item_id))] + " in " + tier + "."];
         }
     }
-});
+});*/
 
 tier_checker.add_new_check(INCLUDING, ["ORAS Ubers"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 1;
