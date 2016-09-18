@@ -695,7 +695,7 @@ switch (commandData) {
             case "deoxys-s": case "deoxys s": case "deoxys speed": 
                 commandData = "Deoxys-Speed"; break;
             case "hoopa-b": case "hoopa b": case "hoopa unbound": case "hoopa u": case "hoopa-u" : 
-                commandData = "Deoxys-Speed"; break;
+                commandData = "Hoopa-Unbound"; break;
             case "darmanitan-d": case "darmanitan d": case "darmanitan z": case "darmanitan-z": case "darmanitan zen":  
                 commandData = "Darmanitan-Zen"; break;
             case "rotom-w": case "rotom w": case "rotom wash": 

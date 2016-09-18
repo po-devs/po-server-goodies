@@ -234,7 +234,7 @@ exports = {
             case "deoxys-s": case "deoxys s": case "deoxys speed": 
                 input = "Deoxys-Speed"; break;
             case "hoopa-b": case "hoopa b": case "hoopa unbound": case "hoopa u": case "hoopa-u" : 
-                input = "Deoxys-Speed"; break;
+                input = "Hoopa-Unbound"; break;
             case "darmanitan-d": case "darmanitan d": case "darmanitan z": case "darmanitan-z": case "darmanitan zen":  
                 input = "Darmanitan-Zen"; break;
             case "rotom-w": case "rotom w": case "rotom wash": 
