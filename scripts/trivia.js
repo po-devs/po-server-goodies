@@ -728,7 +728,8 @@ TriviaGame.prototype.startTriviaRound = function () {
     }
 
     this.phase = "answer";
-    this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question);
+    if (category.toLowerCase() === "pop quiz") { this.htmlAll(question); }
+    else { this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question); }
     Trivia.ticks = 12;
 };
 
@@ -2230,14 +2231,15 @@ addUserCommand(["submitq"], function (src, commandData, channel) {
 
 addAdminCommand(["submitpopq"], function (src, commandData, channel) {
     commandData = commandData.split("*");
-    if (commandData.length != 2) {
-        Trivia.sendPM(src, "Oops! Usage of this command is: /submitpopq question*answer(s)", channel);
+    if (commandData.length != 3) {
+        Trivia.sendPM(src, "Oops! Usage of this command is: /submitpopq category*question*answer(s)", channel);
         Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
         return;
     }
     var category = "Pop Quiz";
-    var question = utilities.html_escape(commandData[0]).trim();
-    var fixAnswer = commandData[1].replace(/ *, */gi, ",").replace(/^ +/, "");
+    var displayCat = "<b>Category:</b> " + commandData[0].toUpperCase() + "<br>";
+    var question = displayCat + utilities.html_escape(commandData[1]).trim();
+    var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
     var answer = fixAnswer.split(",");
     triviaq.add(category, question, answer);
 
@@ -2250,7 +2252,7 @@ addAdminCommand(["submitpopq"], function (src, commandData, channel) {
         }
     }
     Trivia.sendPM(src, "Your question was submitted with the id: " + qid, channel);
-},"Allows you to submit a pop quiz question for review, format /submitpopq Question*Answer1,Answer2,etc")
+},"Allows you to submit a pop quiz question, format /submitpopq Category*Question*Answer1,Answer2,etc")
 
 addUserCommand(["join"], function (src, commandData, channel) {
     if (!Trivia.started) {
