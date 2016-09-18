@@ -22,7 +22,7 @@ var MemoryHash = require('memoryhash.js').MemoryHash;
 var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
-var triviaCategories = ["Anagram: Pokémon", "Anime/Manga", "Animals", "Art", "Comics", "Food/Drink", "Games", "Geography", "History", "Internet", "Language", "Literature", "Math", "Mental Math", "Miscellaneous", "Movies", "Music", "Mythology", "Pokémon", "Pokémon Online", "Politics", "Pop Quiz", "Religion", "Science", "Social Science", "Society", "Space", "Sports", "Technology", "Television", "Video Games"];
+var triviaCategories = ["Anagram: Pokémon", "Anime/Manga", "Animals", "Art", "Comics", "Food/Drink", "Games", "Geography", "History", "Internet", "Language", "Literature", "Math", "Mental Math", "Miscellaneous", "Movies", "Music", "Mythology", "Pokémon", "Pokémon Online", "Politics", "Religion", "Science", "Social Science", "Society", "Space", "Sports", "Technology", "Television", "Video Games"];
 var specialCategories = ["Mental Math"];
 var lastCatGame = 0;
 var lastEventType = 'None.';
@@ -1015,7 +1015,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     this.sendAll("Leaderboard: " + displayboard.join(", "), triviachan);
 
-    if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath) {
+    if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath && leaderboard.length !== 0) {
         this.suddenDeath = true;
         triviabot.sendHtmlAll("<b>" + this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life!</b>", triviachan);
     }
@@ -1092,6 +1092,19 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.sendAll(sys.name(Trivia.suggestion.suggester) + "'s suggestion was cancelled because the game ended before it could be asked.", revchan);
         }
         var allCats = orderedCategories();
+        var advertise = "";
+        var hidden = true;
+        while (hidden == true) { // Don't advertise hidden cats
+            advertise = allCats[sys.rand(0, allCats.length)].category;
+            if (advertise === "Pop Quiz") { continue; } //explicitly listed because Pop Quiz questions can currently appear in events
+            for (var m = 0; m < trivData.hiddenCategories.length; m++) {
+                if (advertise === trivData.hiddenCategories[m]) {
+                    hidden = true;
+                    break;
+                }
+            }
+            hidden = false;
+        }
         if (leaderboard.length === 0) {
             this.htmlAll("<h2>Everyone lost! This is why we can't have nice things!</h2>");
         }
@@ -1099,7 +1112,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
             this.htmlAll("<h2>Congratulations to " + w + "</h2>" + winners.join(", ") + "");
         }
         triviabot.sendHtmlAll("<font size=5 color='red'>While you're waiting for another game, why not submit a question? <a href='http://pokemon-online.eu/threads/trivia-help-and-guidelines.30233'>Help and Guidelines are here!</a></font>", triviachan);
-        triviabot.sendHtmlAll("We could really use more <b>" + allCats[allCats.length - sys.rand(1, 6)].category + "</b> themed questions!", triviachan);
+        triviabot.sendHtmlAll("We could really use more <b>" + advertise + "</b> themed questions!", triviachan);
         triviabot.sendHtmlAll("Never want to miss a Trivia game? Try the <b>/flashme</b> command!", triviachan);
         triviabot.sendHtmlAll("Type /start [goal] to start a new game!", triviachan);
         if (this.catGame) {
