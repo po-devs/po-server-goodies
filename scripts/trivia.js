@@ -1017,7 +1017,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath) {
         this.suddenDeath = true;
-        this.sendAll(this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life.");
+        triviabot.sendHtmlAll("<b>" + this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life!</b>", triviachan);
     }
     var needed = 1;
     if (trivData.eventFlag) { needed = 2; } // to cancel events if only 1 person
