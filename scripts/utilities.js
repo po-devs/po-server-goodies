@@ -217,5 +217,92 @@ exports = {
             }
         }
         return prop;
+    },
+    
+    inputToPokemon : function (input) {
+        input = input.toLowerCase();
+        if (input.indexOf("alola") > -1) {
+            input = input.replace(/(-|\s){0,2}alola(n|-|\s){0,2}/i, ""); //Accounts for "Alola" and "Alolan" seperated by a space or hyphen at the beginning or end
+            input = input + "-Alolan";
+            return input;
+        }        
+        switch (input) {
+            case "deoxys-a": case "deoxys a": case "deoxys attack": 
+                input = "Deoxys-Attack"; break;
+            case "deoxys-d": case "deoxys d": case "deoxys defense": 
+                input = "Deoxys-Defense"; break;
+            case "deoxys-s": case "deoxys s": case "deoxys speed": 
+                input = "Deoxys-Speed"; break;
+            case "hoopa-b": case "hoopa b": case "hoopa unbound": case "hoopa u": case "hoopa-u" : 
+                input = "Deoxys-Speed"; break;
+            case "darmanitan-d": case "darmanitan d": case "darmanitan z": case "darmanitan-z": case "darmanitan zen":  
+                input = "Darmanitan-Zen"; break;
+            case "rotom-w": case "rotom w": case "rotom wash": 
+                input = "Rotom-Wash"; break;
+            case "rotom-f": case "rotom f": case "rotom frost": 
+                input = "Rotom-Frost"; break;
+            case "rotom-c": case "rotom c": case "rotom mow": case "rotom-m": case "rotom m":
+                input = "Rotom-Mow"; break;
+            case "rotom-s": case "rotom s": case "rotom spin": case "rotom-spin": case "rotom fan": 
+                input = "Rotom-Fan"; break;
+            case "rotom-h": case "rotom h": case "rotom heat":
+                input = "Rotom-Heat"; break;
+            case "porygonz": case "porygon z":
+                input = "Porygon-Z"; break;
+            case "porygon-2": case "porygon 2":
+                input = "Porygon2"; break;
+            case "kyurem-b": case "kyurem b": case "kyurem black": 
+                input = "Kyurem-Black"; break;
+            case "kyurem-w": case "kyurem w": case "kyurem white": 
+                input = "Kyurem-White"; break;
+            case "basculin-a": case "basculin a": case "basculin blue striped":
+                input = "Basculin-Blue Striped"; break;
+            case "shaymin-s": case "shaymin s": case "shaymin sky": 
+                input = "Shaymin-Sky"; break;
+            case "giratina-o": case "giratina o": case "giratina origin": 
+                input = "Giratina-Origin"; break;
+            case "keldeo-r": case "keldeo r": case "keldeo resolute": 
+                input = "Keldeo-Resolute"; break;
+            case "meloetta-s": case "meloetta s": case "meloetta p": case "meloetta pirouette": 
+                input = "Meloetta-Pirouette"; break;
+            case "landorus-t": case "landorus t": case "landorus therian":
+                input = "Landorus-Therian"; break;
+            case "tornadus-t": case "tornadus t": case "tornadus therian":
+                input = "Tornadus-Therian"; break;
+            case "thundurus-t": case "thundurus t": case "thundurus therian":
+                input = "Thundurus-Therian"; break;
+            case "mr mime": case "mrmime": case "mr.mime":
+                input = "Mr. Mime"; break;
+            case "mime jr": case "mimejr": case "mimejr.":
+                input = "Mime Jr."; break;
+            case "aegislash b": case "aegislash-b": case "aegislash blade":
+                input = "Aegislash-Blade"; break;
+            case "type null": case "typenull": case "type:null":
+                input = "Type: Null"; break; //will literally break without fix below
+            case "tapukoko":
+                input = "Tapu Koko"; break;
+            case "jangmoo": case "jangmo o":
+                input = "Jangmo-o"; break;
+            case "oricorio baile": case "oricorio-baile":
+                input = "Oricorio"; break;
+            case "oricorio pom pom": case "oricorio-pom-pom":
+                input = "Oricorio-Pom Pom"; break;
+            case "oricorio pa'u": case "oricorio-pau": case "oricorio pau":
+                input = "Oricorio-Pa'u"; break;
+            case "oricorio sensu":
+                input = "Oricorio-Sensu"; break;
+            case "wishiwashi solo": case "wishiwashi-solo":
+                input = "Wishiwashi"; break;
+            case "wishiwashi school":
+                input = "Wishiwashi-School"; break;
+            case "zygarde complete":
+                input = "Zygarde-Complete"; break;
+            case "zygarde 10%": case "zygarde-10": case "zygarde 10":
+                input = "Zygarde-10%"; break;
+            case "zygarde 50%": case "zygarde 50":
+                input = "Zygarde"; break;
+            default: input = input.replace(/flabebe/i, "Flabébé");
+        }
+        return input;
     }
 };

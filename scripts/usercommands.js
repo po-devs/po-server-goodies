@@ -679,39 +679,96 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }*/
     //Messy but who really cares?
+    //Will replace with the utilities function when server restarts and applies the change
     function translate(commandData) {
-        switch (commandData.toLowerCase()) {
-            case "darmanitan-z": commandData = "Darmanitan-D"; break;
-            case "mr mime": commandData = "Mr. Mime"; break;
-            case "mime jr": commandData = "Mime Jr."; break;
-            case "meloetta-p": commandData = "Meloetta-S"; break;
-            case "hoopa-u": commandData = "Hoopa-B"; break;
-            case "rotom-wash": commandData = "Rotom-W"; break;
-            case "rotom-fan": commandData = "Rotom-S"; break;
-            case "rotom-frost": commandData = "Rotom-F"; break;
-            case "rotom-heat": commandData = "Rotom-H"; break;
-            case "rotom-mow": commandData = "Rotom-C"; break;
-            case "giratina-origin": commandData = "Giratina-O"; break;
-            case "shaymin-sky": commandData = "Shaymin-S"; break;
-            case "deoxys-attack": commandData = "Deoxys-A"; break;
-            case "deoxys-defense": commandData = "Deoxys-D"; break;
-            case "deoxys-speed": commandData = "Deoxys-S"; break;
-            case "tornadus-therian": commandData = "Tornadus-T"; break;
-            case "thundurus-therian": commandData = "Thundurus-T"; break;
-            case "landorus-therian": commandData = "Landorus-T"; break;
-            case "kyurem-black": commandData = "Kyurem-B"; break;
-            case "kyurem-white": commandData = "Kyurem-W"; break;
-            case "porygonz":
-            case "porygon z": commandData = "Porygon-Z"; break;
-            case "porygon-2":
-            case "porygon 2": commandData = "Porygon2"; break;
+        commandData = commandData.toLowerCase();
+        if (commandData.indexOf("alola") > -1) {
+            commandData = commandData.replace(/(-|\s){0,2}alola(n|-|\s){0,2}/i, ""); //Accounts for "Alola" and "Alolan" seperated by a space or hyphen at the beginning or end
+            commandData = commandData + "-Alolan";
+            return commandData;
+        }        
+switch (commandData) {
+            case "deoxys-a": case "deoxys a": case "deoxys attack": 
+                commandData = "Deoxys-Attack"; break;
+            case "deoxys-d": case "deoxys d": case "deoxys defense": 
+                commandData = "Deoxys-Defense"; break;
+            case "deoxys-s": case "deoxys s": case "deoxys speed": 
+                commandData = "Deoxys-Speed"; break;
+            case "hoopa-b": case "hoopa b": case "hoopa unbound": case "hoopa u": case "hoopa-u" : 
+                commandData = "Deoxys-Speed"; break;
+            case "darmanitan-d": case "darmanitan d": case "darmanitan z": case "darmanitan-z": case "darmanitan zen":  
+                commandData = "Darmanitan-Zen"; break;
+            case "rotom-w": case "rotom w": case "rotom wash": 
+                commandData = "Rotom-Wash"; break;
+            case "rotom-f": case "rotom f": case "rotom frost": 
+                commandData = "Rotom-Frost"; break;
+            case "rotom-c": case "rotom c": case "rotom mow": case "rotom-m": case "rotom m":
+                commandData = "Rotom-Mow"; break;
+            case "rotom-s": case "rotom s": case "rotom spin": case "rotom-spin": case "rotom fan": 
+                commandData = "Rotom-Fan"; break;
+            case "rotom-h": case "rotom h": case "rotom heat":
+                commandData = "Rotom-Heat"; break;
+            case "porygonz": case "porygon z":
+                commandData = "Porygon-Z"; break;
+            case "porygon-2": case "porygon 2":
+                commandData = "Porygon2"; break;
+            case "kyurem-b": case "kyurem b": case "kyurem black": 
+                commandData = "Kyurem-Black"; break;
+            case "kyurem-w": case "kyurem w": case "kyurem white": 
+                commandData = "Kyurem-White"; break;
+            case "basculin-a": case "basculin a": case "basculin blue striped":
+                commandData = "Basculin-Blue Striped"; break;
+            case "shaymin-s": case "shaymin s": case "shaymin sky": 
+                commandData = "Shaymin-Sky"; break;
+            case "giratina-o": case "giratina o": case "giratina origin": 
+                commandData = "Giratina-Origin"; break;
+            case "keldeo-r": case "keldeo r": case "keldeo resolute": 
+                commandData = "Keldeo-Resolute"; break;
+            case "meloetta-s": case "meloetta s": case "meloetta p": case "meloetta pirouette": 
+                commandData = "Meloetta-Pirouette"; break;
+            case "landorus-t": case "landorus t": case "landorus therian":
+                commandData = "Landorus-Therian"; break;
+            case "tornadus-t": case "tornadus t": case "tornadus therian":
+                commandData = "Tornadus-Therian"; break;
+            case "thundurus-t": case "thundurus t": case "thundurus therian":
+                commandData = "Thundurus-Therian"; break;
+            case "mr mime": case "mrmime": case "mr.mime":
+                commandData = "Mr. Mime"; break;
+            case "mime jr": case "mimejr": case "mimejr.":
+                commandData = "Mime Jr."; break;
+            case "aegislash b": case "aegislash-b": case "aegislash blade":
+                commandData = "Aegislash-Blade"; break;
+            case "type null": case "typenull": case "type:null":
+                commandData = "Type: Null"; break; //will literally break without fix below
+            case "tapukoko":
+                commandData = "Tapu Koko"; break;
+            case "jangmoo": case "jangmo o":
+                commandData = "Jangmo-o"; break;
+            case "oricorio baile": case "oricorio-baile":
+                commandData = "Oricorio"; break;
+            case "oricorio pom pom": case "oricorio-pom-pom":
+                commandData = "Oricorio-Pom Pom"; break;
+            case "oricorio pa'u": case "oricorio-pau": case "oricorio pau":
+                commandData = "Oricorio-Pa'u"; break;
+            case "oricorio sensu":
+                commandData = "Oricorio-Sensu"; break;
+            case "wishiwashi solo": case "wishiwashi-solo":
+                commandData = "Wishiwashi"; break;
+            case "wishiwashi school":
+                commandData = "Wishiwashi-School"; break;
+            case "zygarde complete":
+                commandData = "Zygarde-Complete"; break;
+            case "zygarde 10%": case "zygarde-10": case "zygarde 10":
+                commandData = "Zygarde-10%"; break;
+            case "zygarde 50%": case "zygarde 50":
+                commandData = "Zygarde"; break;
             default: commandData = commandData.replace(/flabebe/i, "Flabébé");
         }
         return commandData;
     }
     function tierBans(commandData, pokeId) {
         if (pokeId == sys.pokeNum("Mega Rayquaza")) {
-            return "None"; //lazy way of doing it
+            return "Anything Goes"; //lazy way of doing it
         }
         var stone = 0, aforme;
         if (commandData.indexOf(".") !== -1) {
@@ -722,7 +779,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             pokeId = sys.pokeNum(aforme[1]);
         } else {
             aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
+            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-Pirouette") || pokeId == sys.pokeNum("Darmanitan-Zen") || pokeId == sys.pokeNum("Aegislash-Blade")) {
                 pokeId = sys.pokeNum(aforme[0]);
             }
         }
@@ -744,6 +801,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         commandData = translate(commandData).split(":");
+        if (commandData == "Type") {
+            commandData = "Type: Null"; //easy fix for now. inb4 more pokemon with colons in their name
+        }
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
         var pokeId;
