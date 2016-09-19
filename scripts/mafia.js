@@ -5812,19 +5812,6 @@ function Mafia(mafiachan) {
                 commandData = this.correctCase(commandData);
                 target = commandData != noPlayer ? mafia.players[commandData] : null;
                 
-                var player = mafia.players[sys.name(src)];
-                var dayargs = { //Common Args used in commands and counters
-                            '~Self~': player.name,
-                            '~Player~': player.name,
-                            '~User~': player.name,
-                            '~Target~': (typeof target == "string" ? target : target.name),
-                            '~Role~': player.role.translation,
-                            '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
-                            '~Side~': mafia.theme.trside(player.role.side),
-                            '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
-                            '~Action~': command
-                            };
-                
                 var commandObject = player.role.actions.standby[command];
                 var commandName = command;
                 var tRole, tSide;
@@ -5832,6 +5819,19 @@ function Mafia(mafiachan) {
                     command = commandObject.command;
 
                 if (target !== null) {
+                    var player = mafia.players[sys.name(src)];
+                    var dayargs = { //Common Args used in commands and counters
+                            '~Self~': player.name,
+                            '~Player~': player.name,
+                            '~User~': player.name,
+                            '~Target~': (target.name),
+                            '~Role~': player.role.translation,
+                            '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
+                            '~Side~': mafia.theme.trside(player.role.side),
+                            '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
+                            '~Action~': command
+                            };
+                
                     if ((commandObject.target === undefined || ["Self", "Any", "OnlySelf", "OnlyTeam"].indexOf(commandObject.target) == -1) && player == target) {
                         gamemsg(srcname, "Nope, this wont work... You can't target yourself!", "±Hint");
                         return;
