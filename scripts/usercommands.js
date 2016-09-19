@@ -686,8 +686,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             commandData = commandData.replace(/(-|\s){0,2}alola(n|-|\s){0,2}/i, ""); //Accounts for "Alola" and "Alolan" seperated by a space or hyphen at the beginning or end
             commandData = commandData + "-Alolan";
             return commandData;
-        }        
-switch (commandData) {
+        }
+        switch (commandData) {
             case "deoxys-a": case "deoxys a": case "deoxys attack": 
                 commandData = "Deoxys-Attack"; break;
             case "deoxys-d": case "deoxys d": case "deoxys defense": 
@@ -738,6 +738,8 @@ switch (commandData) {
                 commandData = "Mime Jr."; break;
             case "aegislash b": case "aegislash-b": case "aegislash blade":
                 commandData = "Aegislash-Blade"; break;
+            case "floette ef": case "floette-ef": case "floette eternal":
+                commandData = "Floette-Eternal"; break;
             case "type null": case "typenull": case "type:null":
                 commandData = "Type: Null"; break; //will literally break without fix below
             case "tapukoko":
