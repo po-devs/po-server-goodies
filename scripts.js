@@ -2492,6 +2492,13 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
 
 battleConnectionLost : function() {
     battlebot.sendAll("Connection to Battle Server lost!", staffchannel);
+    sys.battlingIds().forEach(function(id) {
+        var teamCount = sys.teamCount(id), toWrite = [];
+        for (var i = 0; i < teamCount; i++) {
+            toWrite.push(script.importable(id, teamCount, false, false) + "|||");
+        }
+        sys.writeToFile("dump.txt", toWrite.join("|"));
+    });
 },
 
 hasAuthElements: function (array) {
