@@ -1521,7 +1521,7 @@ function Mafia(mafiachan) {
             return;
         }
         var shoved, playerIndex;
-        for (var b = 0; b < this.safariShove.length; b++;) {
+        for (var b = 0; b < this.safariShove.length; b++) {
             shoved = this.safariShove[b];
             playerIndex = (this.rewardSafariPlayers.index(shoved) ? this.rewardSafariPlayers.index(shoved) : null);
             if (playerIndex) {
