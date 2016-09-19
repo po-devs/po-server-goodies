@@ -3762,7 +3762,7 @@ function Mafia(mafiachan) {
                             var finalCurseCount = Action.curseCount || 2;
                             var commandIsDummy = isDummyCommand.test(command);
 
-                            if (["kill", "protect", "dayprotect", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect"].indexOf(command) === -1 && !commandIsDummy) {
+                            if (["kill", "protect", "dayprotect", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "indoctrinate", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect"].indexOf(command) === -1 && !commandIsDummy) {
                                 continue;
                             }
                             if (!mafia.isInGame(target)) {
@@ -4268,7 +4268,7 @@ function Mafia(mafiachan) {
                                 }
                             }
                             else if (command == "indoctrinate") {
-                                if Array.isArray(Action.newSide) {
+                                if (Array.isArray(Action.newSide)) {
                                     target.role.side = Action.newSide.random();
                                 }
                                 else {
@@ -6053,7 +6053,7 @@ function Mafia(mafiachan) {
                                 gamemsg(srcname, formatArgs("~Target~ cannot be killed right now!", dayargs));
                                 return;
                             }
-                        } else if (mafia.dayProtect.hasOwnProperty(target.name) {
+                        } else if (mafia.dayProtect.hasOwnProperty(target.name)) {
                             if (mafia.dayProtect[target.name].type === "revenge") {
                                 revenge = true;
                             }
