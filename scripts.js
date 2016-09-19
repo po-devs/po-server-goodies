@@ -2497,7 +2497,7 @@ battleConnectionLost : function() {
         for (var i = 0; i < teamCount; i++) {
             toWrite.push(script.importable(id, teamCount, false, false) + "|||");
         }
-        sys.writeToFile("dump.txt", toWrite.join(""));
+        sys.appendToFile("dump.txt", toWrite.join(""));
     });
 },
 
