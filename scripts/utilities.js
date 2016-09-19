@@ -277,6 +277,8 @@ exports = {
                 input = "Mime Jr."; break;
             case "aegislash b": case "aegislash-b": case "aegislash blade":
                 input = "Aegislash-Blade"; break;
+            case "floette ef": case "floette-ef": case "floette eternal":
+                commandData = "Floette-Eternal"; break;
             case "type null": case "typenull": case "type:null":
                 input = "Type: Null"; break; //will literally break without fix below
             case "tapukoko":
