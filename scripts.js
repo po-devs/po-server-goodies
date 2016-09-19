@@ -1025,7 +1025,7 @@ Jolly Nature (+Spd, -SAtk)
         var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, team, i)] + " @ " + item );
-        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
+        ret.push('Ability: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
         var level = sys.teamPokeLevel(id, team, i);
         if (!compactible && level != 100) ret.push('Lvl: ' + level);
 
