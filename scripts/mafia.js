@@ -2116,6 +2116,7 @@ function Mafia(mafiachan) {
             }, mafia).join(", ");
     };
     this.sendCurrentRoles = function () {
+        var channelUsers = sys.playersOfChannel(mafiachan);
         for (var i = 0; i < channelUsers.length; i++) {
             var player = channelUsers[i];
             if (this.isInGame(sys.name(player)) && (sys.os(player) !== "android")) {
