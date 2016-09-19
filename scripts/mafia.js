@@ -5803,7 +5803,17 @@ function Mafia(mafiachan) {
             }
         }
         else if (mafia.state == "standby") {
-            var dayargs = { //Common Args used in commands and counters
+            name = sys.name(src);
+            if (this.isInGame(name) && this.hasCommand(name, command, "standby")) {
+                player = mafia.players[name];
+                if (!this.isInGame(commandData) && this.isInGame(decodeURIComponent(commandData))) {
+                    commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
+                }
+                commandData = this.correctCase(commandData);
+                target = commandData != noPlayer ? mafia.players[commandData] : null;
+                
+                var player = mafia.players[sys.name(src)];
+                var dayargs = { //Common Args used in commands and counters
                             '~Self~': player.name,
                             '~Player~': player.name,
                             '~User~': player.name,
@@ -5814,14 +5824,7 @@ function Mafia(mafiachan) {
                             '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
                             '~Action~': command
                             };
-            name = sys.name(src);
-            if (this.isInGame(name) && this.hasCommand(name, command, "standby")) {
-                player = mafia.players[name];
-                if (!this.isInGame(commandData) && this.isInGame(decodeURIComponent(commandData))) {
-                    commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
-                }
-                commandData = this.correctCase(commandData);
-                target = commandData != noPlayer ? mafia.players[commandData] : null;
+                
                 var commandObject = player.role.actions.standby[command];
                 var commandName = command;
                 var tRole, tSide;
