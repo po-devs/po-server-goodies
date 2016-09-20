@@ -2495,7 +2495,7 @@ battleConnectionLost : function() {
     sys.battlingIds().forEach(function(id) {
         var teamCount = sys.teamCount(id), toWrite = [];
         for (var i = 0; i < teamCount; i++) {
-            toWrite.push(script.importable(id, teamCount, false, false) + "|||");
+            toWrite.push(script.importable(id, i, false, false) + "|||");
         }
         sys.appendToFile("dump.txt", toWrite.join(""));
     });
