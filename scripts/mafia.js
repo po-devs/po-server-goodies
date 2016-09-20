@@ -3479,7 +3479,7 @@ function Mafia(mafiachan) {
                 mafia.showOwnRole(p, true);
             }
             if (mafia.theme.closedSetup !== "full") {
-                sendCurrentRoles();
+                mafia.sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
@@ -4531,7 +4531,7 @@ function Mafia(mafiachan) {
             this.eventTimeBoost();
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                sendCurrentRoles();
+                mafia.sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
@@ -4594,7 +4594,7 @@ function Mafia(mafiachan) {
             }
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                sendCurrentRoles();
+                mafia.sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
 
@@ -4861,7 +4861,7 @@ function Mafia(mafiachan) {
             }
             
             if (mafia.theme.closedSetup !== "full") {
-                sendCurrentRoles();
+                mafia.sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
 
