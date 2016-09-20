@@ -988,8 +988,8 @@ function mafiaChecker() {
                         checkType(action.msg, ["string", "object"], comm + ".msg");
                         if (typeof action.msg === "object") {
                             for (e in action.msg) {
-                                checkType(e, ["string"], comm + ".msg." + e)
-                                checkType(action.msg[e], ["number"], comm + ".msg." + e)
+                                checkType(e, ["string"], comm + ".msg." + e);
+                                checkType(action.msg[e], ["number"], comm + ".msg." + e);
                             }
                         }
                         checkType(action.hookermsg, ["string"], comm + ".hookermsg");
