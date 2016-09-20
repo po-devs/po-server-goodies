@@ -277,6 +277,22 @@ exports = {
                 input = "Mime Jr."; break;
             case "aegislash b": case "aegislash-b": case "aegislash blade":
                 input = "Aegislash-Blade"; break;
+            case "pumpkaboo-s": case "pumpkaboo s": case "pumpkaboo small":
+                commandData = "Pumpkaboo-Small"; break;
+            case "pumpkaboo-l": case "pumpkaboo l": case "pumpkaboo large":
+                commandData = "Pumpkaboo-Large"; break;
+            case "pumpkaboo-xl": case "pumpkaboo xl": case "pumpkaboo super":
+                commandData = "Pumpkaboo-Super"; break;
+            case "gourgeist-s": case "gourgeist s": case "gourgeist small":
+                commandData = "Gourgeist-Small"; break;
+            case "gourgeist-l": case "gourgeist l": case "gourgeist large":
+                commandData = "Gourgeist-Large"; break;
+            case "gourgeist-xl": case "gourgeist xl": case "gourgeist super":
+                commandData = "Gourgeist-Super"; break;
+            case "wormadam-g": case "wormadam g": case "wormadam sandy":
+                commandData = "Wormadam-Sandy"; break;
+            case "wormadam-s": case "wormadam s": case "wormadam trash":
+                commandData = "Wormadam-Trash"; break;
             case "floette ef": case "floette-ef": case "floette eternal":
                 commandData = "Floette-Eternal"; break;
             case "type null": case "typenull": case "type:null":
