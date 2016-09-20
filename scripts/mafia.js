@@ -1525,7 +1525,7 @@ function Mafia(mafiachan) {
         var shoved, playerIndex;
         for (var b = 0; b < this.safariShove.length; b++) {
             shoved = this.safariShove[b];
-            playerIndex = (this.rewardSafariPlayers.index(shoved) ? this.rewardSafariPlayers.index(shoved) : null);
+            playerIndex = (this.rewardSafariPlayers.indexOf(shoved) ? this.rewardSafariPlayers.indexOf(shoved) : null);
             if (playerIndex) {
                 this.rewardSafariPlayers.splice(playerIndex, 1);
             }
@@ -2084,6 +2084,31 @@ function Mafia(mafiachan) {
                     var onlistRole = role.actions.onlist,
                         roleName = html_escape(this.theme.trrole(onlistRole)),
                         color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
+                    return "<font color='" + color + "'>" + roleName + "</a>";
+                } else {
+                    var roleName = html_escape(role.translation),
+                        color = this.theme.sideColor[role.side];
+                    return "<font color='" + color + "'>" + roleName + "</a>";
+                }
+            }, mafia).join(", ");
+    };
+    this.getCurrentRolesLinks = function () {
+        return Object.keys(this.players).map(function(name) {
+                return this.players[name].role;
+            }, mafia).sort(function(a, b) { /* Sorting to not give out the order of the roles per player */
+                var tra = typeof a.actions.onlist === "string" ? mafia.theme.trrole(a.actions.onlist) : a.translation;
+                var trb = typeof b.actions.onlist === "string" ? mafia.theme.trrole(b.actions.onlist) : b.translation;
+                if (tra == trb)
+                    return 0;
+                else if (tra < trb)
+                    return -1;
+                else
+                    return 1;
+            }).map(function(role) {
+                if (typeof role.actions.onlist === "string") {
+                    var onlistRole = role.actions.onlist,
+                        roleName = html_escape(this.theme.trrole(onlistRole)),
+                        color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
                     return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 } else {
                     var roleName = html_escape(role.translation),
@@ -2091,6 +2116,18 @@ function Mafia(mafiachan) {
                     return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 }
             }, mafia).join(", ");
+    };
+    this.sendCurrentRoles = function () {
+        var channelUsers = sys.playersOfChannel(mafiachan);
+        for (var i = 0; i < channelUsers.length; i++) {
+            var player = channelUsers[i];
+            if (this.isInGame(sys.name(player)) && (sys.os(player) !== "android")) {
+                gamemsg(sys.name(player), this.getCurrentRolesLinks, "±Current Roles");
+            }
+            else {
+                gamemsg(sys.name(player), this.getCurrentRoles, "±Current Roles");
+            }
+        }
     };
     this.sendCurrentPlayers = function () {
         var channelUsers = sys.playersOfChannel(mafiachan),
@@ -2859,7 +2896,7 @@ function Mafia(mafiachan) {
             player.role.side = randomSample(mafia.theme.roles[role].side.random);
         }
         if (keepSide) {
-            player.role.side.oldSide;
+            player.role.side = oldSide;
         }
         if ("night" in player.role.actions) {
             for (act in player.role.actions.night) {
@@ -3442,7 +3479,7 @@ function Mafia(mafiachan) {
                 mafia.showOwnRole(p, true);
             }
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
@@ -4494,7 +4531,7 @@ function Mafia(mafiachan) {
             this.eventTimeBoost();
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
@@ -4557,7 +4594,7 @@ function Mafia(mafiachan) {
             }
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
 
@@ -4824,7 +4861,7 @@ function Mafia(mafiachan) {
             }
             
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                sendCurrentRoles();
             }
             mafia.sendCurrentPlayers();
 
@@ -5988,6 +6025,15 @@ function Mafia(mafiachan) {
                     tRole = target.role.translation;
                     tSide = mafia.theme.trside(target.role.side);
                     var revenge = false;
+                    if (mafia.dayProtect.hasOwnProperty(target.name)) {
+                            if (mafia.dayProtect[target.name].type === "revenge") {
+                                revenge = true;
+                            }
+                            else if (mafia.dayProtect[target.name].type === "protect") {
+                                gamemsg(srcname, formatArgs(mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "Your target (~Target~) was protected!", dayargs));
+                                return;
+                            }
+                        }
                     if (target.role.actions.hasOwnProperty("daykill")) {
                         if (target.role.actions.daykill == "evade") {
                             if (target.role.actions.daykillevademsg !== undefined && typeof target.role.actions.daykillevademsg == "string") {
@@ -5997,15 +6043,8 @@ function Mafia(mafiachan) {
                                 gamemsg(srcname, formatArgs("~Target~ cannot be killed right now!", dayargs));
                                 return;
                             }
-                        } else if (mafia.dayProtect.hasOwnProperty(target.name)) {
-                            if (mafia.dayProtect[target.name].type === "revenge") {
-                                revenge = true;
-                            }
-                            else if (mafia.dayProtect[target.name].type === "protect") {
-                                gamemsg(srcname, formatArgs(mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "Your target (~Target~) was protected!", dayargs));
-                                return;
-                            }
-                        } else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb" || (typeof target.role.actions.daykill.mode == "object" && "revenge" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.revenge.indexOf(player.role.role) != -1)) {
+                        }
+                        else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb" || (typeof target.role.actions.daykill.mode == "object" && "revenge" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.revenge.indexOf(player.role.role) != -1)) {
                             revenge = true;
                         } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
                             if (player.role.actions.daykillmissmsg !== undefined && typeof player.role.actions.daykillmissmsg == "string") {
