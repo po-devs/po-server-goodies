@@ -3028,6 +3028,18 @@ function Mafia(mafiachan) {
             this.addPhaseStalkAction(name, "vote", commandData);
         }
         this.votes[sys.name(src)] = commandData;
+        for (var p in mafia.players) {
+            if (!(mafia.players[p].role.hasOwnProperty("voteHax"))) {
+                continue;
+            }
+            var voteHaxData = mafia.players[p].role.voteHax,
+                haxmsg = voteHaxData.msg ? voteHaxData.msg : "~Player~ voted for ~Target~!",
+                haxperc = voteHaxData.chance ? voteHaxData.chance : 1
+            if (haxperc > Math.random()) {
+                gamemsg(p, haxmsg.replace(/~Target~/g, commandData).replace(/~Player~/g, name));
+            }
+        }
+        
         if (!(commandData in this.votedBy)) {
             this.votedBy[commandData] = [];
         }
@@ -5987,10 +5999,11 @@ function Mafia(mafiachan) {
                     }
                     tRole = target.role.translation;
                     tSide = mafia.theme.trside(target.role.side);
-                    var revenge = false;
+                    var revenge = false, rmsg = null;
                     if (mafia.dayProtect.hasOwnProperty(target.name)) {
                             if (mafia.dayProtect[target.name].type === "revenge") {
                                 revenge = true;
+                                rmsg = mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
                             }
                             else if (mafia.dayProtect[target.name].type === "protect") {
                                 gamemsg(srcname, formatArgs(mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "Your target (~Target~) was protected!", dayargs));
@@ -6107,8 +6120,10 @@ function Mafia(mafiachan) {
                         }
                         this.kill(mafia.players[commandData]);
                     } else {
-                        var rmsg = (target.role.actions.daykillrevengemsg ||
-                        "~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!").replace(/~Self~/g, commandData).replace(/~Role~/g, mafia.players[commandData].role).replace(/~Target~/g, name).replace(/~TargetRole~/g,mafia.players[name].role.translation);
+                        if (!rmsg) {
+                            rmsg = (target.role.actions.daykillrevengemsg ||
+                            "~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!").replace(/~Self~/g, commandData).replace(/~Role~/g, mafia.players[commandData].role).replace(/~Target~/g, name).replace(/~TargetRole~/g,mafia.players[name].role.translation);
+                        }
                         gamemsgAll(rmsg);
 
                         if ("copyAs" in commandObject) {
