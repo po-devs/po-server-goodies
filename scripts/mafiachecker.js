@@ -322,7 +322,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "voteHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -988,8 +988,8 @@ function mafiaChecker() {
                         checkType(action.msg, ["string", "object"], comm + ".msg");
                         if (typeof action.msg === "object") {
                             for (e in action.msg) {
-                                checkType(e, ["number"], comm + ".msg." + e)
-                                checkType(action.msg[e], ["string"], comm + ".msg." + e)
+                                checkType(e, ["string"], comm + ".msg." + e)
+                                checkType(action.msg[e], ["number"], comm + ".msg." + e)
                             }
                         }
                         checkType(action.hookermsg, ["string"], comm + ".hookermsg");
@@ -1002,6 +1002,10 @@ function mafiaChecker() {
                         checkType(action.constant, ["number"], comm + ".constant");
                         checkValidValue(action.silent, [true, false], comm + ".silent");
                     }
+                }
+                if (checkType(role.actions.voteHax, ["object"], act + ".voteHax")) {
+                    checkType(role.actions.voteHax.msg, ["msg"], comm + ".voteHax.msg");
+                    checkType(role.actions.voteHax.chance, ["number"], comm + ".voteHax.chance");
                 }
                 if (checkType(role.actions.daykill, ["object", "string"], act + ".daykill")) {
                     action = role.actions.daykill;
