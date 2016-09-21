@@ -3988,12 +3988,12 @@ function Safari() {
                 return;
             }
             var index = parseInt(cmd.index, 10);
-            if (isNaN(index) || index < 1 || index >= l) {
+            if (isNaN(index) || index < 1 || index > l) {
                 safaribot.sendHtmlMessage(src, "No such photo!", safchan);
                 return;
             }
-            safaribot.sendMessage(src, "You deleted the photo " + index + " (" + cap(this.describePhoto(photos[index-1])) + ")!", safchan);
             index = index-1;
+            safaribot.sendMessage(src, "You deleted the photo " + (index+1) + " (" + cap(this.describePhoto(photos[index])) + ")!", safchan);
             photos.splice(index, 1);
             this.saveGame(player);
         }
