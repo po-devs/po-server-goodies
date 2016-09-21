@@ -71,6 +71,8 @@ function Mafia(mafiachan) {
             name: "Game",
             color: "#3DAA68"
         };
+        Safari = require("safari.js");
+        safchan = sys.channelId("Safari");
 
     var savePlayedGames = function (entry) {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
@@ -1530,9 +1532,7 @@ function Mafia(mafiachan) {
                 this.rewardSafariPlayers.splice(playerIndex, 1);
             }
         }
-        var Safari = require('safari.js');
         if ((Safari) && (Safari.hasOwnProperty("mafiaPromo"))) {
-            var safchan = sys.channelId("Safari");
             Safari.mafiaPromo(this.rewardSafariPlayers)
         }
         this.safariShove = [];
@@ -1573,12 +1573,12 @@ function Mafia(mafiachan) {
             this.eventQueue = [defaultThemeName];
         }
         var etheme = this.eventQueue[0];
+        mafia.isEvent = true;
         this.startGame("Event", etheme);
         this.eventQueue.splice(0,1);
         if (this.eventQueue.length < 3) {
             this.eventQueue.push(this.getRandom(this.eventThemePool));
         }
-        mafia.isEvent = true;
     };
     this.addEventTheme = function (src,theme,place) {
         var srcname = sys.name(src);
@@ -1894,8 +1894,16 @@ function Mafia(mafiachan) {
             sendBorder();
             if (this.theme.name == defaultThemeName) {
                 mafiabot.sendHtmlAll("An <b>Event</b> Mafia game is starting!", mafiachan);
+                sendBorder(safchan);
+                sendChanHtmlAll("An <b>Event</b> #Mafia game is starting!", safchan);
+                sendBorder(safchan);
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
+            }
+            if (Safari) {
+                sendBorder(safchan);
+                sendChanHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed #Mafia game is starting!", safchan);
+                sendBorder(safchan);
             }
             gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!", undefined, undefined, true);
             sendBorder();
@@ -1995,12 +2003,12 @@ function Mafia(mafiachan) {
     };
     this.tickDown = function () { /* called every second */
         if (this.state == "blank") {
-            this.tryEventTheme();
-            if (this.distributeEvent) {
-                this.trySafariReward();
-            }    
+            this.tryEventTheme(); 
             return;
         }
+        if (this.distributeEvent) {
+            this.trySafariReward();
+        }   
         if (this.ticks <= 0) {
             return;
         }
