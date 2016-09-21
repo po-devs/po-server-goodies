@@ -3926,12 +3926,16 @@ function Safari() {
             10: Math.min(1 + p, 11)
         });
 
-        var pokeName = poke(currentDisplay);
+        var target = currentDisplay;
+        if (target === 0) {
+            target = currentPokemon;
+        }
+        var pokeName = poke(target);
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
         var photo = {
-            id: currentDisplay,
+            id: target,
             amt: currentPokemonCount,
             when: period,
             where: (contestCount > 0 && currentTheme ? currentTheme : "default"),
