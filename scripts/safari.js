@@ -3976,7 +3976,7 @@ function Safari() {
         
         if (action === "*") {
             sys.sendMessage(src, "", safchan);
-            safaribot.sendMessage(src, "You have " + plural(l, "photo") + " stored:", safchan);
+            safaribot.sendMessage(src, "You have " + plural(l, "photo") + " stored (you can hold up to 20 photos):", safchan);
             for (var e = 0; e < l; e++) {
                 safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])), safchan);
             }
@@ -12754,7 +12754,7 @@ function Safari() {
             return;
         }
         act = parseInt(act, 10);
-        if (!act || isNaN(act) || act < 1 || act >= photographQuest.length) {
+        if (!act || isNaN(act) || act < 1 || act > photographQuest.length) {
             safaribot.sendMessage(src, "Editor-in-chief: That's a valid request!", safchan);
             return;
         }
