@@ -72,7 +72,7 @@ function Mafia(mafiachan) {
             color: "#3DAA68"
         };
         Safari = require("safari.js");
-        safchan = sys.channelId(Safari);
+        safchan = sys.channelId("Safari");
 
     var savePlayedGames = function (entry) {
         sys.writeToFile(MAFIA_SAVE_FILE, JSON.stringify(PreviousGames));
