@@ -2780,7 +2780,7 @@ function Safari() {
             shiny = appearAs.shiny;
         } else {
             disguise = [132, 151, 570, 571].contains(num);
-            if (disguise && chance(0.5)) {
+            if (disguise && chance(0.6)) {
                 appearance = sys.rand(1,722);
                 if (shiny) {
                     multiplier = 5;
@@ -12709,6 +12709,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: We are too busy printing tomorrow's edition! Come back later!", safchan);
             return;
         }
+        var isAndroid = sys.os(src) === "android";
         
         var act = data.length > 0 && data[0] ? data[0] : "*";
         if (player.balls.lens === 0) {
@@ -12745,7 +12746,15 @@ function Safari() {
                         break;
                     }
                 }
-                safaribot.sendHtmlMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") " + (canFulfill ? "[" + link("/quest journal:" + (e+1), "You can fulfill this request") + "]" : ""), safchan);
+                if (isAndroid) {
+                    if (canFulfill) {
+                        safaribot.sendHtmlMessage(src, toColor((e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", "magenta"), safchan);
+                    } else {
+                        safaribot.sendMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", safchan);
+                    }
+                } else {
+                    safaribot.sendHtmlMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") " + (canFulfill ? "[" + link("/quest journal:" + (e+1), "You can fulfill this request") + "]" : ""), safchan);
+                }
             }
             if (player.quests.journal.cooldown >= now()) {
                 safaribot.sendMessage(src, "Editor-in-chief: I'm still editing to the last photo that you brought, so come back in " + timeLeftString(player.quests.journal.cooldown) + " if you wish to submit more photos!", safchan);
@@ -12822,7 +12831,7 @@ function Safari() {
         }
         
         rew = giveStuff(player, toStuffObj(rew));
-        player.quests.journal.cooldown = now() + hours(0.25);
+        player.quests.journal.cooldown = now() + hours(0.333);
         player.records.photosSubmitted += 1;
         var oldPoints = player.records.photoPoints;
         player.records.photoPoints += score;
@@ -12944,7 +12953,7 @@ function Safari() {
     this.updatePhotographQuest = function() {
         var changed = false;
         var req;
-        while (photographQuest.length < 18) {
+        while (photographQuest.length < 20) {
             req = this.createPhotoRequest(sys.rand(10, 100));
             if (req) {
                 photographQuest.push(req);
@@ -13950,7 +13959,7 @@ function Safari() {
         }
 
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: This room is infested with lots of wild Pokémon! Defeat them to pass, but <b>{2}</b>-type and <b>{3}</b>-type Pokémon are forbidden!".format(level, roomNum, toColor(this.forbiddenTypes[0], "blue"), toColor(this.forbiddenTypes[1], "blue")));
+        this.sendAll("Room {0}-{1}: This room is infested with lots of wild Pokémon! Defeat them to pass, but <b>{2}</b>-type and <b>{3}</b>-type Pokémon are forbidden!".format(level, roomNum, typeIcon(this.forbiddenTypes[0]), typeIcon(this.forbiddenTypes[1])));
         this.sendAll("Wild Pokémon: " + this.horde.map(pokeInfo.icon).join(""));
         this.sendIndividuals();
         this.sendAll("");
@@ -14281,17 +14290,17 @@ function Safari() {
         };
 
         this.sendAll("");
-        this.sendAll("Room " + level + "-" + roomNum + ": A weird statue is blocking the exit. The statue seems to have 3 types, but only one is visible: " + toColor(this.types[0], "blue") + ". Destroy the statue to proceed!");
+        this.sendAll("Room " + level + "-" + roomNum + ": A weird statue is blocking the exit. The statue seems to have 3 types, but only one is visible: " + typeIcon(this.types[0]) + ". Destroy the statue to proceed!");
         this.sendIndividuals();
         this.sendAll("");
     }
     BlockedRoom.prototype = new PyramidRoom();
     BlockedRoom.prototype.midturn = function() {
-        var known = this.revealedTypes.concat();
+        var known = this.revealedTypes.concat().map(typeIcon);
         while (known.length < this.types.length) {
             known.push("???");
         }
-        this.sendToAlive("Choose a Pokémon to break the {0}-type statue!".format(toColor(known.join("/"), "blue")));
+        this.sendToAlive("Choose a Pokémon to break the {0}-type statue!".format(known.join(" / ")));
         this.sendIndividuals();
     };
     BlockedRoom.prototype.validInput = function(id, commandData) {
@@ -14339,7 +14348,7 @@ function Safari() {
 
             var pointsRange = [48 + 32 * this.level, 28 + 18 * this.level, 10 + 6 * this.level, -6 - 6 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
-            this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(toColor(this.types.join("/"), "blue"), plural(points, "Point")));
+            this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
                 var reward = randomSampleObj(this.treasures);
                 this.sendAll("<b>{0}</b> found something stuck to a fragment of the statue! {0} received {1}!".format(addFlashTag(bestAttacker.toCorrectCase()), toColor(treasureName(reward), "blue")), true);
@@ -14351,7 +14360,7 @@ function Safari() {
             var rt = this.revealedTypes.length;
             if (rt < this.types.length) {
                 this.revealedTypes.push(this.types[rt]);
-                this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), this.types[rt], toColor(this.revealedTypes.join("/"), "blue")));
+                this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), typeIcon(this.types[rt]), toColor(this.revealedTypes.map(typeIcon).join(" / "), "blue")));
             }
 
             var staminaStr = [], members = this.pyr.names, id;
@@ -14844,7 +14853,7 @@ function Safari() {
 
 
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: {2}, {4}-type user, challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : "", an(main)));
+        this.sendAll("Room {0}-{1}: {2}, {4}-type user, challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : "", typeIcon(main)));
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -15006,11 +15015,11 @@ function Safari() {
             this.bonusTypes.push(type2);
         }
 
-        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes, "or") + " will give bonus points!)!";
+        this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will give bonus points!)!";
 
         this.sendAll("");
         this.sendAll("Room {0}-{1}: As soon as you enter the room, you see a Pokémon in the shadows using {2}. They then look at you and prepare another attack!".format(level, roomNum, toColor(this.firstAtk, "blue") + " and " + toColor(this.secondAtk, "blue")));
-        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + toColor(readable(this.bonusTypes, "or"), "red") + " will give bonus points!");
+        this.sendAll("Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will give bonus points!");
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -15067,7 +15076,7 @@ function Safari() {
                     }
                 }
                 if (bonusUsed.length > 0) {
-                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.join("/") + "-type Pokémon");
+                    bonusMsg.push(p.toCorrectCase() + " defended with " + bonusUsed.map(typeIcon).join("/") + "-type Pokémon");
                 }
             }
         }
@@ -19751,7 +19760,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 var type1 = sys.type(sys.pokeType1(info.num));
                 var type2 = sys.type(sys.pokeType2(info.num));
-                safaribot.sendMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(type1 + (type2 === "???" ? "" : "/" + type2))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + "]", safchan);
+                safaribot.sendHtmlMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(typeIcon(type1) + (type2 === "???" ? "" : " "+typeIcon(type2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + "]", safchan);
                 var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
