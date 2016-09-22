@@ -7310,7 +7310,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "rescind") {
-            if (!distributeEvent) {
+            if (!mafia.distributeEvent) {
                  msg(src, "Wait until after an Event game ends to rescind points from it.", channel);
                  return;
             }
