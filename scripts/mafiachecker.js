@@ -1428,7 +1428,7 @@ function mafiaChecker() {
             }
             else {
                 checkType(action.convert.newRole, ["string", "array"], comm + ".convert.newRole");
-                if (typeof action.convert.newRole === "array") {
+                if (Array.isArray(action.convert.newRole)) {
                     for (e in action.convert.newRole) {
                         checkValidRole(e, comm + ".convert.newRole");
                     }
