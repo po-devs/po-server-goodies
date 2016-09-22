@@ -155,6 +155,12 @@ function Mafia(mafiachan) {
         }
         return true;
     }
+    function gamemsgAllArray(mess) {
+        for (var i = 0; i < mess.length; i++) {
+            gamemsgAll(mess[i]);
+        }
+        return true;
+    }
     function gamemsgAll(mess, botName, channel, html) {
         if (mess === undefined || mess === "") {
             return false;
