@@ -1292,7 +1292,7 @@ function mafiaChecker() {
     Theme.prototype.checkOnDeath = function(action, comm, extra, isLynch) {
         var e;
         
-        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse"].concat(extra), comm);
+        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert"].concat(extra), comm);
                     
         checkType(action.onslay, ["boolean"], comm + ".onslay");
         
@@ -1419,6 +1419,26 @@ function mafiaChecker() {
             if (!("exposeRoles" in action)) {
                 addMinorError("'exposemsg' found at " + comm + ", but there's no 'exposeRoles'");
             }
+        }
+        
+        /* onDeath.convert related attributes */
+        if (checkType(action.convert, ["object"], comm + ".convert")) {
+            if (!("newRole" in action.convert)) {
+                addFatalError(comm + ".convert in missing the attribute \"newRole\"");
+            }
+            else {
+                checkType(action.convert.newRole, ["string", "array"], comm + ".convert.newRole");
+                if (Array.isArray(action.convert.newRole)) {
+                    for (e in action.convert.newRole) {
+                        checkValidRole(e, comm + ".convert.newRole");
+                    }
+                }
+                else {
+                    checkValidRole(action.convert.newRole, comm + ".convert.newRole");
+                }
+            }
+            checkType(action.convert.msg, ["string"], comm + ".convert.msg");
+            checkValidValue(action.convert.sendKillMsg, [true, false], comm + ".convert.sendKillMsg");
         }
     };
     Theme.prototype.checkActions = function() {
