@@ -2002,13 +2002,13 @@ function Mafia(mafiachan) {
         mafia.tryEventTheme();
     };
     this.tickDown = function () { /* called every second */
+        if (this.distributeEvent) {
+            this.trySafariReward();
+        }   
         if (this.state == "blank") {
             this.tryEventTheme(); 
             return;
         }
-        if (this.distributeEvent) {
-            this.trySafariReward();
-        }   
         if (this.ticks <= 0) {
             return;
         }
