@@ -3252,7 +3252,10 @@ function Mafia(mafiachan) {
             
             if (mafia.isEvent) {
                 mafia.rewardSafariTime = new Date().getTime() + 5 * 60 * 1000;
-                mafia.rewardSafariPlayers = mafia.allPlayers;
+                mafia.rewardSafariPlayers = [];
+                for (var m in mafia.allPlayers) {
+                    mafia.rewardSafariPlayers.push(mafia.allPlayers[m].toLowerCase())
+                }
                 mafia.distributeEvent = true;
                 mafia.isEvent = false;
             }
@@ -7320,11 +7323,11 @@ function Mafia(mafiachan) {
                  msg(src, "Wait until after an Event game ends to rescind points from it.", channel);
                  return;
             }
-            if (this.rewardSafariPlayers.indexOf(commandData.toCorrectCase()) === -1) {
-                 msg(src, "Can't find any player named " + commandData.toCorrectCase() + " to rescind coins from!", channel);
+            if (this.rewardSafariPlayers.indexOf(commandData.toLowerCase()) === -1) {
+                 msg(src, "Can't find any player named " + commandData + " to rescind coins from!", channel);
                  return;
             }
-            mafia.safariShove.push(commandData.toCorrectCase());
+            mafia.safariShove.push(commandData.toLowerCase());
             dualBroadcast("±" + mafiabot.name + ": " + srcname + " rescinded " + commandData + "'s Mafia Event participation points!");
             return;
         }
