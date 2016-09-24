@@ -7320,8 +7320,8 @@ function Mafia(mafiachan) {
                  msg(src, "Wait until after an Event game ends to rescind points from it.", channel);
                  return;
             }
-            if (this.rewardSafariPlayers.indexOf(commandData.toCorrectCase()) === -1) {
-                 msg(src, "Can't find any player named " + commandData.toCorrectCase() + " to rescind coins from!", channel);
+            if (this.rewardSafariPlayers.indexOf(commandData) === -1) {
+                 msg(src, "Can't find any player named " + commandData + " to rescind coins from!", channel);
                  return;
             }
             mafia.safariShove.push(commandData.toCorrectCase());
