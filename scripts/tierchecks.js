@@ -507,6 +507,17 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons"], function primalBan(src, team, tier) {
+    var ret = [];
+    var primals = [sys.pokeNum("Primal Groudon"), sys.pokeNum("Primal Kyogre")];
+    for (var i = 0; i < 6; i++) {
+        if (primals.contains(sys.teamPoke(src, team, i))) {
+            ret.push("The Pokemon '%0' is banned on tier 'ORAS Balanced Hackmons' for the following reasons: Pokemon %0 is banned.".format(sys.teamPoke(src,team,i)));
+        }
+    }    
+    return ret;
+});
+
 tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCSleepTrap(src, team) {
 	var ret = [];
 	var gen = sys.gen(src, team);
@@ -531,7 +542,6 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
 });
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCUnown(src, team) {
-    var ret = [];
     var gen = sys.gen(src, team);
     //Both shininess and form are determined by IVs in gen 2, making the letters I and V the only ones that can be shiny
     if (gen == 2) {
@@ -541,8 +551,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
                 sys.changePokeShine(src, team, i, false);
             }
         }
-    }	
-    return ret;
+    }
 });
 
 module.exports = tier_checker;
