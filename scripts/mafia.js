@@ -3254,7 +3254,7 @@ function Mafia(mafiachan) {
                 mafia.rewardSafariTime = new Date().getTime() + 5 * 60 * 1000;
                 mafia.rewardSafariPlayers = [];
                 for (var m in mafia.allPlayers) {
-                    mafia.rewardSafariPlayers.push(m.toLowerCase())
+                    mafia.rewardSafariPlayers.push(mafia.allPlayers[m].toLowerCase())
                 }
                 mafia.distributeEvent = true;
                 mafia.isEvent = false;
