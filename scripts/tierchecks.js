@@ -512,7 +512,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons"], function prima
     var primals = [sys.pokeNum("Primal Groudon"), sys.pokeNum("Primal Kyogre")];
     for (var i = 0; i < 6; i++) {
         if (primals.contains(sys.teamPoke(src, team, i))) {
-            ret.push("The Pokemon '%0' is banned on tier 'ORAS Balanced Hackmons' for the following reasons: Pokemon %0 is banned.".format(sys.teamPoke(src,team,i)));
+            ret.push("The Pokemon '{0}' is banned on tier 'ORAS Balanced Hackmons'.".format(sys.teamPoke(src,team,i)));
         }
     }    
     return ret;
