@@ -7323,11 +7323,11 @@ function Mafia(mafiachan) {
                  msg(src, "Wait until after an Event game ends to rescind points from it.", channel);
                  return;
             }
-            if (this.rewardSafariPlayers.indexOf(commandData) === -1) {
+            if (this.rewardSafariPlayers.indexOf(commandData.toLowerCase()) === -1) {
                  msg(src, "Can't find any player named " + commandData + " to rescind coins from!", channel);
                  return;
             }
-            mafia.safariShove.push(commandData);
+            mafia.safariShove.push(commandData.toLowerCase());
             dualBroadcast("±" + mafiabot.name + ": " + srcname + " rescinded " + commandData + "'s Mafia Event participation points!");
             return;
         }
