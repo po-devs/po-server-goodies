@@ -76,11 +76,11 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags","extAnswers"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
-        if (data === "leaderBoard" || data === "triviaWarnings" || data === "hiddenCategories" || data === "editMessageFlags") {
+        if (data === "leaderBoard" || data === "triviaWarnings" || data === "hiddenCategories" || data === "editMessageFlags" || data === "extAnswers") {
             trivData[data] = [];
         }
         else if (data === "autostartRange") {
@@ -300,6 +300,7 @@ function PMcheckq(src, channel) {
         if (+questionId < 0) {
             Trivia.sendPM(src, "Put into edit by: " + questionInfo.name, channel); // was just placed into edit
             trivData.editMessageFlags.push(questionInfo.question); // remember that this was placed into edit
+            saveData();
         } else {
             for (var i = 0; i < trivData.editMessageFlags.length; i++) {
                 if (questionInfo.question === trivData.editMessageFlags[i]) {
@@ -730,6 +731,12 @@ TriviaGame.prototype.startTriviaRound = function () {
     this.phase = "answer";
     if (category.toLowerCase() === "pop quiz") { this.htmlAll(question); }
     else { this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question); }
+    for (var f = 0; f < trivData.extAnswers.length; f++) {
+        if (questionNumber === trivData.extAnswers[f]) {
+            Trivia.ticks = 18;
+            return;
+        }
+    }
     Trivia.ticks = 12;
 };
 
@@ -1611,6 +1618,7 @@ QuestionHolder.prototype.checkq = function () {
         if (+questionId < 0) {
             triviabot.sendAll("Put into edit by: " + questionInfo.name, revchan); // was just placed into edit
             trivData.editMessageFlags.push(questionInfo.question); // remember that this was placed into edit
+            saveData();
         } else {
             for (var i = 0; i < trivData.editMessageFlags.length; i++) {
                 if (questionInfo.question === trivData.editMessageFlags[i]) {
@@ -1685,6 +1693,7 @@ QuestionHolder.prototype.changeQuestion = function (id, question) {
     for (var i = 0; i < trivData.editMessageFlags.length; i++) {
         if (data[1] === trivData.editMessageFlags[i]) {
             trivData.editMessageFlags.splice(i, 1, question);
+            saveData();
             break;
         }
     }
@@ -1934,9 +1943,9 @@ EventStatistics.prototype.updateEventStats = function (playerArray, noWinners) {
     var eventTime = (manualEventFlag ? manualEventTime : lastEventTime);
     var timeStamp = (manualEventFlag ? manualEventTimeStamp : lastEventTimeStamp);
     if (Trivia.scoreType !== 'elimination') {
-        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'scoreBoard' : playerArray, 'firstGoalR' : firstGoalR, 'secondGoalR' : secondGoalR, 'thirdGoalR' : thirdGoalR};
+        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'scoreBoard' : playerArray, 'firstGoalR' : firstGoalR, 'secondGoalR' : secondGoalR, 'thirdGoalR' : thirdGoalR, 'totalServerPlayers' : sys.playerIds().length, 'totalTriviaPlayers' : sys.playersOfChannel(triviachan).length};
     } else {
-        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'participants' : playerArray, 'noWinners' : noWinners};
+        this.stats = {'gameType' : Trivia.scoreType, 'goal' : Trivia.maxPoints, 'lastGame' : eventTime, 'lastGameTime' : timeStamp, 'players' : playerArray.length, 'rounds' : Trivia.round, 'duration' : eventDuration, 'participants' : playerArray, 'noWinners' : noWinners, 'totalServerPlayers' : sys.playerIds().length, 'totalTriviaPlayers' : sys.playersOfChannel(triviachan).length};
     }
     this.recordedGames.unshift(this.stats);
     sys.writeToFile(this.file, JSON.stringify(this.recordedGames));
@@ -2442,7 +2451,9 @@ addAdminCommand(["eventstats"], function (src, commandData, channel) {
                 if (x > 5) { break; }
                 if (z !== stats[i].gameType && z !== "") { continue; }
                 x++;
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + (isNaN(stats[i].duration) ? stats[i].duration : getTimeString(stats[i].duration)), channel);
+                if (stats[i].totalServerPlayers === undefined) { stats[i].totalServerPlayers = "No data recorded."; }
+                if (stats[i].totalTriviaPlayers === undefined) { stats[i].totalTriviaPlayers = "No data recorded."; }
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + (isNaN(stats[i].duration) ? stats[i].duration : getTimeString(stats[i].duration)) + "<br><font color='#3daa68'><b>Server Players Online: </b></font>" + stats[i].totalServerPlayers + "<br><font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + stats[i].totalTriviaPlayers, channel);
                 if (stats[i].gameType !== 'elimination') {
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Score Board: </b></font>" + stats[i].scoreBoard.join(", "), channel);
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><b>First Player past Goal: </b></font>" + stats[i].firstGoalR + ", <font color='#3daa68'><b>Second Player past Goal: </b></font>" + stats[i].secondGoalR + ", <font color='#3daa68'><b>Third Player past Goal: </b></font>" + stats[i].thirdGoalR, channel);
@@ -2483,9 +2494,19 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
         var avgElimGoalT = 0, avgElimPlayersT = 0, avgElimRoundsT = 0, avgElimDurationT = 0,
                 elimCount = 0, noWinnersCount = 0, elimDurationCount = 0;
 
+        var avgServerPlayersT = 0, avgChannelPlayersT = 0, serverPlayerCount = 0, channelPlayerCount = 0;
+
         var justRound = "";
 
         for (var i = 0; i < stats.length; i++) {
+            if (stats[i].totalServerPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
+                avgServerPlayersT += stats[i].totalServerPlayers;
+                serverPlayerCount++;
+            }
+            if (stats[i].totalTriviaPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
+                avgChannelPlayersT += stats[i].totalTriviaPlayers;
+                channelPlayerCount++;
+            }
             if (stats[i].gameType === "knowledge") {
                 avgKnowGoalT += parseInt(stats[i].goal);
                 avgKnowPlayersT += stats[i].players;
@@ -2554,6 +2575,16 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             }
         }
         sys.sendMessage(src, "***Average Event Stats***", channel);
+        if (serverPlayerCount !== 0) {
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel);
+            var avgServerPlayers = avgServerPlayersT / serverPlayerCount;
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Server Players Online: </b></font>" + avgServerPlayers.toFixed(2), channel);
+        }
+        if (channelPlayerCount !== 0) {
+            if (!serverPlayerCount) { sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel); }
+            var avgChannelPlayers = avgChannelPlayersT / channelPlayerCount;
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + avgChannelPlayers.toFixed(2), channel);
+        }
         if (knowCount !== 0) {
             var avgKnowGoal = avgKnowGoalT / knowCount;
             var avgKnowPlayers = avgKnowPlayersT / knowCount;
@@ -2565,7 +2596,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgKnow3rdRounds = "N/A";
             if ((knowCount - know2ndCount) !== 0) { avgKnow2ndRounds = avgKnow2ndRoundsT / (knowCount - know2ndCount); }
             if ((knowCount - know3rdCount) !== 0) { avgKnow3rdRounds = avgKnow3rdRoundsT / (knowCount - know3rdCount); }
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Know Averages<br>Average Goal: </b></font>" + avgKnowGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + avgKnowPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgKnowRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgKnowDuration + "<br><font color='#3daa68'><b>Average Round 1st Player Reached Goal: </b></font>" + avgKnow1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgKnow2ndRounds) ? avgKnow2ndRounds : avgKnow2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Average Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgKnow3rdRounds) ? avgKnow3rdRounds : avgKnow3rdRounds.toFixed(2)) + "<br>", channel);
+            sys.sendHtmlMessage(src, "<br><font color='#3daa68'><b><u>Knowledge Events</u><br>Goal: </b></font>" + avgKnowGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgKnowPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgKnowRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgKnowDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgKnow1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgKnow2ndRounds) ? avgKnow2ndRounds : avgKnow2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgKnow3rdRounds) ? avgKnow3rdRounds : avgKnow3rdRounds.toFixed(2)) + "<br>", channel);
         }
         if (speedCount !== 0) {
             var avgSpeedGoal = avgSpeedGoalT / speedCount;
@@ -2578,7 +2609,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgSpeed3rdRounds = "N/A";
             if ((speedCount - speed2ndCount) !== 0) { avgSpeed2ndRounds = avgSpeed2ndRoundsT / (speedCount - speed2ndCount); }
             if ((speedCount - speed3rdCount) !== 0) { avgSpeed3rdRounds = avgSpeed3rdRoundsT / (speedCount - speed3rdCount); }
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Speed Averages<br>Average Goal: </b></font>" + avgSpeedGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + avgSpeedPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgSpeedRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgSpeedDuration + "<br><font color='#3daa68'><b>Average Round 1st Player Reached Goal: </b></font>" + avgSpeed1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgSpeed2ndRounds) ? avgSpeed2ndRounds : avgSpeed2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Average Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgSpeed3rdRounds) ? avgSpeed3rdRounds : avgSpeed3rdRounds.toFixed(2)) + "<br>", channel);
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Speed Events</u><br>Goal: </b></font>" + avgSpeedGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgSpeedPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgSpeedRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgSpeedDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgSpeed1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgSpeed2ndRounds) ? avgSpeed2ndRounds : avgSpeed2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgSpeed3rdRounds) ? avgSpeed3rdRounds : avgSpeed3rdRounds.toFixed(2)) + "<br>", channel);
         }
         if (elimCount !== 0) {
             var avgElimGoal = avgElimGoalT / elimCount;
@@ -2587,7 +2618,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
             var avgElimRounds = avgElimRoundsT / elimCount;
             var xElim = (!elimDurationCount ? 0 : avgElimDurationT / elimDurationCount);
             var avgElimDuration = (xElim === 0 ? "Not enough data." : getTimeString(parseInt(xElim)));
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Elimination Averages<br>Average Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Average Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Average Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Average Duration: </b></font>" + avgElimDuration + "<br>", channel);
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Elimination Events</u><br>Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgElimDuration + "<br>", channel);
         }
     }
 }, "Displays event stat averages.");
@@ -2700,12 +2731,86 @@ addAdminCommand(["changegoal"], function (src, commandData, channel) {
     return;
 }, "Allows you to change the goal for the current game");
 
+addAdminCommand(["extanswers"], function (src, commandData, channel) {
+    if (commandData === undefined) {
+        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
+        return;
+    }
+    var i, q, count = 0, linkUsed = false;
+    if (commandData.indexOf(":") !== -1) {
+        commandData = commandData.split(":");
+        i = parseInt(commandData[1]);
+        linkUsed = true;
+    }
+    if (!commandData.length || linkUsed) {
+        Trivia.sendPM(src, "The questions with extended answer times are: ", channel);
+        if (!commandData.length) { i = 0; }
+        for (i; i < trivData.extAnswers.length; i++) {
+            if (count >= 50) {
+                Trivia.sendPM(src, "List contains more than 50 questions.", channel);
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//extanswers filler:" + i + "\">Show more questions</a></b>", channel);
+                break;
+            }
+            count++;
+            q = triviaq.get(trivData.extAnswers[i]);
+            if (q !== null) {
+                Trivia.sendPM(src, parseInt(i + 1) + ". question id: " + trivData.extAnswers[i] + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, channel);
+            } else {
+                trivData.extAnswers.splice(i, 1); //If somehow this question doesn't exist anymore and is still in the list, delete it from the list.
+                saveData();
+            }
+        }
+        return;
+    }
+    q = triviaq.get(commandData);
+    if (q !== null) {
+        for (var j = 0; j < trivData.extAnswers.length; j++) {
+            if (commandData === trivData.extAnswers[j]) {
+                Trivia.sendPM(src, "Question ID: '" + commandData + "' already has a longer answer time.", channel);
+                return;
+            }
+        }
+        trivData.extAnswers.push(commandData);
+        saveData();
+        triviabot.sendAll(sys.name(src) + " added question id: " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " to the extended answers list.", revchan);
+    } else {
+        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
+    }
+}, "Use to add questions (by ID number) to the list of questions that should have a longer answer time when asked.");
+
+addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
+    if (!commandData.length || commandData === undefined) {
+        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
+        return;
+    }
+    var q = triviaq.get(commandData);
+    if (q !== null) {
+        for (var i = 0; i < trivData.extAnswers.length; i++) {
+            if (commandData === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+                triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " from the extended answers list.", revchan);
+                break;
+            }
+        }
+    } else {
+        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
+    }
+}, "Use to remove questions (by ID number) to the list of questions that should have a longer answer time when asked.");
+
 addAdminCommand(["removeq"], function (src, commandData, channel) {
     var q = triviaq.get(commandData);
     if (q !== null) {
-        triviabot.sendAll(sys.name(src) + " removed question: id, " + commandData + " category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
         triviaq.remove(commandData);
         questionData.remove(commandData);
+        for (var i = 0; i < trivData.extAnswers.length; i++) {
+            if (commandData === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+                break;
+            }
+        }
         return;
     }
     Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
@@ -3274,6 +3379,7 @@ addAdminCommand(["accept"], function (src, commandData, channel) {
         for (var i = 0; i < trivData.editMessageFlags.length; i++) {
             if (q.question === trivData.editMessageFlags[i]) {
                 trivData.editMessageFlags.splice(i, 1);
+                saveData();
             }
         }
         triviabot.sendAll(sys.name(src) + " accepted question: id: " + qid + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
@@ -3323,6 +3429,15 @@ addAdminCommand(["editq"], function (src, commandData, channel) {
         questionData.remove(commandData[0]);
         trivreview.state.questions.add(id, q.category + ":::" + q.question + ":::" + q.answer + ":::" + sys.name(src) + ":::" + (commandData[1] ? commandData[1] + " - " + sys.name(src) : "None."));
         triviabot.sendAll(sys.name(src) + " placed a question at the top of the review queue.", revchan);
+        for (var i = 0; i < trivData.extAnswers.length; i++) {
+            if (commandData[0] === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+                var notes = "ALERT! This question has been removed from the extended answer time list. - ±" + triviabot.name;
+                trivreview.changeNotes(id, notes, "add");
+                break;
+            }
+        }
         trivreview.checkq();
         return;
     }
@@ -3373,6 +3488,7 @@ addAdminCommand(["decline"], function (src, commandData, channel) {
         for (var i = 0; i < trivData.editMessageFlags.length; i++) {
             if (q.question === trivData.editMessageFlags[i]) {
                 trivData.editMessageFlags.splice(i, 1);
+                saveData();
             }
         }
         triviabot.sendAll(sys.name(src) + " declined question: category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
@@ -3389,6 +3505,10 @@ addOwnerCommand(["declinecatqs"], function (src, commandData, channel) {
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
         if (commandData.toLowerCase() === q.category.toLowerCase()) {
+            if (i === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+            }
             triviaq.remove(i);
             questionData.remove(i);
             counter++;
