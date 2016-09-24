@@ -732,7 +732,7 @@ TriviaGame.prototype.startTriviaRound = function () {
     if (category.toLowerCase() === "pop quiz") { this.htmlAll(question); }
     else { this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question); }
     for (var f = 0; f < trivData.extAnswers.length; f++) {
-        if (questionNumber === trivData.extAnswers[f]) {
+        if (this.roundQuestion === trivData.extAnswers[f]) {
             Trivia.ticks = 18;
             return;
         }
