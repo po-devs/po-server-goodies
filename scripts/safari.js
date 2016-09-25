@@ -6756,7 +6756,6 @@ function Safari() {
         if (item === "soda") {
             var questList = Object.keys(player.quests);
             questList.splice(questList.indexOf("scientist"), 1);
-            questList.splice(questList.indexOf("monger"), 1);
             if (!info.target) {
                 safaribot.sendMessage(src, "Choose a quest to reduce the current cooldown with '/use soda:[Quest]! Valid quests are " + readable(questList.map(cap)) + ". ", safchan);
                 return;
@@ -13192,7 +13191,7 @@ function Safari() {
                         return 0;
                     }
                     obj.move = val;
-                    return Math.max(130 - c, 1) * 1;
+                    return Math.round(Math.max(130 - c, 1) * 0.75);
             }
             
             return 5;
