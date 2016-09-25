@@ -579,6 +579,8 @@ function Safari() {
     var lastPokemonCount = 1;
     var currentDisplay = null;
     var currentPokemonAction = null;
+    var currentPokemonMood = null;
+    var currentPokemonMoodRate = null;
     var maxThrows = 10;
     var currentThrows;
     var preparationPhase = 0;
@@ -1194,6 +1196,9 @@ function Safari() {
     var photoQuality = ["Disastrous", "Terrible", "Awful", "Bad", "Poor", "Okay", "Good", "Great", "Superb", "Excellent", "Perfect"];
     var photoActions = {
         Any: ["eating", "playing", "dancing", "sleeping", "jumping", "singing", "whistling", "running", "standing still", "sitting", "walking", "stretching", "crying", "laughing", "yawning", "attacking", "smiling", "protecting itself"],
+        Positive: ["eating", "playing", "dancing", "sleeping", "singing", "whistling", "stretching", "smiling"],
+        Neutral: ["jumping", "walking", "standing still", "sitting", "laughing", "yawning"],
+        Negative: ["running", "crying", "attacking", "protecting itself"],
         Normal: ["spinning", "screaming"],
         Fighting: ["punching", "kicking"],
         Flying: ["flying", "flapping their wings"],
@@ -1212,6 +1217,11 @@ function Safari() {
         Dragon: ["howling", "rampaging"],
         Dark: ["taunting", "hiding"],
         Fairy: ["winking", "casting a spell"]
+    };
+    var photoMood = {
+        Positive: ["happy", "relaxed", "confident", "lively", "docile"],
+        Neutral: ["indifferent", "calm", "distracted", "lazy"],
+        Negative: ["angry", "anxious", "scared", "tired", "sad"]
     };
     
     /* Misc Variables */
@@ -1687,12 +1697,22 @@ function Safari() {
             return result.slice(-upper, -lower);
         }
     }
-    function removeDuplicates(arr) {
-        var result = {};
-        for (var x in arr) {
-            result[arr[x]] = 1;
+    function removeDuplicates(arr, onlyNumbers) {
+        if (onlyNumbers) {
+            var result = [];
+            for (var x = 0; x < arr.length; x++) {
+                if (!result.contains(arr[x])) {
+                    result.push(arr[x]);
+                }
+            }
+            return result;
+        } else {
+            var result = {};
+            for (var x in arr) {
+                result[arr[x]] = 1;
+            }
+            return Object.keys(result);
         }
-        return Object.keys(result);
     }
     function compare(a,b) {
         if (a.sort < b.sort) {
@@ -2799,6 +2819,9 @@ function Safari() {
         var t1 = sys.type(sys.pokeType1(currentPokemon));
         var t2 = sys.type(sys.pokeType2(currentPokemon));
         currentPokemonAction = photoActions.Any.concat(photoActions[t1], (t2 !== "???" ? photoActions[t2] : [])).random();
+        currentPokemonMoodRate = sys.rand(1, 31);
+        var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
+        currentPokemonMood = photoMood[mood].random();
         
         var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
@@ -3513,6 +3536,7 @@ function Safari() {
             return;
         }
 
+        this.changeWildMood(player.party[0]);
         player.balls[ball] -= 1;
         this.updateShop(player, ball);
 
@@ -3664,6 +3688,8 @@ function Safari() {
 
         if (flee) {
             this.pokemonFlee();
+        } else {
+            this.changeWildAction("catch");
         }
 
         player.cooldowns.ball = currentTime + cooldown;
@@ -3693,7 +3719,19 @@ function Safari() {
             "The wild {0} was actually just a well made PokéDoll!",
             "The wild {0} was actually a Poké Fan cosplaying as a {0}!",
             "The wild {0} turned into MissingNo and glitched out of existence!",
-            "The wild {0} was not really wild! Their owner called them back to their Pokéball!"
+            "The wild {0} was not really wild! Their owner called them back to their Pokéball!",
+            "The wild {0} was snatched up by a Team Rocket mecha!",
+            "The wild {0} ate a Warp Seed and escaped via teleport!",
+            "The wild {0} escaped through a hidden entrance to the Distortion World!",
+            "The wild {0} was stolen and turned into candies!",
+            "The wild {0} used Self-Destruct. BOOM!",
+            "The wild {0} blasted off at the speed of light!",
+            "\"I must go. My people need me.\" The wild {0} rocketed off!",
+            "The wild {0} was banished to the Shadow Realm!",
+            "The wild {0} achieved nirvana and transcended to a higher plane!",
+            "The wild {0} got bored went to #Mafia!",
+            "The wild {0} paid its retreat cost and returned to the bench!",
+            "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!"
         ];
         if (isRare(currentPokemon)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled::\n");
@@ -3927,10 +3965,11 @@ function Safari() {
         });
 
         var target = currentDisplay;
-        if (target === 0) {
+        if (target === 0 || wildEvent) {
             target = currentPokemon;
         }
         var pokeName = poke(target);
+        this.changeWildMood(player.party[0]);
         
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
@@ -3940,10 +3979,11 @@ function Safari() {
             when: period,
             where: (contestCount > 0 && currentTheme ? currentTheme : "default"),
             what: currentPokemonAction,
+            mood: currentPokemonMood,
             score: quality
         };
         sendAll(sys.name(src) + " is taking a photo of the " + pokeName + "!");
-        safaribot.sendMessage(src, "You took a photo of " + this.describePhoto(photo) + "!", safchan);
+        safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "!" + (sys.os(src) !== "android" ? " [" + link("/album delete:" + (player.photos.length+1), "Delete", true) + "]" : ""), "#DD4411"), safchan);
         
         player.photos.push(photo);
         player.cooldowns.ball = currentTime + cooldown;
@@ -3952,11 +3992,59 @@ function Safari() {
         currentThrows -= 2;
         if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
             this.pokemonFlee();
+        } else {
+            this.changeWildAction("photo");
         }
+    };
+    this.changeWildMood = function(attacker) {
+        var target = currentPokemon;
+        var typeBonus = this.checkEffective(sys.type(sys.pokeType1(attacker)), sys.type(sys.pokeType2(attacker)), sys.type(sys.pokeType1(target)), sys.type(sys.pokeType2(target)));
+        var range = [0, 0.0625, 0.125, 0.25, 0.5, 1, 2, 4, 8, 16];
+        var valueList = [10, 8, 4, 2, 1, 0, -1, -2, -4, -8,];
+        var mod = 0;
+        for (var e = range.length; e--; ) {
+            if (typeBonus >= range[e]) {
+                mod = valueList[e];
+                break;
+            }
+        }
+        
+        var previousMood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
+        currentPokemonMoodRate += mod;
+        currentPokemonMoodRate = Math.max(1, Math.min(30, currentPokemonMoodRate));
+        var newMood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
+        if (newMood !== previousMood) {
+            currentPokemonMood = photoMood[newMood].random();
+        }
+    };
+    this.changeWildAction = function(action) {
+        if (chance(0.3 + (currentThrows/55))) {
+            return;
+        }
+        var id = currentPokemon;
+        var t = sys.type(sys.pokeType1(id));
+        var list = photoActions[t];
+        
+        t = sys.type(sys.pokeType2(id));
+        if (t !== "???") {
+            list = list.concat(photoActions[t]);
+        }
+        var bst = getBST(id),
+            type = "Neutral",
+            max = bst / 1000,
+            rng = Math.random();
+            
+        if (rng < max) {
+            type = action === "photo" ? "Negative" : "Positive";
+        } else if (rng > max + 0.24) {
+            type = action === "photo" ? "Positive" : "Negative";
+        }
+        list = removeDuplicates(list.concat(photoActions[type]));
+        currentPokemonAction = list.random();
     };
     this.describePhoto = function(photo) {
         var qualityName = photoQuality[photo.score];
-        return plural(photo.amt, (typeof photo.id === "string" ? "*" : "") + photo.id) + " " + photo.what + " in " + an(cap(photo.where)) + " environment during the " + photo.when + " (Quality: " + qualityName + ")";
+        return (photo.amt === 1 ? an(photo.mood) : toWord(photo.amt) + " " + photo.mood) + " " + poke(photo.id) + " " + photo.what + " in " + an(cap(photo.where)) + " environment during the " + photo.when + " (Quality: " + qualityName + ")";
     };
     this.viewPhotos = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -3980,22 +4068,45 @@ function Safari() {
             for (var e = 0; e < l; e++) {
                 safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])), safchan);
             }
-            safaribot.sendHtmlMessage(src, "To delete a photo, use " + link("/album delete:Number", null, true) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "To delete a photo, use " + link("/album delete:Number", null, true) + ". To delete multiple photos at once, use " + link("/album delete:Number,Number", null, true) +"!", safchan);
             sys.sendMessage(src, "", safchan);
         } else if (action === "delete") {
             if (!cmd.index) {
-                safaribot.sendHtmlMessage(src, "To delete a photo, use " + link("/album delete:Number", null, true) + "!", safchan);
+                safaribot.sendHtmlMessage(src, "To delete a photo, use " + link("/album delete:Number", null, true) + ". To delete multiple photos at once, use " + link("/album delete:Number,Number", null, true) +"!", safchan);
                 return;
             }
-            var index = parseInt(cmd.index, 10);
-            if (isNaN(index) || index < 1 || index > l) {
-                safaribot.sendHtmlMessage(src, "No such photo!", safchan);
+            var list = cmd.index.split(",");
+            var out = [], index, r;
+            for (var e = list.length; e--; ) {
+                r = list[e].trim();
+                index = parseInt(r, 10);
+                if (isNaN(index) || index < 1 || index > l) {
+                    out.push(r);
+                } else {
+                    list[e] = index;
+                }
+            }
+            if (out.length > 0) {
+                safaribot.sendMessage(src, "The following values are not valid photos: " + readable(out), safchan);
                 return;
             }
-            index = index-1;
-            safaribot.sendMessage(src, "You deleted the photo " + (index+1) + " (" + cap(this.describePhoto(photos[index])) + ")!", safchan);
-            photos.splice(index, 1);
-            this.saveGame(player);
+            list = list.sort(function(a, b) {
+                return a - b;
+            });
+            list = removeDuplicates(list, true);
+            if (list.length === 0) {
+                safaribot.sendMessage(src, "You didn't delete any photo!", safchan);
+                return;
+            }
+            out = [];
+            for (e = list.length; e--; ) {
+                index = list[e]-1;
+                out.push(list[e] + " (" + cap(this.describePhoto(photos[index])) + ")");
+                photos.splice(index, 1);
+            }
+            out.reverse();
+            safaribot.sendMessage(src, "You deleted the following photo(s): " + readable(out) + "!", safchan);
+            this.saveGame(player); 
         }
     };
     
@@ -4604,6 +4715,7 @@ function Safari() {
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
+            safaribot.sendMessage(src, "For Color: Select any valid color (" +  readable(Object.keys(pokeColors), "or") + ") to display all currently owned Pokémon with that color", safchan);
             safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
             safaribot.sendMessage(src, "-Exact value. e.g.: /find bst 500 (displays all Pokémon with BST of exactly 500)", safchan);
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
@@ -4684,6 +4796,10 @@ function Safari() {
                     break;
                 case "region":
                     crit = "region";
+                    break;
+                case "color":
+                case "colour":
+                    crit = "color";
                     break;
                 default:
                     crit = "abc";
@@ -4819,6 +4935,19 @@ function Safari() {
                }
             });
             return "from the " + val + " Region";
+        }
+        else if (crit == "color") {
+            val = val.toLowerCase();
+            if (!pokeColors.hasOwnProperty(val)) {
+                safaribot.sendMessage(src, val + " is not a valid color! Valid colors are " + readable(Object.keys(pokeColors)) + ".", safchan);
+                return false;
+            }
+            current.forEach(function(x){
+               if (getPokeColor(x) === val) {
+                    list.push(x);
+               }
+            });
+            return cap(val) + "-colored";
         }
     }
     function rangeFilter(src, current, list, val, mode, paramName, info, type) {
@@ -12746,14 +12875,10 @@ function Safari() {
                         break;
                     }
                 }
-                if (isAndroid) {
-                    if (canFulfill) {
-                        safaribot.sendHtmlMessage(src, toColor((e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", "magenta"), safchan);
-                    } else {
-                        safaribot.sendMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", safchan);
-                    }
+                if (canFulfill) {
+                    safaribot.sendHtmlMessage(src, toColor((e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ")", "magenta") + (!isAndroid ? " [" + link("/quest journal:" + (e+1), "You can fulfill this request") + "]" : ""), safchan);
                 } else {
-                    safaribot.sendHtmlMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") " + (canFulfill ? "[" + link("/quest journal:" + (e+1), "You can fulfill this request") + "]" : ""), safchan);
+                    safaribot.sendMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", safchan);
                 }
             }
             if (player.quests.journal.cooldown >= now()) {
@@ -12764,7 +12889,7 @@ function Safari() {
         }
         act = parseInt(act, 10);
         if (!act || isNaN(act) || act < 1 || act > photographQuest.length) {
-            safaribot.sendMessage(src, "Editor-in-chief: That's a valid request!", safchan);
+            safaribot.sendMessage(src, "Editor-in-chief: That's not a valid request!", safchan);
             return;
         }
         var offer = data.length > 1 && data[1] ? parseInt(data[1], 10) : "*";
@@ -12867,7 +12992,7 @@ function Safari() {
         
         this.saveGame(player);
         photographQuest.splice(act, 1);
-        this.updatePhotographQuest();
+        this.updatePhotographQuest(act);
         
     };
     this.photoMatchesRequest = function(photo, request) {
@@ -12885,6 +13010,9 @@ function Safari() {
             return false;
         }
         if (request.what && photo.what !== request.what) {
+            return false;
+        }
+        if (request.mood && photo.mood !== request.mood) {
             return false;
         }
         if (request.when && photo.when !== request.when) {
@@ -12910,8 +13038,13 @@ function Safari() {
     this.translatePhotoRequest = function(obj) {
         var who = "any Pokémon";
         var amt = obj.amt || 1;
+        var mood = obj.mood || null;
         if (obj.species) {
-            who = plural(amt, obj.species + "");
+            if (mood) {
+                who = (amt === 1 ? an(mood) : toWord(amt) + " " + mood) + " " + poke(obj.species);
+            } else {
+                who = plural(amt, obj.species + "");
+            }
         } else if (obj.hasOwnProperty("type") || obj.hasOwnProperty("color") || obj.hasOwnProperty("region") || obj.hasOwnProperty("bst") || obj.hasOwnProperty("move")) {
             who = [];
             if (obj.color) {
@@ -12931,10 +13064,10 @@ function Safari() {
                 who.push("that can learn " + sys.move(obj.move));
             }
             
-            who = who.join(" ");
+            who = (mood ? mood + " " : "") + who.join(" ");
             who = amt === 1 ? an(who) : ["two", "three", "four", "five"][amt-2] + " " + who;
-        } else if (amt > 1) {
-            who = "any " + ["Two", "Three", "Four", "Five"][amt-2] + " Pokémon";
+        } else {
+            who = "any" + (amt > 1 ? " " + ["Two", "Three", "Four", "Five"][amt-2] : "")  + (mood ? " " + mood + " " : "")+ " Pokémon";
         }
         if (obj.what) {
             who += " " + obj.what;
@@ -12950,13 +13083,17 @@ function Safari() {
         }
         return who;
     };
-    this.updatePhotographQuest = function() {
+    this.updatePhotographQuest = function(pos) {
         var changed = false;
         var req;
         while (photographQuest.length < 20) {
             req = this.createPhotoRequest(sys.rand(10, 100));
             if (req) {
-                photographQuest.push(req);
+                if (typeof pos === "number") {
+                    photographQuest.splice(pos, 0, req);
+                } else {
+                    photographQuest.push(req);
+                }
                 changed = true;
             }
         }
@@ -12970,7 +13107,7 @@ function Safari() {
         var val = 0, p, id, score = 0;
         
         var addProperty = function(obj) {
-            var prop = randomSample({ "amt": 3, "where": 5, "what": 4, "when": 4, "quality": 3, "species": 4, "type": 3, "color": 3, "region": 3, "bst": 3, "move": 3 });
+            var prop = randomSample({ "amt": 3, "where": 3, "what": 5, "when": 4, "mood": 5, "quality": 5, "species": 4, "type": 3, "color": 3, "region": 3, "bst": 3, "move": 3 });
             
             if (obj.hasOwnProperty(prop)) {
                 return 0;
@@ -12978,14 +13115,14 @@ function Safari() {
             var val;
             switch (prop) {
                 case "amt": 
-                    val = [1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4].random();
+                    val = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 4].random();
                     if (val === 1) {
                         return 0;
                     }
                     obj.amt = val;
                     return val * 32;
                 case "where": 
-                    val = chance(0.3) ? "default" : Object.keys(contestThemes).random();
+                    val = chance(0.33) ? "default" : Object.keys(contestThemes).random();
                     obj.where = val;
                     return val === "default" ? 10 : 45;
                 case "what": 
@@ -12998,6 +13135,10 @@ function Safari() {
                 case "when": 
                     obj.when = ["night", "morning", "afternoon", "evening"].random();
                     return 15;
+                case "mood": 
+                    val = photoMood.Positive.concat(photoMood.Neutral, photoMood.Negative).random();
+                    obj.mood = val;
+                    return 50;
                 case "quality": 
                     val = sys.rand(1, 11);
                     obj.quality = val;
@@ -13057,10 +13198,10 @@ function Safari() {
             return 5;
         };
         
-        var l = 0, paramCount = chance(0.7) ? 3 : 4;
+        var l = 0, paramCount = parseInt(randomSample({ "2": 10, "3": 5, "4": 1  }), 10);
         while (val < minScore) {
             l++;
-            if (l > 30) {
+            if (l > 40) {
                 return null;
             }
             p = addProperty(out);
@@ -13158,7 +13299,7 @@ function Safari() {
         }
         var set = data[0];
         if (set && set.toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I hold some auctions for every 6 hours for some special items. But I only accept " + es(finishName("shady")) + "!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I hold auctions every 6 hours for some special items. But I only accept " + es(finishName("shady")) + "!", safchan);
             safaribot.sendMessage(src, "Monger: You can obtain those " + es(finishName("shady")) + " by playing Event Games at #Mafia. They are distributed 5 minutes after the Event Game is finished.", safchan);
             safaribot.sendHtmlMessage(src, "Monger: To participate in the auction, just place your bid in the item that you want with " + link("/quest monger:Set:YourBid", null, true) + ". Participants cannot see each other's bids, so offer a value that you think it will be enough to beat any other bid. If your bid is the highest valid offer at the deadline, you get the prize.", safchan);
             safaribot.sendMessage(src, "Monger: Be sure that you have the amount of " + es(finishName("shady")) + " that you offered by the time the auction finishes or your bid will be ignored. Also, if two or more people bid the same value, the first one to bid will be the winner.", safchan);
@@ -13167,14 +13308,15 @@ function Safari() {
         var options = ["a", "b", "c", "d"];
         var id = player.id;
         if (!set || !options.contains(set.toLowerCase())) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I have some interesting some goodies here, but I only accept " + es(finishName("shady")) + " for them. To learn how this works, use " + link("/quest monger:help") + ".", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I have some interesting goodies here, but I only accept " + es(finishName("shady")) + " for them. To learn how this works, use " + link("/quest monger:help") + ".", safchan);
             if (mAuctionsData.length > 0) {
                 safaribot.sendMessage(src, "Current Auctions: ", safchan);
-                var e, obj;
+                var e, obj, n = now();
                 for (e = 0; e < mAuctionsData.length; e++) {
                     obj = mAuctionsData[e];
-                    safaribot.sendHtmlMessage(src, "[" + options[e].toUpperCase() + "] " + obj.rewardName + " --- Deal ends in about " + timeLeftString(obj.deadline) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
+                    safaribot.sendHtmlMessage(src, "[" + options[e].toUpperCase() + "] " + obj.rewardName + " --- " + (obj.deadline < n ? "Deal ends after contest" : "Deal ends in about " + timeLeftString(obj.deadline)) + (id in obj.offers ? " (Your bid: " + plural(obj.offers[id].value, "shady") + ")" : "") , safchan);
                 }
+                safaribot.sendMessage(src, "You currently have " + plural(player.balls.shady, "shady") + "!", safchan);
             }
             return;
         }
@@ -18760,6 +18902,12 @@ function Safari() {
             if (player.altlog.length === 0) {
                 player.altlog.push(player.id);
             }
+            var list = photoMood.Positive.concat(photoMood.Neutral, photoMood.Negative);
+            for (i = player.photos.length; i--; ) {
+                if (!player.photos[i].mood) {
+                    player.photos[i].mood = list.random();
+                } 
+            }
             for (i in player.shop) {
                 if (!getInput(i)) {
                     delete player.shop[i];
@@ -19703,8 +19851,10 @@ function Safari() {
             }
             if (command === "info") {
                 var time = new Date(now()).toUTCString();
+                var period = new Date().getUTCHours();
+                period = ["Night", "Morning", "Afternoon", "Evening"][Math.floor(period/6)];
                 sys.sendMessage(src, separator, safchan);
-                safaribot.sendMessage(src, "Current Time: " + time, safchan);
+                safaribot.sendMessage(src, "Current Time: " + time + " (" + period + ")", safchan);
                 if (contestCount > 0) {
                     var min = Math.floor(contestCount/60);
                     var sec = contestCount%60;
@@ -20505,7 +20655,7 @@ function Safari() {
                 var req = this.translatePhotoRequest(photographQuest[info]);
                 photographQuest.splice(info, 1);
                 safaribot.sendMessage(src, "Removed Journal photo request for " + req + "!", safchan);
-                safari.updatePhotographQuest();
+                safari.updatePhotographQuest(info);
                 return true;
             }
             if (command === "lbban") {
