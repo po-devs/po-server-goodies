@@ -12980,7 +12980,7 @@ function Safari() {
                 player.balls.pack += 1;
                 rewards.push(plural(1, "pack"));
             } else {
-                player.balls.pack += 1;
+                player.balls.egg += 1;
                 rewards.push(plural(1, "egg"));
             }
         }
@@ -13066,7 +13066,7 @@ function Safari() {
             who = (mood ? mood + " " : "") + who.join(" ");
             who = amt === 1 ? an(who) : ["two", "three", "four", "five"][amt-2] + " " + who;
         } else {
-            who = "any" + (amt > 1 ? " " + ["Two", "Three", "Four", "Five"][amt-2] : "")  + (mood ? " " + mood + " " : "")+ " Pokémon";
+            who = "any" + (amt > 1 ? " " + ["two", "three", "four", "five"][amt-2] : "")  + (mood ? " " + mood + " " : "")+ " Pokémon";
         }
         if (obj.what) {
             who += " " + obj.what;
