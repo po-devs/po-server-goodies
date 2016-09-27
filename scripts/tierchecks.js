@@ -443,6 +443,16 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     }
 });*/
 
+tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, tier) {
+    var ret = [];
+    for (var i = 0; i < 6; i++) {
+        if (sys.teamPoke(src, team, i) === sys.pokeNum("Floette-Eternal")) {
+            ret.push("The Pokemon 'Floette-Eternal' is banned in tier '" + tier + "'.");
+        }
+    }    
+    return ret;    
+});
+
 tier_checker.add_new_check(INCLUDING, ["ORAS Ubers"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 1;
     for (var i = 0, j = 0; i < 6; ++i) {
