@@ -231,8 +231,8 @@ function Safari() {
             transmutationsMade: 0,
             philosopherTransmutations: 0,
             philosopherTransmutationsCost: 0,
-            photoPoints: 0,
-            photosSubmitted: 0,
+            journalPoints: 0,
+            journalSubmitted: 0,
             burnReceived: 0,
             burnGiven: 0,
             shadyUsed: 0,
@@ -625,7 +625,7 @@ function Safari() {
         pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
         eliteCleared: { desc: "by cleared Elite Four challenges", alts: ["elite", "elite four", "elitefour", "elite4", "e4", "elite 4", "e 4", "elite cleared",], alias: "elite cleared" },
         baseValue: { desc: "by most valuable Secret Base", alts: ["base", "secretbase", "secret base",], alias: "base" },
-        photoPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" }
+        journalPoints: { desc: "by most photo points", alts: ["photos", "photo", "photo points", "photo points"], alias: "photo" }
     };
     var monthlyLeaderboardTypes = {
         pokesCaught: { desc: "by successful catches during this month", alts: ["caught monthly"], alias: "caught monthly", lastAlias: "caught last", file: "scriptdata/safari/monthlyPokesCaught.txt", lastDesc: "by successful catches during the last month"  },
@@ -3729,7 +3729,7 @@ function Safari() {
             "\"I must go. My people need me.\" The wild {0} rocketed off!",
             "The wild {0} was banished to the Shadow Realm!",
             "The wild {0} achieved nirvana and transcended to a higher plane!",
-            "The wild {0} got bored went to #Mafia!",
+            "The wild {0} got bored and went to #Mafia!",
             "The wild {0} paid its retreat cost and returned to the bench!",
             "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!"
         ];
@@ -3986,6 +3986,7 @@ function Safari() {
         safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "!" + (sys.os(src) !== "android" ? " [" + link("/album delete:" + (player.photos.length+1), "Delete", true) + "]" : ""), "#DD4411"), safchan);
         
         player.photos.push(photo);
+        safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo") +"!", safchan);
         player.cooldowns.ball = currentTime + cooldown;
         this.saveGame(player);
         
@@ -4105,7 +4106,7 @@ function Safari() {
                 photos.splice(index, 1);
             }
             out.reverse();
-            safaribot.sendMessage(src, "You deleted the following photo(s): " + readable(out) + "!", safchan);
+            safaribot.sendMessage(src, "You deleted the following " + (out.length === 1 ? "photo" : plural(out.length, "photo")) + ": " + readable(out) + "!", safchan);
             this.saveGame(player); 
         }
     };
@@ -5187,7 +5188,7 @@ function Safari() {
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}). Arena Record: {3}-{4} ({5}, {6}). Performed {7} and {8}.".format(given, rec.collectorGiven, rec.scientistGiven, rec.arenaWon, rec.arenaLost, percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutationsMade, "Transmutation")), safchan);
             sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
-            sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.photosSubmitted, "photo"), plural(rec.photoPoints, "Photo Point")), safchan);
+            sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.journalSubmitted, "photo"), plural(rec.journalPoints, "Photo Point")), safchan);
             sys.sendMessage(src, "±Events: Won {0} with {1}. Won {2} ({3} as Favorite, {4} as Underdog). Won Battle Factory {5} and was Runner-up {6}. Scored a high of {7} and received a prize during a Quiz.".format(plural(rec.factionWins, "Faction War"), plural(rec.factionMVPs, "MVP"), plural(rec.pokeRaceWins, "Pokémon Race"), rec.favoriteRaceWins, rec.underdogRaceWins, plural(rec.factoryFirst, "time"), plural(rec.factorySecond, "time"), plural(rec.topQuizScore, "point")), safchan);
             sys.sendMessage(src, "", safchan);
         } else {
@@ -8249,7 +8250,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "precontest", "event", "pyramid"])) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
 
@@ -11467,7 +11468,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Sorry, we need to clean out the stadium before we can host more battles. Please return at a later point in time!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -11569,7 +11570,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
         if (opt !== "start") {
@@ -11977,7 +11978,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
-                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
+                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
                     return;
                 }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
@@ -12035,7 +12036,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
-                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "precontest"])) {
+                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
                     return;
                 }
                 var invites = [];
@@ -12864,11 +12865,13 @@ function Safari() {
             return;
         }
         
+        this.updatePhotographQuest();
+        
         var photos = player.photos, req;
         if (act === "*") {
-            var obj, e, i, canFulfill;
+            var obj, e, i, canFulfill, desc;
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm currently looking for the following photos. If you have any of those, use " + link("/quest journal:Number", null, true) + " to give them to me.", safchan);
-            for (e = 0; e < photographQuest.length; e++) {
+            for (e in photographQuest) {
                 obj = photographQuest[e];
                 canFulfill = false;
                 for (i = photos.length; i--; ) {
@@ -12877,10 +12880,11 @@ function Safari() {
                         break;
                     }
                 }
+                desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, this.translatePhotoRequest(obj), obj.fscore, timeLeftString(obj.deadline));
                 if (canFulfill) {
-                    safaribot.sendHtmlMessage(src, toColor((e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ")", "magenta") + (!isAndroid ? " [" + link("/quest journal:" + (e+1), "You can fulfill this request") + "]" : ""), safchan);
+                    safaribot.sendHtmlMessage(src, toColor(desc, "magenta") + (!isAndroid ? " [" + link("/quest journal:" + e, "You can fulfill this request") + "]" : ""), safchan);
                 } else {
-                    safaribot.sendMessage(src, (e+1) + ". A photo of " + this.translatePhotoRequest(obj) + " (Score: " + obj.score + ") ", safchan);
+                    safaribot.sendHtmlMessage(src, desc, safchan);
                 }
             }
             if (player.quests.journal.cooldown >= now()) {
@@ -12889,26 +12893,24 @@ function Safari() {
             sys.sendMessage(src, "", safchan);
             return;
         }
-        act = parseInt(act, 10);
-        if (!act || isNaN(act) || act < 1 || act > photographQuest.length) {
+        if (!act || !photographQuest.hasOwnProperty(act)) {
             safaribot.sendMessage(src, "Editor-in-chief: That's not a valid request!", safchan);
             return;
         }
         var offer = data.length > 1 && data[1] ? parseInt(data[1], 10) : "*";
-        act -= 1;
         
         var req = photographQuest[act];
         if (offer === "*") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Let's see, these are the photos that you have that fill my request " + (act+1) + " (" + cap(this.translatePhotoRequest(req)) + "): ", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Let's see, these are the photos that you have that fill my request " + act + " (" + cap(this.translatePhotoRequest(req)) + "): ", safchan);
             var found = false;
             for (var e = 0; e < photos.length; e++) {
                 if (this.photoMatchesRequest(photos[e], req)) {
                     found = true;
-                    safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])) + " (Score: " + Math.round(req.score * (0.5 + (photos[e].score / 10))) + ") " + link("/quest journal:" + (act+1) + ":" + (e+1), "[Give this photo]", true), safchan);
+                    safaribot.sendHtmlMessage(src, "[" + (e+1) + "] " + cap(this.describePhoto(photos[e])) + " (Score: " + Math.round(req.fscore * (0.5 + (photos[e].score / 10))) + ") " + link("/quest journal:" + act + ":" + (e+1), "[Give this photo]", true), safchan);
                 }
             }
             if (found) {
-                safaribot.sendHtmlMessage(src, "Editor-in-chief: To choose which photo you will give me, type " + link("/quest journal:" + (act+1) + ":Number", false, true) + ".", safchan);
+                safaribot.sendHtmlMessage(src, "Editor-in-chief: To choose which photo you will give me, type " + link("/quest journal:" + act + ":Number", false, true) + ".", safchan);
             } else {
                 safaribot.sendMessage(src, "None", safchan);
             }
@@ -12934,42 +12936,45 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: This photo doesn't match this request!", safchan);
             return;
         }
-        var score = Math.round(req.score * (0.5 + (photo.score / 10)));
-        var rewLevel = Math.floor(score/25);
+        var score = Math.round(req.fscore * (0.5 + (photo.score / 10)));
+        var rewLevel = Math.floor(score/30);
         var rew;
         switch (rewLevel) {
-            case 0: //0~25
-                rew = ["20@dust", "1@gacha", "1@pearl"].random();
+            case 0: //0~30
+                rew = ["20@dust", "1@gacha", "1@pearl", "1@luxury"].random();
             break;
-            case 1: //26~50
-                rew = ["35@dust", "2@gacha", "1@myth", "1@pearl"].random();
+            case 1: //31~60
+                rew = ["35@dust", "2@gacha", "1@silver", "1@myth", "1@pearl", "2@luxury"].random();
             break;
-            case 2: //51~75
-                rew = ["50@dust", "3@gacha", "1@silver", "1@myth", "2@pearl"].random();
+            case 2: //61~90
+                rew = ["50@dust", "3@gacha", "2@silver", "3@myth", "2@pearl", "4@luxury"].random();
             break;
-            case 3: //76~100
-                rew = ["65@dust", "4@gacha", "2@silver", "2@myth", "1@gem", "1@bigpearl"].random();
+            case 3: //91~120
+                rew = ["70@dust", "5@gacha", "4@silver", "4@myth", "2@gem", "2@bigpearl", "6@luxury"].random();
             break;
-            case 4: //101~125
-                rew = ["80@dust", "5@gacha", "2@silver", "2@myth", "1@gem", "1@bigpearl", "4@luxury"].random();
+            case 4: //121~150
+                rew = ["90@dust", "7@gacha", "5@silver", "5@myth", "3@gem", "3@bigpearl", "1@golden"].random();
             break;
-            default: //126+
-                rew = ["100@dust", "6@gacha", "3@silver", "3@myth", "2@gem", "2@bigpearl", "6@luxury", "4@quick"].random();
+            case 4: //151~180
+                rew = ["120@dust", "10@gacha", "7@silver", "7@myth", "4@gem", "3@bigpearl", "2@golden"].random();
+            break;
+            default: //181+
+                rew = ["1@rare", "20@gacha", "10@silver", "10@myth", "5@gem", "5@bigpearl", "3@golden", "1@nugget"].random();
         }
         
         rew = giveStuff(player, toStuffObj(rew));
-        player.quests.journal.cooldown = now() + hours(0.333);
-        player.records.photosSubmitted += 1;
-        var oldPoints = player.records.photoPoints;
-        player.records.photoPoints += score;
-        var newPoints = player.records.photoPoints;
+        player.quests.journal.cooldown = now() + hours(0.5);
+        player.records.journalSubmitted += 1;
+        var oldPoints = player.records.journalPoints;
+        player.records.journalPoints += score;
+        var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this is photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + "!", safchan);
         
         var added = 0;
-        while (player.balls.lens < 10 && Math.floor(player.records.photoPoints/itemData.lens.threshold) >= player.balls.lens) {
+        while (player.balls.lens < 10 && Math.floor(player.records.journalPoints/itemData.lens.threshold) >= player.balls.lens) {
             player.balls.lens += 1;
             added++;
         }
@@ -12993,9 +12998,11 @@ function Safari() {
         }
         
         this.saveGame(player);
-        photographQuest.splice(act, 1);
-        this.updatePhotographQuest(act);
-        
+        if (!req.done) {
+            req.done = true;
+            req.deadline = now() + 3*60*1000;
+            permObj.add("photographQuest", JSON.stringify(photographQuest));
+        }
     };
     this.photoMatchesRequest = function(photo, request) {
         var id = parseInt(photo.id, 10);
@@ -13085,18 +13092,97 @@ function Safari() {
         }
         return who;
     };
-    this.updatePhotographQuest = function(pos) {
+    this.updatePhotographQuest = function() {
         var changed = false;
         var req;
-        while (photographQuest.length < 20) {
-            req = this.createPhotoRequest(sys.rand(10, 100));
+        var goal = { "easy": 4, "normal": 6, "hard": 5, "ultra": 4 };
+        var current = { "easy": 0, "normal": 0, "hard": 0, "ultra": 0 };
+        
+        var getRequestDiff = function(req) {
+            if (req.score <= 45) {
+                return "easy";
+            }
+            else if (req.score <= 80) {
+                return "normal";
+            }
+            else if (req.score <= 120) {
+                return "hard";
+            }
+            else {
+                return "ultra";
+            }
+        };
+        var getDiffRange = function(diff) {
+            switch (diff) {
+                case "easy":
+                    return [16, 45];
+                case "normal":
+                    return [46, 80];
+                case "hard":
+                    return [81, 120];
+                case "ultra":
+                    return [121, 1000];
+            }
+        };
+        var getNeededDiff = function() {
+            if (current.easy < goal.easy) {
+                return "easy";
+            }
+            else if (current.normal < goal.normal) {
+                return "normal";
+            }
+            else if (current.hard < goal.hard) {
+                return "hard";
+            }
+            else if (current.ultra < goal.ultra) {
+                return "ultra";
+            }
+            return null;
+        };
+        var getNextIndex = function(quest) {
+            var list = Object.keys(quest).map(function(x) {
+                return parseInt(x, 10);
+            });
+            if (list.length === 0) {
+                return 1;
+            }
+            var i = list[list.length-1];
+            if (i === 999) {
+                i = 1;
+            }
+            while (list.contains(i)) {
+                i++;
+            }
+            return i;
+        };
+        var n = now();
+        for (var c in photographQuest) {
+            req = photographQuest[c];
+            if (req.deadline && n >= req.deadline) {
+                delete photographQuest[c];
+            } else {
+                current[getRequestDiff(req)]++;
+            }
+        }
+        var diffModifiers = { easy: 0.75, normal: 0.9, hard: 1.05, ultra: 1.2 };
+        
+        var d, index;
+        while (current.easy < goal.easy || current.normal < goal.normal | current.hard < goal.hard || current.ultra < goal.ultra) {
+            d = getNeededDiff();
+            if (!d) {
+                break;
+            }
+            req = this.createPhotoRequest(getDiffRange(d));
             if (req) {
-                if (typeof pos === "number") {
-                    photographQuest.splice(pos, 0, req);
-                } else {
-                    photographQuest.push(req);
+                c = getRequestDiff(req);
+                req.fscore = Math.round(req.score * diffModifiers[c]);
+                if (current[c] < goal[c]) {
+                    index = getNextIndex(photographQuest);
+                    req.deadline = now() + hours(96);
+                    photographQuest[index] = req;
+                    current[c]++;
+                    changed = true;
                 }
-                changed = true;
             }
         }
         
@@ -13104,7 +13190,7 @@ function Safari() {
             permObj.add("photographQuest", JSON.stringify(photographQuest));
         }
     };
-    this.createPhotoRequest = function(minScore) {
+    this.createPhotoRequest = function(scoreRange) {
         var out = {};
         var val = 0, p, id, score = 0;
         
@@ -13126,25 +13212,25 @@ function Safari() {
                 case "where": 
                     val = chance(0.33) ? "default" : Object.keys(contestThemes).random();
                     obj.where = val;
-                    return val === "default" ? 10 : 45;
+                    return val === "default" ? 10 : 40;
                 case "what": 
                     val = chance(0.7) ? photoActions.Any.random() : photoActions[Object.keys(photoActions).random()].random();
                     obj.what = val;
                     if (val === "eating") {
-                        return 10;
+                        return 12;
                     }
-                    return photoActions.Any.contains(val) ? 40 : 80;
+                    return photoActions.Any.contains(val) ? 35 : 70;
                 case "when": 
                     obj.when = ["night", "morning", "afternoon", "evening"].random();
-                    return 15;
+                    return 16;
                 case "mood": 
                     val = photoMood.Positive.concat(photoMood.Neutral, photoMood.Negative).random();
                     obj.mood = val;
-                    return 50;
+                    return 48;
                 case "quality": 
                     val = sys.rand(1, 11);
                     obj.quality = val;
-                    return val * val;
+                    return Math.round(val * val * 0.7);
                 case "species": 
                     if (obj.hasOwnProperty("type") || obj.hasOwnProperty("color") || obj.hasOwnProperty("region") || obj.hasOwnProperty("bst") || obj.hasOwnProperty("move")) {
                         return 0;
@@ -13159,7 +13245,7 @@ function Safari() {
                     }
                     obj.species = val;
                     var t = (getBST(val)-180)/50+1;
-                    return Math.ceil(t*t/2.5)*4;
+                    return Math.ceil(t*t/2.5)*3;
                 case "type": 
                     if (obj.species) { return 0; }
                     obj.type = Object.keys(effectiveness).random();
@@ -13181,7 +13267,7 @@ function Safari() {
                     if (obj.species) { return 0; }
                     val = sys.rand(200, 540);
                     obj.bst = val;
-                    return Math.round(val / 100);
+                    return Math.round(val / 9);
                 case "move": 
                     if (obj.species) { return 0; }
                     val = sys.rand(1, 622);
@@ -13194,14 +13280,14 @@ function Safari() {
                         return 0;
                     }
                     obj.move = val;
-                    return Math.round(Math.max(130 - c, 1) * 0.75);
+                    return Math.round(Math.max(110 - c, 1) * 0.7);
             }
             
             return 5;
         };
         
-        var l = 0, paramCount = parseInt(randomSample({ "2": 10, "3": 5, "4": 1  }), 10);
-        while (val < minScore) {
+        var l = 0, paramCount = parseInt(randomSample({ "2": 9, "3": 5, "4": 1  }), 10);
+        while (true) {
             l++;
             if (l > 40) {
                 return null;
@@ -13213,6 +13299,16 @@ function Safari() {
             if (Object.keys(out).length >= paramCount) {
                 break;
             }
+            if (val >= scoreRange[0] && val <= scoreRange[1]) {
+                break;
+            }
+        }
+        if (!out.hasOwnProperty("species") && !out.hasOwnProperty("type") && !out.hasOwnProperty("color") && !out.hasOwnProperty("region") && !out.hasOwnProperty("bst") && !out.hasOwnProperty("move")) {
+            val = Math.round(val*0.5);
+        }
+        
+        if (val < scoreRange[0] || val > scoreRange[1]) {
+            return null;
         }
         score = val;
         
@@ -13307,7 +13403,7 @@ function Safari() {
             safaribot.sendMessage(src, "Monger: Be sure that you have the amount of " + es(finishName("shady")) + " that you offered by the time the auction finishes or your bid will be ignored. Also, if two or more people bid the same value, the first one to bid will be the winner.", safchan);
             return;
         }
-        var options = ["a", "b", "c", "d"];
+        var options = ["a", "b", "c", "d", "e", "f"];
         var id = player.id;
         if (!set || !options.contains(set.toLowerCase())) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Monger: I have some interesting goodies here, but I only accept " + es(finishName("shady")) + " for them. To learn how this works, use " + link("/quest monger:help") + ".", safchan);
@@ -13378,9 +13474,9 @@ function Safari() {
         
         //Refill MAuctions list
         var set = mAuctionsData.length > 0 ? mAuctionsData[mAuctionsData.length-1].set : -1;
-        while (mAuctionsData.length < 4) {
+        while (mAuctionsData.length < 6) {
             set++;
-            if (set >= 4) {
+            if (set >= 6) {
                 set = 0;
             }
             mAuctionsData.push(this.createMAuction(mAuctionsData.length, set));
@@ -13395,6 +13491,8 @@ function Safari() {
         var rewards = [
             ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "@bignugget"],
             ["@form", "2@golden", "@fossil", "@rare"],
+            ["@burn", "@nugget", "15@silver", "5@gem"],
+            ["2@pack", "@fossil", "2@egg","2@golden", "@form"],
             ["10@myth", "15@luxury", "10@quick", "15@spy", "10@heavy", "10@clone"],
             ["@fossil"]
         ];
@@ -13403,7 +13501,7 @@ function Safari() {
             reward: rewards[set].random(),
             set: set,
             rewardName: "",
-            deadline: now() + hours((index+1)*6) - 3000
+            deadline: now() + hours((index+1)*4) - 3000
         };
         out.rewardName = translateStuff(out.reward);
         return out;
@@ -20648,16 +20746,14 @@ function Safari() {
                 return true;
             }
             if (command === "dqphoto") {
-                var info = parseInt(commandData, 10);
-                if (isNaN(info) || info < 1 || info > photographQuest.length) {
+                if (!photographQuest.hasOwnProperty(commandData)) {
                     safaribot.sendMessage(src, "This is not a valid Journal photo request!", safchan);
                     return true;
                 }
-                info -= 1;
-                var req = this.translatePhotoRequest(photographQuest[info]);
-                photographQuest.splice(info, 1);
+                var req = this.translatePhotoRequest(photographQuest[commandData]);
+                delete photographQuest[commandData];
                 safaribot.sendMessage(src, "Removed Journal photo request for " + req + "!", safchan);
-                safari.updatePhotographQuest(info);
+                safari.updatePhotographQuest();
                 return true;
             }
             if (command === "lbban") {
@@ -22657,7 +22753,7 @@ function Safari() {
                 return true;
             }
             if (command === "rephoto") {
-                photographQuest = [];
+                photographQuest = {};
                 safari.updatePhotographQuest();
                 safaribot.sendMessage(src, "Renewed photo requests for Journal quest!", safchan);
                 return true;
@@ -22735,7 +22831,7 @@ function Safari() {
         if (scientistQuest === null) {
             this.changeScientistQuest();
         }
-        photographQuest = parseFromPerm("photographQuest", []);
+        photographQuest = parseFromPerm("photographQuest", {});
         this.updatePhotographQuest();
         
         lastLeaderboards = parseFromPerm("lastLeaderboards", null);
