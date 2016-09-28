@@ -12867,9 +12867,9 @@ function Safari() {
         
         this.updatePhotographQuest();
         
-        var photos = player.photos, req;
+        var photos = player.photos, req, n = now();
         if (act === "*") {
-            var obj, e, i, canFulfill, desc;
+            var obj, e, i, canFulfill, desc, t;
             safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm currently looking for the following photos. If you have any of those, use " + link("/quest journal:Number", null, true) + " to give them to me.", safchan);
             for (e in photographQuest) {
                 obj = photographQuest[e];
@@ -12880,14 +12880,18 @@ function Safari() {
                         break;
                     }
                 }
-                desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, this.translatePhotoRequest(obj), obj.fscore, timeLeftString(obj.deadline));
+                t = timeLeftString(obj.deadline);
+                if (obj.deadline - n <= (3*60*1000)) {
+                    t = toColor(t, "red");
+                }
+                desc = "{0}. A photo of {1} (Score: {2} | Deadline: {3})".format(e, this.translatePhotoRequest(obj), obj.fscore, t);
                 if (canFulfill) {
                     safaribot.sendHtmlMessage(src, toColor(desc, "magenta") + (!isAndroid ? " [" + link("/quest journal:" + e, "You can fulfill this request") + "]" : ""), safchan);
                 } else {
                     safaribot.sendHtmlMessage(src, desc, safchan);
                 }
             }
-            if (player.quests.journal.cooldown >= now()) {
+            if (player.quests.journal.cooldown >= n) {
                 safaribot.sendMessage(src, "Editor-in-chief: I'm still editing to the last photo that you brought, so come back in " + timeLeftString(player.quests.journal.cooldown) + " if you wish to submit more photos!", safchan);
             }
             sys.sendMessage(src, "", safchan);
@@ -12963,7 +12967,7 @@ function Safari() {
         }
         
         rew = giveStuff(player, toStuffObj(rew));
-        player.quests.journal.cooldown = now() + hours(0.5);
+        player.quests.journal.cooldown = n + hours(0.5);
         player.records.journalSubmitted += 1;
         var oldPoints = player.records.journalPoints;
         player.records.journalPoints += score;
@@ -13000,7 +13004,7 @@ function Safari() {
         this.saveGame(player);
         if (!req.done) {
             req.done = true;
-            req.deadline = now() + 3*60*1000;
+            req.deadline = n + 3*60*1000;
             permObj.add("photographQuest", JSON.stringify(photographQuest));
         }
     };
@@ -13139,7 +13143,7 @@ function Safari() {
             }
             return null;
         };
-        var getNextIndex = function(quest) {
+        var getNextIndex = function(quest, lastRemoved) {
             var list = Object.keys(quest).map(function(x) {
                 return parseInt(x, 10);
             });
@@ -13147,26 +13151,29 @@ function Safari() {
                 return 1;
             }
             var i = list[list.length-1];
+            if (lastRemoved) {
+                lastRemoved = parseInt(lastRemoved, 10);
+            }
             if (i === 999) {
                 i = 1;
             }
-            while (list.contains(i)) {
+            while (list.contains(i) || i === lastRemoved) {
                 i++;
             }
             return i;
         };
-        var n = now();
+        var n = now(), d, index, lastRemoved;
         for (var c in photographQuest) {
             req = photographQuest[c];
             if (req.deadline && n >= req.deadline) {
                 delete photographQuest[c];
+                lastRemoved = c;
             } else {
                 current[getRequestDiff(req)]++;
             }
         }
         var diffModifiers = { easy: 0.75, normal: 0.9, hard: 1.05, ultra: 1.2 };
         
-        var d, index;
         while (current.easy < goal.easy || current.normal < goal.normal | current.hard < goal.hard || current.ultra < goal.ultra) {
             d = getNeededDiff();
             if (!d) {
@@ -13177,7 +13184,7 @@ function Safari() {
                 c = getRequestDiff(req);
                 req.fscore = Math.round(req.score * diffModifiers[c]);
                 if (current[c] < goal[c]) {
-                    index = getNextIndex(photographQuest);
+                    index = getNextIndex(photographQuest, lastRemoved);
                     req.deadline = now() + hours(96);
                     photographQuest[index] = req;
                     current[c]++;
