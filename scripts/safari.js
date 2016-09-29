@@ -12892,7 +12892,7 @@ function Safari() {
                 }
             }
             if (player.quests.journal.cooldown >= n) {
-                safaribot.sendMessage(src, "Editor-in-chief: I'm still editing to the last photo that you brought, so come back in " + timeLeftString(player.quests.journal.cooldown) + " if you wish to submit more photos!", safchan);
+                safaribot.sendMessage(src, "Editor-in-chief: I'm still editing the last photo that you brought, so come back in " + timeLeftString(player.quests.journal.cooldown) + " if you wish to submit more photos!", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -12922,7 +12922,7 @@ function Safari() {
         }
         
         if (player.quests.journal.cooldown >= now()) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm still editing to the last photo that you brought, come back in " + timeLeftString(player.quests.journal.cooldown) + "!", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: I'm still editing the last photo that you brought, come back in " + timeLeftString(player.quests.journal.cooldown) + "!", safchan);
             return;
         }
         if (contestCount > 0) {
@@ -13143,7 +13143,7 @@ function Safari() {
             }
             return null;
         };
-        var getNextIndex = function(quest, lastRemoved) {
+        var getNextIndex = function(quest, justRemoved) {
             var list = Object.keys(quest).map(function(x) {
                 return parseInt(x, 10);
             });
@@ -13151,27 +13151,25 @@ function Safari() {
                 return 1;
             }
             var i = list[list.length-1];
-            if (lastRemoved) {
-                lastRemoved = parseInt(lastRemoved, 10);
-            }
-            if (i === 999) {
-                i = 1;
-            }
-            while (list.contains(i) || i === lastRemoved) {
+            while (list.contains(i) || justRemoved.contains(i)) {
                 i++;
+                if (i > 9999) {
+                    i = 1;
+                }    
             }
             return i;
         };
-        var n = now(), d, index, lastRemoved;
+        var n = now(), d, index, justRemoved = [];
         for (var c in photographQuest) {
             req = photographQuest[c];
             if (req.deadline && n >= req.deadline) {
                 delete photographQuest[c];
-                lastRemoved = c;
+                justRemoved.push(c);
             } else {
                 current[getRequestDiff(req)]++;
             }
         }
+        justRemoved = justRemoved.map(function(x) { parseInt(x, 10); });
         var diffModifiers = { easy: 0.75, normal: 0.9, hard: 1.05, ultra: 1.2 };
         
         while (current.easy < goal.easy || current.normal < goal.normal | current.hard < goal.hard || current.ultra < goal.ultra) {
@@ -13184,7 +13182,7 @@ function Safari() {
                 c = getRequestDiff(req);
                 req.fscore = Math.round(req.score * diffModifiers[c]);
                 if (current[c] < goal[c]) {
-                    index = getNextIndex(photographQuest, lastRemoved);
+                    index = getNextIndex(photographQuest, justRemoved);
                     req.deadline = now() + hours(96);
                     photographQuest[index] = req;
                     current[c]++;
@@ -13314,7 +13312,7 @@ function Safari() {
             val = Math.round(val*0.5);
         }
         
-        if (val < scoreRange[0] || val > scoreRange[1]) {
+        if (!val || isNaN(val) || val < scoreRange[0] || val > scoreRange[1]) {
             return null;
         }
         score = val;
@@ -18045,7 +18043,7 @@ function Safari() {
                 return;
             }
             SESSION.users(src).safari = player;
-            this.sanitize(getAvatar(src));
+            this.sanitize(player);
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
@@ -19066,16 +19064,20 @@ function Safari() {
     };
     this.sanitizeAll = function() {
         var onChannel = sys.playersOfChannel(safchan);
-        var player;
-        for (var e in onChannel) {
-            player = getAvatar(onChannel[e]);
-            if (!player) {
-                continue;
+        var player, e;
+        try {
+            for (e in onChannel) {
+                player = getAvatar(onChannel[e]);
+                if (!player) {
+                    continue;
+                }
+                safari.sanitize(player);
+                safari.sanitizePokemon(player);
+                safari.sanitizeBase(player);
+                safari.saveGame(player);
             }
-            safari.sanitize(player);
-            safari.sanitizePokemon(player);
-            safari.sanitizeBase(player);
-            safari.saveGame(player);
+        } catch (err) {
+            safaribot.sendAll("Safari Error during sanitizeAll" + (err.lineNumber ? " at line " + err.lineNumber : "") + ": " + err + " (while sanitizing " + sys.name(onChannel[e]) + ")", staffchannel);
         }
     };
     this.trackMessage = function(mess, player) {
