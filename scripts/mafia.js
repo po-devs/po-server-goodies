@@ -70,8 +70,7 @@ function Mafia(mafiachan) {
         defaultGameBot = {
             name: "Game",
             color: "#3DAA68"
-        };
-        Safari = require("safari.js");
+        },
         safchan = sys.channelId("Safari");
 
     var savePlayedGames = function (entry) {
@@ -1538,8 +1537,9 @@ function Mafia(mafiachan) {
                 this.rewardSafariPlayers.splice(playerIndex, 1);
             }
         }
+        var Safari = require("safari.js");
         if ((Safari) && (Safari.hasOwnProperty("mafiaPromo"))) {
-            Safari.mafiaPromo(this.rewardSafariPlayers)
+            Safari.mafiaPromo(this.rewardSafariPlayers);
         }
         this.safariShove = [];
         this.rewardSafariPlayers = [];
@@ -1905,11 +1905,11 @@ function Mafia(mafiachan) {
                 sendBorder(safchan);
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
-            }
-            if (Safari) {
-                sendBorder(safchan);
-                sendChanHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
-                sendBorder(safchan);
+                if (safchan) {
+                    sendBorder(safchan);
+                    sendChanHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
+                    sendBorder(safchan);
+                }
             }
             gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!", undefined, undefined, true);
             sendBorder();
@@ -3070,7 +3070,7 @@ function Mafia(mafiachan) {
             }
             var voteHaxData = mafia.players[p].role.voteHax,
                 haxmsg = voteHaxData.msg ? voteHaxData.msg : "~Player~ voted for ~Target~!",
-                haxperc = voteHaxData.chance ? voteHaxData.chance : 1
+                haxperc = voteHaxData.chance ? voteHaxData.chance : 1;
             if (haxperc > Math.random()) {
                 gamemsg(p, haxmsg.replace(/~Target~/g, commandData).replace(/~Player~/g, name));
             }
@@ -3254,7 +3254,7 @@ function Mafia(mafiachan) {
                 mafia.rewardSafariTime = new Date().getTime() + 5 * 60 * 1000;
                 mafia.rewardSafariPlayers = [];
                 for (var m in mafia.allPlayers) {
-                    mafia.rewardSafariPlayers.push(mafia.allPlayers[m].toLowerCase())
+                    mafia.rewardSafariPlayers.push(mafia.allPlayers[m].toLowerCase());
                 }
                 mafia.distributeEvent = true;
                 mafia.isEvent = false;
@@ -3820,7 +3820,7 @@ function Mafia(mafiachan) {
                                             if (!targetMode.silent) {
                                                 var targetmsg = "msg" in targetMode ? targetMode.msg : "Your target (~Self~) evaded your ~Action~!";
                                                 if (typeof targetmsg === "object") {
-                                                    targetmsg = randomSample(targetmsg)
+                                                    targetmsg = randomSample(targetmsg);
                                                 }
                                                 gamemsg(player.name, formatArgs(targetmsg, modeargs));
                                                 var broadcastMsg = "broadcastMsg" in targetMode ? targetMode.broadcastMsg : "";
@@ -4265,8 +4265,8 @@ function Mafia(mafiachan) {
                                 else {
                                     target.role.side = Action.newSide;
                                 }
-                                var pmsg = ("indoctrinatemsg" in Action ? Action.indoctrinatemsg : "You have been changed to the ~NewSide~ side!").replace(/~NewSide~/g, mafia.theme.trside(target.role.side))
-                                var usermsg = ("indoctrinateusermsg" in Action ? Action.indoctrinateusermsg : "You changed ~Target~ to the ~NewSide~ side!").replace(/~NewSide~/g, mafia.theme.trside(target.role.side))
+                                var pmsg = ("indoctrinatemsg" in Action ? Action.indoctrinatemsg : "You have been changed to the ~NewSide~ side!").replace(/~NewSide~/g, mafia.theme.trside(target.role.side));
+                                var usermsg = ("indoctrinateusermsg" in Action ? Action.indoctrinateusermsg : "You changed ~Target~ to the ~NewSide~ side!").replace(/~NewSide~/g, mafia.theme.trside(target.role.side));
                                 gamemsg(target.name, formatArgs(pmsg, nightargs));
                                 gamemsg(player.name, formatArgs(usermsg, nightargs));
                             }
