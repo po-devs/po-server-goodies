@@ -38,6 +38,7 @@ function Safari() {
     var eventLog = "scriptdata/safari/eventlog.txt";
     var giftLog = "scriptdata/safari/giftlog.txt";
     var miscLog = "scriptdata/safari/misclog.txt";
+    var questLog = "scriptdata/safari/questlog.txt";
     var tradebansFile = "scriptdata/safaribans.txt";
     var saltbansFile = "scriptdata/safarisalt.txt";
     var permFile = "scriptdata/safariobjects.txt";
@@ -3980,7 +3981,7 @@ function Safari() {
             where: (contestCount > 0 && currentTheme ? currentTheme : "default"),
             what: currentPokemonAction,
             mood: currentPokemonMood,
-            score: quality
+            score: parseInt(quality, 10)
         };
         sendAll(sys.name(src) + " is taking a photo of the " + pokeName + "!");
         safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "!" + (sys.os(src) !== "android" ? " [" + link("/album delete:" + (player.photos.length+1), "Delete", true) + "]" : ""), "#DD4411"), safchan);
@@ -11169,10 +11170,11 @@ function Safari() {
 
                 player.money = Math.min(player.money + payout, moneyCap);
 
-                var stole = 1, costumed = player.costume === "rocket", theft = "";
+                var stole = 1, costumed = player.costume === "rocket", theft = "", stoleList = [];
                 quest.requests = quest.requests.shuffle(); //Shuffle to make it more random
                 for (e = 0; e < quest.requests.length; e++) {
                     if (costumed && chance(costumeData.rocket.rate * stole)) {
+                        stoleList.push(poke(quest.requests[e]));
                         theft = " but stole the " + poke(quest.requests[e]) + " back";
                         safaribot.sendMessage(src, "You cleverly distract the Collector and while he is not looking, you grab your " + poke(quest.requests[e]) + " back and run off!", safchan);
                         player.records.pokesStolen += 1;
@@ -11183,6 +11185,7 @@ function Safari() {
                 }
                 sys.sendMessage(src, "", safchan);
                 this.logLostCommand(sys.name(src), "quest collector:" + data.join(":"), "gave " + readable(quest.requests.map(poke), "and") + theft);
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Collector|||Gave " + readable(quest.requests.map(poke)) + "|||Received $" + addComma(payout) + (stoleList.length > 0 ? ", stole " + readable(stoleList) + " back" : "") + "\n");
                 player.records.collectorEarnings += payout;
                 player.records.collectorGiven += quest.requests.length;
                 this.addToMonthlyLeaderboards(player.id, "collectorEarnings", payout);
@@ -11331,6 +11334,7 @@ function Safari() {
 
             sys.sendMessage(src, "", safchan);
             this.logLostCommand(sys.name(src), "quest scientist:" + data.join(":"), "gave " + poke(id) + theft);
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(quest.reward, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
         } else {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that.", safchan);
@@ -11389,6 +11393,7 @@ function Safari() {
             var player = getAvatarOff(name);
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
+            var rewname = "";
             if (isWinner) {
                 var amt = args.rewardAmt;
                 if (!args.noRecords) {
@@ -11400,10 +11405,12 @@ function Safari() {
                 var rew = args.reward || "silver";
 
                 if (amt !== 0) {
+                    rewname = plural(amt, rew);
                     safaribot.sendMessage(id, "You received " + plural(amt, rew) + "!", safchan);
                     rewardCapCheck(player, rew, amt, true);
                 }
                 if (args.moneyReward) {
+                    rewname = "$" + addComma(args.moneyReward);
                     safaribot.sendMessage(id, "You received $" + addComma(args.moneyReward) + "!", safchan);
                     player.money += args.moneyReward;
                     if (player.money > moneyCap) {
@@ -11423,6 +11430,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
             player.quests.arena.cooldown = now() + hours(args.cooldown);
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arena|||Fought " + args.name + " using " + readable(player.party.map(poke)) +  " team|||" + (isWinner ? "Won" : "Lost") + " "+ playerScore + "x" + npcScore + (rewname ? ", received " + rewname : "") + "\n");
             safari.saveGame(player);
         };
         var price = {
@@ -11787,6 +11795,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
                     player.quests.tower.bonusPower = 0;
                 }
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Tower|||Challenged using " + readable(player.party.map(poke)) +  "|||Cleared " + plural(count, "floor") + (rewardText.length > 0 ? ", received " + readable(rewardText, "and") : "") + "\n");
                 safari.saveGame(player);
                 if (updatelb) {
                     safari.updateLeaderboards();
@@ -11926,6 +11935,7 @@ function Safari() {
         safaribot.sendMessage(src, "Wonder Trade Operator: The trade was finished successfully! You traded your " + input.name + " and received " + an(poke(receivedId)) + "!", safchan);
         sys.sendMessage(src, "", safchan);
         this.logLostCommand(sys.name(src), "quest wonder:" + data.join(":"), "received " + poke(receivedId));
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Wonder Trade|||Gave " + input.name + "|||Received " + poke(receivedId) + "\n");
         if (isRare(receivedId)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(receivedId) + "::wonder traded::" + sys.name(src) + "\n");
         }
@@ -12323,6 +12333,7 @@ function Safari() {
             if (lostPoke) {
                 this.logLostCommand(sys.name(src), "quest alchemist:" + data.join(":"), "failed, lost " + translateStuff(lostStuff));
             }
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Alchemist|||Lost " + (out.lost.length > 0 ? readable(out.lost) : "nothing") + "|||Received nothing (failed)\n");
         } else {
             var ingUsed = {};
             for (var e in rec.ingredients) {
@@ -12358,6 +12369,7 @@ function Safari() {
                     sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Alchemist by " + sys.name(src) + "::\n");
                 }
             }
+            sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Alchemist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
         }
         this.saveGame(player);
     };
@@ -12414,6 +12426,7 @@ function Safari() {
                 if (isRare(result) || isRare(info.id)) {
                     sys.appendToFile(mythLog, now() + "|||" + poke(result) + "::was transmuted from " + info.name + " by " + sys.name(src) + " using " + plural(cost, "philosopher") + "::\n");
                 }
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Philosopher|||Gave " + info.name + " and " + plural(cost, "philosopher") + "|||Received " + poke(result) + "\n");
             }
         }
     };
@@ -12478,6 +12491,7 @@ function Safari() {
         safaribot.sendMessage(src, paymsg.format(an(decoName)), safchan);
         printDecoration(src, out);
         player.quests.decor.cooldown = now() + hours(payment == "buy" ? 3 : 1);
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Decor|||Paid " + (payment === "buy" ? addComma(moneyCost) + " and " + plural(silverCost, "silver") : plural(1, "coupon")) + "|||Received " + decoName + "\n");
         this.saveGame(player);
     };
     this.fightLeague = function(src, data) {
@@ -12688,6 +12702,7 @@ function Safari() {
                         player.records.allGymsCleared += 1;
                     }
                     player.records.gymsCleared += 1;
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Received " + gym.badge + " and " + plural(reward[1], reward[0]) + " by defeating " + args.name + "\n");
                     safari.saveGame(player);
                 } else {
                     var npc = JSON.parse(JSON.stringify(gym.trainers[next]));
@@ -12724,6 +12739,7 @@ function Safari() {
                 
                 player.records.gymsLost += 1;
                 player.quests.league.cooldown = now() + hours(2);
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 safari.saveGame(player);
             }
         };
@@ -12773,6 +12789,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> For your success, we award you with " + plural(1, "philosopher") + "!", safchan);
                     rewardCapCheck(player, "philosopher", 1, true);
                     sys.sendAll("", safchan);
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Elite Four|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(1, "philosopher") + " by defeating " + args.name + "\n");
                 } else {
                     var npc = JSON.parse(JSON.stringify(args.elite[next]));
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> That was a great battle! I will heal your party a bit, then you can head to battle " + npc.name + "!", safchan);
@@ -12810,6 +12827,7 @@ function Safari() {
                 player.quests.league.eliteCurrentUsed = true;
                 player.quests.league.eliteCurrent = false;
                 player.records.eliteLost += 1;
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Elite Four|||Challenged with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 safari.saveGame(player);
             }
         };
@@ -12965,7 +12983,7 @@ function Safari() {
             default: //181+
                 rew = ["1@rare", "20@gacha", "10@silver", "10@myth", "5@gem", "5@bigpearl", "3@golden", "1@nugget"].random();
         }
-        
+        var rewardName = translateStuff(rew);
         rew = giveStuff(player, toStuffObj(rew));
         player.quests.journal.cooldown = n + hours(0.5);
         player.records.journalSubmitted += 1;
@@ -12975,7 +12993,7 @@ function Safari() {
         player.photos.splice(offer, 1);
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this is photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
-        safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + "!", safchan);
+        safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
         
         var added = 0;
         while (player.balls.lens < 10 && Math.floor(player.records.journalPoints/itemData.lens.threshold) >= player.balls.lens) {
@@ -13001,6 +13019,7 @@ function Safari() {
             safaribot.sendMessage(src, "You received " + readable(rewards) + "!", safchan);
         }
         
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
         this.saveGame(player);
         if (!req.done) {
             req.done = true;
@@ -13545,6 +13564,7 @@ function Safari() {
             }
             sys.sendAll("", safchan);
             sys.appendToFile(giftLog, now() + "|||Monger Auction|||" + winner.id.toCorrectCase() + "|||mauction|||won|||" + obj.rewardName + " by paying " + plural(price, "shady") + "\n");
+            sys.appendToFile(questLog, now() + "|||" + winner.id.toCorrectCase() + "|||Monger|||Paid " + plural(price, "shady") + "|||Received " + obj.rewardName + "\n");
         } else {
             sys.sendAll("", safchan);
             safaribot.sendAll("No valid offers have been made for the Monger Auction of " + obj.rewardName + "!", safchan);
@@ -13873,18 +13893,23 @@ function Safari() {
         } else {
             this.sendToViewers(readable(this.fullNames, "and") + " reached the " + getOrdinal(this.room) + " room of the " + getOrdinal(this.level) + " floor with a total of " + plural(this.points, "Point") + "!");
         }
+        var finishVerb;
         switch (this.finishMode) {
             case "quit":
                 this.sendToViewers("This Pyramid run was finished because the leader decided to leave!");
+                finishVerb = "Quit at room " + this.level + "-" + this.room;
             break;
             case "stamina":
                 this.sendToViewers("This Pyramid run was finished because the leader's stamina dropped to 0!");
+                finishVerb = "Defeated at room " + this.level + "-" + this.room;
             break;
             case "cleared":
                 this.sendToViewers("This Pyramid run was finished because the challengers cleared all floors!");
+                finishVerb = "Cleared the Pyramid";
             break;
         }
-        this.sendToViewers("Team: " + this.fullNames.map(function(x) { return x + " (" + this.parties[x.toLowerCase()].map(poke).join(", ") + ")"; }, this).join(", "));
+        var teamNames = this.fullNames.map(function(x) { return x + " (" + this.parties[x.toLowerCase()].map(poke).join(", ") + ")"; }, this).join(", ");
+        this.sendToViewers("Team: " + teamNames);
 
         var p = this.points, reward = null, amt = 1;
         if (p >= 15000) {
@@ -13955,6 +13980,7 @@ function Safari() {
         } else {
             this.sendToViewers("");
         }
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Pyramid|||Challenged with " + teamNames + (this.usingVoucher ? ", paid with " + finishName("fossil") : "") +"|||" + finishVerb + " with " + plural(this.points, "Point") + ", received " + plural(amt, reward) + "\n");
         this.finished = true;
         checkUpdate();
     };
@@ -19446,7 +19472,7 @@ function Safari() {
             "/offmsg [players]։[message]: Sets a message that will be sent to these players next time they join the channel.",
 
             "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
-            "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), showids (saves created with their idnum), misclog (other stuff)"
+            "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), showids (saves created with their idnum), questlog (quests finished), misclog (other stuff)"
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
@@ -19459,7 +19485,7 @@ function Safari() {
             "/safaripay [player]։[amount]: Awards a player with the specified amount of money.",
             "/safarigift [player/player names]։[item]։[amount]: Gifts a player with any amount of an item or ball. You can send to multiple players at once if you separate each name with a comma or a comma and a space.",
             "/bestow [player]։[pokemon]: Gifts a player a specific Pokémon. Use /bestow [player]։[pokemon]։Remove to confiscate a Pokémon from a player.",
-            "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player.",
+            "/forgerecord [player]։[record]։[amount]: Alters a specific record of a player. Use /forgerecordall [record]:[amount] to change it for all players.",
             "/wipesafari [player]: Wipes the targeted player's safari. Irreversable-ish. Use /bwipesafari or /wipesafarib to broadcast the wipe message.",
             "/loadsafari [JSON]: Creates a safari save with the specified JSON code.",
             "/findsaves: Lists all saves the Safari Game currently has data on.",
@@ -21083,6 +21109,19 @@ function Safari() {
                 });
                 return true;
             }
+            if (command === "questlog") {
+                safari.showLog(src, command, commandData, questLog, "quest", function(x) {
+                    var info = x.split("|||");
+                    var time = new Date(parseInt(info[0], 10)).toUTCString();
+                    var name = info[1];
+                    var quest = info[2];
+                    var input = info[3];
+                    var output = info[4];
+
+                    return name + " --- " + quest + " quest --- " + input + " --- " + output + " --- (" + time + ")";
+                });
+                return true;
+            }
             if (command === "showids") {
                 var list = [];
                 for (var e in idnumList.hash) {
@@ -21444,6 +21483,43 @@ function Safari() {
                 this.sanitize(player);
                 safaribot.sendAll(target.toCorrectCase() + "'s \"" + record + "\" record has been changed to " + recValue + " by " + sys.name(src) + "!", safchan);
                 sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + target.toCorrectCase() + "|||forgerecord|||had their " + record + " record forged to|||" + recValue + "\n");
+                return true;
+            }
+            if (command === "forgerecordall") {
+                var cmd = toCommandData(commandData, ["prop", "val"]);
+                if (cmd.prop === "*" || !cmd.prop) {
+                    safaribot.sendMessage(src, "Use /forgerecordall [RecordName]:[NewValue] to change a record for all saves.", safchan);
+                    return true;
+                }
+                if (!playerTemplate.records.hasOwnProperty(cmd.prop)) {
+                    safaribot.sendMessage(src, "No such record!", safchan);
+                    return true;
+                }
+                var rec = cmd.prop;
+                var val = parseInt(cmd.val, 10);
+                if (isNaN(val)) {
+                    safaribot.sendMessage(src, "Please type a valid value for the record!", safchan);
+                    return true;
+                }
+                
+                var e, data, obj = {}, player, failed = [];
+                for (e in rawPlayers.hash) {
+                    if (rawPlayers.hash.hasOwnProperty(e)) {
+                        player = getAvatarOff(e);
+                        if (player) {
+                            player.records[rec] = val;
+                            safari.saveGame(player);
+                        } else {
+                            failed.push(e);
+                        }
+                    }
+                }
+                
+                safaribot.sendMessage(src, "Everyone's " + rec + " record has been changed to " + val + "!", safchan);
+                if (failed.length > 0) {
+                    safaribot.sendMessage(src, "Exceptions: " + failed.join(", "), safchan);
+                }
+                sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||Everyone|||forgerecordall|||had their " + cmd.prop + " record forged to|||" + val + "\n");
                 return true;
             }
             if (command === "reassignid") {
