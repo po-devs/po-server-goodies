@@ -1495,7 +1495,7 @@ function Mafia(mafiachan) {
                 }
                 else {
                     for (var r in players[p].role.unique) {
-                        restrictedRoles.push(players[p].role.unique[r])
+                        restrictedRoles.push(players[p].role.unique[r]);
                     }
                 }
             }
