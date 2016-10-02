@@ -3473,13 +3473,13 @@ function Mafia(mafiachan) {
                         if (mafia.theme.roles[ro].unique) {
                             if (mafia.theme.roles[ro].unique === true) {
                                 if (spawnedRoles.indexOf(ro) !== -1) {
-                                    excl = true
+                                    excl = true;
                                 }
                             }
                             else if (Array.isArray(mafia.theme.roles[ro].unique)) {
                                 for (var r in mafia.theme.roles[ro].unique) {
                                     if (spawnedRoles.indexOf(mafia.theme.roles[ro].unique[r]) !== -1) {
-                                        excl = true
+                                        excl = true;
                                         gamemsgAll(mafia.theme.roles[ro].unique[r])
                                     }
                                 }
@@ -4532,14 +4532,14 @@ function Mafia(mafiachan) {
                         target.addVote = {
                             "duration": dur,
                             "value": Action.addVote
-                        }
+                        };
                     }
                     if ("addVoteshield" in Action && mafia.isInGame(target.name) && targets.length > 0) {
                         var dur = Math.floor("addVoteshieldDuration" in Action ? Action.addVoteshieldDuration : -1);
                         target.addVoteshield = {
                             "duration": dur,
                             "value": Action.addVoteshield
-                        }
+                        };
                     }
                     if ("suicideChance" in Action && mafia.isInGame(player.name) && targets.length > 0) {
                         if (Action.suicideChance > Math.random()) {
@@ -4547,7 +4547,7 @@ function Mafia(mafiachan) {
                             gamemsg(player.name, pmsg);
                             mafia.kill(player);
                             nightkill = true;
-                        }
+                        };
                     }
 
                             //Post-Action effects here
