@@ -4736,7 +4736,6 @@ function Mafia(mafiachan) {
                                 this.compulsoryStandby[c][pl.name] = [];
                             }
                             this.compulsoryStandby[c][pl.name].push(n);
-                            gamemsgAll("standby action at " + c);
                         }
                     }
                 }
