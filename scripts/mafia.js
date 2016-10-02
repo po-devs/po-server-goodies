@@ -4724,16 +4724,17 @@ function Mafia(mafiachan) {
                         for (i = 0; i < lim; i++) {
                             if (typeof app.compulsory === "number") 
                                 c = mafia.ticks - app.compulsory;
-                            else
+                            else {
                                 c = mafia.ticks - (sys.rand(app.compulsory[0], app.compulsory[1]));
+                            }
                             if (this.isEvent)
                                 c *= 1.5;
                             c = Math.floor(c);
                             if (!(c in this.compulsoryStandby)) {
-                                this.compulsoryStandby[c] = {}
+                                this.compulsoryStandby[c] = {};
                             }
                             if (!(pl.name in this.compulsoryStandby[c])) {
-                                this.compulsoryStandby[c][pl.name] = []
+                                this.compulsoryStandby[c][pl.name] = [];
                             }
                             this.compulsoryStandby[c][pl.name].push(n);
                             gamemsgAll("standby action at " + c);
