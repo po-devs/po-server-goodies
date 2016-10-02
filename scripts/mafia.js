@@ -1488,10 +1488,10 @@ function Mafia(mafiachan) {
     };
     this.filterUniqueRoles = function (newRole, players) {
         var restrictedRoles = [], obj = {}, obj2 = {};
-        for (p in players) {
+        for (var  p in players) {
             if (players[p].role.unique) {
                 if (players[p].role.unique === true) {
-                    restrictedRoles.push(players[p].role.role)
+                    restrictedRoles.push(players[p].role.role);
                 }
                 else {
                     for (var r in players[p].role.unique) {
