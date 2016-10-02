@@ -3480,7 +3480,6 @@ function Mafia(mafiachan) {
                                 for (var r in mafia.theme.roles[ro].unique) {
                                     if (spawnedRoles.indexOf(mafia.theme.roles[ro].unique[r]) !== -1) {
                                         excl = true;
-                                        gamemsgAll(mafia.theme.roles[ro].unique[r])
                                     }
                                 }
                             }
