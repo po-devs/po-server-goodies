@@ -2222,6 +2222,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.capsbot, sys.name(src), {'time': 900, 'reason': "Overusing CAPS"});
             }
         }
+        else if (user.caps >= Math.floor(maxCaps / 2)) {
+            capsbot.sendMessage(src, "Warning: You may be muted for excessive usage of CAPS LOCK!", channel);
+        }
     } else if (user.caps > 0) {
         user.caps -= 1;
     }
@@ -2276,6 +2279,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
                 sys.kick(src, channel);
             }
+        }
+        else if (user.floodcount >= Math.floor(linecount / 2)) {
+            kickbot.sendMessage(src, "Warning: You may be muted for flooding the chat!", channel);
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);
