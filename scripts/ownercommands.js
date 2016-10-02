@@ -1,33 +1,4 @@
 exports.handleCommand = function(src, command, commandData, tar, channel) {
-    if (command == "addwatch") {
-        var i = commandData.split(":");
-        var name = i[0];
-        var comment = i[1] || '-';
-        if (i.length != 2) {
-            normalbot.sendMessage(src, "The format is (user):(comment)", channel);
-            return;
-        }
-        if (sys.dbIp(name) === undefined) {
-            normalbot.sendMessage(src, name + " is not a valid user.", channel);
-            return;
-        }
-        script.namesToWatch.add(name.toLowerCase(), comment + " ~ " + sys.name(src));
-        normalbot.sendAll(name + " was added to the watch list.", staffchannel);
-        return;
-    }
-    if (command == "removewatch") {
-        var name = commandData;
-        if (script.namesToWatch.get(name.toLowerCase()) !== undefined) {
-            script.namesToWatch.remove(name.toLowerCase());
-            normalbot.sendAll(name + " was removed from the watch list.", staffchannel);
-            return;
-        }
-        else {
-            normalbot.sendMessage(src, name + " is not in the watch list.", channel);
-            return;
-        }
-        return;
-    }
     if (command == "ipban") {
         var subip;
         var comment;
@@ -144,7 +115,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             index.push(i);
         }
         var teams = index.map(function(index) {
-            return script.importable(tar, index);
+            return script.importable(tar, index, false, true);
         }, this).filter(function(data) {
             return data.length > 0;
         }).map(function(team) {
@@ -356,7 +327,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
         autosmute.push(name);
         if (sys.id(name) !== undefined) {
-            SESSION.users(sys.id(name)).activate("smute", "Script", 0, "Evader", true);
+            SESSION.users(sys.id(name)).activate("smute", "Script", parseInt(sys.time(), 10) + 86400, "Evader", true);
         }
         sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
         normalbot.sendAll(commandData + " was added to the autosmute list", staffchannel);
@@ -364,13 +335,14 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
     }
     if (command == "removeautosmute") {
         var name = commandData.toLowerCase();
-        autosmute = autosmute.filter(function(list_name) {
-            if (list_name == name) {
-                normalbot.sendAll(commandData + " was removed from the autosmute list", staffchannel);
-                return true;
-            }
-        });
-        sys.writeToFile(Config.dataDir + 'secretsmute.txt', autosmute.join(":::"));
+        var i = autosmute.indexOf(name);
+        if (i > -1) {
+            normalbot.sendAll(autosmute[i] + " was removed from the autosmute list.", staffchannel);
+            autosmute.splice(i, 1);
+            sys.writeToFile(Config.dataDir + "secretsmute.txt", autosmute.join(":::"));
+            return;
+        }
+        normalbot.sendMessage(src, "No such user in the autosmute list!"); 
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
@@ -457,7 +429,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         script.init();
         return;
     }
-    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak")) {
+    if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels")) {
         if (command === "eval") {
             if (commandData === undefined) {
                 normalbot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", channel);
@@ -526,13 +498,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "clearpass") {
+        if (!commandData || !sys.dbRegistered(commandData)) {
+            return;
+        }
         var mod = sys.name(src);
 
         if (sys.dbAuth(commandData) > 2) {
+            normalbot.sendMessage(src, commandData + "'s password could not be cleared as it is an owner account!", channel);
             return;
         }
         sys.clearPass(commandData);
-        normalbot.sendMessage(src, "" + commandData + "'s password was cleared!", channel);
+        normalbot.sendMessage(src, commandData + "'s password was cleared!", channel);
         if (tar !== undefined) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
             sys.sendNetworkCommand(tar, 14); // make the register button active again
@@ -545,13 +521,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             if (resp !== "") {
                 sys.writeToFile(Config.dataDir + "notice.html", resp);
                 normalbot.sendMessage(src, "Notice updated!", channel);
+                if (command === "updatenotice") {
+                    sendNotice();
+                }         
             } else {
                 normalbot.sendAll("Failed to update notice!", staffchannel);
             }
         });
-        if (command === "updatenotice") {
-            sendNotice();
-        }
         return;
     }
     if (command == "updatebansites") {
@@ -849,7 +825,6 @@ exports.help =
         "/sendmessage: Sends a chat message to a user. Format is /sendmessage user:::message:::channel. Use /sendhtmlmessage for a message with HTML Format.",
         "/contributor[off]: Adds contributor status (for indigo access) to a user, with reason. Format is /contributor user:reason.",
         "/clearpass: Clears a user's password.",
-        "/[add/remove]watch: Adds a user to a watch list to track their battle activity. Format is /addwatch user:comment.",
         "/autosmute: Adds a user to the autosmute list",
         "/removeautosmute: Removes a user from the autosmute list",
         "/periodicsay: Sends a message to specified channels periodically. Format is /periodicsay minutes:::channel1,channel2,...:::message. Use /periodichtml for a message with HTML formatting.",
@@ -874,7 +849,7 @@ exports.help =
         "/updatecommands: To update command files. Update scripts afterwards for full effect.",
         "/updatetiers[soft]: To update tiers. Soft saves to file only without reloading.",
         "/[un]loadstats: Loads the usage stats plugin.",
-        "/[un]loadreplay: Loads the replay plugin.",
+        "/[un]loadreplays: Loads the replay plugin.",
         "/warnwebclients: Sends a big alert with your message to webclient users.",
         "/clearladder: Clears rankings from a tier.",
         "/advertise: Sends a html message to the main channels",

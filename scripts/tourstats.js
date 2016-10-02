@@ -27,7 +27,7 @@ function updateTourStats(tier, time, winner, num, noPoints, purgeTime) {
             "ORAS Balanced Hackmons" : [0, 0 ,0 ,1 ,2],
             "ORAS Hackmons" : [0, 0, 0, 1, 2],
             "ORAS 1v1": [0, 0, 0, 0, 1],
-            "Flash Clash": [0, 0, 0, 0, 1],
+            //"Flash Clash": [0, 0, 0, 0, 1],
             "Metronome": [0, 0, 0, 0, 0],
             "default": [0, 1, 2, 4, 6],
         }

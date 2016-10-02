@@ -432,15 +432,15 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     return ret;
 });
 
-/* Baton Pass got fully banned
-tier_checker.add_new_check(INCLUDING, ["ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU"], function batonPassLimitXY(src, team, tier) {
+
+tier_checker.add_new_check(INCLUDING, ["ORAS Ubers"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 1;
     for (var i = 0, j = 0; i < 6; ++i) {
         if (sys.hasTeamPokeMove(src, team, i, sys.moveNum("Baton Pass")) && (++j > batonPassLimit)) {
             return ["Baton Pass is limited to "+batonPassLimit+" Pokémon per team in " + tier + "."];
         }
     }
-});*/
+});
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player, team) {
     for (var slot=0; slot<6; slot++)

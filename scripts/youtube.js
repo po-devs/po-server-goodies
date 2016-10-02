@@ -6,6 +6,10 @@ function YouTube() {
     
     this.afterChatMessage = function (src, message, channel) {
         if ((message.indexOf("youtube.com") > -1 && message.indexOf("watch?v=") > -1) || message.indexOf("youtu.be/") > -1) {
+            if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
+                youtubeBot.sendMessage(src, "Loading YouTube data failed.", channel);
+                return;
+            }
             var videoId;
             // PC LINK
             if (message.indexOf("youtube.com") !== -1) {

@@ -29,7 +29,7 @@ module.exports.afterLogIn = function afterLogIn(src) {
         }, sys.rand(10, 75));
     }*/
     if (autosmute.indexOf(name.toLowerCase()) !== -1) { //using this so they can't just check the name!
-        SESSION.users(src).activate("smute", "Script", 0, "Evader", true);
+        SESSION.users(src).activate("smute", "Script", parseInt(sys.time(), 10) + 86400, "Evader", true);
         normalbot.sendAll("Smute based on name: " + name + ", IP: " + sys.ip(src), staffchannel);
     }
 };

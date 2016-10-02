@@ -63,7 +63,8 @@ function Hangman() {
     var tossUpOrder = [];
     var usedTossUps = []; 
     var validFills = [];
-    var vowels = ["a", "e", "i", "o", "u"];    
+    var vowels = ["a", "e", "i", "o", "u"];
+    var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     
     var hint = "";
     var parts;
@@ -139,18 +140,7 @@ function Hangman() {
             hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' correctly, so the host (" + hostName + ") has won this game! [Completion: " + i.toFixed(2) + "%]", hangchan);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
-            if (sys.isInChannel(sys.id(hostName), hangchan)) {
-                this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-            } else {
-                hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);               
-                this.setWinner(undefined, true);
-            }
-            if (isEventGame) {
-                eventCount = eventLimit;
-            }
-            if (pendingEvent) {
-                eventDelay = true;
-            }
+            this.concludeGame();
         }
     };
     
@@ -189,7 +179,7 @@ function Hangman() {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
-        if ("abcdefghijklmnopqrstuvwxyz".indexOf(letter) === -1) {
+        if (alphabet.indexOf(letter) === -1) {
             hangbot.sendMessage(src, "This is not a valid answer!", hangchan);
             return;
         }
@@ -207,7 +197,7 @@ function Hangman() {
                 break;
             }
         }
-        if (SESSION.users(src).smute.active) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
@@ -259,17 +249,16 @@ function Hangman() {
             this.applyPoints(src, p);
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " completed the word '" + currentWord.join("") + "'!", hangchan);
-            this.countPoints();
+            var w = this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (isEventGame) {
-                    sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
-                }
-            if (pendingEvent) {
-                eventDelay = true;
-            } else {
+                sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
+            }
+            if (!pendingEvent) {
                 hangbot.sendAll("Type /start answer:hint to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
+            this.concludeGame(w);
         } else {
             if (!correct) {
                 this.addMiss(src);
@@ -298,18 +287,7 @@ function Hangman() {
                 if (isEventGame) {
                     sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
                 }
-                if (sys.isInChannel(sys.id(hostName), hangchan)) { // IF HOST WINS AND STILL IN CHANNEL
-                    this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-                } else { // IF HOST WINS AND NOT IN CHANNEL
-                    hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);                
-                    this.setWinner(undefined, true); // TRUE SO PLAYER CAN INSTANT START
-                }
-                if (isEventGame) {
-                    eventCount = eventLimit;
-                }
-                if (pendingEvent) {
-                    eventDelay = true;
-                }
+                this.concludeGame();
             }
         }
     };
@@ -361,7 +339,7 @@ function Hangman() {
                 break;
             }
         }   
-        if (SESSION.users(src).smute.active) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1)) {
             hangbot.sendMessage(src, "You need to wait for another 9 seconds before submitting another guess!", hangchan);
             return;
         }
@@ -397,17 +375,16 @@ function Hangman() {
 
             sys.sendAll("*** ************************************************************ ***", hangchan);
             hangbot.sendAll("" + sys.name(src) + " answered correctly and got " + p + " points!", hangchan);
-            this.countPoints();
+            var w = this.countPoints();
             sys.sendAll("*** ************************************************************ ***", hangchan);
             sendChanHtmlAll(" ", hangchan);
             if (isEventGame) {
                 sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±" + hangbot.name + ":</b></font> Suggest more event game categories <a href='http://pokemon-online.eu/threads/31530'>here</a>!", hangchan);
             }
-            if (pendingEvent) {
-                eventDelay = true;
-            } else {
+            if (!pendingEvent) {
                 hangbot.sendAll("Type /start [answer]:[hint] to start a new game. If you didn't win then wait " + winnerDelay + " seconds.", hangchan);
             }
+            this.concludeGame(w);
         } else {
             hangbot.sendAll("" + sys.name(src) + " answered " + ans + "! " + thing, hangchan);               
             this.addMiss(src);
@@ -439,7 +416,7 @@ function Hangman() {
             hangbot.sendMessage(src, "An event game is about to start!", hangchan);
             return;
         }
-        if (SESSION.users(src).smute.active || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
+        if ((SESSION.users(src).smute.active && sys.auth(src) < 1) || winner && (new Date()).getTime() < nextGame && sys.name(src).toLowerCase() !== winner.toLowerCase()) {
             hangbot.sendMessage(src, "Only the last winner can start a game! If the winner takes more than " + winnerDelay + " seconds, anyone can start a new game!", hangchan);
             return;
         }
@@ -506,6 +483,35 @@ function Hangman() {
         this.createGame(sys.name(src), a, h, src, gameMode);
     };
 
+    this.concludeGame = function (winner) {
+        if (winner && !script.cmp(winner, hostName)) {
+            if (sys.isInChannel(sys.id(winner), hangchan)) {
+                this.setWinner(winner, false);
+            }
+            else {
+                this.setWinner(undefined, true);
+            }
+        } 
+        else if (sys.isInChannel(sys.id(hostName), hangchan)) {
+            this.setWinner(hostName, (hostIpArray.indexOf(null) > -1 && hostName == hangbot.name));
+        }
+        else {
+            if (!pendingEvent) {
+                hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);
+            }
+            this.setWinner(undefined, !pendingEvent);
+        }
+        if (gameMode === suddenDeath) {
+            suddenDeathTime = suddenDeathLimit;
+        }
+        if (isEventGame) {
+            eventCount = eventLimit;
+        }
+        if (pendingEvent) {
+            eventDelay = true;
+        }        
+    };
+
     //adapted from string_to_slug http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
     this.removeNonEnglish = function (str) {
         str = str.toLowerCase();
@@ -520,7 +526,7 @@ function Hangman() {
     };
 
     this.validateAnswer = function(a) {
-        var validCharacters = "abcdefghijklmnopqrstuvwxyz",
+        var validCharacters = alphabet,
             validLetters = 0,
             l,
             result = {
@@ -538,16 +544,27 @@ function Hangman() {
         }
 
         a = a.replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ").toLowerCase();
-        if (a.length > 60 || a.length < 4) {
+        if ((a.length > 60 || a.length < 4) && result.errors.push.length === 0) {
             result.errors.push("Your answer cannot be longer than 60 characters or shorter than 4 characters!");
         }
-
+        var unlosable = function(ans) {
+            return alphabet.every(function(e) {
+                return ans.indexOf(e) > -1;
+            });
+        }
+        var _a = a.replace(/ /g, "").split("");
+        if (unlosable(_a)) {
+            result.errors.push("Your answer cannot contain every letter of the alphabet!");
+        }
+        else if ((this.removeDupes(_a).length + defaultParts - 1) >= 26) {
+            result.errors.push("Your game is impossible to lose given " + defaultParts + " chances. Please change your answer!");
+        }
         result.answer = a;
         return result;
     };
 
     this.createGame = function (name, a, h, src, mode) {
-        var validCharacters = "abcdefghijklmnopqrstuvwxyz";
+        var validCharacters = alphabet;
         sys.saveVal("Stats/HangmanGamesPlayed", 1 + (+sys.getVal("Stats/HangmanGamesPlayed")));
         hint = h;
         word = a;
@@ -783,12 +800,6 @@ function Hangman() {
             ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
         }
         sys.sendAll("±Results: " + ranking.join(", "), hangchan);
-        if (sys.isInChannel(sys.id(w), hangchan)) { // IF THE WINNER IS STILL IN CHANNEL
-            this.setWinner(w);
-        } else { // IF THE WINNER IS NOT IN CHANNEL
-            hangbot.sendAll("The winner isn't in the channel, so anyone may start a game now!", hangchan);
-            this.setWinner(undefined, true);
-        }
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
             var lbWon = this.getPropCase(leaderboards.current, w),
@@ -801,9 +812,8 @@ function Hangman() {
             }
             leaderboards.current[w] = lbScore + 1;
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
-            eventCount = eventLimit;
         }
-        return;
+        return w;
     };
     this.getPropCase = function (obj, prop) {
         var key;
@@ -988,7 +998,6 @@ function Hangman() {
             hangbot.sendMessage(src, "No game is running!", hangchan);
             return;
         }
-        sys.sendMessage(src, " ", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'><b>Current Word</b>: " + currentWord.join(" ") + "</font>", hangchan);
         sys.sendHtmlMessage(src, "<font color='red'>[Hint: " + hint + "]  [Letters used: " + usedLetters.map(function (x) {
             return x.toUpperCase();
@@ -1006,6 +1015,13 @@ function Hangman() {
         } else {
             sys.sendHtmlMessage(src, "<font color='red'>Current " + (gameMode === regular ? "":(gameMode === suddenDeath ? "Sudden Death":"Toss Up")) + " game started by " + hostName + "</font>", hangchan);
         }
+    };
+    this.removeDupes = function (arr) {
+        var result = {};
+        for (var x in arr) {
+            result[arr[x]] = 1;
+        }
+        return Object.keys(result);
     };
     this.showRules = function (src) {
         var x, rules = [
@@ -1740,7 +1756,7 @@ function Hangman() {
             hangman.flashlist(src);
             return true;
         }
-        if (hangman.authLevel(src) < 1 && !(command === "end" && hostIpArray.indexOf(sys.ip(src)) !== -1)) {
+        if (hangman.authLevel(src) < 1 && !(command === "end" && script.cmp(sys.name(src), hostName))) {
             return false;
         }
         var id;
@@ -2226,14 +2242,7 @@ function Hangman() {
                 hangbot.sendAll("HANGED! No one guessed the word '" + word.toUpperCase() + "' in time, so the host (" + hostName + ") has won this game!", hangchan);
                 sys.sendAll("*** ************************************************************ ***", hangchan);
                 sendChanHtmlAll(" ", hangchan);
-                if (sys.isInChannel(sys.id(hostName), hangchan)) {
-                    this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
-                } else {
-                    hangbot.sendAll((!isEventGame ? "The winner isn't in the channel, so a":"A") + "nyone may start a game now!", hangchan);           
-                    this.setWinner(undefined, true);
-                }
-                eventCount = eventLimit;
-                suddenDeathTime = suddenDeathLimit;
+                this.concludeGame();
             }
         }      
         if (word && gameMode === tossUp){
