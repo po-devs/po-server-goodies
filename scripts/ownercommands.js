@@ -108,30 +108,16 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData + " is no longer a contributor!", channel);
         return;
     }
-    if (command == "showteam") {
-        var teamCount = sys.teamCount(tar);
-        var index = [];
-        for (var i = 0; i < teamCount; i++) {
-            index.push(i);
-        }
-        var teams = index.map(function(index) {
-            return script.importable(tar, index, false, true);
-        }, this).filter(function(data) {
-            return data.length > 0;
-        }).map(function(team) {
-            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
-        }).join("");
-        if (teams) {
-            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
-            normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
-        } else {
-            normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
-        }
-        return;
-    }
     if (command == "rangeban") {
         var subip;
         var comment;
+        /*Temporary work around for IP issue*/
+        var ffff = commandData.indexOf("::ffff:");
+        var prepend = "";
+        if (ffff != -1) {
+            commandData = commandData.replace("::ffff:", "");
+            prepend = "::ffff:";
+        }
         var space = commandData.indexOf(' ');
         if (space != -1) {
             subip = commandData.substring(0,space);
@@ -168,8 +154,8 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         }
 
         /* add rangeban */
-        script.rangebans.add(subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
-        normalbot.sendAll("Rangeban added successfully for IP subrange: " + subip, staffchannel);
+        script.rangebans.add(prepend + subip, script.rangebans.escapeValue(comment) + " --- " + sys.name(src));
+        normalbot.sendAll("Rangeban added successfully for IP subrange: " + prepend + subip, staffchannel);
         /* kick them */
         var players = sys.playerIds();
         var players_length = players.length;
@@ -342,7 +328,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             sys.writeToFile(Config.dataDir + "secretsmute.txt", autosmute.join(":::"));
             return;
         }
-        normalbot.sendMessage(src, "No such user in the autosmute list!"); 
+        normalbot.sendMessage(src, "No such user in the autosmute list!");
         return;
     }
     if (command == "periodicsay" || command == "periodichtml") {
@@ -523,7 +509,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
                 normalbot.sendMessage(src, "Notice updated!", channel);
                 if (command === "updatenotice") {
                     sendNotice();
-                }         
+                }
             } else {
                 normalbot.sendAll("Failed to update notice!", staffchannel);
             }
@@ -813,6 +799,17 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         });
         return;
     }
+    if (command === "whoviewed") {
+        if (!commandData) {
+            normalbot.sendMessage(src, "No name entered", channel);
+            return;
+        }
+        var banned = sys.getFileContent("scriptdata/showteamlog.txt").split("\n").filter(function(s) {
+            return s.toLowerCase().indexOf(commandData.toLowerCase()) != -1;
+        });
+        normalbot.sendMessage(src, banned.length > 1 ? banned.join(", ") : commandData + " has no current teamviews", channel);
+        return;
+    }
     return "no command";
 };
 exports.help = 
@@ -831,7 +828,6 @@ exports.help =
         "/endcalls: Ends the next periodic message.",
         "/sendall: Sends a message to everyone. Use /sendhtmlall for a message with HTML formatting.",
         "/changeauth[s]: Changes the auth of a user. Format is /changeauth auth user. If using /changeauths, the change will be silent.",
-        "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams).",
         "/ip[un]ban: Bans an IP. Format is /ipban ip comment.",
         "/range[un]ban: Makes a range ban. Format is /rangeban ip comment.",
         "/purgemutes: Purges mutes older than the given time in seconds. Default is 4 weeks.",
@@ -857,5 +853,6 @@ exports.help =
         "/detempauth: Removes temporary auth given to a user",
         "/testannouncement: Test the current announcement on Github (only shows for the command user)",
         "/setannouncement: Sets the announcement to the one on Github",
-        "/updateleague: Updates the league data from Github"
+        "/updateleague: Updates the league data from Github",
+        "/whoviewed: Lists who viewed the team of another player and when it was done."
     ];

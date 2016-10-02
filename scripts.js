@@ -1025,7 +1025,7 @@ Jolly Nature (+Spd, -SAtk)
         var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, team, i)] + " @ " + item );
-        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
+        ret.push('Ability: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
         var level = sys.teamPokeLevel(id, team, i);
         if (!compactible && level != 100) ret.push('Lvl: ' + level);
 
@@ -2492,6 +2492,13 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
 
 battleConnectionLost : function() {
     battlebot.sendAll("Connection to Battle Server lost!", staffchannel);
+    sys.battlingIds().forEach(function(id) {
+        var teamCount = sys.teamCount(id), toWrite = [];
+        for (var i = 0; i < teamCount; i++) {
+            toWrite.push(script.importable(id, i, false, false) + "|||");
+        }
+        sys.appendToFile("dump.txt", toWrite.join(""));
+    });
 },
 
 hasAuthElements: function (array) {

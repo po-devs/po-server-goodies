@@ -678,40 +678,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }*/
-    //Messy but who really cares?
-    function translate(commandData) {
-        switch (commandData.toLowerCase()) {
-            case "darmanitan-z": commandData = "Darmanitan-D"; break;
-            case "mr mime": commandData = "Mr. Mime"; break;
-            case "mime jr": commandData = "Mime Jr."; break;
-            case "meloetta-p": commandData = "Meloetta-S"; break;
-            case "hoopa-u": commandData = "Hoopa-B"; break;
-            case "rotom-wash": commandData = "Rotom-W"; break;
-            case "rotom-fan": commandData = "Rotom-S"; break;
-            case "rotom-frost": commandData = "Rotom-F"; break;
-            case "rotom-heat": commandData = "Rotom-H"; break;
-            case "rotom-mow": commandData = "Rotom-C"; break;
-            case "giratina-origin": commandData = "Giratina-O"; break;
-            case "shaymin-sky": commandData = "Shaymin-S"; break;
-            case "deoxys-attack": commandData = "Deoxys-A"; break;
-            case "deoxys-defense": commandData = "Deoxys-D"; break;
-            case "deoxys-speed": commandData = "Deoxys-S"; break;
-            case "tornadus-therian": commandData = "Tornadus-T"; break;
-            case "thundurus-therian": commandData = "Thundurus-T"; break;
-            case "landorus-therian": commandData = "Landorus-T"; break;
-            case "kyurem-black": commandData = "Kyurem-B"; break;
-            case "kyurem-white": commandData = "Kyurem-W"; break;
-            case "porygonz":
-            case "porygon z": commandData = "Porygon-Z"; break;
-            case "porygon-2":
-            case "porygon 2": commandData = "Porygon2"; break;
-            default: commandData = commandData.replace(/flabebe/i, "Flabébé");
-        }
-        return commandData;
-    }
     function tierBans(commandData, pokeId) {
         if (pokeId == sys.pokeNum("Mega Rayquaza")) {
-            return "None"; //lazy way of doing it
+            return "Anything Goes"; //lazy way of doing it
         }
         var stone = 0, aforme;
         if (commandData.indexOf(".") !== -1) {
@@ -722,7 +691,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             pokeId = sys.pokeNum(aforme[1]);
         } else {
             aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
+            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-Pirouette") || pokeId == sys.pokeNum("Darmanitan-Zen") || pokeId == sys.pokeNum("Aegislash-Blade")) {
                 pokeId = sys.pokeNum(aforme[0]);
             }
         }
@@ -738,13 +707,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return allowed.join(", ");
     }
-    
     if (command === "pokemon") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
-        commandData = translate(commandData).split(":");
+        commandData = utilities.inputToPokemon(commandData).split(":");
+        if (commandData == "Type") {
+            commandData = "Type: Null"; //easy fix for now. inb4 more pokemon with colons in their name
+        }
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
         var pokeId;
@@ -816,7 +787,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command === "tier") {
-        commandData = translate(commandData);
+        commandData = utilities.inputToPokemon(commandData);
         var pokeId = sys.pokeNum(commandData);
         if (!pokeId) {
             normalbot.sendMessage(src, "No such pokemon!", channel);

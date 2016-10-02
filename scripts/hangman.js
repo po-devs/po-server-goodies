@@ -360,7 +360,7 @@ function Hangman() {
                 thing = "The time limit was restored to " + suddenDeathTime / 60 + " minute(s)!";
             }
         }        
-        usedAnswers.push(ans.toLowerCase());        
+        usedAnswers.push(ans.toLowerCase());      
         if (ans.toLowerCase() === word.toLowerCase()) {
             hangbot.sendAll("" + sys.name(src) + " answered " + ans + "!", hangchan);            
             var p = 0,
@@ -696,7 +696,7 @@ function Hangman() {
             return;
         }
         var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
-        var a = randomGame[2].toLowerCase(),
+        var a = randomGame[2].replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ").toLowerCase(),
             h = randomGame[3],
             p = randomGame.length < 5 ? defaultParts : randomGame[4];
         isEventGame = isEvent;
@@ -1808,12 +1808,8 @@ function Hangman() {
             return true;
         }
 
-        if (command === "end") {
-            hangman.endGame(src);
-            return true;
-        }
-        if (command === "endevent") {
-            hangman.endGame(src, true);
+        if (command === "end" || command === "endevent") {
+            hangman.endGame(src, command === "endevent");
             return true;
         }
 
