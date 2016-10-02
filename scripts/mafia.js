@@ -4547,7 +4547,7 @@ function Mafia(mafiachan) {
                             gamemsg(player.name, pmsg);
                             mafia.kill(player);
                             nightkill = true;
-                        };
+                        }
                     }
 
                             //Post-Action effects here
