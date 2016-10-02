@@ -289,6 +289,10 @@ exports = {
                 commandData = "Gourgeist-Large"; break;
             case "gourgeist-xl": case "gourgeist xl": case "gourgeist super":
                 commandData = "Gourgeist-Super"; break;
+            case "burmy-g": case "burmy g": case "burmy sandy":
+                commandData = "Burmy-Sandy"; break;
+            case "burmy-s": case "burmy s": case "burmy trash":
+                commandData = "Burmy-Trash"; break;
             case "wormadam-g": case "wormadam g": case "wormadam sandy":
                 commandData = "Wormadam-Sandy"; break;
             case "wormadam-s": case "wormadam s": case "wormadam trash":
