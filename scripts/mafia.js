@@ -3198,8 +3198,8 @@ function Mafia(mafiachan) {
         }
     };
     this.showVoteCount = function(sentName, dat) {
-        var checkPlayer = (dat.length > 0 ? commandArray[0] : "*");
-        var checkDay = (dat.length > 1 ? commandArray[1] : "*");
+        var checkPlayer = dat[0] || "*";
+        var checkDay = dat[1] || "*";
         var pastDay = false, voteData = {};
         if (checkDay === "*" || +checkDay === mafia.time.nights) {
             voteData = this.votedBy;
