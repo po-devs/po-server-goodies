@@ -5665,7 +5665,7 @@ function Mafia(mafiachan) {
 
         var recharge = mafia.getRecharge(player, "night", command);
         if (recharge !== undefined && recharge > 0) {
-            var rechmsg = ("rechargeMsg" in player.role.actions.night[command] ? player.role.actions.night[command].rechargeMsg : "You cannot use this action for ~Recharge~ night(s)!")
+            var rechmsg = ("rechargeMsg" in player.role.actions.night[command] ? player.role.actions.night[command].rechargeMsg : "You cannot use this action for ~Recharge~ night(s)!");
             gamemsg(name, rechmsg.replace(/~Recharge~/g, recharge));
             return;
         }
