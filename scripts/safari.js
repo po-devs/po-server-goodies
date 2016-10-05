@@ -11382,7 +11382,7 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.arena + '">';
         if (data.length === 0) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: You want a battle? Then type /quest arena:name to pick who you want to fight!", safchan);
-            safaribot.sendHtmlMessage(src, "Arena Clerk: You need to pay an entry fee in order to challenge but you will get some " + es(finishName("silver")) + " if you manage to win! Type " + link("/quest arena:help") + "! for more details!", safchan);
+            safaribot.sendHtmlMessage(src, "Arena Clerk: You need to pay an entry fee in order to challenge but you will get some rewards like " + es(finishName("silver")) + " if you manage to win! Type " + link("/quest arena:help") + "! for more details!", safchan);
             if (player.quests.arena.cooldown >= now()) {
                 safaribot.sendMessage(src, "Arena Clerk: There's currently a long queue of people fighting in the Arena, so it may need to wait " + timeLeftString(player.quests.arena.cooldown) + " to try a challenge!", safchan);
             }
@@ -13542,7 +13542,7 @@ function Safari() {
         for (o = 0; o < order.length; o++) {
             id = order[o];
             player = getAvatarOff(id);
-            if (player && player.balls.shady > off[id].value) {
+            if (player && player.balls.shady >= off[id].value) {
                 winner = player;
                 break;
             }
