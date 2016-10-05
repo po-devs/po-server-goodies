@@ -4299,6 +4299,15 @@ function Mafia(mafiachan) {
                                     if (typeof Action.newRole == "object") {
                                         if ("random" in Action.newRole && (Array.isArray(Action.newRole.random) || typeof Action.newRole.random === "object") && Action.newRole.random !== null) {
                                             newRole = mafia.filterUniqueRoles(Action.newRole.random, mafia.players);
+                                        } 
+                                        else {
+                                            var possibleRoles = Object.keys(Action.newRole).shuffle(), nrList = [];
+                                            for (var nr in possibleRoles) {
+                                                if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
+                                                    nrList.push(possibleRoles[nr]);
+                                                }
+                                            }
+                                            newRole = mafia.filterUniqueRoles(nrList, mafia.players);
                                         }
                                     } else {
                                         newRole = Action.newRole;
