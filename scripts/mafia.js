@@ -1501,6 +1501,8 @@ function Mafia(mafiachan) {
             }
         }
         if (Array.isArray(newRole)) {
+            if (newRole.length === 0)
+                return null;
             for (var n in newRole) {
                 if (restrictedRoles.indexOf(newRole[n]) === -1) {
                     obj[newRole[n]] = 1;
