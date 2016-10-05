@@ -2062,7 +2062,7 @@ function Mafia(mafiachan) {
         if (this.state == "standby") {
             if (this.ticks in this.compulsoryStandby) {
                 for (var pl in this.compulsoryStandby[this.ticks]) {
-                    if (!this.isInGame(pl)) {
+                    if (!this.isInGame(pl) || !(sys.id(pl))) {
                         continue;
                     }
                     for (var act in this.compulsoryStandby[this.ticks][pl]) {
