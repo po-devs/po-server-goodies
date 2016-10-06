@@ -3221,6 +3221,7 @@ addAdminCommand(["addblockcats"], function (src, commandData, channel) {
             Trivia.sendPM(src, "The category '" + categories[j] + "' does not exist.", channel);
             return;
         }
+        valid = false;
     }
     var newBlockCat = {'name' : commandData[0].toLowerCase(), 'cats' : categories};
     Trivia.sendAll(sys.name(src) + " added the block category '" + commandData[0] + "' which consists of the categories (" + categories.join(", ") + ").", revchan);
