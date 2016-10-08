@@ -2194,6 +2194,8 @@ function addServerOwnerCommand(commands, callback, help) {
     serverOwnerCommandHelp.push("/" + commands[0] + ": " + (help === undefined ? "no help" : help));
 }
 
+// USER COMMANDS
+
 addUserCommand(["triviarules"], function (src, commandData, channel) {
     sys.sendMessage(src, "", channel);
     sys.sendMessage(src, "*** Trivia rules ***", channel);
@@ -2207,94 +2209,10 @@ addUserCommand(["triviarules"], function (src, commandData, channel) {
     sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time if they deem it necessary.", channel);
 }, "Shows the rules of the Trivia channel");
 
-addUserCommand(["categories", "cats"], function (src, commandData, channel) {
-    if (typeof (triviaCategories) != "object") return;
-    triviabot.sendMessage(src, triviaCategories.join(", "), channel);
-    /*triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel); Rip Wiki*/
-}, "Allows you to view the trivia categories");
-
-addUserCommand(["flashme"], function (src, commandData, channel) {
-    if (!trivData.toFlash[sys.ip(src)]) {
-        trivData.toFlash[sys.ip(src)] = true;
-        saveData();
-        triviabot.sendMessage(src, "You are now going to be flashed when a game starts.", channel);
-    }
-    else {
-        delete trivData.toFlash[sys.ip(src)];
-        saveData();
-        triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.", channel);
-    }
-}, "Whether or not to flash you when a game starts");
-
-addUserCommand(["goal"], function (src, commandData, channel) {
-    if (!Trivia.started) {
-        Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
-        return;
-    }
-    var points = Trivia.maxPoints;
-    Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? " life." : " lives.") : "The goal for the current game is: " + points), channel);
-}, "Allows you to see the current target for the trivia game");
-
-addUserCommand(["submitq"], function (src, commandData, channel) {
-    var user_ip = sys.ip(src),
-        isAdmin = tadmin.isTAdmin(sys.name(src));
-    if (isTrivia("submitbanned", user_ip) && !isAdmin) {
-        var ban = trivData.submitBans[user_ip];
-        Trivia.sendPM(src, "You are banned from submitting questions" + (ban.expires == "never" ? "" : "for  " + getTimeString(ban.expires - sys.time())) + ". " + (ban.reason !== undefined ? "[Reason: " + ban.reason + "]" : ""), channel);
-        return;
-    }
-    commandData = commandData.split("*");
-    if (commandData.length != 3) {
-        Trivia.sendPM(src, "Oops! Usage of this command is: /submitq category*question*answer(s)", channel);
-        Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
-        return;
-    }
-    var category = utilities.html_escape(commandData[0]).trim();
-    if (trivData.equivalentCats.hasOwnProperty(category.toLowerCase())) {
-       category = trivData.equivalentCats[category.toLowerCase()];
-    }
-    var question = utilities.html_escape(commandData[1]).trim();
-    var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
-    var answer = fixAnswer.split(",");
-    var needsreview = false;
-    if (trivreview.questionAmount() === 0) {
-        needsreview = true;
-    }
-
-    var name = sys.name(src);
-    var notes = "None.";
-    var id = trivreview.add(category, question, answer, name, notes);
-
-    Trivia.sendPM(src, "Your question was submitted.", channel);
-    if (needsreview) {
-        trivreview.checkq(id);
-    }
-}, "Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
-
-addAdminCommand(["submitpopq"], function (src, commandData, channel) {
-    commandData = commandData.split("*");
-    if (commandData.length != 3) {
-        Trivia.sendPM(src, "Oops! Usage of this command is: /submitpopq category*question*answer(s)", channel);
-        Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
-        return;
-    }
-    var category = "Pop Quiz";
-    var displayCat = "<b>Category:</b> " + commandData[0].toUpperCase() + "<br>";
-    var question = displayCat + utilities.html_escape(commandData[1]).trim();
-    var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
-    var answer = fixAnswer.split(",");
-    triviaq.add(category, question, answer);
-
-    var all = triviaq.all(),
-            qid;
-    for (var b in all) {
-        var qu = triviaq.get(b);
-        if (qu.question === question) {
-            qid = b;
-        }
-    }
-    Trivia.sendPM(src, "Your question was submitted with the id: " + qid, channel);
-},"Allows you to submit a pop quiz question, format /submitpopq Category*Question*Answer1,Answer2,etc")
+addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
+    tsadmin.tAdminList(src, channel, "Trivia Super Admins");
+    tadmin.tAdminList(src, channel, "Trivia Admins");
+}, "Gives a list of current trivia admins. /tas and /tadmins also work.");
 
 addUserCommand(["join"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2360,6 +2278,116 @@ addUserCommand(["join"], function (src, commandData, channel) {
     }
 }, "Allows you to join a current game of trivia");
 
+addUserCommand(["unjoin"], function (src, commandData, channel) {
+    if (channel == triviachan)
+        Trivia.unjoin(src);
+}, "Allows you to quit a current game of trivia");
+
+addUserCommand(["nextevent"], function (src, commandData, channel) {
+    if (!eventModeOn) {
+        Trivia.sendPM(src, "No events scheduled.", channel);
+        return;
+    }
+    if (trivData.eventFlag) {
+        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        return;
+    }
+    if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
+        Trivia.sendPM(src, "Starts after this game.", channel);
+        return;
+    }
+    var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
+    Trivia.sendPM(src, "The next event will be " + getTimeString(nextEventTime) + " from now.", channel);
+}, "Allows you to see when the next event game will be.");
+
+addUserCommand(["start"], function (src, commandData) {
+    Trivia.startTrivia(src, commandData, "knowledge");
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+
+addUserCommand(["speed"], function (src, commandData) {
+    Trivia.startTrivia(src, commandData, "speed");
+}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+
+addUserCommand(["goal"], function (src, commandData, channel) {
+    if (!Trivia.started) {
+        Trivia.sendPM(src, "A trivia game isn't currently running.", channel);
+        return;
+    }
+    var points = Trivia.maxPoints;
+    Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? " life." : " lives.") : "The goal for the current game is: " + points), channel);
+}, "Allows you to see the current target for the trivia game");
+
+addUserCommand(["flashme"], function (src, commandData, channel) {
+    if (!trivData.toFlash[sys.ip(src)]) {
+        trivData.toFlash[sys.ip(src)] = true;
+        saveData();
+        triviabot.sendMessage(src, "You are now going to be flashed when a game starts.", channel);
+    }
+    else {
+        delete trivData.toFlash[sys.ip(src)];
+        saveData();
+        triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.", channel);
+    }
+}, "Whether or not to flash you when a game starts");
+
+addUserCommand(["submitq"], function (src, commandData, channel) {
+    var user_ip = sys.ip(src),
+        isAdmin = tadmin.isTAdmin(sys.name(src));
+    if (isTrivia("submitbanned", user_ip) && !isAdmin) {
+        var ban = trivData.submitBans[user_ip];
+        Trivia.sendPM(src, "You are banned from submitting questions" + (ban.expires == "never" ? "" : "for  " + getTimeString(ban.expires - sys.time())) + ". " + (ban.reason !== undefined ? "[Reason: " + ban.reason + "]" : ""), channel);
+        return;
+    }
+    commandData = commandData.split("*");
+    if (commandData.length != 3) {
+        Trivia.sendPM(src, "Oops! Usage of this command is: /submitq category*question*answer(s)", channel);
+        Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
+        return;
+    }
+    var category = utilities.html_escape(commandData[0]).trim();
+    if (trivData.equivalentCats.hasOwnProperty(category.toLowerCase())) {
+       category = trivData.equivalentCats[category.toLowerCase()];
+    }
+    var question = utilities.html_escape(commandData[1]).trim();
+    var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
+    var answer = fixAnswer.split(",");
+    var needsreview = false;
+    if (trivreview.questionAmount() === 0) {
+        needsreview = true;
+    }
+
+    var name = sys.name(src);
+    var notes = "None.";
+    var id = trivreview.add(category, question, answer, name, notes);
+
+    Trivia.sendPM(src, "Your question was submitted.", channel);
+    if (needsreview) {
+        trivreview.checkq(id);
+    }
+}, "Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
+
+addUserCommand(["qamount"], function (src, commandData, channel) {
+    if (channel == triviachan || channel == revchan) {
+        var qamount = triviaq.questionAmount();
+        triviabot.sendMessage(src, "The amount of questions is: " + qamount, channel);
+        return;
+    }
+}, "Shows the current amount of questions");
+
+addUserCommand(["lastcat"], function (src, commandData, channel) {
+    if (lastCatGame === 0) {
+        Trivia.sendPM(src, "There hasn't been a Category Game since Trivia was last updated.", channel);
+        return;
+    }
+    Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
+}, "Allows you to check when the last Category Game occurred.");
+
+addUserCommand(["categories", "cats"], function (src, commandData, channel) {
+    if (typeof (triviaCategories) != "object") return;
+    triviabot.sendMessage(src, triviaCategories.join(", "), channel);
+    /*triviabot.sendMessage(src, "For more information, refer to: http://wiki.pokemon-online.eu/wiki/Trivia_Categories", channel); Rip Wiki*/
+}, "Allows you to view the trivia categories");
+
 addUserCommand(["vote"], function (src, commandData, channel) {
     if (Trivia.phase !== "countvotes") {
         Trivia.sendPM(src, "Voting is not currently in progress!", channel);
@@ -2399,353 +2427,17 @@ addUserCommand(["vote"], function (src, commandData, channel) {
     Trivia.voteCat(src, cat);
 }, "Vote for a category game.");
 
-addUserCommand(["nextevent"], function (src, commandData, channel) {
-    if (!eventModeOn) {
-        Trivia.sendPM(src, "No events scheduled.", channel);
-        return;
-    }
-    if (trivData.eventFlag) {
-        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
-        return;
-    }
-    if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
-        Trivia.sendPM(src, "Starts after this game.", channel);
-        return;
-    }
-    var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
-    Trivia.sendPM(src, "The next event will be " + getTimeString(nextEventTime) + " from now.", channel);
-}, "Allows you to see when the next event game will be.");
-
-addAdminCommand(["lastevent"], function (src, commandData, channel) {
-    if (trivData.eventFlag) {
-        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
-        return;
-    }
-    if (manualEventFlag){
-        var manualEventOutputTime = sys.time() - manualEventTime;
-        Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(manualEventOutputTime) + " ago.", channel);
-        return;
-    }
-    var lastEventOutputTime = sys.time() - lastEventTime;
-    if (lastEventType === "None.") {
-        Trivia.sendPM(src, "No events have been played since Trivia was restarted.", channel);
-    }
-    if (eventTimeChangeFlag) {
-        Trivia.sendPM(src, "The event cooldown was last set " + getTimeString(lastEventOutputTime) + " ago.", channel);
-        return;
-    }
-    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(lastEventOutputTime) + " ago.", channel);
-}, "Allows you to see what the last event type was and how long ago it was played.");
-
-addAdminCommand(["eventstats"], function (src, commandData, channel) {
-    var stats = eventStats.loadEventStats();
-    if (stats === "No Stats.") {
-        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
-        return;
-    } else {
-        var gameMode = "";
-        var bookMark = 0;
-        if (commandData.length > 0) {
-            if (commandData.indexOf(":") === -1) {
-                if (isNaN(commandData)) {
-                    gameMode = commandData;
-                    if (gameMode === "know") { commandData = gameMode = "knowledge"; }
-                    if (gameMode === "elim") { commandData = gameMode = "elimination"; }
-                } else {
-                    bookMark = commandData;
-                }
-            } else {
-                commandData = commandData.split(":");
-                if (commandData[0] === "know") { commandData[0] = gameMode = "knowledge"; }
-                if (commandData[0] === "elim") { commandData[0] = gameMode = "elimination"; }
-                gameMode = commandData[0];
-                if (isNaN(commandData[1])) {
-                    triviabot.sendMessage(src, "The book mark must be a number.", channel);
-                    return;
-                }
-                bookMark = commandData[1];
-            }
-        }
-        if (gameMode !== "knowledge" && gameMode !== "speed" && gameMode !== "elimination" && gameMode !== "" && commandData.length !== 0) {
-            triviabot.sendMessage(src, "Please enter a valid game type.", channel);
-            return;
-        }
-        sys.sendMessage(src, "***Event Stats***", channel);
-        var i = 0;
-        var j = 0;
-        var x = 1;
-        var z = "";
-        if (!commandData.length) {
-            j = 0;
-        } else if (commandData === bookMark) {
-            j = parseInt(bookMark);
-        } else if (commandData === gameMode) {
-            j = 0;
-            z = gameMode;
-        } else {
-            j = parseInt(bookMark);
-            z = gameMode;
-        }
-            for (i = j; i < stats.length; i++) {
-                if (x > 5) { break; }
-                if (z !== stats[i].gameType && z !== "") { continue; }
-                x++;
-                if (stats[i].totalServerPlayers === undefined) { stats[i].totalServerPlayers = "No data recorded."; }
-                if (stats[i].totalTriviaPlayers === undefined) { stats[i].totalTriviaPlayers = "No data recorded."; }
-                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + (isNaN(stats[i].duration) ? stats[i].duration : getTimeString(stats[i].duration)) + "<br><font color='#3daa68'><b>Server Players Online: </b></font>" + stats[i].totalServerPlayers + "<br><font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + stats[i].totalTriviaPlayers, channel);
-                if (stats[i].gameType !== 'elimination') {
-                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Score Board: </b></font>" + stats[i].scoreBoard.join(", "), channel);
-                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>First Player past Goal: </b></font>" + stats[i].firstGoalR + ", <font color='#3daa68'><b>Second Player past Goal: </b></font>" + stats[i].secondGoalR + ", <font color='#3daa68'><b>Third Player past Goal: </b></font>" + stats[i].thirdGoalR, channel);
-                } else {
-                    if (stats[i].noWinners) {
-                        sys.sendHtmlMessage(src, "<font color='red'><b>Everyone Lost!</b></font>", channel);
-                    } else {
-                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Participants: </b></font>" + stats[i].participants.join(", "), channel);
-                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Winner: </b></font>" + stats[i].participants[0], channel);
-                    }
-                }
-                sys.sendMessage(src, "", channel);
-            }
-            if ((!commandData.length || commandData === bookMark) && i < stats.length) {
-                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + i + "\">Show next page</a></b>", channel);
-                return;
-            }
-            if ((commandData === gameMode || z === gameMode) && i < stats.length) {
-                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + gameMode + ":" + i + "\">Show next page</a></b>", channel);
-            }
-    }
-}, "For viewing event statistics. Usage is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex]");
-
-addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
-    var stats = eventStats.loadEventStats();
-    if (stats === "No Stats.") {
-        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
-        return;
-    } else {
-        var avgKnowGoalT = 0, avgKnowPlayersT = 0, avgKnowRoundsT = 0, avgKnowDurationT = 0,
-                avgKnow1stRoundsT = 0, avgKnow2ndRoundsT = 0, avgKnow3rdRoundsT = 0,
-                knowCount = 0, know2ndCount = 0, know3rdCount = 0, knowDurationCount = 0;
-
-        var avgSpeedGoalT = 0, avgSpeedPlayersT = 0, avgSpeedRoundsT = 0, avgSpeedDurationT = 0,
-                avgSpeed1stRoundsT = 0, avgSpeed2ndRoundsT = 0, avgSpeed3rdRoundsT = 0,
-                speedCount = 0, speed2ndCount = 0, speed3rdCount = 0, speedDurationCount = 0;
-
-        var avgElimGoalT = 0, avgElimPlayersT = 0, avgElimRoundsT = 0, avgElimDurationT = 0,
-                elimCount = 0, noWinnersCount = 0, elimDurationCount = 0;
-
-        var avgServerPlayersT = 0, avgChannelPlayersT = 0, serverPlayerCount = 0, channelPlayerCount = 0;
-
-        var justRound = "";
-
-        for (var i = 0; i < stats.length; i++) {
-            if (stats[i].totalServerPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
-                avgServerPlayersT += stats[i].totalServerPlayers;
-                serverPlayerCount++;
-            }
-            if (stats[i].totalTriviaPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
-                avgChannelPlayersT += stats[i].totalTriviaPlayers;
-                channelPlayerCount++;
-            }
-            if (stats[i].gameType === "knowledge") {
-                avgKnowGoalT += parseInt(stats[i].goal);
-                avgKnowPlayersT += stats[i].players;
-                avgKnowRoundsT += stats[i].rounds;
-                if (!isNaN(stats[i].duration)) {
-                    avgKnowDurationT += stats[i].duration;
-                    knowDurationCount++;
-                }
-                justRound = stats[i].firstGoalR; //This is a string in the form "Player, Round: #"
-                justRound = justRound.split("Round: ")
-                avgKnow1stRoundsT += parseInt(justRound[1]);
-                if (stats[i].secondGoalR !== "N/A") {
-                    justRound = stats[i].secondGoalR;
-                    justRound = justRound.split("Round: ");
-                    avgKnow2ndRoundsT += parseInt(justRound[1]);
-                } else {
-                    know2ndCount++;
-                }
-                if (stats[i].thirdGoalR !== "N/A") {
-                    justRound = stats[i].thirdGoalR;
-                    justRound = justRound.split("Round: ");
-                    avgKnow3rdRoundsT += parseInt(justRound[1]);
-                } else {
-                    know3rdCount++;
-                }
-                knowCount++;
-            } else if (stats[i].gameType === "speed") {
-                avgSpeedGoalT += parseInt(stats[i].goal);
-                avgSpeedPlayersT += stats[i].players;
-                avgSpeedRoundsT += stats[i].rounds;
-                if (!isNaN(stats[i].duration)) {
-                    avgSpeedDurationT += stats[i].duration;
-                    speedDurationCount++;
-                }
-                justRound = stats[i].firstGoalR;
-                justRound = justRound.split("Round: ");
-                avgSpeed1stRoundsT += parseInt(justRound[1]);
-                if (stats[i].secondGoalR !== "N/A") {
-                    justRound = stats[i].secondGoalR;
-                    justRound = justRound.split("Round: ");
-                    avgSpeed2ndRoundsT += parseInt(justRound[1]);
-                } else {
-                    speed2ndCount++;
-                }
-                if (stats[i].thirdGoalR !== "N/A") {
-                    justRound = stats[i].thirdGoalR;
-                    justRound = justRound.split("Round: ");
-                    avgSpeed3rdRoundsT += parseInt(justRound[1]);
-                } else {
-                    speed3rdCount++;
-                }
-                speedCount++;
-            } else {
-                avgElimGoalT += parseInt(stats[i].goal);
-                if (stats[i].noWinners) {
-                    noWinnersCount++;
-                } else {
-                    avgElimPlayersT += stats[i].players;
-                }
-                avgElimRoundsT += stats[i].rounds;
-                if (!isNaN(stats[i].duration)) {
-                    avgElimDurationT += stats[i].duration;
-                    elimDurationCount++;
-                }
-                elimCount++;
-            }
-        }
-        sys.sendMessage(src, "***Average Event Stats***", channel);
-        if (serverPlayerCount !== 0) {
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel);
-            var avgServerPlayers = avgServerPlayersT / serverPlayerCount;
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Server Players Online: </b></font>" + avgServerPlayers.toFixed(2), channel);
-        }
-        if (channelPlayerCount !== 0) {
-            if (!serverPlayerCount) { sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel); }
-            var avgChannelPlayers = avgChannelPlayersT / channelPlayerCount;
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + avgChannelPlayers.toFixed(2), channel);
-        }
-        if (knowCount !== 0) {
-            var avgKnowGoal = avgKnowGoalT / knowCount;
-            var avgKnowPlayers = avgKnowPlayersT / knowCount;
-            var avgKnowRounds = avgKnowRoundsT / knowCount;
-            var xKnow = (!knowDurationCount ? 0 : avgKnowDurationT / knowDurationCount);
-            var avgKnowDuration = (xKnow === 0 ? "Not enough data." : getTimeString(parseInt(xKnow)));
-            var avgKnow1stRounds = avgKnow1stRoundsT / knowCount;
-            var avgKnow2ndRounds = "N/A";
-            var avgKnow3rdRounds = "N/A";
-            if ((knowCount - know2ndCount) !== 0) { avgKnow2ndRounds = avgKnow2ndRoundsT / (knowCount - know2ndCount); }
-            if ((knowCount - know3rdCount) !== 0) { avgKnow3rdRounds = avgKnow3rdRoundsT / (knowCount - know3rdCount); }
-            sys.sendHtmlMessage(src, "<br><font color='#3daa68'><b><u>Knowledge Events</u><br>Goal: </b></font>" + avgKnowGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgKnowPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgKnowRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgKnowDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgKnow1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgKnow2ndRounds) ? avgKnow2ndRounds : avgKnow2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgKnow3rdRounds) ? avgKnow3rdRounds : avgKnow3rdRounds.toFixed(2)) + "<br>", channel);
-        }
-        if (speedCount !== 0) {
-            var avgSpeedGoal = avgSpeedGoalT / speedCount;
-            var avgSpeedPlayers = avgSpeedPlayersT / speedCount;
-            var avgSpeedRounds = avgSpeedRoundsT / speedCount;
-            var xSpeed = (!speedDurationCount ? 0 : avgSpeedDurationT / speedDurationCount);
-            var avgSpeedDuration = (xSpeed === 0 ? "Not enough data." : getTimeString(parseInt(xSpeed)));
-            var avgSpeed1stRounds = avgSpeed1stRoundsT / speedCount;
-            var avgSpeed2ndRounds = "N/A";
-            var avgSpeed3rdRounds = "N/A";
-            if ((speedCount - speed2ndCount) !== 0) { avgSpeed2ndRounds = avgSpeed2ndRoundsT / (speedCount - speed2ndCount); }
-            if ((speedCount - speed3rdCount) !== 0) { avgSpeed3rdRounds = avgSpeed3rdRoundsT / (speedCount - speed3rdCount); }
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Speed Events</u><br>Goal: </b></font>" + avgSpeedGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgSpeedPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgSpeedRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgSpeedDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgSpeed1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgSpeed2ndRounds) ? avgSpeed2ndRounds : avgSpeed2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgSpeed3rdRounds) ? avgSpeed3rdRounds : avgSpeed3rdRounds.toFixed(2)) + "<br>", channel);
-        }
-        if (elimCount !== 0) {
-            var avgElimGoal = avgElimGoalT / elimCount;
-            var avgElimPlayers = "No player data because no games were won.";
-            if ((elimCount - noWinnersCount) !== 0) { avgElimPlayers = avgElimPlayersT / (elimCount - noWinnersCount); }
-            var avgElimRounds = avgElimRoundsT / elimCount;
-            var xElim = (!elimDurationCount ? 0 : avgElimDurationT / elimDurationCount);
-            var avgElimDuration = (xElim === 0 ? "Not enough data." : getTimeString(parseInt(xElim)));
-            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Elimination Events</u><br>Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgElimDuration + "<br>", channel);
-        }
-    }
-}, "Displays event stat averages.");
-
-addOwnerCommand(["cleareventstats"], function (src, commandData, channel) {
-    eventStats.reset();
-    triviabot.sendMessage(src, "The event stats were cleared.", channel);
-}, "Clears all data from the event stats.");
-
-addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
-    if (commandData.length === 0 || isNaN(commandData)){
-        triviabot.sendMessage(src, trivData.votingCooldown + " rounds is the current vote cooldown", channel);
-    } else {
-        trivData.votingCooldown = commandData;
-        Trivia.sendAll(trivData.votingCooldown + " rounds is the new vote cooldown", revchan);
-    }
-}, "Set number of rounds between each vote.");
-
-addAdminCommand(["enablevoting"], function (src, commandData, channel) {
-    Trivia.voting = true;
-    triviabot.sendAll("Voting for category games is enabled!", revchan);
-}, "Enable voting for category games.");
-
-addAdminCommand(["disablevoting"], function (src, commandData, channel) {
-    Trivia.voting = false;
-    triviabot.sendAll("Voting for category games is disabled!", revchan);
-}, "Disable voting for category games.");
-
-
-addUserCommand(["unjoin"], function (src, commandData, channel) {
-    if (channel == triviachan)
-        Trivia.unjoin(src);
-}, "Allows you to quit a current game of trivia");
-
-addUserCommand(["qamount"], function (src, commandData, channel) {
-    if (channel == triviachan || channel == revchan) {
-        var qamount = triviaq.questionAmount();
-        triviabot.sendMessage(src, "The amount of questions is: " + qamount, channel);
-        return;
-    }
-}, "Shows the current amount of questions");
-
-addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
-    tsadmin.tAdminList(src, channel, "Trivia Super Admins");
-    tadmin.tAdminList(src, channel, "Trivia Admins");
-}, "Gives a list of current trivia admins. /tas and /tadmins also work.");
-
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
 }, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
 
-addUserCommand(["start"], function (src, commandData) {
-    Trivia.startTrivia(src, commandData, "knowledge");
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+/*** TRIVIA ADMIN COMMANDS ***/
 
-addOwnerCommand(["eventstart"], function (src, commandData) {
-    if (!Trivia.started) {
-        trivData.eventFlag = true;
-        manualEventFlag = true;
-        manualEventTime = sys.time();
-        manualEventTimeStamp = getStatsTimeStamp();
-        lastEventType = "knowledge";
-    }
-    Trivia.startTrivia(src, commandData, "knowledge");
-}, "Allows you to start an Event trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random.");
+// General Commands
 
-addUserCommand(["speed"], function (src, commandData) {
-    Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
-
-addOwnerCommand(["eventspeed"], function (src, commandData) {
-    if (!Trivia.started) {
-        trivData.eventFlag = true;
-        manualEventFlag = true;
-        manualEventTime = sys.time();
-        manualEventTimeStamp = getStatsTimeStamp();
-        lastEventType = "speed";
-    }
-    Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start an Event speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
-
-addUserCommand(["lastcat"], function (src, commandData, channel) {
-    if (lastCatGame === 0) {
-        Trivia.sendPM(src, "There hasn't been a Category Game since Trivia was last updated.", channel);
-        return;
-    }
-    Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
-}, "Allows you to check when the last Category Game occurred.");
+addAdminCommand(["elimination", "elim"], function (src, commandData) {
+    Trivia.startTrivia(src, commandData, "elimination");
+}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addAdminCommand(["changegoal"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2770,229 +2462,34 @@ addAdminCommand(["changegoal"], function (src, commandData, channel) {
     return;
 }, "Allows you to change the goal for the current game");
 
-addAdminCommand(["extanswers"], function (src, commandData, channel) {
-    if (commandData === undefined) {
-        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
-        return;
-    }
-    var i, q, count = 0, linkUsed = false;
-    if (commandData.indexOf(":") !== -1) {
-        commandData = commandData.split(":");
-        i = parseInt(commandData[1]);
-        linkUsed = true;
-    }
-    if (!commandData.length || linkUsed) {
-        Trivia.sendPM(src, "The questions with extended answer times are: ", channel);
-        if (!commandData.length) { i = 0; }
-        for (i; i < trivData.extAnswers.length; i++) {
-            if (count >= 50) {
-                Trivia.sendPM(src, "List contains more than 50 questions.", channel);
-                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//extanswers filler:" + i + "\">Show more questions</a></b>", channel);
-                break;
-            }
-            count++;
-            q = triviaq.get(trivData.extAnswers[i]);
-            if (q !== null) {
-                Trivia.sendPM(src, parseInt(i + 1) + ". question id: " + trivData.extAnswers[i] + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, channel);
-            } else {
-                trivData.extAnswers.splice(i, 1); //If somehow this question doesn't exist anymore and is still in the list, delete it from the list.
-                saveData();
-            }
-        }
-        return;
-    }
-    q = triviaq.get(commandData);
-    if (q !== null) {
-        for (var j = 0; j < trivData.extAnswers.length; j++) {
-            if (commandData === trivData.extAnswers[j]) {
-                Trivia.sendPM(src, "Question ID: '" + commandData + "' already has a longer answer time.", channel);
-                return;
-            }
-        }
-        trivData.extAnswers.push(commandData);
-        saveData();
-        triviabot.sendAll(sys.name(src) + " added question id: " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " to the extended answers list.", revchan);
-    } else {
-        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
-    }
-}, "Use to add questions (by ID number) to the list of questions that should have a longer answer time when asked.");
-
-addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
-    if (!commandData.length || commandData === undefined) {
-        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
-        return;
-    }
-    var q = triviaq.get(commandData);
-    if (q !== null) {
-        for (var i = 0; i < trivData.extAnswers.length; i++) {
-            if (commandData === trivData.extAnswers[i]) {
-                trivData.extAnswers.splice(i, 1);
-                saveData();
-                triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " from the extended answers list.", revchan);
-                break;
-            }
-        }
-    } else {
-        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
-    }
-}, "Use to remove questions (by ID number) to the list of questions that should have a longer answer time when asked.");
-
-addAdminCommand(["removeq"], function (src, commandData, channel) {
-    var q = triviaq.get(commandData);
-    if (q !== null) {
-        triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
-        triviaq.remove(commandData);
-        questionData.remove(commandData);
-        for (var i = 0; i < trivData.extAnswers.length; i++) {
-            if (commandData === trivData.extAnswers[i]) {
-                trivData.extAnswers.splice(i, 1);
-                saveData();
-                break;
-            }
-        }
-        return;
-    }
-    Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
-}, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
-
-addAdminCommand(["elimination", "elim"], function (src, commandData) {
-    Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
-
-addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
-    if (!Trivia.started) {
-        trivData.eventFlag = true;
-        manualEventFlag = true;
-        manualEventTime = sys.time();
-        manualEventTimeStamp = getStatsTimeStamp();
-        lastEventType = "elimination";
-    }
-    Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
-
-addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
-    if (commandData === undefined || commandData.indexOf(":") == -1) {
-        triviabot.sendMessage(src, "Usage: game type:new goal", channel);
-        return;
-    }
-    commandData = commandData.split(":");
-    var gameType = commandData[0],
-        newGoal = commandData[1],
-        goalCheck = parseInt(newGoal, 10);
-    if (isNaN(goalCheck)) {
-        Trivia.sendPM(src, "The goal must be a valid number.", channel);
-        return;
-    }
-    if (goalCheck < 1 || goalCheck > 60) {
-        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
-        return;
-    }
-    if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
-        defaultKnowEventGoal = newGoal;
-        eventSets.updateEventSettings();
-        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-        return;
-    }
-    if (gameType.toLowerCase() === "speed"){
-        defaultSpeedEventGoal = newGoal;
-        eventSets.updateEventSettings();
-        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-        return;
-    }
-    if (gameType.toLowerCase() === "elimination" || gameType.toLowerCase() === "elim"){
-        defaultElimEventGoal = newGoal;
-        eventSets.updateEventSettings();
-        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
-        return;
-    }
-    triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
-}, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
-
-addOwnerCommand(["eventrates"], function (src, commandData, channel) {
-    if (commandData.length == 0) {
-        var elimRate = 100 - (eventKnowRate + eventSpeedRate);
-        Trivia.sendPM(src, "Event Knowledge Rate: " + eventKnowRate + " %", channel);
-        Trivia.sendPM(src, "Event Speed Rate: " + eventSpeedRate + " %", channel);
-        Trivia.sendPM(src, "Event Elimination Rate: " + elimRate + " %", channel);
-        return;
-    }
-    if (commandData === undefined || commandData.indexOf(":") == -1) {
-        triviabot.sendMessage(src, "Usage: know rate:speed rate", channel);
-        return;
-    }
-    commandData = commandData.split(":");
-    var knowRate = commandData[0],
-        speedRate = commandData[1],
-        knowRateCheck = parseInt(knowRate, 10),
-        speedRateCheck = parseInt(speedRate, 10);
-    if (isNaN(knowRateCheck) || isNaN(speedRateCheck)) {
-        Trivia.sendPM(src, "The rate must be a valid number.", channel);
-        return;
-    }
-    if (knowRateCheck < 0 || knowRateCheck > 100 || speedRateCheck < 0 || speedRateCheck > 100) {
-        Trivia.sendPM(src, "The rate must not be lower than 0 or higher than 100.", channel);
-        return;
-    }
-    eventKnowRate = knowRateCheck;
-    eventSpeedRate = speedRateCheck;
-    var elimRate = 100 - (eventKnowRate + eventSpeedRate);
-    eventSets.updateEventSettings();
-    Trivia.sendPM(src, "New Event Knowledge Rate: " + eventKnowRate + " %", channel);
-    Trivia.sendPM(src, "New Event Speed Rate: " + eventSpeedRate + " %", channel);
-    Trivia.sendPM(src, "New Event Elimination Rate: " + elimRate + " %", channel);
-}, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is know rate:speed rate.");
-
-addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
-    if (commandData.length === 0) {
-        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
-        return;
-    }
-    var cooldown = getSeconds(commandData);
-    if (isNaN(cooldown)) {
-        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s");
-        return;
-    }
-    trivData.eventCooldown = cooldown;
-    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
-    lastEventTime = sys.time(); //reset timer
-    eventTimeChangeFlag = true;
-    eventSets.updateEventSettings();
-}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
-
-addOwnerCommand(["enableevents"], function (src, commandData, channel) {
-    eventModeOn = true;
-    lastEventTime = sys.time(); // reset timer
-    eventTimeChangeFlag = true;
-    eventSets.updateEventSettings();
-    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
-}, "Enables event elimination games.");
-
-addOwnerCommand(["disableevents"], function (src, commandData, channel) {
-    eventModeOn = false;
-    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
-}, "Disable event elimination games.");
-
-addOwnerCommand(["seteventelimsignup"], function (src, commandData, channel) {
-    if (commandData.length === 0) {
-        Trivia.sendPM(src, "The current signup duration is " + eventElimSignUp + " seconds.", channel);
-        return;
-    }
-    if (isNaN(commandData)) {
-        Trivia.sendPM(src, "Please enter a valid number.", channel);
-        return;
-    }
-    if (commandData < 45 || commandData > 600) {
-        Trivia.sendPM(src, "The duration must be at least 45 seconds and no more than 600 seconds.", channel);
-        return;
-    }
-    eventElimSignUp = parseInt(commandData);
-    eventSets.updateEventSettings();
-    Trivia.sendPM(src, "The new signup duration is " + eventElimSignUp + " seconds.", channel);
-}, "Set the signup duration for event elimination games. Using no command fields allows you to view the current duration.");
-
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
 }, "Allows you to end a current trivia game.");
+
+addAdminCommand(["submitpopq"], function (src, commandData, channel) {
+    commandData = commandData.split("*");
+    if (commandData.length != 3) {
+        Trivia.sendPM(src, "Oops! Usage of this command is: /submitpopq category*question*answer(s)", channel);
+        Trivia.sendPM(src, "Separate multiple answers with ','.", channel);
+        return;
+    }
+    var category = "Pop Quiz";
+    var displayCat = "<b>Category:</b> " + commandData[0].toUpperCase() + "<br>";
+    var question = displayCat + utilities.html_escape(commandData[1]).trim();
+    var fixAnswer = commandData[2].replace(/ *, */gi, ",").replace(/^ +/, "");
+    var answer = fixAnswer.split(",");
+    triviaq.add(category, question, answer);
+
+    var all = triviaq.all(),
+            qid;
+    for (var b in all) {
+        var qu = triviaq.get(b);
+        if (qu.question === question) {
+            qid = b;
+        }
+    }
+    Trivia.sendPM(src, "Your question was submitted with the id: " + qid, channel);
+},"Allows you to submit a pop quiz question, format /submitpopq Category*Question*Answer1,Answer2,etc");
 
 addAdminCommand(["suggest"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -3019,6 +2516,27 @@ addAdminCommand(["say"], function (src, commandData, channel) {
     Trivia.sendAll("(" + sys.name(src) + "): " + commandData, channel);
 }, "Allows you to talk during the answer period.");
 
+addAdminCommand(["lastevent"], function (src, commandData, channel) {
+    if (trivData.eventFlag) {
+        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        return;
+    }
+    if (manualEventFlag){
+        var manualEventOutputTime = sys.time() - manualEventTime;
+        Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(manualEventOutputTime) + " ago.", channel);
+        return;
+    }
+    var lastEventOutputTime = sys.time() - lastEventTime;
+    if (lastEventType === "None.") {
+        Trivia.sendPM(src, "No events have been played since Trivia was restarted.", channel);
+    }
+    if (eventTimeChangeFlag) {
+        Trivia.sendPM(src, "The event cooldown was last set " + getTimeString(lastEventOutputTime) + " ago.", channel);
+        return;
+    }
+    Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(lastEventOutputTime) + " ago.", channel);
+}, "Allows you to see what the last event type was and how long ago it was played.");
+
 addAdminCommand(["flashtas"], function (src, commandData, channel) {
     if ([triviachan, revchan, sachannel].indexOf(channel) === -1) {
         Trivia.sendPM(src, "Please only use /flashtas in Trivia, TrivReview, or Victory Road!", channel);
@@ -3036,258 +2554,286 @@ addAdminCommand(["flashtas"], function (src, commandData, channel) {
     }
 }, "Pings all online Trivia Admins. Use with /flashtas [phrase]. Abuse will be punished.");
 
-addAdminCommand(["search"], function (src, commandData, channel) {
-    if (commandData === undefined) { return; }
-    if (Trivia.playerPlaying(src) && Trivia.round) {
-        var z1 = Trivia.roundQuestion;
-        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
-        if (trivData.eventFlag) {
-            Trivia.sendPM(src, "You cannot use /search during event games!", channel);
+addAdminCommand(["submitban"], function (src, commandData, channel) {
+    if (commandData === undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var user = commandData[0],
+        reason = commandData[1],
+        time = commandData[2];
+    if (sys.dbIp(user) === undefined) {
+        triviabot.sendMessage(src, "Couldn't find " + user, channel);
+        return;
+    }
+    var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
+    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
+        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+        return;
+    }
+    if (time === undefined) {
+        time = 0;
+    }
+    var seconds = getSeconds(time);
+    if (isNaN(seconds)) {
+        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+        return;
+    }
+    if (seconds < 1) {
+        if (!isTriviaOwner(src)) {
+            triviabot.sendMessage(src, "Please specify time!", channel);
             return;
         }
+        time = "forever";
     }
-    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
-    var all = triviaq.all(),
-        b, q, output = [];
-    var re = new RegExp("\\b" + commandData + "\\b", "i");
-    var answer;
-    for (b in all) {
-        q = triviaq.get(b);
-        answer = String(q.answer);
-        if (re.test(q.question) || re.test(answer)) {
-            output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
-        }
-    }
-    all = trivreview.all();
-    for (b in all) {
-        q = trivreview.get(b);
-        answer = String(q.answer);
-        if (re.test(q.question) || re.test(answer)) {
-            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
-        }
-    }
-    var x = 0;
-    while (x < output.length && x !== 50) {
-        Trivia.sendPM(src, output[x], channel);
-        x += 1;
-    }
-    if (x === 50) { //maybe add a configurable value in the future
-        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
-    }
-
-}, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
-
-addAdminCommand(["apropos"], function (src, commandData, channel) {
-    if (commandData === undefined) { return; }
-    if (Trivia.playerPlaying(src) && Trivia.round) {
-        var z1 = Trivia.roundQuestion;
-        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
-        if (trivData.eventFlag) {
-            Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
+    var already = false;
+    if (isTrivia("submitbanned", tarip)) {
+        if (sys.time() - trivData.submitBans[tarip].issued < 15) {
+            triviabot.sendMessage(src, "This person was recently banned!", channel);
             return;
         }
+        already = true;
     }
-    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
-    var all = triviaq.all(),
-        b, q, output = [], answer;
-    for (b in all) {
-        q = triviaq.get(b);
-        answer = String(q.answer);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
+    var expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
+    trivData.submitBans[tarip] = {
+        'name': user,
+        'reason': reason,
+        'by': sys.name(src),
+        'issued': parseInt(sys.time(), 10),
+        'expires': expires
+    };
+    var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
+    for (var x in channels) {
+        if (sys.existChannel(sys.channel(channels[x]))) {
+            triviabot.sendAll(already? sys.name(src) + " changed " + user + "'s submit ban time to " + (timestring === "forever" ? timestring : timestring + " from now") + "!" : (sys.name(src) + " banned " + user + " from submitting questions " + (timestring === "forever" ? "" : "for ") + timestring + "!") + " [Reason: " + reason + "]", channels[x]);
         }
     }
-    all = trivreview.all();
-    for (b in all) {
-        q = trivreview.get(b);
-        answer = String(q.answer);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
-        }
-    }
-    var x = 0;
-    while (x < output.length && x !== 50) {
-        Trivia.sendPM(src, output[x], channel);
-        x += 1;
-    }
-    if (x === 50) { //maybe add a configurable value in the future
-        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
-    }
+    saveData();
+}, "Ban a user from submitting, format /submitban user:reason:time.");
 
-}, "Allows you to search through the questions, format /apropos [query]. Matches incomplete parts of words.");
-
-addAdminCommand(["searchcount"], function (src, commandData, channel) {
+addAdminCommand(["submitunban"], function (src, commandData, channel) {
     if (commandData === undefined) {
+        triviabot.sendMessage(src, "Specify a user!", channel);
         return;
     }
-    var count = 0;
-    for (var x in triviaq.all()) {
-        var q = triviaq.get(x);
-        var answer = String(q.answer);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
-            count++;
+    if (sys.dbIp(commandData) === undefined) {
+        triviabot.sendMessage(src, "Couldn't find " + commandData);
+        return;
+    }
+    var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
+    if (!isTrivia("submitbanned", ip)) {
+        triviabot.sendMessage(src, commandData + " isn't banned from submitting.", channel);
+        return;
+    }
+    delete trivData.submitBans[ip];
+    saveData();
+    var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
+    for (var x in channels) {
+        if (sys.existChannel(sys.channel(channels[x]))) {
+            triviabot.sendAll(sys.name(src) + " unbanned " + commandData + " from submitting questions.", channels[x]);
         }
     }
-    Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
-}, "Counts how many questions fit a /search query");
+    return;
+}, "Unban a user from submitting.");
 
-addAdminCommand(["searchcategory"], function (src, commandData, channel) {
-    if (commandData === undefined) { return; }
-    if (Trivia.playerPlaying(src) && Trivia.round) {
-        var z1 = Trivia.roundQuestion;
-        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
-        if (trivData.eventFlag) {
-            Trivia.sendPM(src, "You cannot use /searchcategory during event games!", channel);
+addAdminCommand(["submitbans"], function (src, commandData, channel) {
+    showTrivia(src, channel, "submitBans");
+}, "View submit bans.");
+
+addAdminCommand(["wordwarns"], function (src, commandData, channel) {
+    var table = '';
+    table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Trivia Warnings</strong></center></td></tr>';
+    for (var i = 0; i < trivData.triviaWarnings.length; i += 5) {
+        table += '<tr>';
+        for (var j = 0; j < 5 && i + j < trivData.triviaWarnings.length; ++j) {
+            table += '<td>' + trivData.triviaWarnings[i + j].toString() + '</td>';
+        }
+        table += '</tr>';
+    }
+    table += '</table>';
+    sys.sendHtmlMessage(src, table, channel);
+    return;
+}, "View word warnings.");
+
+addAdminCommand(["triviamute"], function (src, commandData, channel) {
+    if (commandData === undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var user = commandData[0],
+        reason = commandData[1],
+        time = commandData[2];
+    if (sys.dbIp(user) === undefined) {
+        triviabot.sendMessage(src, "Couldn't find " + user, channel);
+        return;
+    }
+    var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
+    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
+    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
+        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+        return;
+    }
+    if (time === undefined) {
+        time = 0;
+    }
+    var seconds = getSeconds(time);
+    if (isNaN(seconds)) {
+        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+        return;
+    }
+    if (seconds < 1) {
+        if (!isTriviaOwner(src)) {
+            triviabot.sendMessage(src, "Please specify time!", channel);
             return;
         }
+        time = "forever";
     }
-    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
-    var count = 0;
-    for (var i in triviaq.all()) {
-        var q = triviaq.get(i);
-        if (commandData.toLowerCase() === q.category.toLowerCase()) {
-            Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
-            count++;
-            if (count === 50) {
-                Trivia.sendPM(src, "Too many results were found for this query.", channel);
-                return;
-            }
+
+    var already = false;
+    if (isTrivia("muted", tarip)) {
+        if (sys.time() - trivData.mutes[tarip].issued < 15) {
+            triviabot.sendMessage(src, "This person was recently muted!", channel);
+            return;
         }
+        already = true;
     }
-}, "Lists every question in the specified category.");
-
-addAdminCommand(["categorycount"], function (src, commandData, channel) {
-    if (commandData === undefined)
-        return;
-    var all = triviaq.all(),
-        b, q;
-    var count = 0;
-    for (b in all) {
-        q = triviaq.get(b);
-        if (q.category.toLowerCase() == commandData.toLowerCase())
-            count += 1;
+    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
+    var expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
+    trivData.mutes[tarip] = {
+        'name': user,
+        'reason': reason,
+        'by': sys.name(src),
+        'issued': parseInt(sys.time(), 10),
+        'expires': expires
+    };
+    var chans = [triviachan, revchan, sachannel, staffchannel];
+    for (var x in chans) {
+        var current = chans[x];
+        triviabot.sendAll((already ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + " from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current);
     }
-    Trivia.sendPM(src, "There are " + count + " questions with the category " + commandData + ".", channel);
-}, "Shows how many questions are in a specified category");
-
-addAdminCommand(["listc"], function (src, commandData, channel) {
-    var categories = orderedCategories();
-    Trivia.sendPM(src, "All currently used categories:", channel);
-    for (var x = 0; x < categories.length; x++) {
-        var object = categories[x];
-        Trivia.sendPM(src, object.category + " - " + object.count + " questions.", channel);
+    if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
+        Trivia.removePlayer(sys.id(user));
+        triviabot.sendAll(user + " was removed from the game!", triviachan);
     }
-}, "Lists every category currently used and the amount of questions in each.");
+    saveData();
+}, "Trivia mute a user, format /triviamute user:reason:time.");
 
-addAdminCommand(["blockcats"], function (src, commandData, channel) {
-    sys.sendMessage(src, "", channel);
-    Trivia.sendPM(src, "Block Categories: ", channel);
-    var j = 0;
-    for (var i = 0; i < trivData.blockCats.length; i++) {
-        j = i + 1;
-        Trivia.sendPM(src, j + ". " + trivData.blockCats[i].name + " (" + trivData.blockCats[i].cats.join(", ") + ").", channel);
-    }
-    sys.sendMessage(src, "", channel);
-}, "Displays the block categories and the categories of which they consist.");
-
-addAdminCommand(["addblockcats"], function (src, commandData, channel) {
-    if (!commandData.length || commandData === undefined || commandData.indexOf("*") === -1 || commandData.indexOf(",") === -1) {
-        Trivia.sendPM(src, "The correct usage is /addblockcats name*category1,category2,category3,etc.", channel);
+addAdminCommand(["triviaunmute"], function (src, commandData, channel) {
+    if (commandData === undefined) {
+        triviabot.sendMessage(src, "Specify a user!", channel);
         return;
     }
-    commandData = commandData.split("*");
-    if (commandData.length !== 2) {
-        Trivia.sendPM(src, "The correct usage is /addblockcats name*category1,category2,category3,etc.", channel);
+    if (sys.dbIp(commandData) === undefined) {
+        triviabot.sendMessage(src, "Couldn't find " + commandData, channel);
         return;
     }
-    var categories = commandData[1].split(",");
-    var validCats = orderedCategories();
-    var c, valid = false;
-    for (var j = 0; j < categories.length; j++) {
-        for (var i = 0; i < validCats.length; i++) {
-            c = validCats[i];
-            if (c.category.toLowerCase() === categories[j].toLowerCase()) {
-                valid = true;
+    var tarip = sys.id(commandData) === undefined ? sys.dbIp(commandData) : sys.ip(sys.id(commandData));
+    if (!isTrivia("muted", tarip)) {
+        triviabot.sendMessage(src, commandData + " isn't trivia muted!", channel);
+        return;
+    }
+    if (tarip == sys.ip(src) && isTrivia("muted", tarip)) {
+        triviabot.sendMessage(src, "You may not trivia unmute yourself!", channel);
+        return;
+    }
+    delete trivData.mutes[tarip];
+    var chans = [triviachan, revchan, sachannel, staffchannel];
+    for (var x in chans) {
+        var current = chans[x];
+        triviabot.sendAll(commandData + " was trivia unmuted by " + nonFlashing(sys.name(src)) + "!", current);
+    }
+    saveData();
+}, "Trivia unmute a user.");
+
+addAdminCommand(["triviamutes"], function (src, commandData, channel) {
+    showTrivia(src, channel, "mutes");
+}, "View trivia mutes.");
+
+addAdminCommand(["startrange"], function (src, commandData, channel) {
+    if (commandData === "") {
+        triviabot.sendMessage(src, "The current start range is " + trivData.autostartRange.min + "-" + trivData.autostartRange.max + ".", channel);
+        return;
+    }
+    var data = commandData.split("-");
+    if (data.length != 2) {
+        triviabot.sendMessage(src, "That's not how this command works. To change the start range, use /startrange min-max.", channel);
+        return;
+    }
+    if (isNaN(data[0]) || isNaN(data[1])) {
+        triviabot.sendMessage(src, "Both the minimum and maximum for the point range have to be numbers!", channel);
+        return;
+    }
+    trivData.autostartRange.min = data[0];
+    trivData.autostartRange.max = data[1];
+    saveData();
+    triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the start range to " + data[0] + "-" + data[1] + ".", revchan);
+}, "Checks the start range, and lets you modify it. Use /startrange min-max to change it.");
+
+addAdminCommand(["passta"], function (src, commandData, channel) {
+    var oldname = sys.name(src).toLowerCase();
+    var newname = commandData.toLowerCase();
+    var sTA = false;
+    if (sys.dbIp(newname) === undefined) {
+        triviabot.sendMessage(src, "This user doesn't exist!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(newname)) {
+        triviabot.sendMessage(src, "That account isn't registered so you can't give it authority!", channel);
+        return;
+    }
+    if (sys.id(newname) === undefined) {
+        triviabot.sendMessage(src, "Your target is offline!", channel);
+        return;
+    }
+    if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
+        triviabot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
+        return;
+    }
+    /* Can't figure out syntax to allow it to check properly, but it really doesn't matter at this point in the code.
+    if (tadmin.isTAdmin(newname) || isTriviaOwner(newname)) {
+        triviabot.sendMessage(src, "Your target is already a Trivia Admin!", channel);
+        return;
+    }*/
+    if (tsadmin.isTAdmin(oldname)) {
+        tsadmin.removeTAdmin(oldname);
+        tsadmin.addTAdmin(newname);
+        sTA = true;
+    } else if (tadmin.isTAdmin(oldname)){
+        tadmin.removeTAdmin(oldname);
+        tadmin.addTAdmin(newname);
+    } else {
+        triviabot.sendMessage(src, "You are not Trivia Auth", channel);
+        return;
+    }
+    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, sachannel);
+    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, revchan);
+    triviabot.sendMessage(src, "You passed your Trivia auth to " + commandData.toCorrectCase() + "!", channel);
+    return;
+}, "To give your Trivia Admin powers to an alt.");
+
+// Review Commands
+
+addAdminCommand(["removeq"], function (src, commandData, channel) {
+    var q = triviaq.get(commandData);
+    if (q !== null) {
+        triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, revchan);
+        triviaq.remove(commandData);
+        questionData.remove(commandData);
+        for (var i = 0; i < trivData.extAnswers.length; i++) {
+            if (commandData === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
                 break;
             }
         }
-        if (!valid) {
-            Trivia.sendPM(src, "The category '" + categories[j] + "' does not exist.", channel);
-            return;
-        }
-        valid = false;
-    }
-    var newBlockCat = {'name' : commandData[0].toLowerCase(), 'cats' : categories};
-    Trivia.sendAll(sys.name(src) + " added the block category '" + commandData[0] + "' which consists of the categories (" + categories.join(", ") + ").", revchan);
-    trivData.blockCats.push(newBlockCat);
-    saveData();
-}, "Adds a new block category. Usage is /addblockcats name*category1,category2,category3,etc.");
-
-addAdminCommand(["removeblockcats"], function (src, commandData, channel) {
-    if (!commandData.length || commandData === undefined) {
-        Trivia.sendPM(src, "Please enter a valid block category.", channel);
         return;
     }
-    for (var i in trivData.blockCats) {
-        if (trivData.blockCats[i].name === commandData) {
-            Trivia.sendAll(sys.name(src) + " deleted the block category '" + commandData + "'.", revchan);
-            trivData.blockCats.splice(i, 1);
-            saveData();
-            return;
-        }
-    }
-    Trivia.sendPM(src, "'" + commandData + "' is not a valid block category.", channel);
-}, "Deletes a block category.");
-
-addAdminCommand(["askedqamount"], function (src, commandData, channel) {
-    triviabot.sendMessage(src, "There are " + Object.keys(questionData.hash).length + " questions with logged answer data.", channel);
-}, "Shows how many questions have their answer data logged.");
-
-addAdminCommand(["mostasked"], function (src, commandData, channel) {
-    var sortedQs = questionData.sortBy("asked");
-    var count = commandData | 30;
-    triviabot.sendMessage(src, "Most asked questions:", channel);
-    for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[i];
-        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-    }
-}, "Lists the N most asked questions, format /mostasked N, default is 30.");
-
-addAdminCommand(["leastasked"], function (src, commandData, channel) {
-    var sortedQs = questionData.sortBy("asked");
-    var count = commandData | 30;
-    triviabot.sendMessage(src, "Least asked questions:", channel);
-    for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[sortedQs.length - 1 - i];
-        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-    }
-}, "Lists the N least asked questions, format /leastasked N, default is 30.");
-
-addAdminCommand(["mostanswered"], function (src, commandData, channel) {
-    var sortedQs = questionData.sortBy("answered");
-    var count = commandData | 30;
-    triviabot.sendMessage(src, "Questions answered correctly the most:", channel);
-    for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[i];
-        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-    }
-}, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
-
-addAdminCommand(["leastanswered"], function (src, commandData, channel) {
-    var sortedQs = questionData.sortBy("leastanswered");
-    var count = commandData | 30;
-    triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
-    for (var i = 0; i < count && i < sortedQs.length; i++) {
-        var q = sortedQs[sortedQs.length - 1 - i];
-        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
-    }
-}, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
+    Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
+}, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
 
 addAdminCommand(["checkq"], function (src, commandData, channel) {
     PMcheckq(src, channel);
@@ -3599,130 +3145,601 @@ addAdminCommand(["decline"], function (src, commandData, channel) {
     triviabot.sendMessage(src, "No more questions!", channel);
 }, "Allows you to decline the current question in review");
 
-addOwnerCommand(["declinecatqs"], function (src, commandData, channel) {
-    var counter = 0;
+addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
+    if (commandData === ""){
+        for (var i in trivData.equivalentAns) {
+           Trivia.sendPM(src, i + ": " + trivData.equivalentAns[i], channel);
+        }
+    } else {
+        commandData = commandData.toLowerCase();
+        if (trivData.equivalentAns.hasOwnProperty(commandData)){
+            Trivia.sendPM(src, commandData + ": " + trivData.equivalentAns[commandData], channel);
+        } else {
+            Trivia.sendPM(src, commandData + " has no synonyms.");
+        }
+    }
+    return;
+}, "View synonyms of answers.");
+
+addAdminCommand(["extanswers"], function (src, commandData, channel) {
+    if (commandData === undefined) {
+        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
+        return;
+    }
+    var i, q, count = 0, linkUsed = false;
+    if (commandData.indexOf(":") !== -1) {
+        commandData = commandData.split(":");
+        i = parseInt(commandData[1]);
+        linkUsed = true;
+    }
+    if (!commandData.length || linkUsed) {
+        Trivia.sendPM(src, "The questions with extended answer times are: ", channel);
+        if (!commandData.length) { i = 0; }
+        for (i; i < trivData.extAnswers.length; i++) {
+            if (count >= 50) {
+                Trivia.sendPM(src, "List contains more than 50 questions.", channel);
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//extanswers filler:" + i + "\">Show more questions</a></b>", channel);
+                break;
+            }
+            count++;
+            q = triviaq.get(trivData.extAnswers[i]);
+            if (q !== null) {
+                Trivia.sendPM(src, parseInt(i + 1) + ". question id: " + trivData.extAnswers[i] + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer, channel);
+            } else {
+                trivData.extAnswers.splice(i, 1); //If somehow this question doesn't exist anymore and is still in the list, delete it from the list.
+                saveData();
+            }
+        }
+        return;
+    }
+    q = triviaq.get(commandData);
+    if (q !== null) {
+        for (var j = 0; j < trivData.extAnswers.length; j++) {
+            if (commandData === trivData.extAnswers[j]) {
+                Trivia.sendPM(src, "Question ID: '" + commandData + "' already has a longer answer time.", channel);
+                return;
+            }
+        }
+        trivData.extAnswers.push(commandData);
+        saveData();
+        triviabot.sendAll(sys.name(src) + " added question id: " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " to the extended answers list.", revchan);
+    } else {
+        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
+    }
+}, "Use to add questions (by ID number) to the list of questions that should have a longer answer time when asked.");
+
+addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
+    if (!commandData.length || commandData === undefined) {
+        Trivia.sendPM(src, "Please enter a valid question ID.", channel);
+        return;
+    }
+    var q = triviaq.get(commandData);
+    if (q !== null) {
+        for (var i = 0; i < trivData.extAnswers.length; i++) {
+            if (commandData === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+                triviabot.sendAll(sys.name(src) + " removed question: id " + commandData + ", category: " + q.category + ", question: " + q.question + ", answer: " + q.answer + " from the extended answers list.", revchan);
+                break;
+            }
+        }
+    } else {
+        Trivia.sendPM(src, "Your input: '" + commandData + "' is not a valid question id.", channel);
+    }
+}, "Use to remove questions (by ID number) to the list of questions that should have a longer answer time when asked.");
+
+// Search and Statistical Commands
+
+addAdminCommand(["apropos"], function (src, commandData, channel) {
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
+            return;
+        }
+    }
+    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
+    var all = triviaq.all(),
+        b, q, output = [], answer;
+    for (b in all) {
+        q = triviaq.get(b);
+        answer = String(q.answer);
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+            output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+        }
+    }
+    all = trivreview.all();
+    for (b in all) {
+        q = trivreview.get(b);
+        answer = String(q.answer);
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
+        }
+    }
+    var x = 0;
+    while (x < output.length && x !== 50) {
+        Trivia.sendPM(src, output[x], channel);
+        x += 1;
+    }
+    if (x === 50) { //maybe add a configurable value in the future
+        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
+    }
+
+}, "Allows you to search through the questions, format /apropos [query]. Matches incomplete parts of words.");
+
+addAdminCommand(["search"], function (src, commandData, channel) {
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /search during event games!", channel);
+            return;
+        }
+    }
+    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
+    var all = triviaq.all(),
+        b, q, output = [];
+    var re = new RegExp("\\b" + commandData + "\\b", "i");
+    var answer;
+    for (b in all) {
+        q = triviaq.get(b);
+        answer = String(q.answer);
+        if (re.test(q.question) || re.test(answer)) {
+            output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+        }
+    }
+    all = trivreview.all();
+    for (b in all) {
+        q = trivreview.get(b);
+        answer = String(q.answer);
+        if (re.test(q.question) || re.test(answer)) {
+            output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
+        }
+    }
+    var x = 0;
+    while (x < output.length && x !== 50) {
+        Trivia.sendPM(src, output[x], channel);
+        x += 1;
+    }
+    if (x === 50) { //maybe add a configurable value in the future
+        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
+    }
+
+}, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
+
+addAdminCommand(["searchcount"], function (src, commandData, channel) {
+    if (commandData === undefined) {
+        return;
+    }
+    var count = 0;
+    for (var x in triviaq.all()) {
+        var q = triviaq.get(x);
+        var answer = String(q.answer);
+        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+            count++;
+        }
+    }
+    Trivia.sendPM(src, "There are " + count + " questions matching with '" + commandData + "'.", channel);
+}, "Counts how many questions fit a /search query");
+
+addAdminCommand(["askedqamount"], function (src, commandData, channel) {
+    triviabot.sendMessage(src, "There are " + Object.keys(questionData.hash).length + " questions with logged answer data.", channel);
+}, "Shows how many questions have their answer data logged.");
+
+addAdminCommand(["mostasked"], function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("asked");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Most asked questions:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
+    }
+}, "Lists the N most asked questions, format /mostasked N, default is 30.");
+
+addAdminCommand(["leastasked"], function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("asked");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Least asked questions:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[sortedQs.length - 1 - i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
+    }
+}, "Lists the N least asked questions, format /leastasked N, default is 30.");
+
+addAdminCommand(["mostanswered"], function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("answered");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Questions answered correctly the most:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
+    }
+}, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
+
+addAdminCommand(["leastanswered"], function (src, commandData, channel) {
+    var sortedQs = questionData.sortBy("leastanswered");
+    var count = commandData | 30;
+    triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
+    for (var i = 0; i < count && i < sortedQs.length; i++) {
+        var q = sortedQs[sortedQs.length - 1 - i];
+        triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
+    }
+}, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
+
+addAdminCommand(["eventstats"], function (src, commandData, channel) {
+    var stats = eventStats.loadEventStats();
+    if (stats === "No Stats.") {
+        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
+        return;
+    } else {
+        var gameMode = "";
+        var bookMark = 0;
+        if (commandData.length > 0) {
+            if (commandData.indexOf(":") === -1) {
+                if (isNaN(commandData)) {
+                    gameMode = commandData;
+                    if (gameMode === "know") { commandData = gameMode = "knowledge"; }
+                    if (gameMode === "elim") { commandData = gameMode = "elimination"; }
+                } else {
+                    bookMark = commandData;
+                }
+            } else {
+                commandData = commandData.split(":");
+                if (commandData[0] === "know") { commandData[0] = gameMode = "knowledge"; }
+                if (commandData[0] === "elim") { commandData[0] = gameMode = "elimination"; }
+                gameMode = commandData[0];
+                if (isNaN(commandData[1])) {
+                    triviabot.sendMessage(src, "The book mark must be a number.", channel);
+                    return;
+                }
+                bookMark = commandData[1];
+            }
+        }
+        if (gameMode !== "knowledge" && gameMode !== "speed" && gameMode !== "elimination" && gameMode !== "" && commandData.length !== 0) {
+            triviabot.sendMessage(src, "Please enter a valid game type.", channel);
+            return;
+        }
+        sys.sendMessage(src, "***Event Stats***", channel);
+        var i = 0;
+        var j = 0;
+        var x = 1;
+        var z = "";
+        if (!commandData.length) {
+            j = 0;
+        } else if (commandData === bookMark) {
+            j = parseInt(bookMark);
+        } else if (commandData === gameMode) {
+            j = 0;
+            z = gameMode;
+        } else {
+            j = parseInt(bookMark);
+            z = gameMode;
+        }
+            for (i = j; i < stats.length; i++) {
+                if (x > 5) { break; }
+                if (z !== stats[i].gameType && z !== "") { continue; }
+                x++;
+                if (stats[i].totalServerPlayers === undefined) { stats[i].totalServerPlayers = "No data recorded."; }
+                if (stats[i].totalTriviaPlayers === undefined) { stats[i].totalTriviaPlayers = "No data recorded."; }
+                sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Event Index: </b></font>" + i + "<br><font color='#3daa68'><b>Type: </b></font>" + stats[i].gameType + "<br><font color='#3daa68'><b>Goal: </b></font>" + stats[i].goal + "<br><font color='#3daa68'><b>Time Since Played: </b></font>" + getTimeString((sys.time() - stats[i].lastGame)) + "<br><font color='#3daa68'><b>Time Started: </b></font>" + stats[i].lastGameTime + "<br><font color='#3daa68'><b>Players: </b></font>" + stats[i].players + "<br><font color='#3daa68'><b>Rounds: </b></font>" + stats[i].rounds + "<br><font color='#3daa68'><b>Duration: </b></font>" + (isNaN(stats[i].duration) ? stats[i].duration : getTimeString(stats[i].duration)) + "<br><font color='#3daa68'><b>Server Players Online: </b></font>" + stats[i].totalServerPlayers + "<br><font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + stats[i].totalTriviaPlayers, channel);
+                if (stats[i].gameType !== 'elimination') {
+                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Score Board: </b></font>" + stats[i].scoreBoard.join(", "), channel);
+                    sys.sendHtmlMessage(src, "<font color='#3daa68'><b>First Player past Goal: </b></font>" + stats[i].firstGoalR + ", <font color='#3daa68'><b>Second Player past Goal: </b></font>" + stats[i].secondGoalR + ", <font color='#3daa68'><b>Third Player past Goal: </b></font>" + stats[i].thirdGoalR, channel);
+                } else {
+                    if (stats[i].noWinners) {
+                        sys.sendHtmlMessage(src, "<font color='red'><b>Everyone Lost!</b></font>", channel);
+                    } else {
+                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Participants: </b></font>" + stats[i].participants.join(", "), channel);
+                        sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Winner: </b></font>" + stats[i].participants[0], channel);
+                    }
+                }
+                sys.sendMessage(src, "", channel);
+            }
+            if ((!commandData.length || commandData === bookMark) && i < stats.length) {
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + i + "\">Show next page</a></b>", channel);
+                return;
+            }
+            if ((commandData === gameMode || z === gameMode) && i < stats.length) {
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + gameMode + ":" + i + "\">Show next page</a></b>", channel);
+            }
+    }
+}, "For viewing event statistics. Usage is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex]");
+
+addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
+    var stats = eventStats.loadEventStats();
+    if (stats === "No Stats.") {
+        triviabot.sendMessage(src, "There are no stats recorded yet.", channel);
+        return;
+    } else {
+        var avgKnowGoalT = 0, avgKnowPlayersT = 0, avgKnowRoundsT = 0, avgKnowDurationT = 0,
+                avgKnow1stRoundsT = 0, avgKnow2ndRoundsT = 0, avgKnow3rdRoundsT = 0,
+                knowCount = 0, know2ndCount = 0, know3rdCount = 0, knowDurationCount = 0;
+
+        var avgSpeedGoalT = 0, avgSpeedPlayersT = 0, avgSpeedRoundsT = 0, avgSpeedDurationT = 0,
+                avgSpeed1stRoundsT = 0, avgSpeed2ndRoundsT = 0, avgSpeed3rdRoundsT = 0,
+                speedCount = 0, speed2ndCount = 0, speed3rdCount = 0, speedDurationCount = 0;
+
+        var avgElimGoalT = 0, avgElimPlayersT = 0, avgElimRoundsT = 0, avgElimDurationT = 0,
+                elimCount = 0, noWinnersCount = 0, elimDurationCount = 0;
+
+        var avgServerPlayersT = 0, avgChannelPlayersT = 0, serverPlayerCount = 0, channelPlayerCount = 0;
+
+        var justRound = "";
+
+        for (var i = 0; i < stats.length; i++) {
+            if (stats[i].totalServerPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
+                avgServerPlayersT += stats[i].totalServerPlayers;
+                serverPlayerCount++;
+            }
+            if (stats[i].totalTriviaPlayers !== undefined && !isNaN(stats[i].totalServerPlayers)) {
+                avgChannelPlayersT += stats[i].totalTriviaPlayers;
+                channelPlayerCount++;
+            }
+            if (stats[i].gameType === "knowledge") {
+                avgKnowGoalT += parseInt(stats[i].goal);
+                avgKnowPlayersT += stats[i].players;
+                avgKnowRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgKnowDurationT += stats[i].duration;
+                    knowDurationCount++;
+                }
+                justRound = stats[i].firstGoalR; //This is a string in the form "Player, Round: #"
+                justRound = justRound.split("Round: ")
+                avgKnow1stRoundsT += parseInt(justRound[1]);
+                if (stats[i].secondGoalR !== "N/A") {
+                    justRound = stats[i].secondGoalR;
+                    justRound = justRound.split("Round: ");
+                    avgKnow2ndRoundsT += parseInt(justRound[1]);
+                } else {
+                    know2ndCount++;
+                }
+                if (stats[i].thirdGoalR !== "N/A") {
+                    justRound = stats[i].thirdGoalR;
+                    justRound = justRound.split("Round: ");
+                    avgKnow3rdRoundsT += parseInt(justRound[1]);
+                } else {
+                    know3rdCount++;
+                }
+                knowCount++;
+            } else if (stats[i].gameType === "speed") {
+                avgSpeedGoalT += parseInt(stats[i].goal);
+                avgSpeedPlayersT += stats[i].players;
+                avgSpeedRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgSpeedDurationT += stats[i].duration;
+                    speedDurationCount++;
+                }
+                justRound = stats[i].firstGoalR;
+                justRound = justRound.split("Round: ");
+                avgSpeed1stRoundsT += parseInt(justRound[1]);
+                if (stats[i].secondGoalR !== "N/A") {
+                    justRound = stats[i].secondGoalR;
+                    justRound = justRound.split("Round: ");
+                    avgSpeed2ndRoundsT += parseInt(justRound[1]);
+                } else {
+                    speed2ndCount++;
+                }
+                if (stats[i].thirdGoalR !== "N/A") {
+                    justRound = stats[i].thirdGoalR;
+                    justRound = justRound.split("Round: ");
+                    avgSpeed3rdRoundsT += parseInt(justRound[1]);
+                } else {
+                    speed3rdCount++;
+                }
+                speedCount++;
+            } else {
+                avgElimGoalT += parseInt(stats[i].goal);
+                if (stats[i].noWinners) {
+                    noWinnersCount++;
+                } else {
+                    avgElimPlayersT += stats[i].players;
+                }
+                avgElimRoundsT += stats[i].rounds;
+                if (!isNaN(stats[i].duration)) {
+                    avgElimDurationT += stats[i].duration;
+                    elimDurationCount++;
+                }
+                elimCount++;
+            }
+        }
+        sys.sendMessage(src, "***Average Event Stats***", channel);
+        if (serverPlayerCount !== 0) {
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel);
+            var avgServerPlayers = avgServerPlayersT / serverPlayerCount;
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Server Players Online: </b></font>" + avgServerPlayers.toFixed(2), channel);
+        }
+        if (channelPlayerCount !== 0) {
+            if (!serverPlayerCount) { sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Players Online</u>", channel); }
+            var avgChannelPlayers = avgChannelPlayersT / channelPlayerCount;
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b>Players in Trivia Channel: </b></font>" + avgChannelPlayers.toFixed(2), channel);
+        }
+        if (knowCount !== 0) {
+            var avgKnowGoal = avgKnowGoalT / knowCount;
+            var avgKnowPlayers = avgKnowPlayersT / knowCount;
+            var avgKnowRounds = avgKnowRoundsT / knowCount;
+            var xKnow = (!knowDurationCount ? 0 : avgKnowDurationT / knowDurationCount);
+            var avgKnowDuration = (xKnow === 0 ? "Not enough data." : getTimeString(parseInt(xKnow)));
+            var avgKnow1stRounds = avgKnow1stRoundsT / knowCount;
+            var avgKnow2ndRounds = "N/A";
+            var avgKnow3rdRounds = "N/A";
+            if ((knowCount - know2ndCount) !== 0) { avgKnow2ndRounds = avgKnow2ndRoundsT / (knowCount - know2ndCount); }
+            if ((knowCount - know3rdCount) !== 0) { avgKnow3rdRounds = avgKnow3rdRoundsT / (knowCount - know3rdCount); }
+            sys.sendHtmlMessage(src, "<br><font color='#3daa68'><b><u>Knowledge Events</u><br>Goal: </b></font>" + avgKnowGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgKnowPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgKnowRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgKnowDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgKnow1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgKnow2ndRounds) ? avgKnow2ndRounds : avgKnow2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgKnow3rdRounds) ? avgKnow3rdRounds : avgKnow3rdRounds.toFixed(2)) + "<br>", channel);
+        }
+        if (speedCount !== 0) {
+            var avgSpeedGoal = avgSpeedGoalT / speedCount;
+            var avgSpeedPlayers = avgSpeedPlayersT / speedCount;
+            var avgSpeedRounds = avgSpeedRoundsT / speedCount;
+            var xSpeed = (!speedDurationCount ? 0 : avgSpeedDurationT / speedDurationCount);
+            var avgSpeedDuration = (xSpeed === 0 ? "Not enough data." : getTimeString(parseInt(xSpeed)));
+            var avgSpeed1stRounds = avgSpeed1stRoundsT / speedCount;
+            var avgSpeed2ndRounds = "N/A";
+            var avgSpeed3rdRounds = "N/A";
+            if ((speedCount - speed2ndCount) !== 0) { avgSpeed2ndRounds = avgSpeed2ndRoundsT / (speedCount - speed2ndCount); }
+            if ((speedCount - speed3rdCount) !== 0) { avgSpeed3rdRounds = avgSpeed3rdRoundsT / (speedCount - speed3rdCount); }
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Speed Events</u><br>Goal: </b></font>" + avgSpeedGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + avgSpeedPlayers.toFixed(2) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgSpeedRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgSpeedDuration + "<br><font color='#3daa68'><b>Round 1st Player Reached Goal: </b></font>" + avgSpeed1stRounds.toFixed(2) + "<br><font color='#3daa68'><b>Round 2nd Player Reached Goal: </b></font>" + (isNaN(avgSpeed2ndRounds) ? avgSpeed2ndRounds : avgSpeed2ndRounds.toFixed(2)) + "<br><font color='#3daa68'><b>Round 3rd Player Reached Goal: </b></font>" + (isNaN(avgSpeed3rdRounds) ? avgSpeed3rdRounds : avgSpeed3rdRounds.toFixed(2)) + "<br>", channel);
+        }
+        if (elimCount !== 0) {
+            var avgElimGoal = avgElimGoalT / elimCount;
+            var avgElimPlayers = "No player data because no games were won.";
+            if ((elimCount - noWinnersCount) !== 0) { avgElimPlayers = avgElimPlayersT / (elimCount - noWinnersCount); }
+            var avgElimRounds = avgElimRoundsT / elimCount;
+            var xElim = (!elimDurationCount ? 0 : avgElimDurationT / elimDurationCount);
+            var avgElimDuration = (xElim === 0 ? "Not enough data." : getTimeString(parseInt(xElim)));
+            sys.sendHtmlMessage(src, "<font color='#3daa68'><b><u>Elimination Events</u><br>Goal: </b></font>" + avgElimGoal.toFixed(2) + "<br><font color='#3daa68'><b>Players: </b></font>" + (isNaN(avgElimPlayers) ? avgElimPlayers : avgElimPlayers.toFixed(2)) + "<br><font color='#3daa68'><b>Number of Rounds: </b></font>" + avgElimRounds.toFixed(2) + "<br><font color='#3daa68'><b>Duration: </b></font>" + avgElimDuration + "<br>", channel);
+        }
+    }
+}, "Displays event stat averages.");
+
+// Category Commands
+
+addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
+    if (commandData.length === 0 || isNaN(commandData)){
+        triviabot.sendMessage(src, trivData.votingCooldown + " rounds is the current vote cooldown", channel);
+    } else {
+        trivData.votingCooldown = commandData;
+        Trivia.sendAll(trivData.votingCooldown + " rounds is the new vote cooldown", revchan);
+    }
+}, "Set number of rounds between each vote.");
+
+addAdminCommand(["enablevoting"], function (src, commandData, channel) {
+    Trivia.voting = true;
+    triviabot.sendAll("Voting for category games is enabled!", revchan);
+}, "Enable voting for category games.");
+
+addAdminCommand(["disablevoting"], function (src, commandData, channel) {
+    Trivia.voting = false;
+    triviabot.sendAll("Voting for category games is disabled!", revchan);
+}, "Disable voting for category games.");
+
+addAdminCommand(["searchcategory"], function (src, commandData, channel) {
+    if (commandData === undefined) { return; }
+    if (Trivia.playerPlaying(src) && Trivia.round) {
+        var z1 = Trivia.roundQuestion;
+        var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        if (trivData.eventFlag) {
+            Trivia.sendPM(src, "You cannot use /searchcategory during event games!", channel);
+            return;
+        }
+    }
+    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
+    var count = 0;
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
         if (commandData.toLowerCase() === q.category.toLowerCase()) {
-            if (i === trivData.extAnswers[i]) {
-                trivData.extAnswers.splice(i, 1);
-                saveData();
+            Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
+            count++;
+            if (count === 50) {
+                Trivia.sendPM(src, "Too many results were found for this query.", channel);
+                return;
             }
-            triviaq.remove(i);
-            questionData.remove(i);
-            counter++;
         }
     }
-    if (!counter) {
-        triviabot.sendMessage(src, "The " + commandData + " category contains no questions to be deleted.", channel);
-    } else {
-        triviabot.sendMessage(src, "The questions (" + counter + " total) in the " + commandData + " category have been deleted.", channel);
-    }
-}, "Delete all of the questions for a given category.");
+}, "Lists every question in the specified category.");
 
-addAdminCommand(["submitban"], function (src, commandData, channel) {
-    if (commandData === undefined || commandData.indexOf(":") == -1) {
-        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+addAdminCommand(["categorycount"], function (src, commandData, channel) {
+    if (commandData === undefined)
+        return;
+    var all = triviaq.all(),
+        b, q;
+    var count = 0;
+    for (b in all) {
+        q = triviaq.get(b);
+        if (q.category.toLowerCase() == commandData.toLowerCase())
+            count += 1;
+    }
+    Trivia.sendPM(src, "There are " + count + " questions with the category " + commandData + ".", channel);
+}, "Shows how many questions are in a specified category");
+
+addAdminCommand(["listc"], function (src, commandData, channel) {
+    var categories = orderedCategories();
+    Trivia.sendPM(src, "All currently used categories:", channel);
+    for (var x = 0; x < categories.length; x++) {
+        var object = categories[x];
+        Trivia.sendPM(src, object.category + " - " + object.count + " questions.", channel);
+    }
+}, "Lists every category currently used and the amount of questions in each.");
+
+addAdminCommand(["blockcats"], function (src, commandData, channel) {
+    sys.sendMessage(src, "", channel);
+    Trivia.sendPM(src, "Block Categories: ", channel);
+    var j = 0;
+    for (var i = 0; i < trivData.blockCats.length; i++) {
+        j = i + 1;
+        Trivia.sendPM(src, j + ". " + trivData.blockCats[i].name + " (" + trivData.blockCats[i].cats.join(", ") + ").", channel);
+    }
+    sys.sendMessage(src, "", channel);
+}, "Displays the block categories and the categories of which they consist.");
+
+addAdminCommand(["addblockcats"], function (src, commandData, channel) {
+    if (!commandData.length || commandData === undefined || commandData.indexOf("*") === -1 || commandData.indexOf(",") === -1) {
+        Trivia.sendPM(src, "The correct usage is /addblockcats name*category1,category2,category3,etc.", channel);
         return;
     }
-    commandData = commandData.split(":");
-    var user = commandData[0],
-        reason = commandData[1],
-        time = commandData[2];
-    if (sys.dbIp(user) === undefined) {
-        triviabot.sendMessage(src, "Couldn't find " + user, channel);
+    commandData = commandData.split("*");
+    if (commandData.length !== 2) {
+        Trivia.sendPM(src, "The correct usage is /addblockcats name*category1,category2,category3,etc.", channel);
         return;
     }
-    var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
-    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
-        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
-        return;
-    }
-    if (time === undefined) {
-        time = 0;
-    }
-    var seconds = getSeconds(time);
-    if (isNaN(seconds)) {
-        triviabot.sendMessage(src, "The time is a bit odd...", channel);
-        return;
-    }
-    if (seconds < 1) {
-        if (!isTriviaOwner(src)) {
-            triviabot.sendMessage(src, "Please specify time!", channel);
+    var categories = commandData[1].split(",");
+    var validCats = orderedCategories();
+    var c, valid = false;
+    for (var j = 0; j < categories.length; j++) {
+        for (var i = 0; i < validCats.length; i++) {
+            c = validCats[i];
+            if (c.category.toLowerCase() === categories[j].toLowerCase()) {
+                valid = true;
+                break;
+            }
+        }
+        if (!valid) {
+            Trivia.sendPM(src, "The category '" + categories[j] + "' does not exist.", channel);
             return;
         }
-        time = "forever";
+        valid = false;
     }
-    var already = false;
-    if (isTrivia("submitbanned", tarip)) {
-        if (sys.time() - trivData.submitBans[tarip].issued < 15) {
-            triviabot.sendMessage(src, "This person was recently banned!", channel);
+    var newBlockCat = {'name' : commandData[0].toLowerCase(), 'cats' : categories};
+    Trivia.sendAll(sys.name(src) + " added the block category '" + commandData[0] + "' which consists of the categories (" + categories.join(", ") + ").", revchan);
+    trivData.blockCats.push(newBlockCat);
+    saveData();
+}, "Adds a new block category. Usage is /addblockcats name*category1,category2,category3,etc.");
+
+addAdminCommand(["removeblockcats"], function (src, commandData, channel) {
+    if (!commandData.length || commandData === undefined) {
+        Trivia.sendPM(src, "Please enter a valid block category.", channel);
+        return;
+    }
+    for (var i in trivData.blockCats) {
+        if (trivData.blockCats[i].name === commandData) {
+            Trivia.sendAll(sys.name(src) + " deleted the block category '" + commandData + "'.", revchan);
+            trivData.blockCats.splice(i, 1);
+            saveData();
             return;
         }
-        already = true;
     }
-    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
-    var expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
-    trivData.submitBans[tarip] = {
-        'name': user,
-        'reason': reason,
-        'by': sys.name(src),
-        'issued': parseInt(sys.time(), 10),
-        'expires': expires
-    };
-    var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
-    for (var x in channels) {
-        if (sys.existChannel(sys.channel(channels[x]))) {
-            triviabot.sendAll(already? sys.name(src) + " changed " + user + "'s submit ban time to " + (timestring === "forever" ? timestring : timestring + " from now") + "!" : (sys.name(src) + " banned " + user + " from submitting questions " + (timestring === "forever" ? "" : "for ") + timestring + "!") + " [Reason: " + reason + "]", channels[x]);
-        }
-    }
-    saveData();
-}, "Ban a user from submitting, format /submitban user:reason:time.");
+    Trivia.sendPM(src, "'" + commandData + "' is not a valid block category.", channel);
+}, "Deletes a block category.");
 
-addAdminCommand(["submitunban"], function (src, commandData, channel) {
-    if (commandData === undefined) {
-        triviabot.sendMessage(src, "Specify a user!", channel);
-        return;
-    }
-    if (sys.dbIp(commandData) === undefined) {
-        triviabot.sendMessage(src, "Couldn't find " + commandData);
-        return;
-    }
-    var ip = (sys.id(commandData) !== undefined) ? sys.ip(sys.id(commandData)) : sys.dbIp(commandData);
-    if (!isTrivia("submitbanned", ip)) {
-        triviabot.sendMessage(src, commandData + " isn't banned from submitting.", channel);
-        return;
-    }
-    delete trivData.submitBans[ip];
-    saveData();
-    var channels = [sys.channelId("Indigo Plateau"), sys.channelId("Victory Road"), revchan];
-    for (var x in channels) {
-        if (sys.existChannel(sys.channel(channels[x]))) {
-            triviabot.sendAll(sys.name(src) + " unbanned " + commandData + " from submitting questions.", channels[x]);
-        }
-    }
-    return;
-}, "Unban a user from submitting.");
+addAdminCommand(["hiddencats"], function (src, commandData, channel) {
+    triviabot.sendMessage(src, "Hidden categories are: " + trivData.hiddenCategories.join(", "), channel);
+}, "View hidden categories.");
 
-addAdminCommand(["submitbans"], function (src, commandData, channel) {
-    showTrivia(src, channel, "submitBans");
-}, "View submit bans.");
-
-addAdminCommand(["wordwarns"], function (src, commandData, channel) {
-    var table = '';
-    table += '<table border="1" cellpadding="5" cellspacing="0"><tr><td colspan="2"><center><strong>Trivia Warnings</strong></center></td></tr>';
-    for (var i = 0; i < trivData.triviaWarnings.length; i += 5) {
-        table += '<tr>';
-        for (var j = 0; j < 5 && i + j < trivData.triviaWarnings.length; ++j) {
-            table += '<td>' + trivData.triviaWarnings[i + j].toString() + '</td>';
-        }
-        table += '</tr>';
+addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
+    if (!isNaN(commandData)) {
+        trivData.specialChance = parseInt(commandData);
+        saveData();
+        triviabot.sendMessage(src, "Special chance set to " + commandData, channel);
     }
-    table += '</table>';
-    sys.sendHtmlMessage(src, table, channel);
-    return;
-}, "View word warnings.");
+}, "Modify chance of special categories appearing.");
 
 addAdminCommand(["equivalentcats"], function (src, commandData, channel) {
     var sortingArray = [];
@@ -3745,162 +3762,186 @@ addAdminCommand(["equivalentcats"], function (src, commandData, channel) {
     return;
 }, "View what categories act as synonyms for category games and submissions.");
 
-addAdminCommand(["triviamute"], function (src, commandData, channel) {
+addOwnerCommand(["cleareventstats"], function (src, commandData, channel) {
+    eventStats.reset();
+    triviabot.sendMessage(src, "The event stats were cleared.", channel);
+}, "Clears all data from the event stats.");
+
+addOwnerCommand(["eventstart"], function (src, commandData) {
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
+        lastEventType = "knowledge";
+    }
+    Trivia.startTrivia(src, commandData, "knowledge");
+}, "Allows you to start an Event trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random.");
+
+/*** OWNER COMMANDS ***/
+
+addOwnerCommand(["eventspeed"], function (src, commandData) {
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
+        lastEventType = "speed";
+    }
+    Trivia.startTrivia(src, commandData, "speed");
+}, "Allows you to start an Event speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
+
+addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
+    if (!Trivia.started) {
+        trivData.eventFlag = true;
+        manualEventFlag = true;
+        manualEventTime = sys.time();
+        manualEventTimeStamp = getStatsTimeStamp();
+        lastEventType = "elimination";
+    }
+    Trivia.startTrivia(src, commandData, "elimination");
+}, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+
+addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
-        triviabot.sendMessage(src, "Usage: name:reason:time", channel);
+        triviabot.sendMessage(src, "Usage: game type:new goal", channel);
         return;
     }
     commandData = commandData.split(":");
-    var user = commandData[0],
-        reason = commandData[1],
-        time = commandData[2];
-    if (sys.dbIp(user) === undefined) {
-        triviabot.sendMessage(src, "Couldn't find " + user, channel);
+    var gameType = commandData[0],
+        newGoal = commandData[1],
+        goalCheck = parseInt(newGoal, 10);
+    if (isNaN(goalCheck)) {
+        Trivia.sendPM(src, "The goal must be a valid number.", channel);
         return;
     }
-    var tarip = sys.id(user) === undefined ? sys.dbIp(user) : sys.ip(sys.id(user));
-    var ok = sys.auth(src) <= 0 && sys.maxAuth(tarip) <= 0 && !tadmin.isTAdmin(user);
-    if (sys.maxAuth(tarip) >= sys.auth(src) && !ok) {
-        triviabot.sendMessage(src, "Can't do that to higher auth!", channel);
+    if (goalCheck < 1 || goalCheck > 60) {
+        Trivia.sendPM(src, "The goal must not be lower than 1 or higher than 60.", channel);
         return;
     }
-    if (time === undefined) {
-        time = 0;
-    }
-    var seconds = getSeconds(time);
-    if (isNaN(seconds)) {
-        triviabot.sendMessage(src, "The time is a bit odd...", channel);
+    if (gameType.toLowerCase() === "know" || gameType.toLowerCase() === "knowledge"){
+        defaultKnowEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
         return;
     }
-    if (seconds < 1) {
-        if (!isTriviaOwner(src)) {
-            triviabot.sendMessage(src, "Please specify time!", channel);
-            return;
+    if (gameType.toLowerCase() === "speed"){
+        defaultSpeedEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
+    }
+    if (gameType.toLowerCase() === "elimination" || gameType.toLowerCase() === "elim"){
+        defaultElimEventGoal = newGoal;
+        eventSets.updateEventSettings();
+        triviabot.sendMessage(src, "The new default goal for event " + gameType + " games is " + newGoal, channel);
+        return;
+    }
+    triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
+}, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
+
+addOwnerCommand(["eventrates"], function (src, commandData, channel) {
+    if (commandData.length == 0) {
+        var elimRate = 100 - (eventKnowRate + eventSpeedRate);
+        Trivia.sendPM(src, "Event Knowledge Rate: " + eventKnowRate + " %", channel);
+        Trivia.sendPM(src, "Event Speed Rate: " + eventSpeedRate + " %", channel);
+        Trivia.sendPM(src, "Event Elimination Rate: " + elimRate + " %", channel);
+        return;
+    }
+    if (commandData === undefined || commandData.indexOf(":") == -1) {
+        triviabot.sendMessage(src, "Usage: know rate:speed rate", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var knowRate = commandData[0],
+        speedRate = commandData[1],
+        knowRateCheck = parseInt(knowRate, 10),
+        speedRateCheck = parseInt(speedRate, 10);
+    if (isNaN(knowRateCheck) || isNaN(speedRateCheck)) {
+        Trivia.sendPM(src, "The rate must be a valid number.", channel);
+        return;
+    }
+    if (knowRateCheck < 0 || knowRateCheck > 100 || speedRateCheck < 0 || speedRateCheck > 100) {
+        Trivia.sendPM(src, "The rate must not be lower than 0 or higher than 100.", channel);
+        return;
+    }
+    eventKnowRate = knowRateCheck;
+    eventSpeedRate = speedRateCheck;
+    var elimRate = 100 - (eventKnowRate + eventSpeedRate);
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "New Event Knowledge Rate: " + eventKnowRate + " %", channel);
+    Trivia.sendPM(src, "New Event Speed Rate: " + eventSpeedRate + " %", channel);
+    Trivia.sendPM(src, "New Event Elimination Rate: " + elimRate + " %", channel);
+}, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is know rate:speed rate.");
+
+addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the current event cooldown", channel);
+        return;
+    }
+    var cooldown = getSeconds(commandData);
+    if (isNaN(cooldown)) {
+        Trivia.sendPM(src, "The correct usage is no arguments or something such as 3h 30m 45s");
+        return;
+    }
+    trivData.eventCooldown = cooldown;
+    Trivia.sendPM(src, getTimeString(trivData.eventCooldown) + " is the new event cooldown", channel);
+    lastEventTime = sys.time(); //reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
+
+addOwnerCommand(["enableevents"], function (src, commandData, channel) {
+    eventModeOn = true;
+    lastEventTime = sys.time(); // reset timer
+    eventTimeChangeFlag = true;
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "Event elimination games are enabled!", channel);
+}, "Enables event elimination games.");
+
+addOwnerCommand(["disableevents"], function (src, commandData, channel) {
+    eventModeOn = false;
+    Trivia.sendPM(src, "Event elimination games are disabled!", channel);
+}, "Disable event elimination games.");
+
+addOwnerCommand(["seteventelimsignup"], function (src, commandData, channel) {
+    if (commandData.length === 0) {
+        Trivia.sendPM(src, "The current signup duration is " + eventElimSignUp + " seconds.", channel);
+        return;
+    }
+    if (isNaN(commandData)) {
+        Trivia.sendPM(src, "Please enter a valid number.", channel);
+        return;
+    }
+    if (commandData < 45 || commandData > 600) {
+        Trivia.sendPM(src, "The duration must be at least 45 seconds and no more than 600 seconds.", channel);
+        return;
+    }
+    eventElimSignUp = parseInt(commandData);
+    eventSets.updateEventSettings();
+    Trivia.sendPM(src, "The new signup duration is " + eventElimSignUp + " seconds.", channel);
+}, "Set the signup duration for event elimination games. Using no command fields allows you to view the current duration.");
+
+addOwnerCommand(["declinecatqs"], function (src, commandData, channel) {
+    var counter = 0;
+    for (var i in triviaq.all()) {
+        var q = triviaq.get(i);
+        if (commandData.toLowerCase() === q.category.toLowerCase()) {
+            if (i === trivData.extAnswers[i]) {
+                trivData.extAnswers.splice(i, 1);
+                saveData();
+            }
+            triviaq.remove(i);
+            questionData.remove(i);
+            counter++;
         }
-        time = "forever";
     }
-
-    var already = false;
-    if (isTrivia("muted", tarip)) {
-        if (sys.time() - trivData.mutes[tarip].issued < 15) {
-            triviabot.sendMessage(src, "This person was recently muted!", channel);
-            return;
-        }
-        already = true;
-    }
-    var timestring = (time === "forever" ? "forever" : getTimeString(seconds));
-    var expires = (time == "forever") ? "never" : parseInt(sys.time(), 10) + parseInt(seconds, 10);
-    trivData.mutes[tarip] = {
-        'name': user,
-        'reason': reason,
-        'by': sys.name(src),
-        'issued': parseInt(sys.time(), 10),
-        'expires': expires
-    };
-    var chans = [triviachan, revchan, sachannel, staffchannel];
-    for (var x in chans) {
-        var current = chans[x];
-        triviabot.sendAll((already ? nonFlashing(sys.name(src)) + " changed " + user + "'s triviamute time to " + (timestring === "forever" ? "forever" : timestring + " from now") : user + " was trivia muted by " + nonFlashing(sys.name(src)) + (timestring === "forever" ? " forever" : " for " + timestring)) + "! [Reason: " + reason + "]", current);
-    }
-    if (sys.id(user) !== undefined && Trivia.playerPlaying(sys.id(user))) {
-        Trivia.removePlayer(sys.id(user));
-        triviabot.sendAll(user + " was removed from the game!", triviachan);
-    }
-    saveData();
-}, "Trivia mute a user, format /triviamute user:reason:time.");
-
-addAdminCommand(["triviaunmute"], function (src, commandData, channel) {
-    if (commandData === undefined) {
-        triviabot.sendMessage(src, "Specify a user!", channel);
-        return;
-    }
-    if (sys.dbIp(commandData) === undefined) {
-        triviabot.sendMessage(src, "Couldn't find " + commandData, channel);
-        return;
-    }
-    var tarip = sys.id(commandData) === undefined ? sys.dbIp(commandData) : sys.ip(sys.id(commandData));
-    if (!isTrivia("muted", tarip)) {
-        triviabot.sendMessage(src, commandData + " isn't trivia muted!", channel);
-        return;
-    }
-    if (tarip == sys.ip(src) && isTrivia("muted", tarip)) {
-        triviabot.sendMessage(src, "You may not trivia unmute yourself!", channel);
-        return;
-    }
-    delete trivData.mutes[tarip];
-    var chans = [triviachan, revchan, sachannel, staffchannel];
-    for (var x in chans) {
-        var current = chans[x];
-        triviabot.sendAll(commandData + " was trivia unmuted by " + nonFlashing(sys.name(src)) + "!", current);
-    }
-    saveData();
-}, "Trivia unmute a user.");
-
-addAdminCommand(["triviamutes"], function (src, commandData, channel) {
-    showTrivia(src, channel, "mutes");
-}, "View trivia mutes.");
-
-addAdminCommand(["startrange"], function (src, commandData, channel) {
-    if (commandData === "") {
-        triviabot.sendMessage(src, "The current start range is " + trivData.autostartRange.min + "-" + trivData.autostartRange.max + ".", channel);
-        return;
-    }
-    var data = commandData.split("-");
-    if (data.length != 2) {
-        triviabot.sendMessage(src, "That's not how this command works. To change the start range, use /startrange min-max.", channel);
-        return;
-    }
-    if (isNaN(data[0]) || isNaN(data[1])) {
-        triviabot.sendMessage(src, "Both the minimum and maximum for the point range have to be numbers!", channel);
-        return;
-    }
-    trivData.autostartRange.min = data[0];
-    trivData.autostartRange.max = data[1];
-    saveData();
-    triviabot.sendAll(nonFlashing(sys.name(src)) + " changed the start range to " + data[0] + "-" + data[1] + ".", revchan);
-}, "Checks the start range, and lets you modify it. Use /startrange min-max to change it.");
-
-addAdminCommand(["passta"], function (src, commandData, channel) {
-    var oldname = sys.name(src).toLowerCase();
-    var newname = commandData.toLowerCase();
-    var sTA = false;
-    if (sys.dbIp(newname) === undefined) {
-        triviabot.sendMessage(src, "This user doesn't exist!", channel);
-        return;
-    }
-    if (!sys.dbRegistered(newname)) {
-        triviabot.sendMessage(src, "That account isn't registered so you can't give it authority!", channel);
-        return;
-    }
-    if (sys.id(newname) === undefined) {
-        triviabot.sendMessage(src, "Your target is offline!", channel);
-        return;
-    }
-    if (sys.ip(sys.id(newname)) !== sys.ip(src)) {
-        triviabot.sendMessage(src, "Both accounts must be on the same IP to switch!", channel);
-        return;
-    }
-    /* Can't figure out syntax to allow it to check properly, but it really doesn't matter at this point in the code.
-    if (tadmin.isTAdmin(newname) || isTriviaOwner(newname)) {
-        triviabot.sendMessage(src, "Your target is already a Trivia Admin!", channel);
-        return;
-    }*/
-    if (tsadmin.isTAdmin(oldname)) {
-        tsadmin.removeTAdmin(oldname);
-        tsadmin.addTAdmin(newname);
-        sTA = true;
-    } else if (tadmin.isTAdmin(oldname)){
-        tadmin.removeTAdmin(oldname);
-        tadmin.addTAdmin(newname);
+    if (!counter) {
+        triviabot.sendMessage(src, "The " + commandData + " category contains no questions to be deleted.", channel);
     } else {
-        triviabot.sendMessage(src, "You are not Trivia Auth", channel);
-        return;
+        triviabot.sendMessage(src, "The questions (" + counter + " total) in the " + commandData + " category have been deleted.", channel);
     }
-    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, sachannel);
-    Trivia.sendAll(sys.name(src) + " passed their " + (sTA ? "Trivia Owner powers" : "Trivia auth") + " to " + commandData, revchan);
-    triviabot.sendMessage(src, "You passed your Trivia auth to " + commandData.toCorrectCase() + "!", channel);
-    return;
-}, "To give your Trivia Admin powers to an alt.");
+}, "Delete all of the questions for a given category.");
 
 addOwnerCommand(["saybold"], function (src, commandData, channel) {
     if (commandData === "")
@@ -4099,26 +4140,6 @@ addOwnerCommand(["removeequivalentans","rea"], function (src, commandData, chann
    triviabot.sendMessage(src, "You deleted " + commandData + "'s synonyms.", channel);
 }, "Removes synonyms for an answer.");
 
-addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
-    if (commandData === ""){
-        for (var i in trivData.equivalentAns) {
-           Trivia.sendPM(src, i + ": " + trivData.equivalentAns[i], channel);
-        }
-    } else {
-        commandData = commandData.toLowerCase();
-        if (trivData.equivalentAns.hasOwnProperty(commandData)){
-            Trivia.sendPM(src, commandData + ": " + trivData.equivalentAns[commandData], channel);
-        } else {
-            Trivia.sendPM(src, commandData + " has no synonyms.");
-        }
-    }
-    return;
-}, "View synonyms of answers.");
-
-addAdminCommand(["hiddencats"], function (src, commandData, channel) {
-    triviabot.sendMessage(src, "Hidden categories are: " + trivData.hiddenCategories.join(", "), channel);
-}, "View hidden categories.");
-
 addOwnerCommand(["addhiddencat"], function (src, commandData, channel) {
     var cats = orderedCategories().map(function (x) { return x.category; });
     var i = cats.join("*").toLowerCase().split("*").indexOf(commandData.toLowerCase());
@@ -4142,14 +4163,6 @@ addOwnerCommand(["removehiddencat"], function (src, commandData, channel) {
         saveData();
     }
 }, "Unhide a category.");
-
-addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
-    if (!isNaN(commandData)) {
-        trivData.specialChance = parseInt(commandData);
-        saveData();
-        triviabot.sendMessage(src, "Special chance set to " + commandData, channel);
-    }
-}, "Modify chance of special categories appearing.");
 
 /*addOwnerCommand(["revertfrom"], function(src, commandData, channel) {
     commandData = commandData.split(":");
@@ -4203,6 +4216,8 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
         Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
     }
 }, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+
+/*** SERVER OWNER COMMANDS ***/
 
 addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, commandData, channel, command) {
     if (!commandData) {
@@ -4297,6 +4312,10 @@ module.exports = {
             if (sys.auth(src) > 0 || tadmin.isTAdmin(sys.name(src)) || isTriviaOwner(src)) {
                 sys.sendMessage(src, "*** Trivia Admin commands ***", channel);
                 adminCommandHelp.forEach(function (h) {
+                    if (h.indexOf("/elimination") !== -1) { sys.sendHtmlMessage(src, "<font color='blue'><timestamp/>**General TA commands**</font>", channel); }
+                    if (h.indexOf("/removeq") !== -1) { sys.sendHtmlMessage(src, "<font color='blue'><timestamp/>**Review TA commands**</font>", channel); }
+                    if (h.indexOf("/apropos") !== -1) { sys.sendHtmlMessage(src, "<font color='blue'><timestamp/>**Search and Statistical TA commands**</font>", channel); }
+                    if (h.indexOf("/setvotecooldown") !== -1) { sys.sendHtmlMessage(src, "<font color='blue'><timestamp/>**Category TA commands**</font>", channel); }
                     sys.sendMessage(src, h, channel);
                 });
             }
