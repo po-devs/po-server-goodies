@@ -2207,12 +2207,12 @@ addUserCommand(["triviarules"], function (src, commandData, channel) {
     sys.sendMessage(src, "- Trivia is a game for all to enjoy, and bad sportsmanship can turn that into a less pleasant experience for everyone involved. Do not brag when you get a question right, and do not be a sore loser when you get it wrong. Any form of cheating isn't allowed, whether by gaining an unfair advantage for yourself, or hampering someone else's ability to answer.", channel);
     sys.sendMessage(src, "4. Do not abuse question submission:", channel);
     sys.sendMessage(src, "- This includes, but is not limited to, submitting questions that are plainly wrong, offensive to other users, racist, inappropriate, trolling, spamming the same question multiple times, purposefully submitting questions that are already in the database. Trivia Admins can revoke a user's submitting privileges at any time if they deem it necessary.", channel);
-}, "Shows the rules of the Trivia channel");
+}, "Shows the rules of the Trivia channel.");
 
 addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
     tsadmin.tAdminList(src, channel, "Trivia Super Admins");
     tadmin.tAdminList(src, channel, "Trivia Admins");
-}, "Gives a list of current trivia admins. /tas and /tadmins also work.");
+}, "Gives a list of current Trivia Admins. /tas and /tadmins also work.");
 
 addUserCommand(["join"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2276,12 +2276,12 @@ addUserCommand(["join"], function (src, commandData, channel) {
     default:
         Trivia.sendAll(sys.name(src) + " returned to the game with " + Trivia.triviaPlayers[src].points + " points!", triviachan);
     }
-}, "Allows you to join a current game of trivia");
+}, "Allows you to join a current game of Trivia.");
 
 addUserCommand(["unjoin"], function (src, commandData, channel) {
     if (channel == triviachan)
         Trivia.unjoin(src);
-}, "Allows you to quit a current game of trivia");
+}, "Allows you to quit a current game of Trivia.");
 
 addUserCommand(["nextevent"], function (src, commandData, channel) {
     if (!eventModeOn) {
@@ -2298,15 +2298,15 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
     }
     var nextEventTime = (lastEventTime + trivData.eventCooldown) - sys.time();
     Trivia.sendPM(src, "The next event will be " + getTimeString(nextEventTime) + " from now.", channel);
-}, "Allows you to see when the next event game will be.");
+}, "Displays when the next event game will start.");
 
 addUserCommand(["start"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "knowledge");
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start category games.");
 
 addUserCommand(["speed"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start Category Games.");
+}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start category games.");
 
 addUserCommand(["goal"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2315,7 +2315,7 @@ addUserCommand(["goal"], function (src, commandData, channel) {
     }
     var points = Trivia.maxPoints;
     Trivia.sendPM(src, (Trivia.scoreType === "elimination" ? "Everyone started with " + points + (points == 1 ? " life." : " lives.") : "The goal for the current game is: " + points), channel);
-}, "Allows you to see the current target for the trivia game");
+}, "Displays the goal for the current Trivia game.");
 
 addUserCommand(["flashme"], function (src, commandData, channel) {
     if (!trivData.toFlash[sys.ip(src)]) {
@@ -2328,7 +2328,7 @@ addUserCommand(["flashme"], function (src, commandData, channel) {
         saveData();
         triviabot.sendMessage(src, "You are no longer going to be flashed when a game starts.", channel);
     }
-}, "Whether or not to flash you when a game starts");
+}, "Set whether or not to flash you when a game starts.");
 
 addUserCommand(["submitq"], function (src, commandData, channel) {
     var user_ip = sys.ip(src),
@@ -2364,7 +2364,7 @@ addUserCommand(["submitq"], function (src, commandData, channel) {
     if (needsreview) {
         trivreview.checkq(id);
     }
-}, "Allows you to submit a question for review, format /submitq Category*Question*Answer1,Answer2,etc");
+}, "Allows you to submit a question for review. Format is /submitq Category*Question*Answer1,Answer2,etc.");
 
 addUserCommand(["qamount"], function (src, commandData, channel) {
     if (channel == triviachan || channel == revchan) {
@@ -2380,7 +2380,7 @@ addUserCommand(["lastcat"], function (src, commandData, channel) {
         return;
     }
     Trivia.sendPM(src, "The last Category Game occurred " + lastCatGame + " games ago, with categories: " + lastUsedCats.join(", "), channel);
-}, "Allows you to check when the last Category Game occurred.");
+}, "Allows you to check when the last category game occurred.");
 
 addUserCommand(["categories", "cats"], function (src, commandData, channel) {
     if (typeof (triviaCategories) != "object") return;
@@ -2437,7 +2437,7 @@ addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
 
 addAdminCommand(["elimination", "elim"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an elimination game. Format is /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addAdminCommand(["changegoal"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2460,7 +2460,7 @@ addAdminCommand(["changegoal"], function (src, commandData, channel) {
     triviabot.sendAll(sys.name(src) + " changed the goal of the current game to " + commandData + ".", triviachan);
     Trivia.maxPoints = commandData;
     return;
-}, "Allows you to change the goal for the current game");
+}, "Allows you to change the goal for the current game.");
 
 addAdminCommand(["end"], function (src) {
     Trivia.endTrivia(src);
@@ -2489,7 +2489,7 @@ addAdminCommand(["submitpopq"], function (src, commandData, channel) {
         }
     }
     Trivia.sendPM(src, "Your question was submitted with the id: " + qid, channel);
-},"Allows you to submit a pop quiz question, format /submitpopq Category*Question*Answer1,Answer2,etc");
+},"Allows you to submit a pop quiz question. Format is /submitpopq Category*Question*Answer1,Answer2,etc.");
 
 addAdminCommand(["suggest"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2508,7 +2508,7 @@ addAdminCommand(["suggest"], function (src, commandData, channel) {
     Trivia.suggestion.suggester = src;
     Trivia.suggestion.asked = false;
     Trivia.sendAll(sys.name(src) + " made a suggestion for the next question to be asked in Trivia.", revchan);
-}, "Allows you to suggest a question to be asked next in Trivia. Format /suggest [ID].");
+}, "Allows you to suggest a question to be asked next in Trivia. Format is /suggest [ID].");
 
 addAdminCommand(["say"], function (src, commandData, channel) {
     if (commandData === "")
@@ -2535,7 +2535,7 @@ addAdminCommand(["lastevent"], function (src, commandData, channel) {
         return;
     }
     Trivia.sendPM(src, "The last event was of type " + lastEventType + " and was played " + getTimeString(lastEventOutputTime) + " ago.", channel);
-}, "Allows you to see what the last event type was and how long ago it was played.");
+}, "Displays what the last event type was and how long ago it was played.");
 
 addAdminCommand(["flashtas"], function (src, commandData, channel) {
     if ([triviachan, revchan, sachannel].indexOf(channel) === -1) {
@@ -2612,7 +2612,7 @@ addAdminCommand(["submitban"], function (src, commandData, channel) {
         }
     }
     saveData();
-}, "Ban a user from submitting, format /submitban user:reason:time.");
+}, "Ban a user from submitting. Format is /submitban user:reason:time.");
 
 addAdminCommand(["submitunban"], function (src, commandData, channel) {
     if (commandData === undefined) {
@@ -2720,7 +2720,7 @@ addAdminCommand(["triviamute"], function (src, commandData, channel) {
         triviabot.sendAll(user + " was removed from the game!", triviachan);
     }
     saveData();
-}, "Trivia mute a user, format /triviamute user:reason:time.");
+}, "Trivia mute a user. Format is /triviamute user:reason:time.");
 
 addAdminCommand(["triviaunmute"], function (src, commandData, channel) {
     if (commandData === undefined) {
@@ -2751,7 +2751,7 @@ addAdminCommand(["triviaunmute"], function (src, commandData, channel) {
 
 addAdminCommand(["triviamutes"], function (src, commandData, channel) {
     showTrivia(src, channel, "mutes");
-}, "View trivia mutes.");
+}, "View Trivia mutes.");
 
 addAdminCommand(["startrange"], function (src, commandData, channel) {
     if (commandData === "") {
@@ -2833,11 +2833,11 @@ addAdminCommand(["removeq"], function (src, commandData, channel) {
         return;
     }
     Trivia.sendPM(src, "Oops! Question doesn't exist", channel);
-}, "Allows you to remove a question that has already been submitted, format /removeq [ID]");
+}, "Allows you to remove a question that has already been submitted. Format is /removeq [ID].");
 
 addAdminCommand(["checkq"], function (src, commandData, channel) {
     PMcheckq(src, channel);
-}, "Allows you to check the current question in review");
+}, "Displays the current question in review.");
 
 addAdminCommand(["changea"], function (src, commandData) {
     if (trivreview.editingMode) {
@@ -2858,7 +2858,7 @@ addAdminCommand(["changea"], function (src, commandData) {
         return;
     }
     triviabot.sendMessage(src, "No question", revchan);
-}, "Allows you to change an answer to a question in review, format /changea newanswer");
+}, "Allows you to change an answer to a question in review. Format is /changea newanswer.");
 
 addAdminCommand(["changeq"], function (src, commandData) {
     if (trivreview.editingMode) {
@@ -2879,7 +2879,7 @@ addAdminCommand(["changeq"], function (src, commandData) {
         return;
     }
     triviabot.sendMessage(src, "No question", revchan);
-}, "Allows you to change the question to a question in review, format /changeq newquestion");
+}, "Allows you to change the question to a question in review. Format is /changeq newquestion.");
 
 addAdminCommand(["changec"], function (src, commandData) {
     if (trivreview.editingMode) {
@@ -2900,7 +2900,7 @@ addAdminCommand(["changec"], function (src, commandData) {
         return;
     }
     triviabot.sendMessage(src, "No question", revchan);
-}, "Allows you to change the category to a question in review, format /changec newcategory");
+}, "Allows you to change the category to a question in review. Format is /changec newcategory.");
 
 addAdminCommand(["changenotes"], function (src, commandData) {
     if (trivreview.editingMode) {
@@ -2921,7 +2921,7 @@ addAdminCommand(["changenotes"], function (src, commandData) {
         return;
     }
     triviabot.sendMessage(src, "No question");
-}, "Allows you to change the notes to a question in review, format /changenotes notes");
+}, "Allows you to change the notes to a question in review. Format is /changenotes notes.");
 
 addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
     if (trivreview.editingMode) {
@@ -2942,7 +2942,7 @@ addAdminCommand(["addnotes", "addnote"], function (src, commandData) {
         return;
     }
     triviabot.sendMessage(src, "No question");
-}, "Allows you to add notes to a question in review, format /addnotes notes");
+}, "Allows you to add notes to a question in review. Format is /addnotes notes.");
 
 addAdminCommand(["pushback"], function (src, commandData, channel) {
     var tr = trivreview.all();
@@ -2963,7 +2963,7 @@ addAdminCommand(["pushback"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "No more questions!", channel);
-}, "Allows you to push back a question");
+}, "Allows you to push back a question in review.");
 
 addAdminCommand(["showreview"], function (src, commandData, channel) {
     var tr = trivreview.all();
@@ -2999,7 +2999,7 @@ addAdminCommand(["review"], function (src, commandData, channel) {
     }
     triviabot.sendAll(sys.name(src) + " jumped to question #" + commandData + " in review", revchan);
     trivreview.checkq(commandData - 1);
-}, "Jumps to the question with specified id in review");
+}, "Jumps to the question with the specified id in review.");
 
 addAdminCommand(["accept"], function (src, commandData, channel) {
     var tr = trivreview.all();
@@ -3034,7 +3034,7 @@ addAdminCommand(["accept"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "No more questions!", channel);
-}, "Allows you to accept the current question in review");
+}, "Allows you to accept the current question in review.");
 
 addAdminCommand(["showq"], function (src, commandData, channel) {
     var q = triviaq.get(commandData);
@@ -3053,7 +3053,7 @@ addAdminCommand(["showq"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
-}, "Allows you to see an already submitted question");
+}, "Displays an already submitted question.");
 
 addAdminCommand(["editq"], function (src, commandData, channel) {
     commandData = commandData.split("*");
@@ -3087,7 +3087,7 @@ addAdminCommand(["editq"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "This question does not exist", channel);
-}, "Allows you to edit an already submitted question");
+}, "Allows you to place an existing question into review.");
 
 addAdminCommand(["markq"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -3117,7 +3117,7 @@ addAdminCommand(["markq"], function (src, commandData, channel) {
         trivreview.checkq();
         return;
     }
-}, "Puts the most recently asked question in review.");
+}, "Puts the most recently asked question into review.");
 
 addAdminCommand(["decline"], function (src, commandData, channel) {
     var tr = trivreview.all();
@@ -3143,7 +3143,7 @@ addAdminCommand(["decline"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "No more questions!", channel);
-}, "Allows you to decline the current question in review");
+}, "Allows you to decline the current question in review.");
 
 addAdminCommand(["equivalentans","ea"], function (src, commandData, channel) {
     if (commandData === ""){
@@ -3269,7 +3269,7 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
         Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
     }
 
-}, "Allows you to search through the questions, format /apropos [query]. Matches incomplete parts of words.");
+}, "Allows you to search through the questions. Format is /apropos [query]. Matches incomplete parts of words.");
 
 addAdminCommand(["search"], function (src, commandData, channel) {
     if (commandData === undefined) { return; }
@@ -3312,7 +3312,7 @@ addAdminCommand(["search"], function (src, commandData, channel) {
         Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
     }
 
-}, "Allows you to search through the questions, format /search [query]. Only matches whole words.");
+}, "Allows you to search through the questions. Format is /search [query]. Only matches whole words.");
 
 addAdminCommand(["searchcount"], function (src, commandData, channel) {
     if (commandData === undefined) {
@@ -3341,7 +3341,7 @@ addAdminCommand(["mostasked"], function (src, commandData, channel) {
         var q = sortedQs[i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists the N most asked questions, format /mostasked N, default is 30.");
+}, "Lists the N most asked questions. Format is /mostasked N. The default value for N is 30.");
 
 addAdminCommand(["leastasked"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
@@ -3351,7 +3351,7 @@ addAdminCommand(["leastasked"], function (src, commandData, channel) {
         var q = sortedQs[sortedQs.length - 1 - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists the N least asked questions, format /leastasked N, default is 30.");
+}, "Lists the N least asked questions. Format is /leastasked N. The default value for N is 30.");
 
 addAdminCommand(["mostanswered"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("answered");
@@ -3361,7 +3361,7 @@ addAdminCommand(["mostanswered"], function (src, commandData, channel) {
         var q = sortedQs[i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists the N questions answered correctly the most, format /mostanswered N, default is 30.");
+}, "Lists the N questions answered correctly the most. Format is /mostanswered N. The default value for N is 30.");
 
 addAdminCommand(["leastanswered"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("leastanswered");
@@ -3371,7 +3371,7 @@ addAdminCommand(["leastanswered"], function (src, commandData, channel) {
         var q = sortedQs[sortedQs.length - 1 - i];
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists the N questions answered correctly the least, format /leastanswered N, default is 30.");
+}, "Lists the N questions answered correctly the least. Format is /leastanswered N. The default value for N is 30.");
 
 addAdminCommand(["eventstats"], function (src, commandData, channel) {
     var stats = eventStats.loadEventStats();
@@ -3450,7 +3450,7 @@ addAdminCommand(["eventstats"], function (src, commandData, channel) {
                 triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//eventstats " + gameMode + ":" + i + "\">Show next page</a></b>", channel);
             }
     }
-}, "For viewing event statistics. Usage is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex]");
+}, "For viewing event statistics. Format is /eventstats, /eventstats [gameType], /eventstats [eventIndex], or /eventstats [gameType]:[eventIndex].");
 
 addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
     var stats = eventStats.loadEventStats();
@@ -3607,7 +3607,7 @@ addAdminCommand(["setvotecooldown"], function (src, commandData, channel) {
         trivData.votingCooldown = commandData;
         Trivia.sendAll(trivData.votingCooldown + " rounds is the new vote cooldown", revchan);
     }
-}, "Set number of rounds between each vote.");
+}, "Set the number of rounds between each vote.");
 
 addAdminCommand(["enablevoting"], function (src, commandData, channel) {
     Trivia.voting = true;
@@ -3658,7 +3658,7 @@ addAdminCommand(["categorycount"], function (src, commandData, channel) {
             count += 1;
     }
     Trivia.sendPM(src, "There are " + count + " questions with the category " + commandData + ".", channel);
-}, "Shows how many questions are in a specified category");
+}, "Shows how many questions are in a specified category.");
 
 addAdminCommand(["listc"], function (src, commandData, channel) {
     var categories = orderedCategories();
@@ -3711,7 +3711,7 @@ addAdminCommand(["addblockcats"], function (src, commandData, channel) {
     Trivia.sendAll(sys.name(src) + " added the block category '" + commandData[0] + "' which consists of the categories (" + categories.join(", ") + ").", revchan);
     trivData.blockCats.push(newBlockCat);
     saveData();
-}, "Adds a new block category. Usage is /addblockcats name*category1,category2,category3,etc.");
+}, "Adds a new block category. Format is /addblockcats name*category1,category2,category3,etc.");
 
 addAdminCommand(["removeblockcats"], function (src, commandData, channel) {
     if (!commandData.length || commandData === undefined) {
@@ -3731,7 +3731,7 @@ addAdminCommand(["removeblockcats"], function (src, commandData, channel) {
 
 addAdminCommand(["hiddencats"], function (src, commandData, channel) {
     triviabot.sendMessage(src, "Hidden categories are: " + trivData.hiddenCategories.join(", "), channel);
-}, "View hidden categories.");
+}, "Displays hidden categories.");
 
 addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
     if (!isNaN(commandData)) {
@@ -3739,7 +3739,7 @@ addAdminCommand(["setspecialchance"], function (src, commandData, channel) {
         saveData();
         triviabot.sendMessage(src, "Special chance set to " + commandData, channel);
     }
-}, "Modify chance of special categories appearing.");
+}, "Allows you to modify the chance of special categories appearing.");
 
 addAdminCommand(["equivalentcats"], function (src, commandData, channel) {
     var sortingArray = [];
@@ -3789,7 +3789,7 @@ addOwnerCommand(["eventspeed"], function (src, commandData) {
         lastEventType = "speed";
     }
     Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start an Event speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an event speed trivia game. Format is /speed [number][*category1][*category2][...]. Leave number blank for random.");
 
 addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
     if (!Trivia.started) {
@@ -3800,7 +3800,7 @@ addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
         lastEventType = "elimination";
     }
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an Event elimination game, format /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an Event elimination game. Format is /elimination [number][*category1][*category2][...]. Leave number blank for random.");
 
 addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
@@ -3838,7 +3838,7 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
         return;
     }
     triviabot.sendMessage(src, "Valid game types are know, speed, and elim.", channel);
-}, "Allows you adjust the default goals for events. Format is game type:new goal(example know:15)");
+}, "Allows you adjust the default goals for events. Format is /setdefaulteventgoal gametype:newgoal(example /setdefaulteventgoal know:15)");
 
 addOwnerCommand(["eventrates"], function (src, commandData, channel) {
     if (commandData.length == 0) {
@@ -3872,7 +3872,7 @@ addOwnerCommand(["eventrates"], function (src, commandData, channel) {
     Trivia.sendPM(src, "New Event Knowledge Rate: " + eventKnowRate + " %", channel);
     Trivia.sendPM(src, "New Event Speed Rate: " + eventSpeedRate + " %", channel);
     Trivia.sendPM(src, "New Event Elimination Rate: " + elimRate + " %", channel);
-}, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is know rate:speed rate.");
+}, "Allows you to see or set the rates for the game types of events. The rate for elimination games will be the percent that remains. Format is /eventrates knowrate:speedrate.");
 
 addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
     if (commandData.length === 0) {
@@ -3889,7 +3889,7 @@ addOwnerCommand(["seteventcooldown"], function (src, commandData, channel) {
     lastEventTime = sys.time(); //reset timer
     eventTimeChangeFlag = true;
     eventSets.updateEventSettings();
-}, "Set or check the cooldown time between each event. Example: 3h 30m 45s");
+}, "Set or check the cooldown time between each event. Example: /seteventcooldown 3h 30m 45s");
 
 addOwnerCommand(["enableevents"], function (src, commandData, channel) {
     eventModeOn = true;
@@ -3897,12 +3897,12 @@ addOwnerCommand(["enableevents"], function (src, commandData, channel) {
     eventTimeChangeFlag = true;
     eventSets.updateEventSettings();
     Trivia.sendPM(src, "Event elimination games are enabled!", channel);
-}, "Enables event elimination games.");
+}, "Enables event games.");
 
 addOwnerCommand(["disableevents"], function (src, commandData, channel) {
     eventModeOn = false;
     Trivia.sendPM(src, "Event elimination games are disabled!", channel);
-}, "Disable event elimination games.");
+}, "Disables event games.");
 
 addOwnerCommand(["seteventelimsignup"], function (src, commandData, channel) {
     if (commandData.length === 0) {
@@ -3963,7 +3963,7 @@ addOwnerCommand(["triviaadmin", "striviaadmin"], function (src, commandData, cha
     }
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia admin, use /striviaadmin for a silent promotion.");
+}, "Allows you to promote a new Trivia Admin. Use /striviaadmin for a silent promotion.");
 
 addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandData, channel, command) {
     if (!commandData) {
@@ -3986,7 +3986,7 @@ addOwnerCommand(["triviaadminoff", "striviaadminoff"], function (src, commandDat
     }
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", revchan);
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from " + oldAuth + ".", sachannel);
-}, "Allows you to demote a current trivia admin or super trivia admin, use /striviaadminoff for a silent demotion.");
+}, "Allows you to demote a current Trivia Admin or Super Trivia Admin. Use /striviaadminoff for a silent demotion.");
 
 /*addOwnerCommand(["makebackup"], function(src, commandData, channel) {
     commandData = commandData.split(":");
@@ -4011,7 +4011,7 @@ addOwnerCommand(["updateafter"], function (src, commandData, channel) {
         runUpdate();
     }
     return;
-}, "Updates trivia after the current game is over.");
+}, "Updates Trivia after the current game is over.");
 
 addOwnerCommand(["clearlb"], function (src, commandData, channel) {
     extLB.reset();
@@ -4025,7 +4025,7 @@ addOwnerCommand(["lbmin"], function (src, commandData, channel) {
         extLB.minLB = commandData;
         Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a knowledge game to count towards the leaderboard.",revchan);
     }
-}, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #");
+}, "Changes the minimum points needed for a knowledge-based game to count for the leaderboard. Format /lbmin #.");
 
 addOwnerCommand(["lbspeedmin"], function (src, commandData, channel) {
     if (commandData.length === 0 || isNaN(commandData)){
@@ -4034,7 +4034,7 @@ addOwnerCommand(["lbspeedmin"], function (src, commandData, channel) {
         extLB.minSpeedLB = commandData;
         Trivia.sendAll("A minimum of " + commandData + " point(s) is now required for a speed trivia game to count towards the leaderboard.",revchan);
     }
-}, "Changes the minimum points needed for a speed-based game to count for the leaderboard. Format /lbspeedmin #");
+}, "Changes the minimum points needed for a speed-based game to count for the leaderboard. Format /lbspeedmin #.");
 
 addOwnerCommand(["cleardata"], function (src, commandData, channel) {
     questionData.clear();
@@ -4057,7 +4057,7 @@ addOwnerCommand(["addwordwarn"], function (src, commandData) {
     saveData();
     triviabot.sendChanMessage(src, "You added a warning for: " + regex.source);
     return;
-}, "Adds an answer warning to trivia.");
+}, "Adds an answer warning to Trivia.");
 
 addOwnerCommand(["removewordwarn"], function (src, commandData) {
     if (commandData === undefined) {
@@ -4072,7 +4072,7 @@ addOwnerCommand(["removewordwarn"], function (src, commandData) {
     else {
         triviabot.sendChanMessage(src, commandData + " is not on the warning list");
     }
-}, "Removes a warning from trivia.");
+}, "Removes a warning from Trivia.");
 
 addOwnerCommand(["addequivalentcat"], function (src, commandData, channel) {
    var data = commandData.split("*");
@@ -4124,7 +4124,7 @@ addOwnerCommand(["addequivalentans","aea"], function (src, commandData, channel)
    trivData.equivalentAns[toChange] = changeTo;
    saveData();
    triviabot.sendMessage(src, "Added synonyms for " + toChange + ".", channel);
-}, "Adds synonyms for an answer. Format is /addequivalentans answer*newanswer1,newanswer2,etc");
+}, "Adds synonyms for an answer. Format is /addequivalentans answer*newanswer1,newanswer2,etc.");
 
 addOwnerCommand(["removeequivalentans","rea"], function (src, commandData, channel) {
    if (commandData === "") {
@@ -4215,7 +4215,7 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
     else {
         Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
     }
-}, "Changes all questions from one category to another. Format: /changeallc oldcat*newcat.");
+}, "Changes all questions from one category to another. Format is /changeallc oldcat*newcat.");
 
 /*** SERVER OWNER COMMANDS ***/
 
@@ -4233,7 +4233,7 @@ addServerOwnerCommand(["triviasuperadmin", "striviasuperadmin"], function (src, 
     }
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " promoted " + commandData.toCorrectCase() + " to Super Trivia Admin.", sachannel);
-}, "Allows you to promote a new trivia super admin, use /striviasuperadmin for a silent promotion.");
+}, "Allows you to promote a new Trivia Super Admin. Use /striviasuperadmin for a silent promotion.");
 
 addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function (src, commandData, channel, command) {
     if (!commandData) {
@@ -4249,7 +4249,7 @@ addServerOwnerCommand(["triviasuperadminoff", "striviasuperadminoff"], function 
     }
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", revchan);
     Trivia.sendAll(sys.name(src) + " demoted " + commandData.toCorrectCase() + " from Super Trivia Admin.", sachannel);
-}, "Allows you to demote a current trivia super admin, use /striviasuperadminoff for a silent demotion.");
+}, "Allows you to demote a current Trivia Super Admin. Use /striviasuperadminoff for a silent demotion.");
 
 
 module.exports = {
