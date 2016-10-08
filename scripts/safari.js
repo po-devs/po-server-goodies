@@ -7147,12 +7147,12 @@ function Safari() {
             theft = "but stole it back";
         } else {
             this.removePokemon(src, id);
-            if (isRare(id) && player.tradeban <= now()) {
+            /*if (isRare(id) && player.tradeban <= now()) {
                 sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("<b><font color=tomato>Haha! " + sys.name(src) + " just sold their " + info.name + " to the shop! You should make fun of them with " + link("/rock " + sys.name(src)) + "!</font></b>", safchan);
                 sys.sendAll("", safchan);
                 player.balls.salt += 1;
-            }
+            }*/
         }
 
         this.logLostCommand(sys.name(src), "sell " + data, theft);
