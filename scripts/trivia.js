@@ -1025,7 +1025,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
         displayboard.push(leaderboard[x][0] + " (" + leaderboard[x][1] + ")");
     }
     for (var y in leaderboard) {   //this sorts the winners
-        if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination"){
+        if (leaderboard[y][1] >= this.maxPoints && this.scoreType !== "elimination") {
+            if (trivData.eventFlag && winners.length === 3) { break; }
             winners.push(leaderboard[y][0] + " (" + leaderboard[y][1] + ")");
         }
     }
@@ -1058,7 +1059,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
     if (leaderboard.length === 1 && this.scoreType === "elimination") {
         winners.push(utilities.html_escape(leaderboard[0][0]) + " (" + leaderboard[0][1] + ")");
         winnersNamesOnly.push(utilities.html_escape(leaderboard[0][0]));
-        if (!this.lbDisabled) extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
+        if (!this.lbDisabled && !trivData.eventFlag) {
+            extLB.updateLeaderboard(utilities.html_escape(leaderboard[0][0]).toLowerCase(), parseInt(leaderboard[0][1], 10));
+        }
     }
 
     if (trivData.eventFlag && this.iteration < 3 && this.scoreType !== "elimination") {
@@ -1094,7 +1097,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         //otherwise, it's just 1.
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
-         if (trivData.eventFlag) {
+         /*if (trivData.eventFlag) {
              while (leaderboard[i] && leaderboard[i][1] >= this.maxPoints) {
                  var points = totalPlayers - i;
                  if (this.catGame) {points = points / 2;}
@@ -1103,8 +1106,8 @@ TriviaGame.prototype.finalizeAnswers = function () {
                  lastPoints = points;
                  i++;
              }
-         }
-         if (!this.lbDisabled) sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard));
+         }*/
+
          var w = (winners.length == 1) ? "the winner!" : "our winners!";
          winners.sort(function (a, b) {
              return b[1] - a[1];
@@ -1211,7 +1214,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if (trivData.eventFlag) {
             eventDuration = (manualEventFlag ? sys.time() - manualEventTime : sys.time() - lastEventTime);
             eventStats.updateEventStats((this.scoreType === 'elimination' ? playersForStats.reverse() : displayboard), (leaderboard.length !== 0 ? false : true));
+            var pointsAwarded = 4;
+            for (var v = 0; v < 3 && v < validParticipants.length; v++) {
+                pointsAwarded -= 1;
+                extLB.updateLeaderboard(utilities.html_escape(leaderboard[v][0]), pointsAwarded);
+            }
         }
+        if (!this.lbDisabled) { sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard)); }
         var wasElim = false;
         if (trivData.eventFlag && this.scoreType === "elimination" && leaderboard.length !== 0) {
             wasElim = true;
@@ -2010,6 +2019,15 @@ function PointsLB(file) {
     }
     try {
         this.leaderboard = JSON.parse(fileContent);
+        // This is just to stop the data from being corrupted until the leaderboard resets again. Can be removed later.
+        for (var i = 0; i < this.leaderboard.length; i++) {
+            if (this.leaderboard[i].eventPoints === undefined || isNaN(this.leaderboard[i].eventPoints)) {
+                this.leaderboard[i].eventPoints = 0;
+            }
+            if (this.leaderboard[i].eventWins === undefined || isNaN(this.leaderboard[i].eventWins)) {
+                this.leaderboard[i].eventWins = 0;
+            }
+        }
     }
     catch (e) {
         sys.sendAll("Error loading leaderboard: " + e, revchan);
@@ -2018,12 +2036,16 @@ function PointsLB(file) {
 
 PointsLB.prototype.updateLeaderboard = function (name, points){
     var player;
-    if (Trivia.scoreType === "elimination"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : points, 'elimWins' : 1, 'regPoints': 0, 'speedPoints' : 0, 'regWins' : 0, 'speedWins' : 0};
-    } else if (Trivia.scoreType === "knowledge"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'regPoints' : points, 'speedPoints': 0, 'regWins' : 1, 'speedWins' : 0};
-    } else if (Trivia.scoreType === "speed"){
-        player = {'name' : name.toLowerCase(), 'livesLeft' : 0, 'elimWins' : 0, 'regPoints': 0, 'speedPoints' : points, 'regWins' : 0, 'speedWins' : 1};
+    if (!trivData.eventFlag) {
+        if (Trivia.scoreType === "elimination"){
+            player = {"name" : name.toLowerCase(), "livesLeft" : points, "elimWins" : 1, "regPoints": 0, "speedPoints" : 0, "regWins" : 0, "speedWins" : 0, "eventPoints" : 0, "eventWins" : 0 };
+        } else if (Trivia.scoreType === "knowledge"){
+            player = {"name" : name.toLowerCase(), "livesLeft" : 0, "elimWins" : 0, "regPoints" : points, "speedPoints": 0, "regWins" : 1, "speedWins" : 0, "eventPoints" : 0, "eventWins" : 0 };
+        } else if (Trivia.scoreType === "speed"){
+            player = {"name" : name.toLowerCase(), "livesLeft" : 0, "elimWins" : 0, "regPoints" : 0, "speedPoints" : points, "regWins" : 0, "speedWins" : 1, "eventPoints" : 0, "eventWins" : 0 };
+        }
+    } else {
+        player = { "name" : name.toLowerCase(), "livesLeft" : 0, "elimWins" : 0, "regPoints" : 0, "speedPoints" : 0, "regWins" : 0, "speedWins" : 0, "eventPoints" : points, "eventWins" : 1 };
     }
     var playerIndex = -1;
     var i;
@@ -2036,22 +2058,27 @@ PointsLB.prototype.updateLeaderboard = function (name, points){
     if (playerIndex === -1){
         this.leaderboard.push(player);
     } else {
-        if (Trivia.scoreType === "elimination"){
-            this.leaderboard[playerIndex].livesLeft = this.leaderboard[playerIndex].livesLeft + player.livesLeft;
-            this.leaderboard[playerIndex].elimWins = this.leaderboard[playerIndex].elimWins + 1;
-        } else if (Trivia.scoreType === "knowledge"){
-            this.leaderboard[playerIndex].regPoints = this.leaderboard[playerIndex].regPoints + player.regPoints;
-            this.leaderboard[playerIndex].regWins = this.leaderboard[playerIndex].regWins + 1;
-        } else if (Trivia.scoreType === "speed"){
-            this.leaderboard[playerIndex].speedPoints = this.leaderboard[playerIndex].speedPoints + player.speedPoints;
-            this.leaderboard[playerIndex].speedWins = this.leaderboard[playerIndex].speedWins + 1;
+        if (trivData.eventFlag) {
+            this.leaderboard[playerIndex].eventPoints = this.leaderboard[playerIndex].eventPoints + player.eventPoints;
+            this.leaderboard[playerIndex].eventWins = this.leaderboard[playerIndex].eventWins + player.eventWins;
+        } else {
+            if (Trivia.scoreType === "elimination") {
+                this.leaderboard[playerIndex].livesLeft = this.leaderboard[playerIndex].livesLeft + player.livesLeft;
+                this.leaderboard[playerIndex].elimWins = this.leaderboard[playerIndex].elimWins + 1;
+            } else if (Trivia.scoreType === "knowledge") {
+                this.leaderboard[playerIndex].regPoints = this.leaderboard[playerIndex].regPoints + player.regPoints;
+                this.leaderboard[playerIndex].regWins = this.leaderboard[playerIndex].regWins + 1;
+            } else if (Trivia.scoreType === "speed") {
+                this.leaderboard[playerIndex].speedPoints = this.leaderboard[playerIndex].speedPoints + player.speedPoints;
+                this.leaderboard[playerIndex].speedWins = this.leaderboard[playerIndex].speedWins + 1;
+            }
         }
     }
 };
 
 PointsLB.prototype.showLeaders = function (src, commandData, id) {
-    var scoreTypes = ["elimination", "knowledge", "speed"];
-    var lb = [];
+    var scoreTypes = ["elimination", "knowledge", "speed", "event"];
+    var lb = [], player = [];
     var i, maxPlace;
     var input = commandData.split('*');
     var scoreType = input[0].toLowerCase();
@@ -2065,7 +2092,7 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
             maxPlace = 10;
         } else {maxPlace = input[1];}
         for (i = 0; i < this.leaderboard.length; i++) {
-            var player = {'name' : this.leaderboard[i].name, 'regPoints' : this.leaderboard[i].regPoints, 'speedPoints': this.leaderboard[i].speedPoints, 'regWins' : this.leaderboard[i].regWins, 'livesLeft' : this.leaderboard[i].livesLeft,'elimWins' : this.leaderboard[i].elimWins, 'speedWins' : this.leaderboard[i].speedWins};
+            player = { "name" : this.leaderboard[i].name, "regPoints" : this.leaderboard[i].regPoints, "speedPoints" : this.leaderboard[i].speedPoints, "regWins" : this.leaderboard[i].regWins, "livesLeft" : this.leaderboard[i].livesLeft,"elimWins" : this.leaderboard[i].elimWins, "speedWins" : this.leaderboard[i].speedWins, "eventPoints" : this.leaderboard[i].eventPoints, "eventWins" : this.leaderboard[i].eventWins };
             lb.push(player);
         }
         if (scoreType === "elimination"){
@@ -2110,6 +2137,22 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
                     } else return b.speedWins - a.speedWins;
                 } else return b.speedPoints - a.speedPoints;
             });
+        } else if (scoreType === "event") {
+            lb.sort(function (a, b) {
+                if (b.eventPoints === a.eventPoints) {
+                    if (b.regPoints === a.regPoints){
+                        if (b.regWins === a.regWins){
+                            if (b.speedPoints === a.speedPoints) {
+                                if (b.speedWins === a.speedWins) {
+                                    if (b.livesLeft === a.livesLeft){
+                                        return b.elimWins - a.elimWins;
+                                    } else return b.livesLeft - a.livesLeft;
+                                } else return b.speedWins - a.speedWins;
+                            } else return b.speedPoints - a.speedPoints;
+                        } else return b.regWins - a.regWins;
+                    } else return b.regPoints - a.regPoints;
+                } else return b.eventPoints - a.eventPoints;
+            });
         }
         sys.sendMessage(src, "", id);
         sys.sendMessage(src, "*** Trivia Leaderboard (" + scoreType + ") ***", id);
@@ -2117,11 +2160,13 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
             if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()) {
                 var x = i + 1;
                 if (scoreType === "knowledge"){
-                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point(s) and " + lb[i].regWins + " wins!", id);
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point" + (lb[i].regPoints === 1 ? " and " : "s and ") + lb[i].regWins + " win" + (lb[i].regWins === 1 ? "!" : "s!"), id);
                 } else if (scoreType === "speed"){
-                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point(s) and " + lb[i].speedWins + " wins!", id);
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point" + (lb[i].speedPoints === 1 ? " and " : "s and ") + lb[i].speedWins + " win" + (lb[i].speedWins === 1 ? "!" : "s!"), id);
                 } else if (scoreType === "elimination"){
-                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " win" + (lb[i].elimWins === 1 ? "!" : "s!"), id);
+                } else if (scoreType === "event") {
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].eventPoints + " point" + (lb[i].eventPoints === 1 ? " and " : "s and ") + lb[i].eventWins + " win" + (lb[i].eventWins === 1 ? "!" : "s!"), id);
                 }
             }
         }
@@ -2132,18 +2177,20 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
                 if (lb[i].name === input[y].toLowerCase()) {
                     x = i + 1;
                     if (scoreType === "knowledge"){
-                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point(s) and " + lb[i].regWins + " wins!", id);
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point" + (lb[i].regPoints === 1 ? " and " : "s and ") + lb[i].regWins + " win" + (lb[i].regWins === 1 ? "!" : "s!"), id);
                     } else if (scoreType === "speed"){
-                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point(s) and " + lb[i].speedWins + " wins!", id);
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point" + (lb[i].speedPoints === 1 ? " and " : "s and ") + lb[i].speedWins + " win" + (lb[i].speedWins === 1 ? "!" : "s!"), id);
                     } else if (scoreType === "elimination"){
-                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " wins!", id);
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " win" + (lb[i].elimWins === 1 ? "!" : "s!"), id);
+                    } else if (scoreType === "event") {
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].eventPoints + " point" + (lb[i].eventPoints === 1 ? " and " : "s and ") + lb[i].eventWins + " win" + (lb[i].eventWins === 1 ? "!" : "s!"), id);
                     }
                 }
             }
         }
         sys.sendMessage(src, "", id);
     } else {
-        Trivia.sendPM(src, "Valid scoring systems are knowledge [know], elimination [elim], and speed [speed].", id);
+        Trivia.sendPM(src, "Valid scoring systems are knowledge [know], speed [speed], elimination [elim], and event [event].", id);
     }
 };
 
@@ -2429,7 +2476,7 @@ addUserCommand(["vote"], function (src, commandData, channel) {
 
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
-}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know] or elimination [elim]); required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
+}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know], speed [speed], elimination [elim], event [event]); required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
 
 /*** TRIVIA ADMIN COMMANDS ***/
 
@@ -3232,23 +3279,30 @@ addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
     if (commandData === undefined) { return; }
+    var search = commandData, index = 0;
+    if (commandData.indexOf("*") !== -1) {
+        commandData = commandData.split("*");
+        search = commandData[0];
+        if (!isNaN(commandData[1])) { index = commandData[1]; }
+        else { index = 0; }
+    }
     if (Trivia.playerPlaying(src) && Trivia.round) {
         var z1 = Trivia.roundQuestion;
         var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /apropos to search '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
         if (trivData.eventFlag) {
             Trivia.sendPM(src, "You cannot use /apropos during event games!", channel);
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
+    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [], answer;
     for (b in all) {
         q = triviaq.get(b);
         answer = String(q.answer);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+        if (q.question.toLowerCase().indexOf(search.toLowerCase()) > -1 || answer.toLowerCase().indexOf(search.toLowerCase()) > -1) {
             output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
         }
     }
@@ -3256,37 +3310,46 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
     for (b in all) {
         q = trivreview.get(b);
         answer = String(q.answer);
-        if (q.question.toLowerCase().indexOf(commandData.toLowerCase()) > -1 || answer.toLowerCase().indexOf(commandData.toLowerCase()) > -1) {
+        if (q.question.toLowerCase().indexOf(search.toLowerCase()) > -1 || answer.toLowerCase().indexOf(search.toLowerCase()) > -1) {
             output.push("Question under review: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "'");
         }
     }
     var x = 0;
-    while (x < output.length && x !== 50) {
-        Trivia.sendPM(src, output[x], channel);
+    while (index < output.length && x !== 50) {
+        Trivia.sendPM(src, output[index], channel);
+        index++;
         x += 1;
     }
-    if (x === 50) { //maybe add a configurable value in the future
-        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
+    if (x === 50 && index < output.length) {
+        Trivia.sendPM(src, "Over 50 results were found for this query", channel);
+        triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//apropos " + search + "*" + index + "\">Show more results</a></b>", channel);
     }
 
 }, "Allows you to search through the questions. Format is /apropos [query]. Matches incomplete parts of words.");
 
 addAdminCommand(["search"], function (src, commandData, channel) {
     if (commandData === undefined) { return; }
+    var search = commandData, index = 0;
+    if (commandData.indexOf("*") !== -1) {
+        commandData = commandData.split("*");
+        search = commandData[0];
+        if (!isNaN(commandData[1])) { index = commandData[1]; }
+        else { index = 0; }
+    }
     if (Trivia.playerPlaying(src) && Trivia.round) {
         var z1 = Trivia.roundQuestion;
         var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /search to search '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
         if (trivData.eventFlag) {
             Trivia.sendPM(src, "You cannot use /search during event games!", channel);
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + commandData + "' are: ", channel);
+    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
     var all = triviaq.all(),
         b, q, output = [];
-    var re = new RegExp("\\b" + commandData + "\\b", "i");
+    var re = new RegExp("\\b" + search + "\\b", "i");
     var answer;
     for (b in all) {
         q = triviaq.get(b);
@@ -3304,12 +3367,14 @@ addAdminCommand(["search"], function (src, commandData, channel) {
         }
     }
     var x = 0;
-    while (x < output.length && x !== 50) {
-        Trivia.sendPM(src, output[x], channel);
+    while (index < output.length && x !== 50) {
+        Trivia.sendPM(src, output[index], channel);
+        index++;
         x += 1;
     }
-    if (x === 50) { //maybe add a configurable value in the future
-        Trivia.sendPM(src, "Too many results were found for this query", channel); //possibly add a way to show more results
+    if (x === 50 && index < output.length) {
+        Trivia.sendPM(src, "Over 50 results were found for this query", channel);
+        triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//search " + search + "*" + index + "\">Show more results</a></b>", channel);
     }
 
 }, "Allows you to search through the questions. Format is /search [query]. Only matches whole words.");
@@ -3621,26 +3686,36 @@ addAdminCommand(["disablevoting"], function (src, commandData, channel) {
 
 addAdminCommand(["searchcategory"], function (src, commandData, channel) {
     if (commandData === undefined) { return; }
+    var search = commandData, index = 0;
+    if (commandData.indexOf("*") !== -1) {
+        commandData = commandData.split("*");
+        search = commandData[0];
+        if (!isNaN(commandData[1])) { index = commandData[1]; }
+        else { index = 0; }
+    }
     if (Trivia.playerPlaying(src) && Trivia.round) {
         var z1 = Trivia.roundQuestion;
         var z2 = (z1 > 0) ? triviaq.get(z1).question : z2 = "Mental Math";
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
-        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + commandData + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", sys.channelId("Victory Road"));
+        triviabot.sendAll("Warning: Player " + sys.name(src) + (trivData.eventFlag ? " tried to use" : " used") + " /searchcategory to search the category: '" + search + (z2 !== "Mental Math" ? "' during the question '" + z2 + "' ": "' during a '" + z2 + "' question ") + "while playing #Trivia", revchan);
         if (trivData.eventFlag) {
             Trivia.sendPM(src, "You cannot use /searchcategory during event games!", channel);
             return;
         }
     }
-    Trivia.sendPM(src, "Questions in " + commandData + " category are:", channel);
-    var count = 0;
+    Trivia.sendPM(src, "Questions in " + search + " category are:", channel);
+    var count = 0, length = 0;
+    for (length in triviaq.all()) {}
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
-        if (commandData.toLowerCase() === q.category.toLowerCase()) {
+        if (search.toLowerCase() === q.category.toLowerCase() && parseInt(i) > index) {
             Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
             count++;
-            if (count === 50) {
-                Trivia.sendPM(src, "Too many results were found for this query.", channel);
-                return;
+            if (count === 50 && index < length) { //maybe add a configurable value in the future
+                index = i;
+                Trivia.sendPM(src, "Over 50 results were found for this query", channel);
+                triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//searchcategory " + search + "*" + index + "\">Show more results</a></b>", channel);
+                break;
             }
         }
     }
@@ -4357,7 +4432,7 @@ module.exports = {
             sys.sendMessage(src, "*** NEXT TRIVIA EVENT ***", channel);
             if (eventModeOn) {
                 if (trivData.eventFlag) {
-                    Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+                    triviabot.sendHtmlMessage(src, "A trivia event game is currently running. <a href=\"po:send//join\">Click here to join!</a>", channel);
                     sys.sendHtmlMessage(src, border, channel);
                     return;
                 }
