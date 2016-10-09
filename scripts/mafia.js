@@ -1949,7 +1949,7 @@ function Mafia(mafiachan) {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
                 if (safchan) {
                     sendBorder(safchan);
-                    sendChanHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
+                    mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
                     sendBorder(safchan);
                 }
             }
