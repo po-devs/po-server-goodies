@@ -1216,6 +1216,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             eventStats.updateEventStats((this.scoreType === 'elimination' ? playersForStats.reverse() : displayboard), (leaderboard.length !== 0 ? false : true));
             var pointsAwarded = 4;
             for (var v = 0; v < 3 && v < validParticipants.length; v++) {
+                if (!leaderboard[v]) {
+                    break;
+                }
                 pointsAwarded -= 1;
                 extLB.updateLeaderboard(utilities.html_escape(leaderboard[v][0]), pointsAwarded);
             }
