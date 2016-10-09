@@ -7119,10 +7119,19 @@ function Safari() {
         var perkBonus = 1 + Math.min(itemData.amulet.bonusRate * player.balls.amulet, itemData.amulet.maxRate);
         var price = getPrice(info.num, info.shiny, perkBonus);
 
-        if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
-            var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
-            return;
+
+        if (isRare(id)) {
+            if (input.length < 2 || input[1].toLowerCase() !== "confirmrare") {
+                var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirmrare";
+                safaribot.sendHtmlMessage(src, "You can sell your rare " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+                return;
+            }
+        } else {
+            if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
+                var confirmCommand = "/sell " + (shiny ? "*":"") + sys.pokemon(id) + ":confirm";
+                safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+                return;
+            }
         }
 
         var restrictions = ["contest", "auction", "battle", "event", "pyramid", "tutorial"];
