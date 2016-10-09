@@ -1216,11 +1216,9 @@ TriviaGame.prototype.finalizeAnswers = function () {
             eventStats.updateEventStats((this.scoreType === 'elimination' ? playersForStats.reverse() : displayboard), (leaderboard.length !== 0 ? false : true));
             var pointsAwarded = 4;
             for (var v = 0; v < 3 && v < validParticipants.length; v++) {
-                if (!leaderboard[v]) {
-                    break;
-                }
                 pointsAwarded -= 1;
-                extLB.updateLeaderboard(utilities.html_escape(leaderboard[v][0]), pointsAwarded);
+                if (!validParticipants[v]) { break; }
+                extLB.updateLeaderboard(utilities.html_escape(validParticipants[v][0]), pointsAwarded);
             }
         }
         if (!this.lbDisabled) { sys.writeToFile(extLB.file, JSON.stringify(extLB.leaderboard)); }
@@ -2143,17 +2141,19 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
         } else if (scoreType === "event") {
             lb.sort(function (a, b) {
                 if (b.eventPoints === a.eventPoints) {
-                    if (b.regPoints === a.regPoints){
-                        if (b.regWins === a.regWins){
-                            if (b.speedPoints === a.speedPoints) {
-                                if (b.speedWins === a.speedWins) {
-                                    if (b.livesLeft === a.livesLeft){
-                                        return b.elimWins - a.elimWins;
-                                    } else return b.livesLeft - a.livesLeft;
-                                } else return b.speedWins - a.speedWins;
-                            } else return b.speedPoints - a.speedPoints;
-                        } else return b.regWins - a.regWins;
-                    } else return b.regPoints - a.regPoints;
+                    if (b.eventWins === a.eventWins) {
+                        if (b.regPoints === a.regPoints){
+                            if (b.regWins === a.regWins){
+                                if (b.speedPoints === a.speedPoints) {
+                                    if (b.speedWins === a.speedWins) {
+                                        if (b.livesLeft === a.livesLeft){
+                                            return b.elimWins - a.elimWins;
+                                        } else return b.livesLeft - a.livesLeft;
+                                    } else return b.speedWins - a.speedWins;
+                                } else return b.speedPoints - a.speedPoints;
+                            } else return b.regWins - a.regWins;
+                        } else return b.regPoints - a.regPoints;
+                    } else return b.eventWins - a.eventWins;
                 } else return b.eventPoints - a.eventPoints;
             });
         }
@@ -2339,7 +2339,7 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
         return;
     }
     if (trivData.eventFlag) {
-        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        Trivia.sendPM(src, "A Trivia event game is currently running.", channel);
         return;
     }
     if (eventModeOn && ((lastEventTime + trivData.eventCooldown) <= sys.time())) {
@@ -2568,7 +2568,7 @@ addAdminCommand(["say"], function (src, commandData, channel) {
 
 addAdminCommand(["lastevent"], function (src, commandData, channel) {
     if (trivData.eventFlag) {
-        Trivia.sendPM(src, "A trivia event game is currently running.", channel);
+        Trivia.sendPM(src, "A Trivia event game is currently running.", channel);
         return;
     }
     if (manualEventFlag){
@@ -4435,7 +4435,7 @@ module.exports = {
             sys.sendMessage(src, "*** NEXT TRIVIA EVENT ***", channel);
             if (eventModeOn) {
                 if (trivData.eventFlag) {
-                    triviabot.sendHtmlMessage(src, "A trivia event game is currently running. <a href=\"po:send//join\">Click here to join!</a>", channel);
+                    triviabot.sendHtmlMessage(src, "A Trivia event game is currently running. <a href=\"po:send//join\">Click here to join!</a>", channel);
                     sys.sendHtmlMessage(src, border, channel);
                     return;
                 }
