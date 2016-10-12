@@ -6114,18 +6114,18 @@ function Mafia(mafiachan) {
                     if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
                         return;
                     }
-                    var oldRole = target.role, newRole;
+                    var oldRole = target.role, newRole = null;
                     if (typeof Action.newRole == "object") {
                         if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
                             newRole = randomSample(Action.newRole.random);
                         } else {
-                            var possibleRoles = Object.keys(Action.newRole).shuffle();
+                            var possibleRoles = Object.keys(Action.newRole).shuffle(), nrList = [];
                             for (var nr in possibleRoles) {
                                 if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
-                                    newRole = possibleRoles[nr];
-                                    break;
+                                    nrList.push(possibleRoles[nr]);
                                 }
                             }
+                            newRole = mafia.filterUniqueRoles(nrList, mafia.players);
                         }
                     } else {
                         newRole = Action.newRole;
@@ -6157,13 +6157,14 @@ function Mafia(mafiachan) {
                     } else {
                         var oldRole = player.role, newRole = null;
                         if (typeof Action.copyAs == "object") {
-                            var possibleRoles = Object.keys(Action.copyAs).shuffle();
+                            var possibleRoles = Object.keys(Action.copyAs).shuffle(), nrList;
                             for (var nr in possibleRoles) {
                                 if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
-                                    newRole = possibleRoles[nr];
+                                    nrList.push(possibleRoles[nr]);
                                     break;
                                 }
                             }
+                            newRole = mafia.filterUniqueRoles(nrList, mafia.players);
                         } else if (typeof Action.copyAs == "string") {
                             if (Action.copyAs == "*") {
                                 newRole = target.role.role;
