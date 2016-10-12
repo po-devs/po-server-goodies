@@ -11341,7 +11341,7 @@ function Safari() {
 
         var opt = data[0].toLowerCase();
         if (opt === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Challenge our trainers for a chance to receive some " + es(finishName("silver")) + "! The trainers available are: ", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Challenge our trainers for a chance to receive some items like " + es(finishName("silver")) + "! The trainers available are: ", safchan);
             for (var n in arenaOpponents) {
                 var opp = arenaOpponents[n];
                 safaribot.sendHtmlMessage(src, "-" + link("/quest arena:" + cap(n), cap(n)) + ": Entry Fee: $" + addComma(price[n])  + ". Reward: " + (opp.postArgs.rewardAmt !== 0 ? plural(opp.postArgs.rewardAmt, (opp.postArgs.reward || "silver")) : "") + (opp.postArgs.moneyReward ? "$" + addComma(opp.postArgs.moneyReward) : "") + ". Cooldown: " + utilities.getTimeString(opp.postArgs.cooldown * 60 * 60) + ". ", safchan);
@@ -13147,7 +13147,7 @@ function Safari() {
             }
             
             if (list.length === 0) {
-                return null;
+                return false;
             }
             
             if (obj.what && !photoActions.Any.contains(obj.what)) {
@@ -13159,7 +13159,7 @@ function Safari() {
                 }
                 for (p = list.length; p--; ) {
                     id = list[p];
-                    if (hasType(id, types[0]) || (types.length > 0 && hasType(id, types[1]))) {
+                    if (hasType(id, types[0]) || (types.length > 1 && hasType(id, types[1]))) {
                         continue;
                     }
                     list.splice(p, 1);
@@ -13327,6 +13327,9 @@ function Safari() {
                 continue;
             }
             list = getValidList(out);
+            if (list === null) {
+                return null;
+            }
             val = calculateScore(out, list);
             if (Object.keys(out).length >= paramCount) {
                 break;
@@ -13340,7 +13343,7 @@ function Safari() {
             return null;
         }
         
-        var anyPoke = list === null;
+        var anyPoke = list === false;
         
         if (!anyPoke && list.length === 0) {
             return null;
