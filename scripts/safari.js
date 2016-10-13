@@ -6212,6 +6212,7 @@ function Safari() {
         player.balls.spray -= 1;
         player.records.devolutions += 1;
         player.records.devolutionDust += dustRegained;
+        this.updateShop(player, "spray");
 
         this.evolvePokemon(src, info, evolvedId, "devolved into", evolveStarter);
         this.logLostCommand(sys.name(src), "spray " + commandData, "devolved into " + poke(evolvedId));
@@ -6512,6 +6513,7 @@ function Safari() {
             safaribot.sendMessage(src, "You received " + plural(dustdata, "dust") + " and now have " + totaldust + ".", safchan);
             rewardCapCheck(player, "dust", dustdata);
             player.balls.rare -= 1;
+            this.updateShop(player, "rare");
             safaribot.sendMessage(src, itemsLeft(player, "rare"), safchan);
             this.saveGame(player);
             return;
@@ -6533,6 +6535,7 @@ function Safari() {
             }
             rewardCapCheck(player, reward, amount);
             player.balls.pack -= 1;
+            this.updateShop(player, "pack");
             safaribot.sendMessage(src, itemsLeft(player, "pack"), safchan);
             player.records.packsOpened += 1;
             this.saveGame(player);
@@ -6557,6 +6560,7 @@ function Safari() {
 
             player.pokemon.push(id);
             player.balls.egg -= 1;
+            this.updateShop(player, "egg");
             safaribot.sendMessage(src, itemsLeft(player, "egg"), safchan);
             sys.sendMessage(src, "", safchan);
             player.records.eggsHatched += 1;
@@ -6595,6 +6599,7 @@ function Safari() {
             }
             player.pokemon.push(id);
             player.balls.bright -= 1;
+            this.updateShop(player, "bright");
             safaribot.sendMessage(src, itemsLeft(player, "bright"), safchan);
             sys.sendMessage(src, "", safchan);
             player.records.brightEggsHatched += 1;
@@ -6613,6 +6618,7 @@ function Safari() {
 
             player.balls.water -= 1;
             player.quests.pyramid.bonusStamina = itemData.water.bonusRate;
+            this.updateShop(player, "water");
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You packed some " + finishName("water") + "! You will start your next Pyramid tour with " + (itemData.water.bonusRate * 100) + "% more Stamina!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "water"), safchan);
@@ -6642,6 +6648,7 @@ function Safari() {
 
             quest.cooldown = n + cd;
             player.balls.soda -= 1;
+            this.updateShop(player, "soda");
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "You drank some " + finishName("soda") + "! Your cooldown for the " + cap(id) + " quest changed from " + toColor(timeLeftString(n + remaining), "red") + " to " + toColor(timeLeftString(quest.cooldown), "blue") + "!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "soda"), safchan);
@@ -6830,6 +6837,7 @@ function Safari() {
             }
             
             player.balls.form -= 1;
+            this.updateShop(player, "form");
             safaribot.sendMessage(src, itemsLeft(player, "form"), safchan);
             safari.saveGame(player);
             currentEvent = ev;
@@ -6843,6 +6851,7 @@ function Safari() {
             }
 
             player.balls.cherry -= 1;
+            this.updateShop(player, "cherry");
             player.quests.tower.bonusPower = itemData.cherry.bonusRate;
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "You and your Pokémon ate " + an(finishName("cherry")) + "! You will start your next Battle Tower challenge more energized and able to deal up to " + (itemData.cherry.bonusRate) + " more damage with your attacks!", safchan);
@@ -7285,6 +7294,11 @@ function Safari() {
                 delete seller.shop[input.input];
                 return;
             }
+            if (countRepeated(seller.pokemon, input.id) === 0) {
+                safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + plural(sys.rand(1, 10), "second") + " ago!", safchan);
+                delete seller.shop[input.input];
+                return;
+            }
         }
 
         var amount = 1;
@@ -7309,6 +7323,11 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, sName + "You are out of luck, I just sold my last " + input.name + " " + plural(sys.rand(1, 10), "second") + " ago!", safchan);
                 safaribot.sendMessage(sellerId, "You can't sell " + input.name + " unless you have more than " + iData.tradeReq + " of those! Removing them from your shop!", safchan);
                 delete seller.shop[input.input];
+                return;
+            }
+            if (amount > seller.balls[input.id]) {
+                this.updateShop(seller, input.id);
+                safaribot.sendHtmlMessage(src, sName + "I only have " + plural(shop[input.input].limit, input.name) + " to sell, how do you expect me to sell you " + amount + "?", safchan);
                 return;
             }
         }
@@ -12039,6 +12058,7 @@ function Safari() {
                     var leaderPlayer = getAvatarOff(leader);
                     if (isVoucher) {
                         leaderPlayer.balls.fossil -= 1;
+                        this.updateShop(leaderPlayer, "fossil");
                     } else {
                         leaderPlayer.money -= cost;
                     }
@@ -12302,6 +12322,7 @@ function Safari() {
                 
                 safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(cost, "philosopher") + ", so let's start this!", safchan);
                 player.balls.philosopher -= cost;
+                this.updateShop(player, "philosopher");
                 this.evolvePokemon(src, info, result, "was transmutated into");
                 safaribot.sendHtmlMessage(src, "Alchemist: We did it! Your " + info.name + " is now a " + poke(result) + "!", safchan);
                 player.records.philosopherTransmutations += 1;
