@@ -2071,7 +2071,9 @@ function Mafia(mafiachan) {
                         var actname = this.compulsoryStandby[this.ticks][pl][act]
                         var tar = this.findPossibleTargets(mafia.players[pl], mafia.players[pl].role.actions.standby[actname].target);
                         tar = tar.shuffle()[0];
-                        this.handleCommandOld(sys.id(pl), this.compulsoryStandby[this.ticks][pl][act], tar);
+                        if (tar) {
+                            this.handleCommandOld(sys.id(pl), this.compulsoryStandby[this.ticks][pl][act], tar);
+                        }
                     }
                 }
             }
