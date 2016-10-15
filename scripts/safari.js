@@ -3151,6 +3151,9 @@ function Safari() {
         }
         return false;
     };
+    this.isInTheme = function(id, name) {
+        return (id < 722 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name);
+    };
     this.getRulesMod = function(pokeId, rules) {
         var type1 = sys.type(sys.pokeType1(pokeId)),
             type2 = sys.type(sys.pokeType2(pokeId)),
@@ -3843,7 +3846,11 @@ function Safari() {
         safaribot.sendHtmlMessage(src, toColor("You took a photo of " + this.describePhoto(photo) + "!" + (sys.os(src) !== "android" ? " [" + link("/album delete:" + (player.photos.length+1), "Delete", true) + "]" : ""), "#DD4411"), safchan);
         
         player.photos.push(photo);
-        safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo") +"!", safchan);
+        if (player.photos.length >= 20) {
+            safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
+        } else {
+            safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo") +"!", safchan);
+        }
         player.cooldowns.ball = currentTime + cooldown;
         this.saveGame(player);
         
@@ -13119,105 +13126,107 @@ function Safari() {
             permObj.add("photographQuest", JSON.stringify(photographQuest));
         }
     };
+    this.photoRequestList = function(obj) {
+        var list = [], p, f, id;
+        if (obj.species) {
+            list.push(obj.species);
+            if (obj.hasOwnProperty("what") && !photoActions.Any.contains(obj.what)) {
+                var found = false;
+                for (p in photoActions) {
+                    if (photoActions[p].contains(obj.what) && hasType(obj.species, p)) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    return null;
+                }
+            }
+            if (obj.hasOwnProperty("where") && obj.where !== "default" && !this.isInTheme(obj.species, obj.where)) {
+                return null;
+            }
+        } else {
+            if (!obj.hasOwnProperty("type") && !obj.hasOwnProperty("color") && !obj.hasOwnProperty("region") && !obj.hasOwnProperty("bst") && !obj.hasOwnProperty("move") && !obj.hasOwnProperty("what") && !obj.hasOwnProperty("where")) {
+                return false;
+            }
+            var actTypes, theme;
+            if (obj.what && !photoActions.Any.contains(obj.what)) {
+                actTypes = [];
+                for (p in photoActions) {
+                    if (photoActions[p].contains(obj.what)) {
+                        actTypes.push(p);
+                    }
+                }
+            }
+            var forms;
+            
+            for (p = 1; p < 722; p++) {
+                if (isLegendary(p)) {
+                    continue;
+                }
+                forms = [];
+                if (p in wildForms) {
+                    for (f = 0; f <= wildForms[p]; f++) {
+                        forms.push(pokeInfo.calcForme(p, f));
+                    }
+                } else {
+                    forms = [p];
+                }
+                
+                for (f = forms.length; f--; ) {
+                    id = forms[f];
+                    if (obj.hasOwnProperty("type") && !hasType(id, obj.type)) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("color") && getPokeColor(id) !== obj.color) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("region") && generation(id, true) !== obj.region) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("bst") && getBST(id) < obj.bst) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("move") && !pokedex.getAllMoves(p).contains(""+obj.move)) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("what") && actTypes && !hasType(id, actTypes[0]) && (actTypes.length <= 1 || !hasType(id, actTypes[1]))) {
+                        continue;
+                    }
+                    if (obj.hasOwnProperty("where") && obj.where !== "default" && !this.isInTheme(id, obj.where)) {
+                        continue;
+                    }
+                    list.push(id);
+                }
+            }
+        }
+        
+        if (list.length === 0) {
+            return null;
+        }
+        return list;
+    };
     this.createPhotoRequest = function(scoreRange) {
         var out = {}, val = 0;
         
-        var getValidList = function(obj) {
-            var list = [], p, f, id;
-            if (obj.species) {
-                list.push(obj.species);
-            } else {
-                if (!obj.hasOwnProperty("type") && !obj.hasOwnProperty("color") && !obj.hasOwnProperty("region") && !obj.hasOwnProperty("bst") && !obj.hasOwnProperty("move")) {
-                    return null;
-                }
-                var forms;
-                
-                for (p = 1; p < 722; p++) {
-                    if (isLegendary(p)) {
-                        continue;
-                    }
-                    forms = [];
-                    if (p in wildForms) {
-                        for (f = 0; f <= wildForms[p]; f++) {
-                            forms.push(pokeInfo.calcForme(p, f));
-                        }
-                    } else {
-                        forms = [p];
-                    }
-                    
-                    for (f = forms.length; f--; ) {
-                        id = forms[f];
-                        if (obj.hasOwnProperty("type") && !hasType(id, obj.type)) {
-                            continue;
-                        }
-                        if (obj.hasOwnProperty("color") && getPokeColor(id) !== obj.color) {
-                            continue;
-                        }
-                        if (obj.hasOwnProperty("region") && generation(id, true) !== obj.region) {
-                            continue;
-                        }
-                        if (obj.hasOwnProperty("bst") && getBST(id) < obj.bst) {
-                            continue;
-                        }
-                        if (obj.hasOwnProperty("move") && !pokedex.getAllMoves(p).contains(""+obj.move)) {
-                            continue;
-                        }
-                        list.push(id);
-                    }
-                }
-            }
-            
-            if (list.length === 0) {
-                return false;
-            }
-            
-            if (obj.what && !photoActions.Any.contains(obj.what)) {
-                var types = [];
-                for (p in photoActions) {
-                    if (photoActions[p].contains(obj.what)) {
-                        types.push(p);
-                    }
-                }
-                for (p = list.length; p--; ) {
-                    id = list[p];
-                    if (hasType(id, types[0]) || (types.length > 1 && hasType(id, types[1]))) {
-                        continue;
-                    }
-                    list.splice(p, 1);
-                }
-            }
-            if (obj.where && obj.where !== "default") {
-                var theme = contestThemes[obj.where];
-                for (p = list.length; p--; ) {
-                    id = list[p];
-                    if (!(id < 722 || theme.include.contains(id)) || !safari.validForTheme(id, obj.where)) {
-                        list.splice(p, 1);
-                    }
-                }
-            }
-            if (list.length === 0) {
-                return null;
-            }
-            return list;
-        };
         var calculateScore = function(obj, list) {
             var val = 0;
             
             if (obj.mood) {
-                val += 42;
+                val += 40;
             }
             if (obj.when) {
-                val += 18;
+                val += 20;
             }
             if (obj.what) {
                 if (obj.what === "eating" && (!obj.where || obj.where === "default")) {
-                    val += 10;
+                    val += 12;
                 } else {
-                    val += photoActions.Any.contains(obj.what) ? 42 : 64;
+                    val += photoActions.Any.contains(obj.what) ? 45 : 70;
                 }
             }
             if (obj.where) {
-                val += obj.where === "default" ? 10 : 36;
+                val += obj.where === "default" ? 10 : 38;
             }
             if (obj.quality) {
                 val += Math.round(obj.quality * obj.quality * 0.7);
@@ -13233,7 +13242,7 @@ function Safari() {
                 var b, e,
                     t = (bst-180)/50+1,
                     amtRange = [1, 2, 4, 7, 11, 21, 51, 101, 201],
-                    bonusRange = [6, 5.25, 4.2, 3, 2, 1.8, 1.5, 1.25, 1];
+                    bonusRange = [6.6, 5.5, 4.4, 3, 2, 1.8, 1.5, 1.25, 1];
                     
                 for (e = amtRange.length; e--; ) {
                     if (list.length >= amtRange[e]) {
@@ -13246,13 +13255,13 @@ function Safari() {
                 val *= 0.667;
             }
             if (obj.amt) {
-                val *= [1, 1, 1.75, 2.5, 3.5][obj.amt];
+                val *= [1, 1, 1.75, 2.5, 3.8][obj.amt];
             }
             
             return Math.round(val);
         };
         var addProperty = function(obj) {
-            var prop = randomSample({ "amt": 3, "where": 3, "what": 5, "when": 4, "mood": 5, "quality": 5, "species": 3, "type": 3, "color": 3, "region": 3, "bst": 3, "move": 3 });
+            var prop = randomSample({ "amt": 3, "where": 3, "what": 5, "when": 4, "mood": 5, "quality": 5, "species": 1, "type": 3, "color": 3, "region": 3, "bst": 3, "move": 3 });
             
             if (obj.hasOwnProperty(prop)) {
                 return 0;
@@ -13312,7 +13321,7 @@ function Safari() {
                     if (obj.species) { return false; }
                     val = generations.random();
                     if (val === "None") {
-                        return 0;
+                        return false;
                     }
                     obj.region = val;
                     return true;
@@ -13324,14 +13333,6 @@ function Safari() {
                 case "move": 
                     if (obj.species) { return 0; }
                     val = sys.rand(1, 622);
-                    for (var e = 1, c = 0; e < 722; e++) {
-                        if (!isLegendary(e) && pokedex.getAllMoves(e).contains(""+val)) {
-                            c++;
-                        }
-                    }
-                    if (c < 3) {
-                        return false;
-                    }
                     obj.move = val;
                     return true;
             }
@@ -13347,7 +13348,7 @@ function Safari() {
             if (!addProperty(out)) {
                 continue;
             }
-            list = getValidList(out);
+            list = this.photoRequestList(out);
             if (list === null) {
                 return null;
             }
@@ -20059,7 +20060,7 @@ function Safari() {
                 if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
                     var themes = [];
                     for (var e in contestThemes) {
-                        if ((info.num < 722 || contestThemes[e].include.contains(info.num)) && this.validForTheme(info.num, e)) {
+                        if (safari.isInTheme(info.num, e)) {
                             themes.push(contestThemes[e].name);
                         }
                     }
