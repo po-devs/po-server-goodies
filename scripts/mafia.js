@@ -2069,6 +2069,9 @@ function Mafia(mafiachan) {
                     }
                     for (var act in this.compulsoryStandby[this.ticks][pl]) {
                         var actname = this.compulsoryStandby[this.ticks][pl][act]
+                        if (!(mafia.players[pl].role.actions.standby[actname])) {
+                            continue;
+                        }
                         var tar = this.findPossibleTargets(mafia.players[pl], mafia.players[pl].role.actions.standby[actname].target);
                         tar = tar.shuffle()[0];
                         if (tar) {
