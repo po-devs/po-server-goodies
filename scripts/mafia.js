@@ -6157,7 +6157,7 @@ function Mafia(mafiachan) {
                     } else {
                         var oldRole = player.role, newRole = null;
                         if (typeof Action.copyAs == "object") {
-                            var possibleRoles = Object.keys(Action.copyAs).shuffle(), nrList;
+                            var possibleRoles = Object.keys(Action.copyAs).shuffle(), nrList = [];
                             for (var nr in possibleRoles) {
                                 if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
                                     nrList.push(possibleRoles[nr]);
