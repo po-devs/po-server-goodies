@@ -1,4 +1,4 @@
-// This is the official Pokemon Online Scripts
+﻿// This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
@@ -1363,6 +1363,9 @@ userGuides: function(os, unsupported) {
             "English": "http://pokemon-online.eu/threads/34372/",
             "Español": "http://pokemon-online.eu/threads/34379/",
             "中文": "http://tieba.baidu.com/p/4324437820"
+        },
+        "tiers": { //leaving room for more tier guides to be added later
+            "A Guide to Tiers": "http://pokemon-online.eu/threads/34951/"
         }
     };
     if (!guides.hasOwnProperty(os)) {
@@ -1372,6 +1375,11 @@ userGuides: function(os, unsupported) {
         if (os === p) {
             for (var l in guides[p]) {
                 ret.push(unsupported ? l + ": " + guides[p][l] : "<a href='" + guides[p][l] + "'>" + l + "</a>");
+            }
+        }
+        if (p === "tiers") {
+            for (var t in guides[p]) {
+                ret.push(unsupported ? t + ": " + guides[p][t] : "<a href='" + guides[p][t] + "'>" + t + "</a>");
             }
         }
     }
