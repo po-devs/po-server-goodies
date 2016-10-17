@@ -333,13 +333,14 @@ function getStatsTimeStamp() {
     return x;
 }
 
-function trivia_onMute(src) {
+function trivia_onMute(src, dest) {
     if (!Trivia.started) {
         return;
     }
-    if (Trivia.playerPlaying(src)) {
-        Trivia.removePlayer(src);
-        Trivia.sendAll(sys.name(src) + " left the game!", triviachan);
+    var destId = sys.id(dest);
+    if (Trivia.playerPlaying(destId)) {
+        Trivia.removePlayer(destId);
+        Trivia.sendAll(sys.name(dest) + " left the game!", triviachan);
         return;
     }
 }
@@ -1119,7 +1120,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         var allCats = orderedCategories();
         var advertise = "";
         var hidden = true;
-        while (hidden == true) { // Don't advertise hidden cats
+        while (hidden) { // Don't advertise hidden cats
             advertise = allCats[sys.rand(0, allCats.length)].category;
             if (advertise === "Pop Quiz") { continue; } //explicitly listed because Pop Quiz questions can currently appear in events
             for (var m = 0; m < trivData.hiddenCategories.length; m++) {
@@ -3559,7 +3560,7 @@ addAdminCommand(["averageeventstats"], function (src, commandData, channel) {
                     knowDurationCount++;
                 }
                 justRound = stats[i].firstGoalR; //This is a string in the form "Player, Round: #"
-                justRound = justRound.split("Round: ")
+                justRound = justRound.split("Round: ");
                 avgKnow1stRoundsT += parseInt(justRound[1]);
                 if (stats[i].secondGoalR !== "N/A") {
                     justRound = stats[i].secondGoalR;
@@ -3708,7 +3709,7 @@ addAdminCommand(["searchcategory"], function (src, commandData, channel) {
     }
     Trivia.sendPM(src, "Questions in " + search + " category are:", channel);
     var count = 0, length = 0;
-    for (length in triviaq.all()) {}
+    //for (length in triviaq.all()) {}
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
         if (search.toLowerCase() === q.category.toLowerCase() && parseInt(i) > index) {
@@ -3919,7 +3920,7 @@ addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
 }, "Allows you adjust the default goals for events. Format is /setdefaulteventgoal gametype:newgoal(example /setdefaulteventgoal know:15)");
 
 addOwnerCommand(["eventrates"], function (src, commandData, channel) {
-    if (commandData.length == 0) {
+    if (commandData.length === 0) {
         var elimRate = 100 - (eventKnowRate + eventSpeedRate);
         Trivia.sendPM(src, "Event Knowledge Rate: " + eventKnowRate + " %", channel);
         Trivia.sendPM(src, "Event Speed Rate: " + eventSpeedRate + " %", channel);
