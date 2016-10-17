@@ -340,7 +340,7 @@ function trivia_onMute(src, dest) {
     var destId = sys.id(dest);
     if (Trivia.playerPlaying(destId)) {
         Trivia.removePlayer(destId);
-        Trivia.sendAll(sys.name(dest) + " left the game!", triviachan);
+        Trivia.sendAll(dest + " left the game!", triviachan);
         return;
     }
 }
