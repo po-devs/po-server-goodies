@@ -20990,8 +20990,8 @@ function Safari() {
                     var p2 = info[2].split("::")[0];
                     var p2offer = info[2].split("::")[1];
 
-                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ") " + link("/undo {0}:{1}:{2}:{3}".format(p1, p2, translateStuff(p1offer), translateStuff(p2offer)), "[undo]", true);
-                }, null, true);
+                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ") " /*+ link("/undo {0}:{1}:{2}:{3}".format(p1, p2, translateStuff(p1offer), translateStuff(p2offer)), "[undo]", true)*/;
+                }, null, false);
                 return true;
             }
             if (command === "raretrades") {
@@ -21016,8 +21016,8 @@ function Safari() {
                     var cost = parseInt(p1Info[4], 10);
                     var p2 = info[2].split("::")[0];
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")"  + link("/undo {0}:{1}:{2}{3}:${4}".format(p1, p2, amount > 1 ? amount : "", translateStuff(item), price), "[undo]", true);;
-                }, null, true);
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")"  /*+ link("/undo {0}:{1}:{2}{3}:${4}".format(p1, p2, amount > 1 ? amount : "", translateStuff(item), price), "[undo]", true)*/;
+                }, null, false);
                 return true;
             }
             if (command === "auctionlog") {
