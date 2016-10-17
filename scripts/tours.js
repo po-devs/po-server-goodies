@@ -4369,6 +4369,7 @@ function isInSpecificTour(name, key) {
 }
 
 function isInTour(name) {
+    if (!name) return;
     var key = false;
     for (var x in tours.tour) {
         var srcisintour = false;

@@ -136,6 +136,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.authStats[authName] =  script.authStats[authName] || {};
         script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
         callplugins("onBan", src, tarId);
+        normalbot.sendMessage(sys.id("Fuzzysqurl"), "Source: {0} [{1}], Dest: {2} [{3}]".format(src, sys.name(src), tarId, sys.name(tarId)), sys.channelId("Fuzzy's Channel"));
         return;
     }
     if (command === "unban") {
