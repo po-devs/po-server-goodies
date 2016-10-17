@@ -2465,8 +2465,8 @@ function tourCommand(src, command, commandData, channel) {
                     }
                 }
             }
-            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.os(src) === "android") {
-                sendBotMessage(src, "Android devices are incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
+            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && (sys.os(src) === "android" || sys.os(src) === "webclient")) {
+                sendBotMessage(src, (sys.os(src) === "webclient" ? "Webclient is" : "Android devices are")+" incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
                 return true;
             }
             var isInCorrectGen = false;
