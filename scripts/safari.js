@@ -20990,7 +20990,7 @@ function Safari() {
                     var p2 = info[2].split("::")[0];
                     var p2offer = info[2].split("::")[1];
 
-                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ")";
+                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ") " + link("/undo {0}:{1}:{2}:{3}".format(p1, p1offer, p2, p2offer), "[undo]", true);
                 });
                 return true;
             }
@@ -23041,6 +23041,16 @@ function Safari() {
             }
         }
         return false;
+    };
+    this.onBan = function (src, dest) {
+        if (this.isInAuction(sys.name(src))) {
+            for (var b in currentAuctions) {
+                currentAuctions[b].removePlayer(sys.id(dest));
+            }
+        }
+        if (currentEvent) {
+            currentEvent.shove(src, dest);
+        }
     };
     this.onSafban = function (src) {
         if (this.isInAuction(sys.name(src))) {
