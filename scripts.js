@@ -1248,7 +1248,7 @@ beforePlayerBan : function(src, dest, dur) {
     var authname = sys.name(src).toLowerCase();
     script.authStats[authname] =  script.authStats[authname] || {};
     script.authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-    callplugins("onBan", src, dest);
+    callplugins("onBan", src, sys.name(dest));
 },
 
 beforePlayerKick:function(src, dest){

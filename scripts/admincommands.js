@@ -128,15 +128,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
         }
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip.replace("::ffff:", ""), staffchannel);
-        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>",-1);
+        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>",-1);        
+        callplugins("onBan", src, commandData);
         sys.ban(commandData);
         script.kickAll(ip);
         sys.appendToFile("bans.txt", sys.name(src) + " banned " + commandData + "\n");
         var authName = sys.name(src).toLowerCase();
         script.authStats[authName] =  script.authStats[authName] || {};
         script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
-        callplugins("onBan", src, tarId);
-        normalbot.sendMessage(sys.id("Fuzzysqurl"), "Source: {0} [{1}], Dest: {2} [{3}]".format(src, sys.name(src), tarId, sys.name(tarId)), sys.channelId("Fuzzy's Channel"));
         return;
     }
     if (command === "unban") {

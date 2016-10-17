@@ -749,12 +749,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         normalbot.sendAll("Target: " + targetName + ", IP: " + ip.replace("::ffff:", ""), staffchannel);
         sys.sendHtmlAll("<b><font color=red>" + targetName + " was banned by " + nonFlashing(sys.name(src)) + " for " + getTimeString(minutes) + "!</font></b>");
+        callplugins("onBan", src, targetName);
         sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
         var authName = sys.name(src);
         script.authStats[authName] = script.authStats[authName] || {};
         script.authStats[authName].latestTempBan = [targetName, parseInt(sys.time(), 10)];
-        callplugins("onBan", src, tarId);
         return;
     }
     if (command == "tempunban") {

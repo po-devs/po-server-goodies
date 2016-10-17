@@ -4731,15 +4731,15 @@ module.exports = {
         }
     },
     onBan : function (src, dest) {
-        var key = isInTour(sys.name(dest));
+        var key = isInTour(dest);
         if (key) {
             if (tours.tour[key].state == "signups") {
-                var index = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase());
+                var index = tours.tour[key].players.indexOf(dest.toLowerCase());
                 tours.tour[key].players.splice(index, 1);
                 tours.tour[key].cpt -= 1;
                 return;
             } else {
-                disqualify(dest, key, false, true);
+                disqualify(sys.id(dest), key, false, true);
                 return;
             }
         }
