@@ -754,6 +754,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var authName = sys.name(src);
         script.authStats[authName] = script.authStats[authName] || {};
         script.authStats[authName].latestTempBan = [targetName, parseInt(sys.time(), 10)];
+        callplugins("onBan", src, tarId);
         return;
     }
     if (command == "tempunban") {

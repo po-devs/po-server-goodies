@@ -135,6 +135,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var authName = sys.name(src).toLowerCase();
         script.authStats[authName] =  script.authStats[authName] || {};
         script.authStats[authName].latestBan = [commandData, parseInt(sys.time(), 10)];
+        callplugins("onBan", src, tarId);
         return;
     }
     if (command === "unban") {

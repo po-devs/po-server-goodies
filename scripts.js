@@ -1244,7 +1244,7 @@ beforeChannelDestroyed : function(channel) {
 }, /* end of beforeChannelDestroyed */
 
 beforePlayerBan : function(src, dest, dur) {
-    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest).replace("::ffff:", ""), staffchannel);
     var authname = sys.name(src).toLowerCase();
     script.authStats[authname] =  script.authStats[authname] || {};
     script.authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
