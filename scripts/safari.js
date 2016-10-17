@@ -1692,6 +1692,9 @@ function Safari() {
         }
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+    function stripComma(string) {
+        return string.replace(/(?!=\d),(?=\d)/g, "")
+    }
     function link(string, string2, setmsg) {
         string2 = string2 || string;
         return "<a href=\"po:" + (setmsg ? "setmsg" : "send") + "/" + html_escape(string) + "\">" + html_escape(string2) + "</a>";
@@ -10513,7 +10516,10 @@ function Safari() {
                 sys.sendMessage(src, "" , safchan);
                 sys.sendMessage(targetId, "" , safchan);
                 delete tradeRequests[targetName];
-                sys.appendToFile(tradeLog, now() + "|||" + sys.name(src) + "::" + out2 + "|||" + sys.name(targetId) + "::" + out1 + "\n");
+                
+                var p1 = sys.name(src);
+                var p2 = sys.name(targetId);
+                sys.appendToFile(tradeLog, now() + "|||" + p1 + "::" + out2 + "|||" + p2 + "::" + out1 + "|||" + "/undo {0}:{1}:{2}:{3}".format(p1, p2, toStuffInput(offerObj), toStuffInput(requestObj)) + "\n");
                 if (hasRare) {
                     sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + "'s " + out2 + " <--> " + sys.name(targetId) + "'s " + out1 + "\n");
                 }
@@ -20989,9 +20995,11 @@ function Safari() {
                     var p1offer = info[1].split("::")[1];
                     var p2 = info[2].split("::")[0];
                     var p2offer = info[2].split("::")[1];
+                    var undoLink = link(info[3], "[undo]", true);
+                    if (undoLink.indexOf("undefined") > -1) { undoLink = ""; }
 
-                    return p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ") " /*+ link("/undo {0}:{1}:{2}:{3}".format(p1, p2, translateStuff(p1offer), translateStuff(p2offer)), "[undo]", true)*/;
-                }, null, false);
+                    return html_escape(p1 + "'s " + p1offer + " <--> " + p2 + "'s " + p2offer + " - (" + time + ") ") + undoLink;
+                }, null, true);
                 return true;
             }
             if (command === "raretrades") {
@@ -21016,8 +21024,8 @@ function Safari() {
                     var cost = parseInt(p1Info[4], 10);
                     var p2 = info[2].split("::")[0];
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")"  /*+ link("/undo {0}:{1}:{2}{3}:${4}".format(p1, p2, amount > 1 ? amount : "", translateStuff(item), price), "[undo]", true)*/;
-                }, null, false);
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")";
+                });
                 return true;
             }
             if (command === "auctionlog") {
