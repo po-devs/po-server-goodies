@@ -2068,7 +2068,7 @@ function Mafia(mafiachan) {
                         continue;
                     }
                     for (var act in this.compulsoryStandby[this.ticks][pl]) {
-                        var actname = this.compulsoryStandby[this.ticks][pl][act]
+                        var actname = this.compulsoryStandby[this.ticks][pl][act];
                         if (!(mafia.players[pl].role.actions.standby) || !(mafia.players[pl].role.actions.standby[actname])) {
                             continue;
                         }
@@ -2294,7 +2294,7 @@ function Mafia(mafiachan) {
                     }
                 }
                 if (singleAffected.length > 0) {
-                    v(onDeath.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")));
+                    mafia.onDeathMsg.push(onDeath.singlepoisonmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")));
                 }
             }
             if ("detoxRoles" in onDeath) {
@@ -4732,8 +4732,8 @@ function Mafia(mafiachan) {
                     gamemsg(mafia.players[p].name, commands, undefined, undefined, true);
                 }
                 var pl = mafia.players[p];
-                for (var n in pl.role.actions["standby"]) {
-                    var app = pl.role.actions["standby"][n], c, lim, i;
+                for (var n in pl.role.actions.standby) {
+                    var app = pl.role.actions.standby[n], c, lim, i;
                     if ("compulsory" in app) {
                         lim = "limit" in app ? app.limit : 1;
                         for (i = 0; i < lim; i++) {
@@ -5069,7 +5069,7 @@ function Mafia(mafiachan) {
                     }
                 }
                 if (("duration" in p.addVoteshield) && (p.addVoteshield.duration > 0)) {
-                    gamemsgAll(" " + p.addVoteshield.duration)
+                    gamemsgAll(" " + p.addVoteshield.duration);
                     p.addVoteshield.duration--;
                     if (p.addVoteshield.duration === 0) {
                         p.addVoteshield = {};
@@ -8035,8 +8035,7 @@ this.beforeChatMessage = function (src, message, channel) {
             sys.kick(src, mafiachan);
         }
     };
-    this.onBan = function (src, dest) {//Only for Control panel bans
-        var dest = sys.name(dest);
+    this.onBan = function (src, dest) {
         if (this.state == "entry" || this.state == "voting") {
             this.shoveUser(mafiabot.name, dest, false);
         } else if (this.isInGame(dest)) {
