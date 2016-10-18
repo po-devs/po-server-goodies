@@ -334,7 +334,7 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "voteHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
+                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "voteHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "avoidVoteHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "revealexposerif", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
 
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
@@ -1045,7 +1045,7 @@ function mafiaChecker() {
                     }
                 }
                 if (checkType(role.actions.voteHax, ["object"], act + ".voteHax")) {
-                    checkType(role.actions.voteHax.msg, ["msg"], comm + ".voteHax.msg");
+                    checkType(role.actions.voteHax.msg, ["string"], comm + ".voteHax.msg");
                     checkType(role.actions.voteHax.chance, ["number"], comm + ".voteHax.chance");
                 }
                 if (checkType(role.actions.daykill, ["object", "string"], act + ".daykill")) {
@@ -1149,6 +1149,15 @@ function mafiaChecker() {
                         addMinorError("'revealexposermsg' found at " + act + ", but there's no '" + act + ".expose'");
                     }
                 }
+                if (checkType(role.actions.revealexposerif, ["object"], act + ".revealexposerif")) {
+                    for (var c in role.actions.revealexposerif) {
+                        if ((checkType(c, ["string"], act + ".revealexposerif")) && (checkType(role.actions.revealexposerif[c], ["array"], act + ".revealexposerif"))) {
+                            for (var r in role.actions.revealexposerif[c]) {
+                                checkValidRole(role.actions.revealexposerif[c][r], comm + ".role.actions.revealexposerif." + c);
+                            }
+                        }
+                    }
+                }
                 if (checkType(role.actions.exposerevengemsg, ["string"], act + ".exposerevengemsg")) {
                     if (!("expose" in role.actions)) {
                         addMinorError("'exposerevengemsg' found at " + act + ", but there's no '" + act + ".expose'");
@@ -1185,6 +1194,16 @@ function mafiaChecker() {
                         for (e in action) {
                             if (!checkType(action[e], ["string"], "All values for " + act + ".avoidStandbyHax")) {
                                 break;
+                            }
+                        }
+                    }
+                }
+                if (checkType(role.actions.avoidVoteHax, ["array", "boolean"], act + ".avoidVoteHax")) {
+                    action = role.actions.avoidVoteHax;
+                    if (Array.isArray(action)) {
+                        if (checkType(action, ["array"], act + ".avoidVoteHax")) {
+                            for (e in action) {
+                                checkValidRole(action[e], "All values for " + act + ".avoidVoteHax");
                             }
                         }
                     }
