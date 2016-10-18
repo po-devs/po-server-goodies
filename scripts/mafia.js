@@ -200,7 +200,7 @@ function Mafia(mafiachan) {
     function colorizeRole(r) {
 		var role = mafia.theme.roles[r];
 		if (!role) {
-		    return r
+		    return r;
 		}
 		var tr = role.translation;
 		/* disabling this for now, maybe add once android has color and give users option to disable.
