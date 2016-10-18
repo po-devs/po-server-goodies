@@ -10519,7 +10519,7 @@ function Safari() {
                 
                 var p1 = sys.name(src);
                 var p2 = sys.name(targetId);
-                sys.appendToFile(tradeLog, now() + "|||" + p1 + "::" + out2 + "|||" + p2 + "::" + out1 + "|||" + "/undo {0}:{1}:{2}:{3}".format(p1, p2, offerInput, requestInput) + "\n");
+                sys.appendToFile(tradeLog, now() + "|||" + p1 + "::" + out2 + "|||" + p2 + "::" + out1 + "|||" + "/undo {0}:{1}:{2}:{3}".format(p1, p2, offerInput, reqInput) + "\n");
                 if (hasRare) {
                     sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + "'s " + out2 + " <--> " + sys.name(targetId) + "'s " + out1 + "\n");
                 }
