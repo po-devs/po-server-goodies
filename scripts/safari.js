@@ -1693,7 +1693,7 @@ function Safari() {
         return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
     function stripComma(string) {
-        return string.replace(/(?!=\d),(?=\d)/g, "")
+        return string.replace(/(?!=\d),(?=\d)/g, "");
     }
     function link(string, string2, setmsg) {
         string2 = string2 || string;
@@ -10519,7 +10519,7 @@ function Safari() {
                 
                 var p1 = sys.name(src);
                 var p2 = sys.name(targetId);
-                sys.appendToFile(tradeLog, now() + "|||" + p1 + "::" + out2 + "|||" + p2 + "::" + out1 + "|||" + "/undo {0}:{1}:{2}:{3}".format(p1, p2, toStuffInput(offerObj), toStuffInput(requestObj)) + "\n");
+                sys.appendToFile(tradeLog, now() + "|||" + p1 + "::" + out2 + "|||" + p2 + "::" + out1 + "|||" + "/undo {0}:{1}:{2}:{3}".format(p1, p2, offerInput, requestInput) + "\n");
                 if (hasRare) {
                     sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + "'s " + out2 + " <--> " + sys.name(targetId) + "'s " + out1 + "\n");
                 }
