@@ -146,8 +146,8 @@ function Mafia(mafiachan) {
             sys.sendMessage(id, mess, channel);
         } else {
             var colon = mess.indexOf(": ");
-            if (mess.substring(0, Config.Mafia.max_name_length + 2).indexOf(": ") <= Config.Mafia.max_name_length + 1) {
-                if (!botName && !html && colon !== -1) {
+            if ((Config.Mafia.max_name_length + 2) >= colon) {
+                if (!botName && colon !== -1) {
                     botName = mess.substring(0, colon);
                     mess = mess.slice(colon + 2);
                 }
@@ -175,10 +175,12 @@ function Mafia(mafiachan) {
         if ((!botName && mess.indexOf("±") === -1 && mess.indexOf(":") !== (parseInt(mess.length, 10) - 1) && mess.substring(0, Config.Mafia.max_name_length + 2).indexOf(": ") !== -1) || mess.indexOf("***") === 0) {
             sys.sendAll(mess, channel);
         } else {
-            var colon = mess.indexOf(":");
-            if (!botName && !html && colon !== -1) {
-                botName = mess.substring(0, colon);
-                mess = mess.slice(colon + 2);
+            var colon = mess.indexOf(": ");
+            if ((Config.Mafia.max_name_length + 2) >= colon) {
+                if (!botName && colon !== -1) {
+                    botName = mess.substring(0, colon);
+                    mess = mess.slice(colon + 2);
+                }
             }
             sys.sendHtmlAll("<font color='" + mafia.bot.color + "'><timestamp/> <b>" + (botName ? botName : "±" + mafia.bot.name) + ":</b></font> " + (html ? mess : html_escape(mess)), channel);
         }
@@ -226,11 +228,13 @@ function Mafia(mafiachan) {
         if (!(mafia.theme.roles)) {
             return mess;
         }
+        /*
         for (var r in mafia.theme.roles) {
             var role = mafia.theme.roles[r].role;
             var tr = mafia.theme.roles[r].translation;
             mess = mess.replace(new RegExp(tr + "([^A-z])", "g"), colorizeRole(role) + "$1");
         }
+        */
         return mess;
     }
     /*Sends a message to Mafia and Victory Road*/
