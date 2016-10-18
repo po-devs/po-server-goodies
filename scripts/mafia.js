@@ -199,6 +199,9 @@ function Mafia(mafiachan) {
     }
     function colorizeRole(r) {
 		var role = mafia.theme.roles[r];
+		if (!role) {
+		    return r
+		}
 		var tr = role.translation;
 		/* disabling this for now, maybe add once android has color and give users option to disable.
 		var col = mafia.theme.sideColor[role.side];
@@ -4083,7 +4086,7 @@ function Mafia(mafiachan) {
                 packs = {},
                 packName, sp, pIndex, pInfo,
                 spawnedRoles = [];
-
+                
             for (i = 0; i < srcArray.length; ++i) {
                 sp = srcArray[i];
                 var playerRole;
@@ -5920,7 +5923,7 @@ function Mafia(mafiachan) {
                     for (var s = 0, l = role.actions.startup.revealRole.length; s < l; ++s) {
                         var revealrole = role.actions.startup.revealRole[s];
                         if (mafia.getPlayersForRoleS(revealrole) !== "") {
-                            gamemsg(player.name, "The " + colorizeRole(mafia.theme.roles[revealrole]) + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
+                            gamemsg(player.name, "The " + colorizeRole(mafia.theme.roles[revealrole].role) + " is " + mafia.getPlayersForRoleS(revealrole) + "!");
                         }
                     }
                 }
