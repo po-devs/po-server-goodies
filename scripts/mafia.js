@@ -1988,16 +1988,8 @@ function Mafia(mafiachan) {
             sendBorder();
             if (this.theme.name == defaultThemeName) {
                 mafiabot.sendHtmlAll("An <b>Event</b> Mafia game is starting!", mafiachan);
-                sendBorder(safchan);
-                sendChanHtmlAll("An <b>Event</b> <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
-                sendBorder(safchan);
             } else {
                 mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed Mafia game is starting!", mafiachan);
-                if (safchan) {
-                    sendBorder(safchan);
-                    mafiabot.sendHtmlAll("An Event <b>" + html_escape(this.theme.name + (this.theme.altname ? " (" + this.theme.altname + ")" : "")) + "</b>-themed <a href='po:join/Mafia'>#Mafia</a> game is starting!", safchan);
-                    sendBorder(safchan);
-                }
             }
             gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!", undefined, undefined, true);
             sendBorder();
@@ -2034,6 +2026,11 @@ function Mafia(mafiachan) {
                 }
                 if (sys.existChannel("Mafia Social")) {
                     this.advertiseToChannel(sys.channelId('Mafia Social'), src === "Event");
+                }
+                if (src === "Event") {
+                    if (sys.existChannel(safchan)) {
+                        this.advertiseToChannel(sys.channelId(safchan), src === "Event");
+                    }
                 }
             }
         }
@@ -3204,7 +3201,7 @@ function Mafia(mafiachan) {
                         avoid = true;
                     }
                     else {
-                        avoid = false
+                        avoid = false;
                     }
                 }
             if (haxperc > Math.random() && (!avoid)) {
