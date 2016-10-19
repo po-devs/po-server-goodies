@@ -194,7 +194,7 @@ function Mafia(mafiachan) {
         for (var i in args) {
             mess = mess.replace(new RegExp(i, "g"), args[i]);
         }
-        return mess;
+        return html_escape(mess);
     }
     function toColor(msg, color) {
         return ("<b><font color=" + color + ">" + msg + "</font></b>");
