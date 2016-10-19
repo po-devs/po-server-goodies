@@ -2029,7 +2029,7 @@ function Mafia(mafiachan) {
                 }
                 if (src === "Event") {
                     if (sys.existChannel(sys.channel(safchan))) {
-                        this.advertiseToChannel(sys.channelId(safchan), src === "Event");
+                        this.advertiseToChannel(safchan, src === "Event");
                     }
                 }
             }
