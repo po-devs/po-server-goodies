@@ -43,6 +43,7 @@ function Mafia(mafiachan) {
     this.allPlayers = [];
     this.safariShove = [];
     this.distributeEvent = false;
+    this.MAFIA_WARN_FILE = "mafiawarns.txt";
 
     var DEFAULT_BORDER = "***************************************************************************************",
         GREEN_BORDER = " " + DEFAULT_BORDER + ":",
@@ -6108,17 +6109,38 @@ function Mafia(mafiachan) {
         if ((shove === "shove") || (shove === "true")) {
             this.shoveUser(src,name);
         }
+        this.saveWarningLog(this.MAFIA_WARN_FILE);
     };
     this.clearOldWarnings = function( name ) {
         if (!(name in mafia.warningLog)) {
             mafia.warningLog[name] = {};
             return;
         }
+        var change = false;
         for (var n in mafia.warningLog[name]) {
             if (n < (new Date()).getTime()) {
                 delete mafia.warningLog[name][n];
+                change = true;
             }
         }
+        if (change) {
+            this.saveWarningLog(this.MAFIA_WARN_FILE);
+        }
+    };
+    this.loadWarningLog = function (file) {
+        var fileContent = sys.getFileContent(file);
+        if (fileContent == undefined || fileContent == "") {
+            sys.writeToFile(file, "{}");
+        }
+        try {
+            mafia.warningLog = JSON.parse(fileContent);
+        }
+        catch (e) {
+            dualBroadcast("Error loading warning log: " + e)
+        }
+    };
+    this.saveWarningLog = function (file) {
+        sys.writeToFile(file, JSON.stringify(mafia.warningLog));
     };
     this.checkWarns = function (src, commandData) {
         //var warner = typeof src == "string" ? src : sys.name(src);
@@ -8147,6 +8169,7 @@ this.beforeChatMessage = function (src, message, channel) {
     this.init = function () {
         this.themeManager.loadThemes();
         mafiachan = sys.channelId(MAFIA_CHANNEL);
+        this.loadWarningLog(this.MAFIA_WARN_FILE);
         /*msgAll("Mafia was reloaded, please start a new game!");*/
     };
     this.onHelp = function (src, commandData, channel) {
