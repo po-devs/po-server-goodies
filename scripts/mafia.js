@@ -2028,7 +2028,7 @@ function Mafia(mafiachan) {
                     this.advertiseToChannel(sys.channelId('Mafia Social'), src === "Event");
                 }
                 if (src === "Event") {
-                    if (sys.existChannel(safchan)) {
+                    if (sys.existChannel(sys.channel(safchan))) {
                         this.advertiseToChannel(sys.channelId(safchan), src === "Event");
                     }
                 }
