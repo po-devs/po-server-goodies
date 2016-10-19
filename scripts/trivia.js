@@ -3708,14 +3708,13 @@ addAdminCommand(["searchcategory"], function (src, commandData, channel) {
         }
     }
     Trivia.sendPM(src, "Questions in " + search + " category are:", channel);
-    var count = 0, length = 0;
-    //for (length in triviaq.all()) {}
+    var count = 0;
     for (var i in triviaq.all()) {
         var q = triviaq.get(i);
         if (search.toLowerCase() === q.category.toLowerCase() && parseInt(i) > index) {
             Trivia.sendPM(src, "Question: '" + q.question + "' Answer: '" + q.answer + "' (id='" + i + "')", channel);
             count++;
-            if (count === 50 && index < length) { //maybe add a configurable value in the future
+            if (count === 50) { //maybe add a configurable value in the future
                 index = i;
                 Trivia.sendPM(src, "Over 50 results were found for this query", channel);
                 triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//searchcategory " + search + "*" + index + "\">Show more results</a></b>", channel);
