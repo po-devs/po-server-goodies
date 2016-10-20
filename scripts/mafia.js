@@ -2737,15 +2737,18 @@ function Mafia(mafiachan) {
                 this.teamTargetsData[player.role.side] = {};
             }
             if (onlyUser) {
-            for (var tar in this.teamTargetsData[player.role.side][action]) {
-                tarData = delimSplit("/", this.teamTargetsData[player.role.side][action][tar] );
-                userInputAction = tarData[1];
-                if (userInputAction !== player.name) {
-                    keepTargets[tar] = this.teamTargetsData[player.role.side][action][tar];
-                    continue;
+                for (var tar in this.teamTargetsData[player.role.side][action]) {
+                    tarData = delimSplit("/", this.teamTargetsData[player.role.side][action][tar] );
+                    userInputAction = tarData[1];
+                    if (userInputAction !== player.name) {
+                        keepTargets[tar] = this.teamTargetsData[player.role.side][action][tar];
+                        continue;
                     }
-                blocked = true;
+                    blocked = true;
                 }
+            }
+            else {
+                blocked = true;
             }
             this.teamTargetsData[player.role.side][action] = keepTargets;
             return (blocked);
@@ -2754,15 +2757,18 @@ function Mafia(mafiachan) {
                 this.roleTargetsData[player.role.role] = {};
             }
             if (onlyUser) {
-            for (var tar in this.roleTargetsData[player.role.role][action]) {
-                tarData = delimSplit("/", this.roleTargetsData[player.role.role][action][tar] );
-                userInputAction = tarData[1];
-                if (userInputAction !== player.name) {
-                    keepTargets[tar] = this.roleTargetsData[player.role.role][action][tar];
-                    continue;
+                for (var tar in this.roleTargetsData[player.role.role][action]) {
+                    tarData = delimSplit("/", this.roleTargetsData[player.role.role][action][tar] );
+                    userInputAction = tarData[1];
+                    if (userInputAction !== player.name) {
+                        keepTargets[tar] = this.roleTargetsData[player.role.role][action][tar];
+                        continue;
                     }
-                blocked = true;
+                    blocked = true;
                 }
+            }
+            else {
+                blocked = true;
             }
             this.roleTargetsData[player.role.role][action] = keepTargets;
             return (blocked);
