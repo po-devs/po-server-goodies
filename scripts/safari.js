@@ -8173,6 +8173,10 @@ function Safari() {
             }
         }
 
+        if (tName === name) {
+            safaribot.sendMessage(src, "You can't battle yourself!", safchan);
+            return;
+        }
         /* if (!validPlayers("target", src, data, "You can't battle yourself!")) {
             return;
         } */
@@ -14236,39 +14240,6 @@ function Safari() {
         var nerfed = hasType(id, this.forbiddenTypes[0]) ||hasType(id, this.forbiddenTypes[1]);
         this.sendAll(toColor("{0} is going to use {1}{2}!".format(sys.name(src), cap(commandData.toLowerCase()), (nerfed ? " (nerfed)" : "")), "crimson"));
         return true;
-    };
-    HordeRoom.prototype.getChoices = function() {
-        var out = {}, p, id, members = this.pyr.names, fTypes = this.forbiddenTypes, f, party;
-        for (p in members) {
-            id = members[p];
-            if (this.pyr.stamina[id] <= 0) {
-                continue;
-            }
-            if (id in this.choices) {
-                var pkmn = getInputPokemon(this.choices[id]);
-                if (pkmn.num) {
-                    out[id] = pkmn.id;
-                } else {
-                    out[id] = this.choices[id];
-                }
-            } else {
-                if (this.defaultLeaderChoice && id === this.pyr.leader) {
-                    out[id] = this.defaultLeaderChoice;
-                } else if (this.defaultChoice) {
-                    out[id] = this.defaultChoice;
-                } else if (this.defaultToFirstPoke) {
-                    party = this.pyr.parties[id];
-                    for (f = 0; f < party.length; f++) {
-                        if (!hasType(party[f], fTypes[0]) && !hasType(party[f], fTypes[1])) {
-                            out[id] = party[f];
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
-        return out;
     };
     HordeRoom.prototype.advance = function() {
         var members = this.pyr.names, id, choice, m, p, dmg, opp, res, defeated = {}, stamina = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke, nerfed = {};
