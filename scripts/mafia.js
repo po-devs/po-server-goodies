@@ -17,7 +17,7 @@ var html_escape = require("utilities.js").html_escape;
 function Mafia(mafiachan) {
     this.version = "2016-10-18";
     var mafia = this;
-    var defaultThemeName = "Default"; //why was this lowercase?
+    var defaultThemeName = "default"; //lowercased so it doesn't use the theme in the code (why is it there to begin with?)
 
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
