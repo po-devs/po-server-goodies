@@ -8181,6 +8181,10 @@ function Safari() {
             return;
         } */
         var target = getAvatar(targetId);
+        if (!target) {
+            safaribot.sendMessage(src, "No such player!", safchan);
+            return;
+        }
         if (this.isInAuction(tName)) {
             safaribot.sendMessage(src, "This person is currently in an auction! Wait for them to finish to challenge again!", safchan);
             return;
@@ -13159,7 +13163,7 @@ function Safari() {
             if (!obj.hasOwnProperty("type") && !obj.hasOwnProperty("color") && !obj.hasOwnProperty("region") && !obj.hasOwnProperty("bst") && !obj.hasOwnProperty("move") && !obj.hasOwnProperty("what") && !obj.hasOwnProperty("where")) {
                 return false;
             }
-            var actTypes, theme;
+            var actTypes;
             if (obj.what && !photoActions.Any.contains(obj.what)) {
                 actTypes = [];
                 for (p in photoActions) {
@@ -21234,7 +21238,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Recipe <b>" + cap(data.name, true) + "</b> added to Alchemist quest!", safchan);
                 safaribot.sendMessage(src, "Ingredients: " + translateStuff(rec.ingredients), safchan);
                 safaribot.sendMessage(src, "Reward: " + translateStuff(rec.reward), safchan);
-                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.immediate + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
+                safaribot.sendMessage(src, "Cooldown: " + rec.cooldown + "h | Immediate: " + rec.immediate + " | Transmutation: " + rec.transmutation + " | Fail Chance: " + percentage(rec.failChance, 1, 1) + (rec.failChance > 0 && rec.failUses ? " (uses " + (translateStuff(rec.failUses) || "nothing") + " at failure)" : ""), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
             }
