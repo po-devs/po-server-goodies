@@ -2440,18 +2440,33 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You were removed from signups, so you can't join again!", tourschan, false);
                 return true;
             }
-            if (!sys.hasTier(src, tours.tour[key].tourtype)) {
-                try {
-                    AutoTeams.giveTeam(src, 0, tours.tour[key].tourtype);
-                    sendBotMessage(src, "Your first team was set to a random " + tours.tour[key].tourtype + " team.", tourschan, false);
-                } catch (error) {
-                    var needsteam = ccbftiers.indexOf(tours.tour[key].tourtype) == -1;
-                    sendBotMessage(src, "You need to "+(needsteam ? "have a team for" : "change your tier to")+" the "+tours.tour[key].tourtype+" tier to join!",tourschan,false);
-                    return true;
+            var b = tours.tour[key].tourtype, ccbfFound = false;
+            for (var d in ccbftiers) {
+                if (b === ccbftiers[d]) {
+                    ccbfFound = true;
+                    break;
                 }
             }
-            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && sys.os(src) === "android") {
-                sendBotMessage(src, "Android devices are incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
+            if (!sys.hasTier(src, b)) {
+                if (ccbfFound) {
+                    sys.changeTier(src, 0, b);
+                    if (b === "Battle Factory 6v6" || b === "Battle Factory") {
+                        require("battlefactory.js").generateTeam(src, b);
+                    }
+                    sendBotMessage(src, "Your first team was set to a " + b + " team.", tourschan, false);
+                } else {
+                    try {
+                        AutoTeams.giveTeam(src, 0, b);
+                        sendBotMessage(src, "Your first team was set to a random " + b + " team.", tourschan, false);
+                    } catch (error) {
+                        var needsteam = ccbftiers.indexOf(b) == -1;
+                        sendBotMessage(src, "You need to " + (needsteam ? "have a team for" : "change your tier to") + " the " + b + " tier to join!", tourschan, false);
+                        return true;
+                    }
+                }
+            }
+            if ((tours.tour[key].parameters.mode === "Doubles" || tours.tour[key].parameters.mode === "Triples") && (sys.os(src) === "android" || sys.os(src) === "webclient")) {
+                sendBotMessage(src, (sys.os(src) === "webclient" ? "Webclient is" : "Android devices are")+" incapable of joining "+tours.tour[key].parameters.mode+" tours!",tourschan,false);
                 return true;
             }
             var isInCorrectGen = false;
@@ -4354,6 +4369,7 @@ function isInSpecificTour(name, key) {
 }
 
 function isInTour(name) {
+    if (!name) return;
     var key = false;
     for (var x in tours.tour) {
         var srcisintour = false;
@@ -4715,15 +4731,15 @@ module.exports = {
         }
     },
     onBan : function (src, dest) {
-        var key = isInTour(sys.name(dest));
+        var key = isInTour(dest);
         if (key) {
             if (tours.tour[key].state == "signups") {
-                var index = tours.tour[key].players.indexOf(sys.name(dest).toLowerCase());
+                var index = tours.tour[key].players.indexOf(dest.toLowerCase());
                 tours.tour[key].players.splice(index, 1);
                 tours.tour[key].cpt -= 1;
                 return;
             } else {
-                disqualify(dest, key, false, true);
+                disqualify(sys.id(dest), key, false, true);
                 return;
             }
         }

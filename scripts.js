@@ -1,4 +1,4 @@
-// This is the official Pokemon Online Scripts
+﻿// This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
@@ -1244,11 +1244,11 @@ beforeChannelDestroyed : function(channel) {
 }, /* end of beforeChannelDestroyed */
 
 beforePlayerBan : function(src, dest, dur) {
-    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest).replace("::ffff:", ""), staffchannel);
     var authname = sys.name(src).toLowerCase();
     script.authStats[authname] =  script.authStats[authname] || {};
     script.authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-    callplugins("onBan", src, dest);
+    callplugins("onBan", src, sys.name(dest));
 },
 
 beforePlayerKick:function(src, dest){
@@ -1363,6 +1363,9 @@ userGuides: function(os, unsupported) {
             "English": "http://pokemon-online.eu/threads/34372/",
             "Español": "http://pokemon-online.eu/threads/34379/",
             "中文": "http://tieba.baidu.com/p/4324437820"
+        },
+        "tiers": { //leaving room for more tier guides to be added later
+            "A Guide to Tiers": "http://pokemon-online.eu/threads/34951/"
         }
     };
     if (!guides.hasOwnProperty(os)) {
@@ -1372,6 +1375,11 @@ userGuides: function(os, unsupported) {
         if (os === p) {
             for (var l in guides[p]) {
                 ret.push(unsupported ? l + ": " + guides[p][l] : "<a href='" + guides[p][l] + "'>" + l + "</a>");
+            }
+        }
+        if (p === "tiers") {
+            for (var t in guides[p]) {
+                ret.push(unsupported ? t + ": " + guides[p][t] : "<a href='" + guides[p][t] + "'>" + t + "</a>");
             }
         }
     }
@@ -2222,6 +2230,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.capsbot, sys.name(src), {'time': 900, 'reason': "Overusing CAPS"});
             }
         }
+        else if (user.caps >= Math.floor(maxCaps / 2)) {
+            capsbot.sendMessage(src, "Warning: You may be muted for excessive usage of CAPS LOCK!", channel);
+        }
     } else if (user.caps > 0) {
         user.caps -= 1;
     }
@@ -2276,6 +2287,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
                 sys.kick(src, channel);
             }
+        }
+        else if (user.floodcount >= Math.floor(linecount / 2)) {
+            kickbot.sendMessage(src, "Warning: You may be muted for flooding the chat!", channel);
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);

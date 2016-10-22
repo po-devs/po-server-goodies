@@ -128,7 +128,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             sys.unban(commandData); //needed as at the moment bans don't overwrite tempbans
         }
         normalbot.sendAll("Target: " + commandData + ", IP: " + ip.replace("::ffff:", ""), staffchannel);
-        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>",-1);
+        sendChanHtmlAll("<b><font color=red>" + commandData + " was banned by " + nonFlashing(sys.name(src)) + "!</font></b>",-1);        
+        callplugins("onBan", src, commandData);
         sys.ban(commandData);
         script.kickAll(ip);
         sys.appendToFile("bans.txt", sys.name(src) + " banned " + commandData + "\n");
