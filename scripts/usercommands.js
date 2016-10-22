@@ -987,6 +987,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             team = commandData[1];
         }
         if (tier) {
+            var ccbftiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Hackmons Inverted CC", "Battle Factory", "Battle Factory 6v6"];
+            for (var f in ccbftiers) {
+                if (ccbftiers[f] === tier) { break; } // if they are changing to a ccbftier, this won't matter.
+                if (ccbftiers[f] === sys.tier(src, team)) {
+                    normalbot.sendMessage(src, "You cannot switch from " + ccbftiers[f] + " without loading a new team first.", channel);
+                    return;
+                }
+            }
             if (!tier_checker.has_legal_team_for_tier(src, team, tier)) {
                 normalbot.sendMessage(src, "You cannot switch to " + tier + ".", channel);
             }
