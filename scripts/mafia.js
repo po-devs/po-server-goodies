@@ -6169,7 +6169,7 @@ function Mafia(mafiachan) {
         }
         if (mafia.distributeEvent && this.rewardSafariPlayers.indexOf(name) !== -1) {
             mafia.safariShove.push(name);
-            dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(name) + " rescinded " + cmd[0] + "'s Mafia Event participation points!");
+            dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(warner) + " rescinded " + cmd[0] + "'s Mafia Event participation points!");
         }
     };
     this.removeWarn = function (src, commandData, channel) {
