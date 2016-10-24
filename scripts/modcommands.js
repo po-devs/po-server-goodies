@@ -40,7 +40,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
             var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
             if (filterOS) {
-                channelData[data[1]] = data[1];
+                channelData["os"] = data[1];
             }
             sys.sendMessage(src, "+ChannelUsers:"+JSON.stringify(channelData), channel);
         }
