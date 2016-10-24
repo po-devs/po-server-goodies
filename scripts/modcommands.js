@@ -22,24 +22,26 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, data[1] + " is not a valid OS!", channel);
             return;
         }
+        var playerIDs = sys.playersOfChannel(chanid).filter(function (id) {
+            if (filterOS) {
+                return sys.os(id) === data[1];
+            } else {
+                return id;
+            }
+        });
         var chanName = sys.channel(chanid);
         if (!isbot) {
-            var names = sys.playersOfChannel(chanid).filter(function (id) {
-                if (filterOS) {
-                    return sys.os(id) === data[1];
-                } else {
-                    return id;
-                }
-            }).map(sys.name);
+            var names = playerIDs.map(sys.name);
             channelbot.sendMessage(src, (filterOS ? data[1][0].toUpperCase() + data[1].slice(1).toLowerCase() + " " : "") + "Users of channel #" + chanName + " are: " + names.join(", "), channel);
         } else {
-            var players = sys.playersOfChannel(chanid);
             var objectList = [];
-            for (var i = 0; i < players.length; ++i) {
-                var name = sys.name(players[i]);
-                objectList.push({'id': players[i], 'name': name});
+            for (var i = 0; i < playerIDs.length; ++i) {
+                objectList.push({'id': playerIDs[i], 'name': sys.name(playerIDs[i])});
             }
             var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+            if (filterOS) {
+                channelData[data1] = data1;
+            }
             sys.sendMessage(src, "+ChannelUsers:"+JSON.stringify(channelData), channel);
         }
         return;
