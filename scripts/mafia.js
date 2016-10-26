@@ -15,18 +15,29 @@ var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
 function Mafia(mafiachan) {
-    this.version = "2016-10-18";
+    this.version = "2016-10-22";
     var mafia = this;
     var defaultThemeName = "default"; //lowercased so it doesn't use the theme in the code (why is it there to begin with?)
-
+    var mwarns = script.mwarns;
+    
     this.mafiaStats = require("mafiastats.js");
     this.mafiaChecker = require("mafiachecker.js");
     sys.makeDir(Config.dataDir + "mafiathemes/");
-    if (!this.nextEventTime) {this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;}
-    if (!this.eventQueue) {this.eventQueue = [defaultThemeName];}
-    if (!this.eventThemePool) {this.eventThemePool = [defaultThemeName];}
-    if (!this.warningLog) {this.warningLog = {};}
-    this.warningLog = {};
+    if (!this.nextEventTime) {
+        this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
+    }
+    if (sys.getVal("mafia_eventQueue") !== "") {
+        this.eventQueue = sys.getVal("mafia_eventQueue").split(",");
+    } else {
+        this.eventQueue = [defaultThemeName];
+        sys.saveVal("mafia_eventQueue", this.eventQueue.toString());
+    }
+    if (sys.getVal("mafia_eventThemePool") !== "") {
+        this.eventThemePool = sys.getVal("mafia_eventThemePool").split(",");
+    } else {
+        this.eventThemePool = [defaultThemeName];
+        sys.saveVal("mafia_eventThemePool", this.eventThemePool.toString());
+    }
     this.eventsEnabled = true;
     this.defaultWarningPoints = {
         "afk": 1,
@@ -200,26 +211,26 @@ function Mafia(mafiachan) {
         return ("<b><font color=" + color + ">" + msg + "</font></b>");
     }
     function colorizeRole(r) {
-		var role = mafia.theme.roles[r];
-		if (!role) {
-		    return r;
-		}
-		var tr = role.translation;
-		/* disabling this for now, maybe add once android has color and give users option to disable.
-		var col = mafia.theme.sideColor[role.side];
-		if (col) {
-		    return (toColor(tr, col));
-		}
-		*/
-		return tr;
+        var role = mafia.theme.roles[r];
+        if (!role) {
+            return r;
+        }
+        var tr = role.translation;
+        /* disabling this for now, maybe add once android has color and give users option to disable.
+        var col = mafia.theme.sideColor[role.side];
+        if (col) {
+            return (toColor(tr, col));
+        }
+        */
+        return tr;
     }
     function colorizeSide(s) {
-		var tr = mafia.theme.sideTranslations[s];
-		var col = mafia.theme.sideColor[s];
-		if (col) {
-		    return (toColor(tr, col));
-		}
-		return tr;
+        var tr = mafia.theme.sideTranslations[s];
+        var col = mafia.theme.sideColor[s];
+        if (col) {
+            return (toColor(tr, col));
+        }
+        return tr;
     }
     function colorizePerRole(mess) {
         if (mess === undefined || mess.length === 0 || (typeof mess !== "string")) {
@@ -1682,13 +1693,12 @@ function Mafia(mafiachan) {
             return;
         }
         if (place === "first") {
-            this.eventQueue.reverse();
-            this.eventQueue.push(theme);
-            this.eventQueue.reverse();
+            this.eventQueue = [theme].concat(this.eventQueue);
         }
         else {
             this.eventQueue.push(theme);
         }
+        sys.saveVal("mafia_eventQueue", this.eventQueue.toString());
         gamemsg(srcname, "Theme " + theme + " added to the Event Queue.");
         this.showEventQueue(src);
     };
@@ -1701,14 +1711,13 @@ function Mafia(mafiachan) {
             return;
         }
         if (place === "last") {
-            this.eventQueue.reverse();
-            indx = this.eventQueue.indexOf(theme);
+            indx = this.eventQueue.lastIndexOf(theme);
             this.eventQueue.splice(indx,1);
-            this.eventQueue.reverse();
         }
         else {
             this.eventQueue.splice(indx,1);
         }
+        sys.saveVal("mafia_eventQueue", this.eventQueue.toString());
         gamemsg(srcname, "Theme " + theme + " removed from the Event Queue.");
         this.showEventQueue(src);
     };
@@ -1730,6 +1739,7 @@ function Mafia(mafiachan) {
             return;
         }
         this.eventThemePool.push(theme);
+        sys.saveVal("mafia_eventThemePool", this.eventThemePool.toString());
         gamemsg(srcname, "Theme " + theme + " added to Event Pool.");
         this.showEventPool(src);
     };
@@ -1742,6 +1752,7 @@ function Mafia(mafiachan) {
              return;
         }
         this.eventThemePool.splice(indx,1);
+        sys.saveVal("mafia_eventThemePool", this.eventThemePool.toString());
         gamemsg(srcname, "Theme " + theme + " removed from Event Pool.");
         this.showEventPool(src);
     };
@@ -1918,7 +1929,7 @@ function Mafia(mafiachan) {
         if (this.state != "blank") {
             gamemsg(srcname, "A game is going on. Wait until it's finished before trying to start another one");
             if (this.state == "voting" || this.state == "entry") {
-                gamemsg(srcname, "You can join the current game by typing /join !");
+                gamemsg(srcname, "You can join the current game by typing <a href=\"po:send//join\">/join</a>!");
             }
             return;
         }
@@ -2186,8 +2197,8 @@ function Mafia(mafiachan) {
     this.getPlayersForRoleS = function (role) {
         return mafia.getPlayersForRole(role).join(", ");
     };
-    this.getCurrentRoles = function () {
-        return Object.keys(this.players).map(function(name) {
+    this.sendRolesList = function() {
+        var roles = Object.keys(this.players).map(function(name) {
                 return this.players[name].role;
             }, mafia).sort(function(a, b) { /* Sorting to not give out the order of the roles per player */
                 var tra = typeof a.actions.onlist === "string" ? mafia.theme.trrole(a.actions.onlist) : a.translation;
@@ -2198,7 +2209,8 @@ function Mafia(mafiachan) {
                     return -1;
                 else
                     return 1;
-            }).map(function(role) {
+            }),
+            sendPC = roles.map(function(role) {
                 if (typeof role.actions.onlist === "string") {
                     var onlistRole = role.actions.onlist,
                         roleName = html_escape(this.theme.trrole(onlistRole)),
@@ -2209,21 +2221,40 @@ function Mafia(mafiachan) {
                         color = this.theme.sideColor[role.side];
                     return "<a href=\"po:send//roles " + mafia.theme.name + ":" + roleName + "\" style=\"color:" + color + "\">" + roleName + "</a>";
                 }
-            }, mafia).join(", ");
+            }, mafia).join(", ") + ".",
+            sendAndroid = roles.map(function(role) {
+                if (typeof role.actions.onlist === "string") {
+                    var onlistRole = role.actions.onlist,
+                        roleName = html_escape(this.theme.trrole(onlistRole)),
+                        color = this.theme.sideColor[mafia.theme.roles[onlistRole].side];
+                    return "<posend m='/roles " + mafia.theme.name + ":" + roleName + /*"' style='color:" + color +*/ "'>" + roleName + "</a>";
+                } else {
+                    var roleName = html_escape(role.translation),
+                        color = this.theme.sideColor[role.side];
+                    return "<posend m='/roles " + mafia.theme.name + ":" + roleName + /*"' style='color:" + color +*/ "'>" + roleName + "</a>";
+                }
+            }, mafia).join(", ") + ".";
+        var channelUsers = sys.playersOfChannel(mafiachan);
+        for (var i = 0; i < channelUsers.length; i++) {
+            var id = channelUsers[i];
+            if (sys.isInChannel(id, mafiachan)) {
+                gamemsg(sys.name(id), sys.os(id) === "android" ? sendAndroid : sendPC, "±Current Roles", undefined, true);
+            }
+        }
     };
     this.sendCurrentPlayers = function () {
         var channelUsers = sys.playersOfChannel(mafiachan),
             players = Object.keys(this.players).sort(),
-            list = players.map(function(player) {
+            listPC = players.map(function(player) {
                 return htmlLink(player, true);
-            });
+            }).join(", ") + ".",
+            listAndroid = players.map(function(player) {
+                return "<poappend m='" + player + "'>" + player + "</poappend>";
+            }).join(", ") + ".";
         for (var i = 0; i < channelUsers.length; i++) {
-            var name = sys.name(channelUsers[i]);
-            if (this.isInGame(name) && (sys.os(channelUsers[i]) !== "android")) {
-                var n = players.indexOf(name);
-                list[n] = "<a href=\"po:appendmsg/" + name + "\" style=\"color:" + script.getColor(channelUsers[i]) + "\">" + html_escape(name) + "</a><ping/>";
-                gamemsg(name, list.join(", ") + ".", "±Current Players", undefined, true);
-                list[n] = htmlLink(name, true); // Remove color
+            var id = channelUsers[i], name = sys.name(id);
+            if (this.isInGame(name)) {
+                gamemsg(name, sys.os(id) === "android" ? listAndroid : listPC, "±Current Players", undefined, true);
             } else {
                 gamemsg(name, players.join(", ") + ".", "±Current Players");
             }
@@ -3470,606 +3501,606 @@ function Mafia(mafiachan) {
         if (!(this.isInGame(name)) || (!(this.hasCommand(name, command, "standby")))) {
             return false;
         }
-		var player = mafia.players[name];
-		var srcname = name;
-		if (!this.isInGame(commandData) && this.isInGame(decodeURIComponent(commandData))) {
-			commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
-		}
-		commandData = this.correctCase(commandData);
-		var target = commandData != noPlayer ? mafia.players[commandData] : null;
+        var player = mafia.players[name];
+        var srcname = name;
+        if (!this.isInGame(commandData) && this.isInGame(decodeURIComponent(commandData))) {
+            commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
+        }
+        commandData = this.correctCase(commandData);
+        var target = commandData != noPlayer ? mafia.players[commandData] : null;
 
-		var commandObject = player.role.actions.standby[command];
-		var commandName = command;
-		var tRole, tSide;
-		var Action = player.role.actions.standby[command];
-		if (commandObject.hasOwnProperty("command"))
-			command = commandObject.command;
+        var commandObject = player.role.actions.standby[command];
+        var commandName = command;
+        var tRole, tSide;
+        var Action = player.role.actions.standby[command];
+        if (commandObject.hasOwnProperty("command"))
+            command = commandObject.command;
 
-		if (target !== null) {
-			var player = mafia.players[name];
-			var dayargs = { //Common Args used in commands and counters
-					'~Self~': player.name,
-					'~Player~': player.name,
-					'~User~': player.name,
-					'~Target~': (target.name),
-					'~Role~': colorizeRole(player.role.role),
-					'~TargetRole~': (typeof target == "string" ? target :target.role.translation),
-					'~Side~': mafia.theme.trside(player.role.side),
-					'~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
-					'~Action~': command
-					};
+        if (target !== null) {
+            var player = mafia.players[name];
+            var dayargs = { //Common Args used in commands and counters
+                    '~Self~': player.name,
+                    '~Player~': player.name,
+                    '~User~': player.name,
+                    '~Target~': (target.name),
+                    '~Role~': colorizeRole(player.role.role),
+                    '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
+                    '~Side~': mafia.theme.trside(player.role.side),
+                    '~TargetSide~': (typeof target == "string" ? target : mafia.theme.trside(target.role.side)),
+                    '~Action~': command
+                    };
 
-			if ((commandObject.target === undefined || ["Self", "Any", "OnlySelf", "OnlyTeam"].indexOf(commandObject.target) == -1) && player == target) {
-				gamemsg(srcname, "Nope, this wont work... You can't target yourself!", "±Hint");
-				return true;
-			} else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
-				|| commandObject.target == 'AnyButRole' && player.role.role == target.role.role) {
-				gamemsg(srcname, "Nope, this wont work... You can't target your partners!", "±Hint");
-				return true;
-			} else if (commandObject.target == "OnlySelf" && target != player) {
-				gamemsg(srcname, "You can only use this action on yourself!", "±Hint");
-				return true;
-			} else if ((commandObject.target == "OnlyTeammates" && player == target)
-			 || (["OnlyTeam", "OnlyTeammates"].indexOf(commandObject.target) !== -1 && player.role.side != target.role.side)) {
-				gamemsg(name, "You can only use this action on your teammates!", "±Hint");
-				return true;
-			}
-		}
-		this.addPhaseStalkAction(name, command, commandData);
+            if ((commandObject.target === undefined || ["Self", "Any", "OnlySelf", "OnlyTeam"].indexOf(commandObject.target) == -1) && player == target) {
+                gamemsg(srcname, "Nope, this wont work... You can't target yourself!", "±Hint");
+                return true;
+            } else if (commandObject.target == 'AnyButTeam' && player.role.side == target.role.side
+                || commandObject.target == 'AnyButRole' && player.role.role == target.role.role) {
+                gamemsg(srcname, "Nope, this wont work... You can't target your partners!", "±Hint");
+                return true;
+            } else if (commandObject.target == "OnlySelf" && target != player) {
+                gamemsg(srcname, "You can only use this action on yourself!", "±Hint");
+                return true;
+            } else if ((commandObject.target == "OnlyTeammates" && player == target)
+             || (["OnlyTeam", "OnlyTeammates"].indexOf(commandObject.target) !== -1 && player.role.side != target.role.side)) {
+                gamemsg(name, "You can only use this action on your teammates!", "±Hint");
+                return true;
+            }
+        }
+        this.addPhaseStalkAction(name, command, commandData);
 
-		var recharge = mafia.getRecharge(player, "standby", commandName);
-		if (recharge !== undefined && recharge > 0) {
-			gamemsg(srcname, "You cannot use this action for " + recharge + " day(s)!");
-			return true;
-		}
-		var charges = mafia.getCharges(player, "standby", commandName);
-		if (charges !== undefined && charges === 0) {
-			gamemsg(srcname, "You are out of uses for this action!");
-			return true;
-		}
-		var dayChargesMessage = function(player, commandName, action) {
-			if (mafia.getCharges(player, "standby", commandName) !== undefined) {
-				if (!mafia.isInGame(player.name)){
-					return true;
-				}
-				var charge = mafia.getCharges(player, "standby", commandName);
-				var chargetxt = (action.chargesmsg || "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
-				gamemsg(player.name, chargetxt);
-			}
-		};
+        var recharge = mafia.getRecharge(player, "standby", commandName);
+        if (recharge !== undefined && recharge > 0) {
+            gamemsg(srcname, "You cannot use this action for " + recharge + " day(s)!");
+            return true;
+        }
+        var charges = mafia.getCharges(player, "standby", commandName);
+        if (charges !== undefined && charges === 0) {
+            gamemsg(srcname, "You are out of uses for this action!");
+            return true;
+        }
+        var dayChargesMessage = function(player, commandName, action) {
+            if (mafia.getCharges(player, "standby", commandName) !== undefined) {
+                if (!mafia.isInGame(player.name)){
+                    return true;
+                }
+                var charge = mafia.getCharges(player, "standby", commandName);
+                var chargetxt = (action.chargesmsg || "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
+                gamemsg(player.name, chargetxt);
+            }
+        };
 
-		var convertTo = function(player, target, Action) {
-			if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
-				return;
-			}
-			var oldRole = target.role, newRole = null;
-			if (typeof Action.newRole == "object") {
-				if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
-					newRole = randomSample(Action.newRole.random);
-				} else {
-					var possibleRoles = Object.keys(Action.newRole).shuffle(), nrList = [];
-					for (var nr in possibleRoles) {
-						if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
-							nrList.push(possibleRoles[nr]);
-						}
-					}
-					newRole = mafia.filterUniqueRoles(nrList, mafia.players);
-				}
-			} else {
-				newRole = Action.newRole;
-			}
-			if (newRole === null) {
-				return;
-			} else {
-				mafia.setPlayerRole(target, newRole);
-				if (!Action.silent) {
-					var allmsg = ("convertmsg" in Action ? Action.convertmsg : "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
-					gamemsgAll(allmsg, undefined, undefined, true);
-				}
+        var convertTo = function(player, target, Action) {
+            if ("canConvert" in Action && Action.canConvert != "*" && Action.canConvert.indexOf(target.role.role) == -1) {
+                return;
+            }
+            var oldRole = target.role, newRole = null;
+            if (typeof Action.newRole == "object") {
+                if ("random" in Action.newRole && !Array.isArray(Action.newRole.random) && typeof Action.newRole.random === "object" && Action.newRole.random !== null) {
+                    newRole = randomSample(Action.newRole.random);
+                } else {
+                    var possibleRoles = Object.keys(Action.newRole).shuffle(), nrList = [];
+                    for (var nr in possibleRoles) {
+                        if (Action.newRole[possibleRoles[nr]].indexOf(oldRole.role) != -1) {
+                            nrList.push(possibleRoles[nr]);
+                        }
+                    }
+                    newRole = mafia.filterUniqueRoles(nrList, mafia.players);
+                }
+            } else {
+                newRole = Action.newRole;
+            }
+            if (newRole === null) {
+                return;
+            } else {
+                mafia.setPlayerRole(target, newRole);
+                if (!Action.silent) {
+                    var allmsg = ("convertmsg" in Action ? Action.convertmsg : "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
+                    gamemsgAll(allmsg, undefined, undefined, true);
+                }
 
-				if (target !== player) {
-					pmsg = ("convertusermsg" in Action ? Action.convertusermsg : "Your target (~Target~) has been converted and is now a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
-					gamemsg(player.name, pmsg, undefined, undefined, true);
-				}
+                if (target !== player) {
+                    pmsg = ("convertusermsg" in Action ? Action.convertusermsg : "Your target (~Target~) has been converted and is now a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
+                    gamemsg(player.name, pmsg, undefined, undefined, true);
+                }
 
-				if (!Action.silentConvert) {
-					var tarmsg = ("tarmsg" in Action ? Action.tarmsg : "You have been converted and changed roles!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
-					gamemsg(target.name, tarmsg);
-					mafia.showOwnRole(sys.id(target.name, undefined, undefined, true));
-				}
-			}
-		};
-		var copyAs = function(player, target, Action) {
-			if (typeof Action.copyAs == "string" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
-				return;
-			} else {
-				var oldRole = player.role, newRole = null;
-				if (typeof Action.copyAs == "object") {
-					var possibleRoles = Object.keys(Action.copyAs).shuffle(), nrList = [];
-					for (var nr in possibleRoles) {
-						if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
-							nrList.push(possibleRoles[nr]);
-							break;
-						}
-					}
-					newRole = mafia.filterUniqueRoles(nrList, mafia.players);
-				} else if (typeof Action.copyAs == "string") {
-					if (Action.copyAs == "*") {
-						newRole = target.role.role;
-					} else {
-						newRole = Action.copyAs;
-					}
-				}
-				if (newRole === null) {
-					return;
-				} else {
-					mafia.setPlayerRole(player, newRole);
-					if (!Action.silent) {
-						var allmsg = ("copymsg" in Action ? Action.copymsg : "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(player.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetRole~/g, colorizeRole(target.role.role));
-						gamemsgAll(allmsg, undefined, undefined, true);
-					}
-					if (!Action.silentCopy) {
-						var pmsg = ("copyusermsg" in Action ? Action.copyusermsg : "You copied someone and changed roles!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(player.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetRole~/g, colorizeRole(target.role.role));
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						mafia.showOwnRole(sys.id(player.name));
-					}
-				}
-			}
-		};
-		var massConvert = function(player, Action) {
-			var convertRoles = Action.convertRoles, nr, k, singleAffected = [], affected, newRole, targetPlayers, convertedPlayer, newRole;
-			for (nr in convertRoles) {
-				targetPlayers = mafia.getPlayersForRole(nr);
-				newRole = convertRoles[nr];
-				affected = [];
-				for (k in targetPlayers) {
-					affected.push(targetPlayers[k]);
-					convertedPlayer = mafia.players[targetPlayers[k]];
-					mafia.setPlayerRole(convertedPlayer, newRole);
-					if (!Action.silentMassConvert) {
-						mafia.showOwnRole(sys.id(targetPlayers[k]));
-					}
-				}
-				if (affected.length > 0 && !Action.silent) {
-					if ("singlemassconvertmsg" in Action) {
-						singleAffected = singleAffected.concat(affected);
-					} else {
-						var actionMessage = ("massconvertmsg" in Action ? Action.massconvertmsg : "The ~Old~ became a ~New~!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(nr)).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Number~/g, affected.length);
-						gamemsgAll(actionMessage, undefined, undefined, true);
-					}
-				}
-			}
-			if (singleAffected.length > 0) {
-				gamemsgAll(Action.singlemassconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")).replace(/~Number~/g, singleAffected.length), undefined, undefined, true);
-			}
-		};
+                if (!Action.silentConvert) {
+                    var tarmsg = ("tarmsg" in Action ? Action.tarmsg : "You have been converted and changed roles!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(target.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(player.role.role));
+                    gamemsg(target.name, tarmsg);
+                    mafia.showOwnRole(sys.id(target.name, undefined, undefined, true));
+                }
+            }
+        };
+        var copyAs = function(player, target, Action) {
+            if (typeof Action.copyAs == "string" && "canCopy" in Action && Action.canCopy != "*" && Action.canCopy.indexOf(target.role.role) == -1) {
+                return;
+            } else {
+                var oldRole = player.role, newRole = null;
+                if (typeof Action.copyAs == "object") {
+                    var possibleRoles = Object.keys(Action.copyAs).shuffle(), nrList = [];
+                    for (var nr in possibleRoles) {
+                        if (Action.copyAs[possibleRoles[nr]].indexOf(target.role.role) != -1) {
+                            nrList.push(possibleRoles[nr]);
+                            break;
+                        }
+                    }
+                    newRole = mafia.filterUniqueRoles(nrList, mafia.players);
+                } else if (typeof Action.copyAs == "string") {
+                    if (Action.copyAs == "*") {
+                        newRole = target.role.role;
+                    } else {
+                        newRole = Action.copyAs;
+                    }
+                }
+                if (newRole === null) {
+                    return;
+                } else {
+                    mafia.setPlayerRole(player, newRole);
+                    if (!Action.silent) {
+                        var allmsg = ("copymsg" in Action ? Action.copymsg : "A ~Old~ has been converted into a ~New~!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(player.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetRole~/g, colorizeRole(target.role.role));
+                        gamemsgAll(allmsg, undefined, undefined, true);
+                    }
+                    if (!Action.silentCopy) {
+                        var pmsg = ("copyusermsg" in Action ? Action.copyusermsg : "You copied someone and changed roles!").replace(/~Old~/g, colorizeRole(oldRole.role)).replace(/~New~/g, colorizeRole(player.role.role)).replace(/~Self~/g, player.name).replace(/~Target~/g, target.name).replace(/~TargetRole~/g, colorizeRole(target.role.role));
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        mafia.showOwnRole(sys.id(player.name));
+                    }
+                }
+            }
+        };
+        var massConvert = function(player, Action) {
+            var convertRoles = Action.convertRoles, nr, k, singleAffected = [], affected, newRole, targetPlayers, convertedPlayer, newRole;
+            for (nr in convertRoles) {
+                targetPlayers = mafia.getPlayersForRole(nr);
+                newRole = convertRoles[nr];
+                affected = [];
+                for (k in targetPlayers) {
+                    affected.push(targetPlayers[k]);
+                    convertedPlayer = mafia.players[targetPlayers[k]];
+                    mafia.setPlayerRole(convertedPlayer, newRole);
+                    if (!Action.silentMassConvert) {
+                        mafia.showOwnRole(sys.id(targetPlayers[k]));
+                    }
+                }
+                if (affected.length > 0 && !Action.silent) {
+                    if ("singlemassconvertmsg" in Action) {
+                        singleAffected = singleAffected.concat(affected);
+                    } else {
+                        var actionMessage = ("massconvertmsg" in Action ? Action.massconvertmsg : "The ~Old~ became a ~New~!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(nr)).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Number~/g, affected.length);
+                        gamemsgAll(actionMessage, undefined, undefined, true);
+                    }
+                }
+            }
+            if (singleAffected.length > 0) {
+                gamemsgAll(Action.singlemassconvertmsg.replace(/~Self~/g, player.name).replace(/~Target~/g, readable(singleAffected, "and")).replace(/~Number~/g, singleAffected.length), undefined, undefined, true);
+            }
+        };
 
-		if (command == "kill") {
-			if (player.dayKill >= (commandObject.limit || 1)) {
-				gamemsg(srcname, "You already killed!");
-				return true;
-			}
-			if (target === null) {
-				gamemsg(srcname, "That person is not playing!");
-				return true;
-			}
-			var bp = ("bypass" in Action ? Action.bypass : []);
-			tRole = target.role.translation;
-			tSide = mafia.theme.trside(target.role.side);
-			var revenge = false, rmsg = null;
-			if (name in mafia.dayDistract && bp.indexOf("distract") === -1) {
-					if (mafia.dayDistract[name].type === "revenge") {
-						revenge = true;
-						rmsg = mafia.dayDistract[name].msg ? mafia.dayDistract[name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
-					}
-					else if (mafia.dayDistract[name].type === "distract") {
-						gamemsg(srcname, formatArgs(mafia.dayDistract[name].msg ? mafia.dayDistract[name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
-						return true;
-					}
-				}
-			if (target.name in mafia.dayProtect && bp.indexOf("protect") === -1) {
-					if (mafia.dayProtect[target.name].type === "revenge") {
-						revenge = true;
-						rmsg = mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
-					}
-					else if (mafia.dayProtect[target.name].type === "protect") {
-						gamemsg(srcname, formatArgs(mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "Your target (~Target~) was protected!", dayargs), undefined, undefined, true);
-						return true;
-					}
-				}
-			if (target.role.actions.hasOwnProperty("daykill")) {
-				if (target.role.actions.daykill == "evade" && bp.indexOf("evade") === -1) {
-					if (target.role.actions.daykillevademsg !== undefined && typeof target.role.actions.daykillevademsg == "string") {
-						gamemsg(srcname, target.role.actions.daykillevademsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), undefined, undefined, true);
-						return true;
-					} else {
-						gamemsg(srcname, formatArgs("~Target~ cannot be killed right now!", dayargs), undefined, undefined, true);
-						return true;
-					}
-				}
-				else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb" || (typeof target.role.actions.daykill.mode == "object" && "revenge" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.revenge.indexOf(player.role.role) != -1)) {
-					revenge = true;
-				} else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
-					if (player.role.actions.daykillmissmsg !== undefined && typeof player.role.actions.daykillmissmsg == "string") {
-						gamemsg(srcname, player.role.actions.daykillmissmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), undefined, undefined, true);
-					} else {
-						gamemsg(srcname, "Your kill was evaded!");
-					}
-					if (target.role.actions.daykill.mode.evasionmsg !== undefined && typeof target.role.actions.daykill.mode.evasionmsg == "string") {
-						gamemsg(sys.id(target.name), target.role.actions.daykill.mode.evasionmsg.replace(/~Target~/g, name).replace(/~Self~/g, commandData), undefined, undefined, true);
-					} else {
-						gamemsg(sys.id(target.name), "You evaded a kill!");
-					}
-					player.dayKill = player.dayKill + 1 || 1;
-					if ("recharge" in commandObject) {
-						if (!(player.name in this.dayRecharges)) {
-							this.dayRecharges[player.name] = {};
-						}
-						this.dayRecharges[player.name][commandName] = commandObject.recharge;
-					}
-					if (charges !== undefined) {
-						mafia.removeCharge(player, "standby", commandName);
-					}
-					dayChargesMessage(player, commandName, commandObject);
-					return true;
-				} else if (typeof target.role.actions.daykill.mode == "object" && "evadeCharges" in target.role.actions.daykill.mode && target.evadeCharges.daykill > 0) {
-					var targetMode = target.role.actions.daykill;
+        if (command == "kill") {
+            if (player.dayKill >= (commandObject.limit || 1)) {
+                gamemsg(srcname, "You already killed!");
+                return true;
+            }
+            if (target === null) {
+                gamemsg(srcname, "That person is not playing!");
+                return true;
+            }
+            var bp = ("bypass" in Action ? Action.bypass : []);
+            tRole = target.role.translation;
+            tSide = mafia.theme.trside(target.role.side);
+            var revenge = false, rmsg = null;
+            if (name in mafia.dayDistract && bp.indexOf("distract") === -1) {
+                    if (mafia.dayDistract[name].type === "revenge") {
+                        revenge = true;
+                        rmsg = mafia.dayDistract[name].msg ? mafia.dayDistract[name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
+                    }
+                    else if (mafia.dayDistract[name].type === "distract") {
+                        gamemsg(srcname, formatArgs(mafia.dayDistract[name].msg ? mafia.dayDistract[name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
+                        return true;
+                    }
+                }
+            if (target.name in mafia.dayProtect && bp.indexOf("protect") === -1) {
+                    if (mafia.dayProtect[target.name].type === "revenge") {
+                        revenge = true;
+                        rmsg = mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
+                    }
+                    else if (mafia.dayProtect[target.name].type === "protect") {
+                        gamemsg(srcname, formatArgs(mafia.dayProtect[target.name].msg ? mafia.dayProtect[target.name].msg : "Your target (~Target~) was protected!", dayargs), undefined, undefined, true);
+                        return true;
+                    }
+                }
+            if (target.role.actions.hasOwnProperty("daykill")) {
+                if (target.role.actions.daykill == "evade" && bp.indexOf("evade") === -1) {
+                    if (target.role.actions.daykillevademsg !== undefined && typeof target.role.actions.daykillevademsg == "string") {
+                        gamemsg(srcname, target.role.actions.daykillevademsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), undefined, undefined, true);
+                        return true;
+                    } else {
+                        gamemsg(srcname, formatArgs("~Target~ cannot be killed right now!", dayargs), undefined, undefined, true);
+                        return true;
+                    }
+                }
+                else if (target.role.actions.daykill == "revenge" || target.role.actions.daykill == "bomb" || (typeof target.role.actions.daykill.mode == "object" && "revenge" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.revenge.indexOf(player.role.role) != -1)) {
+                    revenge = true;
+                } else if (typeof target.role.actions.daykill.mode == "object" && target.role.actions.daykill.mode.evadeChance > sys.rand(0, 100) / 100) {
+                    if (player.role.actions.daykillmissmsg !== undefined && typeof player.role.actions.daykillmissmsg == "string") {
+                        gamemsg(srcname, player.role.actions.daykillmissmsg.replace(/~Self~/g, name).replace(/~Target~/g, commandData), undefined, undefined, true);
+                    } else {
+                        gamemsg(srcname, "Your kill was evaded!");
+                    }
+                    if (target.role.actions.daykill.mode.evasionmsg !== undefined && typeof target.role.actions.daykill.mode.evasionmsg == "string") {
+                        gamemsg(sys.id(target.name), target.role.actions.daykill.mode.evasionmsg.replace(/~Target~/g, name).replace(/~Self~/g, commandData), undefined, undefined, true);
+                    } else {
+                        gamemsg(sys.id(target.name), "You evaded a kill!");
+                    }
+                    player.dayKill = player.dayKill + 1 || 1;
+                    if ("recharge" in commandObject) {
+                        if (!(player.name in this.dayRecharges)) {
+                            this.dayRecharges[player.name] = {};
+                        }
+                        this.dayRecharges[player.name][commandName] = commandObject.recharge;
+                    }
+                    if (charges !== undefined) {
+                        mafia.removeCharge(player, "standby", commandName);
+                    }
+                    dayChargesMessage(player, commandName, commandObject);
+                    return true;
+                } else if (typeof target.role.actions.daykill.mode == "object" && "evadeCharges" in target.role.actions.daykill.mode && target.evadeCharges.daykill > 0) {
+                    var targetMode = target.role.actions.daykill;
 
-					player.dayKill = player.dayKill + 1 || 1;
-					target.evadeCharges.daykill--;
+                    player.dayKill = player.dayKill + 1 || 1;
+                    target.evadeCharges.daykill--;
 
-					if (!targetMode.silent) {
-						var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
-						var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						gamemsg(target.name, tmsg, undefined, undefined, true);
-						gamemsg(target.name, "You can still evade " + target.evadeCharges.daykill + " more time(s)!");
-						return true;
-					}
-					return true;
-				} else if (typeof target.role.actions.daykill.mode == "object" && "ignore" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.ignore.indexOf(player.role.role) != -1) {
-					var targetMode = target.role.actions.daykill;
-					if (targetMode.expend) {
-						player.dayKill = player.dayKill + 1 || 1;
-					}
-					if (!targetMode.silent) {
-						var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
-						var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						gamemsg(target.name, tmsg, undefined, undefined, true);
-						return true;
-					}
-					return true;
-				} else if (typeof target.role.actions.daykill.mode == "object" && "ignoreChance" in target.role.actions.daykill.mode) {
-					var attackerRole = player.role.role;
-					var evChance = 0;
-					for (var ignoreNumber in target.role.actions.daykill.mode.ignoreChance) {
-						var rr = target.role.actions.daykill.mode.ignoreChance[ignoreNumber];
-						if (rr.indexOf(attackerRole) != -1) {
-							evChance = ignoreNumber;
-							break;
-						}
-					}
-					if (evChance > sys.rand(0, 100) / 100) {
-						var targetMode = target.role.actions.daykill;
-						var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
-						var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						gamemsg(target.name, tmsg, undefined, undefined, true);
-						return true;
-					}
-				}
+                    if (!targetMode.silent) {
+                        var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
+                        var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        gamemsg(target.name, tmsg, undefined, undefined, true);
+                        gamemsg(target.name, "You can still evade " + target.evadeCharges.daykill + " more time(s)!");
+                        return true;
+                    }
+                    return true;
+                } else if (typeof target.role.actions.daykill.mode == "object" && "ignore" in target.role.actions.daykill.mode && target.role.actions.daykill.mode.ignore.indexOf(player.role.role) != -1) {
+                    var targetMode = target.role.actions.daykill;
+                    if (targetMode.expend) {
+                        player.dayKill = player.dayKill + 1 || 1;
+                    }
+                    if (!targetMode.silent) {
+                        var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
+                        var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        gamemsg(target.name, tmsg, undefined, undefined, true);
+                        return true;
+                    }
+                    return true;
+                } else if (typeof target.role.actions.daykill.mode == "object" && "ignoreChance" in target.role.actions.daykill.mode) {
+                    var attackerRole = player.role.role;
+                    var evChance = 0;
+                    for (var ignoreNumber in target.role.actions.daykill.mode.ignoreChance) {
+                        var rr = target.role.actions.daykill.mode.ignoreChance[ignoreNumber];
+                        if (rr.indexOf(attackerRole) != -1) {
+                            evChance = ignoreNumber;
+                            break;
+                        }
+                    }
+                    if (evChance > sys.rand(0, 100) / 100) {
+                        var targetMode = target.role.actions.daykill;
+                        var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
+                        var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        gamemsg(target.name, tmsg, undefined, undefined, true);
+                        return true;
+                    }
+                }
 
-			}
-			sendBorder();
-			if (!revenge) {
-				gamemsgAll(colorizePerRole(commandObject.killmsg).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~TargetRole~/g, colorizeRole(mafia.players[commandData].role.role)), undefined, undefined, true);
-				if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
-					var rmsg = (commandObject.revealmsg || "While attacking, ~Self~ (~Role~) made a mistake and was revealed!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
-					gamemsgAll(rmsg, undefined, undefined, true);
-				}
-				if ("daykill" in target.role.actions && target.role.actions.daykill === "revealkiller") {
-					var dkr = (target.role.actions.daykillrevengemsg || "Before dying, ~Self~ revealed that ~Target~ is the ~Role~!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~Side~/g, mafia.theme.trside(mafia.players[name].role.side));
-					gamemsgAll(dkr, undefined, undefined, true);
-				}
-				player.dayKill = player.dayKill + 1 || 1;
-				if ("copyAs" in commandObject) {
-					copyAs(player, target, commandObject);
-				}
-				if ("newRole" in commandObject) {
-					convertTo(player, target, commandObject);
-				}
-				if ("convertRoles" in commandObject) {
-					massConvert(player, commandObject);
-				}
-				if (sys.id('PolkaBot') !== undefined) {
-					sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+target.name+" DIED", mafiachan);
-				}
-				this.kill(mafia.players[commandData]);
-			} else {
-				if (!rmsg) {
-					rmsg = (target.role.actions.daykillrevengemsg ||
-					"~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!");
-				}
-				gamemsgAll(rmsg.replace(/~Self~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[commandData].role.role)).replace(/~Target~/g, name).replace(/~TargetRole~/g, colorizeRole(mafia.players[name].role.role)), undefined, undefined, true);
+            }
+            sendBorder();
+            if (!revenge) {
+                gamemsgAll(colorizePerRole(commandObject.killmsg).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~TargetRole~/g, colorizeRole(mafia.players[commandData].role.role)), undefined, undefined, true);
+                if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
+                    var rmsg = (commandObject.revealmsg || "While attacking, ~Self~ (~Role~) made a mistake and was revealed!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
+                    gamemsgAll(rmsg, undefined, undefined, true);
+                }
+                if ("daykill" in target.role.actions && target.role.actions.daykill === "revealkiller") {
+                    var dkr = (target.role.actions.daykillrevengemsg || "Before dying, ~Self~ revealed that ~Target~ is the ~Role~!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~Side~/g, mafia.theme.trside(mafia.players[name].role.side));
+                    gamemsgAll(dkr, undefined, undefined, true);
+                }
+                player.dayKill = player.dayKill + 1 || 1;
+                if ("copyAs" in commandObject) {
+                    copyAs(player, target, commandObject);
+                }
+                if ("newRole" in commandObject) {
+                    convertTo(player, target, commandObject);
+                }
+                if ("convertRoles" in commandObject) {
+                    massConvert(player, commandObject);
+                }
+                if (sys.id('PolkaBot') !== undefined) {
+                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+target.name+" DIED", mafiachan);
+                }
+                this.kill(mafia.players[commandData]);
+            } else {
+                if (!rmsg) {
+                    rmsg = (target.role.actions.daykillrevengemsg ||
+                    "~Target~ tries to attack ~Self~, but ~Self~ fights back and kills ~Target~!");
+                }
+                gamemsgAll(rmsg.replace(/~Self~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[commandData].role.role)).replace(/~Target~/g, name).replace(/~TargetRole~/g, colorizeRole(mafia.players[name].role.role)), undefined, undefined, true);
 
-				if ("copyAs" in commandObject) {
-					copyAs(player, target, commandObject);
-				}
-				if ("newRole" in commandObject) {
-					convertTo(player, target, commandObject);
-				}
-				if ("convertRoles" in commandObject) {
-					massConvert(player, commandObject);
-				}
+                if ("copyAs" in commandObject) {
+                    copyAs(player, target, commandObject);
+                }
+                if ("newRole" in commandObject) {
+                    convertTo(player, target, commandObject);
+                }
+                if ("convertRoles" in commandObject) {
+                    massConvert(player, commandObject);
+                }
 
-				if (sys.id('PolkaBot') !== undefined) {
-					sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
-				}
-				this.kill(mafia.players[name]);
-				if (target.role.actions.daykill === "bomb") {
-					this.kill(mafia.players[commandData]);
-					if (sys.id('PolkaBot') !== undefined) {
-						sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
-					}
-				}
-			}
+                if (sys.id('PolkaBot') !== undefined) {
+                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                }
+                this.kill(mafia.players[name]);
+                if (target.role.actions.daykill === "bomb") {
+                    this.kill(mafia.players[commandData]);
+                    if (sys.id('PolkaBot') !== undefined) {
+                        sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
+                    }
+                }
+            }
 
-			this.onDeadRoles();
+            this.onDeadRoles();
 
-			if (this.testWin()) {
-				return true;
-			}
-			sendBorder();
-		} else if (command == "reveal") {
-			if (player.revealUse >= (commandObject.limit || 1)) {
-				gamemsg(srcname, "You already used this command!");
-				return true;
-			}
-			tRole = player.role.translation;
-			tSide = mafia.theme.trside(player.role.side);
-			var revealMessage = (commandObject.revealmsg || "~Self~ is revealed to be a ~Role~!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(player.role.role));
-			sendBorder();
-			gamemsgAll(revealMessage, undefined, undefined, true);
-			if ("newRole" in commandObject) {
-				convertTo(player, player, commandObject);
-			}
-			if ("convertRoles" in commandObject) {
-				massConvert(player, commandObject);
-			}
-			sendBorder();
-			player.revealUse = player.revealUse + 1 || 1;
-		} else if (command == "expose") {
-			if (player.exposeUse >= (commandObject.limit || 1)) {
-				gamemsg(srcname, "You already used this command!");
-				return true;
-			}
-			if (target === null) {
-				gamemsg(srcname, "That person is not playing!");
-				return true;
-			}
-			tRole = target.role.translation;
-			tSide = mafia.theme.trside(target.role.side);
-			var revenge = false;
-			if (player.name in mafia.dayDistract) {
-					if (mafia.dayDistract[player.name].type === "revenge") {
-						revenge = true;
-						rmsg = mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
-					}
-					else if (mafia.dayDistract[target.name].type === "distract") {
-						gamemsg(srcname, formatArgs(mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
-						return true;
-					}
-				}
-			if (target.role.actions.hasOwnProperty("expose")) {
-				if (target.role.actions.expose == "evade") {
-					var eemsg = (target.role.actions.exposeevademsg || "That person cannot be exposed right now!").replace(/~Self~/g, name).replace(/~Target~/g, commandData);
-					gamemsg(srcname, eemsg, undefined, undefined, true);
-				} else if (target.role.actions.expose == "revenge" || (typeof target.role.actions.expose.mode == "object" && "revenge" in target.role.actions.expose.mode && target.role.actions.expose.mode.revenge.indexOf(player.role.role) != -1)) {
-					revenge = true;
-				} else if (typeof target.role.actions.expose.mode == "object" && target.role.actions.expose.mode.evadeChance > sys.rand(0, 100) / 100) {
-					var emmsg = (player.role.actions.exposemissmsg || "Your ~Action~ was evaded!").replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/g, commandName);
-					var emsg = (target.role.actions.expose.mode.evasionmsg || "You evaded an expose!").replace(/~Target~/g, name).replace(/~Self~/g, commandData);
-					gamemsg(srcname, emmsg, undefined, undefined, true);
-					gamemsg(sys.id(target.name), emsg, undefined, undefined, true);
-					player.exposeUse = player.exposeUse + 1 || 1;
-					if ("recharge" in commandObject) {
-						if (!(player.name in this.dayRecharges)) {
-							this.dayRecharges[player.name] = {};
-						}
-						this.dayRecharges[player.name][commandName] = commandObject.recharge;
-					}
-					if (charges !== undefined) {
-						mafia.removeCharge(player, "standby", commandName);
-					}
-					dayChargesMessage(player, commandName, commandObject);
-					return true;
-				} else if (typeof target.role.actions.expose.mode == "object" && "evadeCharges" in target.role.actions.expose.mode && target.evadeCharges.expose > 0) {
-					var targetMode = target.role.actions.expose;
+            if (this.testWin()) {
+                return true;
+            }
+            sendBorder();
+        } else if (command == "reveal") {
+            if (player.revealUse >= (commandObject.limit || 1)) {
+                gamemsg(srcname, "You already used this command!");
+                return true;
+            }
+            tRole = player.role.translation;
+            tSide = mafia.theme.trside(player.role.side);
+            var revealMessage = (commandObject.revealmsg || "~Self~ is revealed to be a ~Role~!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(player.role.role));
+            sendBorder();
+            gamemsgAll(revealMessage, undefined, undefined, true);
+            if ("newRole" in commandObject) {
+                convertTo(player, player, commandObject);
+            }
+            if ("convertRoles" in commandObject) {
+                massConvert(player, commandObject);
+            }
+            sendBorder();
+            player.revealUse = player.revealUse + 1 || 1;
+        } else if (command == "expose") {
+            if (player.exposeUse >= (commandObject.limit || 1)) {
+                gamemsg(srcname, "You already used this command!");
+                return true;
+            }
+            if (target === null) {
+                gamemsg(srcname, "That person is not playing!");
+                return true;
+            }
+            tRole = target.role.translation;
+            tSide = mafia.theme.trside(target.role.side);
+            var revenge = false;
+            if (player.name in mafia.dayDistract) {
+                    if (mafia.dayDistract[player.name].type === "revenge") {
+                        revenge = true;
+                        rmsg = mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
+                    }
+                    else if (mafia.dayDistract[target.name].type === "distract") {
+                        gamemsg(srcname, formatArgs(mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
+                        return true;
+                    }
+                }
+            if (target.role.actions.hasOwnProperty("expose")) {
+                if (target.role.actions.expose == "evade") {
+                    var eemsg = (target.role.actions.exposeevademsg || "That person cannot be exposed right now!").replace(/~Self~/g, name).replace(/~Target~/g, commandData);
+                    gamemsg(srcname, eemsg, undefined, undefined, true);
+                } else if (target.role.actions.expose == "revenge" || (typeof target.role.actions.expose.mode == "object" && "revenge" in target.role.actions.expose.mode && target.role.actions.expose.mode.revenge.indexOf(player.role.role) != -1)) {
+                    revenge = true;
+                } else if (typeof target.role.actions.expose.mode == "object" && target.role.actions.expose.mode.evadeChance > sys.rand(0, 100) / 100) {
+                    var emmsg = (player.role.actions.exposemissmsg || "Your ~Action~ was evaded!").replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Action~/g, commandName);
+                    var emsg = (target.role.actions.expose.mode.evasionmsg || "You evaded an expose!").replace(/~Target~/g, name).replace(/~Self~/g, commandData);
+                    gamemsg(srcname, emmsg, undefined, undefined, true);
+                    gamemsg(sys.id(target.name), emsg, undefined, undefined, true);
+                    player.exposeUse = player.exposeUse + 1 || 1;
+                    if ("recharge" in commandObject) {
+                        if (!(player.name in this.dayRecharges)) {
+                            this.dayRecharges[player.name] = {};
+                        }
+                        this.dayRecharges[player.name][commandName] = commandObject.recharge;
+                    }
+                    if (charges !== undefined) {
+                        mafia.removeCharge(player, "standby", commandName);
+                    }
+                    dayChargesMessage(player, commandName, commandObject);
+                    return true;
+                } else if (typeof target.role.actions.expose.mode == "object" && "evadeCharges" in target.role.actions.expose.mode && target.evadeCharges.expose > 0) {
+                    var targetMode = target.role.actions.expose;
 
-					player.exposeUse = player.exposeUse + 1 || 1;
-					target.evadeCharges.expose--;
+                    player.exposeUse = player.exposeUse + 1 || 1;
+                    target.evadeCharges.expose--;
 
-					if (!targetMode.silent) {
-						var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
-						var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						gamemsg(target.name, tmsg, undefined, undefined, true);
-						gamemsg(target.name, "You can still evade " + target.evadeCharges.expose + " more time(s)!");
-						return true;
-					}
-					return true;
-				}else if (typeof target.role.actions.expose.mode == "object" && "ignore" in target.role.actions.expose.mode && target.role.actions.expose.mode.ignore.indexOf(player.role.role) != -1) {
-					var targetMode = target.role.actions.expose;
-					if (targetMode.expend) {
-						player.exposeUse = player.exposeUse + 1 || 1;
-					}
-					if (!targetMode.silent) {
-						var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
-						var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
-						gamemsg(player.name, pmsg, undefined, undefined, true);
-						gamemsg(target.name, tmsg, undefined, undefined, true);
-						return true;
-					}
-					return true;
-				}
-			}
-			var exposeMessage = (commandObject.exposemsg || "~Self~ revealed that ~Target~ is the ~Role~!");
-			exposeMessage = colorizePerRole(exposeMessage);
-			var exposeTargetMessage = commandObject.exposedtargetmsg;
-			var inspectMode = target.role.actions.inspect || {};
-			var revealedRole;
-			var revealedSide;
-			if (target.disguiseRole !== undefined) {
-				revealedRole = mafia.theme.trrole(target.disguiseRole);
-			} else if (inspectMode.revealAs !== undefined) {
-				revealedRole = colorizeRole(this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role));
-			} else {
-				revealedRole = colorizeRole(target.role.role);
-			}
-			if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
-				revealedSide = colorizeSide(inspectMode.seenSide);
-			} else {
-				revealedSide = colorizeSide(target.role.side);
-			}
-			sendBorder();
-			gamemsgAll(exposeMessage.replace(/~Self~/g, name).replace(/~Target~/g, target.name).replace(/~Role~/g, revealedRole).replace(/~Side~/g, revealedSide).replace(/~UserRole~/g, colorizeRole(mafia.players[name].role.role)), undefined, undefined, true);
-			if (!revenge) {
-				if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
-					var rmsg = (commandObject.revealmsg || "While exposing, ~Self~ (~Role~) made a mistake and was revealed!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
-					gamemsgAll(rmsg, undefined, undefined, true);
-				}
-				if ("expose" in target.role.actions && target.role.actions.expose == "revealexposer") {
-					var remsg = (target.role.actions.revealexposermsg || "However, ~Self~ revealed that ~Target~ is the ~Role~!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
-					gamemsgAll(remsg, undefined, undefined, true);
-				}
-				if ("revealexposerif" in target.role.actions) {
-					for (var l in target.role.actions.revealexposerif) {
-					    var m = target.role.actions.revealexposerif[l].indexOf(mafia.players[name].role.role);
-					    if (m !== -1) {
-						    var remsg = (l).replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
-						    gamemsgAll(remsg, undefined, undefined, true);
-						    break;
-					    }
-				    }
-				}
-				if (target.role.actions.expose == "die") {
-					var diemsg = (target.role.actions.exposediemsg || "~Self~ could not live with being exposed to everyone and killed themselves!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Action~/g, commandName);
-					gamemsgAll(diemsg, undefined, undefined, true);
-					if ("copyAs" in commandObject) {
-						copyAs(player, target, commandObject);
-					}
-					if ("newRole" in commandObject) {
-						convertTo(player, target, commandObject);
-					}
-					if ("convertRoles" in commandObject) {
-						massConvert(player, commandObject);
-					}
-					this.kill(mafia.players[commandData]);
-					if (sys.id('PolkaBot') !== undefined) {
-						sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
-					}
-				} else {
-					if ("copyAs" in commandObject) {
-						copyAs(player, target, commandObject);
-					}
-					if ("newRole" in commandObject) {
-						convertTo(player, target, commandObject);
-					}
-					if ("convertRoles" in commandObject) {
-						massConvert(player, commandObject);
-					}
-				}
-				player.exposeUse = player.exposeUse + 1 || 1;
+                    if (!targetMode.silent) {
+                        var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
+                        var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        gamemsg(target.name, tmsg, undefined, undefined, true);
+                        gamemsg(target.name, "You can still evade " + target.evadeCharges.expose + " more time(s)!");
+                        return true;
+                    }
+                    return true;
+                }else if (typeof target.role.actions.expose.mode == "object" && "ignore" in target.role.actions.expose.mode && target.role.actions.expose.mode.ignore.indexOf(player.role.role) != -1) {
+                    var targetMode = target.role.actions.expose;
+                    if (targetMode.expend) {
+                        player.exposeUse = player.exposeUse + 1 || 1;
+                    }
+                    if (!targetMode.silent) {
+                        var pmsg = ("msg" in targetMode ? targetMode.msg : "Your target (~Target~) evaded your ~Action~!").replace(/~Target~/g, target.name).replace(/~Role~/g, colorizeRole(target.role.role)).replace(/~Action~/g, commandName);
+                        var tmsg = ("targetmsg" in targetMode ? targetMode.targetmsg : "You evaded a ~Action~!").replace(/~Self~/g, player.name).replace(/~Role~/g, colorizeRole(player.role.role)).replace(/~Action~/g, commandName);
+                        gamemsg(player.name, pmsg, undefined, undefined, true);
+                        gamemsg(target.name, tmsg, undefined, undefined, true);
+                        return true;
+                    }
+                    return true;
+                }
+            }
+            var exposeMessage = (commandObject.exposemsg || "~Self~ revealed that ~Target~ is the ~Role~!");
+            exposeMessage = colorizePerRole(exposeMessage);
+            var exposeTargetMessage = commandObject.exposedtargetmsg;
+            var inspectMode = target.role.actions.inspect || {};
+            var revealedRole;
+            var revealedSide;
+            if (target.disguiseRole !== undefined) {
+                revealedRole = mafia.theme.trrole(target.disguiseRole);
+            } else if (inspectMode.revealAs !== undefined) {
+                revealedRole = colorizeRole(this.revealAsRole(inspectMode.revealAs, target.role, mafia.players[name].role.role));
+            } else {
+                revealedRole = colorizeRole(target.role.role);
+            }
+            if (typeof inspectMode.seenSide == "string" && inspectMode.seenSide in mafia.theme.sideTranslations) {
+                revealedSide = colorizeSide(inspectMode.seenSide);
+            } else {
+                revealedSide = colorizeSide(target.role.side);
+            }
+            sendBorder();
+            gamemsgAll(exposeMessage.replace(/~Self~/g, name).replace(/~Target~/g, target.name).replace(/~Role~/g, revealedRole).replace(/~Side~/g, revealedSide).replace(/~UserRole~/g, colorizeRole(mafia.players[name].role.role)), undefined, undefined, true);
+            if (!revenge) {
+                if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
+                    var rmsg = (commandObject.revealmsg || "While exposing, ~Self~ (~Role~) made a mistake and was revealed!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
+                    gamemsgAll(rmsg, undefined, undefined, true);
+                }
+                if ("expose" in target.role.actions && target.role.actions.expose == "revealexposer") {
+                    var remsg = (target.role.actions.revealexposermsg || "However, ~Self~ revealed that ~Target~ is the ~Role~!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
+                    gamemsgAll(remsg, undefined, undefined, true);
+                }
+                if ("revealexposerif" in target.role.actions) {
+                    for (var l in target.role.actions.revealexposerif) {
+                        var m = target.role.actions.revealexposerif[l].indexOf(mafia.players[name].role.role);
+                        if (m !== -1) {
+                            var remsg = (l).replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
+                            gamemsgAll(remsg, undefined, undefined, true);
+                            break;
+                        }
+                    }
+                }
+                if (target.role.actions.expose == "die") {
+                    var diemsg = (target.role.actions.exposediemsg || "~Self~ could not live with being exposed to everyone and killed themselves!").replace(/~Self~/g, target.name).replace(/~Target~/g, name).replace(/~Action~/g, commandName);
+                    gamemsgAll(diemsg, undefined, undefined, true);
+                    if ("copyAs" in commandObject) {
+                        copyAs(player, target, commandObject);
+                    }
+                    if ("newRole" in commandObject) {
+                        convertTo(player, target, commandObject);
+                    }
+                    if ("convertRoles" in commandObject) {
+                        massConvert(player, commandObject);
+                    }
+                    this.kill(mafia.players[commandData]);
+                    if (sys.id('PolkaBot') !== undefined) {
+                        sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+commandData+" DIED", mafiachan);
+                    }
+                } else {
+                    if ("copyAs" in commandObject) {
+                        copyAs(player, target, commandObject);
+                    }
+                    if ("newRole" in commandObject) {
+                        convertTo(player, target, commandObject);
+                    }
+                    if ("convertRoles" in commandObject) {
+                        massConvert(player, commandObject);
+                    }
+                }
+                player.exposeUse = player.exposeUse + 1 || 1;
 
-			} else {
-				var ermsg = (target.role.actions.exposerevengemsg || "~Target~ (~Role~) tries to expose, but their target gets startled and kills them in retaliation!").replace(/~Self~/g, commandData).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(player.role.role));
-				gamemsgAll(ermsg, undefined, undefined, true);
+            } else {
+                var ermsg = (target.role.actions.exposerevengemsg || "~Target~ (~Role~) tries to expose, but their target gets startled and kills them in retaliation!").replace(/~Self~/g, commandData).replace(/~Target~/g, name).replace(/~Role~/g, colorizeRole(player.role.role));
+                gamemsgAll(ermsg, undefined, undefined, true);
 
-				if ("copyAs" in commandObject) {
-					copyAs(player, target, commandObject);
-				}
-				if ("newRole" in commandObject) {
-					convertTo(player, target, commandObject);
-				}
-				if ("convertRoles" in commandObject) {
-					massConvert(player, commandObject);
-				}
+                if ("copyAs" in commandObject) {
+                    copyAs(player, target, commandObject);
+                }
+                if ("newRole" in commandObject) {
+                    convertTo(player, target, commandObject);
+                }
+                if ("convertRoles" in commandObject) {
+                    massConvert(player, commandObject);
+                }
 
-				if (sys.id('PolkaBot') !== undefined) {
-					sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
-				}
-				this.kill(mafia.players[name]);
-			}
+                if (sys.id('PolkaBot') !== undefined) {
+                    sys.sendMessage(sys.id('PolkaBot'), "±Luxray: "+name+" DIED", mafiachan);
+                }
+                this.kill(mafia.players[name]);
+            }
 
-			if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
-				gamemsg(srcname, exposeTargetMessage.replace(/~Role~/g, revealedRole).replace(/~Target~/g, commandData), undefined, undefined, true);
-			}
-			sendBorder();
-			//player.exposeUse = player.exposeUse + 1 || 1;
-		}
-		if ("recharge" in commandObject) {
-			if (!(player.name in this.dayRecharges)) {
-				this.dayRecharges[player.name] = {};
-			}
-			this.dayRecharges[player.name][commandName] = commandObject.recharge;
-		}
-		if (charges !== undefined) {
-			mafia.removeCharge(player, "standby", commandName);
-		}
-		dayChargesMessage(player, commandName, commandObject);
+            if ("exposedtargetmsg" in commandObject && typeof commandObject.exposedtargetmsg == "string") {
+                gamemsg(srcname, exposeTargetMessage.replace(/~Role~/g, revealedRole).replace(/~Target~/g, commandData), undefined, undefined, true);
+            }
+            sendBorder();
+            //player.exposeUse = player.exposeUse + 1 || 1;
+        }
+        if ("recharge" in commandObject) {
+            if (!(player.name in this.dayRecharges)) {
+                this.dayRecharges[player.name] = {};
+            }
+            this.dayRecharges[player.name][commandName] = commandObject.recharge;
+        }
+        if (charges !== undefined) {
+            mafia.removeCharge(player, "standby", commandName);
+        }
+        dayChargesMessage(player, commandName, commandObject);
 
-		/* Hax-related to command */
-		// some roles can get "hax" from other people using some commands...
-		// however, roles can have avoidStandbyHax: ["kill", "reveal"] in actions..
-		if ("avoidStandbyHax" in player.role.actions && player.role.actions.avoidStandbyHax.indexOf(commandName) != -1) {
-			return true;
-		}
-		var haxRoles = mafia.theme.getStandbyHaxRolesFor(commandName);
-		var haxers = [], haxTypes;
-		for (var i in haxRoles) {
-			var role = haxRoles[i];
-			var haxPlayers = this.getPlayersForRole(role);
-			for (var j in haxPlayers) {
-				var haxPlayer = haxPlayers[j];
-				haxTypes = [];
-				var r = Math.random();
-				var roleName = this.theme.trside(player.role.side);
-				var team = this.getPlayersForRole(player.role.side);
-				var playerRole = colorizeRole(player.role.role);
-				var haxObj = mafia.theme.roles[role].actions.standbyHax;
-				if (r < haxObj[commandName].revealTeam) {
-					gamemsg(haxPlayer, "The " + roleName + " used " + commandName + " on " + commandData + "!", undefined, undefined, true);
-					haxTypes.push("revealTeam");
-				}
-				if (r < haxObj[commandName].revealPlayer) {
-					if (team.length > 1) {
-						gamemsg(haxPlayer, name + " is one of The " + roleName + "!", undefined, undefined, true);
-					} else {
-						gamemsg(haxPlayer, name + " is The " + roleName + "!", undefined, undefined, true);
-					}
-					haxTypes.push("revealPlayer");
-				}
-				if (r < haxObj[commandName].revealRole) {
-					gamemsg(haxPlayer, name + " is " + playerRole + "!", undefined, undefined, true);
-					haxTypes.push("revealRole");
-				}
-				for (var k in haxObj[command]) {
-					if (["revealTeam", "revealPlayer", "revealRole"].indexOf(k) == -1 && r < haxObj[command][k]) {
-						gamemsg(haxPlayer, k.replace(/~Player~/g, name).replace(/~Role~/g, playerRole).replace(/~Side~/g, roleName).replace(/~Action~/g, command).replace(/~Target~/g, commandData).replace(/~TargetRole~/g, tRole).replace(/~TargetSide~/g, tSide), undefined, undefined, true);
-						haxTypes.push("custom");
-					}
-				}
-				if (haxTypes.length > 0) {
-					haxers.push(haxPlayer + " [" + haxTypes.join("/") + "]");
-				}
-			}
-		}
-		if (haxers.length > 0) {
-			this.addPhaseStalkHax(name, command, commandData, haxers);
-		}
-		return true;
-	};
+        /* Hax-related to command */
+        // some roles can get "hax" from other people using some commands...
+        // however, roles can have avoidStandbyHax: ["kill", "reveal"] in actions..
+        if ("avoidStandbyHax" in player.role.actions && player.role.actions.avoidStandbyHax.indexOf(commandName) != -1) {
+            return true;
+        }
+        var haxRoles = mafia.theme.getStandbyHaxRolesFor(commandName);
+        var haxers = [], haxTypes;
+        for (var i in haxRoles) {
+            var role = haxRoles[i];
+            var haxPlayers = this.getPlayersForRole(role);
+            for (var j in haxPlayers) {
+                var haxPlayer = haxPlayers[j];
+                haxTypes = [];
+                var r = Math.random();
+                var roleName = this.theme.trside(player.role.side);
+                var team = this.getPlayersForRole(player.role.side);
+                var playerRole = colorizeRole(player.role.role);
+                var haxObj = mafia.theme.roles[role].actions.standbyHax;
+                if (r < haxObj[commandName].revealTeam) {
+                    gamemsg(haxPlayer, "The " + roleName + " used " + commandName + " on " + commandData + "!", undefined, undefined, true);
+                    haxTypes.push("revealTeam");
+                }
+                if (r < haxObj[commandName].revealPlayer) {
+                    if (team.length > 1) {
+                        gamemsg(haxPlayer, name + " is one of The " + roleName + "!", undefined, undefined, true);
+                    } else {
+                        gamemsg(haxPlayer, name + " is The " + roleName + "!", undefined, undefined, true);
+                    }
+                    haxTypes.push("revealPlayer");
+                }
+                if (r < haxObj[commandName].revealRole) {
+                    gamemsg(haxPlayer, name + " is " + playerRole + "!", undefined, undefined, true);
+                    haxTypes.push("revealRole");
+                }
+                for (var k in haxObj[command]) {
+                    if (["revealTeam", "revealPlayer", "revealRole"].indexOf(k) == -1 && r < haxObj[command][k]) {
+                        gamemsg(haxPlayer, k.replace(/~Player~/g, name).replace(/~Role~/g, playerRole).replace(/~Side~/g, roleName).replace(/~Action~/g, command).replace(/~Target~/g, commandData).replace(/~TargetRole~/g, tRole).replace(/~TargetSide~/g, tSide), undefined, undefined, true);
+                        haxTypes.push("custom");
+                    }
+                }
+                if (haxTypes.length > 0) {
+                    haxers.push(haxPlayer + " [" + haxTypes.join("/") + "]");
+                }
+            }
+        }
+        if (haxers.length > 0) {
+            this.addPhaseStalkHax(name, command, commandData, haxers);
+        }
+        return true;
+    };
 
     this.handlers = {
         entry: function () {
@@ -4262,7 +4293,7 @@ function Mafia(mafiachan) {
                 mafia.showOwnRole(p, true);
             }
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                mafia.sendRolesList();
             }
             mafia.sendCurrentPlayers();
             if ((mafia.theme.closedSetup !== "team") && !mafia.theme.closedSetup && (mafia.theme.closedSetup !== "full")) {
@@ -5369,7 +5400,7 @@ function Mafia(mafiachan) {
             this.eventTimeBoost();
             sendBorder();
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                mafia.sendRolesList();
             }
             mafia.sendCurrentPlayers();
             if (mafia.theme.closedSetup !== "team" && !mafia.theme.closedSetup && mafia.theme.closedSetup !== "full") {
@@ -5458,7 +5489,7 @@ function Mafia(mafiachan) {
                 return;
             }
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                mafia.sendRolesList();
             }
             mafia.sendCurrentPlayers();
 
@@ -5763,7 +5794,7 @@ function Mafia(mafiachan) {
             }
 
             if (mafia.theme.closedSetup !== "full") {
-                gamemsgAll(mafia.getCurrentRoles() + ".", "±Current Roles", undefined, true);
+                mafia.sendRolesList();
             }
             mafia.sendCurrentPlayers();
 
@@ -6075,88 +6106,225 @@ function Mafia(mafiachan) {
             msg(src, "A game is currently in progress. Use /slay to remove the player.");
         }
     };
-    this.warnUser = function (src, commandData) { // /warn [target]:[rule]:[pts]:[comments]:[shove]
+    this.warnUser = function (src, commandData, channel) { // /warn [target]:[rule]:[pts]:[comments]:[shove]
         var warner = typeof src == "string" ? src : sys.name(src);
         var cmd = commandData.split(":");
         var name = cmd[0].toLowerCase();
         var rule = cmd[1];
         if (commandData === "*") {
-            gamemsg(src, "Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.");
+            mafiabot.sendMessage(sys.id(src), "Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.", channel);
             return;
         } else if (sys.dbIp(name) === undefined) {
-            gamemsg(src, "That user does not exist!");
+            gamemsg(src, "That user does not exist!", false, channel);
             return;
         } else if (rule === undefined) {
-            gamemsg(src,"Please specify a rule that has been violated.");
+            gamemsg(src,"Please specify a rule that has been violated.", false, channel);
             return;
         }
         var pts = cmd[2];
-        var comments = cmd[3];
-        var shove = cmd[4];
+        var comments = cmd[3] || "None";
+        var shove = cmd[4] ? cmd[4].toLowerCase() : false;
         if ((pts === undefined) && (rule.toLowerCase() in this.defaultWarningPoints)) {
             pts = this.defaultWarningPoints[rule];
             rule = cap(rule);
         }
-        if (isNaN(pts)) {
-            gamemsg(src,"Please specify an amount of warning points.");
+        if (isNaN(pts) || pts < 1) {
+            gamemsg(src, "Please specify a valid amount of warning points.", false, channel);
             return;
         }
-        if (pts <= 0) {
-            pts = 1;
+        this.clearOldWarnings(name);
+        var expirationTime = (new Date()).getTime() + (timeForWarningErase * pts);
+        var ip;
+        if (sys.id(name) !== undefined) {
+            ip = sys.ip(sys.id(name));
+        } else {
+            ip = sys.dbIp(name);
         }
-        this.clearOldWarnings( name );
-        var expirationTime = ((new Date()).getTime() + (timeForWarningErase * pts) );
-        if (typeof mafia.warningLog[name] !== "object") {
-            mafia.warningLog[name] = {};
+        if (shove !== false && shove !== "") {
+            shove = true;
         }
-        mafia.warningLog[name][expirationTime] = [warner,rule,comments];
-        dualBroadcast("±" + mafiabot.name + ": " + name + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
-        if ((shove === "shove") || (shove === "true")) {
-            this.shoveUser(src,name);
+        var info = {
+            name: name,
+            warner: warner,
+            rule: rule,
+            points: pts,
+            comments: comments,
+            //shove: shove,
+            expirationTime: expirationTime
+        };
+        if (mwarns.get(ip)) {
+            var data = JSON.parse(mwarns.get(ip).split(":::")[1].split("|||")[1]);
+            if (Array.isArray(data)) {
+                data.push(info);
+                mwarns.remove(ip);
+                mwarns.add(ip, name + ":::" + shove + "|||" + JSON.stringify(data));
+            }
+        } else {
+            mwarns.add(ip, name + ":::" + shove + "|||" + JSON.stringify([info]));
+        }
+        dualBroadcast("±" + mafiabot.name + ": " + cmd[0] + " was warned for " + rule + " by " + nonFlashing(warner) + ".");
+        mafiabot.sendAll("Points: " + pts + ", Comments: " + comments.replace(/(s)(lay)/gi, "$1\u200b$2") + ", Shove: " + (shove ? "Yes" : "No"), sachannel);
+        if (shove === true) {
+            this.shoveUser(sys.id(src), name); // why can we not use src as a consistent variable type
+        }
+        if (mafia.distributeEvent && this.rewardSafariPlayers.indexOf(name) !== -1) {
+            mafia.safariShove.push(name);
+            dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(warner) + " rescinded " + cmd[0] + "'s Mafia Event participation points!");
         }
     };
-    this.clearOldWarnings = function( name ) {
-        if (!(name in mafia.warningLog)) {
-            mafia.warningLog[name] = {};
+    this.removeWarn = function (src, commandData, channel) {
+        commandData = commandData.split(":");
+        var name = commandData[0].toLowerCase(), index = commandData[1], ip;
+        if (sys.id(name) !== undefined) {
+            ip = sys.ip(sys.id(name));
+        } else {
+            ip = sys.dbIp(name);
+        }
+        if (isNaN(index) || index < 1) {
+            mafiabot.sendMessage(sys.id(src), "Please enter a valid warn index number!", channel);
             return;
         }
-        for (var n in mafia.warningLog[name]) {
-            if (n < (new Date()).getTime()) {
-                delete mafia.warningLog[name][n];
+        if (!mwarns.get(ip)) {
+            var found = false;
+            var hash = mwarns.hash;
+            for (var x in hash) {
+                found = hash[x].split(":::")[0].split(",").indexOf(name) !== -1;
+                if (found) {
+                    ip = x;
+                    break;
+                }
+            }
+        }
+        if (mwarns.get(ip)) {
+            var warns = JSON.parse(mwarns.get(ip).split(":::")[1].split("|||")[1]);
+            if (index > warns.length) {
+                mafiabot.sendMessage(sys.id(src), commandData[0] + " only has " + warns.length + " warns! Can't remove nonexistent warn #" + index + "!", channel);
+            } else {
+                index--; // Command reads index starting at 1, but arrays start at 0
+                var removed = warns.splice(index, 1),
+                    info = "Rule: " + removed[0].rule + ", Comments: " + removed[0].comments;
+                mwarns.remove(ip);
+                if (warns.length > 0) {
+                    mwarns.add(ip, name + ":::false|||" + JSON.stringify(warns));
+                }
+                mafiabot.sendAll(nonFlashing(src) + " removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", sachannel);
+            }
+        } else {
+            mafiabot.sendMessage(sys.id(src), commandData[0] + " has no warns to remove!", channel);
+        }
+    };
+    this.clearOldWarnings = function(name) {
+        var ip;
+        if (sys.id(name) !== undefined) {
+            ip = sys.ip(sys.id(name));
+        } else {
+            ip = sys.dbIp(name);
+        }
+        if (mwarns.get(ip)) { // reminder to include shove info in this
+            var warns = JSON.parse(mwarns.get(ip).split(":::")[1].split("|||")[1]), removed = false;
+            if (Array.isArray(warns)) {
+                for (var i = warns.length - 1; i >= 0; i--) { // go backwards as to not break array when splicing
+                    var warn = warns[i];
+                    if (warn.expirationTime < (new Date()).getTime()) {
+                        warns.splice(i, 1);
+                        removed = true;
+                    }
+                }
+                if (removed) {
+                    var shove = mwarns.get(ip).split(":::")[1].split("|||")[0];
+                    mwarns.remove(ip);
+                    if (warns.length > 0) {
+                        mwarns.add(ip, name + ":::" + shove + "|||" + JSON.stringify(warns));
+                    }
+                }
             }
         }
     };
-    this.checkWarns = function (src, commandData) {
+    this.checkWarns = function (src, commandData, channel) {
         //var warner = typeof src == "string" ? src : sys.name(src);
-        commandData = commandData.toLowerCase();
-        this.clearOldWarnings( commandData );
-        gamemsg(src, "*** Warnings for " + commandData); // otherwise messages are the same as an actual warn
-        var hasWarns;
-        for (var v in mafia.warningLog[commandData]) {
-            var inst = mafia.warningLog[commandData][v];
-            var msg = (commandData + " was warned by " + inst[0] + " for " + inst[1] + ".");
-            if (inst[2] !== undefined) {
-                msg += " (Comments: " + inst[2] + ")";
-            }
-            gamemsg(src, msg);
-            hasWarns = true;
+        var name = commandData.toLowerCase();
+        this.clearOldWarnings(name);
+        var ip;
+        if (sys.id(name) !== undefined) {
+            ip = sys.ip(sys.id(name));
+        } else {
+            ip = sys.dbIp(name);
         }
-        if (!hasWarns) {
-            gamemsg(src, commandData + " has no standing rule violations.");
+        if (!mwarns.get(ip)) {
+            var found = false;
+            var hash = mwarns.hash;
+            for (var x in hash) {
+                found = hash[x].split(":::")[0].split(",").indexOf(name) !== -1;
+                if (found) {
+                    ip = x;
+                    break;
+                }
+            }
+        }
+        if (mwarns.get(ip)) {
+            var info = JSON.parse(mwarns.get(ip).split(":::")[1].split("|||")[1]),
+                table = ["<table border='1' cellpadding='6' cellspacing='0'><tr><th colspan='6'>Mafia Warns for " + commandData + "</th></tr><tr><th>Index</th><th>Name</th><th>By</th><th>Rule</th><th>Points</th><th>Comments</th></tr>"];
+                for (var i = 0; i < info.length; i++) {
+                    var warning = info[i], row = [i + 1, warning.name, warning.warner, warning.rule, warning.points, warning.comments].map(function(e) {
+                        return "<td><center>" + e + "</center></td>";
+                    });
+                    table.push("<tr>" + row.join("") + "</tr>");
+                }
+                var shove = mwarns.get(ip).split(":::")[1].split("|||")[0];
+                if (shove == "true") {
+                    table.push("<tr><td colspan='6'><center>" + commandData + " <b>will be shoved</b> if they attempt to join a game.</center></td></tr>");
+                } else {
+                    table.push("<tr><td colspan='6'><center>" + commandData + " will <b>not</b> be shoved if they attempt to join a game.</center></td></tr>");
+                }
+                table.push("</table>");
+                sys.sendHtmlMessage(sys.id(src), table.join(""), channel);
+        } else {
+            mafiabot.sendMessage(sys.id(src), commandData + " has no standing rule violations.", channel);
         }
     };
-    this.myWarns = function (src ) {
+    this.myWarns = function (src, channel) {
         var name = typeof src == "string" ? src : sys.name(src);
         name = name.toLowerCase();
         this.clearOldWarnings( name );
-        var hasWarns, msg;
-        for (var v in mafia.warningLog[name]) {
-            var inst = mafia.warningLog[name][v];
-            msg = ("You have a warning for " + inst[1] + ".");
-            gamemsg(src,msg);
-            hasWarns = true;
+        var ip;
+        if (sys.id(name) !== undefined) {
+            ip = sys.ip(sys.id(name));
+        } else {
+            ip = sys.dbIp(name);
         }
-        if (!hasWarns) gamemsg(src,"You have no standing rule violations!");
+        if (!mwarns.get(ip)) {
+            var found = false;
+            var hash = mwarns.hash;
+            for (var x in hash) {
+                found = hash[x].split(":::")[0].split(",").indexOf(name) !== -1;
+                if (found) {
+                    ip = x;
+                    break;
+                }
+            }
+        }
+        if (mwarns.get(ip)) {
+            var info = JSON.parse(mwarns.get(ip).split(":::")[1].split("|||")[1]),
+                shove = mwarns.get(ip).split(":::")[1].split("|||")[0] == "true";
+            var table = ["<table border='1' cellpadding='4' cellspacing='0'><tr><th colspan='3'>Your Mafia Warns</th></tr><tr><th>Warner</th><th>Rule</th><th>Comments</th></tr>"];
+                for (var i = 0; i < info.length; i++) {
+                    var warning = info[i], row = [warning.warner, warning.rule, warning.comments].map(function(e) {
+                       return "<td><center>" + e + "</center></td>"; 
+                    });
+                    table.push("<tr>" + row.join("") + "</tr>");
+                }
+                table.push("</table>");
+                sys.sendHtmlMessage(sys.id(src), table.join(""), mafiachan);
+            if (shove) {
+                mwarns.remove(ip);
+                mwarns.add(ip, name + ":::false|||" + JSON.stringify(info));
+                if (this.state == "entry") {
+                    mafiabot.sendHtmlMessage(sys.id(src), "Now that you have checked your warns, you can <a href=\"po:send//join\">/join</a> the Mafia game!", channel, undefined, undefined, true);
+                }
+            }
+        } else {
+            mafiabot.sendMessage(sys.id(src), "You have no standing rule violations.", channel);
+        }
     };
     this.possibleBotquote = function (mess) {
         var taboo = ["±Kill:", "±Game:", "±Info:", "±Murkrow:", "±Hint:"];
@@ -6271,7 +6439,7 @@ function Mafia(mafiachan) {
         return false;
     };
     this.canJoin = function (src) {
-        var user = sys.name(src);
+        var user = sys.name(src), ip = sys.ip(src);
         if (this.isInGame(sys.name(src))) {
             gamemsg(user, "You already joined!");
             return false;
@@ -6279,11 +6447,11 @@ function Mafia(mafiachan) {
         if (this.invalidName(src)) {
             return false;
         }
-        if (this.ips.indexOf(sys.ip(src)) != -1) {
+        if (this.ips.indexOf(ip) != -1) {
             gamemsg(user, "This IP is already in list. You cannot register two times!");
             return false;
         }
-        if (this.numjoins[sys.ip(src)] >= 2) {
+        if (this.numjoins[ip] >= 2) {
             gamemsg(user, "You can't join/unjoin more than 3 times!");
             return false;
         }
@@ -6293,6 +6461,11 @@ function Mafia(mafiachan) {
         }
         if (!sys.dbRegistered(sys.name(src))) {
             gamemsg(user, "You need to register to play mafia here! Click on the 'Register' button below and follow the instructions!");
+            return false;
+        }
+        var warnings = mwarns.get(ip);
+        if (warnings !== undefined && warnings.split(":::")[1].split("|||")[0] == "true") {
+            gamemsg(user, "You have been warned for breaking a rule! You must type <a href=\"po:send//mywarns\">/mywarns</a> to check your warnings before you join.", undefined, undefined, true)
             return false;
         }
         return true;
@@ -6626,7 +6799,7 @@ function Mafia(mafiachan) {
             command = message.substr(0).toLowerCase();
         }
         if (channel != mafiachan) {
-            if (["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "spawn", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg"].indexOf(command) === -1) {
+            if (["mafiabans", "mafiaadmins", "madmins", "mas", "roles", "priority", "spawn", "sides", "themeinfo", "readlog", "targetlog", "mafiarules", "passma", "windata", "topthemes", "playedgames", "pg", "warn", "unwarn", "warnlog", "mywarns"].indexOf(command) === -1) {
                 if (channel == staffchannel || channel == sachannel) {
                     if (["mafiaban", "mafiaunban", "disable", "enable", "enablenonpeak", "disablenonpeak", "mafiaadminoff", "mafiaadmin", "mafiasadmin", "mafiasuperadmin", "mafiasuperadminoff", "smafiaadmin", "smafiasuperadmin", "smafiaadminoff", "smafiasuperadminoff", "updatestats", "themes", "aliases"].indexOf(command) === -1) {
                         return;
@@ -7054,14 +7227,14 @@ function Mafia(mafiachan) {
             }
             var list = theme.spawnInfo[c - 1].slice(0, count);
 
-            sys.sendMessage(src, "", mafiachan);
-            gamemsg(srcname, theme.name + "'s spawn at " + count + " players: ");
+            sys.sendMessage(src, "", channel);
+            gamemsg(srcname, theme.name + "'s spawn at " + count + " players: ", false, channel);
 
             for (c = 0; c < list.length; c++) {
-                sys.sendMessage(src, (c + 1) + ": " + list[c], mafiachan);
+                sys.sendMessage(src, (c + 1) + ": " + list[c], channel);
             }
 
-            sys.sendMessage(src, "", mafiachan);
+            sys.sendMessage(src, "", channel);
             return;
         }
         if (command === "tips") {
@@ -7519,7 +7692,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "mywarns") {
-            this.myWarns(srcname);
+            this.myWarns(srcname, channel);
             return;
         }
 
@@ -7527,11 +7700,15 @@ function Mafia(mafiachan) {
             throw ("no valid command");
 
         if (command === "warn") {
-            this.warnUser(srcname, commandData);
+            this.warnUser(srcname, commandData, channel);
+            return;
+        }
+        if (command === "unwarn") {
+            this.removeWarn(srcname, commandData, channel);
             return;
         }
         if (command === "warnlog") {
-            this.checkWarns(srcname, commandData);
+            this.checkWarns(srcname, commandData, channel);
             return;
         }
         var tar = sys.id(commandData);
@@ -7641,7 +7818,7 @@ function Mafia(mafiachan) {
                  return;
             }
             mafia.safariShove.push(commandData.toLowerCase());
-            dualBroadcast("±" + mafiabot.name + ": " + srcname + " rescinded " + commandData + "'s Mafia Event participation points!");
+            dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(srcname) + " rescinded " + commandData + "'s Mafia Event participation points!");
             return;
         }
         var id;
@@ -8082,7 +8259,7 @@ this.beforeChatMessage = function (src, message, channel) {
                     gamemsg(srcname, "A voting for the next game is running now! Type /vote [theme name] to vote for " + readable(Object.keys(this.possibleThemes), "or") + "!", "±Info");
                     break;
                 case "entry":
-                    gamemsg(srcname, "You can join a " + (mafia.theme.name == defaultThemeName ? "" : mafia.theme.name + "-themed ") + "mafia game now by typing /join! ", "±Info");
+                    gamemsg(srcname, "You can join a " + (mafia.theme.name == defaultThemeName ? "" : "<b>" + mafia.theme.name + "</b>-themed ") + "mafia game now by typing <a href=\"po:send//join\">/join</a>! ", "±Info", undefined, true);
                     break;
                 default:
                     if (mafia.isInGame(srcname)) {
