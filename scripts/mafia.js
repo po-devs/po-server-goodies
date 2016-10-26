@@ -6201,6 +6201,7 @@ function Mafia(mafiachan) {
                 "Some rules have a default amount of points which do not need to be specificed. Type /warnhelp points to see default point info.",
                 "<comments> are the comments you want to leave for the user. Comments should be more detailed and rules more brief. This is helpful to explain to the person what they did wrong.",
                 "<shove> is true/false. If true, target will be shoved and cannot join the game unless they check /mywarns. Useful for AFKs or if someone does not respond to a PM.",
+                "Type /unwarn <name>:<index> to remove a warn from someone. Index is the number used to identify a warn. You can see the index of a warn with /warnlog <user>. If index is left blank, the most recent warn will be removed.",
                 ""
             ];
             dump(src, helpInfo, channel);
@@ -6214,7 +6215,7 @@ function Mafia(mafiachan) {
         } else {
             ip = sys.dbIp(name);
         }
-        if (isNaN(index) || index < 1) {
+        if ((isNaN(index) || index < 1) && index !== undefined) {
             mafiabot.sendMessage(sys.id(src), "Please enter a valid warn index number!", channel);
             return;
         }
@@ -6223,6 +6224,9 @@ function Mafia(mafiachan) {
             if (index > warns.length) {
                 mafiabot.sendMessage(sys.id(src), commandData[0] + " only has " + warns.length + " warns! Can't remove nonexistent warn #" + index + "!", channel);
             } else {
+                if (index === undefined) {
+                    index = warns.length;
+                }
                 index--; // Command reads index starting at 1, but arrays start at 0
                 var removed = warns.splice(index, 1),
                     info = "Rule: " + removed[0].rule + ", Comments: " + removed[0].comments;
