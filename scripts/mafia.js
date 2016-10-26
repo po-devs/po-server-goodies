@@ -6120,7 +6120,7 @@ function Mafia(mafiachan) {
         }
         var pts = cmd[2];
         var comments = cmd[3] || "None";
-        var shove = cmd[4] ? cmd[4].toLowerCase() : false;
+        var shove = cmd[4] ? cmd[4].toLowerCase() : "false";
         if ((pts === undefined || pts === "") && this.defaultWarningPoints.hasOwnProperty(rule.toLowerCase())) {
             pts = this.defaultWarningPoints[rule.toLowerCase()];
         }
@@ -6136,7 +6136,7 @@ function Mafia(mafiachan) {
         } else {
             ip = sys.dbIp(name);
         }
-        if (shove != "false" && shove !== "no" && shove !== "") {
+        if (["false", "no", ""].indexOf(shove) === -1) {
             shove = true;
         } else {
             shove = false;
@@ -6162,7 +6162,7 @@ function Mafia(mafiachan) {
         }
         mafiabot.sendAll(cmd[0] + " was warned for " + rule + " by " + nonFlashing(warner) + ".", mafiachan);
         mafiabot.sendAll(cmd[0] + " was warned for " + rule + " by " + nonFlashing(warner) + " [Points: " + pts + ", Comments: " + comments.replace(/(s)(lay)/gi, "$1\u200b$2") + ", Shove: " + (shove ? "Yes" : "No") + "]", sachannel);        
-        if (shove === true) {
+        if (shove === true && !this.usersToShove.hasOwnProperty(name)) {
             this.shoveUser(sys.id(src), name); // why can we not use src as a consistent variable type
         }
         if (mafia.distributeEvent && this.rescind(name)) {
@@ -6193,7 +6193,7 @@ function Mafia(mafiachan) {
         } else {
             var helpInfo = [
                 "",
-                "±" + mafiabot.name + ": Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.",
+                "Syntax is /warn <user>꞉<rule>꞉<duration>꞉<comments>꞉<shove>.",
                 "<user> and <rule> are mandatory parameters.",
                 "<user> is the target user you want to warn.",
                 "<rule> is the rule the user broke, such as AFK, Slay Abuse, Team Vote, Bot Quote, Dead Talk, Trolling, or a specific rule in /mafiarules.",
@@ -6201,7 +6201,7 @@ function Mafia(mafiachan) {
                 "Some rules have a default amount of points which do not need to be specificed. Type /warnhelp points to see default point info.",
                 "<comments> are the comments you want to leave for the user. Comments should be more detailed and rules more brief. This is helpful to explain to the person what they did wrong.",
                 "<shove> is true/false. If true, target will be shoved and cannot join the game unless they check /mywarns. Useful for AFKs or if someone does not respond to a PM.",
-                "Type /unwarn <name>:<index> to remove a warn from someone. Index is the number used to identify a warn. You can see the index of a warn with /warnlog <user>. If index is left blank, the most recent warn will be removed.",
+                "Type /unwarn <name>꞉<index> to remove a warn from someone. Index is the number used to identify a warn. You can see the index of a warn with /warnlog <user>. If index is left blank, the most recent warn will be removed.",
                 ""
             ];
             dump(src, helpInfo, channel);
@@ -6236,7 +6236,7 @@ function Mafia(mafiachan) {
                 }
                 mafiabot.sendAll(nonFlashing(src) + " removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", sachannel);
                 if (channel !== sachannel) {
-                    mafiabot.sendMessage(src, "You removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", channel);
+                    mafiabot.sendMessage(sys.id(src), "You removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", channel);
                 }
             }
         } else {
