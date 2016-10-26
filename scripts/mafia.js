@@ -6232,7 +6232,7 @@ function Mafia(mafiachan) {
                 }
                 mafiabot.sendAll(nonFlashing(src) + " removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", sachannel);
                 if (channel !== sachannel) {
-                    mafiabot.sendAll("You removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", channel);
+                    mafiabot.sendMessage(src, "You removed warn #" + (index + 1) + " [" + info + "] from " + commandData[0] + ".", channel);
                 }
             }
         } else {
