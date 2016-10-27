@@ -2268,6 +2268,10 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (command == "sub") {
                 var data = commandData.split(":",2);
+                if (data.length < 2) {
+                    sendBotMessage(src, "The format is /sub (new name):(old name)", tourschan, false);
+                    return;
+                }
                 var newname = data[0].toLowerCase();
                 var oldname = data[1].toLowerCase();
                 var key = isInTour(oldname);
