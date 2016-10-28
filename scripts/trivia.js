@@ -1039,7 +1039,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
 
     this.sendAll("Leaderboard: " + displayboard.join(", "), triviachan);
 
-    if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath && leaderboard.length !== 0) {
+    if (this.scoreType === "elimination" && this.round >= Math.min(5 + (this.maxPoints - 1) * 3, 10) && !this.suddenDeath && leaderboard.length > 1) {
         this.suddenDeath = true;
         triviabot.sendHtmlAll("<b>" + this.round + " rounds have passed, so sudden death has started! If all players answer correctly, the last player to answer will lose a life!</b>", triviachan);
     }
