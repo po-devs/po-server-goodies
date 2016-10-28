@@ -2244,10 +2244,10 @@ function Mafia(mafiachan) {
             players = Object.keys(this.players).sort(),
             listPC = players.map(function(player) {
                 return htmlLink(player, true);
-            }).join(", ") + ".",
+            }).join(", ") + ".<ping/>",
             listAndroid = players.map(function(player) {
                 return "<poappend m='" + player + "'>" + player + "</poappend>";
-            }).join(", ") + ".";
+            }).join(", ") + ".<ping/>";
         for (var i = 0; i < channelUsers.length; i++) {
             var id = channelUsers[i], name = sys.name(id);
             if (this.isInGame(name)) {
