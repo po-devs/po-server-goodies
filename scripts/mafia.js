@@ -1926,7 +1926,7 @@ function Mafia(mafiachan) {
         if (this.state != "blank") {
             gamemsg(srcname, "A game is going on. Wait until it's finished before trying to start another one");
             if (this.state == "voting" || this.state == "entry") {
-                gamemsg(srcname, "You can join the current game by typing <a href=\"po:send//join\">/join</a>!");
+                gamemsg(srcname, "You can join the current game by typing <a href=\"po:send//join\">/join</a>!", "±Info", mafiachan, true);
             }
             return;
         }
