@@ -2236,7 +2236,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (command == "cancelbattle") {
                 var key = isInTour(commandData);
-                if (key === false) {
+                if (key === false || !commandData) {
                     sendBotMessage(src,"That player isn't in a tournament!",tourschan,false);
                     return true;
                 }
