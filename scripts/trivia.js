@@ -3774,7 +3774,7 @@ addAdminCommand(["addblockcats"], function (src, commandData, channel) {
     for (var j = 0; j < categories.length; j++) {
         for (var i = 0; i < validCats.length; i++) {
             c = validCats[i];
-            if (c.category.toLowerCase() === categories[j].toLowerCase()) {
+            if (c.category.toLowerCase() === categories[j].toLowerCase() || categories[j].toLowerCase() === "mental math") {
                 valid = true;
                 break;
             }
