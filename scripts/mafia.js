@@ -3791,7 +3791,7 @@ function Mafia(mafiachan) {
             }
             sendBorder();
             if (!revenge) {
-                gamemsgAll(colorizePerRole(html_escape(commandObject.killmsg)).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~TargetRole~/g, colorizeRole(mafia.players[commandData].role.role)), undefined, undefined, true);
+                gamemsgAll(html_escape(commandObject.killmsg).replace(/~Self~/g, name).replace(/~Target~/g, commandData).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role)).replace(/~TargetRole~/g, colorizeRole(mafia.players[commandData].role.role)), undefined, undefined, true);
                 if ("revealChance" in commandObject && commandObject.revealChance > sys.rand(0, 100) / 100) {
                     var rmsg = (commandObject.revealmsg || "While attacking, ~Self~ (~Role~) made a mistake and was revealed!").replace(/~Self~/g, name).replace(/~Role~/g, colorizeRole(mafia.players[name].role.role));
                     gamemsgAll(rmsg, undefined, undefined, true);
