@@ -2289,7 +2289,7 @@ afterChatMessage : function(src, message, chan)
                 sys.kick(src, channel);
             }
         }
-        else if (user.floodcount >= Math.floor(linecount / 2)) {
+        else if (user.floodcount >= linecount - 1) {
             kickbot.sendMessage(src, "Warning: You may be muted for flooding the chat!", channel);
         }
     }
