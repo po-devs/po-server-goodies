@@ -1424,8 +1424,9 @@ function Mafia(mafiachan) {
                 return this.players[x].name;
         }
         for (var i = 0; i < this.dead.length; i++) {
-            if (this.dead[i].toLowerCase() == lstring)
+            if (this.dead[i].toLowerCase() == lstring) {
                 return this.dead[i];
+            }
         }
         return noPlayer;
     };
