@@ -3678,7 +3678,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanAll("CLAUSES: "+getTourClauses(key),channels[x]);
                 sendChanAll("PARAMETERS: "+parameters.mode+" Mode"+(parameters.gen != "default" ? "; Gen: "+getSubgen(parameters.gen,true) : "")+(parameters.type == "double" ? "; Double Elimination" : "")+(parameters.event ? "; Event Tournament" : "")+(wifiuse != "default" ? "; "+wifiuse : ""), channels[x]);
                 if (channels[x] == tourschan) {
-                    sendChanHtmlAll("<timestamp/> Type <b>/join</b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
+                    sendChanHtmlAll("<timestamp/> Type <b><a href=\"po:send//join\">/join</a></b> to enter the tournament, "+(tours.tour[key].maxplayers === "default" ? "you have "+time_handle(parameters.event ? tourconfig.toursignup*2 : tourconfig.toursignup)+" to join!" : tours.tour[key].maxplayers+" places are open!"), channels[x]);
                 }
                 else {
                     sendChanAll(tourconfig.tourbot+"Go to the #"+sys.channel(tourschan)+" channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
@@ -4128,7 +4128,7 @@ function tourprintbracket(key) {
                 tours.tour[key].time = parseInt(sys.time(), 10)+(is1v1Tour(key) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq);
             }
             if (tours.tour[key].round == 1) {
-                var submessage = "<div style='margin-left: 50px'><br/>Type <b>/join</b> to join late, good while subs last!</div>";
+                var submessage = "<div style='margin-left: 50px'><br/>Type <b><a href=\"po:send//join\">/join</a></b> to join late, good while subs last!</div>";
                 var roundposting = "<div style='margin-left: 50px'><b>Round "+tours.tour[key].round+" of the "+getFullTourName(key)+" Tournament</b><br/><table>";
                 for (var x=0; x<tours.tour[key].players.length; x+=2) {
                     var player1data = "<td>("+(tours.tour[key].seeds.indexOf(tours.tour[key].players[x])+1)+")</td><td align='right'>"+toTourName(tours.tour[key].players[x])+"</td>";
