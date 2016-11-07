@@ -10273,7 +10273,7 @@ function Safari() {
         
         var joinCommand = "/join " + this.hostName;
         sendAll("", true, true);
-        sendAll(this.hostName + " is starting an auction! The product is " + an(this.productName) + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", true);
+        sendAll(this.hostName + " is starting an auction! The product is " + this.productName + ", with bids starting at $" + addComma(starting) + " (Minimum bid raise: $" + addComma(minBid) + ")! Type " + link(joinCommand) + " to join the auction!", true);
         safaribot.sendMessage(src, "You started an auction! The auction ends when the current bid is not matched after 3 turns or if no one makes a bid for the first 40 seconds!", safchan);
         sendAll("", true, true);
     }
@@ -10395,7 +10395,7 @@ function Safari() {
         }
         id = sys.id(this.currentBidder);
         if (id) {
-            safaribot.sendMessage(id, "You bought " + an(this.productName) + " from " + this.hostName + " for $" + addComma(this.currentOffer) + "!", safchan);
+            safaribot.sendMessage(id, "You bought " + this.productName + " from " + this.hostName + " for $" + addComma(this.currentOffer) + "!", safchan);
         }
         this.sendToViewers("");
         this.finished = true;
@@ -10415,7 +10415,7 @@ function Safari() {
         this.sendToViewers(sys.name(src) + " has joined the auction!");
         this.members.push(sys.name(src).toLowerCase());
         sys.sendMessage(src, "", safchan);
-        safaribot.sendHtmlMessage(src, "You joined " + this.hostName + "'s auction for " + an(this.productName) + ". Type <a href='po:setmsg//bid " + (this.currentOffer + this.minBid) + "'>/bid [value]</a> to make your offer, or " + link("/leave") + " to quit the auction.", safchan);
+        safaribot.sendHtmlMessage(src, "You joined " + this.hostName + "'s auction for " + this.productName + ". Type <a href='po:setmsg//bid " + (this.currentOffer + this.minBid) + "'>/bid [value]</a> to make your offer, or " + link("/leave") + " to quit the auction.", safchan);
         if (this.currentBidder) {
             safaribot.sendMessage(src, "The current offer is $" + addComma(this.currentOffer) + ". You can only make offers at least $" + addComma(this.minBid) + " higher than the current offer.", safchan);
         } else {
