@@ -273,6 +273,7 @@ function Safari() {
         trackers: [],
         auctionWarns: 0,
         auctionWarnCooldown: 0,
+        burnLastUsed: 0,
         cooldowns: {
             ball: 0,
             bait: 0,
@@ -381,7 +382,7 @@ function Safari() {
         permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 50, aliases:["permfinder"], tradable: false},
         dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
         salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false, invisible: true},
-        burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
+        burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, threshold: 96, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
         dummy: {name: "dummy", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
         dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
         dummy3: {name: "dummy3", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
@@ -557,7 +558,7 @@ function Safari() {
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
-            soothe: "A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + itemData.soothe.bonusRate * 100 + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%). Obtained from Gachapon.",
+            soothe: "A bell with a comforting chime that calms the owner and their Pokémon. Reduces delay after a successful catch by " + toFixed(itemData.soothe.bonusRate * 100, 2) + "% (Max Rate: " + itemData.soothe.maxRate * 100 + "%). Obtained from Gachapon.",
             scarf: "A fashionable scarf made of the finest silk. Wearing it allows you to lead a more luxurious life and grants you " + itemData.scarf.bonusRate * 100 + "% more money from Luxury Balls (Max Rate: " + itemData.scarf.maxRate * 100 + "%). Obtained from Gachapon.",
             battery: " A high-capacity battery that can increase the uses of Item Finder by " + itemData.battery.bonusRate + " per day. (Max Rate: " + itemData.battery.maxRate + "). Obtained from Gachapon.",
             honey: "Sweet-smelling Combee Honey that, when applied to bait, increases the chance of a Pokémon being attracted by " + itemData.honey.bonusRate * 100 + "% (Max Rate: " + itemData.honey.maxRate * 100 + "%). Found with Itemfinder.",
@@ -2438,6 +2439,9 @@ function Safari() {
                 }
                 asset = itemAlias(asset, true);
 
+                if (asset === "burn" && player.balls[asset] === 0 && amt > 0) {
+                    player.burnLastUsed = now();
+                }
                 player.balls[asset] += amt;
                 max = getCap(asset);
                 if (player.balls[asset] > max) {
@@ -5975,6 +5979,10 @@ function Safari() {
 
         player.records.burnGiven += 1;
         target.records.burnReceived += 1;
+        player.burnLastUsed = now();
+        if (target.balls[item] === 1) {
+            target.burnLastUsed = now();
+        }
 
         this.saveGame(player);
         this.saveGame(target);
@@ -6132,7 +6140,7 @@ function Safari() {
             break;
             case "cometshard": {
                 amount = 1;
-                safaribot.sendMessage(src, "The Gachapon machine spits an old-looking capsule. After some trouble to open it, you find a mysterious " + finishName(reward) + ".", safchan);
+                safaribot.sendMessage(src, "The Gachapon machine spits an old-looking capsule. After some trouble opening it, you find a mysterious " + finishName(reward) + ".", safchan);
             }
             break;
             case "whtapricorn":
@@ -6561,7 +6569,7 @@ function Safari() {
             }
             break;
             case "cometshard": {
-                safaribot.sendHtmlMessage(src, "<b>Beeeeeeeeeeeeeep!!</b> Your Itemfinder lets out a high pitched noise as you pass by a strange shard. After analyzing it for a while, you realize the object is not from this world and decide to pick it.", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Beeeeeeeeeeeeeep!!</b> Your Itemfinder lets out a high pitched noise as you pass by a strange shard. After analyzing it for a while, you realize the object is not from this world and decide to pick it up.", safchan);
             }
             break;
             case "bigpearl": {
@@ -6639,9 +6647,17 @@ function Safari() {
         }
         if (item === "gem") {
             var chars = player.balls.itemfinder,
+                limit = getCap("permfinder"),
                 gemdata = itemData.gem.charges,
                 pchars = player.balls.permfinder + gemdata,
                 tchars = chars + pchars;
+            if (player.balls.permfinder >= limit) {
+                safaribot.sendMessage(src, "Your Itemfinder is already fully charged!", safchan);
+                return;
+            }
+            if (pchars > limit) {
+                gemdata = limit - player.balls.permfinder;
+            }
 
             safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
             safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
@@ -7856,7 +7872,7 @@ function Safari() {
                         if (!reward.hasOwnProperty(t)) {
                             reward[t] = 0;
                         }
-                        reward[t] = temp[t];
+                        reward[t] += temp[t];
                     }
                 }
             }
@@ -7865,6 +7881,15 @@ function Safari() {
                 safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", safchan);
             } else if (out.discarded.length > 0) {
                 safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", safchan);
+            }
+            if (player.burnLastUsed !== 0 && player.balls.burn > 0) {
+                var n = Math.floor((now() - player.burnLastUsed) / hours(itemData.burn.threshold));
+                if (n > 0) {
+                    n = Math.min(n, player.balls.burn);
+                    player.balls.burn -= n;
+                    player.burnLastUsed = now();
+                    safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past the expiration date!", safchan);
+                }
             }
         }
         this.saveGame(player);
@@ -13650,6 +13675,9 @@ function Safari() {
             if (list === null) {
                 return null;
             }
+            if (list && list.length === 1 && list[0] === 235 && out.move && chance(0.9)) {
+                return null;
+            }
             val = calculateScore(out, list);
             if (Object.keys(out).length >= paramCount) {
                 break;
@@ -14362,6 +14390,7 @@ function Safari() {
         if (this.postInput && this.postInput(src, commandData)) {
             return;
         }
+        commandData = this.toReadableInput(commandData);
         this.sendAll(toColor("{0} is going to use {1}!".format(player.id.toCorrectCase(), commandData), "crimson"));
     };
     PyramidRoom.prototype.pokeInParty = function(id, commandData) {
@@ -14375,6 +14404,10 @@ function Safari() {
             return false;
         }
         return true;
+    };
+    PyramidRoom.prototype.toReadableInput = function(data) {
+        var p = getInputPokemon(data);
+        return p.name;
     };
     PyramidRoom.prototype.getChoices = function() {
         var out = {}, p, id, members = this.pyr.names;
@@ -14505,21 +14538,12 @@ function Safari() {
         if (!this.pokeInParty(id, commandData)) {
             return false;
         }
-        /* var num = getInputPokemon(commandData).id;
-        if (hasType(num, this.forbiddenTypes[0])) {
-            this.send(id, "You can't choose a " + this.forbiddenTypes[0] + "-type Pokémon for this room!");
-            return false;
-        }
-        if (hasType(num, this.forbiddenTypes[1])) {
-            this.send(id, "You can't choose a " + this.forbiddenTypes[1] + "-type Pokémon for this room!");
-            return false;
-        } */
         return true;
     };
     HordeRoom.prototype.postInput = function(src, commandData) {
-        var id = getInputPokemon(commandData).id;
-        var nerfed = hasType(id, this.forbiddenTypes[0]) ||hasType(id, this.forbiddenTypes[1]);
-        this.sendAll(toColor("{0} is going to use {1}{2}!".format(sys.name(src), cap(commandData.toLowerCase()), (nerfed ? " (nerfed)" : "")), "crimson"));
+        var p = getInputPokemon(commandData);
+        var nerfed = hasType(p.id, this.forbiddenTypes[0]) ||hasType(p.id, this.forbiddenTypes[1]);
+        this.sendAll(toColor("{0} is going to use {1}{2}!".format(sys.name(src), p.name, (nerfed ? " (nerfed)" : "")), "crimson"));
         return true;
     };
     HordeRoom.prototype.advance = function() {
@@ -19288,6 +19312,9 @@ function Safari() {
             if (player.money % 1 !== 0) {
                 player.money = Math.floor(player.money);
             }
+            if (player.burnLastUsed === 0 && player.balls.burn > 0) {
+                player.burnLastUsed = now();
+            }
             if (player.party.length === 0) {
                 player.party = [player.starter];
             }
@@ -21935,6 +21962,9 @@ function Safari() {
                         playerArray.splice(index, 1);
                         continue;
                     }
+                    if (item === "burn" && player.balls[item] === 0 && itemQty > 0) {
+                        player.burnLastUsed = now();
+                    }
                     player.balls[item] += itemQty;
                     if (item === "entry") {
                         rafflePlayers.add(player.id, player.balls.entry);
@@ -23017,13 +23047,23 @@ function Safari() {
                 sys.appendToFile(giftLog, now() + "|||" + sys.name(src) + "|||" + data[0].toCorrectCase() + "|||nextspawn|||had their next spawn changed to " + translated + "|||\n");
                 return true;
             }
-            if (command === "editdata") {
+            if (command === "editdata" || command === "rename") {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "Syntax: /editdata [costume/item]:[Name]:[Property]:[New Value].", safchan);
                     safaribot.sendMessage(src, "When editing a string, remember to include the quotation marks.", safchan);
                     return true;
                 }
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                if (command === "rename") {
+                    var r = "";
+                    if (info.length > 1 && info[1]) {
+                        r = info[1];
+                        if (r !== "clear") {
+                            r = "\"" + r + "\"";
+                        }
+                    }
+                    info = ["item", info[0], "fullName", r];
+                }
                 var data, e, type, list, defaultData, customValues;
                 switch (info[0]) {
                     case "costume":
