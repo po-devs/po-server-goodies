@@ -108,7 +108,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if ((command === "me" || command === "rainbow") && !SESSION.channels(channel).muteall) {
+    if ((command === "me" || command === "rainbow" || command === "fullrainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff) {
             normalbot.sendMessage(src, "/me was turned off.", channel);
             return;
@@ -150,7 +150,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (command === "me") {
             var colour = script.getColor(src);
             sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
-        } else if (command === "rainbow") {
+        } else if (command === "rainbow" || command === "fullrainbow") {
             if (script.isOfficialChan(channel) && sys.auth(src) < 1) {
                 return;
             }
@@ -177,7 +177,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (auth) {
                 toSend.push("</i>");
             }
-            toSend.push(messagetosend);
+            if (command === "fullrainbow") {    
+                for (i = 0; i < messagetosend.length; ++i) {
+                    toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(messagetosend[i]) + "</span>");
+                }
+            } else {
+                toSend.push(messagetosend);                
+            }
             sendChanHtmlAll(toSend.join(""), channel);
         }
         script.afterChatMessage(src, "/" + command + " " + commandData, channel);
