@@ -7888,7 +7888,7 @@ function Safari() {
                     n = Math.min(n, player.balls.burn);
                     player.balls.burn -= n;
                     player.burnLastUsed = now();
-                    safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past the expiration date!", safchan);
+                    safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past the their expiration date!", safchan);
                 }
             }
         }
