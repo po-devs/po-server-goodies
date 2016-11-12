@@ -19833,7 +19833,7 @@ function Safari() {
 
         //User commands
         if (!safariUpdating || SESSION.channels(safchan).isChannelOwner(src)) {
-            if (command === "me" || command === "rainbow") {
+            if (command === "me" || command === "rainbow" || command === "fullrainbow") {
                 if (commandData === "*") {
                     return true; //retain server behavior
                 }
