@@ -2288,6 +2288,9 @@ function Safari() {
         }
         else if (asset.indexOf("@") !== -1 || allItems.contains(itemAlias(asset, true))) {
             var item = itemAlias(asset.substr(asset.indexOf("@") + 1), true);
+            if (!allItems.contains(item)) {
+                return getInputPokemon(asset);
+            }
             var amount = parseInt(asset.substr(0, asset.indexOf("@")), 10) || 1;
             return {
                 id: item,
@@ -7888,7 +7891,7 @@ function Safari() {
                     n = Math.min(n, player.balls.burn);
                     player.balls.burn -= n;
                     player.burnLastUsed = now();
-                    safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past the their expiration date!", safchan);
+                    safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", safchan);
                 }
             }
         }
