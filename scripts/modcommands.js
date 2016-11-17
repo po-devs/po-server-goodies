@@ -513,7 +513,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'client' : tar ? sys.os(tar) : "Unknown",
                 'version' : tar ? sys.version(tar) : "Unknown",
                 'teams' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) ? teams : "Unknown",
-                'uniqueid' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) && sys.uniqueId(tar).id ? sys.uniqueId(tar).id : "Unknown"
+                'uniqueid' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
