@@ -1392,22 +1392,12 @@ function Mafia(mafiachan) {
             for (var c in data) {
                 if (data[c].hasOwnProperty("macro")) {
                     if (data[c].macro) {
-                        if (sys.os(player) === "android") {
-                            cmds.push("/" + c);
-                        }
-                        else {
-                            cmds.push(htmlLink("/" + c));
-                        }
+                        cmds.push(htmlLink("/" + c));
                     }
                     continue;
                 }
                 if (mafia.theme.macro) {
-                    if (sys.os(player) === "android") {
-                        cmds.push("/" + c);
-                    }
-                    else {
-                        cmds.push(htmlLink("/" + c));
-                    }
+                    cmds.push(htmlLink("/" + c));
                 }
             }
         }
@@ -2235,7 +2225,7 @@ function Mafia(mafiachan) {
         for (var i = 0; i < channelUsers.length; i++) {
             var id = channelUsers[i];
             if (sys.isInChannel(id, mafiachan)) {
-                gamemsg(sys.name(id), sys.os(id) === "android" ? sendAndroid : sendPC, "±Current Roles", undefined, true);
+                gamemsg(sys.name(id), sendPC, "±Current Roles", undefined, true);
             }
         }
     };
@@ -2251,7 +2241,7 @@ function Mafia(mafiachan) {
         for (var i = 0; i < channelUsers.length; i++) {
             var id = channelUsers[i], name = sys.name(id);
             if (this.isInGame(name)) {
-                gamemsg(name, sys.os(id) === "android" ? listAndroid : listPC, "±Current Players", undefined, true);
+                gamemsg(name, listPC, "±Current Players", undefined, true);
             } else {
                 gamemsg(name, players.join(", ") + ".", "±Current Players");
             }
