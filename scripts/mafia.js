@@ -6951,7 +6951,7 @@ function Mafia(mafiachan) {
                 return;
             }
             if (targetName.length === 1) {
-                if (!this.isInGame(targetName[0])) {
+                if (!this.isInGame(this.correctCase(targetName[0]))) {
                     gamemsg(sys.name(src),"You can't whisper to someone who isn't in the game!");
                     return;
                 } else if (targetName[0].toLowerCase() === sys.name(src).toLowerCase()) {
