@@ -6947,7 +6947,7 @@ function Mafia(mafiachan) {
                 targetName = commandData.substring(0, pos).replace(/ ,|, /g, ",").split(","),
                 message = commandData.substring(pos + 1, commandData.length);
             if (pos === -1 || message === "") {
-                gamemsg(sentName, "Please whisper an actual message. Syntax is /whisper [name]:[message]");
+                gamemsg(sys.name(src), "Please whisper an actual message. Syntax is /whisper [name]:[message]");
                 return;
             }
             if (targetName.length === 1) {
