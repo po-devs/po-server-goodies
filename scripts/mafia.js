@@ -3504,7 +3504,7 @@ function Mafia(mafiachan) {
                     '~Self~': player.name,
                     '~Player~': player.name,
                     '~User~': player.name,
-                    '~Target~': (target.name),
+                    '~Target~': (typeof target == "string" ? target :target.name),
                     '~Role~': colorizeRole(player.role.role),
                     '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
                     '~Side~': mafia.theme.trside(player.role.side),
