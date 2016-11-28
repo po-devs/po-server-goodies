@@ -3489,7 +3489,7 @@ function Mafia(mafiachan) {
             commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
         }
         commandData = this.correctCase(commandData);
-        var target = commandData != noPlayer ? mafia.players[commandData] : null;
+        var target = (this.isInGame(commandData) ? mafia.players[commandData] : null);
 
         var commandObject = player.role.actions.standby[command];
         var commandName = command;
