@@ -7606,8 +7606,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "eventthemes") {
-            var themes = this.eventThemePool.map(function(theme) { return mafia.themeManager.themes[mafia.eventQueue[0]].name; }).sort();
-            mafiabot.sendMessage(src, "The themes that can be started as events are: " + readable(themes, "and") + "." , mafiachan);
+            this.showEventPool(src);
             return;
         }
         if (command === "featured") {
