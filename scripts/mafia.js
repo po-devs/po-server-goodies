@@ -26,9 +26,9 @@ function Mafia(mafiachan) {
     if (!this.nextEventTime) {
         this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
     }
-	if (!this.defaultEventInterval) {
-		this.defaultEventInterval = 2 * 60 * 60 * 1000;
-	}
+    if (!this.defaultEventInterval) {
+        this.defaultEventInterval = 2 * 60 * 60 * 1000;
+    }
     if (sys.getVal("mafia_eventQueue") !== "") {
         this.eventQueue = sys.getVal("mafia_eventQueue").split(",");
     } else {
@@ -8129,14 +8129,14 @@ function Mafia(mafiachan) {
                         //this.showEvent; // this doesn't exist???
                     }
                     break;
-				case "interval":
-					if (!isNaN(data[1]) && data[1] >= 1800) {
-						this.defaultEventInterval = data[1] * 1000;
-						mafiabot.sendHtmlMessage(src, "Event interval set to <b>" + getTimeString(data[1]) + "</b>")
-					} else {
-						msg(src, "Event interval must be at least 30 minutes.")
-					}
-					break;
+                case "interval":
+                    if (!isNaN(data[1]) && data[1] >= 1800) {
+                        this.defaultEventInterval = data[1] * 1000;
+                        mafiabot.sendHtmlMessage(src, "Event interval set to <b>" + getTimeString(data[1]) + "</b>")
+                    } else {
+                        msg(src, "Event interval must be at least 30 minutes.")
+                    }
+                    break;
                 default:
                     this.showEventQueue(src);
                     msg(src, "Use /event add:[theme] to add to queue, /event remove:[theme] to remove, /event jump:[theme] to add a theme to the front of the queue, /event trim:[theme] to cut the last, or /event shuffle to shuffle the queue.");
