@@ -1050,7 +1050,7 @@ Jolly Nature (+Spd, -SAtk)
         for (j = 0; j < 4; ++j) {
             var move = sys.teamPokeMove(id, team, i, j);
             if (move !== undefined) {
-                ret.push('- ' + sys.move(move) + (move == hpnum ? ' [' + sys.type(sys.hiddenPowerType.apply(sys, hpinfo)) + ']':''));
+                ret.push('- ' + sys.move(move) + (move == hpnum ? (' [' + (sys.gen(id, team) < 7 ? (sys.type(sys.hiddenPowerType.apply(sys, hpinfo))):(sys.type(sys.teamPokeHiddenPower(id, team, i)))) + ']'):''));
             }
         }
         ret.push("");
