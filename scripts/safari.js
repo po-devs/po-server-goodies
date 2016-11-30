@@ -17590,33 +17590,16 @@ function Safari() {
             return;
         }
         if (this.round === 10) { //Check if event is over here
+            if (this.silentMode) {
+                this.countSilentPoints();
+            }
             this.finish();
             return;
         }
         if (this.phase === "preparing" || this.phase === "answer3") {
             this.sendToViewers((this.round === 0 ? "First" : "<b>Time's Over!</b> Next") + " question coming in 5 seconds!");
             if (this.silentMode && this.round > 0) {
-                var answers = {}, ans = this.silentAnswers, e, p, c, list;
-                for (e in ans) {
-                    if (!answers.hasOwnProperty(ans[e])) {
-                        answers[ans[e]] = [];
-                    }
-                    answers[ans[e]].push(e);
-                }
-                var toCC = function(x) {
-                    return "<b>" + x.toCorrectCase() + "</b>";
-                };
-                for (e in answers) {
-                    list = answers[e];
-                    ans = sys.pokemon(e);
-                    p = Math.round(100/list.length);
-                    this.sendToViewers(readable(list.map(toCC).map(addFlashTag)) + " answered " + toColor(ans, "blue") + " and received " + plural(p, "point") + (list.length > 1 ? " each" : "") + "!", true);
-                    for (c = list.length; c--; ) {
-                        this.points[list[c]] += p;
-                        this.answered[list[c]] += 1;
-                    }
-                }
-                this.silentAnswers = {};
+                this.countSilentPoints();
             }
             this.phase = "question";
             return;
@@ -17678,6 +17661,29 @@ function Safari() {
             this.phase = "answer";
         }
 
+    };
+    Quiz.prototype.countSilentPoints = function() {
+        var answers = {}, ans = this.silentAnswers, e, p, c, list;
+        for (e in ans) {
+            if (!answers.hasOwnProperty(ans[e])) {
+                answers[ans[e]] = [];
+            }
+            answers[ans[e]].push(e);
+        }
+        var toCC = function(x) {
+            return "<b>" + x.toCorrectCase() + "</b>";
+        };
+        for (e in answers) {
+            list = answers[e];
+            ans = sys.pokemon(e);
+            p = Math.round(100/list.length);
+            this.sendToViewers(readable(list.map(toCC).map(addFlashTag)) + " answered " + toColor(ans, "blue") + " and received " + plural(p, "point") + (list.length > 1 ? " each" : "") + "!", true);
+            for (c = list.length; c--; ) {
+                this.points[list[c]] += p;
+                this.answered[list[c]] += 1;
+            }
+        }
+        this.silentAnswers = {};
     };
     Quiz.prototype.filter = function(list, typesUsed) {
         var type, val2, val, desc;
