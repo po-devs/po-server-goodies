@@ -60,6 +60,7 @@ if (!Trivia || !Trivia.started) {
     Trivia = new TriviaGame();
 }
 var extLB = new PointsLB("trivialeaderboard.txt");
+var extLastLB = new PointsLastLB("lasttrivialeaderboard.txt");
 var triviaq = new QuestionHolder("triviaq.txt");
 var trivreview = new QuestionHolder("trivreview.txt");
 var tadmin = new TriviaAdmin("tadmins.txt");
@@ -1003,6 +1004,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
     var i = 0;
     var newMonth = new Date().getMonth();
     if (month !== newMonth){
+        extLB.updateLastLB();
         extLB.reset();
         month = newMonth;
     }
@@ -2021,15 +2023,6 @@ function PointsLB(file) {
     }
     try {
         this.leaderboard = JSON.parse(fileContent);
-        // This is just to stop the data from being corrupted until the leaderboard resets again. Can be removed later.
-        for (var i = 0; i < this.leaderboard.length; i++) {
-            if (this.leaderboard[i].eventPoints === undefined || isNaN(this.leaderboard[i].eventPoints)) {
-                this.leaderboard[i].eventPoints = 0;
-            }
-            if (this.leaderboard[i].eventWins === undefined || isNaN(this.leaderboard[i].eventWins)) {
-                this.leaderboard[i].eventWins = 0;
-            }
-        }
     }
     catch (e) {
         sys.sendAll("Error loading leaderboard: " + e, revchan);
@@ -2198,7 +2191,158 @@ PointsLB.prototype.showLeaders = function (src, commandData, id) {
     }
 };
 
-PointsLB.prototype.reset = function(){
+PointsLB.prototype.updateLastLB = function() {
+    extLastLB.update(this.leaderboard);
+};
+
+PointsLB.prototype.reset = function() {
+    this.leaderboard = [];
+    sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
+};
+
+function PointsLastLB(file) {
+    this.file = file;
+    this.minLB = 7;
+    this.minSpeedLB = 25;
+    this.leaderboard = [];
+    var fileContent = sys.getFileContent(this.file);
+    if (fileContent === undefined || fileContent === "") {
+        sys.writeToFile(file, "[]");
+    }
+    try {
+        this.leaderboard = JSON.parse(fileContent);
+    }
+    catch (e) {
+        sys.sendAll("Error loading leaderboard: " + e, revchan);
+    }
+}
+
+PointsLastLB.prototype.showLeaders = function (src, commandData, id) {
+    var scoreTypes = ["elimination", "knowledge", "speed", "event"];
+    var lb = [], player = [];
+    var i, maxPlace;
+    var input = commandData.split('*');
+    var scoreType = input[0].toLowerCase();
+    if (scoreType === "know"){
+        scoreType = "knowledge";
+    } else if (scoreType === "elim"){
+        scoreType = "elimination";
+    }
+    if (scoreTypes.indexOf(scoreType) !== -1){
+        if (input.length === 1 || isNaN(input[1]) || input[1] <= 0){
+            maxPlace = 10;
+        } else {maxPlace = input[1];}
+        for (i = 0; i < this.leaderboard.length; i++) {
+            player = { "name" : this.leaderboard[i].name, "regPoints" : this.leaderboard[i].regPoints, "speedPoints" : this.leaderboard[i].speedPoints, "regWins" : this.leaderboard[i].regWins, "livesLeft" : this.leaderboard[i].livesLeft,"elimWins" : this.leaderboard[i].elimWins, "speedWins" : this.leaderboard[i].speedWins, "eventPoints" : this.leaderboard[i].eventPoints, "eventWins" : this.leaderboard[i].eventWins };
+            lb.push(player);
+        }
+        if (scoreType === "elimination"){
+            lb.sort(function (a, b){
+                if (b.elimWins === a.elimWins){
+                    if (b.livesLeft === a.livesLeft) {
+                        if (b.regWins === a.regWins){
+                            if (b.speedWins === a.speedWins) {
+                                if (b.regPoints === a.regPoints) {
+                                    return b.speedPoints - a.speedPoints;
+                                } else return b.regPoints - a.regPoints;
+                            } else return b.speedWins - a.speedWins;
+                        } else return b.regWins - a.regWins;
+                    } else return b.livesLeft - a.livesLeft;
+                } else return b.elimWins - a.elimWins;
+            });
+        } else if (scoreType === "knowledge"){
+            lb.sort(function (a, b){
+                if (b.regPoints === a.regPoints){
+                    if (b.regWins === a.regWins){
+                        if (b.speedPoints === a.speedPoints) {
+                            if (b.speedWins === a.speedWins) {
+                                if (b.livesLeft === a.livesLeft){
+                                    return b.elimWins - a.elimWins;
+                                } else return b.livesLeft - a.livesLeft;
+                            } else return b.speedWins - a.speedWins;
+                        } else return b.speedPoints - a.speedPoints;
+                    } else return b.regWins - a.regWins;
+                } else return b.regPoints - a.regPoints;
+            });
+        } else if (scoreType === "speed"){
+            lb.sort(function (a, b){
+                if (b.speedPoints === a.speedPoints){
+                    if (b.speedWins === a.speedWins){
+                        if (b.regPoints === a.regPoints) {
+                            if (b.regWins === a.regWins) {
+                                if (b.livesLeft === a.livesLeft){
+                                    return b.elimWins - a.elimWins;
+                                } else return b.livesLeft - a.livesLeft;
+                            } else return b.regWins - a.regWins;
+                        } else return b.regPoints - a.regPoints;
+                    } else return b.speedWins - a.speedWins;
+                } else return b.speedPoints - a.speedPoints;
+            });
+        } else if (scoreType === "event") {
+            lb.sort(function (a, b) {
+                if (b.eventPoints === a.eventPoints) {
+                    if (b.eventWins === a.eventWins) {
+                        if (b.regPoints === a.regPoints){
+                            if (b.regWins === a.regWins){
+                                if (b.speedPoints === a.speedPoints) {
+                                    if (b.speedWins === a.speedWins) {
+                                        if (b.livesLeft === a.livesLeft){
+                                            return b.elimWins - a.elimWins;
+                                        } else return b.livesLeft - a.livesLeft;
+                                    } else return b.speedWins - a.speedWins;
+                                } else return b.speedPoints - a.speedPoints;
+                            } else return b.regWins - a.regWins;
+                        } else return b.regPoints - a.regPoints;
+                    } else return b.eventWins - a.eventWins;
+                } else return b.eventPoints - a.eventPoints;
+            });
+        }
+        sys.sendMessage(src, "", id);
+        sys.sendMessage(src, "*** Trivia Leaderboard (" + scoreType + ") ***", id);
+        for (i = 0; i < lb.length; i++) {
+            if (i < maxPlace || lb[i].name === sys.name(src).toLowerCase()) {
+                var x = i + 1;
+                if (scoreType === "knowledge"){
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point" + (lb[i].regPoints === 1 ? " and " : "s and ") + lb[i].regWins + " win" + (lb[i].regWins === 1 ? "!" : "s!"), id);
+                } else if (scoreType === "speed"){
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point" + (lb[i].speedPoints === 1 ? " and " : "s and ") + lb[i].speedWins + " win" + (lb[i].speedWins === 1 ? "!" : "s!"), id);
+                } else if (scoreType === "elimination"){
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " win" + (lb[i].elimWins === 1 ? "!" : "s!"), id);
+                } else if (scoreType === "event") {
+                    Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].eventPoints + " point" + (lb[i].eventPoints === 1 ? " and " : "s and ") + lb[i].eventWins + " win" + (lb[i].eventWins === 1 ? "!" : "s!"), id);
+                }
+            }
+        }
+        sys.sendMessage(src, "", id);
+        var y = input.length - 1; //allow maxLength to still be optional
+        if (input[y] !== "" || input[y] !== undefined) {
+            for (i = 0; i < lb.length; i++) {
+                if (lb[i].name === input[y].toLowerCase()) {
+                    x = i + 1;
+                    if (scoreType === "knowledge"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].regPoints + " point" + (lb[i].regPoints === 1 ? " and " : "s and ") + lb[i].regWins + " win" + (lb[i].regWins === 1 ? "!" : "s!"), id);
+                    } else if (scoreType === "speed"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].speedPoints + " point" + (lb[i].speedPoints === 1 ? " and " : "s and ") + lb[i].speedWins + " win" + (lb[i].speedWins === 1 ? "!" : "s!"), id);
+                    } else if (scoreType === "elimination"){
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].livesLeft + " total lives left and " + lb[i].elimWins + " win" + (lb[i].elimWins === 1 ? "!" : "s!"), id);
+                    } else if (scoreType === "event") {
+                        Trivia.sendPM(src, "#" + x + " " + lb[i].name + " with " + lb[i].eventPoints + " point" + (lb[i].eventPoints === 1 ? " and " : "s and ") + lb[i].eventWins + " win" + (lb[i].eventWins === 1 ? "!" : "s!"), id);
+                    }
+                }
+            }
+        }
+        sys.sendMessage(src, "", id);
+    } else {
+        Trivia.sendPM(src, "Valid scoring systems are knowledge [know], speed [speed], elimination [elim], and event [event].", id);
+    }
+};
+
+PointsLastLB.prototype.update = function(oldLB) {
+    this.leaderboard = oldLB;
+    sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
+};
+
+PointsLastLB.prototype.reset = function() {
     this.leaderboard = [];
     sys.writeToFile(this.file, JSON.stringify(this.leaderboard));
 };
@@ -2480,7 +2624,11 @@ addUserCommand(["vote"], function (src, commandData, channel) {
 
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
-}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know], speed [speed], elimination [elim], event [event]); required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
+}, "Shows the current leaderboard and your standing, format: /leaderboard [type]*[#]*[player]. /lb can also be used. Type is the scoring used (knowledge [know], speed [speed], elimination [elim], event [event]) required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
+
+addUserCommand(["lastleaderboard", "lastlb"], function (src, commandData, channel) {
+    extLastLB.showLeaders(src, commandData, channel);
+}, "Shows the leaderboard from last month, format: /lastlb [type]*[#]*[player]. Type is the scoring used (knowledge [know], speed [speed], elimination [elim], event [event]) required. # is the number of places to show; if left blank, shows top 10 and your placement. Player is an optional input that allows you to search for a player's position in the leaderboard.");
 
 /*** TRIVIA ADMIN COMMANDS ***/
 
@@ -4096,6 +4244,11 @@ addOwnerCommand(["clearlb"], function (src, commandData, channel) {
     triviabot.sendMessage(src, "The Trivia leaderboard was cleared.", channel);
 }, "Clears all data from the leaderboard.");
 
+addOwnerCommand(["clearlastlb"], function (src, commandData, channel) {
+    extLastLB.reset();
+    triviabot.sendMessage(src, "The Trivia leaderboard from last month was cleared.", channel);
+}, "Clears all data from the leaderboard from the previous month.");
+
 addOwnerCommand(["lbmin"], function (src, commandData, channel) {
     if (commandData.length === 0 || isNaN(commandData)){
         triviabot.sendMessage(src, extLB.minLB + " points are currently required for a game to count towards the leaderboard.", channel);
@@ -4511,6 +4664,7 @@ module.exports = {
             trivreview = new QuestionHolder("trivreview.txt");
             tadmin = new TriviaAdmin("tadmins.txt");
             extLB = new PointsLB("trivialeaderboard.txt");
+            extLastLB = new PointsLastLB("lasttrivialeaderboard.txt");
             eventSets = new EventSettings("triviaeventsettings.txt");
             eventStats = new EventStatistics("triviaeventstats.txt");
         }
