@@ -5183,7 +5183,7 @@ function Safari() {
             sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(rec.pokesCaught, rec.pokesNotCaught, percentage(rec.pokesCaught, rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
             sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney + rec.towerEarnings;
-            var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver * rec.pokeRaceSilver;
+            var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver + rec.pokeRaceSilver;
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
             sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
@@ -17888,7 +17888,9 @@ function Safari() {
                 out = giveStuff(player, stuff);
 
                 player.records.quizFirst += 1;
-                player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                if (!this.silentMode) {
+                    player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                }
                 safari.saveGame(player);
                 this.sendMessage(id, "You " + out + "!");
             }
@@ -17904,7 +17906,9 @@ function Safari() {
                     out = giveStuff(player, stuff);
 
                     player.records.quizSecond += 1;
-                    player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                    if (!this.silentMode) {
+                        player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                    }
                     safari.saveGame(player);
                     this.sendMessage(id, "You " + out + "!");
                 }
@@ -17922,7 +17926,9 @@ function Safari() {
                         out = giveStuff(player, stuff);
 
                         player.records.quizThird += 1;
-                        player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                        if (!this.silentMode) {
+                            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                        }
                         safari.saveGame(player);
                         this.sendMessage(id, "You " + out + "!");
                     }
