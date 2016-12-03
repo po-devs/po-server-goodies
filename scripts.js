@@ -819,7 +819,9 @@ unban: function(type, src, tar, commandData) {
     var past = {"mute": "muted", "mban": "mafia banned", "smute": "secretly muted", "hmute": "hangman banned", "safban": "safari banned"}[type];
     var sendAll =  {
         "smute": function(line) {
-            banbot.sendAll(line, staffchannel);
+            sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
+                banbot.sendMessage(uid, line);
+            });
         },
         "mban": function(line, ip) {
             if (ip) {
