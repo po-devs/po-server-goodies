@@ -26,6 +26,9 @@ function Mafia(mafiachan) {
     if (!this.nextEventTime) {
         this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
     }
+    if (!this.defaultEventInterval) {
+        this.defaultEventInterval = 2 * 60 * 60 * 1000;
+    }
     if (sys.getVal("mafia_eventQueue") !== "") {
         this.eventQueue = sys.getVal("mafia_eventQueue").split(",");
     } else {
@@ -1653,11 +1656,11 @@ function Mafia(mafiachan) {
             return;
         }
         if (forced) {
-            this.nextEventTime = new Date().getTime() + 2 * 60 * 60 * 1000;
+            this.nextEventTime = new Date().getTime() + this.defaultEventInterval;
         }
         else {
             while (this.nextEventTime < new Date().getTime()) {
-                this.nextEventTime += 2 * 60 * 60 * 1000;
+                this.nextEventTime += this.defaultEventInterval;
             }
         }
         if (!(this.eventQueue)) {
@@ -3489,7 +3492,7 @@ function Mafia(mafiachan) {
             commandData = decodeURIComponent(commandData); // HTML links for player names changes > to %3E; this changes %3E back to >
         }
         commandData = this.correctCase(commandData);
-        var target = commandData != noPlayer ? mafia.players[commandData] : null;
+        var target = (this.isInGame(commandData) ? mafia.players[commandData] : null);
 
         var commandObject = player.role.actions.standby[command];
         var commandName = command;
@@ -3504,7 +3507,7 @@ function Mafia(mafiachan) {
                     '~Self~': player.name,
                     '~Player~': player.name,
                     '~User~': player.name,
-                    '~Target~': (target.name),
+                    '~Target~': (typeof target == "string" ? target :target.name),
                     '~Role~': colorizeRole(player.role.role),
                     '~TargetRole~': (typeof target == "string" ? target :target.role.translation),
                     '~Side~': mafia.theme.trside(player.role.side),
@@ -7606,8 +7609,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "eventthemes") {
-            var themes = this.eventThemePool.map(function(theme) { return mafia.themeManager.themes[mafia.eventQueue[0]].name; }).sort();
-            mafiabot.sendMessage(src, "The themes that can be started as events are: " + readable(themes, "and") + "." , mafiachan);
+            this.showEventPool(src);
             return;
         }
         if (command === "featured") {
@@ -8127,11 +8129,19 @@ function Mafia(mafiachan) {
                         //this.showEvent; // this doesn't exist???
                     }
                     break;
+                case "interval":
+                    if (!isNaN(data[1]) && data[1] >= 1800) {
+                        this.defaultEventInterval = data[1] * 1000;
+                        mafiabot.sendHtmlMessage(src, "Event interval set to <b>" + getTimeString(data[1]) + "</b>")
+                    } else {
+                        msg(src, "Event interval must be at least 30 minutes.")
+                    }
+                    break;
                 default:
                     this.showEventQueue(src);
                     msg(src, "Use /event add:[theme] to add to queue, /event remove:[theme] to remove, /event jump:[theme] to add a theme to the front of the queue, /event trim:[theme] to cut the last, or /event shuffle to shuffle the queue.");
                     msg(src, "Edit the themes added to the event queue by default with /event addpool:[theme] and /event removepool:[theme].");
-                    msg(src, "Use /event forcestart to set the event time to now or /event time:[time from now in seconds] to set the time.");
+                    msg(src, "Use /event forcestart to set the event time to now, /event time:[time from now in seconds] to set the time, or /event interval:[time in seconds] to set the default time between events.");
             }
             return;
         }

@@ -37,6 +37,7 @@ function Safari() {
     var mythLog = "scriptdata/safari/mythlog.txt";
     var eventLog = "scriptdata/safari/eventlog.txt";
     var giftLog = "scriptdata/safari/giftlog.txt";
+    var crossLog = "scriptdata/safari/crosslog.txt";
     var miscLog = "scriptdata/safari/misclog.txt";
     var questLog = "scriptdata/safari/questlog.txt";
     var tradebansFile = "scriptdata/safaribans.txt";
@@ -288,7 +289,8 @@ function Safari() {
             nubTaunt: 0,
             baseView: 0,
             unown: 0,
-            burn: 0
+            burn: 0,
+            price: 0
         },
         shop: {},
         quests: {
@@ -550,7 +552,7 @@ function Safari() {
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\". Obtained from Pyramid quest.",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\". Obtained from Pyramid quest.",
             water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
-            soda: "Carbonated drink that reduces remaining cooldown for a quest to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\".",
+            soda: "Carbonated drink that reduces remaining cooldown for a quest, auction, burn heal or costume change to " + (itemData.soda.bonusRate * 100) + "%. Use with \"/use soda:[Quest]\".",
             cherry: "A tasty treat that keeps you energized during a Tower Challenge allowing you to deal more damage. Use with \"/use cherry\". Obtained from Alchemy.",
             blkapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very strong flavor. Found with Itemfinder.",
             whtapricorn: "An acorn-shaped fruit that can be crafted into a Pokéball. Has a very weak flavor. Obtained from Gachapon.",
@@ -3731,7 +3733,8 @@ function Safari() {
             "The wild {0} achieved nirvana and transcended to a higher plane!",
             "The wild {0} got bored and went to #Mafia!",
             "The wild {0} paid its retreat cost and returned to the bench!",
-            "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!"
+            "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!",
+            "The wild {0} was divided by zero!"
         ];
         if (isRare(currentPokemon)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
@@ -5180,7 +5183,7 @@ function Safari() {
             sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(rec.pokesCaught, rec.pokesNotCaught, percentage(rec.pokesCaught, rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
             sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney + rec.towerEarnings;
-            var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver;
+            var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver + rec.pokeRaceSilver;
             sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Money:</b></font> Earned ${0} and {1} [{2}].".format(addComma(earnings), plural(silverEarnings, "silver"), (sys.os(src) === "android" ? "Use \"/records earnings\" to show a breakdown by source" : link("/records earnings", "By source"))), safchan);
             sys.sendMessage(src, "±Gachapon: Used {0} ({1}, {2}).".format(plural(rec.gachasUsed, "gacha"), plural(rec.masterballsWon, "master"), plural(rec.jackpotsWon, "Jackpot")), safchan);
             var onOthers = rec.rocksHit + rec.rocksWalletHit + rec.rocksMissedWindow + rec.rocksItemfinderHit;
@@ -6652,15 +6655,16 @@ function Safari() {
             var chars = player.balls.itemfinder,
                 limit = getCap("permfinder"),
                 gemdata = itemData.gem.charges,
-                pchars = player.balls.permfinder + gemdata,
-                tchars = chars + pchars;
+                pchars = player.balls.permfinder + gemdata;
             if (player.balls.permfinder >= limit) {
                 safaribot.sendMessage(src, "Your Itemfinder is already fully charged!", safchan);
                 return;
             }
             if (pchars > limit) {
                 gemdata = limit - player.balls.permfinder;
+                pchars = limit;
             }
+            var tchars = chars + pchars;
 
             safaribot.sendHtmlMessage(src, "The " + finishName("gem") + " begins to emit a soft baaing sound. Your Itemfinder then lights up and responds with a loud <b>BAA~!</b>", safchan);
             safaribot.sendMessage(src, "Your Itemfinder gained " + gemdata + " charges. [Remaining Charges: " + tchars + " (Daily " + chars + " plus " + pchars + " bonus)].", safchan);
@@ -6799,29 +6803,43 @@ function Safari() {
         }
         if (item === "soda") {
             var questList = Object.keys(player.quests);
+            var otherList = ["costume", "auction", "burn"];
             questList.splice(questList.indexOf("scientist"), 1);
             if (!info.target) {
-                safaribot.sendMessage(src, "Choose a quest to reduce the current cooldown with '/use soda:[Quest]! Valid quests are " + readable(questList.map(cap)) + ". ", safchan);
+                safaribot.sendMessage(src, "Choose a quest to reduce the current cooldown with '/use soda:[Quest]! Valid quests are " + readable(questList.map(cap)) + ". You can reduce the cooldown for " + readable(otherList.map(cap)) + ".", safchan);
                 return;
             }
             var id = info.target.toLowerCase();
-            if (!questList.contains(id)) {
-                safaribot.sendMessage(src, "Choose a quest to reduce the current cooldown with '/use soda:[Quest]! Valid quests are " + readable(questList.map(cap)) + ". ", safchan);
+            if (!questList.contains(id) && !otherList.contains(id)) {
+                safaribot.sendMessage(src, "Choose a quest to reduce the current cooldown with '/use soda:[Quest]! Valid quests are " + readable(questList.map(cap)) + ". You can reduce the cooldown for " + readable(otherList.map(cap)) + ".", safchan);
                 return;
             }
-            var n = now(), quest = player.quests[id];
-            if (n >= quest.cooldown) {
-                safaribot.sendMessage(src, "You have no cooldown on this quest!", safchan);
-                return;
+            var n = now(), remaining, cd, result, name;
+            if (otherList.contains(id)) {
+                if (n >= player.cooldowns[id]) {
+                    safaribot.sendMessage(src, "You have no cooldown for " + id + "!", safchan);
+                    return;
+                }
+                remaining = player.cooldowns[id] - n;
+                cd = Math.round(remaining * itemData.soda.bonusRate);
+                player.cooldowns[id] = result = n + cd;
+                name = id;
+            } else {
+                var quest = player.quests[id];
+                if (n >= quest.cooldown) {
+                    safaribot.sendMessage(src, "You have no cooldown on this quest!", safchan);
+                    return;
+                }
+                remaining = quest.cooldown - n;
+                cd = Math.round(remaining * itemData.soda.bonusRate);
+                quest.cooldown = result = n + cd;
+                name = cap(id) + " quest";
             }
-            var remaining = quest.cooldown - n;
-            var cd = Math.round(remaining * itemData.soda.bonusRate);
 
-            quest.cooldown = n + cd;
             player.balls.soda -= 1;
             this.updateShop(player, "soda");
             sys.sendMessage(src, "", safchan);
-            safaribot.sendHtmlMessage(src, "You drank some " + finishName("soda") + "! Your cooldown for the " + cap(id) + " quest changed from " + toColor(timeLeftString(n + remaining), "red") + " to " + toColor(timeLeftString(quest.cooldown), "blue") + "!", safchan);
+            safaribot.sendHtmlMessage(src, "You drank some " + finishName("soda") + "! Your cooldown for the " + name + " changed from " + toColor(timeLeftString(n + remaining), "red") + " to " + toColor(timeLeftString(result), "blue") + "!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "soda"), safchan);
             sys.sendMessage(src, "", safchan);
             this.saveGame(player);
@@ -6899,7 +6917,7 @@ function Safari() {
             var sub, p = evType;
             if (evType === "invertedwar") {
                 p = "factionwar";
-            } else if (["lcbfactory", "quiz"].contains(evType)) {
+            } else if (["lcbfactory", "quiz", "hquiz"].contains(evType)) {
                 p = "bfactory";
             }
             var picked = sets[p], rew;
@@ -7003,7 +7021,8 @@ function Safari() {
                     ev = new BFactory(src, reward[0], reward[1], reward[2], evType == "lcbfactory");
                 break;
                 case "quiz":
-                    ev = new Quiz(src, reward[0], reward[1], reward[2]);
+                case "hquiz":
+                    ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz");
                 break;
             }
             
@@ -7179,9 +7198,9 @@ function Safari() {
 
         var restrictions = ["contest", "auction", "battle", "event", "pyramid", "tutorial"];
         //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
-        if (player.party[0] === id) {
-            restrictions = restrictions.concat(["wild"]);
-            reason = "sell your active Pokémon";
+        if (player.party[0] === id && countRepeated(player.pokemon, id) === 1) {
+            safaribot.sendHtmlMessage(src, "You can't sell your active Pokémon!", safchan);
+            return;
         }
         if (cantBecause(src, reason, restrictions)) {
             return;
@@ -7643,6 +7662,52 @@ function Safari() {
                 this.saveShop();
             }
         }
+        this.saveGame(player);
+    };
+    this.checkShops = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        
+        if ((!data || data === "*")) {
+            safaribot.sendHtmlMessage(src, "Use " + link("/price ", "/price Pokémon", true) + " or " + link("/price @", "/price @Item", true) + " to find shops selling that Pokémon/item (only checks for online players).", safchan);
+            return;
+        }
+        var currentTime = now();
+        if (player.cooldowns.price > currentTime) {
+            safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.price) + " before checking a price again!", safchan);
+            return;
+        }
+        var input = getInput(data);
+        if (!input || (input.type === "item" && itemData[input.id].invisible)) {
+            safaribot.sendMessage(src, data + " is not a valid item or Pokémon!", safchan);
+            return;
+        }
+        var players = sys.playersOfChannel(safchan), list = [], p, obj;
+        for (var e = players.length; e--; ) {
+            p = getAvatar(players[e]);
+            if (p) {
+                obj = p.shop[input.input];
+                if (obj && obj.limit > 0) {
+                    list.push(link("/shop " + p.id.toCorrectCase(), p.id.toCorrectCase())  + " ($" + addComma(obj.price) + ", " + obj.limit + " available)");
+                }
+            }
+        }
+        
+        if (list.length) {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "Online players with <b>" + input.name + "</b> in their shop: ", safchan);
+            for (e = 0; e < list.length; e++) {
+                safaribot.sendHtmlMessage(src, list[e], safchan);
+            }
+            safaribot.sendMessage(src, "Use /shop Name to visit their shop.", safchan);
+            sys.sendMessage(src, "", safchan);
+        } else {
+            safaribot.sendHtmlMessage(src, "No online player with " + input.name + " in their shop found!", safchan);
+        }
+        
+        player.cooldowns.price = currentTime + 60*1000;
         this.saveGame(player);
     };
     this.editShop = function(src, data, editNPCShop, isSilver) {
@@ -8413,6 +8478,27 @@ function Safari() {
             sys.sendMessage(targetId, "", safchan);
         }
     };
+    this.forfeitBattle = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var name = sys.name(src);
+        
+        if (!this.isBattling(name)) {
+            safaribot.sendMessage(src, "You are not battling!", safchan);
+            return;
+        }
+        var battle, b;
+        for (b in currentBattles) {
+            battle = currentBattles[b];
+            if (battle.isInBattle(name)) {
+                battle.abort(src, name, true);
+                currentBattles.splice(b, 1);
+                return;
+            }
+        }
+        
+    };
     this.watchBattle = function(src, data) {
         if (!validPlayers("target", src, data)) {
             return;
@@ -8644,14 +8730,18 @@ function Safari() {
             }
         }
     };
-    Battle.prototype.abort = function(src, loser) {
+    Battle.prototype.abort = function(src, loser, isForfeit) {
         var winner = "Tie";
         if (loser.toLowerCase() == this.name1.toLowerCase()) {
             winner = this.name2;
         } else if (loser.toLowerCase() == this.name2.toLowerCase()) {
             winner = this.name1;
         }
-        this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        if (isForfeit) {
+            this.sendToViewers("<b>" + loser + " forfeited! " + (winner !== "Tie" ? winner + " won!" : "") + "</b>", true);
+        } else {
+            this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        }
         if (this.npcBattle && this.postBattle) {
             this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs, this.viewers);
         }
@@ -9516,7 +9606,8 @@ function Safari() {
     };
     Battle2.prototype.generateMoves = function(id, data, name) {
         var out = [], m, move, amt, p, types = data.types, eff, damaging, used, amt, factor;
-        var boost =  (this.npcBattle && name === this.name2 ? this.powerBoost : 0) + 1;
+        var boost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.8 : 0) + 1;
+        var moveBoost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.6 : 0) + 1;
         
         for (m = this.moveAmt; m--; ) {
             used = [];
@@ -9532,7 +9623,7 @@ function Safari() {
             } else {
                 move.category = chance(0.5) ? "physical" : "special";
                 move.type = randomSample(types);
-                move.power = Math.round(sys.rand(2, 23) * boost) * 5;
+                move.power = Math.round(sys.rand(2, 23) * moveBoost) * 5;
                 factor = (60 - move.power) / 100;
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
                     factor = 0;
@@ -10048,14 +10139,18 @@ function Safari() {
             }
         }
     };
-    Battle2.prototype.abort = function(src, loser) {
+    Battle2.prototype.abort = function(src, loser, isForfeit) {
         var winner = "Tie";
         if (loser.toLowerCase() == this.name1.toLowerCase()) {
             winner = this.name2;
         } else if (loser.toLowerCase() == this.name2.toLowerCase()) {
             winner = this.name1;
         }
-        this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        if (isForfeit) {
+            this.sendToViewers("<b>" + loser + " forfeited! " + (winner !== "Tie" ? winner + " won!" : "") + "</b>", true);
+        } else {
+            this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
+        }
         if (this.npcBattle && this.postBattle) {
             this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers);
         }
@@ -10297,7 +10392,7 @@ function Safari() {
         this.finished = false;
         this.changed = false;
 
-        this.productName = translateStuff(product);
+        this.productName = translateStuff(product, true);
         
         var joinCommand = "/join " + this.hostName;
         sendAll("", true, true);
@@ -10384,7 +10479,7 @@ function Safari() {
     };
     Auction.prototype.finishAuction = function() {
         this.sendToViewers("");
-        this.sendToViewers("[Auction] The auction is finished! " + this.currentBidder.toCorrectCase() + " takes the " + this.productName + " for $" + addComma(this.currentOffer) + "!");
+        this.sendToViewers("[Auction] The auction is finished! " + this.currentBidder.toCorrectCase() + " takes " + this.productName + " for $" + addComma(this.currentOffer) + "!");
         if (this.suddenDeath && Object.keys(this.suddenDeathOffers).length > 0) {
             var allOffers = [];
             for (var e in this.suddenDeathOffers) {
@@ -10533,7 +10628,7 @@ function Safari() {
         delete this.confirmBid[id];
 
         if (this.suddenDeath) {
-            safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for the " + this.productName + "!", safchan);
+            safaribot.sendMessage(src, "[Auction] You are offering $" + addComma(offer) + " for " + this.productName + "!", safchan);
             this.suddenDeathOffers[id] = offer;
         } else {
             if (this.currentBidder === id) {
@@ -10541,7 +10636,7 @@ function Safari() {
                 return;
             }
             this.sendToViewers("");
-            this.sendToViewers("[Auction] " + sys.name(src) + " is offering $" + addComma(offer) + " for the " + this.productName + "!");
+            this.sendToViewers("[Auction] " + sys.name(src) + " is offering $" + addComma(offer) + " for " + this.productName + "!");
 
             if (id !== this.currentBidder) {
                 this.changed = true;
@@ -12738,7 +12833,10 @@ function Safari() {
         if (cantBecause(src, reason, ["tutorial"])) {
             return;
         }
-        
+        if (safari.isBattling(sys.name(src))) {
+            safaribot.sendMessage(src, "League Guide: Please finish your current battle first!", safchan);
+            return;
+        }
         var quest = player.quests.league;
         var week = parseInt(permObj.get("currentWeek"), 10);
         if (quest.week != week) {
@@ -12912,7 +13010,7 @@ function Safari() {
         }
         
         var postBattle = function(name, isWinner, hpLeft, args, viewers) {
-            var player = getAvatarOff(name);
+            var player = getAvatarOff(name), e;
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
@@ -12950,7 +13048,7 @@ function Safari() {
                         player.records.gymsLost += 1;
                         player.quests.league.cooldown = now() + hours(2);
                         safari.saveGame(player);
-                        for (var e = 0; e < viewers.length; e++) {
+                        for (e = 0; e < viewers.length; e++) {
                             safaribot.sendMessage(sys.id(viewers[e]), "League Guide: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
                         }
                         return;
@@ -12971,6 +13069,11 @@ function Safari() {
                         t1HP: regen
                     });
                     currentBattles.push(battle);
+                    for (e = 0; e < viewers.length; e++) {
+                        if (!battle.viewers.contains(viewers[e])) {
+                            battle.viewers.push(viewers[e]);
+                        }
+                    }
                 }
             } else {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
@@ -13002,7 +13105,7 @@ function Safari() {
     this.fightElite = function(src) {
         var trainerSprite = '<img src="' + base64trainers.league + '">';
         var postBattle = function(name, isWinner, hpLeft, args, viewers) {
-            var player = getAvatarOff(name);
+            var player = getAvatarOff(name), e;
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
             if (isWinner) {
@@ -13037,7 +13140,7 @@ function Safari() {
                         player.quests.league.eliteCurrent = false;
                         player.records.eliteLost += 1;
                         safari.saveGame(player);
-                        for (var e = 0; e < viewers.length; e++) {
+                        for (e = 0; e < viewers.length; e++) {
                             safaribot.sendMessage(sys.id(viewers[e]), "League Guide: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
                         }
                         return;
@@ -13058,6 +13161,12 @@ function Safari() {
                         cantWatch: true
                     });
                     currentBattles.push(battle);
+                    
+                    for (e = 0; e < viewers.length; e++) {
+                        if (!battle.viewers.contains(viewers[e])) {
+                            battle.viewers.push(viewers[e]);
+                        }
+                    }
                 }
             } else {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Come back after you hone your skills a bit more!", safchan);
@@ -13864,7 +13973,7 @@ function Safari() {
                 this.offlineMessage(winner, "You " + out + " from a Monger Auction by paying " + plural(price, "shady") + "!");
             }
             sys.sendAll("", safchan);
-            sys.appendToFile(giftLog, now() + "|||Monger Auction|||" + winner.id.toCorrectCase() + "|||mauction|||won|||" + obj.rewardName + " by paying " + plural(price, "shady") + "\n");
+            sys.appendToFile(crossLog, now() + "|||Monger|||" + winner.id.toCorrectCase() + "|||" + obj.rewardName + " by paying " + plural(price, "shady") + "\n");
             sys.appendToFile(questLog, now() + "|||" + winner.id.toCorrectCase() + "|||Monger|||Paid " + plural(price, "shady") + "|||Received " + obj.rewardName + "\n");
         } else {
             sys.sendAll("", safchan);
@@ -16269,6 +16378,8 @@ function Safari() {
                 return "LC Battle Factory";
             case "quiz":
                 return "Quiz";
+            case "hquiz":
+                return "Hidden Quiz";
             default:
                 return "No Event";
         }
@@ -16310,6 +16421,10 @@ function Safari() {
                 return "lcbfactory";
             case "quiz":
                 return "quiz";
+            case "hquiz":
+            case "hiddenquiz":
+            case "hidden quiz":
+                return "hquiz";
             default:
                 return null;
         }
@@ -17269,6 +17384,9 @@ function Safari() {
         }
         var team = this.playerTeams[name];
         var list = commandData.split(":"), info, id, e;
+        if (list.length === 1 && !getInputPokemon(list[0]).num) {
+            list = list[0].split("");
+        }
         if (list.length > 3) {
             this.sendMessage(name, "You can only choose up to 3 Pokémon for each match!");
             return;
@@ -17345,7 +17463,7 @@ function Safari() {
                 safari.saveGame(player);
                 this.sendMessage(thirdplace, "You " + out + "!");
             }
-        } else {
+        } else if (this.reward3) {
             this.sendToViewers("No third place prize will be given due to the low number of participants!");
         }
 
@@ -17396,12 +17514,13 @@ function Safari() {
         return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
     };
 
-    function Quiz(src, reward1, reward2, reward3) {
+    function Quiz(src, reward1, reward2, reward3, silent) {
         SafariEvent.call(this, src);
-        this.eventName = "Quiz";
+        this.eventName = (silent ? "Hidden " : "") + "Quiz";
         this.minPlayers = 3;
         this.turnLength = 5;
         this.signupsDuration = 8;
+        this.silentMode = silent;
 
         this.round = 0;
         this.phase = "signup";
@@ -17413,6 +17532,7 @@ function Safari() {
         this.validAnswers = [];
         this.usedAnswers = [];
         this.playersAnswered = [];
+        this.silentAnswers = {};
         this.noSmeargle = false;
 
         this.reward1 = reward1;
@@ -17451,7 +17571,11 @@ function Safari() {
         this.sendToViewers("");
         safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
         this.sendToViewers("Your goal is to answer each round's question with a Pokémon name . Use " + toColor("/ans [Pokémon]", "blue") + " for that!");
-        this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points.");
+        if (this.silentMode) {
+            this.sendToViewers("Answers are only revealed when each round finishes. Repeated answers give less points.");
+        } else {
+            this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points.");
+        }
         this.sendToViewers("");
         this.phase = "preparing";
     };
@@ -17466,11 +17590,17 @@ function Safari() {
             return;
         }
         if (this.round === 10) { //Check if event is over here
+            if (this.silentMode) {
+                this.countSilentPoints();
+            }
             this.finish();
             return;
         }
         if (this.phase === "preparing" || this.phase === "answer3") {
             this.sendToViewers((this.round === 0 ? "First" : "<b>Time's Over!</b> Next") + " question coming in 5 seconds!");
+            if (this.silentMode && this.round > 0) {
+                this.countSilentPoints();
+            }
             this.phase = "question";
             return;
         }
@@ -17531,6 +17661,29 @@ function Safari() {
             this.phase = "answer";
         }
 
+    };
+    Quiz.prototype.countSilentPoints = function() {
+        var answers = {}, ans = this.silentAnswers, e, p, c, list;
+        for (e in ans) {
+            if (!answers.hasOwnProperty(ans[e])) {
+                answers[ans[e]] = [];
+            }
+            answers[ans[e]].push(e);
+        }
+        var toCC = function(x) {
+            return "<b>" + x.toCorrectCase() + "</b>";
+        };
+        for (e in answers) {
+            list = answers[e];
+            ans = sys.pokemon(e);
+            p = Math.round(100/list.length);
+            this.sendToViewers(readable(list.map(toCC).map(addFlashTag)) + " answered " + toColor(ans, "blue") + " and received " + plural(p, "point") + (list.length > 1 ? " each" : "") + "!", true);
+            for (c = list.length; c--; ) {
+                this.points[list[c]] += p;
+                this.answered[list[c]] += 1;
+            }
+        }
+        this.silentAnswers = {};
     };
     Quiz.prototype.filter = function(list, typesUsed) {
         var type, val2, val, desc;
@@ -17676,14 +17829,23 @@ function Safari() {
             this.sendMessage(name, info.name + " is not allowed when the hints include moves!");
             return;
         }
-        var pointsRange = [100, 85, 75, 60, 50, 40, 30, 20, 15, 12];
-        var points = pointsRange[Math.min(this.playersAnswered.length, pointsRange.length-1)];
-        this.playersAnswered.push(name);
-        this.usedAnswers.push(info.num);
-        this.points[name] += points;
-        this.answered[name] += 1;
+        if (this.silentMode) {
+            if (this.silentAnswers.hasOwnProperty(name)) {
+                this.sendMessage(name, "You changed your answer to " + toColor(info.name, "blue") + "!");
+            } else {
+                this.sendMessage(name, "You answered " + toColor(info.name, "blue") + "!");
+            }
+            this.silentAnswers[name] = info.num;
+        } else {
+            var pointsRange = [100, 85, 75, 60, 50, 40, 30, 20, 15, 12];
+            var points = pointsRange[Math.min(this.playersAnswered.length, pointsRange.length-1)];
+            this.playersAnswered.push(name);
+            this.usedAnswers.push(info.num);
+            this.points[name] += points;
+            this.answered[name] += 1;
 
-        this.sendToViewers(addFlashTag(name.toCorrectCase()) + " answered " + toColor(info.name, "blue") + " and got " + plural(points, "point") + "!", true);
+            this.sendToViewers(addFlashTag(name.toCorrectCase()) + " answered " + toColor(info.name, "blue") + " and got " + plural(points, "point") + "!", true);
+        }
     };
     Quiz.prototype.finish = function() {
         var ordered = Object.keys(this.points);
@@ -17732,7 +17894,9 @@ function Safari() {
                 out = giveStuff(player, stuff);
 
                 player.records.quizFirst += 1;
-                player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                if (!this.silentMode) {
+                    player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                }
                 safari.saveGame(player);
                 this.sendMessage(id, "You " + out + "!");
             }
@@ -17748,7 +17912,9 @@ function Safari() {
                     out = giveStuff(player, stuff);
 
                     player.records.quizSecond += 1;
-                    player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                    if (!this.silentMode) {
+                        player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                    }
                     safari.saveGame(player);
                     this.sendMessage(id, "You " + out + "!");
                 }
@@ -17766,13 +17932,15 @@ function Safari() {
                         out = giveStuff(player, stuff);
 
                         player.records.quizThird += 1;
-                        player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                        if (!this.silentMode) {
+                            player.records.topQuizScore = Math.max(player.records.topQuizScore, pts[id]);
+                        }
                         safari.saveGame(player);
                         this.sendMessage(id, "You " + out + "!");
                     }
                 }
             }
-        } else {
+        } else if (this.reward3) {
             this.sendToViewers("No third place prize will be given due to the low number of participants!");
         }
         this.sendToViewers("");
@@ -17816,12 +17984,26 @@ function Safari() {
         this.payouts = {};
 
         var r;
+        if (data.racers) {
+            var racers = data.racers.split(",").map(function(x){ return x.trim(); });
+            var list = [], p;
+            for (r = 0; r < racers.length && list.length < 6; r++) {
+                p = getInputPokemon(racers[r]);
+                if (p.num && !list.contains(p.name)) {
+                    list.push(sys.pokemon(p.num));
+                }
+            }
+            for (r = 0; r < list.length; r++) {
+                this.runners[list[r]] = 0;
+            }
+        }
         while (Object.keys(this.runners).length < 6) {
             r = sys.pokemon(sys.rand(1, 722));
             if (!(r in this.runners)) {
                 this.runners[r] = 0;
             }
         }
+        
 
         if (type === "bet") {
             this.minBet = data.minBet || 10;
@@ -18274,7 +18456,7 @@ function Safari() {
             } else if (sys.os(src) === "webclient") {
                 safaribot.sendMessage(src, "To register, go to the settings menu and choose 'Register'!", safchan);
             } else {
-                safaribot.sendMessage(src, "To register, click the 'Register' below the chat!", safchan);
+                safaribot.sendMessage(src, "To register, click the 'Register'button  below the chat!", safchan);
             }
             return true;
         }
@@ -18308,7 +18490,7 @@ function Safari() {
 
         var num = getInputPokemon(data).num;
         if (!num || starters.indexOf(num) === -1) {
-            safaribot.sendHtmlMessage(src, "Invalid Pokémon! Possible choices: " + starters.map(function (x) { x = sys.pokemon(x); return link("/start " + x, x); }).join(", "), safchan);
+            safaribot.sendHtmlMessage(src, "To start playing, type " + link("/start ", null, true) + " followed one of these Pokémon: " + starters.map(function (x) { x = sys.pokemon(x); return link("/start " + x, x); }).join(", "), safchan);
             return;
         }
 
@@ -19442,7 +19624,7 @@ function Safari() {
         }
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
-        sys.appendToFile(giftLog, now() + "|||Tournaments|||" + name.toCorrectCase() + "|||Cross-Promotion|||received|||" + rew + "\n");
+        sys.appendToFile(crossLog, now() + "|||Tournaments|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
     this.triviaPromo = function (name, placing) {
         var player = getAvatarOff(name);
@@ -19471,7 +19653,7 @@ function Safari() {
         }
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
-        sys.appendToFile(giftLog, now() + "|||Trivia|||" + name.toCorrectCase() + "|||Cross-Promotion|||received|||" + rew + "\n");
+        sys.appendToFile(crossLog, now() + "|||Trivia|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
     this.mafiaPromo = function(list) {
         var amt = list.length;
@@ -19498,7 +19680,7 @@ function Safari() {
             safaribot.sendHtmlAll(html_escape(readable(received)) + " received " + rew + " for playing in the Mafia Event Game!", safchan);
             sys.sendAll("", safchan);
         }
-        sys.appendToFile(giftLog, now() + "|||Mafia|||" + readable(received) + "|||Cross-Promotion|||received|||" + rew + "\n");
+        sys.appendToFile(crossLog, now() + "|||Mafia|||" + readable(received) + "|||" + rew + "\n");
     };
     this.isChannelAdmin = function (src) {
         return SESSION.channels(safchan).isChannelAdmin(src);
@@ -19679,7 +19861,11 @@ function Safari() {
         sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 4 players to start, and 7 for the 3rd place reward.", safchan);
 
         sys.sendMessage(src, "", safchan);
-        sys.sendMessage(src, "Quiz: On each round, a question is made and players must answer with a Pokémon. One answer per player, can't repeat answer within the round. Lasts for 10 rounds, rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Quiz: On each round, a question is made and players must answer with a Pokémon. One answer per player, can't repeat answer within the round, first to answer receives more points. Lasts for 10 rounds, rewards are given to the 1st, 2nd and 3rd place.", safchan);
+        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 3 players to start, and 7 for the 3rd place reward.", safchan);
+        sys.sendMessage(src, "", safchan);
+        
+        sys.sendMessage(src, "Hidden Quiz: On each round, a question is made and players must answer with a Pokémon. One answer per player, answers are only revealed at the end of each round, repeated answers give less points. Lasts for 10 rounds, rewards are given to the 1st, 2nd and 3rd place.", safchan);
         sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 3 players to start, and 7 for the 3rd place reward.", safchan);
         sys.sendMessage(src, "", safchan);
     };
@@ -19705,6 +19891,7 @@ function Safari() {
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
+            "/price [Item/Pokémon]: To find an online shop selling the specified Item or Pokémon.",
             "/auction: To start an auction.",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/quest: To view available quests.",
@@ -19717,6 +19904,7 @@ function Safari() {
             "/editbase [decoration]։[Coordinate X]։[Coordinate Y]: To edit your Secret Base. Use /decorations to check what you can decorate it with.",
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party/battles. Use /viewt for a text-only version of your data (excluding party).",
             "/challenge: To challenge another player to a battle. Use /challenge2 for a Rotation Battle.",
+            "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
@@ -19763,7 +19951,7 @@ function Safari() {
             "/offmsg [players]։[message]: Sets a message that will be sent to these players next time they join the channel.",
 
             "Log Files: Use /command [amount]։[lookup]։[limit] to return a list of logged data. Defaults to 10. Lookup will only return logs with the specified value in the past amount of logs (can use && or || for multiples terms). Limit will restrict the number of results displayed even if more than that is found (defaults to 100).",
-            "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), showids (saves created with their idnum), questlog (quests finished), misclog (other stuff)"
+            "Available logs: ***tradelog (trades), raretrades (trades involving legendaries, shinies or rare forms), shoplog (shop transactions), auctionlog (auctions), lostlog (actions that led to a Pokémon being lost), mythlog (rare spawns and Masterball usage), altlog (save transfers), eventlog (events), giftlog (gifts or values edited), crosslog (cross-promotion rewards), showids (saves created with their idnum), questlog (quests finished), misclog (other stuff)"
         ];
         var ownerHelp = [
             "*** Safari Owner Commands ***",
@@ -19920,6 +20108,10 @@ function Safari() {
                         break;
                 }
                 safari.editShop(src, action + ":" + commandData);
+                return true;
+            }
+            if (command === "price") {
+                safari.checkShops(src, commandData, command);
                 return true;
             }
             if (command === "pawn" || command === "pawnall") {
@@ -20088,6 +20280,10 @@ function Safari() {
             }
             if (command === "quest" || command === "quests") {
                 safari.questNPC(src, commandData);
+                return true;
+            }
+            if (command === "forfeit") {
+                safari.forfeitBattle(src, commandData);
                 return true;
             }
             if (command === "sort") {
@@ -20560,10 +20756,10 @@ function Safari() {
                 if (type === null) {
                     safaribot.sendHtmlMessage(src, "To start an event, use one of the following commands (parameters in red are optional):", safchan);
                     safaribot.sendHtmlMessage(src, "Faction War: /startevent [war/invertedwar]:[Reward]:" + toColor("[Team1]:[Team2]:[Team2Reward]", "orangered"), safchan);
-                    safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]", "orangered"), safchan);
-                    safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]", true) + toColor(" (everything is optional)", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Pokémon Race: /startevent race:[Reward]:" + toColor("[UnderdogReward]:[FavoriteReward]:[Racers]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout:Racers", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Racer1,Racer2,etc]", true) + toColor(" (everything is optional)", "orangered"), safchan);
                     safaribot.sendHtmlMessage(src, "Battle Factory: /startevent [factory/lcfactory]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
-                    safaribot.sendHtmlMessage(src, "Quiz: /startevent quiz:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Quiz: /startevent [quiz/hquiz]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
                     return true;
                 }
 
@@ -20607,7 +20803,7 @@ function Safari() {
                     safari.flashPlayers();
                 }
                 else if (type == "race") {
-                    var r1 = param[0], r2 = "", r3 = "", l = param.length;
+                    var r1 = param[0], r2 = "", r3 = "", racers = null, l = param.length;
 
                     if (!r1) {
                         safaribot.sendMessage(src, "Please specify a valid reward for the first place!", safchan);
@@ -20634,10 +20830,14 @@ function Safari() {
                             return true;
                         }
                     }
+                    if (l > 3) {
+                        racers = param[3];
+                    }
                     var data = {
                         reward: r1,
                         rewardUnderdog: r2,
-                        rewardFavorite: r3
+                        rewardFavorite: r3,
+                        racers: racers
                     };
 
                     var ev = new PokeRace(src, "normal", data);
@@ -20652,7 +20852,8 @@ function Safari() {
                         underdog: null,
                         normal: null,
                         bet: null,
-                        reward: null
+                        reward: null,
+                        racers: null
                     };
                     var l = param.length;
 
@@ -20717,6 +20918,9 @@ function Safari() {
                             data.normal = val;
                         }
                     }
+                    if (l > 7) {
+                        data.racers = param[7];
+                    }
 
                     var ev = new PokeRace(src, "bet", data);
                     currentEvent = ev;
@@ -20764,8 +20968,8 @@ function Safari() {
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
-                else if (type == "quiz") {
-                    var r1 = "", r2 = "", r3 = "", pLen = param.length;
+                else if (type == "quiz" || type == "hquiz") {
+                    var r1 = "", r2 = "", r3 = "", silent = (type === "hquiz"), pLen = param.length;
 
                     if (pLen > 0) {
                         r1 = param[0];
@@ -20802,7 +21006,7 @@ function Safari() {
                         }
                     }
 
-                    var ev = new Quiz(src, r1, r2, r3);
+                    var ev = new Quiz(src, r1, r2, r3, silent);
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
@@ -21153,6 +21357,7 @@ function Safari() {
                 if (!locking && id) {
                     safaribot.sendHtmlMessage(id, toColor("Your Safari save was unlocked! Use /start to load it!", "red"), safchan);
                 }
+                sys.appendToFile(miscLog, now() + "|||" + player.id.toCorrectCase() + "|||'s save was " + (locking ? "locked" : "unlocked") + " by " + sys.name(src) + "\n");
                 return true;
             }
             if (command === "offmsg") {
@@ -21295,6 +21500,7 @@ function Safari() {
                         safaribot.sendMessage(sys.id(id), "You can now create a Safari save with /start!", safchan);
                     }
                 }
+                sys.appendToFile(miscLog, now() + "|||" + id + "||| was " + (!allowedSharedIPNames.contains(id) ? "dis" : "") + "allowed by " + sys.name(src) + " to create a save despite sharing IP with another player\n");
                 permObj.add("allowedSharedIPs", JSON.stringify(allowedSharedIPNames));
                 return true;
             }
@@ -21354,12 +21560,12 @@ function Safari() {
                     var time = new Date(parseInt(info[0], 10)).toUTCString();
                     var p1Info = info[1].split("::");
                     var p1 = p1Info[0];
-                    var amount = parseInt(p1Info[1], 10);
+                    // var amount = parseInt(p1Info[1], 10);
                     var item = p1Info[2];
                     var price = parseInt(p1Info[3], 10);
                     var p2 = info[2].split("::")[0];
 
-                    return p2 + " won " + p1 + "'s auction for " + amount + "x " + item + " by paying $" + addComma(price) + " --- (" + time + ")";
+                    return p2 + " won " + p1 + "'s auction for " + item + " by paying $" + addComma(price) + " --- (" + time + ")";
                 });
                 return true;
             }
@@ -22178,7 +22384,7 @@ function Safari() {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
                     safaribot.sendMessage(src, "Wrong format! Use /clearcd Player:Type!", safchan);
-                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, baseView, unown, burn, collector, scientist, arena, tower, pyramid, wonder, alchemist, league or decor!", safchan);
+                    safaribot.sendMessage(src, "Types can be ball, bait, auction, stick, costume, rock, gacha, itemfinder, baseView, unown, burn, price, collector, scientist, arena, tower, pyramid, wonder, alchemist, league or decor!", safchan);
                     return true;
                 }
                 var target = cmd[0];
@@ -22211,6 +22417,7 @@ function Safari() {
                     case "itemfinder":
                     case "burn":
                     case "unown":
+                    case "price":
                         player.cooldowns[type] = 0;
                     break;
                     case "baseview":
@@ -22461,6 +22668,18 @@ function Safari() {
                     var gift = info[5];
 
                     return name + " used /" + commandName + " --- " + target + " " + verb + " " + gift + " --- (" + time + ")";
+                });
+                return true;
+            }
+            if (command === "crosslog") {
+                safari.showLog(src, command, commandData, crossLog, "cross-promotion rewards", function(x) {
+                    var info = x.split("|||");
+                    var time = new Date(parseInt(info[0], 10)).toUTCString();
+                    var name = info[1];
+                    var target = info[2];
+                    var gift = info[3];
+
+                    return name + " awarded " + target + " with " + gift + " --- (" + time + ")";
                 });
                 return true;
             }
@@ -22721,7 +22940,8 @@ function Safari() {
                 }
                 out = [];
                 for (e = 0; e < currentAuctions.length; e++) {
-                    out.push(currentAuctions[e].hostName + "'s " + currentAuctions[e].productName);
+                    obj = currentAuctions[e];
+                    out.push(obj.hostName + "'s " + obj.productName + " (Current bid: " + (obj.currentBidder ? "$" + addComma(obj.currentOffer) + " by " + obj.currentBidder.toCorrectCase() : "N/A") + ")");
                 }
                 if (out.length > 0) {
                     nothingFound = false;
@@ -23060,7 +23280,7 @@ function Safari() {
                 if (command === "rename") {
                     var r = "";
                     if (info.length > 1 && info[1]) {
-                        r = info[1];
+                        r = info[1].replace(/\"/g, "");
                         if (r !== "clear") {
                             r = "\"" + r + "\"";
                         }
@@ -23425,6 +23645,18 @@ function Safari() {
                 }
             } else {
                 this.loadGame(src);
+            }
+        }
+        return false;
+    };
+    this.afterChatMessage = function (src, message, channel) {
+        if (channel == safchan) {
+            var player = getAvatar(src);
+            var msg = message.toLowerCase();
+            if (!player && msg.search(/how/gi) !== -1 && msg.search(/play|start|catch/gi) != -1) {
+                var color = script.getColor(src);
+                var c = "<b>" + toColor(sys.name(src), color) + "</b>";
+                safaribot.sendHtmlMessage(src, "Hello, " + c + "! To play Safari, please type " + link("/start") + " and follow the instructions.", safchan);
             }
         }
         return false;
