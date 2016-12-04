@@ -479,7 +479,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
             if (sys.uniqueId(id)) {
                 var banInfo = {"name": name, "ip": ip, "banner": banner, "type": banType, "psuedo": !sys.uniqueId(id).isUnique };
-                script.idBans.add(id, JSON.stringify(banInfo));
+                script.idBans.add(sys.uniqueId(id).id, JSON.stringify(banInfo));
                 bansApplied.push("id");
                 if (banType === "muted") {
                     SESSION.users(tar).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
