@@ -1180,6 +1180,7 @@ beforeChannelJoin : function(src, channel) {
             }
             if (found) {
                 if (sys.time() > expires) {
+                    poUser.un(bans[x]);
                     script[bans[x] + "s"].remove(iphash);
                     normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
                 } else {
