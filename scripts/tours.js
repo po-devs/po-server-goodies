@@ -3599,32 +3599,35 @@ function advanceround(key) {
 // starts a tournament
 function tourstart(tier, starter, key, parameters) {
     var staffchan = sys.channelId("Victory Road"), tourAdminsObj = tours.touradmins, activeAuthCount = 0;
-    if (tours.queue.length === 1) { // NOTIFY VICTORY ROAD THAT /QUEUE IS LOW
-        sendBotAll("Queue in Tournaments is low.", staffchan, true);
-    }
-    else if (tours.queue.length === 0) { // NOTIFY VICTORY ROAD THAT /QUEUE IS EMPTY
+    
+    if (tours.queue.length <= 1) {
         for (var x in tourAdminsObj) {
             if (sys.loggedIn(sys.id(x)) === true) {
                 activeAuthCount++;
                 sys.sendHtmlMessage(sys.id(x), "<font color=" + tourconfig.tourbotcolour + "><timestamp/><b>"+tourconfig.tourbot+"</b></font><b> You have been flashed!</b><ping/>", staffchan);
             }
         }
-        sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 2 random tiers."), staffchan, true);
+        if (tours.queue.length === 1) {
+            sendBotAll("Queue in Tournaments is low.", staffchan, true);
+        }
+        else {
+            sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 2 random tiers."), staffchan, true);
 
-        var tourarray = autotiers.shuffle();
-        var checked = 0;
-        var toursAdded = 0;
-        while (checked < tourarray.length && toursAdded < 2) {
-            var tourtier = tourarray[checked];
-            var lasttours = getListOfTours(tourconfig.norepeat);
-            var lastindex = lasttours.indexOf(tourtier);
-            if (lastindex === -1 && tourtier !== tier) {
-                var parameters2 = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
-                tours.queue.push({'tier': tourtier, 'starter': "Autostarter", 'parameters': parameters2});
-                sendBotAll((startsWithVowel(tourtier) ? "An " : "A ") + tourtier + " tournament was automatically placed into the queue!",tourschan, false);
-                toursAdded++;
+            var tourarray = autotiers.shuffle();
+            var checked = 0;
+            var toursAdded = 0;
+            while (checked < tourarray.length && toursAdded < 2) {
+                var tourtier = tourarray[checked];
+                var lasttours = getListOfTours(tourconfig.norepeat);
+                var lastindex = lasttours.indexOf(tourtier);
+                if (lastindex === -1 && tourtier !== tier) {
+                    var parameters2 = {"gen": "default", "mode": modeOfTier(tourtier), "type": doubleelimtiers.indexOf(tourtier) == -1 ? "single" : "double", "maxplayers": false, "event": false, "wifi": (sys.getClauses(tourtier)%256 >= 128 ? true : false)};
+                    tours.queue.push({'tier': tourtier, 'starter': "Autostarter", 'parameters': parameters2});
+                    sendBotAll((startsWithVowel(tourtier) ? "An " : "A ") + tourtier + " tournament was automatically placed into the queue!",tourschan, false);
+                    toursAdded++;
+                }
+                checked++;
             }
-            checked++;
         }
     }
     try {
