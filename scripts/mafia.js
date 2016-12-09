@@ -68,7 +68,7 @@ function Mafia(mafiachan) {
                     shove = warning.split(":::")[1].split("|||")[0],
                     info = JSON.parse(warning.split(":::")[1].split("|||")[1]);
                 newWarns[ip] = {
-                    names: [],
+                    names: [name],
                     shove: shove === "true" ? true : false,
                     warns: []
                 };
