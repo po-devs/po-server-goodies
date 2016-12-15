@@ -1650,7 +1650,7 @@ function Hangman() {
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
-            "/passha: To give your Hangman Admin powers to an alt.",
+            "/passha: To give your Hangman Admin powers to an alt. /passhas to do it silently.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used.",
             "/changelog: Display event game edit logs. Format /changelog range:criteria"
@@ -1705,7 +1705,7 @@ function Hangman() {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "flashhas", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "flashhas", "passha", "passhas", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return false;
         }
         if (command === "help") {
@@ -1760,7 +1760,7 @@ function Hangman() {
             return false;
         }
         var id;
-        if (command == "passha") {
+        if (command === "passha" || command === "passhas") {
             var oldname = sys.name(src).toLowerCase();
             if (commandData === undefined) {
                 sys.sendMessage(src, "±Unown: Enter a username!");
@@ -1803,7 +1803,9 @@ function Hangman() {
             if (id !== undefined) {
                 SESSION.users(id).hangmanAdmin = true;
             }
-            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+            if (command === "passha") {
+                sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+            }
             sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!");
             return true;
         }
