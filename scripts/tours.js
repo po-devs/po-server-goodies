@@ -1588,7 +1588,7 @@ function tourCommand(src, command, commandData, channel) {
                         sendBotMessage(src,"Value must be between 1 and 255.",tourschan,false);
                         return true;
                     }
-                    tourconfig.maxrunning = value;
+                    tourconfig.maxrunning = parseInt(value, 10);
                     sys.saveVal(configDir+"tourconfig.txt", "maxrunning", value);
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the maximum number of simultaneous tours to "+tourconfig.maxrunning);
                     return true;
