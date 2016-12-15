@@ -1806,7 +1806,7 @@ function Hangman() {
             if (command === "passha") {
                 sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
             }
-            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!");
+            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!", channel);
             return true;
         }
 
