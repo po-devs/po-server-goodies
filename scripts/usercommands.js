@@ -4,6 +4,7 @@
 exports.handleCommand = function (src, command, commandData, tar, channel) {
     var arraySlice = require("utilities.js").arraySlice;
     var getTimeString = require("utilities.js").getTimeString;
+    var htmlEscape = utilities.html_escape;
     var find_tier = require("utilities.js").find_tier;
     // loop indices
     var i, x;
@@ -980,6 +981,42 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         sys.changeName(src, "(⌐■_■)");
+        return;
+    }
+    if (command === "sendbot" && !SESSION.channels(channel).muteall) {
+        if (!["alice", "blinky", "maribel hearn", "nightmare moon", "oikawa tooru", "strudels"].contains(sys.name(src).toLowerCase())) {
+            return;
+        }
+        if (commandData === undefined) {
+            bot.sendMessage(src, "Command syntax: /sendbot name*color*message", channel);
+            return;
+        }
+        commandData = htmlEscape(commandData);
+        var splitArray = commandData.split("*", 3);
+        if (splitArray.length !== 3 || splitArray[2].length < 1) {
+            bot.sendMessage(src, "Command syntax: /sendbot name*color*message", channel);
+            return;
+        }
+        var name = (typeof splitArray[0] !== "string" ? splitArray[0].toString() : splitArray[0]),
+            color = (typeof splitArray[1] !== "string" ? splitArray[1].toString() : splitArray[1]),
+            message = (typeof splitArray[2] !== "string" ? splitArray[2].toString() : splitArray[2]);
+        if (name.length > 20) {
+            bot.sendMessage(src, "Name needs to be 1-20 in size.", channel);
+            return;
+        }
+        if (["dratini", "blaziken", "exploud", "chatot", "snorlax", "meowth", "countbot", "typhlosion", "porygon", "blastoise", "commandbot", "querybot", "unown", "goomy", "tauros", "kangaskhan", "guard"].contains(name.toLowerCase())) {
+            bot.sendMessage(src, "Offcial bot names aren't allowed.", channel);
+            return;
+        }
+        if (!sys.validColor(color)) {
+            bot.sendMessage(src, "Enter a valid color.", channel);
+            return;
+        }
+        if (SESSION.users(src).botName !== name) {
+            SESSION.users(src).botName = name;
+            sys.sendHtmlAll("<font color='#FF00FF'><timestamp/><b>" + sys.name(src) + " changed their bot name to: " + name + "</font></b>", sys.channelId("Watch"));
+        }
+        sys.sendHtmlAll("<font color='" + color + "'><timestamp/><b>±" + name + ": </font></b>" + message, channel);
         return;
     }
     if (command === "changetier") {
