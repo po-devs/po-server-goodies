@@ -1196,7 +1196,7 @@ function Hangman() {
             var game = autoGames[e].split(":");
             var i = game[0],
                 u = game[1],
-                a = game[2].toUpperCase(),
+                a = game[2],
                 h = game[3];
             if (script.cmp(a, newQ) && script.cmp(h, newH)) {
                 hangbot.sendMessage(src, "An identical game already exists. (Index: " + i + " - Word: " + a + " - Hint: " + h + " - User: " + u + ")", hangchan);
