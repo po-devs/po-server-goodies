@@ -1192,6 +1192,17 @@ function Hangman() {
         }
         newQ = result.answer;
 
+        for (var e in autoGames) {
+            var game = autoGames[e].split(":");
+            var i = game[0],
+                u = game[1],
+                a = game[2].toUpperCase(),
+                h = game[3];
+            if (script.cmp(a, newQ) && script.cmp(h, newH)) {
+                hangbot.sendMessage(src, "An identical game already exists. (Index: " + i + " - Word: " + a + " - Hint: " + h + " - User: " + u + ")", hangchan);
+                return;
+            }
+        }
         /*if (isNaN(newC)) {
             hangbot.sendMessage(src, "Number of chances must be a valid number higher or equal to " + minBodyParts + "!", hangchan);
             return;
