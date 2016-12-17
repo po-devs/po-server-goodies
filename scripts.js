@@ -2363,9 +2363,10 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     }
     if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
         if (sys.existChannel("Watch")) {
+            var srcIP = sys.dbIp(srcname).replace("::ffff:", ""), destIP = sys.dbIp(destname).replace("::ffff:", "");
             sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", watchchannel);
-            normalbot.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " | " + destname + "'s IP: " + sys.dbIp(destname), watchchannel);
-            sys.appendToFile(Config.dataDir + "watchNamesLog.txt", srcname + ":::" + destname + ":::" + (tie ? "tie" : srcname) + ":::" + (desc === "forfeit" ? "Forfeit" : "N/A") + ":::" + (tier ? tier: "N/A") + "::: " + (time ? getTimeString(sys.time() - time) : "N/A") + ":::" + sys.dbIp(srcname) + ":::" + sys.dbIp(destname) + "\n");
+            normalbot.sendAll(srcname + "'s IP: " + srcIP + " | " + destname + "'s IP: " + destIP, watchchannel);
+            sys.appendToFile(Config.dataDir + "watchNamesLog.txt", srcname + ":::" + destname + ":::" + (tie ? "tie" : srcname) + ":::" + (desc === "forfeit" ? "Forfeit" : "N/A") + ":::" + (tier ? tier: "N/A") + "::: " + (time ? getTimeString(sys.time() - time) : "N/A") + ":::" + srcIP + ":::" + destIP + "\n");
         }
     }
 },
