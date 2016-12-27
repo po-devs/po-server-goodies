@@ -4751,6 +4751,9 @@ module.exports = {
                 }
             }
             sendWelcomeMessage(player, chan);
+            if (isInTour(sys.name(player))) {
+                sendBotMessage(player, "<font size=4>Use <b>/getteam</b> if you don't have any teams for this tournament!</font>", chan, true);
+            }
         }
     },
     afterBattleEnded : function(source, dest, desc) {
