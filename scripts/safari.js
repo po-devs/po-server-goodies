@@ -3669,7 +3669,7 @@ function Safari() {
                 }
             }
             pokeName = poke(currentDisplay);
-            safaribot.sendMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it! " : "") + itemsLeft(player, ball), safchan);
+            safaribot.sendHtmlMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
             } else if (rng < finalChance + 0.2) {
@@ -3731,7 +3731,7 @@ function Safari() {
             "\"I must go. My people need me.\" The wild {0} rocketed off!",
             "The wild {0} was banished to the Shadow Realm!",
             "The wild {0} achieved nirvana and transcended to a higher plane!",
-            "The wild {0} got bored and went to #Mafia!",
+            "The wild {0} got bored and went to #" + ["Mafia", "Trivia", "Hangman", "Evolution Game", "Tournaments"].random() + "!",
             "The wild {0} paid its retreat cost and returned to the bench!",
             "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!",
             "The wild {0} was divided by zero!"
@@ -11131,8 +11131,9 @@ function Safari() {
                 }
             }
         }
-        if (list.length > 20) {
-            safaribot.sendMessage(src, "You can only add up to 20 Items/Pokémon to your Tradeblocked list.", safchan);
+        var maxSize = 20;
+        if (list.length > maxSize) {
+            safaribot.sendMessage(src, "You can only add up to " + maxSize + " Items/Pokémon to your Tradeblocked list.", safchan);
             return;
         }
         player.tradeBlacklist = list;
@@ -19603,18 +19604,18 @@ function Safari() {
         switch (placing) {
             case 1:
                 player.balls.rare += 1;
-                player.balls.gem += 1;
+                player.balls.pack += 1;
                 player.balls.mega += 1;
-                rew = plural(1, "mega") + ", " + plural(1, "rare") + ", " + plural(1, "gem");
+                rew = plural(1, "mega") + ", " + plural(1, "rare") + ", " + plural(1, "pack");
             break;
             case 2:
                 player.balls.rare += 1;
-                player.balls.gem += 1;
-                rew = plural(1, "rare") + ", " + plural(1, "gem");
+                player.balls.pack += 1;
+                rew = plural(1, "rare") + ", " + plural(1, "pack");
             break;
             case 3:
-                player.balls.gem += 1;
-                rew = plural(1, "gem");
+                player.balls.rare += 1;
+                rew = plural(1, "rare");
             break;
             default:
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
@@ -19656,6 +19657,7 @@ function Safari() {
         sys.appendToFile(crossLog, now() + "|||Trivia|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
     this.mafiaPromo = function(list) {
+        return;
         var amt = list.length;
         if (list.length === 0) {
             return;
