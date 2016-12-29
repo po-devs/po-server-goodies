@@ -792,13 +792,13 @@ function Hangman() {
         } else {
             w = winners[0];
         }
-        hangbot.sendAll("" + w + " has won " + nonFlashing(hostName) + "'s game with " + maxPoints + " points!", hangchan);
+        hangbot.sendAll(w + " has won " + nonFlashing(hostName) + "'s game with " + maxPoints + " points!", hangchan);
         var ranking = [],
             p;
         for (p in points) {
-            ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
+            ranking.push((script.cmp(w, p) ? "<b>" : "") + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")" + (script.cmp(w, p) ? "</b>" : ""));
         }
-        sys.sendAll("±Results: " + ranking.join(", "), hangchan);
+        sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±Results:</b></font>  " + ranking.join(", "), hangchan);
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
             var lbWon = this.getPropCase(leaderboards.current, w),
