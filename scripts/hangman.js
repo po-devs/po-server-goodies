@@ -117,7 +117,6 @@ function Hangman() {
 
     this.unownGuess = function () {     
         var i, x, y, z, count = 0;
-
         x = Math.floor(Math.random() * validFills.length);
         y = validFills[x];
         validFills.splice(x, 1);
@@ -629,7 +628,7 @@ function Hangman() {
                 }
             }       
             for (y in keys) {
-                if (keys[y] != "-") {
+                if (alphabet.indexOf(keys[y]) > -1) {
                     validFills.push(y);
                 }
                 tossUpOrder.push(y);
