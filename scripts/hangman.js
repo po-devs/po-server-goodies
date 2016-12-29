@@ -796,7 +796,7 @@ function Hangman() {
         var ranking = [],
             p;
         for (p in points) {
-            ranking.push((script.cmp(w, p) ? "<b>" : "") + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")" + (script.cmp(w, p) ? "</b>" : ""));
+            ranking.push((script.cmp(w, p) ? "<b>" : "") + p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")" + (script.cmp(w, p) ? "</b>" : ""));
         }
         sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±Results:</b></font>  " + ranking.join(", "), hangchan);
         if (isEventGame) {
