@@ -23764,21 +23764,23 @@ function Safari() {
                 //Store value to prevent first person from getting credit
                 var temp = isBaited;
                 isBaited = false;
-                for (i = 0; i <= throwers.length; i++) {
-                    if (i + 1 >= throwers.length) {
-                        resolvingThrows = false;
-                    }
-                    name = throwers[i];
-                    if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
-                        alreadyThrow.push(name);
-                        if (preparationThrows[name] === "photo") {
-                            safari.takePhoto(sys.id(name), preparationThrows[name], false, true);
-                        } else {
-                            safari.throwBall(sys.id(name), preparationThrows[name], false, true);
+                if (throwers.length > 0) {
+                    for (i = 0; i < throwers.length; i++) {
+                        if (i + 1 >= throwers.length) {
+                            resolvingThrows = false;
                         }
+                        name = throwers[i];
+                        if (sys.isInChannel(sys.id(name), safchan) && alreadyThrow.indexOf(name) === -1) {
+                            alreadyThrow.push(name);
+                            if (preparationThrows[name] === "photo") {
+                                safari.takePhoto(sys.id(name), preparationThrows[name], false, true);
+                            } else {
+                                safari.throwBall(sys.id(name), preparationThrows[name], false, true);
+                            }
+                        }
+                        //Now toggle it correctly again
+                        isBaited = temp;
                     }
-                    //Now toggle it correctly again
-                    isBaited = temp;
                 }
                 preparationFirst = null;
                 preparationThrows = {};
