@@ -23764,7 +23764,7 @@ function Safari() {
                 //Store value to prevent first person from getting credit
                 var temp = isBaited;
                 isBaited = false;
-                for (i = 0; i < throwers.length; i++) {
+                for (i = 0; i <= throwers.length; i++) {
                     if (i + 1 >= throwers.length) {
                         resolvingThrows = false;
                     }
