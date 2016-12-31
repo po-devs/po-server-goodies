@@ -23739,29 +23739,31 @@ function Safari() {
         if (preparationPhase > 0) {
             preparationPhase--;
             if (preparationPhase <= 0) {
-                resolvingThrows = true;
-                var name, i, throwChances = {}, size = Object.keys(preparationThrows).length, throwers = [], alreadyThrow = [], n = now(), p;
-                
-                for (i in preparationThrows) {
-                    p = getAvatarOff(i);
-                    if (p && p.truesalt >= n) {
-                        throwChances[i] = 0.1;
-                    } else {
-                        throwChances[i] = size * (preparationThrows[i] == "quick" ? itemData.quick.bonusRate : 1);
+                var size = Object.keys(preparationThrows).length;
+                if (size) {
+                    resolvingThrows = true;
+                    var name, i, throwChances = {}, throwers = [], alreadyThrow = [], n = now(), p;
+                    
+                    for (i in preparationThrows) {
+                        p = getAvatarOff(i);
+                        if (p && p.truesalt >= n) {
+                            throwChances[i] = 0.1;
+                        } else {
+                            throwChances[i] = size * (preparationThrows[i] == "quick" ? itemData.quick.bonusRate : 1);
+                        }
                     }
-                }
-                while (Object.keys(throwChances).length) {
-                    n = randomSample(throwChances);
-                    throwers.push(n);
-                    delete throwChances[n];
-                }
-                if (preparationFirst) {
-                    if (throwers.indexOf(preparationFirst) !== -1) {
-                        throwers.splice(throwers.indexOf(preparationFirst), 1);
-                        throwers.splice(0, 0, preparationFirst);
+                    while (Object.keys(throwChances).length) {
+                        n = randomSample(throwChances);
+                        throwers.push(n);
+                        delete throwChances[n];
                     }
-                }
-                if (throwers.length > 0) {
+                    if (preparationFirst) {
+                        if (throwers.indexOf(preparationFirst) !== -1) {
+                            throwers.splice(throwers.indexOf(preparationFirst), 1);
+                            throwers.splice(0, 0, preparationFirst);
+                        }
+                    }
+
                     //Store value to prevent first person from getting credit
                     var temp = isBaited;
                     isBaited = false;
@@ -23781,9 +23783,9 @@ function Safari() {
                         //Now toggle it correctly again
                         isBaited = temp;
                     }
+                    preparationFirst = null;
+                    preparationThrows = {};
                 }
-                preparationFirst = null;
-                preparationThrows = {};
             }
         }
         if (contestCooldown === 180) {
