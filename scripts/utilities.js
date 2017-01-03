@@ -277,27 +277,27 @@ exports = {
             case "aegislash b": case "aegislash-b": case "aegislash blade":
                 input = "Aegislash-Blade"; break;
             case "pumpkaboo-s": case "pumpkaboo s": case "pumpkaboo small":
-                commandData = "Pumpkaboo-Small"; break;
+                input = "Pumpkaboo-Small"; break;
             case "pumpkaboo-l": case "pumpkaboo l": case "pumpkaboo large":
-                commandData = "Pumpkaboo-Large"; break;
+                input = "Pumpkaboo-Large"; break;
             case "pumpkaboo-xl": case "pumpkaboo xl": case "pumpkaboo super":
-                commandData = "Pumpkaboo-Super"; break;
+                input = "Pumpkaboo-Super"; break;
             case "gourgeist-s": case "gourgeist s": case "gourgeist small":
-                commandData = "Gourgeist-Small"; break;
+                input = "Gourgeist-Small"; break;
             case "gourgeist-l": case "gourgeist l": case "gourgeist large":
-                commandData = "Gourgeist-Large"; break;
+                input = "Gourgeist-Large"; break;
             case "gourgeist-xl": case "gourgeist xl": case "gourgeist super":
-                commandData = "Gourgeist-Super"; break;
+                input = "Gourgeist-Super"; break;
             case "burmy-g": case "burmy g": case "burmy sandy":
-                commandData = "Burmy-Sandy"; break;
+                input = "Burmy-Sandy"; break;
             case "burmy-s": case "burmy s": case "burmy trash":
-                commandData = "Burmy-Trash"; break;
+                input = "Burmy-Trash"; break;
             case "wormadam-g": case "wormadam g": case "wormadam sandy":
-                commandData = "Wormadam-Sandy"; break;
+                input = "Wormadam-Sandy"; break;
             case "wormadam-s": case "wormadam s": case "wormadam trash":
-                commandData = "Wormadam-Trash"; break;
+                input = "Wormadam-Trash"; break;
             case "floette ef": case "floette-ef": case "floette eternal":
-                commandData = "Floette-Eternal"; break;
+                input = "Floette-Eternal"; break;
             case "type null": case "typenull": case "type:null":
                 input = "Type: Null"; break; //will literally break without fix below
             case "tapukoko":
