@@ -15270,6 +15270,9 @@ function Safari() {
         }
 
         if (player.id === this.pyr.leader) {
+            if (this.passed) {
+                return;
+            }
             if (this.answerType === "name" && info.num !== null && !info.shiny) {
                 this.checkAnswer(info.name, sys.pokeNum(info.name));
                 return;
