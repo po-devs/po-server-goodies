@@ -223,8 +223,7 @@ exports = {
         input = input.toLowerCase();
         if (input.indexOf("alola") > -1) {
             input = input.replace(/(-|\s){0,2}alola(n|-|\s){0,2}/i, ""); //Accounts for "Alola" and "Alolan" seperated by a space or hyphen at the beginning or end
-            input = input + "-Alolan";
-            return input;
+            return "Alolan " + input;
         }        
         switch (input) {
             case "deoxys-a": case "deoxys a": case "deoxys attack": 
