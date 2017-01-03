@@ -728,7 +728,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (isNaN(commandData)) {
             pokeId = sys.pokeNum(commandData);
         } else {
-            if (commandData < 1 || commandData > 721) {
+            if (commandData < 1 || commandData > 802) {
                 normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
                 return;
             }

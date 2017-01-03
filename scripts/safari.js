@@ -919,7 +919,7 @@ function Safari() {
             if (pokeInfo.shiny(poke)) {
                 ret += "&shiny=true";
             }
-            ret += "&gen=7'>";
+            ret += "&gen=6'>";
             return ret;
         },
         valid: function(poke) {
