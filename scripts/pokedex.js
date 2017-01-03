@@ -8,7 +8,7 @@ pokedex.hasDreamWorldAbility = function (pokemon, ability) {
 pokedex.getAllMoves = function (pokeId) {
     if (allMovesList === undefined) {
         allMovesList = {};
-        var data = sys.getFileContent('db/pokes/6G/all_moves.txt').split('\n');
+        var data = sys.getFileContent('db/pokes/7G/all_moves.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
