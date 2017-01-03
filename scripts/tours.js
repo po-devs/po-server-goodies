@@ -320,6 +320,8 @@ function getSubgen(name, getLongName) {
         "XY": "6-0",
         "Omega Ruby/Alpha Sapphire": "6-1",
         "ORAS": "6-1",
+        "Sun/Moon": "7-0",
+        "SM": "7-0",
         "1": "1-3",
         "2": "2-2",
         "3": "3-4",
