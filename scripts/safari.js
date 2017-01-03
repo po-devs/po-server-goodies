@@ -6408,7 +6408,7 @@ function Safari() {
         }
 
         var species = pokeInfo.species(num);
-        if (!(species in megaEvolutions) || megaPokemon.indexOf(num) > -1) {
+        if (!(species in megaEvolutions) || isMega(num)) {
             safaribot.sendMessage(src, "This Pokémon cannot mega evolve!", safchan);
             return;
         }
