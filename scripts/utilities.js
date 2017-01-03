@@ -302,8 +302,18 @@ exports = {
                 input = "Type: Null"; break; //will literally break without fix below
             case "tapukoko":
                 input = "Tapu Koko"; break;
+            case "tapulele":
+                input = "Tapu Lele"; break;
+            case "tapubulu":
+                input = "Tapu Bulu"; break;
+            case "tapufini":
+                input = "Tapu Fini"; break;
             case "jangmoo": case "jangmo o":
                 input = "Jangmo-o"; break;
+            case "hakamoo": case "hakamo o":
+                input = "Hakamo-o"; break;
+            case "kommoo": case "kommo o":
+                input = "Kommo-o"; break;
             case "oricorio baile": case "oricorio-baile":
                 input = "Oricorio"; break;
             case "oricorio pom pom": case "oricorio-pom-pom":
@@ -312,16 +322,22 @@ exports = {
                 input = "Oricorio-Pa'u"; break;
             case "oricorio sensu":
                 input = "Oricorio-Sensu"; break;
+            case "midday lycanroc": case "midday-lycanroc": case "lycanroc-midday": case "lycanroc midday":
+                input = "Lycanroc"; break;
+            case "midnight lycanroc": case "midnight-lycanroc": case "lycanroc midnight":
+                input = "Lycanroc-Midnight"; break;
             case "wishiwashi solo": case "wishiwashi-solo":
                 input = "Wishiwashi"; break;
             case "wishiwashi school":
                 input = "Wishiwashi-School"; break;
-            case "zygarde complete":
-                input = "Zygarde-Complete"; break;
+            case "ash-greninja":
+                input = "Ash Greninja"; break;
             case "zygarde 10%": case "zygarde-10": case "zygarde 10":
                 input = "Zygarde-10%"; break;
-            case "zygarde 50%": case "zygarde 50":
+            case "zygarde-50%": case "zygarde 50%": case "zygarde-50": case "zygarde 50":
                 input = "Zygarde"; break;
+            case "zygarde 100%": case "zygarde-100": case "zygarde-100%": case "zygarde 100": case "zygarde complete":
+                input = "Zygarde-Complete"; break;
             default: input = input.replace(/flabebe/i, "Flabébé");
         }
         return input;
