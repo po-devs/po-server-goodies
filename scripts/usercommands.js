@@ -719,8 +719,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         commandData = utilities.inputToPokemon(commandData).split(":");
-        if (commandData == "Type") {
-            commandData = "Type: Null"; //easy fix for now. inb4 more pokemon with colons in their name
+        if (script.cmp(commandData[0], "Type")) {
+            commandData[0] = "Type: Null"; //easy fix for now. inb4 more pokemon with colons in their name
         }
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
