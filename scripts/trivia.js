@@ -751,7 +751,7 @@ TriviaGame.prototype.startTriviaRound = function () {
                 if (isShiny) {
                     question = "<center><img src='pokemon:" + dexNum + "&shiny=true'></center>";
                 } else {
-                    question = "<center><img src='pokemon:" + dexNum + "'></center>"
+                    question = "<center><img src='pokemon:" + dexNum + "'></center>";
                 }
             }
             if (category === "Pokémon Without Vowels") {
