@@ -926,11 +926,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         commandData = commandData.split(":");
-        if (commandData.length !== 2) {
+        if (commandData.length < 2 || commandData.length > 3) {
             normalbot.sendMessage(src, "Incorrect syntax! Format for this command is: /canlearn Pokemon:move", channel);
             return;
         }
-        var pokeId = sys.pokeNum(commandData[0]);
+        if (commandData.length === 3) { // type: null
+            commandData[0] += commandData[1];
+            commandData[1] = commandData[2];
+        }
+        var pokeId = sys.pokeNum(utilities.inputToPokemon(commandData[0]));
         var moveId = sys.moveNum(commandData[1]);
         if (!pokeId) {
             if (!moveId) {
