@@ -3108,7 +3108,7 @@ function sendReminder(key) {
                 var inTier = false;
                 var isFunTier = false;
                 if (playerTiers.indexOf(tourTier) === -1) {
-                    var tierMessage = "<ping/><font color=red>" + html_escape(toCorrectCase(player)) + ", you are in the <b>" + html_escape(getFullTourName(key)) + "</b> tournament, but you do not have a team set to the <b>" + tourTier + "</b> tier. Please use /getteam or load a <b>" + tourTier + "</b> team and battle your opponent, <b>" + html_escape(toCorrectCase(opponent)) + ",</b> or else you may be disqualified."
+                    var tierMessage = "<ping/><font color=red>" + html_escape(toCorrectCase(player)) + ", you are in the <b>" + html_escape(getFullTourName(key)) + "</b> tournament, but you do not have a team set to the <b>" + tourTier + "</b> tier. Please use <a href='po:send//getteam'>/getteam</a> or load a <b>" + tourTier + "</b> team and battle your opponent, <b>" + html_escape(toCorrectCase(opponent)) + ",</b> or else you may be disqualified."
                     if (ccbftiers.indexOf(tourTier) !== -1) {
                         isFunTier = true;
                         var funTierMessage = "<ping/><font color=red>" + html_escape(toCorrectCase(player)) + ", you are in the <b>" + html_escape(getFullTourName(key)) +"</b> tournament, but you do not have a team set to the <b>" + tourTier + "</b> tier. Please use <b>/changetier " + tourTier + "</b> and battle your opponent, <b>" + html_escape(toCorrectCase(opponent)) + ",</b> or else you may be disqualified.";
@@ -4754,7 +4754,7 @@ module.exports = {
             }
             sendWelcomeMessage(player, chan);
             if (isInTour(sys.name(player))) {
-                sendBotMessage(player, "<font size=4>Use <b>/getteam</b> if you don't have any teams for this tournament!</font>", chan, true);
+                sendBotMessage(player, "<font size=4>Use <b><a href='po:send//getteam'>/getteam</a></b> if you don't have any teams for this tournament!</font>", chan, true);
             }
         }
     },
