@@ -373,6 +373,7 @@ function TriviaGame() {
     this.lbDisabled = false;
     this.lastvote = 0;
     this.votes = {};
+    this.voters = [];
     this.voting = true;
 }
 
@@ -545,6 +546,9 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
+    }
+    if (this.catGame && this.voters.length !== 0) {
+        for (var y in this.voters) { autoJoin(this.voters[y]); }
     }
     if (!trivData.eventFlag) {
         if (time > lastAdvertise + 60 * 10) {
@@ -1466,6 +1470,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.inactivity = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
+    this.voters = [];
     if (trivData.eventFlag) { trivData.hiddenCategories.push("Pop Quiz"); }
     trivData.eventFlag = false;
     eventElimPlayers = [];
@@ -2677,7 +2682,14 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         Trivia.sendPM(src, "You have already voted for this category!", channel);
         return;
     }
-
+    var alreadyVoted = false;
+    for (var y in Trivia.voters) {
+        if (Trivia.voters[y] === sys.name(src)) {
+            alreadyVoted = true;
+            break;
+        }
+    }
+    if (!alreadyVoted) { Trivia.voters.push(sys.name(src)); }
     Trivia.voteCat(src, cat);
 }, "Vote for a category game.");
 
