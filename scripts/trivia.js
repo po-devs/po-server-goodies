@@ -2459,6 +2459,7 @@ addUserCommand(["houserules"], function (src, commandData, channel) {
     sys.sendMessage(src, "- The Ultra Beasts, Nihilego, Buzzwole, Pheromosa, Xurkitree, Celesteela, Kartana, and Guzzlord are not considered legendary.", channel);
     sys.sendMessage(src, "4. Assume normal conditions (no Skill Swapped abilities, no type change, etc.):", channel);
     sys.sendMessage(src, "- For questions where battle conditions are relevant, assume the conditions are normal, unless special conditions are stated in the question.", channel);
+    sys.sendMessage(src, "- For questions such as 'What Poison-type Pokémon has the highest base (insert stat here)?', this includes Mega Evolutions.", channel);
 }, "Shows the house rules for Trivia games.");
 
 addUserCommand(["triviaadmins","tadmins","tas"], function (src, commandData, channel) {
