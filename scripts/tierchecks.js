@@ -557,7 +557,7 @@ tier_checker.add_new_check(INCLUDING, ["SM Balanced Hackmons"], function banDire
         for (m = 0; m < 4; m++) {
             move_num = sys.teamPokeMove(src, team, p, m);
             if (move_num >= 673 && move_num <= 701) { // Breakneck Blitz ~ 10,000,000 Volt Thunderbolt
-                return ["You are not allowed to use Z-Moves without their respective Z-Crystal in " + tier + "."];
+                return ["You are not allowed to load Z-Moves directly in " + tier + "."];
             }
         }
     }
