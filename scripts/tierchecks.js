@@ -80,7 +80,7 @@ TierChecker.prototype.add_new_check = function(exclusive, tiers, checker) {
 };
 
 TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent, returncomp) {
-    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || tier == "Inverted Challenge Cup" || tier == "Hackmons Challenge Cup" || tier == "Hackmons CC 1v1" || tier == "Hackmons Wifi CC 1v1" || tier == "Hackmons Inverted CC" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 6) return true;
+    if (tier == "Challenge Cup" || tier == "CC 1v1" || tier == "Wifi CC 1v1" || tier == "Inverted Challenge Cup" || tier == "Hackmons Challenge Cup" || tier == "Hackmons CC 1v1" || tier == "Hackmons Wifi CC 1v1" || tier == "Hackmons Inverted CC" || (tier == "Battle Factory" || tier == "Battle Factory 6v6") && sys.gen(src, team) === 7) return true;
     if (!sys.hasLegalTeamForTier(src, team, tier)) return false;
 
     var complaints = [];
@@ -108,7 +108,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["ORAS LC", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS Ubers", "Anything Goes", "ORAS Hackmons", "Battle Factory 6v6", "Challenge Cup"];
+    var testPath = ["SM LC", "SM OU", "SM Ubers", "Anything Goes", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
