@@ -513,7 +513,7 @@ tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons"], function abilityClause(src, team) {
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons", "SM Balanced Hackmons"], function abilityClause(src, team) {
     var abilities = {};
     for (var i = 0; i < 6; i++) {
         var ability = sys.ability(sys.teamPokeAbility(src, team, i));
@@ -549,6 +549,18 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons"], function prima
         }
     }    
     return ret;
+});
+
+tier_checker.add_new_check(INCLUDING, ["SM Balanced Hackmons"], function banDirectZMoves(src, team, tier) {
+    var p, m, move_num;
+    for (p = 0; p < 6; p++) {
+        for (m = 0; m < 4; m++) {
+            move_num = sys.teamPokeMove(src, team, p, m);
+            if (move_num >= 673 && move_num <= 701) { // Breakneck Blitz ~ 10,000,000 Volt Thunderbolt
+                return ["You are not allowed to use Z-Moves without their respective Z-Crystal in " + tier + "."];
+            }
+        }
+    }
 });
 
 tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCSleepTrap(src, team) {
