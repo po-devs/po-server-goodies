@@ -737,6 +737,16 @@ TriviaGame.prototype.startTriviaRound = function () {
                 questionNumber = Trivia.randomId();
                 i++;
             }
+            // to account for webclient until it gets updated to Gen 7
+            if ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.webclientPlayers())) && i !== 200) {
+                var qu = triviaq.get(questionNumber);
+                if (qu.question > 721) { // the stored questions for who's that pokemon? are the dex numbers. Basically, "if this is > Gen 7"
+                    var ran = sys.rand(1, 721);
+                    // all the who's that pokemon questions are stored sequentially because they were created with /createwtp
+                    // so let's change to a pre-Gen 7 pokemon
+                    questionNumber = questionNumber - ran;
+                }
+            }
             if (i === 200) {
                 this.catGame = true;
                 this.usingCats = specialCategories;
@@ -749,13 +759,21 @@ TriviaGame.prototype.startTriviaRound = function () {
         category = q.category;
         if (category.indexOf("Anagram") === -1){
             question = q.question;
-            if (category === "Who's That Pokémon?") {
+            if (category === "Who's That Pokémon?") {    
                 var rand = sys.rand(1, 1025), dexNum = question;
                 if (rand === 7) { isShiny = true; }
                 if (isShiny) {
-                    question = "<center><img src='pokemon:" + dexNum + "&shiny=true'></center>";
+                    if (dexNum < 722) { // to account for webclient until it updates to Gen 7
+                        question = "<center><img src='pokemon:" + dexNum + "&gen=6&shiny=true'></center>";
+                    } else {
+                        question = "<center><img src='pokemon:" + dexNum + "&shiny=true'></center>";
+                    }
                 } else {
-                    question = "<center><img src='pokemon:" + dexNum + "'></center>";
+                    if (dexNum < 722) { // to account for webclient until it updates to Gen 7
+                        question = "<center><img src='pokemon:" + dexNum + "&gen=6'></center>";
+                    } else {
+                        question = "<center><img src='pokemon:" + dexNum + "'></center>";
+                    }
                 }
             }
             if (category === "Pokémon Without Vowels") {
@@ -1571,6 +1589,15 @@ TriviaGame.prototype.playerPlaying = function (src) {
 TriviaGame.prototype.androidPlayers = function () {
    for (var i in this.triviaPlayers) {
       if (this.triviaPlayers[i].playing && sys.os(i) === "android" && sys.version(i) < 48) {
+         return true;
+      }
+   }
+   return false;
+};
+
+TriviaGame.prototype.webclientPlayers = function () {
+   for (var i in this.triviaPlayers) {
+      if (this.triviaPlayers[i].playing && sys.os(i) === "webclient") {
          return true;
       }
    }
