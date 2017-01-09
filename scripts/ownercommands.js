@@ -592,6 +592,36 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         normalbot.sendAll("Updated global functions!", staffchannel);
         return;
     }
+    if (command === "updatefile") {
+        var files = ["crc32.js", "utilities.js", "bot.js", "memoryhash.js", "pokedex.js"];
+        if (commandData === "" || files.indexOf(commandData.toLowerCase()) === -1) {
+            normalbot.sendMessage(src, "File '" + commandData + "' not found.", channel);
+            return;
+        }
+        var fileName = files[files.indexOf(commandData.toLowerCase())];
+        var module = updateModule(fileName);
+        module.source = fileName;
+        delete require.cache[fileName];
+        switch (fileName) {
+            case "crc32.js":
+                crc32 = require(fileName).crc32;
+                break;
+            case "utilities.js":
+                utilities = require(fileName);
+                break;
+            case "bot.js":
+                Bot = require(fileName).Bot;
+                break;
+            case "memoryhash.js":
+                MemoryHash = require(fileName).MemoryHash;
+                break;
+            case "pokedex.js":
+                pokedex = require(fileName);
+                break;
+        }
+        normalbot.sendAll("File " + fileName + " was updated!", staffchannel);
+        return;
+    }
     if (command == "updatescripts") {
         normalbot.sendMessage(src, "Fetching scripts...", channel);
         var updateURL = Config.base_url + "scripts.js";

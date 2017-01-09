@@ -839,6 +839,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var abilityId = sys.abilityNum(commandData);
+        if (commandData.toLowerCase() === "rks system") {
+            abilityId = 217;
+        }
         if (!abilityId) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
