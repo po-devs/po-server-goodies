@@ -604,7 +604,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         delete require.cache[fileName];
         switch (fileName) {
             case "crc32.js":
-                crc32 = require(fileName).crc32
+                crc32 = require(fileName).crc32;
                 break;
             case "utilities.js":
                 utilities = require(fileName);
