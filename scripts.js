@@ -1651,7 +1651,7 @@ afterChangeTeam : function(src)
     this.nameWarnTest(src);
     var POuser = SESSION.users(src);
     var new_name = sys.name(src);
-    if (POuser.name != new_name) {
+    if (POuser.hasOwnProperty("name") && POuser.name != new_name) {
         var now = parseInt(sys.time(), 10);
         if (!POuser.namehistory) {
             POuser.namehistory = [];
