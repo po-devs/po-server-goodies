@@ -50,6 +50,7 @@ var firstGoalR = "N/A";
 var secondGoalR = "N/A";
 var thirdGoalR = "N/A";
 var isShiny = false;
+var debugMode = false;
 
 var Trivia;
 try {
@@ -78,7 +79,7 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags","extAnswers","blockCats"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags","extAnswers","blockCats","debugTime","debugAnswerTime"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
@@ -733,7 +734,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         else {
             questionNumber = Trivia.randomId();
             var i = 0;
-            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
+            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers()) || (this.webclientPlayers() && triviaq.get(questionNumber).question > 721)) && i !== 200) {
                 questionNumber = Trivia.randomId();
                 i++;
             }
@@ -749,7 +750,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         category = q.category;
         if (category.indexOf("Anagram") === -1){
             question = q.question;
-            if (category === "Who's That Pokémon?") {
+            if (category === "Who's That Pokémon?") {    
                 var rand = sys.rand(1, 1025), dexNum = question;
                 if (rand === 7) { isShiny = true; }
                 if (isShiny) {
@@ -792,7 +793,11 @@ TriviaGame.prototype.startTriviaRound = function () {
             return;
         }
     }
-    Trivia.ticks = 12;
+    if (!debugMode) {
+        Trivia.ticks = 12;
+    } else {
+        Trivia.ticks = trivData.debugAnswerTime;
+    }
 };
 
 TriviaGame.prototype.finalizeAnswers = function () {
@@ -1346,9 +1351,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
         this.catGame = true;
         this.usingCats = specialCategories;
     }
-    var rand = sys.rand(15, 21);
-    this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
-    Trivia.ticks = rand;
+    if (!debugMode) {
+        var rand = sys.rand(15, 21);
+        this.sendAll("Please wait " + rand + " seconds until the next question!", triviachan);
+        Trivia.ticks = rand;
+    } else {
+        Trivia.ticks = trivData.debugTime;
+    }
 };
 
 TriviaGame.prototype.event = function() {
@@ -1571,6 +1580,15 @@ TriviaGame.prototype.playerPlaying = function (src) {
 TriviaGame.prototype.androidPlayers = function () {
    for (var i in this.triviaPlayers) {
       if (this.triviaPlayers[i].playing && sys.os(i) === "android" && sys.version(i) < 48) {
+         return true;
+      }
+   }
+   return false;
+};
+
+TriviaGame.prototype.webclientPlayers = function () {
+   for (var i in this.triviaPlayers) {
+      if (this.triviaPlayers[i].playing && sys.os(i) === "webclient") {
          return true;
       }
    }
@@ -2458,7 +2476,7 @@ addUserCommand(["houserules"], function (src, commandData, channel) {
     sys.sendMessage(src, "*** Trivia House Rules ***", channel);
     sys.sendMessage(src, "1. Smeargle only learns Sketch:", channel);
     sys.sendMessage(src, "- For questions such as 'Name a Pokémon that learns Transform', Smeargle would not be accepted.", channel);
-    sys.sendMessage(src, "2. Z Moves are distinct from, and are not considered to be, moves:", channel);
+    sys.sendMessage(src, "2. Z-Moves are distinct from, and are not considered to be, moves:", channel);
     sys.sendMessage(src, "- For questions such as 'What Steel-type move has the highest Base Power?', Corkscrew Crash, the Steel-type Z Move, would not be accepted.", channel);
     sys.sendMessage(src, "3. Mythical Pokémon are considered Legendary Pokémon, but Ultra Beasts are not:", channel);
     sys.sendMessage(src, "- The Ultra Beasts, Nihilego, Buzzwole, Pheromosa, Xurkitree, Celesteela, Kartana, and Guzzlord are not considered legendary.", channel);
@@ -4518,6 +4536,38 @@ addOwnerCommand(["changeallc"], function (src, commandData, channel) {
         Trivia.sendAll("All questions under category " + oldCat + " were changed to the category " + newCat + "!", revchan);
     }
 }, "Changes all questions from one category to another. Format is /changeallc oldcat*newcat.");
+
+addOwnerCommand(["debugmode"], function (src, commandData, channel) {
+    // May add more later as needed.
+    if (commandData.length === 0) {
+        debugMode = !debugMode;
+        Trivia.sendPM(src, "Debug mode is " + (debugMode ? "on." : "off."), channel);
+        return;
+    }
+    if (!debugMode) {
+        Trivia.sendPM(src, "Please turn on debug mode before adjusting times.", channel);
+        return;
+    }
+    commandData = commandData.split(":");
+    var variable = commandData[0];
+    var time = commandData[1];
+    if (variable.toLowerCase() !== "between" && variable.toLowerCase() !== "answer") {
+        Trivia.sendPM(src, "Valid variables are 'between' and 'answer'.", channel);
+        return;
+    }
+    if (isNaN(time)) {
+        Trivia.sendPM(src, "Please input the number of seconds.", channel);
+        return;
+    }
+    if (variable === "between") {
+        trivData.debugTime = time;
+        Trivia.sendPM(src, "The time between rounds is now " + trivData.debugTime + " seconds for debug mode.", channel);
+    } else {
+        trivData.debugAnswerTime = time;
+        Trivia.sendPM(src, "The answer time is now " + trivData.debugAnswerTime + " seconds for debug mode.", channel);
+    }
+    saveData();
+}, "Use /debugmode to toggle on / off. Use /debugmode [variable]:[time] to set times in games. Variables are 'between' and 'answer' for the time between rounds and the answer time, respectively.")
 
 /*** The following three commands are very expensive and cause too much server lag.
   Now that everything has a uniform format, these can be modified to only add new Pokemon in future generations.
