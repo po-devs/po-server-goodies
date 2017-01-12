@@ -466,7 +466,7 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function banInBattleFormes(src, 
     return ret;
 });
 
-tier_checker.add_new_check(EXCLUDING, hackmons.concat(["Anything Goes"]), function banEternal(src, team, tier) {
+tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, tier) {
     var ret = [];
     for (var i = 0; i < 6; i++) {
         if (sys.teamPoke(src, team, i) === sys.pokeNum("Floette-Eternal")) {
