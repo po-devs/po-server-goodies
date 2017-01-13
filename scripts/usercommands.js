@@ -701,8 +701,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 pokeId = sys.pokeNum(aforme[0]);
             }
         }
-        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
+        // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
+        // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
+        var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
+        if (pokeId > 721) { tiers = ["SM Ubers", "SM OU", "SM LC"]; }
         for (var x = 0; x < tiers.length; x++) {
             if (stone > 0 && sys.isItemBannedFromTier(stone, tiers[x])) {
                 break;
