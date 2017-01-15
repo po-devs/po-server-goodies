@@ -439,6 +439,9 @@ step: function() {
                 if (["mban", "hmute", "safban"].contains(p)) {
                     usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", sachannel);
                 }
+                else {
+                    usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", watchchannel);
+                }
             }
         }
     }
