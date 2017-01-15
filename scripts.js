@@ -405,6 +405,43 @@ step: function() {
         };
         sys.writeToFile(JSONP_FILE, "setServerStats(" + JSON.stringify(stats) + ");");
     }
+    
+    var banlists = {
+        "mute": {"list": script.mutes, "term": "mute", "bot": normalbot},
+        "smute": {"list": script.smutes, "term": "smute", "bot": normalbot},
+        "mban": {"list": script.mbans, "term": "Mafia ban", "bot": mafiabot},
+        "hmute": {"list": script.hmutes, "term": "Hangman ban", "bot": hangbot},
+        "safban": {"list": script.safbans, "term": "Safari ban", "bot": safaribot}
+    };
+    for (var p in banlists) {
+        var hash = banlists[p].list.hash;
+        var term = banlists[p].term;
+        var usebot = banlists[p].bot;
+        
+        for (var ip in hash) {
+            var split = hash[ip].split(":");
+            var expires = split[2];
+            var name = split[3];
+            if (expires > 0 && sys.time() > expires) {
+                sys.playerIds().forEach(function(id) {
+                    if (sys.loggedIn(id) && ip === sys.ip(id)) {
+                        SESSION.users(id).un(p);
+                        if (p !== "smute") {
+                            usebot.sendMessage(id, "Your " + term + " has expired.");
+                        }
+                    }
+                });
+                if (ip in hash) { // no online user with matching ip
+                    banlists[p].list.remove(ip);
+                }
+                
+                usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", staffchannel);
+                if (["mban", "hmute", "safban"].contains(p)) {
+                    usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", sachannel);
+                }
+            }
+        }
+    }
 },
 
 serverStartUp : function() {
@@ -783,7 +820,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 active = true;
             }
         }
-        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
+        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData.toCorrectCase() + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData.toCorrectCase() + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
 
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
@@ -1178,15 +1215,9 @@ beforeChannelJoin : function(src, channel) {
                 }
             }
             if (found) {
-                if (sys.time() > expires) {
-                    poUser.un(bans[x]);
-                    script[bans[x] + "s"].remove(iphash);
-                    normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
-                } else {
-                    sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (by ? " by " + by : '')+". " + (expires > 0 ? "Ban expires in " + getTimeString(expires - parseInt(sys.time(), 10)) + ". " : '') + (reason ? "[Reason: " + reason + "]" : ''));
-                    sys.stopEvent();
-                    return;
-                }
+                sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (by ? " by " + by : '')+". " + (expires > 0 ? "Ban expires in " + getTimeString(expires - parseInt(sys.time(), 10)) + ". " : '') + (reason ? "[Reason: " + reason + "]" : ''));
+                sys.stopEvent();
+                return;
             }
         }
     }
@@ -1903,11 +1934,6 @@ beforeChatMessage: function(src, message, chan) {
         }
     }*/
 
-    if (SESSION.users(src).expired("mute")) {
-        SESSION.users(src).un("mute");
-        normalbot.sendMessage(src, "your mute has expired.", channel);
-    }
-
     var isBlocked = true, command, commandData;
     if (is_command(message)) {
         //Used further down too
@@ -2104,25 +2130,22 @@ beforeChatMessage: function(src, message, chan) {
     */
     // Secret mute
     if (SESSION.users(src).smute.active) {
-        if (SESSION.users(src).expired("smute") || script.getMaxAuth(src) > 0) {
-            SESSION.users(src).un("smute");
-        } else {
-            sys.playerIds().forEach(function(id) {
-                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    var color = script.getColor(id);
-                    if (sys.isInChannel(id, channel)) {
-                        if (isAndroid(id)) {
-                            sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
-                        } else {
-                            sys.sendMessage(id,  sys.name(src) + ": " + message, channel);
-                        }
+        sys.playerIds().forEach(function(id) {
+            if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                var color = script.getColor(id);
+                if (sys.isInChannel(id, channel)) {
+                    if (isAndroid(id)) {
+                        sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
+                    } else {
+                        sys.sendMessage(id,  sys.name(src) + ": " + message, channel);
                     }
                 }
-            });
-            sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + script.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
-            sys.stopEvent();
-            this.afterChatMessage(src, message, channel);
-        }
+            }
+        });
+        sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + script.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
+        sys.stopEvent();
+        this.afterChatMessage(src, message, channel);
+        
         return;
     }
 
@@ -2516,13 +2539,13 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
 
 battleConnectionLost : function() {
     battlebot.sendAll("Connection to Battle Server lost!", staffchannel);
-    sys.battlingIds().forEach(function(id) {
+    /* sys.battlingIds().forEach(function(id) {
         var teamCount = sys.teamCount(id), toWrite = [];
         for (var i = 0; i < teamCount; i++) {
             toWrite.push(script.importable(id, i, false, false) + "|||");
         }
         sys.appendToFile("dump.txt", toWrite.join(""));
-    });
+    }); */
 },
 
 hasAuthElements: function (array) {
