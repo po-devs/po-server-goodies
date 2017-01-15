@@ -22,13 +22,13 @@ var allgentiers = cctiers.concat("Metronome");
 //Tiers that are BF or CC. These also allow others to watch
 var ccbftiers = cctiers.concat("Battle Factory", "Battle Factory 6v6");
 //Tiers with double elim by default
-var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "ORAS 1v1", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
+var doubleelimtiers = ["CC 1v1", "Wifi CC 1v1", "Gen 5 1v1", "Gen 5 1v1 Ubers", "SM 1v1", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
 //Tiers that are locked to Singles Mode
 var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1", "GBU Singles", "Adv Ubers", "Adv OU", "DP Ubers", "DP OU", "No Preview OU", "No Preview Ubers", "Wifi OU", "Wifi Ubers", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1"];
 //Tiers with Team Preview state that can't be modified
 var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles"];
 //Tiers used when queue is empty
-var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "ORAS 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
+var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "ORAS Ubers", "ORAS OU", "Battle Factory 6v6", "Monotype", "SM 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
 
 //Clause List
 var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
@@ -75,7 +75,7 @@ var signupMessageDelay = 0;
 // Event tournaments highlighted in red
 var redborder = "<font color=#FF0000><b>"+border+"</b></font>";
 var redhtmlborder = "<font color=#FF0000><timestamp/> <b>"+border+"</b></font>";
-var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 250 ? "6-1" : "6-0";
+var defaultgen = parseInt(sys.serverVersion().replace(/\./g, ""), 10) >= 270 ? "7-0" : "6-1";
 var tourcommands = ["/join: Joins a tournament.",
                     "/unjoin: Unjoins a tournament during signups only.",
                     "/queue: Lists upcoming tournaments.",
@@ -849,7 +849,7 @@ function getEventTour(datestring) {
                         }
                         else {
                             parameters.gen = defaultgen;
-                            sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourserrchan, false);
+                            sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used SM instead!", tourserrchan, false);
                         }
                     }
                     else if (cmp(parameterset, "maxplayers")) {
@@ -2015,8 +2015,8 @@ function tourCommand(src, command, commandData, channel) {
                                 parameters.gen = newgen;
                             }
                             else {
-                                parameters.gen = defaultgen; // XY
-                                sendBotMessage(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used XY instead!", tourschan, false);
+                                parameters.gen = defaultgen; // SM
+                                sendBotMessage(src, "Warning! The subgen '"+parametervalue+"' does not exist! Used SM instead!", tourschan, false);
                             }
                         }
                         else if (cmp(parameterset, "type")) {
