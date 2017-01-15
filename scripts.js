@@ -437,7 +437,7 @@ step: function() {
                     banlists[p].list.remove(ip);
                 }
                 
-                var msg = name + "'s " + term + " has expired. [IP: " + ip.replace("::ffff:", "") + ", By: " + by + ", Reason: " + reason + "]";
+                var msg = nonFlashing(name) + "'s " + term + " has expired. [IP: " + ip.replace("::ffff:", "") + ", By: " + nonFlashing(by) + ", Reason: " + reason + "]";
                 
                 usebot.sendAll(msg, staffchannel);
                 if (["mban", "hmute", "safban"].contains(p)) {
