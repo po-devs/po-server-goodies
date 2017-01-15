@@ -2626,7 +2626,7 @@ function tourCommand(src, command, commandData, channel) {
             tours.tour[key].cpt += 1;
             var oppname = index%2 === 0 ? toCorrectCase(tours.tour[key].players[index+1]) : toCorrectCase(tours.tour[key].players[index-1]);
             sendBotAll("Late entrant "+sys.name(src)+" will play against "+oppname+" in the "+getFullTourName(key)+" tournament. "+(tours.tour[key].players.length - tours.tour[key].cpt)+" sub"+(tours.tour[key].players.length - tours.tour[key].cpt == 1 ? "" : "s") + " remaining.", tourschan, false);
-            sendBotMessage(sys.id(oppname),"<ping/>" + sys.name(src) + ", late entrant " + html_escape(sys.name(src)) + " will play against you in the " + html_escape(getFullTourName(key))+" tournament.", tourschan, true);
+            sendBotMessage(sys.id(oppname),"<ping/>" + oppname + ", late entrant " + html_escape(sys.name(src)) + " will play against you in the " + html_escape(getFullTourName(key))+" tournament.", tourschan, true);
             markActive(src, "post");
             markActive(sys.id(oppname), "post");
             return true;
