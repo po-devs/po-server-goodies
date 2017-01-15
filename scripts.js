@@ -1651,31 +1651,34 @@ afterChangeTeam : function(src)
     this.nameWarnTest(src);
     var POuser = SESSION.users(src);
     var new_name = sys.name(src);
-    if (POuser && POuser.name != new_name) {
-        var now = parseInt(sys.time(), 10);
-        if (!POuser.namehistory) {
-            POuser.namehistory = [];
+    if (POuser) {
+        if (POuser.name != new_name) {
+            var now = parseInt(sys.time(), 10);
+            if (!POuser.namehistory) {
+                POuser.namehistory = [];
+            }
+            POuser.namehistory.push([new_name, now]);
+            POuser.name = new_name;
+            var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
+            if (spamcheck && spamcheck[1]+10 > now) {
+                sys.kick(src);
+                return;
+            }
         }
-        POuser.namehistory.push([new_name, now]);
-        POuser.name = new_name;
-        var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
-        if (spamcheck && spamcheck[1]+10 > now) {
-            sys.kick(src);
-            return;
+        if (script.isContrib(src)) {
+            var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
+            if (sys.dbRegistered(sys.name(src))) {
+                POuser.contributions = script.contributors.get(contribName);
+            }
+            else {
+                normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
+                script.contributors.remove(contribName);
+            }
         }
+        
+        POuser.sametier = script.getKey("forceSameTier", src) == "1";
     }
-    if (script.isContrib(src)) {
-        var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
-        if (sys.dbRegistered(sys.name(src))) {
-            POuser.contributions = script.contributors.get(contribName);
-        }
-        else {
-            normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
-            script.contributors.remove(contribName);
-        }
-    }
-
-    POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
+    
     if (!authChangingTeam) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to Auth" + "\n");
@@ -1683,8 +1686,6 @@ afterChangeTeam : function(src)
         if (!(sys.auth(src) > 0 && sys.auth(src) <= 3))
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from Auth" + "\n");
     }
-
-    POuser.sametier = script.getKey("forceSameTier", src) == "1";
 
     if (script.getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
@@ -1696,7 +1697,6 @@ afterChangeTeam : function(src)
             normalbot.sendMessage(src, "You were placed into '" + sys.tier(src, team) + "' tier.");
         }
     }
-
 }, /* end of afterChangeTeam */
 
 
