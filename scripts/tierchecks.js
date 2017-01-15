@@ -296,7 +296,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function endlessCheck(src,
 
 
 tier_checker.add_new_check(INCLUDING, ["Monogen"], function monoGenCheck(src, team) {
-    var GEN_MAX = [0, 151, 252, 386, 493, 649, 721];
+    var GEN_MAX = [0, 151, 252, 386, 493, 649, 721, 802];
     var gen = 0;
     for (var i = 0; i < 6; ++i) {
         var pokenum = sys.teamPoke(src, team, i);
@@ -406,9 +406,9 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     
     /* Template */
     //  type: {type: "Type", items: [], pokes: [], abilities: []}
-    var typeBans = { 
-        flying: {type: "Flying", items: ["Charizardite X"]},
-        dragon: {type: "Dragon", items: ["Altarianite"]}
+    /*********TYPE BANS CODE STARTS HERE*************/
+ /*   var typeBans = {
+        // This is empty now since SM just started.
     };
     var ret = [], item, pkmn, ability;
     for (var e in typeBans) {
@@ -442,7 +442,7 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
             }
         }
     }
-    return ret;
+    return ret;*/
 });
 
 /*tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function haxCheck(src, team, tier) {
@@ -483,7 +483,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokem
                     return;
     return ["You do not have any valid Pokémon."];
 });
-
+// Leaving a note here that if we kill off Sky Battle (which we still might), this needs commenting out.
 tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src, team) {
     var bannedAbilities = {
         'duskull': ['frisk'],
