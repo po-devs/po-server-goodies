@@ -414,14 +414,16 @@ step: function() {
         "safban": {"list": script.safbans, "term": "Safari ban", "bot": safaribot}
     };
     for (var p in banlists) {
-        var hash = banlists[p].list.hash;
-        var term = banlists[p].term;
-        var usebot = banlists[p].bot;
+        var hash = banlists[p].list.hash,
+            term = banlists[p].term,
+            usebot = banlists[p].bot;
         
         for (var ip in hash) {
-            var split = hash[ip].split(":");
-            var expires = split[2];
-            var name = split[3];
+            var split = hash[ip].split(":"),
+                by = split[1],
+                expires = split[2],
+                name = split[3],
+                reason = split[4];
             if (expires > 0 && sys.time() > expires) {
                 sys.playerIds().forEach(function(id) {
                     if (sys.loggedIn(id) && ip === sys.ip(id)) {
@@ -435,12 +437,14 @@ step: function() {
                     banlists[p].list.remove(ip);
                 }
                 
-                usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", staffchannel);
+                var msg = name + "'s " + term + " has expired. [IP: " + ip.replace("::ffff:", "") + ", By: " + by + ", Reason: " + reason + "]";
+                
+                usebot.sendAll(msg, staffchannel);
                 if (["mban", "hmute", "safban"].contains(p)) {
-                    usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", sachannel);
+                    usebot.sendAll(msg, sachannel);
                 }
                 else {
-                    usebot.sendAll(name + "'s " + term + " has expired. (IP: " + ip.replace("::ffff:", "") + ")", watchchannel);
+                    usebot.sendAll(msg, watchchannel);
                 }
             }
         }
