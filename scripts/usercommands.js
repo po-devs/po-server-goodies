@@ -1069,6 +1069,7 @@ exports.help = [
     "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
     "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
     "/contributors: Lists contributors to Pokémon Online.",
+    "/guide: Links to client guides and more. Inputing client type can list different guides.", // the code for this is in scripts.js
     "/intier [tier]: Displays all unidled players in a specific tier.",
     "/league: Lists gym leaders and elite four of the PO league.",
     "/notice: Allows you to view current events.",
