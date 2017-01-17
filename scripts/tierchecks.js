@@ -459,7 +459,7 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function sigh(src, team, tier) {
     for (var i = 0; i < 6; i++) {
         var poke = sys.teamPoke(src, team, i);
         if (sys.pokemon(poke).indexOf("Mega ") === 0) {
-            return [poke + " is banned in tier '" + tier + "'."];
+            return [sys.pokemon(poke) + " is banned in tier '" + tier + "'."];
         }
     }
 }); 
