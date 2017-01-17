@@ -14,7 +14,7 @@ Files: bfteams.json
 /* globals sendChanAll, bfbot, staffchannel, tier_checker, sendChanHtmlAll, sys, Config, SESSION, require, module */
 
 // Globals
-var bfVersion = "1.200";
+var bfVersion = "1.300";
 var dataDir = "scriptdata/bfdata/";
 var submitDir = dataDir + "submit/";
 var bfSets, working, defaultSets, userQueue, reviewChannel, submitBans, bfHash, reviewers;
@@ -252,7 +252,8 @@ function pokeCodeToPokemon(pokeCode) {
         "gen": sys.generation(toNumber(pokeCode.substr(37, 1)),
                               toNumber(pokeCode.substr(38, 1))),
         "genNum": toNumber(pokeCode.substr(37, 1)),
-        "subgenNum": toNumber(pokeCode.substr(38, 1))
+        "subgenNum": toNumber(pokeCode.substr(38, 1)),
+        "hiddenPowerType": pokeCode.length === 40 ? toNumber(pokeCode.substr(39, 1)) : 16
     };
 }
 
@@ -274,6 +275,7 @@ function pokemonToPokeCode(pokemon) {
         pokeCode += toChars(pokemon.dvs[d], 1);
     }
     pokeCode += toChars(pokemon.genNum, 1) + toChars(pokemon.subgenNum, 1);
+    pokeCode += toChars(pokemon.hiddenPowerType, 1);
     return pokeCode;
 }
 
@@ -835,7 +837,8 @@ function factoryCommand(src, command, commandData, channel) {
                             "evs": evs,
                             "dvs": dvs,
                             "genNum": sys.gen(src, 0),
-                            "subgenNum": sys.subgen(src, 0)
+                            "subgenNum": sys.subgen(src, 0),
+                            "hiddenPowerType": sys.teamPokeHiddenPower(src, 0, x)
                         });
                         if (!setIsDuplicate(pokeCode, tier)) {
                             team.push({
@@ -1213,7 +1216,7 @@ function setLint(checkFile) {
                         }
                     }
                 } catch (error) {
-                    errors.push("<td>Bad Set</td><td>Property '" + html_escape(property) + "'; expected 39 character alphanumeric strings.</td>");
+                    errors.push("<td>Bad Set</td><td>Property '" + html_escape(property) + "'; expected 39 or 40 character alphanumeric strings.</td>");
                 }
             }
         } else if (["readable", "desc", "mode", "perfectivs", "maxpokes"].indexOf(property) < 0) {
@@ -1262,8 +1265,8 @@ function printLintResults(src, lintResults, channel) {
 
 // converts a set code to a readable format, or importable. The lineBreak parameter defaults to "<br />"
 function getReadablePoke(setCode, lineBreak) {
-    if (setCode.length !== 39) {
-        throw "Invalid Set, each set should be 39 alphanumeric characters long.";
+    if (setCode.length < 39 || setCode.length > 40) {
+        throw "Invalid Set, each set should be 39 or 40 alphanumeric characters long.";
     }
     lineBreak = lineBreak || "<br />";
     var stats = ["HP", "Atk", "Def", "SAtk", "SDef", "Spd"];
@@ -1295,8 +1298,8 @@ function getReadablePoke(setCode, lineBreak) {
     readablePoke += lineBreak;
     for (var m = 0; m < 4; m++) {
         if (info.moves[m] === "Hidden Power") {
-            var hpType = sys.hiddenPowerType(5, info.dvs[0], info.dvs[1], info.dvs[2],
-                                                info.dvs[3], info.dvs[4], info.dvs[5]);
+            var hpType = info.gen < 7 ? sys.hiddenPowerType(5, dvs[0], dvs[1], dvs[2], dvs[3], dvs[4], dvs[5]) :
+                                                info.hiddenPowerType;
             readablePoke += "- Hidden Power [" + sys.type(hpType) + "]" + lineBreak;
         } else if (info.moves[m] !== "(No Move)") {
             readablePoke += "- " + info.moves[m] + lineBreak;
@@ -1383,8 +1386,8 @@ function getPokePreview(src, team, poke) {
     for (var m = 0; m < 4; m++) {
         moves.push(sys.move(sys.teamPokeMove(src, team, poke, m)));
         if (moves[m] === "Hidden Power") {
-            var hpType = sys.hiddenPowerType(5, dvs[0], dvs[1], dvs[2],
-                                                dvs[3], dvs[4], dvs[5]);
+            var hpType = sys.gen(src, team) < 7 ? sys.hiddenPowerType(5, dvs[0], dvs[1], dvs[2], dvs[3], dvs[4], dvs[5]) :
+                                                sys.teamPokeHiddenPower(src, team, poke);
             moves[m] += " [" + sys.type(hpType) + "]";
         }
     }
