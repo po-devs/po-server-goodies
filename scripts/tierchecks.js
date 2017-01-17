@@ -455,16 +455,14 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
     }
 });*/
 
-tier_checker.add_new_check(EXCLUDING, hackmons, function banInBattleFormes(src, team, tier) { // bandaid fix for zygarde 100% and ash greninja
-    var ret = [], i;
-    for (i = 0; i < 6; i++) {
-        var monName = sys.pokemon(sys.teamPoke(src, team, i));
-        if (["Zygarde-Complete", "Ash Greninja"].indexOf(monName) > -1) {
-            ret.push("The Pokemon '" + monName + "' is banned in tier '" + tier + "'.");
+tier_checker.add_new_check(EXCLUDING, hackmons, function sigh(src, team, tier) {
+    for (var i = 0; i < 6; i++) {
+        var poke = sys.teamPoke(src, team, i);
+        if (sys.pokemon(poke).indexOf("Mega ") === 0) {
+            return [poke + " is banned in tier '" + tier + "'."];
         }
     }
-    return ret;
-});
+}); 
 
 tier_checker.add_new_check(INCLUDING, ["ORAS Ubers"], function batonPassLimitXY(src, team, tier) {
     var batonPassLimit = 1;
