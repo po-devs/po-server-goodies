@@ -2300,7 +2300,7 @@ function tourCommand(src, command, commandData, channel) {
                 var reason = data[1];
                 var time = 900;
                 if (data[2]) {
-                    time = utilities.getSeconds(data[2]);
+                    time = utilities.getSeconds(data[2].trim());
                 }
                 var ip = sys.dbIp(tar);
                 if (ip === undefined) {
