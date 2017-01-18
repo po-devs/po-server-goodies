@@ -494,7 +494,7 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
             return;
         }
         sys.clearPass(commandData);
-        normalbot.sendAll(commandData + "'s password was cleared by " + mod + "!", staffchannel);
+        normalbot.sendAll(commandData + "'s password was cleared by " + nonFlashing(mod) + "!", staffchannel);
         if (tar !== undefined) {
             normalbot.sendMessage(tar, "Your password was cleared by " + mod + "!");
             sys.sendNetworkCommand(tar, 14); // make the register button active again
