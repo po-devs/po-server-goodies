@@ -377,14 +377,14 @@ tier_checker.add_new_check(INCLUDING, ["BW2 NU", "BW2 NEU"], function smashPassC
 });
 
 tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, team) {
-    var type1, type2, typea = 0, typeb = 0,teamLength = 0, poke, currentGen = 7;
+    var type1, type2, typea = 0, typeb = 0,teamLength = 0, poke;
     for (var i = 0; i < 6; i++) {
         poke = sys.teamPoke(src, team, i);
         if (poke === 0) {
             continue;
         }
-        type1 = sys.pokeType1(poke, currentGen);
-        type2 = sys.pokeType2(poke, currentGen);
+        type1 = sys.pokeType1(poke);
+        type2 = sys.pokeType2(poke);
         teamLength++;
     }
     for (var j = 0; j < 6; j++) {
@@ -392,10 +392,10 @@ tier_checker.add_new_check(INCLUDING, ["Monotype"], function monotypeCheck(src, 
         if (poke === 0) {
             continue;
         }
-        if ((type1 === sys.pokeType1(poke, currentGen) || type1 === sys.pokeType2(poke, currentGen)) && type1 !== 18) {
+        if ((type1 === sys.pokeType1(poke) || type1 === sys.pokeType2(poke)) && type1 !== 18) {
             typea++;
         }
-        if ((type2 === sys.pokeType1(poke, currentGen) || type2 === sys.pokeType2(poke, currentGen)) && type2 !== 18) {
+        if ((type2 === sys.pokeType1(poke) || type2 === sys.pokeType2(poke)) && type2 !== 18) {
             typeb++;
         }
     }
