@@ -762,15 +762,10 @@ TriviaGame.prototype.startTriviaRound = function () {
             if (category === "Pokémon Without Vowels") {
                 var yList = ["Yanma", "Hariyama", "Yanmega", "Yamask", "Yungoos"]; // exception list where 'y' is not a vowel
                 var z = question.toLowerCase();
-                while (z.indexOf("a") !== -1) { z = z.replace("a", ""); }
-                while (z.indexOf("e") !== -1) { z = z.replace("e", ""); }
-                while (z.indexOf("i") !== -1) { z = z.replace("i", ""); }
-                while (z.indexOf("o") !== -1) { z = z.replace("o", ""); }
-                while (z.indexOf("u") !== -1) { z = z.replace("u", ""); }
-                while (z.indexOf("y") !== -1 && yList.indexOf(question) === -1) { z = z.replace("y", ""); }
+                z = z.replace(/[aeiou]/g, "");
+                if (yList.indexOf(question) === -1) { z = z.replace(/y/g, ""); }
                 question = z; // Just did it this way for clarity.
             }
-
         } else {
             var name = q.question.split("");
             question = [];
