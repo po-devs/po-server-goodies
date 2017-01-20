@@ -2750,7 +2750,7 @@ function Safari() {
                 var theme = contestThemes[currentTheme];
                 maxStats = sys.rand(theme.minBST || 300, theme.maxBST || 601);
                 var list = [], bst, e, id;
-                for (e = 1; e < 722; e++) {
+                for (e = 1; e < 803; e++) {
                     bst = "customBST" in theme && e in theme.customBST ? theme.customBST[e] : getBST(e);
                     if (this.validForTheme(e, currentTheme) && bst <= maxStats) {
                         list.push(e);
@@ -2782,7 +2782,7 @@ function Safari() {
                         maxList = player.costume === "chef" ? costumeData.chef.rate : 7;
 
                     do {
-                        num = sys.rand(1, 722);
+                        num = sys.rand(1, 803);
                         bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
                         if (bst <= maxStats) {
                             var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)), false, player.costume === "inver");
@@ -2799,7 +2799,7 @@ function Safari() {
                     if (!found) {
                         if (list.length === 0) {
                             do {
-                                num = sys.rand(1, 722);
+                                num = sys.rand(1, 803);
                                 bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
                                 pokeId = poke(num + (shiny ? "" : 0));
                             } while (!pokeId || bst > maxStats);
@@ -2810,7 +2810,7 @@ function Safari() {
                     pokeId = poke(num + (shiny ? "" : 0));
                 } else {
                     do {
-                        num = sys.rand(1, 722);
+                        num = sys.rand(1, 803);
                         bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
                         pokeId = poke(num + (shiny ? "" : 0));
                     } while (!pokeId || bst > maxStats);
@@ -3355,7 +3355,7 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(id, name) {
-        return (id < 722 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name);
+        return (id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name);
     };
     this.getRulesMod = function(pokeId, rules) {
         var type1 = sys.type(sys.pokeType1(pokeId)),
@@ -3449,9 +3449,12 @@ function Safari() {
             }
         }
 
-        var tiers = ["ORAS LC", "ORAS NU", "ORAS LU", "ORAS UU", "ORAS OU", "ORAS Ubers"];
-        var tierChance = 0.02;
+        var tiers = ["SM LC", "ORAS NU", "ORAS LU", "ORAS UU", "SM OU", "SM Ubers"];
+        var tierChance = 0.02, isGen7 = generation(parseInt(wild, 10)) === 7;
         for (var x = 0; x < tiers.length; x++) {
+            if (isGen7 && tiers[x].indexOf("SM ") === -1) { // Workaround while SM tiers are not complete
+                continue;
+            }
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = catchTierChance[x];
                 break;
@@ -3797,6 +3800,7 @@ function Safari() {
             "The wild {0} blasted off at the speed of light!",
             "\"I must go. My people need me.\" The wild {0} rocketed off!",
             "The wild {0} was banished to the Shadow Realm!",
+            "The wild {0} accidentally triggered a trap card and was sent to the graveyard!",
             "The wild {0} achieved nirvana and transcended to a higher plane!",
             "The wild {0} got bored and went to #" + ["Mafia", "Trivia", "Hangman", "Evolution Game", "Tournaments"].random() + "!",
             "The wild {0} paid its retreat cost and returned to the bench!",
@@ -4017,7 +4021,7 @@ function Safari() {
             return;
         }
 
-        var cooldown = itemData.lens.cooldown;
+        var cooldown = Math.round(itemData.lens.cooldown * (1 - this.getFortune(player, "photocd", 0)));
         var p = player.balls.lens * itemData.lens.bonusRate;
         p = Math.min(p, itemData.lens.maxRate);
         var quality = randomSample({
@@ -21439,7 +21443,7 @@ function Safari() {
                     input = getInputPokemon(info[1]);
                 }
                 if (!input || !input.num) {
-                    input = getInputPokemon(sys.rand(1, 722) + "");
+                    input = getInputPokemon(sys.rand(1, 803) + "");
                 }
                 var amt = 1;
                 if (info.length > 2) {
@@ -23805,6 +23809,22 @@ function Safari() {
                 safaribot.sendMessage(src, "Edited property '{0}' from '{1}' to '{2}'!".format(prop, old, val), safchan);
                 return true;
             }
+            if (command === "fakespawn") {
+                var data = toCommandData(commandData, ["name", "bst", "img", "shiny", "isEvent"]);
+                if (commandData == "*" || !data.name || data.name == "*" || !data.bst || !data.img) {
+                    safaribot.sendHtmlMessage(src, "Syntax is " + link("/fakespawn A wild Name:::BST: 300:::ImageSource", null, true), safchan);
+                    return true;
+                }
+                
+                var appmsg = data.name + " appeared! <i>(" + data.bst + ")</i>";
+                var img = "<img src='" + data.img + "'>";
+                sendAll("<hr><center>" + (data.shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (data.isEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + img + "</center><hr>", true, true);
+                var onChannel = sys.playersOfChannel(safchan);
+                for (var e in onChannel) {
+                    ballMacro(onChannel[e]);
+                }
+                return true;
+            }
             if (command === "rephoto") {
                 photographQuest = {};
                 safari.updatePhotographQuest();
@@ -24162,6 +24182,9 @@ function Safari() {
                 if (possibleThemes.contains(lastContests[e].themeId)) {
                     possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
                 }
+            }
+            if (possibleThemes.contains("none")) {
+                possibleThemes.splice(possibleThemes.indexOf("none"), 1);
             }
             if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
