@@ -823,15 +823,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var accuracy = pokedex.getMoveAccuracy(moveId);
         var PP = pokedex.getMovePP(moveId);
         var contact = (pokedex.getMoveContact(moveId) ? "Yes" : "No");
+        var effect = pokedex.getMoveEffect(moveId);
+        var zBP = pokedex.getZBP(moveId);
+        var zEffect = pokedex.getZEffect(moveId);
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
-        table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
-        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8 / 5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
+        table += "<tr><th>Type</th><th>Category</th><th>Power</th>" + (zBP ? "<th>Z-Power</th>" : "") + "<th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
+        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td>" + (zBP ? "<td><center>" + zBP + "</center></td>" : "") + "<td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8 / 5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getMoveEffect(moveId), channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + effect, channel);
+        if (zEffect) {
+            sys.sendHtmlMessage(src, "<b>Z-Effect:</b> " + zEffect, channel);
+        }
         sys.sendHtmlMessage(src, "", channel);
         return;
     }
