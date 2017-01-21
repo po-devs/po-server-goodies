@@ -4804,7 +4804,38 @@ module.exports = {
         var joined = Trivia.playerPlaying(src);
         if (Trivia.started) {
             if (!joined && Trivia.phase === "answer") {
-                Trivia.sendPM(src, "You haven't joined, so you are unable to submit an answer. Type /join to join.", channel);
+                if (Trivia.scoreType === "elimination" && Trivia.phase === "answer") {
+                    if (Trivia.round > Trivia.maxPoints) {
+                        var canJoin = false;
+                        for (var z in Trivia.triviaPlayers) { // if they have joined previously, don't lock them out here
+                            if (Trivia.triviaPlayers[z].name === sys.name(src)) {
+                                canJoin = true;
+                                break;
+                            }
+                        }
+                        if (!canJoin) {
+                            Trivia.sendPM(src, "It is too late to join this game!", channel);
+                            return true; //without this, it tells them that they can't join, but then lets them join anyway
+                        }
+                    }
+                    Trivia.addPlayer(src);
+                    Trivia.triviaPlayers[src].points = Trivia.triviaPlayers[src].points - (Trivia.round - parseInt(Trivia.triviaPlayers[src].roundLeft));
+                    if (Trivia.triviaPlayers[src].roundLeft !== Trivia.round) { Trivia.triviaPlayers[src].points++; } // no need to penalize them twice if the don't answer correctly
+                    if (Trivia.triviaPlayers[src].points <= 0) {
+                        Trivia.removePlayer(src);
+                        Trivia.sendPM(src, "It is too late to join this game!", channel);
+                        return true;
+                    }
+                    Trivia.sendAll(sys.name(src) + " joined the game late with " + Trivia.triviaPlayers[src].points + (Trivia.triviaPlayers[src].points === 1 ? " life!" : " lives!"), triviachan);
+                    Trivia.addAnswer(src, message.replace(/,/gi, ""));
+                    Trivia.sendPM(src, "Your answer was submitted: " + message, channel);
+                    return true;
+                } else {
+                    Trivia.addPlayer(src);
+                    Trivia.sendAll(sys.name(src) + " joined the game!", channel);
+                }
+                Trivia.addAnswer(src, message.replace(/,/gi, ""));
+                Trivia.sendPM(src, "Your answer was submitted: " + message, channel);
                 return true;
             }
         }
