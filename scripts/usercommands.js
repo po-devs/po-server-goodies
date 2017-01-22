@@ -830,7 +830,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
         table += "<tr><th>Type</th><th>Category</th><th>Power</th>" + (zBP ? "<th>Z-Power</th>" : "") + "<th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
-        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td>" + (zBP ? "<td><center>" + zBP + "</center></td>" : "") + "<td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8 / 5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
+        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td>" + (zBP ? "<td><center>" + zBP + "</center></td>" : "") + "<td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + Math.floor(PP * 8 / 5) + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
         sys.sendHtmlMessage(src, "", channel);
