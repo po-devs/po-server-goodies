@@ -542,6 +542,19 @@ tier_checker.add_new_check(INCLUDING, ["SM Balanced Hackmons"], function banDire
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["SM Balanced Hackmons"], function banComaTalk(src, team, tier) {
+    var p, m, move_num, ability;
+    for (p = 0; p < 6; p++) {
+        for (m = 0; m < 4; m++) {
+            move_num = sys.teamPokeMove(src, team, p, m);
+            ability = sys.teamPokeAbility(src, team, p);
+            if (move_num === sys.moveNum("Sleep Talk") && ability === sys.abilityNum("Comatose")) {
+                return ["You are not allowed to use Sleep Talk + Comatose in " + tier + "."];
+            }
+        }
+    }
+});
+
 tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCSleepTrap(src, team) {
 	var ret = [];
 	var gen = sys.gen(src, team);
