@@ -1,4 +1,4 @@
-var heightList, weightList, powerList, accList, ppList, categoryList, moveEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList;
+var heightList, weightList, powerList, zPowerList, accList, ppList, categoryList, moveEffList, zEffList, moveFlagList, abilityList, itemList, berryList, flingPowerList, berryPowerList, berryTypeList, allMovesList, allGenMovesList;
 var pokedex = {};
 
 pokedex.hasDreamWorldAbility = function (pokemon, ability) {
@@ -8,7 +8,7 @@ pokedex.hasDreamWorldAbility = function (pokemon, ability) {
 pokedex.getAllMoves = function (pokeId) {
     if (allMovesList === undefined) {
         allMovesList = {};
-        var data = sys.getFileContent('db/pokes/6G/all_moves.txt').split('\n');
+        var data = sys.getFileContent(pokeDir + '7G/all_moves.txt').split('\n');
         for (var i = 0; i < data.length; i++) {
             var index = data[i].indexOf(" ");
             var key = data[i].substr(0, index);
@@ -142,6 +142,21 @@ pokedex.getMoveBP = function (moveId) {
     return powerList[moveId];
 };
 
+pokedex.getZBP = function (moveId) {
+    if (zPowerList === undefined) {
+        zPowerList = {};
+        var data = sys.getFileContent(moveDir + "zpower.txt").split("\n");
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var power = data[i].substr(index + 1);
+            zPowerList[key] = power;
+        }
+    }
+    
+    return zPowerList[moveId] || false;
+};
+
 pokedex.getMoveCategory = function (moveId) {
     if (categoryList === undefined) {
         categoryList = {};
@@ -208,6 +223,21 @@ pokedex.getMoveEffect = function (moveId) {
         return "Deals normal damage.";
     }
     return moveEffList[moveId].replace(/[\[\]{}]/g, "");
+};
+
+pokedex.getZEffect = function (moveId) {
+    if (zEffList === undefined) {
+        zEffList = {};
+        var data = sys.getFileContent(moveDir + "zeffect.txt").split("\n");
+        for (var i = 0; i < data.length; i++) {
+            var index = data[i].indexOf(" ");
+            var key = data[i].substr(0, index);
+            var effect = data[i].substr(index + 1);
+            zEffList[key] = effect;
+        }
+    }
+    
+    return zEffList[moveId] || false;
 };
 
 pokedex.getMoveContact = function (moveId) {
@@ -307,6 +337,5 @@ pokedex.getBerryType = function (berryId) {
     }
     return berryTypeList[berryId];
 };
-
 
 module.exports = pokedex;

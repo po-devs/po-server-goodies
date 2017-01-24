@@ -117,7 +117,6 @@ function Hangman() {
 
     this.unownGuess = function () {     
         var i, x, y, z, count = 0;
-
         x = Math.floor(Math.random() * validFills.length);
         y = validFills[x];
         validFills.splice(x, 1);
@@ -360,7 +359,7 @@ function Hangman() {
                 thing = "The time limit was restored to " + suddenDeathTime / 60 + " minute(s)!";
             }
         }        
-        usedAnswers.push(ans.toLowerCase());        
+        usedAnswers.push(ans.toLowerCase());      
         if (ans.toLowerCase() === word.toLowerCase()) {
             hangbot.sendAll("" + sys.name(src) + " answered " + ans + "!", hangchan);            
             var p = 0,
@@ -487,17 +486,19 @@ function Hangman() {
         if (winner && !script.cmp(winner, hostName)) {
             if (sys.isInChannel(sys.id(winner), hangchan)) {
                 this.setWinner(winner, false);
-            } 
+            }
             else {
                 this.setWinner(undefined, true);
             }
         } 
         else if (sys.isInChannel(sys.id(hostName), hangchan)) {
-            this.setWinner(hostName, (hostIpArray.indexOf(null) !== -1 && hostName == hangbot.name));
+            this.setWinner(hostName, (hostIpArray.indexOf(null) > -1 && hostName == hangbot.name));
         }
-        else if (!pendingEvent) {
-            hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);                
-            this.setWinner(undefined, true);
+        else {
+            if (!pendingEvent) {
+                hangbot.sendAll((isEventGame ? "A":"The winner isn't in the channel, so a") + "nyone may start a game now!", hangchan);
+            }
+            this.setWinner(undefined, !pendingEvent);
         }
         if (gameMode === suddenDeath) {
             suddenDeathTime = suddenDeathLimit;
@@ -627,7 +628,7 @@ function Hangman() {
                 }
             }       
             for (y in keys) {
-                if (keys[y] != "-") {
+                if (alphabet.indexOf(keys[y]) > -1) {
                     validFills.push(y);
                 }
                 tossUpOrder.push(y);
@@ -694,7 +695,7 @@ function Hangman() {
             return;
         }
         var randomGame = autoGames[sys.rand(0, autoGames.length)].split(":");
-        var a = randomGame[2].toLowerCase(),
+        var a = randomGame[2].replace(/\-/g, " ").replace(/[^A-Za-z0-9\s']/g, "").replace(/^\s+|\s+$/g, '').replace(/ {2,}/g," ").toLowerCase(),
             h = randomGame[3],
             p = randomGame.length < 5 ? defaultParts : randomGame[4];
         isEventGame = isEvent;
@@ -791,13 +792,13 @@ function Hangman() {
         } else {
             w = winners[0];
         }
-        hangbot.sendAll("" + w + " has won " + nonFlashing(hostName) + "'s game with " + maxPoints + " points!", hangchan);
+        hangbot.sendAll(w + " has won " + nonFlashing(hostName) + "'s game with " + maxPoints + " points!", hangchan);
         var ranking = [],
             p;
         for (p in points) {
-            ranking.push(p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")");
+            ranking.push((script.cmp(w, p) ? "<b>" : "") + p + " (" + points[p] + " points" + (p in misses ? ", " + misses[p] + " miss(es)" : "") + ")" + (script.cmp(w, p) ? "</b>" : ""));
         }
-        sys.sendAll("±Results: " + ranking.join(", "), hangchan);
+        sys.sendHtmlAll("<font color=#3DAA68><timestamp/> <b>±Results:</b></font>  " + ranking.join(", "), hangchan);
         if (isEventGame) {
             hangbot.sendAll(w + " won an Event Game and received 1 Leaderboard point!", hangchan);
             var lbWon = this.getPropCase(leaderboards.current, w),
@@ -1190,6 +1191,17 @@ function Hangman() {
         }
         newQ = result.answer;
 
+        for (var e in autoGames) {
+            var game = autoGames[e].split(":");
+            var i = game[0],
+                u = game[1],
+                a = game[2],
+                h = game[3];
+            if (script.cmp(a, newQ) && script.cmp(h, newH)) {
+                hangbot.sendMessage(src, "An identical game already exists. (Index: " + i + " - Word: " + a + " - Hint: " + h + " - User: " + u + ")", hangchan);
+                return;
+            }
+        }
         /*if (isNaN(newC)) {
             hangbot.sendMessage(src, "Number of chances must be a valid number higher or equal to " + minBodyParts + "!", hangchan);
             return;
@@ -1648,7 +1660,7 @@ function Hangman() {
             "/hangmanunban: To hangman unban a user.",
             "/hangmanbans: Searches the hangman banlist, show full list if no search term is entered.",
             "/flashhas: Flashes all Hangman Admins. Use /flashhas [phrase] to use a different message (abuse will be punished for).",
-            "/passha: To give your Hangman Admin powers to an alt.",
+            "/passha: To give your Hangman Admin powers to an alt. /passhas to do it silently.",
             "/searchquest: To search a question in the autogame/eventgame data base. Format /searchquest query:criteria where criteria is (w)ord (default), (h)int, (i)ndex or (e)ditor.",
             "/checkgame: To see the answer of a game (only once per game). Prevents playing if used.",
             "/changelog: Display event game edit logs. Format /changelog range:criteria"
@@ -1703,7 +1715,7 @@ function Hangman() {
         else {
             command = message.substr(0).toLowerCase();
         }
-        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "flashhas", "passha", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
+        if (channel !== hangchan && ["hangmanban", "hangmanunban", "hangmanbans", "hangmanmute", "hangmanunmute", "hangmanmutes", "hangmanadmins", "hadmins", "has", "flashhas", "passha", "passhas", "hangmanadminoff", "hangmanadmin", "hangmansadmin", "hangmansuperadmin", "shangmanadmin", "shangmansuperadmin", "shangmanadminoff"].indexOf(command) === -1) {
             return false;
         }
         if (command === "help") {
@@ -1754,11 +1766,11 @@ function Hangman() {
             hangman.flashlist(src);
             return true;
         }
-        if (hangman.authLevel(src) < 1 && !(command === "end" && hostIpArray.indexOf(sys.ip(src)) !== -1)) {
+        if (hangman.authLevel(src) < 1 && !(command === "end" && script.cmp(sys.name(src), hostName))) {
             return false;
         }
         var id;
-        if (command == "passha") {
+        if (command === "passha" || command === "passhas") {
             var oldname = sys.name(src).toLowerCase();
             if (commandData === undefined) {
                 sys.sendMessage(src, "±Unown: Enter a username!");
@@ -1801,17 +1813,15 @@ function Hangman() {
             if (id !== undefined) {
                 SESSION.users(id).hangmanAdmin = true;
             }
-            sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
-            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!");
+            if (command === "passha") {
+                sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+            }
+            sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!", channel);
             return true;
         }
 
-        if (command === "end") {
-            hangman.endGame(src);
-            return true;
-        }
-        if (command === "endevent") {
-            hangman.endGame(src, true);
+        if (command === "end" || command === "endevent") {
+            hangman.endGame(src, command === "endevent");
             return true;
         }
 

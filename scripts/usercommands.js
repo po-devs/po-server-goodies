@@ -108,7 +108,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }
-    if ((command === "me" || command === "rainbow") && !SESSION.channels(channel).muteall) {
+    if ((command === "me" || command === "rainbow" || command === "fullrainbow") && !SESSION.channels(channel).muteall) {
         if (SESSION.channels(channel).meoff) {
             normalbot.sendMessage(src, "/me was turned off.", channel);
             return;
@@ -150,7 +150,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (command === "me") {
             var colour = script.getColor(src);
             sendChanHtmlAll("<font color='" + colour + "'><timestamp/> *** <b>" + utilities.html_escape(sys.name(src)) + "</b> " + messagetosend + "</font>", channel);
-        } else if (command === "rainbow") {
+        } else if (command === "rainbow" || command === "fullrainbow") {
             if (script.isOfficialChan(channel) && sys.auth(src) < 1) {
                 return;
             }
@@ -177,7 +177,13 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (auth) {
                 toSend.push("</i>");
             }
-            toSend.push(messagetosend);
+            if (command === "fullrainbow") {    
+                for (i = 0; i < messagetosend.length; ++i) {
+                    toSend.push("<span style='color:" + randColour() + "'>" + utilities.html_escape(messagetosend[i]) + "</span>");
+                }
+            } else {
+                toSend.push(messagetosend);                
+            }
             sendChanHtmlAll(toSend.join(""), channel);
         }
         script.afterChatMessage(src, "/" + command + " " + commandData, channel);
@@ -269,7 +275,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** Pokémon Online Server Rules ***", channel);
-        sys.sendMessage(src, "", channel);  
+        sys.sendMessage(src, "", channel); 
         for (var num in script.rules) {
             for (var e in script.rules[num][language]) {
                 sys.sendMessage(src, script.rules[num][language][e], channel);
@@ -355,10 +361,10 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         };
         var printOnlineOffline = function (name) {
             name = name.toLowerCase();
-            if (sys.id(name) === undefined) {
-                sys.sendMessage(src, name, channel);
-            } else {
-                if (doNotShow.indexOf(name) === -1) {
+            if (doNotShow.indexOf(name) === -1) {
+                if (sys.id(name) === undefined) {
+                    sys.sendMessage(src, name, channel);
+                } else {
                     sys.sendHtmlMessage(src, "<timestamp/><font color = " + script.getColor(sys.id(name)) + "><b>" + name.toCorrectCase() + "</b></font>", channel);
                 }
             }
@@ -678,51 +684,30 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }*/
-    //Messy but who really cares?
-    function translate(commandData) {
-        switch (commandData.toLowerCase()) {
-            case "darmanitan-z": commandData = "Darmanitan-D"; break;
-            case "meloetta-p": commandData = "Meloetta-S"; break;
-            case "hoopa-u": commandData = "Hoopa-B"; break;
-            case "rotom-wash": commandData = "Rotom-W"; break;
-            case "rotom-fan": commandData = "Rotom-S"; break;
-            case "rotom-frost": commandData = "Rotom-F"; break;
-            case "rotom-heat": commandData = "Rotom-H"; break;
-            case "rotom-mow": commandData = "Rotom-C"; break;
-            case "giratina-origin": commandData = "Giratina-O"; break;
-            case "shaymin-sky": commandData = "Shaymin-S"; break;
-            case "deoxys-attack": commandData = "Deoxys-A"; break;
-            case "deoxys-defense": commandData = "Deoxys-D"; break;
-            case "deoxys-speed": commandData = "Deoxys-S"; break;
-            case "tornadus-therian": commandData = "Tornadus-T"; break;
-            case "thundurus-therian": commandData = "Thundurus-T"; break;
-            case "landorus-therian": commandData = "Landorus-T"; break;
-            case "kyurem-black": commandData = "Kyurem-B"; break;
-            case "kyurem-white": commandData = "Kyurem-W"; break;
-            case "porygonz":
-            case "porygon z": commandData = "Porygon-Z"; break;
-            case "porygon-2":
-            case "porygon 2": commandData = "Porygon2"; break;
-            default: commandData = commandData.replace(/flabebe/i, "Flabébé");
+    function tierBans(commandData, pokeId) {
+        if (pokeId == sys.pokeNum("Mega Rayquaza")) {
+            return "Anything Goes"; //lazy way of doing it
         }
-        return commandData;
-    }
-    function tierBans(commandData) {
         var stone = 0, aforme;
-        if (commandData.indexOf(" ") !== -1) {
-            stone = sys.stoneForForme(pokeId);
+        if (commandData.indexOf(".") !== -1) {
+            //Intentionally Empty. Like the vocabulary of a Mime.
+        } else if (commandData.indexOf(" ") !== -1 && commandData.indexOf("-") === -1) {
+            stone = sys.stoneForForme(pokeId); //needs to inherit from function before id is replaced below
             aforme = commandData.split(" ");
             pokeId = sys.pokeNum(aforme[1]);
         } else {
             aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-S") || pokeId == sys.pokeNum("Darmanitan-D") || pokeId == sys.pokeNum("Aegislash-B")) {
+            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-Pirouette") || pokeId == sys.pokeNum("Darmanitan-Zen") || pokeId == sys.pokeNum("Aegislash-Blade")) {
                 pokeId = sys.pokeNum(aforme[0]);
             }
         }
-        var tiers = ["ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
+        // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
+        // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
+        var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
+        if (pokeId > 721) { tiers = ["SM Ubers", "SM OU", "SM LC"]; }
         for (var x = 0; x < tiers.length; x++) {
-            if (sys.isItemBannedFromTier(stone, tiers[x])) {
+            if (stone > 0 && sys.isItemBannedFromTier(stone, tiers[x])) {
                 break;
             }
             if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
@@ -731,20 +716,22 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return allowed.join(", ");
     }
-    
     if (command === "pokemon") {
         if (commandData === undefined) {
             normalbot.sendMessage(src, "Please specify a Pokémon!", channel);
             return;
         }
-        commandData = translate(commandData).split(":");
+        commandData = utilities.inputToPokemon(commandData).split(":");
+        if (script.cmp(commandData[0], "Type")) {
+            commandData[0] = "Type: Null"; //easy fix for now. inb4 more pokemon with colons in their name
+        }
         var forme = !isNaN(commandData[1]) ? commandData[1] : 0;
         commandData = commandData[0];
         var pokeId;
         if (isNaN(commandData)) {
             pokeId = sys.pokeNum(commandData);
         } else {
-            if (commandData < 1 || commandData > 721) {
+            if (commandData < 1 || commandData > 802) {
                 normalbot.sendMessage(src, commandData + " is not a valid Pokédex number!", channel);
                 return;
             }
@@ -764,7 +751,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var levels = [5, 50, 100];
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4># " + pokeId % 65536 + " " + sys.pokemon(pokeId) + "</font></b>", channel);
-        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=6'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=6'>", channel);
+        sys.sendHtmlMessage(src, "<img src='pokemon:num=" + pokeId + "&gen=7'><img src='pokemon:num=" + pokeId + "&shiny=true&gen=7'>", channel);
         sys.sendHtmlMessage(src, "<b>Type:</b> " + type1 + (type2 === "???" ? "" : "/" + type2), channel);
         sys.sendHtmlMessage(src, "<b>Abilities:</b> " + ability1 + (sys.pokemon(pokeId).substr(0, 5) === "Mega " ? "" : (ability2 === "(No Ability)" ? "" : ", " + ability2) + (ability3 === "(No Ability)" ? "" : ", " + ability3 + " (Hidden Ability)")), channel);
         sys.sendHtmlMessage(src, "<b>Height:</b> " + pokedex.getHeight(pokeId) + " m", channel);
@@ -804,19 +791,19 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
 
-        var allowed = tierBans(commandData);
+        var allowed = tierBans(commandData, pokeId);
         sys.sendHtmlMessage(src, "<b>Allowed in tiers: </b>" + allowed, channel);
         return;
     }
     if (command === "tier") {
-        commandData = translate(commandData);
+        commandData = utilities.inputToPokemon(commandData);
         var pokeId = sys.pokeNum(commandData);
         if (!pokeId) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
             return;
         }
 
-        var allowed = tierBans(commandData);
+        var allowed = tierBans(commandData, pokeId);
         sys.sendHtmlMessage(src, "<b>" + sys.pokemon(sys.pokeNum(commandData)) + " is allowed in tiers: </b>" + allowed, channel);
         return;
     }
@@ -836,15 +823,21 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var accuracy = pokedex.getMoveAccuracy(moveId);
         var PP = pokedex.getMovePP(moveId);
         var contact = (pokedex.getMoveContact(moveId) ? "Yes" : "No");
+        var effect = pokedex.getMoveEffect(moveId);
+        var zBP = pokedex.getZBP(moveId);
+        var zEffect = pokedex.getZEffect(moveId);
         sys.sendHtmlMessage(src, "", channel);
         sys.sendHtmlMessage(src, "<b><font size = 4>" + sys.move(moveId) + "</font></b>", channel);
         var table = "<table border = 1 cellpadding = 2>";
-        table += "<tr><th>Type</th><th>Category</th><th>Power</th><th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
-        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td><td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + PP * 8 / 5 + ")</center></td><td><center>" + contact + "</center></td></tr>";
+        table += "<tr><th>Type</th><th>Category</th><th>Power</th>" + (zBP ? "<th>Z-Power</th>" : "") + "<th>Accuracy</th><th>PP (Max)</th><th>Contact</th></tr>";
+        table += "<tr><td><center>" + type + "</center></td><td><center>" + category + "</center></td><td><center>" + BP + "</center></td>" + (zBP ? "<td><center>" + zBP + "</center></td>" : "") + "<td><center>" + accuracy + "</center></td><td><center>" + PP + " (" + Math.floor(PP * 8 / 5) + ")</center></td><td><center>" + contact + "</center></td></tr>";
         table += "</table>";
         sys.sendHtmlMessage(src, table, channel);
         sys.sendHtmlMessage(src, "", channel);
-        sys.sendHtmlMessage(src, "<b>Effect:</b> " + pokedex.getMoveEffect(moveId), channel);
+        sys.sendHtmlMessage(src, "<b>Effect:</b> " + effect, channel);
+        if (zEffect) {
+            sys.sendHtmlMessage(src, "<b>Z-Effect:</b> " + zEffect, channel);
+        }
         sys.sendHtmlMessage(src, "", channel);
         return;
     }
@@ -855,6 +848,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         var abilityId = sys.abilityNum(commandData);
+        if (commandData.toLowerCase() === "rks system") {
+            abilityId = 217;
+        }
+        if (commandData.toLowerCase() === "power of alchemy") {
+            abilityId = 230;
+        }
+        if (commandData.toLowerCase() === "soul-heart") {
+            abilityId = 196;
+        }
         if (!abilityId) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
@@ -942,11 +944,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         commandData = commandData.split(":");
-        if (commandData.length !== 2) {
+        if (commandData.length < 2 || commandData.length > 3) {
             normalbot.sendMessage(src, "Incorrect syntax! Format for this command is: /canlearn Pokemon:move", channel);
             return;
         }
-        var pokeId = sys.pokeNum(commandData[0]);
+        if (commandData.length === 3) { // type: null
+            commandData[0] += commandData[1];
+            commandData[1] = commandData[2];
+        }
+        var pokeId = sys.pokeNum(utilities.inputToPokemon(commandData[0]));
         var moveId = sys.moveNum(commandData[1]);
         if (!pokeId) {
             if (!moveId) {
@@ -1009,6 +1015,14 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             team = commandData[1];
         }
         if (tier) {
+            var ccbftiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Hackmons Inverted CC", "Battle Factory", "Battle Factory 6v6"];
+            for (var f in ccbftiers) {
+                if (ccbftiers[f] === tier) { break; } // if they are changing to a ccbftier, this won't matter.
+                if (ccbftiers[f] === sys.tier(src, team)) {
+                    normalbot.sendMessage(src, "You cannot switch from " + ccbftiers[f] + " without loading a new team first.", channel);
+                    return;
+                }
+            }
             if (!tier_checker.has_legal_team_for_tier(src, team, tier)) {
                 normalbot.sendMessage(src, "You cannot switch to " + tier + ".", channel);
             }
@@ -1067,6 +1081,7 @@ exports.help = [
     "/rules [x]: Shows the rules (x is optionally parameter to show a specific rule).",
     "/auth [owners/admins/mods]: Lists auth of given level, shows all auth if left blank.",
     "/contributors: Lists contributors to Pokémon Online.",
+    "/guide: Links to client guides and more. Inputing client type can list different guides.", // the code for this is in scripts.js
     "/intier [tier]: Displays all unidled players in a specific tier.",
     "/league: Lists gym leaders and elite four of the PO league.",
     "/notice: Allows you to view current events.",

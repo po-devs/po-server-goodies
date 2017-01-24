@@ -22,37 +22,39 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             channelbot.sendMessage(src, data[1] + " is not a valid OS!", channel);
             return;
         }
+        var playerIDs = sys.playersOfChannel(chanid).filter(function (id) {
+            if (filterOS) {
+                return sys.os(id) === data[1];
+            } else {
+                return id;
+            }
+        });
         var chanName = sys.channel(chanid);
         if (!isbot) {
-            var names = sys.playersOfChannel(chanid).filter(function (id) {
-                if (filterOS) {
-                    return sys.os(id) === data[1];
-                } else {
-                    return id;
-                }
-            }).map(sys.name);
+            var names = playerIDs.map(sys.name);
             channelbot.sendMessage(src, (filterOS ? data[1][0].toUpperCase() + data[1].slice(1).toLowerCase() + " " : "") + "Users of channel #" + chanName + " are: " + names.join(", "), channel);
         } else {
-            var players = sys.playersOfChannel(chanid);
             var objectList = [];
-            for (var i = 0; i < players.length; ++i) {
-                var name = sys.name(players[i]);
-                objectList.push({'id': players[i], 'name': name});
+            for (var i = 0; i < playerIDs.length; ++i) {
+                objectList.push({'id': playerIDs[i], 'name': sys.name(playerIDs[i])});
             }
             var channelData = {'type': 'ChannelUsers', 'channel-id': chanid, 'channel-name': chanName, 'players': objectList};
+            if (filterOS) {
+                channelData["os"] = data[1];
+            }
             sys.sendMessage(src, "+ChannelUsers:"+JSON.stringify(channelData), channel);
         }
         return;
     }
     if (command == "onrange") {
-        var subip = commandData;
+        var subip = commandData.replace("::ffff:", "");
         var players = sys.playerIds();
         var players_length = players.length;
         var names = [];
         for (var i = 0; i < players_length; ++i) {
             var current_player = players[i];
             if (!sys.loggedIn(current_player)) continue;
-            var ip = sys.ip(current_player);
+            var ip = sys.ip(current_player).replace("::ffff:", "");
             if (ip.substr(0, subip.length) == subip) {
                 names.push(current_player);
             }
@@ -61,7 +63,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (names.length > 0) {
             var msgs = [];
             for (var i = 0; i < names.length; i++) {
-                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]) + ")");
+                msgs.push(sys.name(names[i]) + " (" + sys.ip(names[i]).replace("::ffff:", "") + ")");
             }
             sys.sendMessage(src,"Players: on range " + subip + " are: " + msgs.join(", "), channel);
         } else {
@@ -82,14 +84,26 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         return;
     }
     if (command == "onversion") {
-        commandData = parseInt(commandData, 10);
+        var lt = commandData.indexOf("<") > -1;
+        commandData = parseInt(commandData.replace(/</g, ""), 10);
         if (isNaN(commandData)) {
+            normalbot.sendMessage(src, commandData + " is not a valid version number", channel);
             return;
         }
-        var output = sys.playerIds().filter(function (id) {
-            return sys.version(id) === commandData && sys.loggedIn(id);
-        }).map(sys.name);
-        querybot.sendMessage(src, "Players on version " + commandData + " are: " + output.join(", "), channel);
+        var isAndroid = commandData < 2000;
+        var output;
+        if (lt) {
+           output = sys.playerIds().filter(function (id) {
+                var ver = sys.version(id);
+                //Ignore webclient (ver 1) and try to filter based on Android or PC.
+                return  ver <= commandData && ver > 1 && sys.loggedIn(id) && (isAndroid ? ver < 2000 : ver >= 2000);
+            }).map(sys.name); 
+        } else {
+            output = sys.playerIds().filter(function (id) {
+                return sys.version(id) === commandData && sys.loggedIn(id);
+            }).map(sys.name);
+        }
+        querybot.sendMessage(src, "Players on version " + commandData + (lt ? " or earlier " : "") + " are: " + output.join(", "), channel);
         return;
     }
     if (command === "tiers") {
@@ -490,7 +504,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'username': name,
                 'auth': authLevel,
                 'contributor': contribution,
-                'ip': ip + (tar ? " (" + SESSION.users(tar).hostname + ")" : ""),
+                'ip': ip.replace("::ffff:", "") + (tar ? " (" + SESSION.users(tar).hostname.replace("::ffff:", "") + ")" : ""),
                 'online': online,
                 'registered': registered,
                 'lastlogin': lastLogin,
@@ -498,11 +512,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'bans' : bans,
                 'client' : tar ? sys.os(tar) : "Unknown",
                 'version' : tar ? sys.version(tar) : "Unknown",
-                'teams' : tar ? teams : "Unknown"
+                'teams' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) ? teams : "Unknown",
+                'uniqueid' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
-            querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
+            querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip.replace("::ffff:", "") + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
             var whois = function(resp) {
                 /* May have dced, this being an async call */
@@ -538,7 +553,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 var logintime = false;
                 if (online) logintime = SESSION.users(tar).logintime;
                 var data = [
-                    "User: " + name + " @ " + ip,
+                    "User: " + name + " @ " + ip.replace("::ffff:", ""),
                     "Auth: " + authName,
                     "Online: " + (online ? "yes" : "no"),
                     "Registered name: " + (registered ? "yes" : "no"),
@@ -648,13 +663,15 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return !(myAuth < 3 && sys.dbAuth(target) > myAuth);
         };
 
-        /* Higher auth: don't give the alias list */
+        /* Higher auth: don't give the alias list
+        Literally bypassable by using /whois or /showip then using the IP in /aliases
         if (!allowedToAlias(commandData)) {
             querybot.sendMessage(src, "Not allowed to alias higher auth: " + commandData, channel);
             return;
-        }
+        }*/
 
-        var smessage = "The aliases for the IP " + ip + " are: ";
+        ip = ip.indexOf("::ffff:") > -1 ? ip : "::ffff:" + ip; //allows using IP to search aliases again
+        var smessage = "The aliases for the IP " + ip.replace("::ffff:", "") + " are: ";
         var prefix = "";
         sys.aliases(ip).map(function(name) {
             return [sys.dbLastOn(name), name];
@@ -664,7 +681,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             if (!allowedToAlias(alias)) {
                 return;
             }
-            var status = (sys.id(alias) !== undefined) ? "online" : "Last Login: " + last_login;
+            var status = (sys.id(alias) !== undefined) ? "online, " + sys.os(sys.id(alias)) : /*"Last Login: " +*/ last_login;
             smessage = smessage + alias + (noDates ? "" : " ("+status+")") + ", ";
             if (smessage.length > max_message_length) {
                 querybot.sendMessage(src, prefix + smessage + " ...", channel);
@@ -685,7 +702,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             querybot.sendMessage(src, "This user does not have a valid IP.", channel);
             return;
         }
-        querybot.sendMessage(src, "User: " + name + " | IP: " + ip + ".", channel);
+        querybot.sendMessage(src, "User: " + name + " | IP: " + ip.replace("::ffff:", "") + ".", channel);
         return;
     }
     if (command === "tempban") {
@@ -733,8 +750,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             normalbot.sendAll(targetName + " was initially tempbanned for another " + getTimeString(sys.dbTempBanTime(targetName)) + ".", staffchannel);
             sys.unban(targetName);
         }
-        normalbot.sendAll("Target: " + targetName + ", IP: " + ip, staffchannel);        
+        normalbot.sendAll("Target: " + targetName + ", IP: " + ip.replace("::ffff:", ""), staffchannel);
         sys.sendHtmlAll("<b><font color=red>" + targetName + " was banned by " + nonFlashing(sys.name(src)) + " for " + getTimeString(minutes) + "!</font></b>");
+        callplugins("onBan", src, targetName);
         sys.tempBan(targetName, parseInt(minutes/60, 10));
         script.kickAll(ip);
         var authName = sys.name(src);
@@ -784,6 +802,31 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         script.unban("smute", src, tar, commandData);
         return;
     }
+    if (command == "showteam") {
+        var teamCount = sys.teamCount(tar);
+        var index = [];
+        for (var i = 0; i < teamCount; i++) {
+            index.push(i);
+        }
+        var teams = index.map(function(index) {
+            return script.importable(tar, index, false, true);
+        }, this).filter(function(data) {
+            return data.length > 0;
+        }).map(function(team) {
+            return "<tr><td><pre>" + team.join("<br>") + "</pre></td></tr>";
+        }).join("");
+        if (teams) {
+            sys.sendHtmlMessage(src, "<table border='2'>" + teams + "</table>",channel);
+            normalbot.sendAll(sys.name(src) + " just viewed " + sys.name(tar) + "'s team.", staffchannel);
+            if (sys.auth(src) < 2) {
+                normalbot.sendMessage(tar, sys.name(src) + " just viewed your currently loaded teams."); //all channels so they dont miss it hopefully
+            }
+        } else {
+            normalbot.sendMessage(src, "That player has no teams with valid pokemon.", channel);
+        }
+        sys.appendToFile("scriptdata/showteamlog.txt", "{0} viewed the team of {1} -- ({2})\n".format(sys.name(src), sys.name(tar), new Date().toUTCString()));
+        return;
+    }
     return "no command";
 };
 exports.help =
@@ -816,7 +859,9 @@ exports.help =
         "/watchlist: Lists users having their battle activity tracked.",
         "/onrange: To view who is on an IP range.",
         "/onos: Lists players on a certain operating system (May lag a little with certain OS)",
+        "/onversion: Lists players on a certain version. Use \"<\" to include users on previous versions too.",
         "/tiers: To view the tier(s) of a user.",
         "/battlehistory: To view a user's battle history.",
-        "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system."
+        "/channelusers: Lists users on a channel. Use /channelusers channel:os to filter results by operating system.",      
+        "/showteam: Displays the team of a user (to help people who have problems with event moves or invalid teams)."
     ];

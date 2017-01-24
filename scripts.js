@@ -1,4 +1,4 @@
-// This is the official Pokemon Online Scripts
+﻿// This is the official Pokemon Online Scripts
 // These scripts will only work on 2.0.00 or newer.
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 // You may change these variables as long as you keep the same type
@@ -98,10 +98,10 @@ var updateModule = function updateModule(module_name, callback) {
    }
 };
 
-var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot;
+var channel, contributors, mutes, mbans, safbans, smutes, detained, hmutes, mafiaSuperAdmins, hangmanAdmins, hangmanSuperAdmins, staffchannel, channelbot, normalbot, bot, mafiabot, kickbot, capsbot, checkbot, coinbot, countbot, tourneybot, battlebot, commandbot, querybot, rankingbot, hangbot, bfbot, scriptChecks, lastMemUpdate, bannedUrls, mafiachan, sachannel, tourchannel, rangebans, proxy_ips, mafiaAdmins, authStats, nameBans, chanNameBans, isSuperAdmin, cmp, key, battlesStopped, lineCount, maxPlayersOnline, pastebin_api_key, pastebin_user_key, getSeconds, getTimeString, sendChanMessage, sendChanAll, sendMainTour, VarsCreated, authChangingTeam, usingBannedWords, repeatingOneself, capsName, CAPSLOCKDAYALLOW, nameWarns, poScript, revchan, triviachan, watchchannel, lcmoves, hangmanchan, ipbans, battlesFought, lastCleared, blackjackchan, namesToWatch, allowedRangeNames, reverseTohjo, safaribot, safarichan, tourconfig, teamsbot, autoteamsAuth;
 
 var pokeDir = "db/pokes/";
-var moveDir = "db/moves/6G/";
+var moveDir = "db/moves/7G/";
 var abilityDir = "db/abilities/";
 var itemDir = "db/items/";
 sys.makeDir("scripts");
@@ -125,7 +125,7 @@ var cleanFile = function(filename) {
     if (typeof sys != 'undefined')
         sys.appendToFile(filename, "");
 };
-[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"safbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"watchNamesLog.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt", Config.dataDir+"league.json"].forEach(cleanFile);
+[Config.dataDir+"mafia_stats.json", Config.dataDir+"suspectvoting.json", Config.dataDir+"mafiathemes/metadata.json", Config.dataDir+"channelData.json", Config.dataDir+"mutes.txt", Config.dataDir+"mbans.txt", Config.dataDir+"mwarns.json", Config.dataDir+"safbans.txt", Config.dataDir+"hmutes.txt", Config.dataDir+"smutes.txt", Config.dataDir+"rangebans.txt", Config.dataDir+"contributors.txt", Config.dataDir+"ipbans.txt", Config.dataDir+"namesToWatch.txt", Config.dataDir+"watchNamesLog.txt", Config.dataDir+"hangmanadmins.txt", Config.dataDir+"hangmansuperadmins.txt", Config.dataDir+"pastebin_user_key", Config.dataDir+"secretsmute.txt", Config.dataDir+"ipApi.txt", Config.dataDir + "notice.html", Config.dataDir + "rangewhitelist.txt", Config.dataDir + "idbans.txt", Config.dataDir+"league.json", Config.dataDir + "autoteamsauth.txt"].forEach(cleanFile);
 
 var autosmute = sys.getFileContent(Config.dataDir+"secretsmute.txt").split(':::');
 var crc32 = require('crc32.js').crc32;
@@ -405,6 +405,50 @@ step: function() {
         };
         sys.writeToFile(JSONP_FILE, "setServerStats(" + JSON.stringify(stats) + ");");
     }
+    
+    var banlists = {
+        "mute": {"list": script.mutes, "term": "mute", "bot": normalbot},
+        "smute": {"list": script.smutes, "term": "smute", "bot": normalbot},
+        "mban": {"list": script.mbans, "term": "Mafia ban", "bot": mafiabot},
+        "hmute": {"list": script.hmutes, "term": "Hangman ban", "bot": hangbot},
+        "safban": {"list": script.safbans, "term": "Safari ban", "bot": safaribot}
+    };
+    for (var p in banlists) {
+        var hash = banlists[p].list.hash,
+            term = banlists[p].term,
+            usebot = banlists[p].bot;
+        
+        for (var ip in hash) {
+            var split = hash[ip].split(":"),
+                by = split[1],
+                expires = split[2],
+                name = split[3],
+                reason = split[4];
+            if (expires > 0 && sys.time() > expires) {
+                sys.playerIds().forEach(function(id) {
+                    if (sys.loggedIn(id) && ip === sys.ip(id)) {
+                        SESSION.users(id).un(p);
+                        if (p !== "smute") {
+                            usebot.sendMessage(id, "Your " + term + " has expired.");
+                        }
+                    }
+                });
+                if (ip in hash) { // no online user with matching ip
+                    banlists[p].list.remove(ip);
+                }
+                
+                var msg = nonFlashing(name) + "'s " + term + " has expired. [IP: " + ip.replace("::ffff:", "") + ", By: " + nonFlashing(by) + ", Reason: " + reason + "]";
+                
+                usebot.sendAll(msg, staffchannel);
+                if (["mban", "hmute", "safban"].contains(p)) {
+                    usebot.sendAll(msg, sachannel);
+                }
+                else {
+                    usebot.sendAll(msg, watchchannel);
+                }
+            }
+        }
+    }
 },
 
 serverStartUp : function() {
@@ -419,109 +463,73 @@ init : function() {
         "1": {
             "english": [
                 "1. Pokémon Online is an international server:",
-                "- Respect other peoples' cultures and do not demand they speak English. Everyone is welcome at Pokemon Online, as long as they follow the rules. However, if your username is in a language that reads text from right-to-left, we ask that you do not speak in the main chat, as this can reverse the entire chatroom. We may mute you or ask you to change your name if this happens."
+                "- All cultures and languages are allowed on Pokémon Online and should be treated with respect."
             ],
             "spanish": [
                 "1. Pokémon Online es un servidor internacional:",
-                "- Respeta las culturas ajenas y no demandes que hablen inglés o algun otro idioma que entiendas. Todos estan bienvenidos en Pokémon Online, siempre y cuando sigan las reglas, si tu nombre de usuario esta en un idioma que se lee de derecha a izquierda, te sugerimos que no hables en el chat, ya que esto puede revertir todo el cuadro de chat. Te silenciaremos o te pediremos que cambies de nombre si esto llega a pasar."
+                "- Todas las culturas e idiomas son permitidos en Pokémon Online, y como tales, deben ser respetados."
             ],
             "chinese": [
-                "1.PO官服是一个国际服务器:",
-                "尊重其他民族的文化，不要歧视其他的语种。PO欢迎每一个遵守相关规定的玩家，无论他们来自何方，说着何种语言。但请注意，如果您的语言系统是自右向左读取文本，我们要求您不要在主频道聊天，因为这可能使整个聊天室混乱。如果发生这种情况，我们可能会对您禁言或要求您改变您的名字。"
+                "1. PO官服是一个国际服务器:",
+                "- PO欢迎来自世界各地的语言文化，请所有用户尊重这些不同的语言文化。"
             ],
             "french": [
-                "1. Pokémon est un serveur international:",
-                "Il faut respecter la culture des autres et ne pas demander s'ils parlent Anglais. Tout le monde est bienvenue à Pokémon Online, tant que vous respectez les règles. Cependant, si votre nom d'utilisateur est un nom qui se lit de droite à gauche, on vous demandera de le changer parce qu'il amène la discussion entière à se renverser. On peut vous rendre muet ou vous demander de changer de nom si cela arrive."
+                "1. Pokémon Online est un serveur international:",
+                "- Toutes les cultures et les langues sont permises sur Pokémon Online et doivent être respectées."
             ]
         },
         "2": {
             "english": [
-                "2. No advertising, excessive messages or caps, or inappropriate/obscene content:",
-                "- Do not post links unless they are to notable sites (Youtube, Smogon, Serebii, etc). Do not monopolize the chat with large amounts of messages, or short ones in rapid succession. You may advertise private channels provided you do not do it excessively. Posting pornographic or obscene content is punishable with a ban. Posting social media (Twitter/Facebook/kik) accounts is also punishable."         
+                "2. Do not disrupt the chat:",
+                "- Advertising (including social media accounts), spamming, using all-caps, and flooding disrupt the flow of the chat and are not allowed. Use the \"Find Battle\" option or join a tournament instead of repeatedly asking for battles in the chat."
             ],
             "spanish": [
-                "2. Nada de publicidad, mensajes excesivamente largos y sin sentido o abuso de mayusculas, nada de contenido inapropiado u obsceno:",
-                "- No publiques ningun enlace a menos que haga referencia a sitios conocidos y seguros (Youtube, Smogon, Serebii, etc). No trates de invadir el chat con mensajes extremadamente largos, o con mensajes cortos publicados de forma muy rápida. Puedes publicar tu canal siempre y cuando no lo hagas en exceso. Publicar contenido pornográfico o contenido obsceno se castiga con un ban. Publicar páginas de redes sociales que no sean de Pokémon Online (Facebook/Twitter/Kik) también esta prohibido y se castiga con un ban."               
+                "2. No quebrantar el chat:",
+                "- La publicidad (incluyendo cuentas de redes sociales), spamming, teclear todo en mayúsculas, flooding (o sea, escribir una oración en múltiples líneas en lugar de una sola), quebrantan y/o desorganizan la fluidez normal del chat y por tanto no son permitidos. Utiliza el botón de \"Buscar Batalla\" o inscríbete a un torneo en lugar de pedir batallas repetidamente en el chat."
             ],
             "chinese": [
-                "2. 不要发送广告、冗余信息、大写刷屏、淫秽信息:",
-                "不要在主聊天频道内发送链接，除非他们来自著名的网站（YouTube，Smogon，Serebii等）。不要试图以自我为中心，左右整个聊天室的话题；不要发送无意义的信息如连续发送省略号和无规则无意义的一串字母（测试网络情使用一个小写字母t 不要使用多个ttt也不是大写的T）你可以适当的宣传PO的某个频道，让大家参与其中，但要有度。发布色情或淫秽内容的将会被封禁。发布社交媒体账号/服务器地址（微博/ Facebook/QQ群号等/其他PO服务器地址 ）也将受到处理。"
+                "2. 不要扰乱聊天秩序:",
+                "- 聊天室不允许任何形式的广告或社交账号（微博/ Facebook/QQ群号/其他PO服务器的地址 ）, 冗余信息，无意义的刷屏和无休止的抱怨。测试网络请用单个小写字母t，希望和他人对战请用 \"寻找对战\"按钮 或者加入 #tournaments 的比赛，而不是在聊天室内约战。"
             ],
             "french": [
-                "2. Pas de publicité , des messages ou des lettres capitales excessives, ou du contenu inapproprié/obscène:",
-                "Ne pas publier des liens à moins qu'ils soient notables (Youtube, Smogon, Serebii, etc). Ne pas prendre le monopole de la discussion avec beaucoup de messages, ou de courts messages rapidement. Vous pouvez faire la publicité à votre chaîne tant que ce n'est pas excessif. Tout contenu pornographique ou obscène peut vous faire banir. Partager des réseaux sociaux (Twitter/Facebook/kik) est également interdit."
+                "2. Ne perturbez pas la discussion:",
+                "- La publicité (inclus les comptes de réseaux sociaux), le spam, l'abus de majuscules, le flood qui perturbe le cours de la discussion ne sont pas permis. Utilisez \"Chercher Combat\" ou rejoignez un tournois au lieu de demander souvent dans la discussion des combats."
             ]
         },
         "3": {
             "english": [
-                "3. Use Find Battle, or join tournaments instead of asking in the main chat:",
-                "- The official channels on Pokemon Online have too much activity to allow battle requests in the chat. Use Find Battle or go join the tournaments channel and participate. The only exception is if you are unable to find a battle for a low-played tier, then asking once every 5 minutes or so is acceptable."
+                "3. Be appropriate and respectful of others:",
+                "- Harassment, flaming, vulgarity, revealing of personal information, or spamming someone's PMs/Challenges will not be tolerated. Do not ask for authority. Needlessly delaying the result of a battle is explicitly forbidden. This is not a dating service. Sexual, inappropriate, or illegal sites and/or content will result in a ban."
             ],
             "spanish": [
-                "3. Usa el botón de buscar batalla, unete a los torneos en lugar de estar constantemente solicitando batallas en el chat:",
-                "- Los canales oficiales en Pokémon Online tienen demasiada actividad como para permitir que cualquiera solicite batallas en el chat. Utiliza el boton de buscar batallas o únete a los torneos en el canal oficial de torneos. La única excepción es si no eres capaz de encontrar una batalla a través del buscador debido a estar en una categoria poco jugada, entonces se te permite solicitar batallas una vez cada 5 minutos, y de forma educada."
+                "3. Se apropiado y respetuoso con los demás:",
+                "- Acosar, insultar, la vulgaridad, revelar información personal, molestar a los demás enviándoles Spam o invitaciones de batalla constantes no será tolerado. No solicites ser Autoridad. Demorar o retrasar el resultado en una batalla está explicitamente prohibido Esto NO es un sitio de citas. Publicar o referir sitios que contengan contenido sexual, inapropiado o ilegal será sancionado con un Ban."
             ],
             "chinese": [
-                "3. 使用寻找对战按钮，或加入Tournaments频道的比赛，而不要问在主聊天频道求战:",
-                "出于PO主聊天频道的聊天内容繁杂，求战不被允许；请使用find battle寻找对战按钮，或者参与Tournaments频道的比赛；不过，如果你在一个没什么人的分级（如LC）可以允许每隔5分钟左右求战一下。"
+                "3. 尊重他人，得体交流与对战:",
+                "- 禁止对他人进行骚扰、挑衅、辱骂、人肉或是故意泄露他人隐私，禁止在与他人的私信、对战、观战中刷屏，或是连续发送挑战等。不要索取权限。严禁恶意挂机或拖延对战时间。这里不是一个约会交友的场所；发送任何非法、色情、不良的网站和内容都会被处于永久封禁。"
             ],
             "french": [
-                "3. Utilisez Find Battle, ou rejoignez les tournois au lieu de demander dans la discussion:",
-                "Les chaînes officielles de Pokémon Online ont beaucoup d'activités pour autoriser de faire ces demandes dans la discussion. Utilisez Find Battle ou rejoignez la chaîne des tournois et participer. La seule exception est si vous jouez un tiers peu joué, à ce moment là demander chaque 5 minutes est acceptable."
+                "3. Soyez appropriés et respectez les autres:",
+                "- Le harcèlement, la provocation, la vulgarité, la divulgation d'informations personnelles ou le spam en message privé ou en défi à quelqu'un d'autre ne sera pas toléré. Ne demandez pas le pouvoir. Ne poussez pas la fin du combat trop loin sans raisons, cela est interdit. Ce n'est pas un site de rencontre. Des sites ou des liens à caractères sexuels, inappropriés ou illégaux vous fera bannir."
             ]
         },
         "4": {
             "english": [
-                "4. Do not ask for authority:",
-                "- By asking, you may have eliminated your chances of becoming one in the future. If you are genuinely interested in becoming a staff member, a good way to get noticed is to become an active member of the community. Engaging others in intelligent chats and offering to help with graphics, programming, or tiering (among others) is a good way to get noticed. Repeated harrasment for auth will be punished."
+                "4. Misuse of the server is prohibited:",
+                "- Do not attempt to cheat the ladder system, exploit bugs, or attempt to find loopholes in the rules. DDoS and other \"cyber attacks\" will not be tolerated. Evading any official punishment is grounds for banning. All appeals can be made on the forums. Do not provide false evidence or claims to the authority, nor waste their time."
             ],
             "spanish": [
-                "4. No solicites autoridad:",
-                "- Al preguntar, es posible que hayas eliminado completamente tus oportunidades de ser una autoridad en el futuro. Si estas interesado en volverte parte del Staff, entonces una buena forma de empezar es ser un miembro activo en la comunidad. Motiva a otros a tener conversaciones inteligentes o productivas, ofrece tu ayuda si tienes habilidad con el arte, programación, las tiers (entre otras cosas) es lo que puedes hacer para que te tomemos en cuenta. El constante acoso a las autoridades para pedir ser tal será sancionado."
+                "4. El uso indebido del servidor está prohibido:",
+                "- No intente hacer trampa en el sistema de ranking, aprovecharse de algún bug o intentar buscar pretextos en las reglas. El DDoS y cualquier otra clase de \"ciber ataque\" no será tolerado. Evadir cualquier sanción oficial constituye la aplicación de un Ban. Todas las apelaciones o solicitudes de desbaneo se pueden hacer desde el foro. No se dirija a la Autoridad con falsas afirmaciones o evidencias, ni tampoco le haga perder tiempo."
             ],
             "chinese": [
-                "4.不要索取权限:",
-                "向管理索取权限很可能将让你失去未来成为权限的机会。如果你对成为一名PO管理真正感兴趣的话，最好的方式是积极的帮助他人，让管理们注意到你对他人的帮助。活跃聊天气氛、帮助PO客户端的编程或者参与平衡分级的讨论等等，是得到注意的好方法。不断地索要权限将会被处罚。"
+                "4. 按照规定使用服务器:",
+                "- 禁止通过任何不公平的手段或是利用服务器的bug与漏洞进行ladder刷分或赚取Tournaments积分。DDoS以及其他任何网络攻击都将遭到严惩。通过任何手段避开封禁、禁言将触发将遭到永久封禁。PO论坛是发布解除封禁请求的唯一去处。不要提供虚假的证据或是浪费管理员的时间。"
             ],
             "french": [
-                "4. Ne pas demander à recevoir l'autorité:",
-                "En demandant, vous perdez vos chances d'en devenir un dans le future. Si vous êtes vraiment interessés de faire parti de l'équipe, une bonne façon de se faire remarquer est devenir un membre actif dans la communauté. Lancer des discussions intelligentes et offrir des aides graphiques, de programmation, ou encore nous aider à rendre nos tiers meilleurs est une bonne façon de se faire remarquer. L'harcèlement continue aux autorités sera punie."
-            ]
-        },
-        "5": {
-            "english": [
-                "5. No trolling, flaming, or harassing other players. Do not complain about hax in the chat, beyond a one line comment:",
-                "- Inciting responses with inflammatory comments, using verbal abuse against other players, or spamming them via chat/PM/challenges will not be tolerated. Harassing other players by constantly aggravating them or revealing personal information will be severely punished. A one line comment regarding hax after a loss to vent is fine, but excessive bemoaning is not acceptable. Excessive vulgarity will not be tolerated. Wasting the time of the authority will also result in punishment."
-            ],
-            "spanish": [
-                "5. Nada de Trollear, insultar o acosar a otros jugadores. No te quejes constantemente del hax en el chat, no más allá de una linea:",
-                "- Incitar a otros jugadores con comentarios provocativos, usar el abuso verbal contra otros jugadores, o spammearlos a traves del chat/Mensajes Privados/Solicitudes de batalla no será tolerado. Acosar a otros jugadores al revelar su información personal será severamente penalizado. Una linea de comentario concerniente al hax luego de perder para deshagoarte esta bien, pero las quejas constantes no son aceptadas. La vulgaridad excesiva tampoco sera tolerada. Desperdiciar el tiempo de las autoridades también resultará en una sanción."
-            ],
-            "chinese": [
-                "5.禁止钓鱼，恶言相向，或骚扰其他玩家。在主聊天室抱怨被Hax时，最多不要超出一句话:",
-                "通过煽动性的言语激起他人的回复、对他人进行辱骂等人身攻击、持续对他人发出不受欢迎的评论/挑战/私信都是禁止的行为。持续骚扰、恶意激怒、甚至人肉其他玩家将遭到严厉惩处；在被因为脸黑被hax以后发送一句抱怨的话是可以理解的，但是持续不断的抱怨和过分粗鲁的行为是不被允许的；恶意浪费管理的时间同样会受到处理。"
-            ],
-            "french": [
-                "5. Ne pas troller, provoquer ou harceler les autres joueurs. Ne vous plaignez pas dans la discussion générale, à part une ligne:",
-                "Les réponses provocatives, les insultes à l'égard d'autres joueurs, ou le spammage par discussion/message privé/challenges ne sera pas accepter. Harceler les autres de façon exagérée ou réveler des informations personelles sera sévèrement puni. Une ligne pour se plaindre de la malchance est passable, mais ne pas en abuser. Trop de vulgarités ne sera pas permis. Ne faites pas perdre le temps des autorités."
-            ]
-        },
-        "6": {
-            "english": [
-                "6. Do not misuse the server nor its guidelines:",
-                "- Stealing accounts or channels is prohibited. Any attempt to undermine the legitimacy of ladder rankings or tournaments (server or forum) counts as misuse. DDoS and other \"cyber attacks\" will not be tolerated. Evading and trying to find loop-holes for malicious intent both violate the guidelines. All ban appeals should be made directly in the Disciplinary Committee on the forums. Use of the server as a dating service or other various web services that it is not may also count as abuse."
-            ],
-            "spanish": [
-                "6. No hagas un uso inadecuado de las reglas o las normativas:",
-                "- Robar cuentas o canales esta prohibido. Cualquier intento de alterar los rankings del servidor en general o los rankings del torneo, o los del foro también cuenta como un uso inadecuado. DDoS o cualquier otro \"ataque cibernético\" no será tolerado. Evadir las sanciones y tratar de buscar cualquier hueco o excusa dentro de las mismas reglas para fines maliciosos también violan las normativas. Todas las apelaciones para remover un ban se deben hacer directamente en el Comité Disciplinario (Disciplinary Committee) en el foro. El uso del servidor como un sitio de citas o cualquier otro servicio web también cuenta como un abuso de las reglas."
-            ],
-            "chinese": [
-                "6. 其他常规的禁止事项:",
-                "严禁盗取他人账号和频道；禁止任何试图通过不公平的手段进行ladder刷分或赚取Tournaments积分；DDoS以及其他任何对服务器的网络攻击都将遭到严惩；通过改变IP等手段避开封禁、禁言将遭到进一步处罚；所有对于封禁的申诉请直接反馈到论坛专门的帖子里；将PO视作约会工具或是其他并非PO本意的功能也是被禁止的。"
-            ],
-            "french": [
-                "6. Ne pas mal utiliser le serveur ni ses règles:",
-                "Voler des comptes ou des chaînes est interdit. Toute tentatives de devier la légitimité du rang ou des tournois (serveur et forum) compte comme mal utilisation. DDos et autres \"cyber attaques\" ne sont pas tolérées. Ne pas contourner un ban et ne pas tenter de trouver des échapatoires pour mal utiliser et violer les règles. Pour demander à être débanni, vous devez le faire sur les forums dans l'espace Disciplinary Committee. Le serveur n'est pas un site de rencontre ou autre services alors ne pas abuser de ceci."
+                "4. Ne pas mal utiliser le serveur:",
+                "- N'essayer pas de tricher pour gagner des points, n'abusez pas des bugs, ou n'essayez pas de contourner les règles. DDoS et d'autres \"attaques cyber\" ne seront pas tolérés. N’échappez pas à des punitions officielles car cela peut vous coûter un ban. En cas de ban, les appels se font sur les forums. Ne donnez pas de fausses preuves ou de fausses informations aux autorités, ne gâchez pas leur temps non plus."
             ]
         }
     };
@@ -542,7 +550,7 @@ init : function() {
     blackjackchan = SESSION.global().channelManager.createPermChannel("Blackjack", "Play Blackjack here!");
     safarichan = SESSION.global().channelManager.createPermChannel("Safari", "Type /help to see how to play!");
 
-    /* restore mutes, smutes, mafiabans, rangebans, megausers */
+    /* restore mutes, smutes, mafiabans, mafiawarns, rangebans, megausers */
     script.mutes = new MemoryHash(Config.dataDir+"mutes.txt");
     script.mbans = new MemoryHash(Config.dataDir+"mbans.txt");
     script.smutes = new MemoryHash(Config.dataDir+"smutes.txt");
@@ -559,6 +567,7 @@ init : function() {
     script.namesToWatch = new MemoryHash(Config.dataDir+"namesToWatch.txt");
     script.namesToUnban = new MemoryHash(Config.dataDir+"namesToCookieUnban.txt");
     script.idBans = new MemoryHash(Config.dataDir+"idbans.txt");
+    script.autoteamsAuth = new MemoryHash(Config.dataDir + "autoteamsauth.txt");
     try {
         script.league = JSON.parse(sys.read(Config.dataDir+"league.json")).league;
     } catch (e) {
@@ -782,7 +791,7 @@ issueBan : function(type, src, tar, commandData, maxTime) {
                 active = true;
             }
         }
-        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
+        sendAll((active ? nonFlashing(sys.name(src)) + " changed " + commandData.toCorrectCase() + "'s " + nomi + " time to " + (timeString === "" ? "forever!" : timeString + " from now!") : commandData.toCorrectCase() + " was " + verb + " by " + nonFlashing(sys.name(src)) + (timeString === "" ? "" : " for ") + timeString + "!") + (reason.length > 0 ? " [Reason: " + reason + "]" : "") + " [Channel: "+sys.channel(channel) + "]");
 
         sys.playerIds().forEach(function(id) {
             if (sys.loggedIn(id) && sys.ip(id) === tarip)
@@ -817,7 +826,9 @@ unban: function(type, src, tar, commandData) {
     var past = {"mute": "muted", "mban": "mafia banned", "smute": "secretly muted", "hmute": "hangman banned", "safban": "safari banned"}[type];
     var sendAll =  {
         "smute": function(line) {
-            banbot.sendAll(line, staffchannel);
+            sys.dbAuths().map(sys.id).filter(function(uid) { return uid !== undefined; }).forEach(function(uid) {
+                banbot.sendMessage(uid, line);
+            });
         },
         "mban": function(line, ip) {
             if (ip) {
@@ -864,7 +875,7 @@ unban: function(type, src, tar, commandData) {
             return;
         }
         var ip = sys.dbIp(commandData);
-        if(ip !== undefined && memoryhash.get(ip)) {
+        if (ip !== undefined && memoryhash.get(ip)) {
             sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
             memoryhash.remove(ip);
             return;
@@ -876,11 +887,15 @@ unban: function(type, src, tar, commandData) {
         banbot.sendMessage(src, "He/she's not " + past, channel);
         return;
     }
-    if(SESSION.users(src)[type].active && tar == src) {
+    if (SESSION.users(src)[type].active && tar == src) {
        banbot.sendMessage(src, "You may not " + nomi + " yourself!", channel);
        return;
     }
-    SESSION.users(tar).un(type);
+    sys.playerIds().forEach(function(id) {
+        if (sys.loggedIn(id) && sys.ip(id) === sys.ip(tar) && SESSION.users(id)[type].active) {
+            SESSION.users(id).un(type);
+        }
+    });
     sendAll("" + commandData + " was " + verb + " by " + nonFlashing(sys.name(src)) + "!");
 },
 
@@ -939,7 +954,7 @@ banList: function (src, command, commandData) {
             }
             if(typeof commandData != 'undefined' && (!banned_name || banned_name.toLowerCase().indexOf(commandData.toLowerCase()) == -1))
                 continue;
-            tmp.push([ip, banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
+            tmp.push([ip.replace("::ffff:", ""), banned_name, by, (banTime === 0 ? "unknown" : getTimeString(t-banTime)), (expires === 0 ? "never" : getTimeString(expires-t)), utilities.html_escape(reason)]);
         }
     }
     for (var k = 0; k < toDelete.length; ++k)
@@ -1020,7 +1035,7 @@ Jolly Nature (+Spd, -SAtk)
         var item = sys.teamPokeItem(id, team, i);
         item = item !== undefined ? sys.item(item) : "(no item)";
         ret.push(sys.pokemon(poke) + genders[sys.teamPokeGender(id, team, i)] + " @ " + item );
-        ret.push('Trait: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
+        ret.push('Ability: ' + sys.ability(sys.teamPokeAbility(id, team, i)));
         var level = sys.teamPokeLevel(id, team, i);
         if (!compactible && level != 100) ret.push('Lvl: ' + level);
 
@@ -1044,7 +1059,7 @@ Jolly Nature (+Spd, -SAtk)
         for (j = 0; j < 4; ++j) {
             var move = sys.teamPokeMove(id, team, i, j);
             if (move !== undefined) {
-                ret.push('- ' + sys.move(move) + (move == hpnum ? ' [' + sys.type(sys.hiddenPowerType.apply(sys, hpinfo)) + ']':''));
+                ret.push('- ' + sys.move(move) + (move == hpnum ? (' [' + (sys.gen(id, team) < 7 ? (sys.type(sys.hiddenPowerType.apply(sys, hpinfo))):(sys.type(sys.teamPokeHiddenPower(id, team, i)))) + ']'):''));
             }
         }
         ret.push("");
@@ -1154,26 +1169,26 @@ beforeChannelJoin : function(src, channel) {
     var channels = [mafiachan, hangmanchan, safarichan];
     var bans = ["mban", "hmute", "safban"];
     var type = ["Mafia", "Hangman", "Safari"];
-    var found = false;
     for (var x = 0; x < bans.length; x++) {
         if (channel == channels[x]) {
+            var found = false, by, expires, username, reason, iphash;
             var hash = script[bans[x] + "s"].hash;
             for (var ip in hash) {
-                found = script.cmp(hash[ip].split(":")[3], sys.name(src));
+                var split = hash[ip].split(":");
+                by = split[1];
+                expires = split[2];
+                username = split[3];
+                reason = split[4];
+                iphash = ip;
+                found = script.cmp(username, sys.name(src)) || iphash === sys.ip(src);             
                 if (found) {
                     break;
                 }
             }
-            if (poUser[bans[x]].active || found) {
-                if (poUser.expired(bans[x])) {
-                    poUser.un(bans[x]);
-                    normalbot.sendMessage(src, "Your ban from " + type[x] + " expired.");
-                } else {
-                    var info = poUser[bans[x]];
-                    sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (info.by ? " by " + info.by : '')+". " + (info.expires > 0 ? "Ban expires in " + getTimeString(info.expires - parseInt(sys.time(), 10)) + ". " : '') + (info.reason ? "[Reason: " + info.reason + "]" : ''));
-                    sys.stopEvent();
-                    return;
-                }
+            if (found) {
+                sys.sendMessage(src, "±Guard: You are banned from " + type[x] + (by ? " by " + by : '')+". " + (expires > 0 ? "Ban expires in " + getTimeString(expires - parseInt(sys.time(), 10)) + ". " : '') + (reason ? "[Reason: " + reason + "]" : ''));
+                sys.stopEvent();
+                return;
             }
         }
     }
@@ -1239,11 +1254,11 @@ beforeChannelDestroyed : function(channel) {
 }, /* end of beforeChannelDestroyed */
 
 beforePlayerBan : function(src, dest, dur) {
-    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest), staffchannel);
+    normalbot.sendAll("Target: " + sys.name(dest) + ", IP: " + sys.ip(dest).replace("::ffff:", ""), staffchannel);
     var authname = sys.name(src).toLowerCase();
     script.authStats[authname] =  script.authStats[authname] || {};
     script.authStats[authname].latestBan = [sys.name(dest), parseInt(sys.time(), 10)];
-    callplugins("onBan", src, dest);
+    callplugins("onBan", src, sys.name(dest));
 },
 
 beforePlayerKick:function(src, dest){
@@ -1345,21 +1360,23 @@ userGuides: function(os, unsupported) {
         "windows": {
             "English": "http://pokemon-online.eu/threads/34171/",
             "Español": "http://pokemon-online.eu/threads/34234/",
-            "中文": "http://tieba.baidu.com/p/4324437820",
+            "中文": "http://tieba.baidu.com/p/4933564112",
             "Português": "http://pokemon-online.eu/threads/34370/"
         },
         "android": {
             "English": "http://pokemon-online.eu/threads/30992/",
             "Español": "http://pokemon-online.eu/threads/26525/",
-            "中文": "http://tieba.baidu.com/p/4302246727",
+            "中文": "http://tieba.baidu.com/p/4933564112",
             "Français": "http://pokemon-online.eu/threads/31584/"
         },
         "webclient": {
             "English": "http://pokemon-online.eu/threads/34372/",
             "Español": "http://pokemon-online.eu/threads/34379/",
-            "中文": "http://tieba.baidu.com/p/4324437820"
+            "中文": "http://tieba.baidu.com/p/4933564112"
         }
     };
+    var tierGLink = "http://pokemon-online.eu/threads/35490/";
+    var faqLink = "http://pokemon-online.eu/threads/34770/";
     if (!guides.hasOwnProperty(os)) {
         return;
     }
@@ -1370,6 +1387,8 @@ userGuides: function(os, unsupported) {
             }
         }
     }
+    ret.push(unsupported ? "A Guide to Tiers: " + tierGLink : "<a href='" + tierGLink + "'>A Guide to Tiers</a>");
+    ret.push(unsupported ? "FAQ: " + faqLink : "<a href='" + faqLink + "'>FAQ</a>");
     return ret.join(" | ");
 },
 
@@ -1530,20 +1549,22 @@ afterLogIn : function(src) {
     if (script.cookieBanned(src)) { //prevents errors from "no id" from the rest of the function
         return;
     }
-    if (sys.os(src) !== "android" && sys.os(src) !== "webclient" && sys.version(src) < 2500) {
-        sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
-        sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
-        sys.sendMessage(src, "po2.62（PC自带计算器）： http://tieba.baidu.com/p/4210534593?share=9105&fr=share");
-        sys.kick(src);
-        return;
-    }
-    /* Right now its useless with a Gen 6 cut off... */
-    /*if (sys.os(src) === "android" && sys.version(src) > 45 && sys.version(src) < 46) {
-            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at ?????");
+    if (sys.os(src) !== "webclient") {
+        if (sys.os(src) !== "android" && sys.version(src) < 2600) {
+            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the most recent update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
+            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
+            sys.sendMessage(src, "你所使用的版本过旧，已无法与服务器兼容，请下载最新版本 http://tieba.baidu.com/p/4942538103");
             sys.kick(src);
             return;
         }
-    }*/
+        if (sys.os(src) === "android" && sys.version(src) < 50) {
+            sys.sendMessage(src, "Your client version is no longer compatible with the current server version. Please download the update at http://pokemon-online.eu/pages/download/ in order to connect and battle properly!");
+            sys.sendMessage(src, "Tu versión del programa ya no es compatible con la versión actual del servidor. Por favor descarga la versión más reciente en http://pokemon-online.eu/pages/download/ para poder conectarte y tener tus combates!");
+            sys.sendMessage(src, "你所使用的版本过旧，已无法与服务器兼容，请下载最新版本 http://tieba.baidu.com/p/4942538103");
+            sys.kick(src);
+            return;
+        }
+    }
     sys.sendMessage(src, "*** Type in /rules to see the rules and /commands to see the commands! ***");
     sys.sendMessage(src, "±Official Side Channels: #Tournaments | #Safari | #Hangman | #Trivia | #Mafia");
 
@@ -1629,31 +1650,34 @@ afterChangeTeam : function(src)
     this.nameWarnTest(src);
     var POuser = SESSION.users(src);
     var new_name = sys.name(src);
-    if (POuser.name != new_name) {
-        var now = parseInt(sys.time(), 10);
-        if (!POuser.namehistory) {
-            POuser.namehistory = [];
+    if (POuser) {
+        if (POuser.name != new_name) {
+            var now = parseInt(sys.time(), 10);
+            if (!POuser.namehistory) {
+                POuser.namehistory = [];
+            }
+            POuser.namehistory.push([new_name, now]);
+            POuser.name = new_name;
+            var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
+            if (spamcheck && spamcheck[1]+10 > now) {
+                sys.kick(src);
+                return;
+            }
         }
-        POuser.namehistory.push([new_name, now]);
-        POuser.name = new_name;
-        var spamcheck = POuser.namehistory[POuser.namehistory.length-3];
-        if (spamcheck && spamcheck[1]+10 > now) {
-            sys.kick(src);
-            return;
+        if (script.isContrib(src)) {
+            var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
+            if (sys.dbRegistered(sys.name(src))) {
+                POuser.contributions = script.contributors.get(contribName);
+            }
+            else {
+                normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
+                script.contributors.remove(contribName);
+            }
         }
+        
+        POuser.sametier = script.getKey("forceSameTier", src) == "1";
     }
-    if (script.isContrib(src)) {
-        var contribName = utilities.getCorrectPropName(sys.name(src), script.contributors.hash);
-        if (sys.dbRegistered(sys.name(src))) {
-            POuser.contributions = script.contributors.get(contribName);
-        }
-        else {
-            normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
-            script.contributors.remove(contribName);
-        }
-    }
-
-    POuser.mafiaAdmin = script.mafiaAdmins.hash.hasOwnProperty(sys.name(src));
+    
     if (!authChangingTeam) {
         if (sys.auth(src) > 0 && sys.auth(src) <= 3)
             sys.appendToFile("staffstats.txt", sys.name(src) + "~" + src + "~" + sys.time() + "~" + "Changed name to Auth" + "\n");
@@ -1661,8 +1685,6 @@ afterChangeTeam : function(src)
         if (!(sys.auth(src) > 0 && sys.auth(src) <= 3))
             sys.appendToFile("staffstats.txt", "~" + src + "~" + sys.time() + "~" + "Changed name from Auth" + "\n");
     }
-
-    POuser.sametier = script.getKey("forceSameTier", src) == "1";
 
     if (script.getKey("autoIdle", src) == "1") {
         sys.changeAway(src, true);
@@ -1674,7 +1696,6 @@ afterChangeTeam : function(src)
             normalbot.sendMessage(src, "You were placed into '" + sys.tier(src, team) + "' tier.");
         }
     }
-
 }, /* end of afterChangeTeam */
 
 
@@ -1881,11 +1902,6 @@ beforeChatMessage: function(src, message, chan) {
         }
     }*/
 
-    if (SESSION.users(src).expired("mute")) {
-        SESSION.users(src).un("mute");
-        normalbot.sendMessage(src, "your mute has expired.", channel);
-    }
-
     var isBlocked = true, command, commandData;
     if (is_command(message)) {
         //Used further down too
@@ -2082,25 +2098,22 @@ beforeChatMessage: function(src, message, chan) {
     */
     // Secret mute
     if (SESSION.users(src).smute.active) {
-        if (SESSION.users(src).expired("smute") || script.getMaxAuth(src) > 0) {
-            SESSION.users(src).un("smute");
-        } else {
-            sys.playerIds().forEach(function(id) {
-                if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
-                    var color = script.getColor(id);
-                    if (sys.isInChannel(id, channel)) {
-                        if (isAndroid(id)) {
-                            sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
-                        } else {
-                            sys.sendMessage(id,  sys.name(src) + ": " + message, channel);
-                        }
+        sys.playerIds().forEach(function(id) {
+            if (sys.loggedIn(id) && SESSION.users(id).smute.active) {
+                var color = script.getColor(id);
+                if (sys.isInChannel(id, channel)) {
+                    if (isAndroid(id)) {
+                        sys.sendHtmlMessage(id, "<font color=" + color + "><timestamp/><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), channel);
+                    } else {
+                        sys.sendMessage(id,  sys.name(src) + ": " + message, channel);
                     }
                 }
-            });
-            sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + script.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
-            sys.stopEvent();
-            this.afterChatMessage(src, message, channel);
-        }
+            }
+        });
+        sys.sendHtmlAll("<timestamp/>[#" + sys.channel(channel) + "] <font color=" + script.getColor(src) + "><b>" + sys.name(src) + ":</b></font> " + utilities.html_escape(message), watchchannel);
+        sys.stopEvent();
+        this.afterChatMessage(src, message, channel);
+        
         return;
     }
 
@@ -2217,6 +2230,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.capsbot, sys.name(src), {'time': 900, 'reason': "Overusing CAPS"});
             }
         }
+        else if (user.caps >= Math.floor(maxCaps / 2)) {
+            capsbot.sendMessage(src, "Warning: You may be muted for excessive usage of CAPS LOCK!", channel);
+        }
     } else if (user.caps > 0) {
         user.caps -= 1;
     }
@@ -2271,6 +2287,9 @@ afterChatMessage : function(src, message, chan)
                 poChannel.mute(Config.kickbot, sys.name(src), {'time': 3600, 'reason': "Flooding"});
                 sys.kick(src, channel);
             }
+        }
+        else if (user.floodcount >= linecount - 1) {
+            kickbot.sendMessage(src, "Warning: You may be muted for flooding the chat!", channel);
         }
     }
     SESSION.channels(channel).beforeMessage(src, message);
@@ -2334,9 +2353,10 @@ beforeBattleEnded : function(src, dest, desc, bid) {
     }
     if (rated && (script.namesToWatch.get(srcname.toLowerCase()) || script.namesToWatch.get(destname.toLowerCase()))) {
         if (sys.existChannel("Watch")) {
+            var srcIP = sys.dbIp(srcname).replace("::ffff:", ""), destIP = sys.dbIp(destname).replace("::ffff:", "");
             sys.sendHtmlAll("<b><font color = blue>" + srcname + " and " + destname + " finished a battle with result " + (tie ? "tie" : srcname + " winning") + (desc === "forfeit" ? " (forfeit)" : "") + (tier ? " in tier " + tier: "") + (time ? " after " + getTimeString(sys.time() - time) + "." : "." ) + "</font></b>", watchchannel);
-            normalbot.sendAll(srcname + "'s IP: " + sys.dbIp(srcname) + " | " + destname + "'s IP: " + sys.dbIp(destname), watchchannel);
-            sys.appendToFile(Config.dataDir + "watchNamesLog.txt", srcname + ":::" + destname + ":::" + (tie ? "tie" : srcname) + ":::" + (desc === "forfeit" ? "Forfeit" : "N/A") + ":::" + (tier ? tier: "N/A") + "::: " + (time ? getTimeString(sys.time() - time) : "N/A") + ":::" + sys.dbIp(srcname) + ":::" + sys.dbIp(destname) + "\n");
+            normalbot.sendAll(srcname + "'s IP: " + srcIP + " | " + destname + "'s IP: " + destIP, watchchannel);
+            sys.appendToFile(Config.dataDir + "watchNamesLog.txt", srcname + ":::" + destname + ":::" + (tie ? "tie" : srcname) + ":::" + (desc === "forfeit" ? "Forfeit" : "N/A") + ":::" + (tier ? tier: "N/A") + "::: " + (time ? getTimeString(sys.time() - time) : "N/A") + ":::" + srcIP + ":::" + destIP + "\n");
         }
     }
 },
@@ -2487,6 +2507,13 @@ beforeBattleMatchup : function(src,dest,clauses,rated)
 
 battleConnectionLost : function() {
     battlebot.sendAll("Connection to Battle Server lost!", staffchannel);
+    /* sys.battlingIds().forEach(function(id) {
+        var teamCount = sys.teamCount(id), toWrite = [];
+        for (var i = 0; i < teamCount; i++) {
+            toWrite.push(script.importable(id, i, false, false) + "|||");
+        }
+        sys.appendToFile("dump.txt", toWrite.join(""));
+    }); */
 },
 
 hasAuthElements: function (array) {

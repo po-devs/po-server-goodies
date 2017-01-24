@@ -122,6 +122,17 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return;
         }
         sys.sendMessage(src, "*** " + sys.channel(channel) + " channel rules ***", channel);
+        if (!isNaN(commandData)) {
+            var num = parseInt(commandData, 10);
+            if (num <= rules.length && num > 0) {
+                var rule = rules[num - 1].split("\n");
+                sys.sendMessage(src, rule[0], channel);
+                if (rule[1].length > 0) {
+                    sys.sendMessage(src, rule[1], channel);
+                }
+                return;
+            }
+        }
         for (x = 0; x < rules.length; x++) {
             var rule = rules[x].split("\n");
             sys.sendMessage(src, rule[0], channel);
