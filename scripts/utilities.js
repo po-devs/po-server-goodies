@@ -222,7 +222,7 @@ exports = {
     inputToPokemon : function (input) {
         input = input.toLowerCase();
         if (input.indexOf("alola") > -1) {
-            input = input.replace(/(-|\s){0,2}alola(n|-|\s){0,2}/i, ""); //Accounts for "Alola" and "Alolan" seperated by a space or hyphen at the beginning or end
+            input = input.replace(/(-|\s){0,2}alola(n)*(-|\s)*/i, ""); //Accounts for "Alola" and "Alolan" separated by a space or hyphen at the beginning or end
             return "Alolan " + input;
         }        
         switch (input) {
