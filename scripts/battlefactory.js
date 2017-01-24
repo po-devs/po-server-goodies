@@ -24,7 +24,7 @@ var battleFactoryTiers = ["Battle Factory", "Battle Factory 6v6"];
 var lcTiers = [
     "RBY LC", "GSC LC", "Adv LC",
     "HGSS LC", "HGSS LC Ubers", "BW2 LC",
-    "BW2 LC Ubers", "ORAS LC"
+    "BW2 LC Ubers", "ORAS LC", "SM LC"
 ];
 
 // Will escape "&", ">", and "<" symbols for HTML output.
