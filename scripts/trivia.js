@@ -734,7 +734,7 @@ TriviaGame.prototype.startTriviaRound = function () {
         else {
             questionNumber = Trivia.randomId();
             var i = 0;
-            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers()) || (this.webclientPlayers() && triviaq.get(questionNumber).question > 721)) && i !== 200) {
+            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
                 questionNumber = Trivia.randomId();
                 i++;
             }
@@ -1580,7 +1580,7 @@ TriviaGame.prototype.androidPlayers = function () {
    }
    return false;
 };
-
+/* Leaving this here in case it is needed in the future.
 TriviaGame.prototype.webclientPlayers = function () {
    for (var i in this.triviaPlayers) {
       if (this.triviaPlayers[i].playing && sys.os(i) === "webclient") {
@@ -1588,7 +1588,7 @@ TriviaGame.prototype.webclientPlayers = function () {
       }
    }
    return false;
-};
+};*/
 
 TriviaGame.prototype.addPlayer = function (src) {
     var key = this.key(src);
