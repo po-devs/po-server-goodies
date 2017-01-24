@@ -808,7 +808,7 @@ function factoryCommand(src, command, commandData, channel) {
                 }
             }
             var maxSubmissions = isReviewer(src) ? 100 : 15;
-            if (isReviewAdmin(src) && submissions >= maxSubmissions) {
+            if (!isReviewAdmin(src) && submissions >= maxSubmissions) {
                 bfbot.sendMessage(src, "You already have " + maxSubmissions + " or more submissions in the queue, please wait until they get reviewed!", channel);
             } else {
                 var team = [];
@@ -853,7 +853,11 @@ function factoryCommand(src, command, commandData, channel) {
                     }
                 }
                 if (team.length === 0) {
-                    bfbot.sendMessage(src, "You have no Pokemon that can be submitted!", channel);
+                    if (setIsDuplicate(pokeCode, tier)) {
+                        bfbot.sendMessage(src, "This set already exists in " + tier + ".");
+                    } else {
+                        bfbot.sendMessage(src, "You have no Pokemon that can be submitted!", channel);
+                    }
                 } else {
                     if (!userQueue.hasOwnProperty(tier)) {
                         userQueue[tier] = [];
