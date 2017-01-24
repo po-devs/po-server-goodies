@@ -854,6 +854,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (commandData.toLowerCase() === "power of alchemy") {
             abilityId = 230;
         }
+        if (commandData.toLowerCase() === "soul-heart") {
+            abilityId = 196;
+        }
         if (!abilityId) {
             normalbot.sendMessage(src, commandData + " is not a valid ability!", channel);
             return;
