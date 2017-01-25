@@ -1534,7 +1534,7 @@ function generateTeam(src, team, tier) {
         for (var s = 0; s < 6; s++) {
             var pokeData = teamInfo[s];
             sys.changePokeNum(src, team, s, pokeData.pokeId);
-            sys.changePokeName(src, team, s, pokeData.poke);
+            sys.changePokeName(src, team, s, (pokeData.poke === "Greninja-Unbonded" ? "Greninja" : pokeData.poke));
             sys.changePokeNature(src, team, s, pokeData.natureId);
             sys.changePokeAbility(src, team, s, pokeData.abilityId);
             sys.changePokeItem(src, team, s, pokeData.itemId);
