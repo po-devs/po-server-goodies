@@ -1756,6 +1756,7 @@ module.exports = {
             try {
                 var allowedTypes = [];
                 var suggestedTypes = [];
+                bfbot.sendAll("bfSets: " + Object.keys(bfSets) + " | bfHash: " + Object.keys(bfHash).join(", "), staffchannel); //debug
                 for (var pack in bfHash) {
                     if (bfHash[pack].enabled && bfHash[pack].active) {
                         allowedTypes.push(pack);
@@ -1768,6 +1769,7 @@ module.exports = {
                         }
                     }
                 }
+                bfbot.sendAll("allowedTypes: " + allowedTypes.join(", ") + " | suggestedTypes: " + suggestedTypes.join(", "), staffchannel);  //debug
                 if (allowedTypes.length === 0) {
                     throw "No valid packs to choose from!";
                 }
