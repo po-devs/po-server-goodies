@@ -1756,10 +1756,10 @@ module.exports = {
             try {
                 var allowedTypes = [];
                 var suggestedTypes = [];
-                bfbot.sendAll("bfSets: " + Object.keys(bfSets) + " | bfHash: " + Object.keys(bfHash).join(", "), staffchannel); //debug
                 for (var pack in bfHash) {
                     if (bfHash[pack].enabled && bfHash[pack].active) {
                         allowedTypes.push(pack);
+                        bfbot.sendAll("show me the money: " + Object.keys(bfSets[pack]).join(", "), staffchannel); //debug
                         if (bfSets[pack].hasOwnProperty("mode") && bfSets[pack].mode === modes[mode]) {
                             suggestedTypes.push(pack);
                         } else if (bfSets[pack].hasOwnProperty("maxpokes") && bfSets[pack].maxpokes === 6
