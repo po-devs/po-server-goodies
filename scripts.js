@@ -1519,7 +1519,7 @@ cookieBanned: function(src) {
         if (cookie.indexOf(" ") > 1) {
             name = cookie.substr(cookie.indexOf(" ")+1);
         }
-        SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "Cookie", true);
+        SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, nonFlashing(name) + " (Cookie)", true);
         kickbot.sendAll(nonFlashing(sys.name(src)) + " was smuted by cookie" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
         return;
     }
@@ -1534,7 +1534,7 @@ cookieBanned: function(src) {
         var type = idInfo.type;
         kickbot.sendAll(nonFlashing(sys.name(src)) + " was " + (type == "banned" ? "banned" : "smuted") + " by ID" + (name ? " [Original Name: " + nonFlashing(name) + "]." : "."), watchchannel);
         if (type == "muted") {
-            SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, "ID", true);
+            SESSION.users(src).activate("smute", Config.kickbot, parseInt(sys.time(), 10) + 86400, nonFlashing(name) + " (ID)", true);
             return;
         } else {
             normalbot.sendMessage(src, "You are currently banned from the server. If you believe this to be an error, post here: http://pokemon-online.eu/forums/disciplinary-committee.43/");
