@@ -1540,7 +1540,7 @@ function generateTeam(src, team, tier) {
             sys.changePokeItem(src, team, s, pokeData.itemId);
             sys.changePokeHiddenPower(src, team, s, pokeData.hiddenPowerType);
             //                                         Conversion                  Normalium Z
-            var shuffledMoves = pokeData.moveIds.contains(160) && pokeData.itemId === 3000 ? (pokeData.moveIds : (pokeData.moveIds.slice()).shuffle()).sort(noMoveLast); // Z-Conversion
+            var shuffledMoves = pokeData.moveIds.contains(160) && pokeData.itemId === 3000 ? pokeData.moveIds : ((pokeData.moveIds.slice()).shuffle()).sort(noMoveLast); // Z-Conversion
             for (var m = 0; m < 4; m++) {
                 sys.changePokeMove(src, team, s, m, shuffledMoves[m]);
             }
