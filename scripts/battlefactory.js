@@ -1539,7 +1539,8 @@ function generateTeam(src, team, tier) {
             sys.changePokeAbility(src, team, s, pokeData.abilityId);
             sys.changePokeItem(src, team, s, pokeData.itemId);
             sys.changePokeHiddenPower(src, team, s, pokeData.hiddenPowerType);
-            var shuffledMoves = ((pokeData.moveIds.slice()).shuffle()).sort(noMoveLast);
+            //                                         Conversion                  Normalium Z
+            var shuffledMoves = pokeData.moveIds.contains(160) && pokeData.itemId === 3000 ? ((pokeData.moveIds.slice()).shuffle()).sort(noMoveLast) : pokeData.moveIds; // Z-Conversion
             for (var m = 0; m < 4; m++) {
                 sys.changePokeMove(src, team, s, m, shuffledMoves[m]);
             }
