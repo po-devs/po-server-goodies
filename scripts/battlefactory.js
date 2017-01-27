@@ -1768,6 +1768,15 @@ module.exports = {
                                    && sys.tier(src, srcteam) === "Battle Factory 6v6") {
                             suggestedTypes.push(pack);
                         }
+                        else {
+                            if (!bfSets[pack].hasOwnProperty("mode")) {
+                                bfSets[pack].mode = "Singles";
+                            }
+                            if (!bfSets[pack].hasOwnProperty("maxpokes")) {
+                                bfSets[pack].maxpokes = 6;
+                            }
+                            autoSave("all", "");
+                        }
                     }
                 }
                 if (allowedTypes.length === 0) {
