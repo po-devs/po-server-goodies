@@ -3396,6 +3396,7 @@ function Mafia(mafiachan) {
             //mafiabot.sendAll("GAME ENDED", mafiachan);
             mafia.unloadAWOL();
             mafia.clearVariables();
+            mafia.isEvent = false;
             runUpdate();
             this.advertiseFeaturedTheme();
             return true;
