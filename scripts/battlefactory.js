@@ -533,6 +533,8 @@ function factoryCommand(src, command, commandData, channel) {
             };
             if (args.length === 2) {
                 template.mode = args[1];
+            } else {
+                template.mode = "Singles";
             }
             createEntry(tier, template, "No URL for addtier");
             autoSave("teams", tier);
@@ -1759,8 +1761,7 @@ module.exports = {
                 for (var pack in bfHash) {
                     if (bfHash[pack].enabled && bfHash[pack].active) {
                         allowedTypes.push(pack);
-                        bfbot.sendAll("show me the money: " + Object.keys(bfSets[pack]).join(", "), staffchannel); //debug
-                        if (bfSets[pack].hasOwnProperty("mode") && bfSets[pack].mode === modes[mode]) {
+                        if (bfSets[pack].hasOwnProperty("mode") && script.cmp(bfSets[pack].mode, modes[mode])) {
                             suggestedTypes.push(pack);
                         } else if (bfSets[pack].hasOwnProperty("maxpokes") && bfSets[pack].maxpokes === 6
                                    && sys.tier(src, srcteam) === sys.tier(dest, destteam)
@@ -1769,7 +1770,6 @@ module.exports = {
                         }
                     }
                 }
-                bfbot.sendAll("allowedTypes: " + allowedTypes.join(", ") + " | suggestedTypes: " + suggestedTypes.join(", "), staffchannel);  //debug
                 if (allowedTypes.length === 0) {
                     throw "No valid packs to choose from!";
                 }
