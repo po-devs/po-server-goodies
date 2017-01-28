@@ -2077,7 +2077,7 @@ beforeChatMessage: function(src, message, chan) {
         return;
     }
     if (repeatingOneself()) {
-        this.afterChatMessage(src, SESSION.users(src).lastline.message, channel);
+    //    this.afterChatMessage(src, SESSION.users(src).lastline.message, channel);
         sys.stopEvent();
         return;
     }
