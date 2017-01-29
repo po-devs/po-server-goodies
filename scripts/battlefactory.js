@@ -1426,6 +1426,18 @@ function isMegaStone(item) {
     return item > 2000 && item < 3000 && sys.item(item);
 }
 
+function zFilter(set) {
+    return this.zCount < this.zLimit || !isZCrystal(set.itemId);
+}
+
+function isZCrystal(item) {
+    if (isNaN(item)) {
+        item = sys.itemNum(item);
+    }
+    
+    return item >= 3000 && item <= 3028 && sys.item(item);
+}
+
 function isHazard(move) {
     return ["Spikes", "Stealth Rock", "Sticky Web", "Toxic Spikes"].indexOf(move) > -1;
 }
@@ -1478,6 +1490,7 @@ function missingNoLast(p1, p2) {
 
 function generateTeam(src, team, tier) {
     var megaLimit = 1, megaCount = 0;
+    var zLimit = 1, zCount = 0;
     var hazardsLimit = 2;
     var moveCounts = {};
     try {
@@ -1495,14 +1508,11 @@ function generateTeam(src, team, tier) {
             while (!pokemonAdded && pokeArray.length > 0) {
                 var poke = pokeArray.splice(sys.rand(0, pokeArray.length), 1)[0];
                 var filteredSets = pack[poke].map(setToPokemon);
-                filteredSets = filteredSets.filter(megaFilter, {
-                    "megaCount": megaCount,
-                    "megaLimit": megaLimit
-                });
-                filteredSets = filteredSets.filter(hazardLimitFilter, {
-                    "maxHazards": hazardsLimit - totalHazards(moveCounts),
-                    "moveCounts": moveCounts
-                });
+                filteredSets = filteredSets
+                                   .filter(megaFilter, { "megaCount": megaCount, "megaLimit": megaLimit })
+                                   .filter(zFilter, { "zLimit": zLimit, "zCount": zCount })
+                                   .filter(hazardLimitFilter, { "maxHazards": hazardsLimit - totalHazards(moveCounts), "moveCounts": moveCounts });
+
                 // make sure to add some sort of hazard control if none exists
                 if (p === 5 && totalHazards(moveCounts) === 0) {
                     filteredSets = filteredSets.filter(hazardControlOnlyFilter);
