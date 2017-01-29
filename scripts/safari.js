@@ -17895,9 +17895,9 @@ function Safari() {
         safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
         this.sendToViewers("Your goal is to answer each round's question with a Pokémon name . Use " + toColor("/ans [Pokémon]", "blue") + " for that!");
         if (this.silentMode) {
-            this.sendToViewers("Answers are only revealed when each round finishes. Repeated answers give less points.");
+            this.sendToViewers("Answers are only revealed when each round finishes. Repeated answers give less points. <b>" + toColor("Please don't give hints or answers to the other playersparticipants", "red") + "</b>!");
         } else {
-            this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points.");
+            this.sendToViewers("One answer per player, repeated answers and forms are not accepted. Event lasts for 10 rounds, fastest to answer gains more points. <b>" + toColor("Please don't give hints or answers to the other players", "red") + "</b>!");
         }
         this.sendToViewers("");
         this.phase = "preparing";
@@ -19987,7 +19987,7 @@ function Safari() {
     };
     this.mafiaPromo = function(list) {
         var amt = list.length;
-        if (list.length === 0 || true) {
+        if (list.length === 0) {
             return;
         }
         var player, name, received = [], rew;
@@ -20011,6 +20011,12 @@ function Safari() {
             sys.sendAll("", safchan);
         }
         sys.appendToFile(crossLog, now() + "|||Mafia|||" + readable(received) + "|||" + rew + "\n");
+    };
+    this.hangmanPromo = function(name) {
+        
+    };
+    this.hangmanPromoLb = function(name, placing) {
+        
     };
     this.isChannelAdmin = function (src) {
         return SESSION.channels(safchan).isChannelAdmin(src);
