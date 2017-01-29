@@ -77,7 +77,7 @@ function Hangman() {
     var leaderboards = {
         current: {},
         last: {},
-        currentMonth: -1
+        nextWeek: hangman.getNextSunday()
     };
     var flashlist = {
         ip: {},
@@ -811,6 +811,14 @@ function Hangman() {
             }
             leaderboards.current[w] = lbScore + 1;
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
+            
+            if (leaderboards.current[w] % 3 === 0) {
+                var Safari = require("safari.js"); // Safari crossover
+                
+                if (Safari) {
+                    Safari.hangmanPromo(w);
+                }
+            }
         }
         return w;
     };
@@ -1522,16 +1530,38 @@ function Hangman() {
         }
     };
     
-    this.checkNewMonth = function() {
-        var date = new Date();
-        if (date.getUTCMonth() !== leaderboards.currentMonth) {
-            leaderboards.currentMonth = date.getUTCMonth();
+    this.checkNewWeek = function() {
+        if (!leaderboards.hasOwnProperty("nextWeek")) {
+            leaderboards.nextWeek = hangman.getNextSunday();
+        }
+        if (new Date().getTime() >= leaderboards.nextWeek) {
+            var Safari = require("safari.js"); // Safari crossover
+            
+            if (Safari) {
+                var lb = leaderboards.current;
+                var list = Object.keys(lb).sort(function(a, b) {
+                    return lb[b] - lb[a];
+                });
+                var top = list.slice(0, 10), position;
+                
+                for (position in top) {
+                    Safari.hangmanPromoLb(top[position], position);
+                }
+            }
+            leaderboards.nextWeek = hangman.getNextSunday();
             leaderboards.last = leaderboards.current;
             leaderboards.current = {};
+            
             sys.write(leaderboardsFile, JSON.stringify(leaderboards));
             hangbot.sendAll("Hangman's Leaderboards have been reset!", hangchan);
         }
+
     };
+    this.getNextSunday = function() {
+        var date = new Date();
+        
+        return new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).getTime();
+    }
     this.configGame = function (src, commandData) {
         if (commandData === undefined) {
             commandData = "*";
@@ -2182,7 +2212,7 @@ function Hangman() {
             leaderboards = {
                 current: {},
                 last: {},
-                currentMonth: -1
+                nextWeek: hangman.getNextSunday()
             };
         }
         try {
@@ -2228,6 +2258,8 @@ function Hangman() {
         }
     };
     this.stepEvent = function () {
+        hangman.checkNewWeek();
+        
         if (eventCount > 0) {
             eventCount--;
         }
@@ -2262,7 +2294,6 @@ function Hangman() {
             }
         }        
         if (eventCount === 0 && eventGamesEnabled) {
-            hangman.checkNewMonth();
             eventCount = -1;
             if (word) {
                 pendingEvent = true;
