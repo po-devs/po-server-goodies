@@ -73,11 +73,11 @@ function Hangman() {
     var answers;
     var guesses;
     var countMax;    
-	
+
     var leaderboards = {
         current: {},
         last: {},
-        nextWeek: hangman.getNextSunday()
+        nextWeek: 0
     };
     var flashlist = {
         ip: {},
@@ -1533,6 +1533,8 @@ function Hangman() {
     this.checkNewWeek = function() {
         if (!leaderboards.hasOwnProperty("nextWeek")) {
             leaderboards.nextWeek = hangman.getNextSunday();
+            
+            sys.write(leaderboardsFile, JSON.stringify(leaderboards));
         }
         if (new Date().getTime() >= leaderboards.nextWeek) {
             var Safari = require("safari.js"); // Safari crossover
@@ -1561,7 +1563,7 @@ function Hangman() {
         var date = new Date();
         
         return new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).getTime();
-    }
+    };
     this.configGame = function (src, commandData) {
         if (commandData === undefined) {
             commandData = "*";
