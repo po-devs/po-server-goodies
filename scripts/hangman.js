@@ -505,6 +505,7 @@ function Hangman() {
         }
         if (isEventGame) {
             eventCount = eventLimit;
+            isEventGame = false;
         }
         if (pendingEvent) {
             eventDelay = true;
@@ -683,7 +684,7 @@ function Hangman() {
                     sys.sendAll("*** ************************************************************ ***", cid);
                     sys.sendAll("", cid);
                 }
-            })[0, safarichan];
+            })([0, safarichan]);
         }
         var playerlist = sys.playersOfChannel(hangchan);
         var playerId;
@@ -984,6 +985,7 @@ function Hangman() {
             word = undefined;
             winner = undefined;
             this.resetTimers();
+            isEventGame = false;
             if (pendingEvent) {
                 eventDelay = true;
             }
@@ -999,6 +1001,9 @@ function Hangman() {
             SESSION.users(players[p]).hangmanGuessTime = now;
         }
         idleCount = 0;
+        if (isEventGame) {
+            eventCount = eventLimit;
+        }
     };
     this.startEventGame = function(mode) {
         hangman.startAutoGame(true, mode);
@@ -1190,7 +1195,7 @@ function Hangman() {
     };
     
     this.addQuest = function (src, commandData) {
-        if (commandData == "*" || commandData.indexOf(":") === -1) {
+        if (!commandData || commandData == "*" || commandData.indexOf(":") === -1) {
             hangbot.sendMessage(src, "Invalid format for Hangman game! Proper format is 'answer:hint'.", hangchan);
             return;
         }
@@ -1356,7 +1361,7 @@ function Hangman() {
             hangbot.sendMessage(src, "There are no games in the database, you can't delete anything.", hangchan);
             return;
         }
-        if (isNaN(commandData) || (commandData%1)!==0) {
+        if (isNaN(commandData) || (commandData % 1) !== 0) {
             hangbot.sendMessage(src, "You need to write an integer number, the index of the question you want to delete.", hangchan);
             return;
         }
@@ -1575,6 +1580,10 @@ function Hangman() {
     };
     
     this.showNextEvent = function(src) {
+        if (isEventGame) {
+            hangbot.sendMessage(src, "An event is currently ongoing!", hangchan);
+            return;
+        }
         var date = new Date();
         var dateDiff = (new Date(date.getTime() + eventCount) - date.getTime());
         
