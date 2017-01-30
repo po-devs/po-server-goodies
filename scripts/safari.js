@@ -2548,7 +2548,9 @@ function Safari() {
         if (rawResult) {
             return out;
         }
-
+        return stuffReceivedDesc(out);
+    }
+    function stuffReceivedDesc(out) {
         var res = [];
         if (out.gained.length > 0) {
             res.push("received " + readable(out.gained));
@@ -20013,10 +20015,45 @@ function Safari() {
         sys.appendToFile(crossLog, now() + "|||Mafia|||" + readable(received) + "|||" + rew + "\n");
     };
     this.hangmanPromo = function(name) {
+        var player = getAvatarOff(name);
+        if (!player) {
+            return;
+        }
+        var rew = ["6@silver", "9@gacha", "2@gem", "1@form", "110@dust"].random();
+        var out = giveStuff(player, toStuffObj(rew), true);
+        var rewardName = translateStuff(rew, true);
+        this.saveGame(player);
         
+        if (out.gained.length > 0) {
+            sys.sendAll("", safchan);
+            safaribot.sendAll(player.id.toCorrectCase() + " received " + out.gained + " from an Event Hangman game!", safchan);
+            sys.sendAll("", safchan);
+        }
+        if (sys.id(player.id)) {
+            safaribot.sendMessage(sys.id(player.id), "You " + stuffReceivedDesc(out) + " from an Event Hangman game!",safchan);
+        }
+        sys.appendToFile(crossLog, now() + "|||Hangman|||" + player.id.toCorrectCase() + "|||" + rewardName + "\n");
     };
     this.hangmanPromoLb = function(name, placing) {
+        var player = getAvatarOff(name);
+        if (!player) {
+            return;
+        }
+        placing = Math.min(parseInt(placing, 10), 9);
+        var amt = [12, 9, 9, 7, 7, 4, 4, 4, 1, 1][placing];
+        var rew = plural(amt, "cookie");
+        player.balls.cookie += amt;
+        this.sanitize(player);
         
+        if (!sys.id(name)) {
+            this.offlineMessage(player, "You won " + rew + " from a Hangman Leaderboard!");
+        }
+        if (placing === 0) {
+            safaribot.sendHtmlAll("<b>" + getOrdinal(placing + 1) + " in Hangman Leaderboard</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
+        } else {
+            safaribot.sendHtmlAll("<b>" + getOrdinal(placing + 1) + "</b> in Hangman Leaderboard: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
+        }
+        sys.appendToFile(crossLog, now() + "|||Hangman|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
     this.isChannelAdmin = function (src) {
         return SESSION.channels(safchan).isChannelAdmin(src);
