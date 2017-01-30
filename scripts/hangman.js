@@ -670,11 +670,20 @@ function Hangman() {
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20) {
             this.lastAdvertise = time;
-            sys.sendAll("", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
-            hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
-            sys.sendAll("", 0);
+            (function (chanArr) {
+                for (var c in chanArr) {
+                    var cid = chanArr[c];
+                    
+                    if (cid === safarichan && !isEventGame) {
+                        continue;
+                    }
+                    sys.sendAll("", cid);
+                    sys.sendAll("*** ************************************************************ ***", cid);
+                    hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", cid);
+                    sys.sendAll("*** ************************************************************ ***", cid);
+                    sys.sendAll("", cid);
+                }
+            })[0, safarichan];
         }
 	var playerlist = sys.playersOfChannel(hangchan);
         var playerId;
@@ -1530,12 +1539,22 @@ function Hangman() {
         }
     };
     
+    this.getNextSunday = function() {
+        var date = new Date();
+        
+        return new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).getTime();
+    };
+
+    this.resetLB = function() {
+        leaderboards.nextWeek = hangman.getNextSunday();
+        leaderboards.last = leaderboards.current;
+        leaderboards.current = {};
+        
+        sys.write(leaderboardsFile, JSON.stringify(leaderboards));
+        hangbot.sendAll("Hangman's Leaderboards have been reset!", hangchan);
+    };
+    
     this.checkNewWeek = function() {
-        if (!leaderboards.hasOwnProperty("nextWeek")) {
-            leaderboards.nextWeek = hangman.getNextSunday();
-            
-            sys.write(leaderboardsFile, JSON.stringify(leaderboards));
-        }
         if (new Date().getTime() >= leaderboards.nextWeek) {
             var Safari = require("safari.js"); // Safari crossover
             
@@ -1550,20 +1569,18 @@ function Hangman() {
                     Safari.hangmanPromoLb(top[position], position);
                 }
             }
-            leaderboards.nextWeek = hangman.getNextSunday();
-            leaderboards.last = leaderboards.current;
-            leaderboards.current = {};
-            
-            sys.write(leaderboardsFile, JSON.stringify(leaderboards));
-            hangbot.sendAll("Hangman's Leaderboards have been reset!", hangchan);
+            hangman.resetLB();
         }
 
     };
-    this.getNextSunday = function() {
+    
+    this.showNextEvent = function(src) {
         var date = new Date();
+        var dateDiff = (new Date(date.getTime() + eventcount * 1000) - date.getTime())
         
-        return new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).getTime();
-    };
+        hangbot.sendMessage(src, "The next event will be " + dateDiff / (60 * 1000) + " minutes from now.", hangchan);
+    }
+    
     this.configGame = function (src, commandData) {
         if (commandData === undefined) {
             commandData = "*";
@@ -1684,7 +1701,8 @@ function Hangman() {
             "/lb or /leaderboard: To see the event leaderboard. You can type /lblast or /leaderboardlast to see last months leaderboard.",
             "/passlb [user] or /passleaderboard [user]: Passes all your leaderboard points to another alt on the same IP. Both alts must also be logged on.",
             "/myanswer: To see the answer you submitted (host only).",
-            "/flashme: Toggle Event Game flashes on or off."
+            "/flashme: Toggle Event Game flashes on or off.",
+            "/nextevent: Shows the duration until the next Event Game."
         ];
         var adminHelp = [
             "*** Hangman Admin Commands ***",
@@ -1796,6 +1814,10 @@ function Hangman() {
         }
         if (command === "flashme") {
             hangman.flashlist(src);
+            return true;
+        }
+        if (command === "nextevent") {
+            hangman.showNextEvent(src);
             return true;
         }
         if (hangman.authLevel(src) < 1 && !(command === "end" && script.cmp(sys.name(src), hostName))) {
