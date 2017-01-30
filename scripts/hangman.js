@@ -1579,7 +1579,7 @@ function Hangman() {
         var dateDiff = (new Date(date.getTime() + eventcount * 1000) - date.getTime());
         
         hangbot.sendMessage(src, "The next event will be " + dateDiff / (60 * 1000) + " minutes from now.", hangchan);
-    }
+    };
     
     this.configGame = function (src, commandData) {
         if (commandData === undefined) {
