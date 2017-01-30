@@ -1576,7 +1576,7 @@ function Hangman() {
     
     this.showNextEvent = function(src) {
         var date = new Date();
-        var dateDiff = (new Date(date.getTime() + eventcount * 1000) - date.getTime())
+        var dateDiff = (new Date(date.getTime() + eventcount * 1000) - date.getTime());
         
         hangbot.sendMessage(src, "The next event will be " + dateDiff / (60 * 1000) + " minutes from now.", hangchan);
     }
