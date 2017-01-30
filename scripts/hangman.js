@@ -671,7 +671,7 @@ function Hangman() {
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20 || isEventGame) {
             this.lastAdvertise = time;
-            hangman.advertise([0, safarichan]);
+            hangman.advertise([0, safarichan], false);
         }
         var playerlist = sys.playersOfChannel(hangchan);
         var playerId;
@@ -688,11 +688,11 @@ function Hangman() {
         }            
     };
 
-    this.advertise = function(chanArr) {
+    this.advertise = function(chanArr, preEvent) {
         for (var c in chanArr) {
-            var cid = chanArr[c];
+            var cid = chanArr[c], isSafari = cid === safarichan;
             
-            if (!word) {
+            if (preEvent) {
                 var lb = leaderboards.current,
                     list = Object.keys(lb).sort(function (a, b) {
                     return lb[b] - lb[a];
@@ -705,9 +705,10 @@ function Hangman() {
                 sys.sendAll("", cid);
                 continue;
             }
-            else if (cid === safarichan && !isEventGame) {
+            if (isSafari && !isEventGame) {
                 continue;
             }
+            
             sys.sendAll("", cid);
             sys.sendAll("*** ************************************************************ ***", cid);
             hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint \"" + hint.trim() + "\" started in #Hangman!", cid);
@@ -2394,7 +2395,7 @@ function Hangman() {
             hangbot.sendAll("Anyone may start a game now!", hangchan);
         }
         if (eventCount === 60 && eventGamesEnabled) {
-            hangman.advertise([0, hangchan, safarichan]);
+            hangman.advertise([0, hangchan, safarichan], true);
         }
     };
     this.onHmute = function (src) {
