@@ -6,10 +6,6 @@ function YouTube() {
     
     this.afterChatMessage = function (src, message, channel) {
         if ((message.indexOf("youtube.com") > -1 && message.indexOf("watch?v=") > -1) || message.indexOf("youtu.be/") > -1) {
-            if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
-                youtubeBot.sendMessage(src, "Loading YouTube data failed.", channel);
-                return;
-            }
             var videoId;
             // PC LINK
             if (message.indexOf("youtube.com") !== -1) {
@@ -29,6 +25,10 @@ function YouTube() {
                         likes = parseInt(x.statistics.likeCount, 10),
                         dislikes = parseInt(x.statistics.dislikeCount, 10),
                         ratio = Math.round(likes / (likes + dislikes) * 100) || "-";
+                    if (SESSION.users(src).smute.active && sys.auth(src) < 1) {
+                        youtubeBot.sendMessage(src, "Title: {0}, Length: {1}, Uploader: {2}, Likes: {3}%".format(title, length, uploader, ratio), channel);
+                        return;
+                    }
                     youtubeBot.sendAll("Title: {0}, Length: {1}, Uploader: {2}, Likes: {3}%".format(title, length, uploader, ratio), channel);
                 });
             } catch (error) {

@@ -2274,6 +2274,9 @@ function Hangman() {
         if (channel == hangchan) {
             hangman.viewGame(src);
             sys.sendMessage(src, "±Unown: Hello, welcome to Hangman. Use the commands /g [letter] to guess a letter, and /a [answer] to guess the whole thing! For more information, use the /help command. Have fun!", channel);
+            if (!isEventGame) {
+                this.showNextEvent(src);
+            }
         }
         return false;
     };
