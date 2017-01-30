@@ -671,20 +671,7 @@ function Hangman() {
         var time = parseInt(sys.time(), 10);
         if (time > this.lastAdvertise + 60 * 20 || isEventGame) {
             this.lastAdvertise = time;
-            (function (chanArr) {
-                for (var c in chanArr) {
-                    var cid = chanArr[c];
-                    
-                    if (cid === safarichan && !isEventGame) {
-                        continue;
-                    }
-                    sys.sendAll("", cid);
-                    sys.sendAll("*** ************************************************************ ***", cid);
-                    hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint '" + hint.trim() + "' started in #Hangman!", cid);
-                    sys.sendAll("*** ************************************************************ ***", cid);
-                    sys.sendAll("", cid);
-                }
-            })([0, safarichan]);
+            hangman.advertise([0, safarichan]);
         }
         var playerlist = sys.playersOfChannel(hangchan);
         var playerId;
@@ -700,6 +687,35 @@ function Hangman() {
             } 
         }            
     };
+
+    this.advertise = function(chanArr) {
+        for (var c in chanArr) {
+            var cid = chanArr[c];
+            
+            if (!word) {
+                var lb = leaderboards.current,
+                    list = Object.keys(lb).sort(function (a, b) {
+                    return lb[b] - lb[a];
+                });
+                
+                sys.sendAll("", cid);
+                sys.sendAll("*** ************************************************************ ***", cid);
+                hangbot.sendAll(list[0] && cid === 0 ? "The top player on the Hangman Leaderboard is " + nonFlashing(list[0]) + "! Challenge them by winning Event Games in #Hangman!" : "A new Event Game of #Hangman will start in about a minute!", cid);
+                sys.sendAll("*** ************************************************************ ***", cid);
+                sys.sendAll("", cid);
+                continue;
+            }
+            else if (cid === safarichan && !isEventGame) {
+                continue;
+            }
+            sys.sendAll("", cid);
+            sys.sendAll("*** ************************************************************ ***", cid);
+            hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint \"" + hint.trim() + "\" started in #Hangman!", cid);
+            sys.sendAll("*** ************************************************************ ***", cid);
+            sys.sendAll("", cid);
+        }
+    };
+
     this.startAutoGame = function (isEvent, mode) {
         if (autoGames.length === 0) {
             return;
@@ -2378,23 +2394,7 @@ function Hangman() {
             hangbot.sendAll("Anyone may start a game now!", hangchan);
         }
         if (eventCount === 60 && eventGamesEnabled) {
-            var lb = leaderboards.current,
-                list = Object.keys(lb).sort(function (a, b) {
-                return lb[b] - lb[a];
-            });
-
-            sys.sendAll("", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
-   //       hangbot.sendAll("The top player on the Hangman Leaderboard is " + (list[0] !== undefined ? nonFlashing(list[0]) : "~No Top Player Yet~") + "! Challenge them by winning Event Games in #Hangman!", 0);
-            hangbot.sendAll(list[0] !== undefined ? "The top player on the Hangman Leaderboard is " + nonFlashing(list[0]) + "! Challenge them by winning Event Games in #Hangman!":"A new event game of #Hangman will start in about a minute!", 0);
-            sys.sendAll("*** ************************************************************ ***", 0);
-            sys.sendAll("", 0);
-
-            sys.sendAll("", hangchan);
-            sys.sendAll("*** ************************************************************ ***", hangchan);
-            hangbot.sendAll("A new event game of Hangman will start in about a minute!", hangchan);
-            sys.sendAll("*** ************************************************************ ***", hangchan);
-            sys.sendAll("", hangchan);
+            hangman.advertise([0, hangchan, safarichan]);
         }
     };
     this.onHmute = function (src) {
