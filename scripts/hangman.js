@@ -851,14 +851,14 @@ function Hangman() {
     };
     this.viewLeaderboards = function(src, commandData, last) {
         var cut = 10;
-        var fromLastMonth = last;
-        var lb = fromLastMonth ? leaderboards.last : leaderboards.current;
+        var fromLastWeek = last;
+        var lb = fromLastWeek ? leaderboards.last : leaderboards.current;
         var list = Object.keys(lb).sort(function(a, b) {
             return lb[b] - lb[a];
         });
         var name, top = list.slice(0, cut);
         sys.sendMessage(src, "", hangchan);
-        sys.sendMessage(src, "*** " + (fromLastMonth ? "LAST MONTH'S " : "") + "HANGMAN LEADERBOARDS ***", hangchan);
+        sys.sendMessage(src, "*** " + (fromLastWeek ? "LAST WEEK'S " : "") + "HANGMAN LEADERBOARDS ***", hangchan);
         for (var e = 0; e < top.length; e++) {
             name = top[e];
             hangbot.sendMessage(src, (e + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
@@ -875,7 +875,7 @@ function Hangman() {
             if (top.indexOf(name) === -1) {
                 hangbot.sendMessage(src, (list.indexOf(name) + 1) + ". " + name + ": " + lb[name] + " point(s)", hangchan);
             } 
-        } else if (!fromLastMonth) {
+        } else if (!fromLastWeek) {
             hangbot.sendMessage(src, "You still have not won any Event Games!", hangchan);
         }
         sys.sendMessage(src, "", hangchan);
@@ -1707,7 +1707,7 @@ function Hangman() {
             "/pass: To pass starting rights to someone else.",
             "/has or /hangmanadmins: To see a list of hangman auth.",
             "/end: To end a game you started.",
-            "/lb or /leaderboard: To see the event leaderboard. You can type /lblast or /leaderboardlast to see last months leaderboard.",
+            "/lb or /leaderboard: To see the event leaderboard. You can type /lblast or /leaderboardlast to see last week's leaderboard.",
             "/passlb [user] or /passleaderboard [user]: Passes all your leaderboard points to another alt on the same IP. Both alts must also be logged on.",
             "/myanswer: To see the answer you submitted (host only).",
             "/flashme: Toggle Event Game flashes on or off.",
