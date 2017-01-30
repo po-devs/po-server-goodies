@@ -955,7 +955,7 @@ function Hangman() {
             return;
         }
         this.setWinner(sys.name(sys.id(commandData)));
-        hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData + "!", hangchan);
+        hangbot.sendAll("" + sys.name(src) + " has passed starting rights to " + commandData.toCorrectCase() + "!", hangchan);
         passCount += 1;
     };
     this.myAnswer = function (src){
@@ -1877,7 +1877,7 @@ function Hangman() {
                 SESSION.users(id).hangmanAdmin = true;
             }
             if (command === "passha") {
-                sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase(), sachannel);
+                sys.sendAll("±Unown: " + sys.name(src) + " passed their " + (sHA ? "Super Hangman Admin powers" : "Hangman auth") + " to " + commandData.toCorrectCase() + "!", sachannel);
             }
             sys.sendMessage(src, "±Unown: You passed your Hangman auth to " + commandData.toCorrectCase() + "!", channel);
             return true;
