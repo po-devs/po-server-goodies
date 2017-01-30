@@ -439,12 +439,12 @@ step: function() {
                 
                 var msg = nonFlashing(name) + "'s " + term + " has expired. [IP: " + ip.replace("::ffff:", "") + ", By: " + nonFlashing(by) + ", Reason: " + reason + "]";
                 
-                usebot.sendAll(msg, staffchannel);
+                usebot.sendAll(msg, watchchannel);
                 if (["mban", "hmute", "safban"].contains(p)) {
                     usebot.sendAll(msg, sachannel);
                 }
-                else {
-                    usebot.sendAll(msg, watchchannel);
+                else if (p !== "smute") {
+                    usebot.sendAll(msg, staffchannel);
                 }
             }
         }
