@@ -1601,6 +1601,16 @@ function Hangman() {
             hangbot.sendMessage(src, "An event is currently ongoing!", hangchan);
             return;
         }
+        if (eventCount === 0) {
+            if (word) {
+                hangbot.sendMessage(src, "An event will start after the current game!", hangchan);
+            }
+            else {
+                hangbot.sendMessage(src, "An event is currently pending!", hangchan);
+            }
+            
+            return;
+        }
         var date = new Date();
         var dateDiff = (new Date(date.getTime() + eventCount) - date.getTime());
         
