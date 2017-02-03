@@ -2457,7 +2457,7 @@ function tourCommand(src, command, commandData, channel) {
                 if (ccbfFound) {
                     sys.changeTier(src, 0, b);
                     if (b === "Battle Factory 6v6" || b === "Battle Factory") {
-                        require("battlefactory.js").generateTeam(src, b);
+                        require("battlefactory.js").generateTeam(src, 0);
                     }
                     sendBotMessage(src, "Your first team was set to a " + b + " team.", tourschan, false);
                 } else {
