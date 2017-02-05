@@ -1564,7 +1564,7 @@ function Hangman() {
     this.getNextSunday = function() {
         var date = new Date();
         
-        return new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).getTime();
+        return new Date(new Date(date.getFullYear(), date.getUTCMonth(), date.getUTCDate() + (8 - date.getUTCDay()) % 9).setUTCHours(0, 0, 0, 0)).getTime();
     };
 
     this.resetLB = function() {
@@ -1591,9 +1591,9 @@ function Hangman() {
                     Safari.hangmanPromoLb(top[position], position);
                 }
             }
+            
             hangman.resetLB();
         }
-
     };
     
     this.showNextEvent = function(src) {
