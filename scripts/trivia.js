@@ -2794,8 +2794,10 @@ addAdminCommand(["suggest"], function (src, commandData, channel) {
 }, "Allows you to suggest a question to be asked next in Trivia. Format is /suggest [ID].");
 
 addAdminCommand(["say"], function (src, commandData, channel) {
-    if (commandData === "")
+    if (commandData === "") {
+        Trivia.sendPM(src, "Please enter a message.", channel);
         return;
+    }
     Trivia.sendAll("(" + sys.name(src) + "): " + commandData, channel);
 }, "Allows you to talk during the answer period.");
 
@@ -3512,12 +3514,10 @@ addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
 }, "Use to remove questions (by ID number) to the list of questions that should have a longer answer time when asked.");
 
 addAdminCommand(["updatelist"], function (src, commandData, channel) {
-    if (commandData === undefined) { return; }
     if (commandData.length === 0 && trivData.updateList.length === 0) {
         Trivia.sendPM(src, "There are no questions listed.", channel);
         return;
     }
-    var all = triviaq.all();
     var b, q, output = [], index = 0;
     if (!isNaN(commandData) && commandData.length !== 0) {
         index = parseInt(commandData);
@@ -3720,7 +3720,7 @@ addAdminCommand(["askedqamount"], function (src, commandData, channel) {
 
 addAdminCommand(["mostasked"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
-    var count = commandData | 30;
+    var count = (commandData) ? commandData : 30;
     triviabot.sendMessage(src, "Most asked questions:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[i];
@@ -3730,7 +3730,7 @@ addAdminCommand(["mostasked"], function (src, commandData, channel) {
 
 addAdminCommand(["leastasked"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("asked");
-    var count = commandData | 30;
+    var count = (commandData) ? commandData : 30;
     triviabot.sendMessage(src, "Least asked questions:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[sortedQs.length - 1 - i];
@@ -3740,7 +3740,7 @@ addAdminCommand(["leastasked"], function (src, commandData, channel) {
 
 addAdminCommand(["mostanswered"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("answered");
-    var count = commandData | 30;
+    var count = (commandData) ? commandData : 30;
     triviabot.sendMessage(src, "Questions answered correctly the most:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[i];
@@ -3752,11 +3752,11 @@ addAdminCommand(["leastanswered"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("leastanswered");
     var count = 30, minTimesAsked = 0;
     if (commandData.indexOf(":") === -1) {
-        count = commandData | 30;
+        count = (commandData) ? commandData : 30;
     } else {
         commandData = commandData.split(":");
-        count = commandData[0] | 30;
-        minTimesAsked = (!isNaN(commandData[1])) ? parseInt(commandData[1]) : 30;
+        count = (commandData[0]) ? commandData[0] : 30;
+        minTimesAsked = (commandData[1]) ? commandData[1] : 30;
     }
     triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
@@ -4346,8 +4346,10 @@ addOwnerCommand(["declinecatqs"], function (src, commandData, channel) {
 }, "Delete all of the questions for a given category.");
 
 addOwnerCommand(["saybold"], function (src, commandData, channel) {
-    if (commandData === "")
+    if (commandData === "") {
+        Trivia.sendPM(src, "Please enter a message.", channel);
         return;
+    }
     triviabot.sendHtmlAll("(" + utilities.html_escape(sys.name(src)) + "): <b>" + utilities.html_escape(commandData) + "</b>", channel);
 }, "Allows you to talk in bold during the answer period.");
 
