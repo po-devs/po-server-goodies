@@ -79,11 +79,11 @@ catch (e) {
     trivData = {};
 }
 
-var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags","extAnswers","blockCats","debugTime","debugAnswerTime"];
+var neededData = ["submitBans", "toFlash", "mutes", "leaderBoard", "triviaWarnings", "autostartRange", "equivalentCats","equivalentAns","specialChance","hiddenCategories","votingCooldown","eventCooldown","eventFlag","editMessageFlags","extAnswers","blockCats","debugTime","debugAnswerTime","updateList"];
 for (var i = 0; i < neededData.length; ++i) {
     var data = neededData[i];
     if (trivData[data] === undefined) {
-        if (data === "leaderBoard" || data === "triviaWarnings" || data === "hiddenCategories" || data === "editMessageFlags" || data === "extAnswers" || data === "blockCats") {
+        if (data === "leaderBoard" || data === "triviaWarnings" || data === "hiddenCategories" || data === "editMessageFlags" || data === "extAnswers" || data === "blockCats" || data === "updateList") {
             trivData[data] = [];
         }
         else if (data === "autostartRange") {
@@ -3511,6 +3511,90 @@ addAdminCommand(["removeextanswers"], function (src, commandData, channel) {
     }
 }, "Use to remove questions (by ID number) to the list of questions that should have a longer answer time when asked.");
 
+addAdminCommand(["updatelist"], function (src, commandData, channel) {
+    if (commandData === undefined) { return; }
+    if (commandData.length === 0 && trivData.updateList.length === 0) {
+        Trivia.sendPM(src, "There are no questions listed.", channel);
+        return;
+    }
+    var all = triviaq.all();
+    var b, q, output = [], index = 0;
+    if (!isNaN(commandData) && commandData.length !== 0) {
+        index = parseInt(commandData);
+    }
+    if (commandData.length === 0 || !isNaN(commandData)) {
+        for (var i = 0; i < trivData.updateList.length; i++) {
+            b = trivData.updateList[i];
+            q = triviaq.get(b);
+            try {
+                output.push("Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + b + "')");
+            }
+            catch (e) {
+                trivData.updateList.splice(i, 1);
+                saveData();
+                triviabot.sendAll("Warning: Question number " + b + " was removed from the updateList because it could not be found.", revchan);
+            }
+        }
+        var x = 0;
+        while (index < output.length && x !== 50) {
+            Trivia.sendPM(src, output[index], channel);
+            index++;
+            x += 1;
+        }
+        if (x === 50 && index < output.length) {
+            Trivia.sendPM(src, "Over 50 questions were found.", channel);
+            triviabot.sendHtmlMessage(src, "<b><a href=\"po:send//updatelist " + index + "\">Show more questions</a></b>", channel);
+        }
+        return;
+    }
+    var format = "The correct usage is /updatelist or /updatelist add:[question ID] or /updatelist remove:[question ID].";
+    if (commandData.indexOf(":") !== -1) {
+        commandData = commandData.split(":");
+        if (commandData[0] === "add" || commandData[0] === "remove") { var option = commandData[0]; }
+        else {
+            Trivia.sendPM(src, format, channel);
+            return;
+        }
+        if (!isNaN(commandData[1])) { var qID = commandData[1]; }
+        else {
+            Trivia.sendPM(src, format, channel);
+            return;
+        }
+        q = triviaq.get(qID);
+        if (option === "add") {
+            for (var k = 0; k < trivData.updateList.length; k++) {
+                if (trivData.updateList[k] === qID) {
+                    Trivia.sendPM(src, "Question number " + qID + " is already on the list of questions that need updating.", channel);
+                    return;
+                }
+            }
+            trivData.updateList.push(qID);
+            saveData();
+            Trivia.sendPM(src, "The following question was added to the list of questions that need updating:", channel);
+            try {
+            Trivia.sendPM(src, "Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + qID + "')", channel);
+            }
+            catch (e) {
+                trivData.updateList.splice(trivData.updateList.indexOf(qID), 1);
+                saveData();
+                Trivia.sendPM(src, "Error: Question number " + qID + " was not added because it could not be found.", revchan);
+            }
+            return;
+        } else { // for remove
+            for (var j = 0; j < trivData.updateList.length; j++) {
+                if (trivData.updateList[j] === qID) {
+                    trivData.updateList.splice(j, 1);
+                    saveData();
+                    Trivia.sendPM(src, "The following question was removed from the list of questions that need updating:", channel);
+                    Trivia.sendPM(src, "Question: '" + q.question + "' Category: '" + q.category + "' Answer: '" + q.answer + "' (id='" + qID + "')", channel);
+                    return;
+                }
+            }
+            Trivia.sendPM(src, "Question number " + qID + " could not be found in the list of questions that need updating.", channel);
+        }
+    } else { Trivia.sendPM(src, format, channel); }
+}, "Lists questions that may require updating from time to time. Format is /updatelist to view the list; /updatelist add:qID to add a question to the list; /updatelist remove:qID to remove a question from the list.");
+
 // Search and Statistical Commands
 
 addAdminCommand(["apropos"], function (src, commandData, channel) {
@@ -3666,13 +3750,21 @@ addAdminCommand(["mostanswered"], function (src, commandData, channel) {
 
 addAdminCommand(["leastanswered"], function (src, commandData, channel) {
     var sortedQs = questionData.sortBy("leastanswered");
-    var count = commandData | 30;
+    var count = 30, minTimesAsked = 0;
+    if (commandData.indexOf(":") === -1) {
+        count = commandData | 30;
+    } else {
+        commandData = commandData.split(":");
+        count = commandData[0] | 30;
+        minTimesAsked = (!isNaN(commandData[1])) ? parseInt(commandData[1]) : 30;
+    }
     triviabot.sendMessage(src, "Questions answered correctly the least:", channel);
     for (var i = 0; i < count && i < sortedQs.length; i++) {
         var q = sortedQs[sortedQs.length - 1 - i];
+        if (q[1] < minTimesAsked) { continue; }
         triviabot.sendMessage(src, "ID: " + q[0] + ". Times asked: " + q[1] + ". Answered: " + q[2] + ". Answered correctly: " + q[3] + ".", channel);
     }
-}, "Lists the N questions answered correctly the least. Format is /leastanswered N. The default value for N is 30.");
+}, "Lists the N questions answered correctly the least. Format is /leastanswered N. The default value for N is 30. Additionally, an extra input can be added to set the min # of times a question has been asked such as /leastanswered 30:30.");
 
 addAdminCommand(["eventstats"], function (src, commandData, channel) {
     var stats = eventStats.loadEventStats();
