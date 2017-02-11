@@ -1358,7 +1358,7 @@ userGuides: function(os, unsupported) {
     var ret = [];
     var guides = {
         "windows": {
-            "English": "http://pokemon-online.eu/threads/34171/",
+            "English": "http://pokemon-online.eu/threads/35641/",
             "Español": "http://pokemon-online.eu/threads/34234/",
             "中文": "http://tieba.baidu.com/p/4933564112",
             "Português": "http://pokemon-online.eu/threads/34370/"
