@@ -2274,7 +2274,7 @@ function Safari() {
         }
         var ph = "«" + link("/photo", "Photo") + "» ";
         if (isAndroid && isBallAvailable(player, "master")) {
-            safaribot.sendHtmlMessage(src, "Throw: «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "» ", safchan);
+            sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
         }
         if (hasBalls) {
             safaribot.sendHtmlMessage(src, "Throw: " + ret +  "[" + link("/" + ccatch + " cancel", "Cancel") + "] " + (player.balls.lens > 0 ? ph : ""), safchan);
