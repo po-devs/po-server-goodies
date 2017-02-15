@@ -2940,7 +2940,7 @@ function tourCommand(src, command, commandData, channel) {
             sys.sendMessage(src, border,channel);
             return true;
         }
-        if (command == "monthlyleaderboard" || command == "leaderboard") {
+        if (command == "monthlyleaderboard" || command == "leaderboard" || command == "lb") {
             var month = false;
             var themonths = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "october", "november", "december"];
             var mindex = themonths.indexOf(commandData.toLowerCase());
@@ -2954,7 +2954,7 @@ function tourCommand(src, command, commandData, channel) {
             tstats.rankings(src, "", false, mindex);
             return true;
         }
-        if (command == "eventleaderboard") {
+        if (command == "eventleaderboard" || command == "eventlb") {
             tstats.erankings(src, false, commandData);
             return true;
         }
