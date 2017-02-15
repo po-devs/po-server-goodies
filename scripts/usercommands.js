@@ -691,7 +691,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var stone = 0, aforme;
         if (commandData.indexOf(".") !== -1) {
             //Intentionally Empty. Like the vocabulary of a Mime.
-        } else if (commandData.indexOf(" ") !== -1 && commandData.indexOf("-") === -1) {
+        } else if (commandData.indexOf("mega ") === 0 && commandData.indexOf("-") === -1) {
             stone = sys.stoneForForme(pokeId); //needs to inherit from function before id is replaced below
             aforme = commandData.split(" ");
             pokeId = sys.pokeNum(aforme[1]);
