@@ -705,7 +705,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
         var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [];
-        if (pokeId > 721) { tiers = ["SM Ubers", "SM OU", "SM LC"]; }
+        if (pokeId > 721 || commandData.toLowerCase().indexOf("alolan") !== -1 || (pokeId === 658 && commandData !== "greninja")) {
+            tiers = ["SM Ubers", "SM OU", "SM LC"];
+        }
         for (var x = 0; x < tiers.length; x++) {
             if (stone > 0 && sys.isItemBannedFromTier(stone, tiers[x])) {
                 break;
