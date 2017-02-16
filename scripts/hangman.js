@@ -582,7 +582,7 @@ function Hangman() {
         }
         if (gameMode === tossUp) {
             tossUpCount = 0;
-            tossUpGuess = 7;
+            tossUpGuess = 6;
         }
         checked = [];
         usedLetters = [];
@@ -2352,7 +2352,9 @@ function Hangman() {
             tossUpCount++;
             if (tossUpCount === tossUpGuess) {
                 tossUpCount = 0;
-                tossUpGuess += 1;
+                if (tossUpGuess <= 9) {
+                    tossUpGuess += 1;
+                }
                 this.unownGuess();
             }
         }        
