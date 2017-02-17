@@ -20032,6 +20032,9 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
+        if (!sys.id(name)) {
+            this.offlineMessage(player, "You won " + rew + " from an Event Tour!");
+        }
         this.inboxMessage(player, "You won " + rew + " from an Event Tour!");
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -20060,6 +20063,9 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
+        if (!sys.id(name)) {
+            this.offlineMessage(player, "You won " + rew + " from an Event Trivia Game!");
+        }
         this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!");
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -20080,6 +20086,10 @@ function Safari() {
             player.balls.shady += amt;
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
+            
+            if (!sys.id(name)) {
+                this.offlineMessage(player, "You won " + rew + " from a Mafia Event Game!");
+            }
             this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!");
             this.sanitize(player);
         }
