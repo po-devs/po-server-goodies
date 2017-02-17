@@ -5393,6 +5393,9 @@ function Safari() {
     };
     this.inboxMessage = function(player, msg) {
         var d = new Date().toUTCString();
+        if (!player.hasOwnProperty("inbox")) {
+            return;
+        }
         player.inbox.push(msg + " --- [" + d + "]");
         while (player.inbox.length > 30) {
             player.inbox.shift();
