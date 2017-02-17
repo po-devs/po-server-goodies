@@ -5403,6 +5403,14 @@ function Safari() {
         player.unreadmsgs += 1;
         this.saveGame(player);
     };
+    this.offlineMessage = function(player, msg) {
+        if (!player.hasOwnProperty("pendingMessages")) {
+            player.pendingMessages = [];
+        }
+        player.pendingMessages.push(msg);
+        this.saveGame(player);
+    
+    };
     
     /* Tutorial */
     this.skipTutorial = function (src, commandData) {
