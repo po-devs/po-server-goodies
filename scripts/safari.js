@@ -1885,6 +1885,16 @@ function Safari() {
     function hasType(pokeNum, type) {
         return sys.type(sys.pokeType1(pokeNum)) == type || sys.type(sys.pokeType2(pokeNum)) == type;
     }
+    function canLearnMove(num, moveNum) {
+        var id = parseInt(num, 10);
+        var moves = pokedex.getAllMoves(id);
+        var move = moveNum + "";
+        
+        if (!moves) {
+            moves = pokedex.getAllMoves(pokeInfo.species(id));
+        }
+        return moves.contains(move);
+    }
     function getBST(pokeNum) {
         return add(sys.pokeBaseStats(pokeNum));
     }
@@ -4812,9 +4822,10 @@ function Safari() {
         if (commandData === "*") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "How to use /find:", safchan);
-            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Shiny, CanEvolve, FinalForm, CanMega, Duplicate or Region) and a value to find Pokémon in your box. Examples: ", safchan);
+            safaribot.sendMessage(src, "Define a parameter (Name, Number, BST, Type, Move, Shiny, CanEvolve, FinalForm, CanMega, Duplicate or Region) and a value to find Pokémon in your box. Examples: ", safchan);
             safaribot.sendMessage(src, "For Name: Type any part of the Pokémon's name. e.g.: /find name LUG (both Lugia and Slugma will be displayed, among others with LUG on the name)", safchan);
             safaribot.sendMessage(src, "For Type: Type any one or two types. If you type 2, only pokémon with both types will appear. e.g.: /find type water grass", safchan);
+            safaribot.sendMessage(src, "For Move: Type any move. e.g.: /find move tackle (will show all Pokémon that can learn Tackle)", safchan);
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
             safaribot.sendMessage(src, "For Color: Select any valid color (" +  readable(Object.keys(pokeColors), "or") + ") to display all currently owned Pokémon with that color", safchan);
@@ -4842,7 +4853,7 @@ function Safari() {
             }
 
             crit = info[0].toLowerCase();
-            val = info.length > 1 ? info[1].toLowerCase() : "asc";
+            val = info.length > 1 ? info.slice(1).join(" ").toLowerCase() : "asc";
 
             def = applyFilterCriteria(src, info, crit, val, list, current, str);
             if (!def) {
@@ -4903,6 +4914,11 @@ function Safari() {
                 case "colour":
                     crit = "color";
                     break;
+                case "move":
+                case "learn":
+                case "canlearn":
+                    crit = "move";
+                    break;
                 default:
                     crit = "abc";
             }
@@ -4961,6 +4977,20 @@ function Safari() {
                 }
             });
             return "with " + type1 + (type2 ? "/" + type2 : "") + " type";
+        }
+        else if (crit == "move") {
+            val = sys.moveNum(val);
+            if (!val) {
+                safaribot.sendMessage(src, val + " is not a valid move!", safchan);
+                return false;
+            }
+            var m = val + "";
+            current.forEach(function(x){
+                if (canLearnMove(x, m)) {
+                    list.push(x);
+                }
+            });
+            return "that can learn " + sys.move(val);
         }
         else if (crit == "shiny") {
             current.forEach(function(x){
@@ -5394,7 +5424,7 @@ function Safari() {
     this.inboxMessage = function(player, msg) {
         var d = new Date().toUTCString();
         if (!player.hasOwnProperty("inbox")) {
-            return;
+            player.inbox = [];
         }
         player.inbox.push(msg + " --- [" + d + "]");
         while (player.inbox.length > 30) {
@@ -5402,14 +5432,6 @@ function Safari() {
         }
         player.unreadmsgs += 1;
         this.saveGame(player);
-    };
-    this.offlineMessage = function(player, msg) {
-        if (!player.hasOwnProperty("pendingMessages")) {
-            player.pendingMessages = [];
-        }
-        player.pendingMessages.push(msg);
-        this.saveGame(player);
-    
     };
     
     /* Tutorial */
@@ -13784,7 +13806,7 @@ function Safari() {
         if (request.bst && getBST(id) < request.bst) {
             return false;
         }
-        if (request.move && !pokedex.getAllMoves(pokeInfo.species(id)).contains(""+request.move)) {
+        if (request.move && !canLearnMove(id, request.move)) {
             return false;
         }
         return true;
@@ -13844,13 +13866,13 @@ function Safari() {
         var current = { "easy": 0, "normal": 0, "hard": 0, "ultra": 0 };
         
         var getRequestDiff = function(req) {
-            if (req.score <= 45) {
+            if (req.score <= 47) {
                 return "easy";
             }
-            else if (req.score <= 80) {
+            else if (req.score <= 84) {
                 return "normal";
             }
-            else if (req.score <= 120) {
+            else if (req.score <= 124) {
                 return "hard";
             }
             else {
@@ -13860,13 +13882,13 @@ function Safari() {
         var getDiffRange = function(diff) {
             switch (diff) {
                 case "easy":
-                    return [16, 45];
+                    return [16, 47];
                 case "normal":
-                    return [46, 80];
+                    return [48, 84];
                 case "hard":
-                    return [81, 120];
+                    return [85, 124];
                 case "ultra":
-                    return [121, 1000];
+                    return [125, 1000];
             }
         };
         var getNeededDiff = function() {
@@ -13997,7 +14019,7 @@ function Safari() {
                     if (obj.hasOwnProperty("bst") && getBST(id) < obj.bst) {
                         continue;
                     }
-                    if (obj.hasOwnProperty("move") && !pokedex.getAllMoves(p).contains(""+obj.move)) {
+                    if (obj.hasOwnProperty("move") && !canLearnMove(p, obj.move)) {
                         continue;
                     }
                     if (obj.hasOwnProperty("what") && actTypes && !hasType(id, actTypes[0]) && (actTypes.length <= 1 || !hasType(id, actTypes[1]))) {
@@ -14023,11 +14045,11 @@ function Safari() {
             var val = 0, mods = 0;
             
             if (obj.mood) {
-                val += 40;
+                val += 38;
                 mods += 2;
             }
             if (obj.when) {
-                val += 28;
+                val += 26;
                 mods += 1;
             }
             if (obj.what) {
@@ -14035,16 +14057,16 @@ function Safari() {
                     val += 12;
                     mods += 1;
                 } else {
-                    val += photoActions.Any.contains(obj.what) ? 42 : 65;
-                    mods += photoActions.Any.contains(obj.what) ? 2 : 3;
+                    val += photoActions.Any.contains(obj.what) ? 40 : 62;
+                    mods += 2;
                 }
             }
             if (obj.where) {
-                val += obj.where === "default" ? 10 : 33;
+                val += obj.where === "default" ? 10 : 31;
                 mods += obj.where === "default" ? 1 : 2;
             }
             if (obj.quality) {
-                val += Math.round(obj.quality * obj.quality * 0.63);
+                val += Math.round(obj.quality * obj.quality * 0.6);
                 mods += 1;
             }
             
@@ -14068,7 +14090,7 @@ function Safari() {
                 }
                 val += Math.round((t*t/2.5) * b);
                 if (list.length === 1) {
-                    mods += 3;
+                    mods += 2;
                 } else {
                     var speciesMods = ["type", "color", "region", "bst", "move"];
                     for (var e = speciesMods.length; e--; ) {
@@ -14081,11 +14103,12 @@ function Safari() {
                 //For "Any Pokémon" requests
                 val *= 0.5;
             }
+            var amtBonus = 1;
             if (obj.amt) {
-                val *= [1, 1, 1.75, 2.5, 3.8][obj.amt];
+                amtBonus = [1, 1, 1.75, 2.5, 3.8][obj.amt];
                 mods += 2;
             }
-            var modsBonus = 1 + (mods > 1 ? 0.1 + (mods - 1) * 0.05 : 0);
+            var modsBonus = amtBonus + (mods > 1 ? 0.09 + (mods - 1) * 0.034 : 0);
             val = val * modsBonus;
             
             return Math.round(val);
@@ -15600,7 +15623,7 @@ function Safari() {
         var canLearn = [];
         var cantLearn = [];
         for (var i = 1; i < 803; i++) {
-            if (pokedex.getAllMoves(i).contains(this.answerId + "")) {
+            if (canLearnMove(i, this.answerId)) {
                 if (i !== 235) {
                     canLearn.push(sys.pokemon(i));
                 }
@@ -18122,7 +18145,7 @@ function Safari() {
             case "move":
                 val = sys.rand(1, 702);
                 list = list.filter(function(x){
-                    return pokedex.getAllMoves(x).contains("" + val);
+                    return canLearnMove(x, val);
                 });
                 desc = "can learn " + sys.move(val);
             break;
@@ -20043,9 +20066,6 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
-        if (!sys.id(name)) {
-            this.offlineMessage(player, "You won " + rew + " from an Event Tour!");
-        }
         this.inboxMessage(player, "You won " + rew + " from an Event Tour!");
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -20074,9 +20094,6 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
-        if (!sys.id(name)) {
-            this.offlineMessage(player, "You won " + rew + " from an Event Trivia Game!");
-        }
         this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!");
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -20098,9 +20115,6 @@ function Safari() {
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
             
-            if (!sys.id(name)) {
-                this.offlineMessage(player, "You won " + rew + " from a Mafia Event Game!");
-            }
             this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!");
             this.sanitize(player);
         }
@@ -20142,9 +20156,6 @@ function Safari() {
         var rew = plural(amt, "cookie");
         player.balls.cookie += amt;
         
-        if (!sys.id(name)) {
-            this.offlineMessage(player, "You won " + rew + " from a Hangman Leaderboard!");
-        }
         this.inboxMessage(player, "You won " + rew + " from Hangman Leaderboard!");
         this.sanitize(player);
         if (placing === 0) {
