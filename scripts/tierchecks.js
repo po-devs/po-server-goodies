@@ -464,6 +464,15 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Ubers"], function batonPassLimitXY(
     }
 });
 
+tier_checker.add_new_check(INCLUDING, ["SM Ubers"], function ubersSleepTrap(src, team, tier) {
+    for (var i = 0; i < 6; i++) {
+        var hasStag = sys.teamPokeAbility(src, team, i) === sys.abilityNum("Shadow Tag") || sys.teamPoke(src, team, i) === sys.pokeNum("Gengar") && sys.teamPokeItem(src, team, i) === sys.itemNum("Gengarite");
+        if (hasStag && sys.hasTeamPokeMove(src, team, i, sys.moveNum("Hypnosis"))) {
+            return ["The combination of Shadow Tag and Hypnosis is forbidden in " + tier + "."];
+        }
+    }
+});
+
 tier_checker.add_new_check(EXCLUDING, challenge_cups, function hasOneUsablePokemon(player, team) {
     for (var slot=0; slot<6; slot++)
         if (sys.teamPoke(player, team, slot) !== 0)
