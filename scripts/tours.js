@@ -2456,7 +2456,10 @@ function tourCommand(src, command, commandData, channel) {
             if (sys.os(src) === "android") {
                 var playerSubGen = sys.gen(src, 0) + "-" + sys.subgen(src, 0);
                 var tourGen = tours.tour[key].parameters.gen;
-                if (tourGen === "default") { tourGen = defaultgen; }
+                if (tourGen === "default") {
+                    tourGen = sys.generationOfTier(tours.tour[key].tourtype) + "-" + sys.subGenerationOfTier(tours.tour[key].tourtype);
+                    if (!getSubgen(tourGen, true)) { tourGen = defaultgen; } // for default CC
+                }
                 if (playerSubGen !== tourGen) {
                     sendBotMessage(src, "Please make sure that the generation of your team <b>(" + getSubgen(playerSubGen, true) + ")</b> matches the generation of the tournament <b>(" + getSubgen(tourGen, true) + ")</b> before attempting to join. The generation can be changed in the teambuilder.", tourschan, true);
                     return true;
