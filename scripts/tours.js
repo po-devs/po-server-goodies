@@ -2453,10 +2453,37 @@ function tourCommand(src, command, commandData, channel) {
                     break;
                 }
             }
-            if (sys.os(src) === "android") {
+            if (sys.os(src) === "android") { // band aid fix
                 var playerSubGen = sys.gen(src, 0) + "-" + sys.subgen(src, 0);
                 var tourGen = tours.tour[key].parameters.gen;
-                if (tourGen === "default") { tourGen = defaultgen; }
+                if (tourGen === "default") {
+                    var ti = tours.tour[key].tourtype;
+                    if (ti.indexOf("SM") !== -1) { tourGen = "7-0"; }
+                    else {
+                        if (ti.indexOf("ORAS") !== -1 || ti.indexOf("Inverted Battle") !== -1 || ti.indexOf("Sky Battle") !== -1) { tourGen = "6-1"; }
+                        else {
+                            if (ti.indexOf("XY") !== -1) { tourGen = "6-0"; }
+                            else {
+                                if (ti.indexOf("BW2") !== -1) { tourGen = "5-1"; }
+                                else {
+                                    if (ti.indexOf("HGSS") !== -1) { tourGen = "4-2"; }
+                                    else {
+                                        if (ti.indexOf("ADV") !== -1) { tourGen = "3-4"; }
+                                        else {
+                                            if (ti.indexOf("GSC") !== -1) { tourGen = "2-1"; }
+                                            else {
+                                                if (ti.indexOf("RBY") !== -1) { tourGen = "1-1"; }
+                                                else {
+                                                    tourGen = defaultgen;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 if (playerSubGen !== tourGen) {
                     sendBotMessage(src, "Please make sure that the generation of your team <b>(" + getSubgen(playerSubGen, true) + ")</b> matches the generation of the tournament <b>(" + getSubgen(tourGen, true) + ")</b> before attempting to join. The generation can be changed in the teambuilder.", tourschan, true);
                     return true;
