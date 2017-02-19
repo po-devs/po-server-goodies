@@ -346,7 +346,7 @@ function Safari() {
             appearAs: {}
         },
         inbox: [],
-        unreadmsgs: 0,
+        unreadInbox: [],
         rockTargets: [],
         fortune: {
             name: null,
@@ -1154,6 +1154,19 @@ function Safari() {
             return true;
         }
         return false;
+    }
+    function isPlaying(name) {
+        var id = sys.id(name);
+        if (!id) {
+            return false;
+        }
+        if (!getAvatar(id)) {
+            return false;
+        }
+        if (!sys.isInChannel(id, safchan)) {
+            return false;
+        }
+        return true;
     }
     function themeName(obj) {
         if (Array.isArray(obj)) {
@@ -5405,7 +5418,7 @@ function Safari() {
         if (!validPlayers("self", src)) {
             return;
         }
-        var player = getAvatar(src), box = player.inbox, read = box.length - player.unreadmsgs;
+        var player = getAvatar(src), box = player.inbox, unread = player.unreadInbox;
         if (box.length === 0) {
             safaribot.sendMessage(src, "Your Inbox is empty!", safchan);
             return;
@@ -5415,22 +5428,26 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<b>Your Inbox: </b>", safchan);
         for (var e = 0; e < box.length; e++) {
-            safaribot.sendHtmlMessage(src, (e >= read ? toColor(box[e], "red") : box[e]), safchan);
+            safaribot.sendHtmlMessage(src, (unread[e] ? toColor(box[e], "red") : box[e]), safchan);
+            player.unreadInbox[e] = false;
         }
         sys.sendMessage(src, "", safchan);
-        player.unreadmsgs = 0;
         this.saveGame(player);
     };
-    this.inboxMessage = function(player, msg) {
+    this.inboxMessage = function(player, msg, asRead) {
         var d = new Date().toUTCString();
         if (!player.hasOwnProperty("inbox")) {
             player.inbox = [];
         }
+        if (!player.hasOwnProperty("unreadInbox")) {
+            player.unreadInbox = player.inbox.map(function() { return false; });
+        }
         player.inbox.push(msg + " --- [" + d + "]");
+        player.unreadInbox.push(asRead ? false : true);
         while (player.inbox.length > 30) {
             player.inbox.shift();
+            player.unreadInbox.shift();
         }
-        player.unreadmsgs += 1;
         this.saveGame(player);
     };
     
@@ -8241,7 +8258,7 @@ function Safari() {
             var out = giveStuff(player, reward, true);
 
             safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
-            this.inboxMessage(player, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""));
+            this.inboxMessage(player, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
             if (hasMaster && reward.hasOwnProperty("@fragment") && reward["@fragment"] > 0) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
@@ -8266,10 +8283,10 @@ function Safari() {
             out = giveStuff(player, reward, true);
             if (out.gained.length > 0) {
                 safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", safchan);
-                this.inboxMessage(player, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!");
+                this.inboxMessage(player, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", true);
             } else if (out.discarded.length > 0) {
                 safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", safchan);
-                this.inboxMessage(player, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!");
+                this.inboxMessage(player, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", true);
             }
             if (player.burnLastUsed !== 0 && player.balls.burn > 0) {
                 var n = Math.floor((now() - player.burnLastUsed) / hours(itemData.burn.threshold));
@@ -8278,7 +8295,7 @@ function Safari() {
                     player.balls.burn -= n;
                     player.burnLastUsed = now();
                     safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", safchan);
-                    this.inboxMessage(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!");
+                    this.inboxMessage(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", true);
                 }
             }
         }
@@ -14388,7 +14405,7 @@ function Safari() {
             if (sys.id(winner.id)) {
                 safaribot.sendMessage(sys.id(winner.id), "You " + out + "!",safchan);
             }
-            this.inboxMessage(winner, "You " + out + " from a Monger Auction by paying " + plural(price, "shady") + "!");
+            this.inboxMessage(winner, "You " + out + " from a Monger Auction by paying " + plural(price, "shady") + "!", isPlaying(winner.id));
             sys.sendAll("", safchan);
             sys.appendToFile(crossLog, now() + "|||Monger|||" + winner.id.toCorrectCase() + "|||" + obj.rewardName + " by paying " + plural(price, "shady") + "\n");
             sys.appendToFile(questLog, now() + "|||" + winner.id.toCorrectCase() + "|||Monger|||Paid " + plural(price, "shady") + "|||Received " + obj.rewardName + "\n");
@@ -18971,8 +18988,9 @@ function Safari() {
             if (player.fortune.deadline > now() || player.fortune.limit > 0) {
                 safaribot.sendMessage(src, "You still have " + an(finishName("cookie")) + "'s effect active: \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
-            if (player.unreadmsgs > 0) {
-                safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(player.unreadmsgs, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
+            var unread = countRepeated(player.unreadInbox, true);
+            if (unread > 0) {
+                safaribot.sendHtmlMessage(src, toFlashing(addFlashTag(sys.name(src)) + ", you have " + plural(unread, "unread message") + ". To read them, type " + link("/inbox") + ". ", sys.name(src)), safchan);
             }
         } else if (getAvatar(src)) {
             SESSION.users(src).safari = null;
@@ -19931,6 +19949,9 @@ function Safari() {
             if (redoBase || player.secretBaseCache.length !== SECRET_BASE_WIDTH * SECRET_BASE_HEIGHT) {
                 this.sanitizeBase(player);
             }
+            while (player.inbox.length > player.unreadInbox.length) {
+                player.unreadInbox.push(false);
+            }
 
             if (typeof player.money !== "number") {
                 player.money = parseInt(player.money, 10);
@@ -20066,7 +20087,7 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
-        this.inboxMessage(player, "You won " + rew + " from an Event Tour!");
+        this.inboxMessage(player, "You won " + rew + " from an Event Tour!", isPlaying(name));
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
         sys.appendToFile(crossLog, now() + "|||Tournaments|||" + name.toCorrectCase() + "|||" + rew + "\n");
@@ -20094,7 +20115,7 @@ function Safari() {
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
         
-        this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!");
+        this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!", isPlaying(name));
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
         sys.appendToFile(crossLog, now() + "|||Trivia|||" + name.toCorrectCase() + "|||" + rew + "\n");
@@ -20115,7 +20136,7 @@ function Safari() {
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
             
-            this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!");
+            this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!", isPlaying(name));
             this.sanitize(player);
         }
         if (received.length > 0) {
@@ -20143,7 +20164,7 @@ function Safari() {
         if (sys.id(player.id)) {
             safaribot.sendMessage(sys.id(player.id), "You " + stuffReceivedDesc(out) + " from an Event Hangman game!",safchan);
         }
-        this.inboxMessage(player, "You " + stuffReceivedDesc(out) + " from an Event Hangman game!");
+        this.inboxMessage(player, "You " + stuffReceivedDesc(out) + " from an Event Hangman game!", isPlaying(name));
         sys.appendToFile(crossLog, now() + "|||Hangman|||" + player.id.toCorrectCase() + "|||" + rewardName + "\n");
     };
     this.hangmanPromoLb = function(name, placing) {
@@ -20156,7 +20177,7 @@ function Safari() {
         var rew = plural(amt, "cookie");
         player.balls.cookie += amt;
         
-        this.inboxMessage(player, "You won " + rew + " from Hangman Leaderboard!");
+        this.inboxMessage(player, "You won " + rew + " from Hangman Leaderboard!", isPlaying(name));
         this.sanitize(player);
         if (placing === 0) {
             safaribot.sendHtmlAll("<b>" + getOrdinal(placing + 1) + " in Hangman Leaderboard</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -21859,7 +21880,7 @@ function Safari() {
                 safaribot.sendMessage(src, readable(players) + " will receive the following message in their inbox: " + data.message, safchan);
                 return true;
             }
-            if (command === "analyze" || command === "analyzer") {
+            if (command === "analyze" || command === "analyzer" || command === "analyzerare") {
                 var info = commandData.split(":");
                 var target = sys.id(info[0]);
                 var player = getAvatarOff(info[0]);
@@ -21889,8 +21910,11 @@ function Safari() {
                 }
 
                 var spc = 0;
-                if (command === "analyzer") { //Readable format
+                if (command === "analyzer" || command === "analyzerare") { //Readable format
                     if (["pokemon", "party", "ninjaParty"].contains(propName[1])) {
+                        if (command === "analyzerare") {
+                            attr = attr.filter(isRare);
+                        }
                         attr = attr.map(poke);
                         spc = 1;
                     }
@@ -23379,7 +23403,7 @@ function Safari() {
                 if (playerId) {
                     safaribot.sendMessage(playerId, "You received " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + "!", safchan);
                 }
-                safari.inboxMessage(player, "You won a raffle for " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + "!");
+                safari.inboxMessage(player, "You won a raffle for " + plural(rafflePrizeObj.amount, rafflePrizeObj.name) + "!", isPlaying(winner));
                 if (rafflePrizeObj.type == "poke") {
                     player.pokemon.push(rafflePrizeObj.id);
                     if (isRare(rafflePrizeObj.id)) {
@@ -23951,7 +23975,7 @@ function Safari() {
             if (command === "fakespawn" || command === "fakespawn2") {
                 var data = toCommandData(commandData, ["name", "bst", "img", "shiny", "isEvent"]);
                 if (commandData == "*" || !data.name || data.name == "*" || !data.bst || !data.img) {
-                    safaribot.sendHtmlMessage(src, "Syntax is " + link("/fakespawn A wild Name appeared!:::BST: 300:::ImageSource", null, true), safchan);
+                    safaribot.sendHtmlMessage(src, "Syntax is " + link("/" + command + " A wild Name appeared!:::BST: 300:::ImageSource", null, true), safchan);
                     return true;
                 }
                 
@@ -24540,7 +24564,7 @@ function Safari() {
                             if (playerId) {
                                 safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
                             }
-                            safari.inboxMessage(player, "You received " + readable(rewardName, "and") + " for winning the contest!");
+                            safari.inboxMessage(player, "You received " + readable(rewardName, "and") + " for winning the contest!", isPlaying(winner));
                         }
                     }
                 }
