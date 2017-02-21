@@ -341,5 +341,13 @@ exports = {
             default: input = input.replace(/flabebe/i, "Flabébé");
         }
         return input;
+    },
+    
+    baseForme: function(pokeId) {
+        if (isNaN(pokeId)) {
+            pokeId = sys.pokeNum(pokeId);
+        }
+        
+        return pokeId & ((1 << 16) - 1);
     }
 };

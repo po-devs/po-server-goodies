@@ -684,39 +684,50 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         return;
     }*/
-    function tierBans(commandData, pokeId) {
+    function tierBans(commandData, pokeId) { // known issue: sys.isPokeBannedFromTier returns incorrect results for alolan pokemon
         if (pokeId == sys.pokeNum("Mega Rayquaza")) {
             return "Anything Goes"; //lazy way of doing it
         }
-        var stone = 0, aforme;
-        if (commandData.indexOf(".") !== -1) {
-            //Intentionally Empty. Like the vocabulary of a Mime.
-        } else if (commandData.indexOf("mega ") === 0 && commandData.indexOf("-") === -1) {
-            stone = sys.stoneForForme(pokeId); //needs to inherit from function before id is replaced below
-            aforme = commandData.split(" ");
-            pokeId = sys.pokeNum(aforme[1]);
-        } else {
-            aforme = commandData.split("-");
-            if (sys.isAesthetic(pokeId) || pokeId == sys.pokeNum("Meloetta-Pirouette") || pokeId == sys.pokeNum("Darmanitan-Zen") || pokeId == sys.pokeNum("Aegislash-Blade")) {
-                pokeId = sys.pokeNum(aforme[0]);
-            }
-        }
+        
+        var isMega = commandData.indexOf("mega ") === 0 || commandData.indexOf("primal ") === 0;
+        var stone = sys.stoneForForme(pokeId)
+        var base = utilities.baseForme(pokeId);
+        var inBattleBases = ["Castform", "Cherrim", "Darmanitan", "Meloetta", "Greninja", "Aegislash", "Zygarde", "Wishiwashi", "Minior", "Mimikyu"].map(function(m) { return sys.pokeNum(m); });
+        var isInBattleForme = inBattleBases.contains(base) && !inBattleBases.contains(pokeId) && pokeId !== sys.pokeNum("Zygarde-10%");
+        
         // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
         // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
         var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
-        var allowed = [];
-        if (pokeId > 721 || commandData.toLowerCase().indexOf("alolan") !== -1 || (pokeId === 658 && commandData !== "greninja")) {
+        var allowed = [], x, i;
+        // gen 7s, alolan formes, greninja-unbonded/ash greninja, zygarde-10%/zygarde-100%
+        if (base > 721 || commandData.toLowerCase().indexOf("alolan ") === 0 || (base === 658 && commandData !== "greninja") || (base === 718 && commandData.toLowerCase() !== "zygarde")) {
             tiers = ["SM Ubers", "SM OU", "SM LC"];
         }
-        for (var x = 0; x < tiers.length; x++) {
-            if (stone > 0 && sys.isItemBannedFromTier(stone, tiers[x])) {
+        for (x = 0; x < tiers.length; x++) {
+            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme ? base : pokeId;
+            
+            if (isMega && sys.isItemBannedFromTier(stone, tier)) {
+                indirectBan = true;
+            }
+            for (i = 0; i <= 2; i++) {
+                var ab = sys.pokeAbility(usingId, i);
+                if (sys.isAbilityBannedFromTier(ab, tier) && isInBattleForme) {
+                    indirectBan = true;
+                    break;
+                }
+            }
+            if (pokeId === sys.pokeNum("Meloetta-Pirouette") && sys.isMoveBannedFromTier(sys.moveNum("Relic Song"), tier)) { // hard-coding meloetta-pirouette since it's currently the only inBattleForme dependent on a move to transform
+                indirectBan = true;
+            }
+            if (indirectBan) {
                 break;
             }
-            if (!sys.isPokeBannedFromTier(pokeId, tiers[x])) {
-                allowed.push(tiers[x]);
+            if (!sys.isPokeBannedFromTier(usingId, tier)) {
+                allowed.push(tier);
             }
         }
-        return allowed.join(", ");
+        
+        return allowed.length === 0 ? "Anything Goes" : allowed.join(", ");
     }
     if (command === "pokemon") {
         if (commandData === undefined) {
