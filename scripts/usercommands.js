@@ -711,7 +711,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 }
             }
             return ret;
-        })(pokeId, genSpecificFormes);
+        })(pokeId);
 
         // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
         // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
