@@ -695,6 +695,24 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var inBattleBases = ["Castform", "Cherrim", "Darmanitan", "Meloetta", "Greninja", "Aegislash", "Zygarde", "Wishiwashi", "Minior", "Mimikyu"].map(function(m) { return sys.pokeNum(m); });
         var isInBattleForme = inBattleBases.contains(base) && !inBattleBases.contains(pokeId) && pokeId !== sys.pokeNum("Zygarde-10%");
         
+        var notAesthetic = ["Tornadus", "Thundurus", "Landorus", "Deoxys", "Shaymin", "Giratina", "Arceus", "Genesect", "Pumpkaboo", "Gourgeist", "Zygarde", "Silvally"].map(function(m) { return sys.pokeNum(m); }); // because sys.isAesthetic is dumb and treats these formes as aesthetic
+        var isAesthetic = sys.isAesthetic(pokeId) && !notAesthetic.contains(base);
+        
+        var genSpecificFormes = {
+            4: ["Pichu-Spiky Eared"],
+            6: ["Pikachu-Cosplay", "Pikachu-Rock Star", "Pikachu-Pop Star", "Pikachu-Belle", "Pikachu-Ph. d", "Pikachu-Libre"]
+        };
+        var genSpecific = (function(p) {
+            var ret;
+            for (var gen in genSpecificFormes) {
+                if (genSpecificFormes[gen].contains(sys.pokemon(p))) {
+                    ret = gen;
+                    break;
+                }
+            }
+            return ret;
+        })(pokeId, genSpecificFormes);
+
         // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
         // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
         var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
@@ -704,20 +722,23 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             tiers = ["SM Ubers", "SM OU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
-            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme ? base : pokeId;
+            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || isAesthetic ? base : pokeId;
             
             if (isMega && sys.isItemBannedFromTier(stone, tier)) {
                 indirectBan = true;
             }
             for (i = 0; i <= 2; i++) {
                 var ab = sys.pokeAbility(usingId, i);
-                if (sys.isAbilityBannedFromTier(ab, tier) && isInBattleForme) {
+                if (sys.isAbilityBannedFromTier(ab, tier) && isInBattleForme) { // e.g since Zygarde-Complete is reliant on Power Construct, if Power Construct is banned in OU, Zygarde-Complete's effective tier is Ubers
                     indirectBan = true;
                     break;
                 }
             }
             if (pokeId === sys.pokeNum("Meloetta-Pirouette") && sys.isMoveBannedFromTier(sys.moveNum("Relic Song"), tier)) { // hard-coding meloetta-pirouette since it's currently the only inBattleForme dependent on a move to transform
                 indirectBan = true;
+            }
+            if (genSpecific && !(sys.generationOfTier(tier) == genSpecific)) {
+                continue;
             }
             if (indirectBan) {
                 break;
@@ -727,7 +748,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             }
         }
         
-        return allowed.length === 0 ? "Anything Goes" : allowed.join(", ");
+        return allowed.join(", ");
     }
     if (command === "pokemon") {
         if (commandData === undefined) {
