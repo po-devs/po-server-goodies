@@ -694,10 +694,6 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var base = utilities.baseForme(pokeId);
         var inBattleBases = ["Castform", "Cherrim", "Darmanitan", "Meloetta", "Greninja", "Aegislash", "Zygarde", "Wishiwashi", "Minior", "Mimikyu"].map(function(m) { return sys.pokeNum(m); });
         var isInBattleForme = inBattleBases.contains(base) && !inBattleBases.contains(pokeId) && pokeId !== sys.pokeNum("Zygarde-10%");
-        
-        var notAesthetic = ["Tornadus", "Thundurus", "Landorus", "Deoxys", "Shaymin", "Giratina", "Arceus", "Genesect", "Pumpkaboo", "Gourgeist", "Zygarde", "Silvally"].map(function(m) { return sys.pokeNum(m); }); // because sys.isAesthetic is dumb and treats these formes as aesthetic
-        var isAesthetic = sys.isAesthetic(pokeId) && !notAesthetic.contains(base);
-        
         var genSpecificFormes = {
             4: ["Pichu-Spiky Eared"],
             6: ["Pikachu-Cosplay", "Pikachu-Rock Star", "Pikachu-Pop Star", "Pikachu-Belle", "Pikachu-Ph. d", "Pikachu-Libre"]
@@ -722,7 +718,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             tiers = ["SM Ubers", "SM OU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
-            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || isAesthetic ? base : pokeId;
+            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) ? base : pokeId;
             
             if (isMega && sys.isItemBannedFromTier(stone, tier)) {
                 indirectBan = true;
