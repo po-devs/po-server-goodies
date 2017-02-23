@@ -503,13 +503,23 @@ tier_checker.add_new_check(INCLUDING, ["Sky Battle"], function levitateCheck(src
 
 tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balanced Hackmons", "SM Balanced Hackmons"], function abilityClause(src, team) {
     var abilities = {};
+    var clones = {
+        "Mold Breaker": ["Teravolt", "Turboblaze"],
+        "Dazzling": ["Queenly Majesty"]
+    };
     for (var i = 0; i < 6; i++) {
         var ability = sys.ability(sys.teamPokeAbility(src, team, i));
         if (abilities[ability]) {
-            if (abilities[ability]++ > 2) {
+            if (++abilities[ability] >= 2) {
                 return ["You are not allowed more than 2 of any ability in this tier"];
             }
         } else if (ability !== "(No Ability)") {
+            for (var ab in clones) {
+                if (clones[ab].contains(ability)) {
+                    ability = ab;
+                    break;
+                }
+            }
             abilities[ability] = 1;
         }
     }
