@@ -510,7 +510,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
     for (var i = 0; i < 6; i++) {
         var ability = sys.ability(sys.teamPokeAbility(src, team, i));
         if (abilities[ability]) {
-            if (++abilities[ability] >= 2) {
+            if (++abilities[ability] > 2) {
                 return ["You are not allowed more than 2 of any ability in this tier"];
             }
         } else if (ability !== "(No Ability)") {
