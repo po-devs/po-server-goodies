@@ -444,8 +444,15 @@ function Hangman() {
             hangbot.sendMessage(src, "You need to write a hint!", hangchan);
             return;
         }
+        
+        h = h.trim();
+        
         if (script.cmp(a, h)) {
             hangbot.sendMessage(src, "You can't have your answer the same as the hint!");
+            return;
+        }
+        if (script.cmp(h, "hint") && script.cmp(a, "answer") {
+            hangbot.sendMessage(src, "Please use a proper hint and answer! For example: /start Pikachu:Pokémon");
             return;
         }
         if (/asshole|\bdick\b|pussy|bitch|porn|nigga|\bcock\b|\bgay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|\banus|boner|\btits\b|condom|\brape\b/gi.test(h)) {
@@ -711,7 +718,7 @@ function Hangman() {
             
             sys.sendAll("", cid);
             sys.sendAll("*** ************************************************************ ***", cid);
-            hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint \"" + hint.trim() + "\" started in #Hangman!", cid);
+            hangbot.sendAll("A new " + (isEventGame ? "Event G":"g") + "ame of Hangman with the hint \"" + hint + "\" started in #Hangman!", cid);
             sys.sendAll("*** ************************************************************ ***", cid);
             sys.sendAll("", cid);
         }
