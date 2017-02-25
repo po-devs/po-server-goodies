@@ -451,7 +451,7 @@ function Hangman() {
             hangbot.sendMessage(src, "You can't have your answer the same as the hint!");
             return;
         }
-        if (script.cmp(h, "hint") && script.cmp(a, "answer") {
+        if (script.cmp(h, "hint") && script.cmp(a, "answer")) {
             hangbot.sendMessage(src, "Please use a proper hint and answer! For example: /start Pikachu:Pokémon");
             return;
         }
