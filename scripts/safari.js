@@ -7366,7 +7366,7 @@ function Safari() {
     };
     this.getFortune = function(player, type, def, prop, skipCharge) {
         var fort = player.fortune;
-        if (fort.deadline <= 0 && fort.limit <= 0) {
+        if (fort.deadline < now() && fort.limit <= 0) {
             return def;
         }
         if (this.isMatchingFortune(fort, type, prop)) {
@@ -7457,7 +7457,7 @@ function Safari() {
                 if (pawnAll) {
                     amount = player.balls[item];
                 }
-                cost = Math.floor(amount * itemData[item].price/2 * perkBonus);
+                cost = Math.floor(itemData[item].price/2 * perkBonus) * amount;
                 if (player.money + cost > moneyCap) {
                     skipped.push(plural(amount, item));
                 } else {
@@ -7567,7 +7567,7 @@ function Safari() {
     this.showPrices = function(src, shop, command, seller) {
         var i, info, input, price, player = getAvatar(src), pokemon = [], items = [], silverPokemon = [], silverItems = [];
         var fullCommand = "/" + command + " " + (seller ? seller + ":" : "");
-        var silverName = finishName("silver"), discount = 1 - this.getFortune(player, "discount", 0, null, true);
+        var silverName = finishName("silver"), discount = (seller ? 1 : 1 - this.getFortune(player, "discount", 0, null, true));
         for (i in shop) {
             info = shop[i];
             input = getInputPokemon(i);
