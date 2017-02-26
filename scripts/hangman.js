@@ -1235,7 +1235,12 @@ function Hangman() {
             }
             return;
         }
+        if (!newH) {
+            hangbot.sendMessage(src, "You need to enter a hint!", hangchan);
+            return;
+        }
         newQ = result.answer;
+        newH = newH.trim();
 
         for (var e in autoGames) {
             var game = autoGames[e].split(":");
@@ -1258,7 +1263,7 @@ function Hangman() {
         autoGames.push(index + ":" + author + ":" + newQ + ":" + newH + ":7");
         sys.write(autoGamesFile, JSON.stringify(autoGames));
         sys.appendToFile(changeLogFile, new Date().getTime() + "|||" + index + "::" + newQ + "::" + newH +  "::added::" + sys.name(src) + "::\n");
-        hangbot.sendMessage(src, "You have successfully added a new question!", hangchan);
+        hangbot.sendMessage(src, "You have successfully added a new question! (Index: " + index + " - Word: " + newQ.toUpperCase() + " - Hint: " + newH + " - User: " + author + ")", hangchan);
     };
 
     this.searchQuest = function (src, commandData) {
