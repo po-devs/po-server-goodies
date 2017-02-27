@@ -705,14 +705,13 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         return;
     }
     if (command == "updateplugin") {
-        var bind_channel = channel;
         var POglobal = SESSION.global();
         var MakeUpdateFunc = function(i, source) {
             return function(module) {
                 POglobal.plugins[i] = module;
                 module.source = source;
                 module.init();
-                normalbot.sendMessage(src, "Module " + source + " updated!", bind_channel);
+                normalbot.sendAll("Module " + source + " updated!", staffchannel);
             };
         };
         for (var i = 0; i < POglobal.plugins.length; ++i) {
