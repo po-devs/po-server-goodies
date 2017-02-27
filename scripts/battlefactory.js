@@ -1518,10 +1518,11 @@ function generateTeam(src, team, tier) {
                     filteredSets = filteredSets.filter(hazardControlOnlyFilter);
                 }
                 if (filteredSets.length > 0) {
-                    teamInfo[p] = filteredSets[sys.rand(0, filteredSets.length)];
-                    if (sys.isPokeBannedFromTier(teamInfo[p].pokeId, tier)) {
+                    var tmp = filteredSets[sys.rand(0, filteredSets.length)];
+                    if (sys.isPokeBannedFromTier(tmp.pokeId, tier)) {
                         continue;
                     }
+                    teamInfo[p] = tmp;
                     pokemonAdded = true;
                 } else {
                     badPokeArray.push(poke);
