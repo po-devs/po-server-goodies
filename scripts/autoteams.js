@@ -315,7 +315,9 @@ AutoTeams.giveTeam = function(player, slot, tier) {
                 Math.max(1, Math.min(sys.maxLevelOfTier(tier), team[i].level)));
             sys.changePokeShine(player, slot, i, team[i].shiny);
             sys.changePokeGender(player, slot, i, team[i].gender);
-            sys.changePokeHiddenPower(player, slot, i, team[i].hiddenpower);
+            if (team[i].hasOwnProperty("hiddenpower") {
+                sys.changePokeHiddenPower(player, slot, i, team[i].hiddenpower);
+            }
             if (team[i].moves.indexOf(216) > -1) {
                 // Return
                 sys.changePokeHappiness(player, slot, i, 255);
