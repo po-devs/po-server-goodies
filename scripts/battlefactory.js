@@ -1519,6 +1519,9 @@ function generateTeam(src, team, tier) {
                 }
                 if (filteredSets.length > 0) {
                     teamInfo[p] = filteredSets[sys.rand(0, filteredSets.length)];
+                    if (sys.isPokeBannedFromTier(teamInfo[p].pokeId, tier)) {
+                        continue;
+                    }
                     pokemonAdded = true;
                 } else {
                     badPokeArray.push(poke);
@@ -1535,6 +1538,9 @@ function generateTeam(src, team, tier) {
             }
             if (isMegaStone(teamInfo[p].itemId)) {
                 megaCount += 1;
+            }
+            if (isZCrystal(teamInfo[p].itemId)) {
+                zCount += 1;
             }
             for (var c = 0; c < 4; c++) {
                 moveCounts[teamInfo[p].moves[c]] = (moveCounts[teamInfo[p].moves[c]] || 0) + 1;
