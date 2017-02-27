@@ -716,6 +716,9 @@ exports.handleCommand = function(src, command, commandData, tar, channel) {
         };
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if (commandData == POglobal.plugins[i].source) {
+                if (commandData === "battlefactory.js") {
+                    require("battlefactory.js").saveSets();
+                }
                 var source = POglobal.plugins[i].source;
                 updateModule(source, MakeUpdateFunc(i, source));
                 normalbot.sendMessage(src, "Downloading module " + source + "!", channel);

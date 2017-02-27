@@ -940,7 +940,7 @@ function factoryCommand(src, command, commandData, channel) {
         }
     } else if (command === "savesets") {
         autoSave("all", "");
-        bfbot.sendMessage(src, "Saved user generated sets!", channel);
+        bfbot.sendAll("Saved user generated sets!", channel);
     } else if (command === "deleteset") {
         args = commandData.split(":");
         tier = find_pack(args[0]);
@@ -1886,6 +1886,10 @@ module.exports = {
         // generate a team for players with no Pokemon
         generateTeam(src, team, "preset");
         return true;
+    },
+    saveSets: function() {
+        autoSave("all", "");
+        bfbot.sendAll("Saved user generated sets!", reviewChannel);
     },
     "help-string": ["battlefactory: To know the battlefactory commands"]
 };
