@@ -1605,7 +1605,7 @@ afterLogIn : function(src) {
         sys.putInChannel(src, staffchannel);
 
     if (sys.loggedIn(sys.id("Blinky"))) {
-        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " @ USERINFO", staffchannel);
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " # USERINFO", staffchannel);
     }
     /*if (isAndroid(src)) {
         normalbot.sendMessage(src, "New android version back on Play Store! See: http://pokemon-online.eu/threads/po-android-play-store-revival.29571/");
