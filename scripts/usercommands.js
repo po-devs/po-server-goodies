@@ -711,11 +711,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
 
         // Can phase out ORAS tiers after all the SM tiers form (or sooner if desired).
         // Will need to add the other SM tiers after they are created (didn't list them now so that it doesn't reference tiers that don't exist yet.)
-        var tiers = ["SM Ubers", "SM OU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
+        var tiers = ["SM Ubers", "SM OU", "SM UU", "SM LC", "ORAS Ubers", "ORAS OU", "ORAS UU", "ORAS LU", "ORAS NU", "ORAS LC"];
         var allowed = [], x, i;
         // gen 7s, alolan formes, greninja-unbonded/ash greninja, zygarde-10%/zygarde-100%
         if (base > 721 || commandData.toLowerCase().indexOf("alolan ") === 0 || (base === 658 && commandData !== "greninja") || (base === 718 && commandData.toLowerCase() !== "zygarde")) {
-            tiers = ["SM Ubers", "SM OU", "SM LC"];
+            tiers = ["SM Ubers", "SM OU", "SM UU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
             var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) ? base : pokeId;
