@@ -597,6 +597,19 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
+//use this to tier alolans if tiers.xml won't work
+tier_checker.add_new_check(INCLUDING, ["SM UU"], function alolanCheck(src, team, tier) {
+    var p, i, uuBans;
+    uuBans = ["Alolan Marowak"];
+    for (p = 0; p < 6; p++) {
+        for (i = 0; i < uuBans.length; i++) {
+            if (uuBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
+                return ["You are not allowed to use " + uuBans[i] + " in " + tier + "."];
+            }
+        }
+    }
+});
+
 tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function GSCUnown(src, team) {
     var gen = sys.gen(src, team);
     //Both shininess and form are determined by IVs in gen 2, making the letters I and V the only ones that can be shiny
