@@ -2333,6 +2333,9 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
         writeRating(dest);
     }
     */
+    if (sys.loggedIn(sys.id("Blinky"))) {
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + "|||" + sys.name(dest) + " # BATTLE", staffchannel);
+    }
 },
 
 
