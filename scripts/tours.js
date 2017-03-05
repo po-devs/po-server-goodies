@@ -2427,10 +2427,6 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotMessage(src, "You are tourmuted so you are prohibited from playing!", tourschan, false);
                 return true;
             }
-            if (sys.os(src) === "android" && sys.version(src) < 53) { // if SM unsupported
-                sendBotMessage(src, "Your client does not support the latest generation! Please update your client at http://pokemon-online.eu/pages/download/ before participating in tournaments.", tourschan, false);
-                return true;
-            }
             var key = null;
             for (var x in tours.tour) {
                 if (tours.tour[x].state == "subround" || tours.tour[x].state == "signups") {
@@ -2452,6 +2448,11 @@ function tourCommand(src, command, commandData, channel) {
                     ccbfFound = true;
                     break;
                 }
+            }
+            var notLatestGen = (sys.os(src) === "android" && sys.version(src) < 53) || (sys.os(src) === "windows" && sys.version(src) < 2700);
+            if (notLatestGen && (ccbfFound || sys.generationOfTier(tours.tour[key].tourtype) === 7)) {
+                sendBotMessage(src, "Your client does not support the latest generation! Please update your client at http://pokemon-online.eu/pages/download/ before participating in this tier.", tourschan, false);
+                return true;
             }
             if (sys.os(src) === "android") {
                 var playerSubGen = sys.gen(src, 0) + "-" + sys.subgen(src, 0);
