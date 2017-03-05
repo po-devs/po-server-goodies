@@ -19180,7 +19180,7 @@ function Safari() {
         return true;
     };
     Bingo.prototype.onWatch = function(src) {
-        safaribot.sendHtmlMessage(src, "You are watching the " + this.eventName + "! <b>", safchan);
+        safaribot.sendMessage(src, "You are watching the " + this.eventName + "!", safchan);
     };
 
     /* System Functions */
