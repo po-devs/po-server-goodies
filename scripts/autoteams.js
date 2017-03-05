@@ -105,10 +105,10 @@ AutoTeams.natureInfo = function(nature) {
     return info;
 };
 
-AutoTeams.moveInfo = function(move, ivs, gen) {
+AutoTeams.moveInfo = function(move, ivs, gen, hpType) {
     var info = sys.move(move);
     if (info === "Hidden Power") {
-        info += " [" + sys.type(sys.hiddenPowerType(gen, ivs[0], ivs[1], ivs[2], ivs[3], ivs[4], ivs[5])) + "]";
+        info += " [" + (hpType && gen >= 7 ? sys.type(hpType) : sys.type(sys.hiddenPowerType(gen, ivs[0], ivs[1], ivs[2], ivs[3], ivs[4], ivs[5]))) + "]";
     }
     return "- " + info;
 };
@@ -170,7 +170,7 @@ AutoTeams.teamImportable = function(teamName, tier) {
         for (var m = 0; m < 4; m++) {
             if (team[p].moves[m] !== 0) {
                 importable += this.moveInfo(
-                    team[p].moves[m], team[p].ivs, gen) + "\n";
+                    team[p].moves[m], team[p].ivs, gen, team[p].hiddenpower) + "\n";
             }
         }
     }
