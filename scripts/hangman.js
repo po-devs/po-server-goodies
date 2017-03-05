@@ -489,7 +489,7 @@ function Hangman() {
         this.createGame(sys.name(src), a, h, src, gameMode);
     };
 
-    this.concludeGame = function (winner) {
+    this.concludeGame = function(winner) {
         if (winner && !script.cmp(winner, hostName)) {
             if (sys.isInChannel(sys.id(winner), hangchan)) {
                 this.setWinner(winner, false);
@@ -1007,8 +1007,9 @@ function Hangman() {
             if (sys.existChannel("Victory Road"))
                 hangbot.sendAll("Warning: Player " + sys.name(src) + " stopped " + (sys.name(src) == hostName ? "their" : hostName + "'s") + " game in #Hangman. " + (sys.name(src) !== hostName ? "(Hint: " + hint + ", Answer: " + word + ")" : ""), sys.channelId("Victory Road"));
             word = undefined;
-            winner = undefined;
-            this.resetTimers();
+            winner = hostName;
+            nextGame = 0;
+            this.setWinner(winner, true);
             isEventGame = false;
             if (pendingEvent) {
                 eventDelay = true;
