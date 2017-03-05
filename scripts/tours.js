@@ -2122,7 +2122,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             if (command == "remove") {
                 var index = -1;
-                if (!isNaN(parseInt(commandData, 10))) {
+                if (!isNaN(parseInt(commandData, 10)) && commandData.toLowerCase() !== "3v3 singles") {
                     index = parseInt(commandData, 10)-1;
                 }
                 else {
