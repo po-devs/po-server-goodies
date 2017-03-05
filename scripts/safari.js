@@ -7078,7 +7078,8 @@ function Safari() {
         }
         if (item === "form") {
             var evType = getEventId(info.target);
-            if (!evType) {
+            var unavailableEv = ["bingo"];
+            if (!evType || unavailableEv.contains(evType)) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "To start an event, use " + link("/use form:EventType:RewardSet", null, true) + ". You can learn about each event by typing " + link("/eventhelp") + ".", safchan);
                 safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory or Quiz.", safchan);
