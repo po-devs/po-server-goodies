@@ -3732,7 +3732,7 @@ function tourstart(tier, starter, key, parameters) {
                 sendChanHtmlAll("<timestamp/> Go to the <a href='po:join/Tournaments'>#Tournaments</a>  channel (Use /cjoin Tournaments) and type /join to enter the tournament!", channels[x]);
             }
             if (AutoTeams.teamsAvailable(tier)) {
-                sendChanHtmlAll("<timestamp/> <b>Don't have a team? Don't worry the server will provide one when you join!</b>", channels[x]);
+                sendChanHtmlAll("<timestamp/> <b>Don't have a team? Don't worry, the server will provide one when you join!</b>", channels[x]);
             }
             if (!parameters.event) {
                 sendChanAll(border, channels[x]);
