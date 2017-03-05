@@ -19112,9 +19112,17 @@ function Safari() {
         return c;
     };
     Bingo.prototype.sayBingo = function(src) {
+        if (this.finished) {
+            this.sendMessage(name, "The event already finished!");
+            return;
+        }
         var name = sys.name(src).toLowerCase();
         if (this.phase !== "playing") {
             this.sendMessage(name, "The event didn't even start yet!");
+            return;
+        }
+        if (this.round < 5) {
+            this.sendMessage(name, "There's no possible way you already got a Bingo!");
             return;
         }
         if (this.cooldowns[name] > this.round) {
@@ -19124,8 +19132,8 @@ function Safari() {
         var c = this.countLines(this.cards[name]);
         if (c < this.goal) {
             this.sendToViewers(sys.name(src) + " shouts <b>BINGO</b>! But they still didn't complete " + plural(this.goal, "line") +"!");
-            this.cooldowns[name] = this.round + 2;
-            this.sendMessage(name, "You still don't have " + plural(this.goal, "line") + " complete! As a punishment, you won't be able to say Bingo during the next turn!");
+            this.cooldowns[name] = this.round + 3;
+            this.sendMessage(name, "You still don't have " + plural(this.goal, "line") + " complete! As a punishment, you won't be able to say Bingo for the next 2 turns!");
             return;
         }
         this.sendToViewers("");
