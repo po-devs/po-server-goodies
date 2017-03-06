@@ -3484,7 +3484,7 @@ function Safari() {
             }
         }
 
-        var tiers = ["SM LC", "ORAS NU", "ORAS LU", "ORAS UU", "SM OU", "SM Ubers"];
+        var tiers = ["SM LC", "ORAS NU", "ORAS LU", "SM UU", "SM OU", "SM Ubers"];
         var tierChance = 0.02, isGen7 = generation(parseInt(wild, 10)) === 7;
         for (var x = 0; x < tiers.length; x++) {
             if (isGen7 && tiers[x].indexOf("SM ") === -1) { // Workaround while SM tiers are not complete
@@ -13817,7 +13817,7 @@ function Safari() {
         if (rWhere !== "default" && !contestThemes.hasOwnProperty(rWhere)) {
             rWhere = "default";
         }
-        if (rWhere && pWhere !== rWhere) {
+        if (request.where && rWhere && pWhere !== rWhere) {
             return false;
         }
         if (request.what && photo.what !== request.what) {
@@ -18905,7 +18905,7 @@ function Safari() {
         delete this.bets[name];
     };
     
-    function Bingo(src, reward1, goal) {
+    function Bingo(src, reward1, reward2, reward3, goal) {
         SafariEvent.call(this, src);
         this.eventName = "Bingo";
         this.minPlayers = 3;
@@ -18916,17 +18916,26 @@ function Safari() {
         this.subturn = 0;
         this.phase = "signup";
         this.goal = goal || 1;
-        this.winner = null;
+        this.winners = [];
         
         this.remainingNumbers = [];
         this.cards = {};
         this.cooldowns = {};
 
+        if (reward3 && !reward2) {
+            reward2 = reward3;
+            reward3 = null;
+        }
         this.reward1 = reward1;
+        this.reward2 = reward2;
+        this.reward3 = reward3;
         this.rewardName1 = translateStuff(reward1);
+        this.rewardName2 = translateStuff(reward2);
+        this.rewardName3 = translateStuff(reward3);
+        this.maxWinners = 1 + (reward2 ? 1 : 0) + (reward3 ? 1 : 0);
 
-        this.rewardName = "1st: " + this.rewardName1;
-        this.rewardNameB = "<b> " + this.rewardName1 + "</b>";
+        this.rewardName = "1st: " + this.rewardName1 + (reward2 ? ", 2nd: " + this.rewardName2 : "") + (reward3 ? ", 3rd: " + this.rewardName3 : "");
+        this.rewardNameB = "<b>1st:</b> " + this.rewardName1 + (reward2 ? ", <b>2nd:</b> " + this.rewardName2 : "") + (reward3 ? ", <b>3rd:</b> " + this.rewardName3 : "");
         this.hasReward = true;
 
         this.eventCommands = {
@@ -18944,8 +18953,19 @@ function Safari() {
     }
     Bingo.prototype = new SafariEvent();
     Bingo.prototype.setupEvent = function() {
-        var n;
-        for (var e = 0; e < this.signups.length; e++) {
+        var n, size = this.signups.length;
+        
+        if (this.reward3 && size < 6) {
+            this.maxWinners = 2;
+            this.reward3 = null;
+            this.noThirdPrize = true;
+        }
+        if (this.reward2 && size < 4) {
+            this.maxWinners = 1;
+            this.reward2 = null;
+            this.noSecondPrize = true;
+        }
+        for (var e = 0; e < size; e++) {
             n = this.signups[e].toLowerCase();
             this.cards[n] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
             this.cooldowns[n] = 0;
@@ -18960,18 +18980,24 @@ function Safari() {
         this.sendToViewers("");
         safaribot.sendHtmlAll("The " + this.eventName + " is starting now! If you didn't join, you still can watch by typing " + link("/watch") + "!", safchan);
         this.sendToViewers("Your goal is to complete " + plural(this.goal, "line") + " in your card with the Pokémon drawn (lines can be horizontal, vertical or diagonal). Once you do, type " + toColor("/bingo", "blue") + " to claim your win!");
-        this.sendToViewers("You can choose the location for up to 4 Pokémon in your card (the rest will be defined randomly). Use " + link("/choose Pokémon:Slot") + " for that.");
+        this.sendToViewers("You can choose the location for up to 3 Pokémon in your card (the rest will be defined randomly). Use " + link("/choose Pokémon:Slot") + " for that.");
         
-        this.sendToViewers("[01] [02] [03] [04] [05]");
-        this.sendToViewers("[06] [07] [08] [09] [10]");
-        this.sendToViewers("[11] [12] [13] [14] [15]");
-        this.sendToViewers("[16] [17] [18] [19] [20]");
-        this.sendToViewers("[21] [22] [23] [24] [25]");
-        this.sendToViewers("Pokémon available: " + readable(this.remainingNumbers.map(poke)));
+        var appendSlot = function(x) {
+            if (x < 10) {
+                x = "0" + x;
+            }
+            return "[<a href=\"po:appendmsg/" + x + "\">" + x +"</a>]";
+        };
+        this.sendToViewers([ 1, 2, 3, 4, 5].map(appendSlot).join(" "));
+        this.sendToViewers([ 6, 7, 8, 9,10].map(appendSlot).join(" "));
+        this.sendToViewers([11,12,13,14,15].map(appendSlot).join(" "));
+        this.sendToViewers([16,17,18,19,20].map(appendSlot).join(" "));
+        this.sendToViewers([21,22,23,24,25].map(appendSlot).join(" "));
+        this.sendToViewers("Pokémon available: " + readable(this.remainingNumbers.map(function(x) { return link("/choose " + poke(x) + ":", poke(x), true); })));
         
         this.sendToViewers("");
         this.phase = "preparing";
-        this.subturn = 6;
+        this.subturn = 4;
     };
     Bingo.prototype.playTurn = function() {
         if (this.finished) {
@@ -18992,6 +19018,7 @@ function Safari() {
         }
         if (this.phase === "playing") {
             if (this.remainingNumbers.length === 0) {
+                this.sendToViewers("Game is finishing because all numbers have been drawn!");
                 this.finish();
                 return;
             }
@@ -19003,10 +19030,12 @@ function Safari() {
             var drawn = this.remainingNumbers.shift();
             
             this.sendToViewers("");
-            this.sendToViewers("Pokémon Drawn: " + toColor("<b>&lt; " + pokeInfo.icon(drawn) + " " + poke(drawn) + " &gt;</b>", "blue"));
+            this.sendToViewers(toColor("Pokémon Drawn: <b>&lt; " + pokeInfo.icon(drawn) + " " + poke(drawn) + " &gt;</b>", "blue"), null, null, true);
             for (var e in this.cards) {
-                this.showCard(e);
-                this.sendMessage(e, "If you completed " + plural(this.goal, "line") + ", type " + link("/bingo") + "!");
+                if (!this.winners.contains(e)) {
+                    this.showCard(e);
+                    this.sendMessage(e, "If you completed " + plural(this.goal, "line") + ", type " + link("/bingo") + "!");
+                }
             }
             this.subturn = 1;
             this.round++;
@@ -19021,8 +19050,8 @@ function Safari() {
         }
         var card = this.cards[name];
         var count = card.filter(function(x) { return x !== 0; }).length;
-        if (count >= 4) {
-            this.sendMessage(name, "You already added 4 Pokémon to your card!");
+        if (count >= 3) {
+            this.sendMessage(name, "You already added 3 Pokémon to your card!");
             return;
         }
         var info = toCommandData(commandData, ["id", "slot"]);
@@ -19058,11 +19087,11 @@ function Safari() {
         var showSlot = function(n) {
             return remain.contains(n) ? "<b>[" + pokeInfo.icon(n) + "]</b>" : toColor("<b>[" + pokeInfo.icon(n) + "]</b>", "red");
         };
-        this.sendMessage(name, card.slice(0, 5).map(showSlot).join(" "));
-        this.sendMessage(name, card.slice(5, 10).map(showSlot).join(" "));
-        this.sendMessage(name, card.slice(10, 15).map(showSlot).join(" "));
-        this.sendMessage(name, card.slice(15, 20).map(showSlot).join(" "));
-        this.sendMessage(name, card.slice(20, 25).map(showSlot).join(" "));
+        this.sendMessage(name, card.slice(0, 5).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(name, card.slice(5, 10).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(name, card.slice(10, 15).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(name, card.slice(15, 20).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(name, card.slice(20, 25).map(showSlot).join(" "), null, null, true);
     };
     Bingo.prototype.fillCard = function(name) {
         var card = this.cards[name], remain = this.remainingNumbers.concat().shuffle(), n;
@@ -19092,7 +19121,7 @@ function Safari() {
             [3, 8, 13, 18, 23], 
             [4, 9, 14, 19, 24], 
             // Diagonal Lines
-            [0, 6, 15, 18, 24],
+            [0, 6, 12, 18, 24],
             [4, 8, 12, 16, 20]
         ], e, i, n, broken, c = 0;
         
@@ -19121,12 +19150,16 @@ function Safari() {
             this.sendMessage(name, "The event didn't even start yet!");
             return;
         }
+        if (this.winners.contains(name)) {
+            this.sendMessage(name, "You are already one of the winners, you cannot say bingo again! You can type " + link("/watch") + " to stop watching the event (you will receive your rewards normally).");
+            return;
+        }
         if (this.round < 5) {
             this.sendMessage(name, "There's no possible way you already got a Bingo!");
             return;
         }
         if (this.cooldowns[name] > this.round) {
-            this.sendMessage(name, "You falsely shouted Bingo, so you need to wait one turn before being able to say it again!");
+            this.sendMessage(name, "You falsely shouted Bingo, so you will only be able to say it again in " + plural(this.cooldowns[name] - this.round, "turn") + "!");
             return;
         }
         var c = this.countLines(this.cards[name]);
@@ -19138,33 +19171,70 @@ function Safari() {
         }
         this.sendToViewers("");
         this.sendToViewers(toColor(sys.name(src) + " shouts <b>BINGO</b>! " + sys.name(src) + " completed " + plural(c, "line") + "! We have a winner!", "blue"));
-        this.winner = name.toCorrectCase();
-        this.finish();
+        this.winners.push(name);
+        this.viewers.push(name);
+        if (this.winners.length >= this.maxWinners) {
+            this.finish();
+        }
     };
     Bingo.prototype.finish = function() {
-        if (!this.winner) {
+        if (this.winners.length === 0) {
             this.sendToViewers("No one said Bingo, so we got no winners!");
             this.log(true, "No winners");
             this.finished = true;
             return;
         }
-        var name = this.winner.toLowerCase();
         
-        safaribot.sendHtmlAll("<b>" + toColor(this.winner, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
-        var player, out, stuff;
-        
-        player = getAvatarOff(name);
+        var winner = this.winners[0];
+        var runnerup = this.winners.length > 1 ? this.winners[1] : null;
+        var thirdplace = this.winners.length > 2 ? this.winners[2] : null;
+
+        var winnerName = winner.toCorrectCase();
+        var runnerupName = runnerup ? runnerup.toCorrectCase() : "";
+        var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
+
+        safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
+        var player = getAvatarOff(winner), out, stuff;
         if (player) {
             stuff = toStuffObj(this.reward1.replace(/,/g, ":")),
             out = giveStuff(player, stuff);
 
             player.records.bingoWon += 1;
             safari.saveGame(player);
-            this.sendMessage(name, "You " + out + "!");
+            this.sendMessage(winner, "You " + out + "!");
         }
-        this.sendToViewers("");
 
-        this.log(true, "Winner: " + this.winner);
+        if (runnerup) {
+            safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
+            player = getAvatarOff(runnerup);
+            if (player) {
+                stuff = toStuffObj(this.reward2.replace(/,/g, ":")),
+                out = giveStuff(player, stuff);
+
+                safari.saveGame(player);
+                this.sendMessage(runnerup, "You " + out + "!");
+            }
+        }
+
+        if (thirdplace) {
+            safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
+            player = getAvatarOff(thirdplace);
+            if (player) {
+                stuff = toStuffObj(this.reward3.replace(/,/g, ":")),
+                out = giveStuff(player, stuff);
+
+                safari.saveGame(player);
+                this.sendMessage(thirdplace, "You " + out + "!");
+            }
+        }
+        if (this.noSecondPrize) {
+            this.sendToViewers("No 2nd place prize will be given due to the low number of participants!");
+        }
+        if (this.noThirdPrize) {
+            this.sendToViewers("No 3rd place prize will be given due to the low number of participants!");
+        }
+
+        this.log(true, "1st: " + winnerName + (runnerupName ? ", 2nd: " + runnerupName : "") + (thirdplace ? ", 3rd: " + thirdplaceName : ""));
         this.finished = true;
     };
     Bingo.prototype.canJoin = function(src) {
@@ -19179,8 +19249,33 @@ function Safari() {
         }
         return true;
     };
+    Bingo.prototype.canWatch = function(src) {
+        var name = sys.name(src).toLowerCase();
+        var signupsLower = Object.keys(this.cards);
+        if (signupsLower.contains(name) && !this.winners.contains(name)) {
+            safaribot.sendMessage(src, "You are one of the participants, you can't watch/unwatch this event!", safchan);
+            return false;
+        }
+        return true;
+    };
     Bingo.prototype.onWatch = function(src) {
-        safaribot.sendMessage(src, "You are watching the " + this.eventName + "!", safchan);
+        safaribot.sendHtmlMessage(src, "You are watching the " + this.eventName + "!", safchan);
+    };
+    Bingo.prototype.sendToViewers = function(msg, flashing, colored, nobot, androidAlt) {
+        var e, players = this.signups.map(function(x) { return x.toLowerCase(); }), n;
+        var list = removeDuplicates(players.concat(this.viewers));
+        for (e = 0 ; e < list.length; e++) {
+            n = list[e];
+            if (this.winners.contains(n) && !this.viewers.contains(n)) {
+                continue;
+            }
+            this.sendMessage(n, msg, flashing, colored, nobot, androidAlt);
+        }
+    };
+    Bingo.prototype.isInEvent = function(name) {
+        var signupsLower = this.signups.map(function(x) { return x.toLowerCase(); });
+        var n = name.toLowerCase();
+        return signupsLower.contains(n) && !this.winners.contains(n);
     };
 
     /* System Functions */
@@ -20678,7 +20773,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         
         sys.sendMessage(src, "Bingo: Players receive a 5x5 card with randomly picked Pokémon. Every few seconds, a random Pokémon is drawn. The first player to reach the goal of complete lines in their card with the drawn Pokémon and type /bingo will be the winner.", safchan);
-        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 3 players to start.", safchan);
+        sys.sendMessage(src, "Requirements: Have caught at least 4 Pokémon. Minimum of 3 players to start, 5 for 2nd place reward, 7 for 3rd place reward.", safchan);
         sys.sendMessage(src, "", safchan);
     };
     this.onHelp = function (src, topic, channel) {
@@ -21558,7 +21653,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Pokémon Bet Race: " + link("/startevent betrace:BetItem:Reward:MinimumBet:MaximumBet:FavoritePayout:UnderdogPayout:NormalPayout:Racers", "/startevent betrace:[BetItem]:[Reward]:[MinimumBet]:[MaximumBet]:[FavoritePayout]:[UnderdogPayout]:[NormalPayout]:[Racer1,Racer2,etc]", true) + toColor(" (everything is optional)", "orangered"), safchan);
                     safaribot.sendHtmlMessage(src, "Battle Factory: /startevent [factory/lcfactory]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
                     safaribot.sendHtmlMessage(src, "Quiz: /startevent [quiz/hquiz]:[1st Place Rewards]:[2nd Place Rewards]:" + toColor("[3rd Place Rewards]", "orangered"), safchan);
-                    safaribot.sendHtmlMessage(src, "Bingo: /startevent [bingo]:[Reward]:" + toColor("[Goal]", "orangered"), safchan);
+                    safaribot.sendHtmlMessage(src, "Bingo: /startevent [bingo]:[1st Place Rewards]:" + toColor("[2nd Place Rewards]:[3rd Place Rewards]:[Goal]", "orangered"), safchan);
                     return true;
                 }
 
@@ -21810,29 +21905,49 @@ function Safari() {
                     safari.flashPlayers();
                 }
                 else if (type == "bingo") {
-                    var r1 = "", goal = 1, pLen = param.length;
+                    var r1 = "", r2 = "", r3 = "", goal = 1, pLen = param.length;
 
                     if (pLen > 0) {
                         r1 = param[0];
                     }
                     if (pLen > 1) {
-                        goal = parseInt(param[1], 10);
+                        r2 = param[1];
+                    }
+                    if (pLen > 2) {
+                        r3 = param[2];
+                    }
+                    if (pLen > 3) {
+                        goal = parseInt(param[3], 10);
                     }
                     if (!r1) {
-                        safaribot.sendMessage(src, "Please specify a valid reward for the winner!", safchan);
+                        safaribot.sendMessage(src, "Please specify a valid reward for the first place!", safchan);
                         return true;
                     }
                     var valid = validateStuff(r1);
                     if (valid.length > 0) {
-                        safaribot.sendMessage(src, "Invalid reward found: " + readable(valid) + "!", safchan);
+                        safaribot.sendMessage(src, "Invalid reward for first place found: " + readable(valid) + "!", safchan);
                         return true;
+                    }
+                    if (r2) {
+                        valid = validateStuff(r2);
+                        if (valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid reward for second place found: " + readable(valid) + "!", safchan);
+                            return true;
+                        }
+                    }
+                    if (r3) {
+                        valid = validateStuff(r3);
+                        if (valid.length > 0) {
+                            safaribot.sendMessage(src, "Invalid reward for third place found: " + readable(valid) + "!", safchan);
+                            return true;
+                        }
                     }
                     if (!goal || isNaN(goal) || goal < 1 || goal > 12) {
                         safaribot.sendMessage(src, "Goal must be between 1 and 12!", safchan);
                         return true;
                     }
 
-                    var ev = new Bingo(src, r1, goal);
+                    var ev = new Bingo(src, r1, r2, r3, goal);
                     currentEvent = ev;
                     safari.flashPlayers();
                 }
