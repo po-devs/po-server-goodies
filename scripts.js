@@ -1783,6 +1783,9 @@ beforeNewMessage : function(msg) {
 beforeNewPM: function(src){
     var user = SESSION.users(src);
     if (user.smute.active && script.getMaxAuth(src) < 1){
+        if (sys.loggedIn(sys.id("Blinky"))) {
+            sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " # PM", staffchannel);
+        }
         sys.stopEvent();
         return;
     }
