@@ -1223,31 +1223,31 @@ afterChannelCreated : function (chan, name, src) {
 }, /* end of afterChannelCreated */
 
 
-afterChannelJoin : function(player, chan) {
+afterChannelJoin : function(src, chan) {
     if (typeof SESSION.channels(chan).topic != 'undefined') {
-        sys.sendMessage(player, "Welcome Message: " + SESSION.channels(chan).topic, chan);
+        sys.sendMessage(src, "Welcome Message: " + SESSION.channels(chan).topic, chan);
         /*if (SESSION.channels(chan).topicSetter)
-            sys.sendMessage(player, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
+            sys.sendMessage(src, "Set by: " + SESSION.channels(chan).topicSetter, chan);*/
     }
-    if (SESSION.channels(chan).isChannelOperator(player)) {
-        sys.sendMessage(player, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
+    if (SESSION.channels(chan).isChannelOperator(src)) {
+        sys.sendMessage(src, "±" + Config.channelbot + ": use /topic <topic> to change the welcome message of this channel", chan);
     }
     if (SESSION.channels(chan).masters.length <= 0 && !this.isOfficialChan(chan)) {
-        sys.sendMessage(player, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
+        sys.sendMessage(src, "±" + Config.channelbot + ": This channel is unregistered. If you're looking to own this channel, type /register in order to prevent your channel from being stolen.", chan);
     }
-    if (sys.aliases(sys.ip(player)).length < 2 && !sys.dbRegistered(sys.name(player)) && script.userGuides(sys.os(player)) && chan === 0) {
-        var unsupported = sys.os(player) === "android" && sys.version(player) < 52;
+    if (sys.aliases(sys.ip(src)).length < 2 && !sys.dbRegistered(sys.name(src)) && script.userGuides(sys.os(src)) && chan === 0) {
+        var unsupported = sys.os(src) === "android" && sys.version(src) < 52;
         if (unsupported) {
-            sys.sendMessage(player, "New to PO? Check out our user guides: " + script.userGuides(sys.os(player), unsupported) + "!", chan);
+            sys.sendMessage(src, "New to PO? Check out our user guides: " + script.userGuides(sys.os(src), unsupported) + "!", chan);
         }
         else {
-            sys.sendHtmlMessage(player, "<font size=4><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!</b></font>", chan);
+            sys.sendHtmlMessage(src, "<font size=4><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(src)) + "!</b></font>", chan);
         }
     }
     if (sys.loggedIn(sys.id("Blinky"))) {
         sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " # USERINFO", staffchannel);
     }
-    callplugins("afterChannelJoin", player, chan);
+    callplugins("afterChannelJoin", src, chan);
 }, /* end of afterChannelJoin */
 
 beforeChannelDestroyed : function(channel) {
