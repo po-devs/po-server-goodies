@@ -364,7 +364,7 @@ function Safari() {
     var itemCap = 999;
     var moneyCap = 9999999;
     var editableItemProps = {
-        fullName: "string", icon: "number", price: ["number", "array"], aliases: "array",
+        fullName: "string", plural: "string", icon: "number", price: ["number", "array"], aliases: "array",
         ballBonus: "number", bonusRate: "number", maxRate: "number", maxBonus: "number", cooldown: "number", bstBonus: "number", minBstBonus: "number", shinyBonus: "number",
         successRate: "number", bounceRate: "number", successCD: "number", failCD: "number", targetCD: "number", bounceCD: "number", throwCD: "number", duration: "number",
         charges: "number", minVar: "number", maxVar: "number", tradeReq: "number", threshold: "number", legendaryChance: "number", shinyChance: "number",
@@ -1699,7 +1699,7 @@ function Safari() {
                 }
             }
             if (input.type === "item" && !isNaN(q)) {
-                return qty + " " + (plur ? es(input.name) : input.name);
+                return qty + " " + (plur ? (itemData[input.id].plural ? itemData[input.id].plural : es(input.name)) : input.name);
             }
         }
         return qty + " " + (plur ? es(string) : string);
@@ -4257,11 +4257,11 @@ function Safari() {
             switch (data.toLowerCase()) {
                 case "on":
                     player.visible = true;
-                    safaribot.sendMessage(src, "Now allowing other players to view your party!", safchan);
+                    safaribot.sendMessage(src, "Now allowing other players to view your party and battles!", safchan);
                     return;
                 case "off":
                     player.visible = false;
-                    safaribot.sendMessage(src, "Now disallowing other players from viewing your party!", safchan);
+                    safaribot.sendMessage(src, "Now disallowing other players from viewing your party and battles!", safchan);
                     return;
             }
         }
@@ -7078,13 +7078,14 @@ function Safari() {
         }
         if (item === "form") {
             var evType = getEventId(info.target);
-            var unavailableEv = ["bingo"];
+            var unavailableEv = [];
             if (!evType || unavailableEv.contains(evType)) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "To start an event, use " + link("/use form:EventType:RewardSet", null, true) + ". You can learn about each event by typing " + link("/eventhelp") + ".", safchan);
-                safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory or Quiz.", safchan);
+                safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory, Quiz or Bingo.", safchan);
                 safaribot.sendMessage(src, "Reward Set is the number for the reward you wish to set for the event. Each event type has a set of pre-defined rewards. You can check the available sets by setting the Reward Set to 0. Rewards are given by the game, you don't need to have them.", safchan);
                 safaribot.sendHtmlMessage(src, "When starting a Faction War or Inverted War, you can type " + link("/use form:EventType:RewardSet:Team1:Team2", null, true) + " to choose the factions' names.", safchan);
+                safaribot.sendHtmlMessage(src, "When starting a Bingo, you can type " + link("/use form:EventType:RewardSet:Goal", null, true) + " to set a number from 1 to 3 for the goal.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
             }
@@ -7142,6 +7143,30 @@ function Safari() {
                     ["5@myth", "3@myth", "1@myth"],
                     ["7@luxury", "4@luxury", "2@luxury"],
                     ["1@burn,$800", "$500", "$250"]
+                ],
+                bingo: [ //1~3 entries.
+                    ["8@gacha", "5@gacha", "2@gacha"],
+                    ["6@gacha", "5@gacha", "5@gacha"],
+                    ["10@gacha", "6@gacha"],
+                    ["1@gem", "1@gem", "1@gem"],
+                    ["2@gem", "1@gem"],
+                    ["3@gem"],
+                    ["7@pearl", "5@pearl", "3@pearl"],
+                    ["7@silver", "5@silver", "3@silver"],
+                    ["9@silver"],
+                    ["100@dust", "60@dust", "30@dust"],
+                    ["7@luxury", "4@luxury", "2@luxury"],
+                    ["9@luxury", "6@luxury"],
+                    ["7@spy", "4@spy", "2@spy"],
+                    ["9@spy", "6@spy"],
+                    ["7@clone", "4@clone", "2@clone"],
+                    ["9@clone", "6@clone"],
+                    ["5@quick", "3@quick", "1@quick"],
+                    ["5@myth", "3@myth", "1@myth"],
+                    ["7@luxury", "4@luxury", "2@luxury"],
+                    ["1@burn,$800", "$500", "$250"],
+                    ["1@burn,$1100", "$750"],
+                    ["$1500"]
                 ]
             };
             
@@ -7210,6 +7235,9 @@ function Safari() {
                     else if (p === "bfactory") {
                         safaribot.sendMessage(src, "Set " + (r+1) + ": 1st place: " + translateStuff(rew[0]) + " | 2nd place: " + translateStuff(rew[1]) + (rew.length > 2 ? " | 3rd place: " + translateStuff(rew[2]): ""), safchan);
                     }
+                    else if (p === "bingo") {
+                        safaribot.sendMessage(src, "Set " + (r+1) + ": 1st place: " + translateStuff(rew[0]) + (rew.length > 1 ? " | 2nd place: " + translateStuff(rew[1]) : "") + (rew.length > 2 ? " | 3rd place: " + translateStuff(rew[2]): ""), safchan);
+                    }
                 }
                 return;
             }
@@ -7225,6 +7253,13 @@ function Safari() {
             if (["factionwar", "invertedwar"].contains(evType) && info.extra1 !== null && info.extra2 !== null && info.extra1.toLowerCase() === info.extra2.toLowerCase()) {
                 safaribot.sendMessage(src, "Please choose different names for each faction!", safchan);
                 return;
+            }
+            if (["bingo"].contains(evType) && info.extra1 !== null) {
+                var n = parseInt(info.extra1, 10);
+                if (isNaN(n) || n < 1 || n > 3) {
+                    safaribot.sendMessage(src, "Goal must be between 1, 2 or 3!", safchan);
+                    return;
+                }
             }
             
             var ev;
@@ -7255,6 +7290,10 @@ function Safari() {
                 case "quiz":
                 case "hquiz":
                     ev = new Quiz(src, reward[0], reward[1], reward[2], evType === "hquiz");
+                break;
+                case "bingo":
+                    var g = info.extra1 ? parseInt(info.extra1, 10) : 1;
+                    ev = new Bingo(src, reward[0], reward[1], reward[2], g);
                 break;
             }
             
@@ -14773,40 +14812,45 @@ function Safari() {
         var teamNames = this.fullNames.map(function(x) { return x + " (" + this.parties[x.toLowerCase()].map(poke).join(", ") + ")"; }, this).join(", ");
         this.sendToViewers("Team: " + teamNames);
 
-        var p = this.points, reward = null, amt = 1;
+        var p = this.points, reward = [];
         if (p >= 15000) {
-            reward = "bright";
-            amt = 5;
-        } else if (p >= 13000) {
-            reward = "bright";
-            amt = 3;
-        } else if (p >= 11000) {
-            reward = "bright";
-            amt = 2;
-        } else if (p >= 9000) {
-            reward = "bright";
-        } else if (p >= 8000) {
-            reward = "mega";
-        } else if (p >= 7000) {
-            reward = "rare";
-        } else if (p >= 6000) {
-            reward = "pack";
-        } else if (p >= 5000) {
-            reward = "egg";
-        } else if (p >= 3000) {
-            reward = "nugget";
-        } else if (p >= 1500) {
-            reward = ["quick", "heavy", "clone", "premier"].random();
-            amt = this.level * 3;
-        } else if (this.finishMode === "cleared"){
-            reward = "gem";
-            amt = 2;
-        } else {
-            reward = "gacha";
-            amt = this.level * 2;
+            reward.push("2@bright");
         }
+        if (p >= 13000) {
+            reward.push("1@bright");
+        } 
+        if (p >= 11000) {
+            reward.push("1@bright");
+        } 
+        if (p >= 9000) {
+            reward.push("1@bright");
+        } 
+        if (p >= 8000) {
+            reward.push("1@mega");
+        } 
+        if (p >= 7000) {
+            reward.push("1@rare");
+        } 
+        if (p >= 6000) {
+            reward.push("1@pack");
+        } 
+        if (p >= 5000) {
+            reward.push("1@egg");
+        } 
+        if (p >= 3000) {
+            reward.push("1@nugget");
+        } 
+        if (p >= 1500) {
+            reward.push((this.level * 3) + "@" + ["quick", "heavy", "clone", "premier"].random());
+        } 
+        if (this.finishMode === "cleared"){
+            reward.push("5@gem");
+        } else {
+            reward.push((this.level * 2) + "@gacha");
+        }
+        reward = reward.join(", ");
 
-        var e, name, player;
+        var e, name, player, out;
         for (e = 0; e < this.names.length; e++) {
             name = this.names[e];
             player = getAvatarOff(name);
@@ -14819,8 +14863,8 @@ function Safari() {
                     player.records.pyramidLeaderClears += 1;
                 }
                 if (reward) {
-                    this.sendToViewers("Party leader " + name.toCorrectCase() + " received " + plural(amt, reward) + " for their performance at Pyramid!");
-                    rewardCapCheck(player, reward, amt);
+                    out = giveStuff(player, toStuffObj(reward));
+                    this.sendToViewers("Party leader " + name.toCorrectCase() + " " + out + " for their performance at Pyramid!");
                 }
             } else {
                 if (player.quests.pyramid.cooldown < now()) {
@@ -14842,7 +14886,7 @@ function Safari() {
         } else {
             this.sendToViewers("");
         }
-        sys.appendToFile(questLog, now() + "|||" + this.leader.toCorrectCase() + "|||Pyramid|||Challenged with " + teamNames + (this.usingVoucher ? ", paid with " + finishName("fossil") : "") +"|||" + finishVerb + " with " + plural(this.points, "Point") + ", received " + plural(amt, reward) + "\n");
+        sys.appendToFile(questLog, now() + "|||" + this.leader.toCorrectCase() + "|||Pyramid|||Challenged with " + teamNames + (this.usingVoucher ? ", paid with " + finishName("fossil") : "") +"|||" + finishVerb + " with " + plural(this.points, "Point") + ", " + out + "\n");
         this.finished = true;
         checkUpdate();
     };
@@ -15074,14 +15118,14 @@ function Safari() {
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
             bignugget: { chance: 1 * level, item: "bignugget", amount: 1 },
-            bait: { chance: 18, item: "bait", amount: 2 * level },
-            gacha: { chance: 12, item: "gacha", amount: 3 * level },
-            dust: { chance: 15, item: "dust", amount: 10 * level },
+            bait: { chance: 20, item: "bait", amount: 2 * level },
+            gacha: { chance: 14, item: "gacha", amount: 2 * level },
+            dust: { chance: 15, item: "dust", amount: 9 * level },
             safari: { chance: 15, item: "safari", amount: 3 * level },
             great: { chance: 12, item: "great", amount: level },
             quick: { chance: 9, item: "quick", amount: level },
-            spy: { chance: 9, item: "spy", amount: level },
-            rock: { chance: 12, item: "rock", amount: 5 * level },
+            spy: { chance: 10, item: "spy", amount: level },
+            rock: { chance: 12, item: "rock", amount: 4 * level },
             pearl: { chance: 10, item: "pearl", amount: 1 * level },
             stardust: { chance: 7, item: "stardust", amount: 1 * level }
         };
@@ -15234,13 +15278,13 @@ function Safari() {
 
         this.treasures = {
             egg: { chance: 1 * level, item: "egg", amount: 1 },
-            bignugget: { chance: 2 + level, item: "bignugget", amount: 1 },
-            bait: { chance: 12, item: "bait", amount: 5 * level },
-            dust: { chance: 10, item: "dust", amount: 14 * level },
+            bignugget: { chance: 1 + level, item: "bignugget", amount: 1 },
+            bait: { chance: 14, item: "bait", amount: 5 * level },
+            dust: { chance: 12, item: "dust", amount: 14 * level },
             myth: { chance: 15, item: "myth", amount: 2 * level },
             heavy: { chance: 12, item: "heavy", amount: 2 * level },
-            spy: { chance: 13, item: "spy", amount: 2 * level },
-            bigpearl: { chance: 5, item: "bigpearl", amount: level }
+            spy: { chance: 15, item: "spy", amount: 2 * level },
+            bigpearl: { chance: 4, item: "bigpearl", amount: level }
         };
 
         this.sendAll("");
@@ -15367,12 +15411,12 @@ function Safari() {
         this.treasures = {
             pack: { chance: 1 * level, item: "pack", amount: 1 },
             spray: { chance: 2 + level, item: "spray", amount: 1 },
-            starpiece: { chance: 4 + level, item: "starpiece", amount: 1 },
-            silver: { chance: 13, item: "silver", amount: 2 * level },
-            ultra: { chance: 15, item: "ultra", amount: 1 * level },
-            quick: { chance: 15, item: "quick", amount: 1 * level },
-            clone: { chance: 15, item: "clone", amount: 1 * level },
-            rock: { chance: 20, item: "rock", amount: 10 * level },
+            starpiece: { chance: 3 + level, item: "starpiece", amount: 1 },
+            silver: { chance: 14, item: "silver", amount: level },
+            ultra: { chance: 16, item: "ultra", amount: 1 * level },
+            quick: { chance: 17, item: "quick", amount: 1 * level },
+            clone: { chance: 17, item: "clone", amount: 1 * level },
+            rock: { chance: 21, item: "rock", amount: 10 * level },
             stardust: { chance: 8, item: "stardust", amount: 1 * level }
         };
 
@@ -15523,11 +15567,11 @@ function Safari() {
         var rew = {
             gem: { chance: 2 * level, item: "gem", amount: 1 },
             nugget: { chance: 1 * level, item: "nugget", amount: 1 },
-            money: { chance: 12, item: "money", amount: 200 * level },
-            safari: { chance: 18, item: "safari", amount: 5 * level },
-            myth: { chance: 12, item: "myth", amount: 1 * level },
-            spy: { chance: 12, item: "spy", amount: 1 * level },
-            pearl: { chance: 10, item: "pearl", amount: 1 * level }
+            money: { chance: 14, item: "money", amount: 180 * level },
+            safari: { chance: 19, item: "safari", amount: 5 * level },
+            myth: { chance: 13, item: "myth", amount: 1 * level },
+            spy: { chance: 14, item: "spy", amount: 1 * level },
+            pearl: { chance: 9, item: "pearl", amount: 1 * level }
         };
         while (treasuresAmt > 0) {
             this.hintsLocation[objects.shift()] = randomSampleObj(rew);
@@ -15936,12 +15980,12 @@ function Safari() {
             spray: { chance: 1 + level, item: "spray", amount: 1 },
             money: { chance: 3, item: "money", amount: 240 * level },
             money2: { chance: 12, item: "money", amount: 150 * level },
-            silver: { chance: 7, item: "silver", amount: 2 * level },
-            gacha: { chance: 10, item: "gacha", amount: 5 * level },
+            silver: { chance: 7, item: "silver", amount: 1 * level },
+            gacha: { chance: 12, item: "gacha", amount: 3 * level },
             great: { chance: 10, item: "great", amount: 3 * level },
-            ultra: { chance: 8, item: "ultra", amount: 2 + level },
-            luxury: { chance: 10, item: "luxury", amount: 1 * level },
-            clone: { chance: 10, item: "clone", amount: 1 * level },
+            ultra: { chance: 9, item: "ultra", amount: 2 + level },
+            luxury: { chance: 11, item: "luxury", amount: 1 * level },
+            clone: { chance: 11, item: "clone", amount: 1 * level },
             premier: { chance: 8, item: "premier", amount: 2 * level }
         };
 
@@ -16094,11 +16138,11 @@ function Safari() {
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
             gem: { chance: 3 * level, item: "gem", amount: 1 },
-            silver: { chance: 6, item: "silver", amount: 1 * level },
-            bait: { chance: 10, item: "bait", amount: 2 * level },
-            great: { chance: 10, item: "great", amount: 2 * level },
-            luxury: { chance: 10, item: "luxury", amount: 1 * level },
-            quick: { chance: 10, item: "quick", amount: 1 * level },
+            silver: { chance: 7, item: "silver", amount: 1 * level },
+            bait: { chance: 13, item: "bait", amount: 2 * level },
+            great: { chance: 13, item: "great", amount: 2 * level },
+            luxury: { chance: 13, item: "luxury", amount: 1 * level },
+            quick: { chance: 11, item: "quick", amount: 1 * level },
             rock: { chance: 10, item: "rock", amount: 10 * level },
             stardust: { chance: 6, item: "stardust", amount: 1 * level }
         };
@@ -16337,12 +16381,12 @@ function Safari() {
 
         this.treasures = {
             egg: { chance: 1 * level, item: "egg", amount: 1 },
-            nugget: { chance: 2 + level, item: "nugget", amount: 1 },
-            silver: { chance: 8, item: "silver", amount: 2 + level },
-            dust: { chance: 14, item: "dust", amount: 9 * level },
-            quick: { chance: 10, item: "quick", amount: 1 * level },
-            rock: { chance: 15, item: "rock", amount: 15 * level },
-            bigpearl: { chance: 5, item: "bigpearl", amount: 1 * level }
+            nugget: { chance: 1 + level, item: "nugget", amount: 1 },
+            silver: { chance: 9, item: "silver", amount: 1 + level },
+            dust: { chance: 16, item: "dust", amount: 9 * level },
+            quick: { chance: 11, item: "quick", amount: 1 * level },
+            rock: { chance: 18, item: "rock", amount: 12 * level },
+            bigpearl: { chance: 4, item: "bigpearl", amount: 1 * level }
         };
         if (chance(0.44 + 0.06 * this.level)) {
             this.hiddenTreasure = randomSampleObj(this.treasures);
@@ -16667,19 +16711,19 @@ function Safari() {
             pack: { chance: 3 + level, item: "pack", amount: 1 },
             gem: { chance: 4 + level, item: "gem", amount: 1 },
             nugget: { chance: 3 + level, item: "nugget", amount: 1 },
-            bignugget: { chance: 2 + level, item: "bignugget", amount: 1 },
+            bignugget: { chance: 1 + level, item: "bignugget", amount: 1 },
             money: { chance: 2, item: "money", amount: 900 * level },
             money2: { chance: 8, item: "money", amount: 220 * level },
-            silver: { chance: 7, item: "silver", amount: 3 * level },
-            gacha: { chance: 12, item: "gacha", amount: 5 * level },
-            dust: { chance: 14, item: "dust", amount: 10 * level },
+            silver: { chance: 7, item: "silver", amount: 2 * level },
+            gacha: { chance: 12, item: "gacha", amount: 4 * level },
+            dust: { chance: 16, item: "dust", amount: 10 * level },
             ultra: { chance: 15, item: "ultra", amount: 3 * level },
             myth: { chance: 14, item: "myth", amount: 2 * level },
-            luxury: { chance: 14, item: "luxury", amount: 2 * level },
+            luxury: { chance: 18, item: "luxury", amount: 2 * level },
             heavy: { chance: 14, item: "heavy", amount: 2 * level },
             premier: { chance: 11, item: "premier", amount: 3 * level },
             pearl: { chance: 10, item: "pearl", amount: 2 + level },
-            bigpearl: { chance: 8, item: "bigpearl", amount: 1 * level },
+            bigpearl: { chance: 6, item: "bigpearl", amount: 1 * level },
             stamina: { chance: 6, item: "stamina", amount: 3 + level }
         };
         for (p = 0; p < 3; p++) {
@@ -18920,6 +18964,7 @@ function Safari() {
         
         this.remainingNumbers = [];
         this.cards = {};
+        this.shouts = {};
         this.cooldowns = {};
 
         if (reward3 && !reward2) {
@@ -18968,6 +19013,7 @@ function Safari() {
         for (var e = 0; e < size; e++) {
             n = this.signups[e].toLowerCase();
             this.cards[n] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+            this.shouts[n] = 0;
             this.cooldowns[n] = 0;
         }
         do {
@@ -19154,7 +19200,7 @@ function Safari() {
             this.sendMessage(name, "You are already one of the winners, you cannot say bingo again! You can type " + link("/watch") + " to stop watching the event (you will receive your rewards normally).");
             return;
         }
-        if (this.round < 5) {
+        if (this.round <= 5) {
             this.sendMessage(name, "There's no possible way you already got a Bingo!");
             return;
         }
@@ -19165,12 +19211,14 @@ function Safari() {
         var c = this.countLines(this.cards[name]);
         if (c < this.goal) {
             this.sendToViewers(sys.name(src) + " shouts <b>BINGO</b>! But they still didn't complete " + plural(this.goal, "line") +"!");
-            this.cooldowns[name] = this.round + 3;
-            this.sendMessage(name, "You still don't have " + plural(this.goal, "line") + " complete! As a punishment, you won't be able to say Bingo for the next 2 turns!");
+            this.shouts[name] += 1;
+            this.cooldowns[name] = this.round + this.shouts[name] + 1;
+            this.sendMessage(name, "You still don't have " + plural(this.goal, "line") + " complete! As a punishment, you won't be able to say Bingo for the next " + plural(this.shouts[name], "turn") + "!");
             return;
         }
         this.sendToViewers("");
-        this.sendToViewers(toColor(sys.name(src) + " shouts <b>BINGO</b>! " + sys.name(src) + " completed " + plural(c, "line") + "! We have a winner!", "blue"));
+        var placement = ["We have a winner!", "Second place is here!", "There's the third place!"][this.winners.length];
+        this.sendToViewers(toColor(sys.name(src) + " shouts <b>BINGO</b>! " + sys.name(src) + " completed " + plural(c, "line") + "! " + placement, "blue"));
         this.winners.push(name);
         this.viewers.push(name);
         if (this.winners.length >= this.maxWinners) {
@@ -19193,6 +19241,7 @@ function Safari() {
         var runnerupName = runnerup ? runnerup.toCorrectCase() : "";
         var thirdplaceName = thirdplace ? thirdplace.toCorrectCase() : "";
 
+        this.sendToViewers("");
         safaribot.sendHtmlAll("<b>" + toColor(winnerName, "blue") + "</b> won the <b>" + this.eventName + "</b> and received " + this.rewardName1 + "!", safchan);
         var player = getAvatarOff(winner), out, stuff;
         if (player) {
