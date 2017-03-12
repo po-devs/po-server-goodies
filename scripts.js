@@ -1244,6 +1244,9 @@ afterChannelJoin : function(player, chan) {
             sys.sendHtmlMessage(player, "<font size=4><b>New to PO? Check out our user guides: " + script.userGuides(sys.os(player)) + "!</b></font>", chan);
         }
     }
+    if (sys.loggedIn(sys.id("Blinky"))) {
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + " # USERINFO", staffchannel);
+    }
     callplugins("afterChannelJoin", player, chan);
 }, /* end of afterChannelJoin */
 
