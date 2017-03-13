@@ -1075,7 +1075,7 @@ canJoinStaffChannel : function(src) {
         return true;
     if (SESSION.users(src).megauser)
         return true;
-    if (script.isContrib(src) && sys.dbRegistered(sys.name(src)))
+    if (SESSION.users(src).contributions !== undefined)
         return true;
     var allowedNames = Config.canJoinStaffChannel;
     if (allowedNames.indexOf(sys.name(src)) > -1)
@@ -1150,7 +1150,7 @@ beforeChannelJoin : function(src, channel) {
         normalbot.sendAll(contribName + " was removed from contributors due to their alt being unregistered. [Contributions: " + script.contributors.get(contribName) + "]", staffchannel);
         sys.sendMessage(src, "±Guard: Sorry, access to that place is restricted!");
         script.contributors.remove(contribName);
-        SESSION.users(src).contributions = undefined;
+        delete SESSION.users(src).contributions;
         sys.stopEvent();
         return;
     }
