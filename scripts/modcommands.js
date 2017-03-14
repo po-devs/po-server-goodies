@@ -574,7 +574,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                         version = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(2) + (version.charAt(3) !== 0 ? version.charAt(3) : "") + ")";
                     } else if (sys.os(tar) === "android") {
                         //could be redone better probably
-                        var verArr = ["7.1", "7.1", "7.0","6.1","6.0","5.2","5.1","5.0","4.4"];
+                        var verArr = ["7.1", "7.0", "6.3","6.1","6.0","5.2","5.1","5.0","4.4"];
                         var x = 45 + verArr.length - version; //45 is essentially the last google play version
                         if (x < 0) {
                             version = " (later than v2.6.2)";
