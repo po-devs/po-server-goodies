@@ -571,7 +571,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                     var version = sys.version(tar);
                     if (sys.os(tar) === "windows" || sys.os(tar) === "mac" || sys.os(tar) === "linux") {
                         version = version + ""; //convert to string for charAt
-                        version = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(2) + (version.charAt(3) !== 0 ? version.charAt(3) : "") + ")";
+                        version = " (v" + version.charAt(0) + "." + version.charAt(1) + "." + version.charAt(2) + (version.charAt(3) != 0 ? version.charAt(3) : "") + ")";
                     } else if (sys.os(tar) === "android") {
                         //could be redone better probably
                         var verArr = ["7.1", "7.0", "6.3","6.1","6.0","5.2","5.1","5.0","4.4"];
