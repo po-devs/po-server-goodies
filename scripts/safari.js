@@ -1788,7 +1788,8 @@ function Safari() {
         if (sys.os(sys.id(name)) !== "android") {
             newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
         } else {
-            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
+            // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
+            newregex1 = "<background color='......#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
         }
         var flashregex = new RegExp(flashtag,"g");
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -1994,33 +1995,34 @@ function Safari() {
         return link("/find " + poke(id), poke(id));
     }
     function typeIcon(type) {
-        var text = "#000";
+        var text = "#fefefe";
         var colors = {
-            Normal: { bg: "#bdbda1" },
-            Fighting: {bg: "#d46a64" },
-            Flying: { bg: "#b7a3f4" },
-            Poison: { bg: "#c77ac7" },
+            Normal: { bg: "#a8a878" },
+            Fighting: {bg: "#c03028" },
+            Flying: { bg: "#a890f0" },
+            Poison: { bg: "#a040a0" },
             Ground: { bg: "#e0c068" },
             Rock: { bg: "#b8a038" },
             Bug: { bg: "#a8b820" },
-            Ghost: { bg: "#8e78b3" },
+            Ghost: { bg: "#705898" },
             Steel: { color: "#333", bg: "#b8b8d0" },
             Fire: { bg: "#f08030" },
-            Water: { bg: "#749af4 " },
-            Grass: { bg: "#70b050" },
+            Water: { bg: "#6890f0" },
+            Grass: { bg: "#4b9228" },
             Electric: { color: "#333", bg: "#f8d030" },
             Psychic: { bg: "#f85888" },
             Ice: { color: "#333", bg: "#98d8d8" },
-            Dragon: { bg: "#9e77fb" },
-            Dark: { bg: "#8d847e" },
-            Fairy: { bg: "#f0a8b8" }
+            Dragon: { bg: "#7038f8" },
+            Dark: { bg: "#705848" },
+            Fairy: { bg: "#ee99ac" }
         };
         if ("color" in colors[type]) {
             text = colors[type].color;
         }
         var bg = colors[type].bg;
         
-        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
+        // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
+        return "<background color='......"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
