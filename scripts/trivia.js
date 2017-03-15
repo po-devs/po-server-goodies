@@ -778,7 +778,20 @@ TriviaGame.prototype.startTriviaRound = function () {
         var index = this.qSource.indexOf(questionNumber);
         this.qSource.splice(index, 1);
     }
-
+    // insert whitespace to prevent Google searches for answers
+    if (category !== "Who's That Pokémon?") {
+        var htmlTag = false;
+        var googleProofQ = question.toString().split("").map(function(e) {
+            if (e === "<") { htmlTag = true; }
+            if (e === ">") { htmlTag = false; }
+            if (htmlTag) {
+                return e;
+            } else {
+                return utilities.non_flashing(e);
+            }
+        }).join("");
+        question = googleProofQ;
+    }
     this.phase = "answer";
     if (category.toLowerCase() === "pop quiz") { this.htmlAll(question); }
     else { this.htmlAll("<b>Category:</b> " + category.toUpperCase() + "<br>" + question); }
