@@ -597,6 +597,16 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
+tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, tier) {
+    var ret = [];
+    for (var i = 0; i < 6; i++) {
+        if (sys.teamPoke(src, team, i) === sys.pokeNum("Floette-Eternal")) {
+            ret.push("The Pokemon 'Floette-Eternal' is banned in tier '" + tier + "'.");
+        }
+    }    
+    return ret;    
+});
+
 //use this to tier alolans if tiers.xml won't work
 tier_checker.add_new_check(INCLUDING, ["SM UU"], function alolanCheck(src, team, tier) {
     var p, i, uuBans;

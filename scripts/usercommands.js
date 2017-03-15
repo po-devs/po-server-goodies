@@ -718,7 +718,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             tiers = ["SM Ubers", "SM OU", "SM UU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
-            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) ? base : pokeId;
+            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) && pokeId !== sys.pokeNum("Floette-Eternal") ? base : pokeId;
             
             if (isMega && sys.isItemBannedFromTier(stone, tier)) {
                 indirectBan = true;
