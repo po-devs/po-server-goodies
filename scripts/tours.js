@@ -518,8 +518,8 @@ function sendAuthPlayers(message,key) {
             var newregex1 = "";
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
-            } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
+            } else { // copying rice's safari hack for an android bug
+                newregex1 = "<background color='......#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -539,8 +539,8 @@ function sendHtmlAuthPlayers(message,key) {
             var newregex1 = "";
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
-            } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
+            } else { // copying rice's safari hack for an android bug
+                newregex1 = "<background color='......#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             var borderregex = new RegExp(htmlborder, "g");
@@ -569,8 +569,8 @@ function sendFlashingBracket(message,key) {
             var newregex1 = "";
             if (sys.os(arr[x]) !== "android") {
                 newregex1 = "<font style='BACKGROUND-COLOR: #FFAAFF'>" + htmlname + "</font><ping/>";
-            } else {
-                newregex1 = "<background color='#FFAAFF'>" + htmlname + "</background><ping/>";
+            } else { // copying rice's safari hack for an android bug
+                newregex1 = "<background color='......#FFAAFF'>" + htmlname + "</background><ping/>";
             }
             var flashregex = new RegExp(flashtag,"g");
             newmessage = message.replace(regex,newregex1).replace(flashregex,"");
