@@ -650,6 +650,7 @@ function getConfigValue(file, key) {
             tourbotcolour: "#3DAA68",
             minpercent: 5,
             minplayers: 3,
+            mineventplayers: 4,
             decayrate: 10,
             decaytime: 2,
             norepeat: 7,
@@ -697,6 +698,7 @@ function initTours() {
         tourbotcolour: getConfigValue("tourconfig.txt", "tourbotcolour"),
         minpercent: parseFloat(getConfigValue("tourconfig.txt", "minpercent")),
         minplayers: parseInt(getConfigValue("tourconfig.txt", "minplayers"), 10),
+        mineventplayers: parseInt(getConfigValue("tourconfig.txt", "mineventplayers"), 10),
         decayrate: parseFloat(getConfigValue("tourconfig.txt", "decayrate")),
         decaytime: parseFloat(getConfigValue("tourconfig.txt", "decaytime")),
         norepeat: parseInt(getConfigValue("tourconfig.txt", "norepeat"), 10),
@@ -1510,6 +1512,7 @@ function tourCommand(src, command, commandData, channel) {
                 sys.sendMessage(src,"Tour Reminder Time: "+time_handle(tourconfig.reminder),tourschan);
                 sys.sendMessage(src,"Auto start when percentage of players is less than: "+tourconfig.minpercent+"%",tourschan);
                 sys.sendMessage(src,"Minimum number of players: "+tourconfig.minplayers,tourschan);
+                sys.sendMessage(src, "Minimum number of event players: " + tourconfig.mineventplayers, tourschan);
                 sys.sendMessage(src,"Decay Rate: "+tourconfig.decayrate+"%",tourschan);
                 sys.sendMessage(src,"Decay Time: "+tourconfig.decaytime+" days",tourschan);
                 sys.sendMessage(src,"Decay Global Rate: "+tourconfig.decayglobalrate+"%",tourschan);
@@ -1540,6 +1543,7 @@ function tourCommand(src, command, commandData, channel) {
                     sys.sendMessage(src,"remindertime: "+time_handle(tourconfig.reminder),tourschan);
                     sys.sendMessage(src,"minpercent: "+tourconfig.minpercent,tourschan);
                     sys.sendMessage(src,"minplayers: "+tourconfig.minplayers,tourschan);
+                    sys.sendMessage(src, "mineventplayers: " + tourconfig.mineventplayers, tourschan);
                     sys.sendMessage(src,"decayrate: "+tourconfig.decayrate,tourschan);
                     sys.sendMessage(src,"decaytime: "+tourconfig.decaytime,tourschan);
                     sys.sendMessage(src,"decayglobalrate: "+tourconfig.decayglobalrate,tourschan);
@@ -1743,23 +1747,24 @@ function tourCommand(src, command, commandData, channel) {
                     sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the repeat limit to "+tourconfig.norepeat+" tournaments");
                     return true;
                 }
-                else if (option == 'minplayers') {
+                else if (option == 'minplayers' || option === "mineventplayers") {
+                    var useVal = option === "minplayers" ? tourconfig.minplayers : tourconfig.mineventplayers;
                     if (!isTourOwner(src)) {
                         sendBotMessage(src,"Can't change minimum number of players, ask a tour owner.",tourschan,false);
                         return true;
                     }
                     if (isNaN(value)) {
                         sendBotMessage(src,"Minimum muber of players required to start a tournament.",tourschan,false);
-                        sendBotMessage(src,"Current Value: "+tourconfig.minplayers,tourschan,false);
+                        sendBotMessage(src,"Current Value: " + useVal, tourschan, false);
                         return true;
                     }
                     if (value < 3 || value > 255) {
                         sendBotMessage(src,"Value must be between 3 and 255.",tourschan,false);
                         return true;
                     }
-                    tourconfig.minplayers = value;
-                    sys.saveVal(configDir+"tourconfig.txt", "minplayers", value);
-                    sendAllTourAuth(tourconfig.tourbot+sys.name(src)+" set the minimum number of players to "+tourconfig.minplayers,tourschan,false);
+                    option === "minplayers" ? tourconfig.minplayers = value : tourconfig.mineventplayers = value;
+                    sys.saveVal(configDir+"tourconfig.txt", option, value);
+                    sendAllTourAuth(tourconfig.tourbot + sys.name(src) + " set the minimum number of " + (option === "mineventplayers" ? "event" : "") + " players to " + value, tourschan, false);
                     return true;
                 }
                 else if (option == 'winmessages') {
@@ -3784,11 +3789,12 @@ function tourstart(tier, starter, key, parameters) {
 function tourinitiate(key) {
     try {
         var size = tourmakebracket(key);
-        if (tours.tour[key].cpt < tourconfig.minplayers) {
+        var minplayers = tours.tour[key].event ? tourconfig.mineventplayers : tourconfig.minplayers;
+        if (tours.tour[key].cpt < minplayers) {
             if (tours.globaltime !== -1) {
                 tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
             }
-            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least "+tourconfig.minplayers+" players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false);
+            sendBotAll("The "+getFullTourName(key)+" tournament was cancelled by the server! You need at least " + minplayers + " players!"+(tours.globaltime > 0 ? " (A new tournament will start in "+time_handle(tourconfig.tourbreak)+")." : ""), tourschan, false);
             tours.history.unshift(getFullTourName(key)+": Cancelled with "+tours.tour[key].cpt+(tours.tour[key].cpt == 1 ? " player" : " players"));
             if (tours.history.length > 25) {
                 tours.history.pop();
