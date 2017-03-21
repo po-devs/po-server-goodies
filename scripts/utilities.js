@@ -178,6 +178,7 @@ exports = {
         var parts = s.split(" ");
         var secs = 0;
         for (var i = 0; i < parts.length; ++i) {
+            var c = parts[i][parts[i].length - 1];
             if (c === undefined) {
                 continue;
             }
