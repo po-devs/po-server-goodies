@@ -232,7 +232,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "ORAS LC"], function littleCupCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "ORAS LC", "SM LC"], function littleCupCheck(src, team, tier) {
     var ret = [];
     var gen = sys.gen(src, team);
     var check = (gen > 5 ? ["Treecko", "Mudkip", "Turtwig", "Chimchar", "Piplup"].map(sys.pokeNum) : lcpokemons);
@@ -241,10 +241,18 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "O
         if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && check.indexOf(x) != -1 ) {
             ret.push(sys.pokemon(x) + " is not allowed with a " + (gen > 5 ? "Hidden":"Dream World") + " Ability in " + tier + ".");
         }
-        if (x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) {
-            for (var j = 0; j < 4; j++) {
-                if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
-                    ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
+        if ((x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) || (sys.pokemon(x) === "Eevee" && gen > 6)) {
+            if (gen < 7) {
+                for (var j = 0; j < 4; j++) {
+                    if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
+                        ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
+                    }
+                }
+            } else { //Eevee check
+                for (var k = 0; k < 4; k++) {
+                    if (["Celebrate", "Happy Hour"].indexOf(sys.move(sys.teamPokeMove(src, team, i, k))) !== -1) {
+                        ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, k)) + ".");
+                    }
                 }
             }
         }
