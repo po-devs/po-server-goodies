@@ -2532,7 +2532,7 @@ addUserCommand(["join"], function (src, commandData, channel) {
         }
         Trivia.addPlayer(src);
         Trivia.triviaPlayers[src].points = Trivia.triviaPlayers[src].points - (Trivia.round - parseInt(Trivia.triviaPlayers[src].roundLeft));
-    //    if (Trivia.phase === "answer" && Trivia.triviaPlayers[src].roundLeft !== Trivia.round) { Trivia.triviaPlayers[src].points++; } // no need to penalize them twice if the don't answer correctly
+        if (Trivia.phase === "answer" && Trivia.triviaPlayers[src].roundLeft !== Trivia.round && Trivia.triviaPlayers[src].phaseLeft !== "answer") { Trivia.triviaPlayers[src].points++; } // no need to penalize them twice if they don't answer correctly
         if (Trivia.phase === "standby" && Trivia.triviaPlayers[src].roundLeft === Trivia.round && Trivia.triviaPlayers[src].phaseLeft === "answer") { Trivia.triviaPlayers[src].points--; } // if a player tries to unjoin and join to avoid a question, make sure they get penalized
         if (Trivia.triviaPlayers[src].points <= 0) {
             Trivia.removePlayer(src);
