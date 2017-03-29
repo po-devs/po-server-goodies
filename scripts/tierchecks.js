@@ -641,4 +641,148 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     }
 });
 
+tier_checker.add_new_check(EXCLUDING, hackmons, function resolveLegality(src, team, tier) {
+    var legality = {
+        Alolan: { // ANNOYING
+            "Raticate": ["Work Up", "Thunderbolt", "Thunder", "Charge Beam", "Thunder Wave", "Wild Charge", "Screech", "Flame Wheel", "Bite", "Last Resort"],
+            "Sandslash": [],
+            "Ninetales": [],
+            "Dugtrio": [],
+            "Persian": [],
+            "Golem": [],
+            "Muk": [],
+            "Exeggutor": [],
+            "Marowak": []
+        },
+        Event: {
+            "Celebrate": {
+                "Bulbasaur": {"min_level": 5, "ability": "Chlorophyll"},
+                "Ivysaur": {"min_level": 16, "ability": "Chlorophyll"},
+                "Venusaur": {"min_level": 32, "ability": "Chlorophyll"},
+                "Charmander": {"min_level": 5, "ability": "Solar Power"},
+                "Charmeleon": {"min_level": 16, "ability": "Solar Power"},
+                "Charizard": {"min_level":36, "ability": "Solar Power"},
+                "Squirtle": {"min_level": 5, "ability": "Rain Dish"},
+                "Wartortle": {"min_level": 16, "ability": "Rain Dish"},
+                "Blastoise": {"min_level": 36, "ability": "Rain Dish"},
+                "Alolan Vulpix": {"min_level": 10, "ability": "Snow Cloak"},
+                "Alolan Ninetales": {"min_level": 10, "ability": "Snow Cloak"},
+                "Comfey": {"min_level": 10, "ability": "Triage"},
+                "Eevee": {"min_level": 10, "ability": ["Run Away", "Adaptibility"]},
+                "Pikachu": {"min_level": 10, "ability": "Static"},
+                "Raichu": {"min_level": 10, "ability": "Static"},
+                "Alolan Raichu": {"min_level": 10, "ability": "Surge Surfer"},
+                "Rayquaza": {"min_level": 100, "shiny": true},
+                "Ho-Oh": {"min_level": 50, "ability": "Pressure", "shiny": true},
+                "Magikarp": {"ability": "Swift Swim"},
+                "Gyarados": {"min_level": 20, "ability": "Intimidate"},
+                "Sylveon": {"min_level": 10, "ability": "Cute Charm"},
+                "Glaceon": {"min_level": 10, "ability": "Snow Cloak"},
+                "Leafeon": {"min_level": 10, "ability": "Leaf Guard"},
+                "Umbreon": {"min_level": 10, "ability": "Synchronize"},
+                "Espeon": {"min_level": 10, "ability": "Synchronize"},
+                "Flareon": {"min_level": 10, "ability": "Flash Fire"},
+                "Jolteon": {"min_level": 10, "ability": "Volt Absorb"},
+                "Vaporeon": {"min_level": 10, "ability": "Water Absorb"}
+            },
+            "Happy Hour": {
+                "Munchlax": {"min_level": 5, "ability": "Thick Fat"},
+                "Snorlax": {"min_level": 6, "ability": "Thick Fat"},
+                "Eevee": {"min_level": 10, "ability": ["Run Away", "Adaptibility"]},
+                "Sylveon": {"min_level": 11, "ability": "Cute Charm"},
+                "Glaceon": {"min_level": 11, "ability": "Snow Cloak"},
+                "Leafeon": {"min_level": 11, "ability": "Leaf Guard"},
+                "Umbreon": {"min_level": 11, "ability": "Synchronize"},
+                "Espeon": {"min_level": 11, "ability": "Synchronize"},
+                "Flareon": {"min_level": 10, "ability": "Flash Fire"},
+                "Jolteon": {"min_level": 10, "ability": "Volt Absorb"},
+                "Vaporeon": {"min_level": 10, "ability": "Water Absorb"},
+                "Greninja": {"min_level": 100, "ability": "Protean"},
+                "Meowth": {"min_level": 20, "ability": "Pickup"},
+                "Persian": {"min_level": 28, "ability": "Limber"},
+                "Alolan Persian": {"min_level": 21, "ability": "Fur Coat"},
+                "Delibird": {"min_level": 10, "ability": ["Vital Spirit", "Hustle"]},
+                "Pikachu": {"min_level": 99, "ability": "Static"},
+                "Raichu": {"min_level": 99, "ability": "Static"},
+                "Alolan Raichu": {"min_level": 99, "ability": "Surge Surfer"},
+                "Magikarp": {"ability": "Swift Swim"},
+                "Gyarados": {"min_level": 20, "ability": "Intimidate"},
+                "Jirachi": {"min_level": 25, "shiny": true},
+                "Inkay": {"min_level": 10, "ability": ["Contrary", "Suction Cups"]},
+                "Malamar": {"min_level": 30, "ability": ["Contrary", "Suction Cups"]}
+            },
+            "Hold Back": {
+                "Munchlax": {"min_level": 5, "ability": "Thick Fat"},
+                "Snorlax": {"min_level": 6, "ability": "Thick Fat"},
+                "Eevee": {"min_level": 10, "ability": ["Run Away", "Adaptibility"]},
+                "Sylveon": {"min_level": 11, "ability": "Cute Charm"},
+                "Glaceon": {"min_level": 11, "ability": "Snow Cloak"},
+                "Leafeon": {"min_level": 11, "ability": "Leaf Guard"},
+                "Umbreon": {"min_level": 11, "ability": "Synchronize"},
+                "Espeon": {"min_level": 11, "ability": "Synchronize"},
+                "Flareon": {"min_level": 10, "ability": "Flash Fire"},
+                "Jolteon": {"min_level": 10, "ability": "Volt Absorb"},
+                "Vaporeon": {"min_level": 10, "ability": "Water Absorb"},
+                "Samurott": {"min_level": 50, "ability": "Shell Armor"},
+                "Emboar": {"min_level": 50, "ability": "Reckless"},
+                "Serperior": {"min_level": 50, "ability": "Contrary"},
+                "Mareep": {"min_level": 10, "ability": "Static"},
+                "Flaaffy": {"min_level": 15, "ability": "Static"},
+                "Ampharos": {"min_level": 30, "ability": "Static"},
+                "Beldum": {"min_level": 5, "ability": "Clear Body", "shiny": true},
+                "Metang": {"min_level": 20, "ability": "Clear Body", "shiny": true},
+                "Metagross": {"min_level": 45, "ability": "Clear Body", "shiny": true},
+                "Celebi": {"min_level": 10}
+            },
+            "Hold Hands": {
+                "Pikachu": {"min_level": 10, "ability": "Static"},
+                "Raichu": {"min_level": 10, "ability": "Static"},
+                "Alolan Raichu": {"min_level": 10, "ability": "Surge Surfer"},
+                "Charizard": {"min_level": 36, "ability": "Blaze", "shiny": true},
+                "Vivillon-Fancy": {"min_level": 12, "ability": ["Shield Dust", "Compound Eyes"]}
+            },
+            "V-Create": {
+                "Victini": {"min_level": 15},
+                "Rayquaza": {"min_level": 100}
+            }
+        }
+    };
+    for (var p = 0; p < 6; p++) {
+        var pokeNum = sys.teamPoke(src, team, p),
+            pokeName = sys.pokemon(pokeNum),
+            baseName = sys.pokemon(utilities.baseForme(pokeName));
+        var alolan = pokeName.indexOf("Alolan ") === 0;
+        for (var m = 0; m < 4; m++) {
+            var moveNum = sys.teamPokeMove(src, team, p, m),
+                moveName = sys.move(moveNum);
+            sys.sendAll(alolan + " && " + baseName in legality.Alolan  + " && " + legality.Alolan[baseName].contains(moveName));
+            if (alolan && baseName in legality.Alolan && legality.Alolan[baseName].contains(moveName)) {
+                return [pokeName + " cannot learn the move " + moveName + "."];
+            }
+            else if (moveName in legality.Event && pokeName in legality.Event[moveName]) {
+                var constraints = legality.Event[moveName][pokeName], c;
+                for (c in constraints) {
+                    var legal = function() {
+                        var val = constraints[c];
+                        switch(c) {
+                            case "min_level":
+                                return [sys.teamPokeLevel(src, team, p) >= val, pokeName + " must be at least level " + val + " to be compatible with event move " + moveName + "."];
+                            case "ability":
+                                var ability = sys.teamPokeAbility(src, team, p);
+                                return [Array.isArray(val) ? val.contains(ability) : val === ability, pokeName + " must have " + (Array.isArray(val) ? val.join(" or ") : val) + " to be compatible with event move " + moveName + "."];
+                            case "shiny":
+                                return [sys.teamPokeShine(src, team, p), pokeName + " must be Shiny to be compatible with event move " + moveName + "."];
+                            default:
+                                return [true, ""];
+                        }
+                    }();
+                    if (!legal[0]) {
+                        return [legal[1]];
+                    }
+                }
+            }
+        }
+    }
+});
+
 module.exports = tier_checker;
