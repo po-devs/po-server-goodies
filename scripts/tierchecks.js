@@ -755,7 +755,6 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function resolveLegality(src, te
         for (var m = 0; m < 4; m++) {
             var moveNum = sys.teamPokeMove(src, team, p, m),
                 moveName = sys.move(moveNum);
-            sys.sendAll(alolan + " && " + baseName in legality.Alolan  + " && " + legality.Alolan[baseName].contains(moveName));
             if (alolan && baseName in legality.Alolan && legality.Alolan[baseName].contains(moveName)) {
                 return [pokeName + " cannot learn the move " + moveName + "."];
             }
