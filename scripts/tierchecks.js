@@ -770,7 +770,10 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function resolveLegality(src, te
                             case "hidden":
                                 var ability = sys.ability(sys.teamPokeAbility(src, team, p)),
                                     hiddenability = sys.ability(sys.pokeAbility(pokeNum, 2)),
-                                    abilities = [sys.ability(sys.pokeAbility(pokeNum, 0)), sys.ability(sys.pokeAbility(pokeNum, 1))];
+                                    abilities = [sys.ability(sys.pokeAbility(pokeNum, 0))];
+                                if (sys.pokeAbility(pokeNum, 1)) {
+                                    abilities.push(sys.ability(sys.pokeAbility(pokeNum, 1)));
+                                }
                                 return [typeof val === "boolean" ? (val ? hiddenability && ability === hiddenability : abilities.contains(ability)) : true, pokeName + " must have " + (typeof val === "boolean" && val ? hiddenability : abilities.join(" or ")) + " to be compatible with event move " + moveName + "."];
                             case "shiny":
                                 return [typeof val === "boolean" ? sys.teamPokeShine(src, team, p) === val : true, pokeName + (val ? " must be" : " cannot be") + " Shiny to be compatible with event move " + moveName + "."];
