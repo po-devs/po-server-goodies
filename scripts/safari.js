@@ -9659,7 +9659,7 @@ function Safari() {
         if (val > 0) {
             boost = (2 + val) / 2;
         } else if (val < 0) {
-            boost = 2 / (2 + val);
+            boost = 2 / (2 - val);
         }
         if (crit && ((crit > 0 && val < 0) || (crit < 0 && val > 0))) {
             boost = 1;
