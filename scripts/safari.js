@@ -73,6 +73,8 @@ function Safari() {
         casedName: "",
         nameColor: "",
         idnum: 0,
+        created: 0,
+        tutorialFinished: 0,
         pokemon: [],
         party: [],
         money: 0,
@@ -1114,6 +1116,7 @@ function Safari() {
     var photographQuest;
     var ccatch = "ccatch";
     var ccatch2 = "ccatchh";
+    var pendingActiveChanges = {};
     var allowedSharedIPNames = [];
     var forbiddenNames = ["on", "off", "cancel", "name"];
     var TYPE_NULL_NAME = "TypeNullName";
@@ -2853,9 +2856,9 @@ function Safari() {
                 }
             }
         }
-        if (isRare(num) && !dexNum) {
+        if (isRare(pokeId) && !dexNum) {
             amount = 1;
-            if (isLegendary(num) && contestCount > 0 && contestCount % 2 === 0) {
+            if ((isLegendary(num) || shiny) && contestCount > 0 && contestCount % 2 === 0) {
                 wildEvent = true;
             }
         }
@@ -2928,9 +2931,15 @@ function Safari() {
         lastWild = now();
     };
     this.startContest = function(commandData) {
+        if (currentPokemon && isRare(currentPokemon)) {
+            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared when a contest started::\n");
+        }
+        
+        currentPokemon = null;
+        this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
-
+        
         var votesResult;
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
@@ -3008,9 +3017,7 @@ function Safari() {
         wildEvent = false;
         isBaited = false;
         nextRules = null;
-        if (currentPokemon && isRare(currentPokemon)) {
-            sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::disappeared when a contest started::\n");
-        }
+        
         safari.createWild();
     };
     this.pickRules = function(theme) {
@@ -3761,6 +3768,9 @@ function Safari() {
                 currentDisplay = null;
                 wildEvent = false;
                 isBaited = false;
+                if (contestCount <= 0) {
+                    this.runPendingActive();
+                }
                 checkUpdate();
             } else {
                 currentThrows -= (lastPokemonCount > 4 ? 2 : 4) * (lastPokemonCount - amt);
@@ -3855,6 +3865,9 @@ function Safari() {
         currentDisplay = null;
         currentPokemonCount = lastPokemonCount = 1;
         isBaited = false;
+        if (contestCount <= 0) {
+            this.runPendingActive();
+        }
     };
     this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted) {
         var result = 1;
@@ -4421,11 +4434,16 @@ function Safari() {
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
-            if (cantBecause(src, "change your active Pokémon", ["wild", "contest", "auction", "battle", "event", "pyramid", "tutorial"])) {
-                return;
-            }
             if (player.party[0] === id) {
                 safaribot.sendMessage(src, "This is already your active Pokémon!", safchan);
+                return;
+            }
+            if (contestCount > 0 || currentPokemon) {
+                pendingActiveChanges[player.id] = info.input;
+                safaribot.sendMessage(src, "Your active Pokémon will automatically be changed to " + info.name + " in the next opportunity!", safchan);
+                return;
+            }
+            if (cantBecause(src, "change your active Pokémon", ["wild", "contest", "auction", "battle", "event", "pyramid", "tutorial"])) {
                 return;
             }
             if (player.party.indexOf(id) === -1) {
@@ -5461,6 +5479,19 @@ function Safari() {
         }
         this.saveGame(player);
     };
+    this.runPendingActive = function() {
+        var e, id, player;
+        for (e in pendingActiveChanges) {
+            id = sys.id(e);
+            if (id) {
+                player = getAvatar(id);
+                if (player) {
+                    this.manageParty(id, "active:" + pendingActiveChanges[e]);
+                }
+            }
+        }
+        pendingActiveChanges = {};
+    };
     
     /* Tutorial */
     this.skipTutorial = function (src, commandData) {
@@ -5486,6 +5517,7 @@ function Safari() {
         } else {
             tutorMsg(src, "Here's a small gift pack to help you out. Take care on your journey and if you have any questions, other players may be able to assist you!");
         }
+        player.tutorialFinished = now();
         welcomePack(src);
         sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||used /skiptutorial\n");
 
@@ -5581,6 +5613,7 @@ function Safari() {
             case 13: {
                 tutorMsg(src, "Congratulations! You have completed the tutorial.");
                 welcomePack(src, true);
+                player.tutorialFinished = now();
             }
             break;
         }
@@ -9401,16 +9434,20 @@ function Safari() {
             var poke1 = this.team1[move1.ownerId];
             var poke2 = this.team2[move2.ownerId];
             
-            var spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.25 : 1));
-            var spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.25 : 1));
+            var spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
+            var spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
             
             var order = [];
-            if (move1.priority > move2.priority || (move1.priority === move2.priority && spd1 > spd2)) {
-                order = [1, 2];
-            } else if (move1.priority < move2.priority || (move1.priority === move2.priority && spd1 < spd2)) {
-                order = [2, 1];
+            if (move1.priority === move2.priority) {
+                if (spd1 > spd2) {
+                    order = [1, 2];
+                } else if (spd1 < spd2) {
+                    order = [2, 1];
+                } else {
+                    order = [1, 2].shuffle();
+                }
             } else {
-                order = [1, 2].shuffle();
+                order = move1.priority > move2.priority ? [1, 2] : [2, 1];
             }
             
             var o, i, id, user, target, move, out, name;
@@ -9434,7 +9471,7 @@ function Safari() {
                         continue;
                     }
                     if (user.condition === "sleep") {
-                        if (user.conditionDuration <= 0 || chance(0.1)) {
+                        if (user.conditionDuration <= 0 || chance(0.12)) {
                             this.sendToViewers(toColor(name + " woke up!", sColor));
                             user.condition = "none";
                         } else {
@@ -9444,7 +9481,7 @@ function Safari() {
                         }
                     }
                     if (user.condition === "freeze") {
-                        if (chance(0.3)) {
+                        if (chance(0.33)) {
                             this.sendToViewers(toColor(name + " thawed out!", sColor));
                             user.condition = "none";
                         } else {
@@ -9522,7 +9559,7 @@ function Safari() {
         }
         var name = user.owner + "'s " + poke(user.id);
         if (user.condition === "burn") {
-            user.hp -= Math.round(user.maxhp / 8);
+            user.hp -= Math.round(user.maxhp / 16);
             this.sendToViewers(name + " was hurt by its burn!");
         }
         else if (user.condition === "poison") {
@@ -9620,9 +9657,9 @@ function Safari() {
         var val = user.boosts[stat];
         var boost = 1;
         if (val > 0) {
-            boost = (2 + boost) / 2;
+            boost = (2 + val) / 2;
         } else if (val < 0) {
-            boost = 2 / (2 + boost);
+            boost = 2 / (2 + val);
         }
         if (crit && ((crit > 0 && val < 0) || (crit < 0 && val > 0))) {
             boost = 1;
@@ -17098,6 +17135,9 @@ function Safari() {
             this.viewers.splice(this.viewers.indexOf(name.toLowerCase()), 1);
             this.sendToViewers(name + " stopped watching this " + this.eventName + "!");
             safaribot.sendMessage(src, "You are no longer watching the " + this.eventName + "!", safchan);
+            if (this.onUnwatch) {
+                this.onUnwatch(src);
+            }
         } else {
             this.sendToViewers(name + " is watching this " + this.eventName + "!");
             this.viewers.push(name.toLowerCase());
@@ -18968,6 +19008,7 @@ function Safari() {
         this.cards = {};
         this.shouts = {};
         this.cooldowns = {};
+        this.watchTargets = {};
 
         if (reward3 && !reward2) {
             reward2 = reward3;
@@ -19085,6 +19126,9 @@ function Safari() {
                     this.sendMessage(e, "If you completed " + plural(this.goal, "line") + ", type " + link("/bingo") + "!");
                 }
             }
+            for (e in this.watchTargets) {
+                this.showCard(this.watchTargets[e], e);
+            }
             this.subturn = 1;
             this.round++;
             return;
@@ -19129,17 +19173,22 @@ function Safari() {
         card[slot-1] = id.num;
         this.sendMessage(name, "You added " + id.name + " to slot " + slot + "!");
     };
-    Bingo.prototype.showCard = function(name) {
+    Bingo.prototype.showCard = function(name, viewer) {
+        if (!viewer) {
+            viewer = name;
+        }
         var card = this.cards[name];
         var remain = this.remainingNumbers;
         var showSlot = function(n) {
-            return remain.contains(n) ? "<b>[" + pokeInfo.icon(n) + "]</b>" : toColor("<b>[" + pokeInfo.icon(n) + "]</b>", "red");
+            var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
+            var c2 = remain.contains(n) ? '#555555' : '#FCD116';
+            return '<background color="......'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
         };
-        this.sendMessage(name, card.slice(0, 5).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(name, card.slice(5, 10).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(name, card.slice(10, 15).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(name, card.slice(15, 20).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(name, card.slice(20, 25).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(5, 10).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(10, 15).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(15, 20).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(20, 25).map(showSlot).join(" "), null, null, true);
     };
     Bingo.prototype.fillCard = function(name) {
         var card = this.cards[name], remain = this.remainingNumbers.concat().shuffle(), n;
@@ -19225,7 +19274,29 @@ function Safari() {
         this.viewers.push(name);
         if (this.winners.length >= this.maxWinners) {
             this.finish();
+        } else {
+            var t;
+            for (c in this.watchTargets) {
+                if (this.watchTargets[c] === name) {
+                    t = this.getOngoingPlayer();
+                    this.watchTargets[c] = t;
+                    this.sendMessage(c, "As " + name + " has won, you will now follow " + t.toCorrectCase() + "'s card!");
+                }
+            }
         }
+    };
+    Bingo.prototype.getOngoingPlayer = function() {
+        var target, list = Object.keys(this.cards);
+        if (list.length === this.winners.length) {
+            return this.winners[0];
+        }
+        if (list.length === 0) {
+            return this.signups[0].toLowerCase();
+        }
+        do {
+            target = list.random();
+        } while (this.winners.contains(target));
+        return target;
     };
     Bingo.prototype.finish = function() {
         if (this.winners.length === 0) {
@@ -19310,7 +19381,15 @@ function Safari() {
         return true;
     };
     Bingo.prototype.onWatch = function(src) {
-        safaribot.sendHtmlMessage(src, "You are watching the " + this.eventName + "!", safchan);
+        var target = this.getOngoingPlayer();
+        this.watchTargets[sys.name(src).toLowerCase()] = target;
+        safaribot.sendHtmlMessage(src, "You are watching the " + this.eventName + "! You will follow <b>" + target.toCorrectCase() + "</b>'s card!", safchan);
+    };
+    Bingo.prototype.onUnwatch = function(src) {
+        var name = sys.name(src).toLowerCase();
+        if (this.watchTargets.hasOwnProperty(name)) {
+            delete this.watchTargets[name];
+        }
     };
     Bingo.prototype.sendToViewers = function(msg, flashing, colored, nobot, androidAlt) {
         var e, players = this.signups.map(function(x) { return x.toLowerCase(); }), n;
@@ -19386,6 +19465,7 @@ function Safari() {
         player.pokemon.push(num);
         player.party.push(num);
         player.starter = num;
+        player.created = now();
 
         player.lastLogin = getDay(now());
         player.altlog.push(id);
@@ -22693,6 +22773,20 @@ function Safari() {
                 require("modcommands.js").handleCommand(src, "aliases", commandData, -1, channel);
                 return true;
             }
+            if (command === "identify") {
+                var player = getAvatarOff(commandData);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+                sys.sendMessage(src, "", safchan);
+                safaribot.sendHtmlMessage(src, "<b>{0}</b>'s Information | IDnum: {1} | Original Name: {2}".format(player.id.toCorrectCase(), player.idnum, player.altlog[0]), safchan);
+                safaribot.sendMessage(src, "Recent Alts (Safari): {0}".format(player.altlog.slice(-10).join(", ")), safchan);
+                safaribot.sendHtmlMessage(src, "Recent Alts (Server): " + link("/aliases " + player.id) + " or " + link("/aliases ~" + player.id), safchan);
+                safaribot.sendMessage(src, "Created: {0} | Tutorial Finished: {1} | Tutorial Duration {2}".format(new Date(player.created).toUTCString(), new Date(player.tutorialFinished).toUTCString(), utilities.getTimeString((player.tutorialFinished - player.created) / 1000)), safchan);
+                sys.sendMessage(src, "", safchan);
+                return true;
+            }
             var shopCommands = ["npcadd", "addnpc", "npcremove", "removenpc", "closenpc", "npcclose", "npcclean", "cleannpc", "silveradd", "addsilver"];
             if (shopCommands.contains(command)) {
                 var action = "remove";
@@ -23011,6 +23105,7 @@ function Safari() {
                     nextRules = null;
                     nextTheme = null;
                     contestCatchers = {};
+                    safari.runPendingActive();
                     checkUpdate();
                 } else {
                     safaribot.sendMessage(src, "You can't skip a contest if there's none running or about to start!", safchan);
@@ -23614,6 +23709,9 @@ function Safari() {
                         sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
                     }
                     resetVars(true);
+                    if (contestCount <= 0) {
+                        safari.runPendingActive();
+                    }
                 }
                 checkUpdate();
                 return true;
@@ -25114,6 +25212,7 @@ function Safari() {
                         permObj.add("loginDaysDown", 0);
                     }
                 }
+                safari.runPendingActive();
                 checkUpdate();
             } else {
                 if (!currentPokemon && chance(0.089743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
