@@ -946,7 +946,7 @@ function Safari() {
             // ret += "&gen=7'>";
             /* Start of temporary hack due to windows client bug with shiny sprites. Enable the line above and remove this block once the client can properly show shiny sprites for non-gen 7 Pokémon*/
             var g = 6, id = parseInt(poke, 10), sp = pokeInfo.species(id);
-            var withback = true;
+            var withback = false;
             if ((sp >= 722 && sp < 803) || [131730, 66254, 131790, 458777, 524313, 589849, 655385, 720921, 786457, 65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(id)) {
                 g = 7;
                 if (shiny) {
@@ -3858,7 +3858,6 @@ function Safari() {
             "The wild {0} got bored and went to #" + ["Mafia", "Trivia", "Hangman", "Evolution Game", "Tournaments"].random() + "!",
             "The wild {0} paid its retreat cost and returned to the bench!",
             "The wild {0} was caught, but the Pokéball containing it mysteriously vanished!",
-            "April Fools! The {0} actually never existed!",
             "The wild {0} was divided by zero!"
         ];
         if (isRare(currentPokemon)) {
@@ -6010,14 +6009,10 @@ function Safari() {
         var rng = Math.random();
         var rng2 = Math.random();
         
-        // var targetName = utilities.non_flashing(commandData.toCorrectCase());
-        // var id = commandData.toLowerCase();
-        // var targetId = sys.id(commandData);
-        // var target = getAvatar(targetId);
-        var id = player.id;
-        var targetName = utilities.non_flashing(id.toCorrectCase());
-        var targetId = src;
-        var target = player;
+        var targetName = utilities.non_flashing(commandData.toCorrectCase());
+        var id = commandData.toLowerCase();
+        var targetId = sys.id(commandData);
+        var target = getAvatar(targetId);
 
         if (target.tutorial.inTutorial) {
             safaribot.sendMessage(src, "Hey! That's not nice. You shouldn't throw " + an(finishName(item)) + " at someone completing the tutorial!", safchan);
@@ -6028,7 +6023,7 @@ function Safari() {
             return;
         }
         
-        // player.rockTargets.push(id);
+        player.rockTargets.push(id);
         if (player.rockTargets.length > 10) {
             player.rockTargets.shift();
         }
@@ -6722,16 +6717,9 @@ function Safari() {
             safaribot.sendMessage(src, "Your " + info.name + " " + verb + " " + poke(evolution) + "!", safchan);
             sys.sendMessage(src, "", safchan);
         } else {
-            var rm = sys.rand(1, 803);
-            if (rm in wildForms && chance(0.66)) {
-                rm = pokeInfo.calcForme(rm, sys.rand(1, wildForms[rm]+1));
-            }
-            if (chance(0.05)) {
-                rm = rm + "";
-            }
             sendAll("", false, true);
-            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(rm) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
-            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(rm) + ", and then " + verb + " " + poke(evolution) + "!");
+            sendAll(pokeInfo.icon(info.num) + " -> " + pokeInfo.icon(parseInt(evolution, 10)), true);
+            sendAll(sys.name(src) + "'s " + info.name + " " + verb + " " + poke(evolution) + "!");
             sendAll("", false, true);
         }
         this.saveGame(player);
@@ -11614,29 +11602,29 @@ function Safari() {
                 sprites.push('<img src="' + base64trainers[qs[i]] + '">');
             }
             safaribot.sendHtmlMessage(src, "<b>Quests available:</b>" + sprites.join(""), safchan);
-            safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Lazy Rich Guy") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")) + (stopQuests.collector ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest collector", "Collector") + " " + (quest.collector.cooldown > n ? "[Available in " + timeLeftString(quest.collector.cooldown) + "]" : (quest.collector.deadline > n ? "[Ends in " + timeLeftString(quest.collector.deadline) + "]" : "[Available]")) + (stopQuests.collector ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Ig Nobel Winner") + " " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest scientist", "Scientist") + " " + (scientistQuest.expires > n ? "[Ends in " + timeLeftString(scientistQuest.expires) + "]" : "[Standby]") + (stopQuests.scientist ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Fight some dudes") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]") + (stopQuests.arena ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arena", "Arena") + " " + (quest.arena.cooldown > n ? "[Available in " + timeLeftString(quest.arena.cooldown) + "]" : "[Available]") + (stopQuests.arena ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Subara") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]") + (stopQuests.wonder ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest wonder", "Wonder Trade") + " " + (quest.wonder.cooldown > n ? "[Available in " + timeLeftString(quest.wonder.cooldown) + "]" : "[Available]") + (stopQuests.wonder ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "We have no elevators") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest tower", "Battle Tower") + " " + (quest.tower.cooldown > n ? "[Available in " + timeLeftString(quest.tower.cooldown) + "]" : "[Available]") + (stopQuests.tower ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Old Triangle") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest pyramid", "Pyramid") + " " + (quest.pyramid.cooldown > n ? "[Available in " + timeLeftString(quest.pyramid.cooldown) + "]" : "[Available]") + (stopQuests.pyramid ? " <b>[Disabled]</b>" : ""), safchan);
             //safaribot.sendHtmlMessage(src, "-Pyramid [Closed for renovation]", safchan);
             //safaribot.sendHtmlMessage(src, "-" + link("/quest piramyd", "Piramyd") + " [Available]", safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "BOOOOOM!") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist!") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Cuuuuuuute!") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest league", "Fight stronger dudes") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.league ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest league", "League") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.league ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "The Onion") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "Journal") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Suspicious Dude") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
 
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
@@ -11783,7 +11771,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 175 and 320. Reward is 2.4x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 599. Reward is 4.8x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Insane", "Insane") + " - For crazy people.", safchan);
+                    // safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Insane", "Insane") + " - For crazy people.", safchan);
                     // safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 720, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
@@ -11806,7 +11794,7 @@ function Safari() {
                     return;
                 }
                 if (data.length < 2) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", or " + link("/quest collector:start:insane", "Insane") + ") using /quest collector:start:[difficulty]! Type " + link("/quest collector:difficulty") + " to learn more about the different difficulty levels.", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + /* ", or " + link("/quest collector:start:insane", "Insane") + */ ") using /quest collector:start:[difficulty]! Type " + link("/quest collector:difficulty") + " to learn more about the different difficulty levels.", safchan);
                     return;
                 }
                 var diff = data[1].toLowerCase();
@@ -11826,10 +11814,10 @@ function Safari() {
                     case "[hard]":
                         level = 2;
                     break;
-                    case "insane":
+                    /* case "insane":
                     case "[insane]":
                         level = 4;
-                    break;
+                    break; */
                     default:
                         safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + /* ", or " + link("/quest collector:start:epic", "Epic") + */ ") using /quest collector:start:[difficulty]!", safchan);
                         return;
@@ -11852,14 +11840,14 @@ function Safari() {
                         request.push(randomNum);
                     }
                 }
-                /* if (level == 3) {
+                if (level == 3) {
                     var legend = 0;
                     //This kills the Phione
                     while (legend === sys.pokeNum("Phione") || legend === 0) {
                         legend = legendaries.random();
                     }
                     request.push(legend);
-                } */
+                }
 
                 var reward = 0;
                 for (e = 0; e < request.length; e++) {
@@ -12023,9 +12011,6 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
-                if (quest.requests.length < 9) {
-                    quest.cooldown = now() + hours(1);
-                }
                 quest.requests = [];
                 quest.deadline = null;
                 this.saveGame(player);
@@ -21639,11 +21624,6 @@ function Safari() {
                     } else {
                         safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                     }
-                }
-                if (info.num == 14) {
-                    sys.sendMessage(src, "P.S.: This is the best Pokémon ever.", safchan);
-                } else {
-                    sys.sendMessage(src, "P.S.: Kakuna is better than " + info.name + ".", safchan);
                 }
                 sys.sendMessage(src, "", safchan);
                 return true;
