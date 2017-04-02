@@ -12011,6 +12011,7 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
+                quest.cooldown = now() + hours(1);
                 quest.requests = [];
                 quest.deadline = null;
                 this.saveGame(player);
