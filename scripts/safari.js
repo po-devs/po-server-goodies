@@ -11021,6 +11021,9 @@ function Safari() {
         }
     };
     Auction.prototype.makeOffer = function(src, bid) {
+        if (this.finished) {
+            return;
+        }
         var player = getAvatar(src);
         var id = sys.name(src).toLowerCase();
 
@@ -13358,6 +13361,7 @@ function Safari() {
         
         var trainerSprite = '<img src="' + base64trainers.league + '">';
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
+        var opt2 = data.length > 1 ? data[1].toLowerCase() : "*";
         
         var cost = 5000;
         if (opt === "help") {
@@ -13411,6 +13415,12 @@ function Safari() {
             return;
         }
         else if (["elite", "elite 4", "elite four", "elitefour", "elite4", "e4", "e 4"].contains(opt)) {
+            if (opt2 !== "start") {
+                safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You can challenge the Elite Four if you cleared all gyms during the previous week.", safchan);
+                safaribot.sendHtmlMessage(src, "League Guide: You can start the challenge with " + link("/quest league:elite:start") + ". Once you do, you will fight all 4 members in a row. If you win, you will receive a rare Philosopher's Stone.", safchan);
+                safaribot.sendHtmlMessage(src, "League Guide: You can only challenge the Elite Four once per week, and only if you obtained all badges from the gyms during the previous week.", safchan);
+                return;
+            }
             if (quest.eliteCurrentUsed) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: You already challenged the Elite Four during the current period! Clear the 7 gyms again during this period to get a new chance next week!", safchan);
                 return;
@@ -14822,6 +14832,9 @@ function Safari() {
         this.sendToViewers("Points: " + this.points + " | Stamina: " + this.names.map(function(x){ return x.toCorrectCase() + " (" + stm[x] + ")"; }).join(", "));
     };
     Pyramid.prototype.useCommand = function(src, commandData) {
+        if (this.finished) {
+            return;
+        }
         if (this.currentRoom) {
             this.currentRoom.useCommand(src, commandData);
         }
@@ -22803,7 +22816,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>{0}</b>'s Information | IDnum: {1} | Original Name: {2}".format(player.id.toCorrectCase(), player.idnum, player.altlog[0]), safchan);
                 safaribot.sendMessage(src, "Recent Alts (Safari): {0}".format(player.altlog.slice(-10).join(", ")), safchan);
-                safaribot.sendHtmlMessage(src, "Recent Alts (Server): " + link("/aliases " + player.id) + " or " + link("/aliases ~" + player.id), safchan);
+                safaribot.sendHtmlMessage(src, "Recent Alts (Server): " + link("/aliases " + player.id) + " or " + link("/aliases ~" + player.id) + (sys.id(commandData) ? " (on " + sys.os(sys.id(commandData)) + ")" : ""), safchan);
                 safaribot.sendMessage(src, "Created: {0} | Tutorial Finished: {1} | Tutorial Duration {2}".format(new Date(player.created).toUTCString(), new Date(player.tutorialFinished).toUTCString(), utilities.getTimeString((player.tutorialFinished - player.created) / 1000)), safchan);
                 sys.sendMessage(src, "", safchan);
                 return true;
@@ -24085,7 +24098,7 @@ function Safari() {
                 }
                 if (currentEvent) {
                     nothingFound = false;
-                    safaribot.sendMessage(src, "Ongoing Event: " + currentEvent.eventName, safchan);
+                    safaribot.sendMessage(src, "Ongoing Event: " + currentEvent.eventName + " (" + currentEvent.signups.length + " players)", safchan);
                 }
                 if (nothingFound) {
                     safaribot.sendMessage(src, "No ongoing Battles, Auctions or Events!", safchan);
