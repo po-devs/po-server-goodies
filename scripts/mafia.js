@@ -3348,6 +3348,7 @@ function Mafia(mafiachan) {
             if (checkDay < mafia.time.nights) {
                 pastDay = true;
             }
+            mafia.isEvent = false;
             gamemsg(sentName, "*** VOTECOUNT FOR DAY " + checkDay + " ***");
             voteData = this.votedByArchive[checkDay];
         }
