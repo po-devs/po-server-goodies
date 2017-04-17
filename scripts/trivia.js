@@ -355,6 +355,7 @@ function TriviaGame() {
     this.started = false;
     this.maxPoints = 0;
     this.scoreType = "";
+    this.difficulty = "any";
     this.qSource = [];
     this.catGame = false;
     this.specialCatGame = false;
@@ -390,7 +391,7 @@ TriviaGame.prototype.sendAll = function (message, channel) {
     triviabot.sendAll(message, channel === undefined ? triviachan : channel);
 };
 
-TriviaGame.prototype.startGame = function (data, name) {
+TriviaGame.prototype.startGame = function (data, name, difficulty) {
     if (this.started) return;
     if (this.startoff) return;
     if (triviaq.questionAmount() < 1) return;
@@ -424,6 +425,7 @@ TriviaGame.prototype.startGame = function (data, name) {
             }
         }
     }
+    this.difficulty = difficulty;
     this.startNormalGame(this.maxPoints, cats, name);
 };
 
@@ -441,6 +443,10 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             Trivia.sendAll(n + " joined the game!", triviachan);
         }
     };
+    var diffMessage = "Difficulty: Any"; //default
+    if (this.difficulty === "easy") { diffMessage = "Difficulty: <font color=blue>Easy</font>"; }
+    if (this.difficulty === "intermediate") { diffMessage = "Difficulty: <font color=green>Intermediate</font>"; }
+    if (this.difficulty === "hard") { diffMessage = "Difficulty: <font color=red>Hard</font>"; }
     if (this.catGame){
         for (var q in triviaq.all()) {
             if (cats.join("*").toLowerCase().split("*").indexOf(triviaq.get(q).category.toLowerCase()) != -1) {
@@ -483,6 +489,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " opened signups for an elimination game " : "An elimination game was started ") + "featuring " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds.", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
@@ -495,6 +502,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "A speed #Trivia game was started! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " has started a Speed Category Game! " : "A Speed Category game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
@@ -507,6 +515,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "A Category game has started in #Trivia! Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + "! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " has started a Category Game! " : "A Category Game was started! ") + "Test your knowledge on " + (catsLength > 1 ? cats.join(", ") + " and " + lastCat : cats[0]) + ". First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
@@ -519,6 +528,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "A speed #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " started a Speed Trivia game! " : "A speed trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
@@ -532,6 +542,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "An elimination #Trivia game with " + points + " " + (points == 1 ? "life" : "lives") + " is in signups!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " opened signups for an elimination game! " : "An elimination game was started! ") + "You only have " + points + " " + (points == 1 ? "life" : "lives") + "! Signups end in 45 seconds!", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
         }
     }
@@ -544,6 +555,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
             ad = "A #Trivia game was started! First to " + points + " " + (points == 1 ? "point" : "points") + " wins!";
             sendChanAll("",triviachan);
             this.sendAll((name ? name + " started a Trivia game! " : "A trivia game was started! ") + "First to " + points + " " + (points == 1 ? "point" : "points") + " wins!", triviachan);
+            triviabot.sendHtmlAll(diffMessage, triviachan);
             triviabot.sendHtmlAll("Type <b><a href=\"po:send//join\">/join</a></b> to join!", triviachan);
             autoJoin(name);
         }
@@ -573,6 +585,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
                 if (this.scoreType !== 'elimination'){
                     triviabot.sendHtmlAll("<b>The game can continue until up to 3 players reach the goal!</b>", triviachan);
                 }
+                triviabot.sendHtmlAll(diffMessage, triviachan);
             } else {
                 this.sendAll(ad, c);
             }
@@ -595,7 +608,7 @@ TriviaGame.prototype.startNormalGame = function (points, cats, name) {
     }
 };
 
-TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = points / categories
+TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = points / categories / difficulty (extracted before data is split)
     if (this.started) {
         this.sendPM(src, "A trivia game has already started!", triviachan);
         return;
@@ -614,6 +627,21 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
         return;
     }*/
     this.scoreType = scoring;
+    // set difficulty if present
+    if (data.toLowerCase().indexOf(":easy") !== -1) {
+        this.difficulty = "easy";
+        data = data.toLowerCase().replace(":easy", "");
+    } else if (data.toLowerCase().indexOf(":int") !== -1) { // allow for abbreviated input
+        this.difficulty = "intermediate";
+        if (data.toLowerCase().indexOf(":intermediate") !== -1) {
+            data = data.toLowerCase().replace(":intermediate", "");
+        } else {
+            data = data.toLowerCase().replace(":int", "");
+        }
+    } else if (data.toLowerCase().indexOf(":hard") !== -1) {
+        this.difficulty = "hard";
+        data = data.toLowerCase().replace(":hard", "");
+    }
     data = data.split("*");
 
     var isTA = (tadmin.isTAdmin(sys.name(src)) || tsadmin.isTAdmin(sys.name(src)) || sys.auth(src) > 0);
@@ -686,7 +714,7 @@ TriviaGame.prototype.startTrivia = function (src, data, scoring) { //Data = poin
     }
     data[0] = (isNaN(rand)) ? sys.rand(trivData.autostartRange.min, parseInt(trivData.autostartRange.max, 10) + 1) : +rand;
     data = data.join("*");
-    this.startGame(data, sys.name(src));
+    this.startGame(data, sys.name(src), this.difficulty);
 };
 
 TriviaGame.prototype.startTriviaRound = function () {
@@ -726,19 +754,54 @@ TriviaGame.prototype.startTriviaRound = function () {
         this.roundQuestion = 0;
     } else {
         /* Make a random number to get the ID of the (going to be) asked question, or use the suggestion */
-        var questionNumber;
+        var q, questionNumber;
         if (Trivia.suggestion.id !== undefined) {
             questionNumber = Trivia.suggestion.id;
             Trivia.suggestion.asked = true;
-        }
+        } // determine the limits for the game difficulty
         else {
-            questionNumber = Trivia.randomId();
-            var i = 0;
-            while ((triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers())) && i !== 200) {
-                questionNumber = Trivia.randomId();
-                i++;
+            var upperLimit = 1;
+            var lowerLimit = 0;
+            switch(this.difficulty) {
+                case "easy":
+                    lowerLimit = 0.6;
+                    break;
+                case "intermediate":
+                    upperLimit = 0.8;
+                    lowerLimit = 0.4;
+                    break;
+                case "hard":
+                    upperLimit = 0.5;
+                    break;
+                default: // default to "any", so the limits don't need to change
             }
-            if (i === 200) {
+            var qOKAY = false;
+            var asked, data, rateAnsweredCorrectly, i = 0;
+            // pick a question with the appropriate difficulty. merged this with the android and who's that pokemon check.
+            while ((!qOKAY && (triviaq.get(questionNumber) === null || (triviaq.get(questionNumber).category.toLowerCase() === "who's that pokémon?" && this.androidPlayers()))) && i !== 300) {    
+                i++;
+                questionNumber = Trivia.randomId();
+                q = triviaq.get(questionNumber);
+                if (q === null) { continue; }
+                if (!questionData.hash.hasOwnProperty(questionNumber)) { continue; }
+                data = questionData.get(questionNumber).split(" ");
+                // data[0] = times asked, data[1] = answered(players in game at the time), data[2] = answered correctly
+                asked = parseInt(data[0], 10);
+                if (data[1] === 0 || asked < 5) { // check to see if the question is "new"
+                    if (this.difficulty !== "easy") { // don't use "new" questions on easy
+                        qOKAY = true;
+                        continue;
+                    }
+                    continue;
+                }
+                rateAnsweredCorrectly = data[2] / data[1];
+                if (rateAnsweredCorrectly <= upperLimit && rateAnsweredCorrectly >= lowerLimit) {
+                    qOKAY = true;
+                    continue;
+                }
+                qOKAY = false; // just in case the question was okay, but failed the android + who's that pokemon check
+            }
+            if (i === 300) {
                 this.catGame = true;
                 this.usingCats = specialCategories;
                 this.startTriviaRound();
@@ -746,7 +809,7 @@ TriviaGame.prototype.startTriviaRound = function () {
             }
         }
         /* Get the category, question, and answer */
-        var q = triviaq.get(questionNumber);
+        q = triviaq.get(questionNumber);
         category = q.category;
         if (category.indexOf("Anagram") === -1){
             question = q.question;
@@ -1373,8 +1436,19 @@ TriviaGame.prototype.event = function() {
     lastEventTimeStamp = getStatsTimeStamp();
     var eventType = sys.rand(1, 101);
     var catEvent = sys.rand(1, 11);
+    var diffRand = sys.rand(1, 101);
+    var difficulty = "any";
     var catEventFlag = false;
     var randomCat =  "";
+
+    if (diffRand >= 1 && diffRand < 41) { // 40 %
+        difficulty = "easy";
+    } else if (diffRand >= 41 && diffRand < 71) { // 30 %
+        difficulty = "intermediate";
+    } else if (diffRand >= 71 && diffRand < 81) { // 10 %
+        difficulty = "hard";
+    } // 20% chance that the difficulty stays "any"
+
     if (catEvent === 1 && trivData.blockCats.length) {
         var r = sys.rand(0, trivData.blockCats.length);
         randomCat = trivData.blockCats[r].name;
@@ -1382,19 +1456,19 @@ TriviaGame.prototype.event = function() {
     }
     if (eventType >= 1 && eventType <= eventKnowRate) {
         this.scoreType = lastEventType = "knowledge";
-        if (!catEventFlag) { Trivia.startGame(defaultKnowEventGoal); }
-        else { Trivia.startGame(defaultKnowEventGoal + "*" + randomCat); }
+        if (!catEventFlag) { Trivia.startGame(defaultKnowEventGoal, false, difficulty); }
+        else { Trivia.startGame(defaultKnowEventGoal + "*" + randomCat, false, difficulty); }
     }
     else {
         if (eventType >= (eventKnowRate + 1) && eventType <= (eventKnowRate + eventSpeedRate)) {
             this.scoreType = lastEventType = "speed";
-            if (!catEventFlag) { Trivia.startGame(defaultSpeedEventGoal); }
-            else { Trivia.startGame(defaultSpeedEventGoal + "*" + randomCat); }
+            if (!catEventFlag) { Trivia.startGame(defaultSpeedEventGoal, false, difficulty); }
+            else { Trivia.startGame(defaultSpeedEventGoal + "*" + randomCat, false, difficulty); }
         }
         else {
             this.scoreType = lastEventType = "elimination";
-            if (!catEventFlag) { Trivia.startGame(defaultElimEventGoal); }
-            else { Trivia.startGame(defaultElimEventGoal + "*" + randomCat); }
+            if (!catEventFlag) { Trivia.startGame(defaultElimEventGoal, false, difficulty); }
+            else { Trivia.startGame(defaultElimEventGoal + "*" + randomCat, false, difficulty); }
         }
     }
     lastEventTime = sys.time(); //current time in seconds
@@ -1473,6 +1547,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.iteration = 0;
     this.maxPoints = 0;
     this.scoreType = "";
+    this.difficulty = "any";
     this.qSource = [];
     this.catGame = false;
     this.specialCatGame = false;
@@ -2587,11 +2662,11 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
 
 addUserCommand(["start"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "knowledge");
-}, "Allows you to start a trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start category games.");
+}, "Allows you to start a trivia game, format /start [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level). Only Trivia Admins may start category games.");
 
 addUserCommand(["speed"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start a speed trivia game, format /speed [number][*category1][*category2][...]. Leave number blank for random. Only Trivia Admins may start category games.");
+}, "Allows you to start a speed trivia game, format /speed [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level). Only Trivia Admins may start category games.");
 
 addUserCommand(["goal"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -2733,7 +2808,7 @@ addUserCommand(["lastleaderboard", "lastlb"], function (src, commandData, channe
 
 addAdminCommand(["elimination", "elim"], function (src, commandData) {
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an elimination game. Format is /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an elimination game. Format is /elimination [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level).");
 
 addAdminCommand(["changegoal"], function (src, commandData, channel) {
     if (!Trivia.started) {
@@ -4191,7 +4266,7 @@ addOwnerCommand(["eventstart"], function (src, commandData) {
         lastEventType = "knowledge";
     }
     Trivia.startTrivia(src, commandData, "knowledge");
-}, "Allows you to start an Event trivia game, format /start [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an Event trivia game, format /start [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level).");
 
 /*** OWNER COMMANDS ***/
 
@@ -4204,7 +4279,7 @@ addOwnerCommand(["eventspeed"], function (src, commandData) {
         lastEventType = "speed";
     }
     Trivia.startTrivia(src, commandData, "speed");
-}, "Allows you to start an event speed trivia game. Format is /speed [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an event speed trivia game. Format is /speed [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level).");
 
 addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
     if (!Trivia.started) {
@@ -4215,7 +4290,7 @@ addOwnerCommand(["eventelimination", "eventelim"], function (src, commandData) {
         lastEventType = "elimination";
     }
     Trivia.startTrivia(src, commandData, "elimination");
-}, "Allows you to start an Event elimination game. Format is /elimination [number][*category1][*category2][...]. Leave number blank for random.");
+}, "Allows you to start an Event elimination game. Format is /elimination [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include any difficulty level).");
 
 addOwnerCommand(["setdefaulteventgoal"], function (src, commandData, channel) {
     if (commandData === undefined || commandData.indexOf(":") == -1) {
