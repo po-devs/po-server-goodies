@@ -209,7 +209,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
     if (command === "topic") {
         //Mods shouldn't be able to change topic of private channels
         if (poChannel.isChannelOperator(src) || (sys.auth(src) === 1 && script.isPOChannel(channel))) {
-            SESSION.channels(channel).setTopic(src, commandData);
+            var commandDataPlusSetter = commandData + " - " + html_escape(sys.name(src));
+            SESSION.channels(channel).setTopic(src, commandDataPlusSetter);
         } else {
             SESSION.channels(channel).setTopic(src);
         }
@@ -218,10 +219,11 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
 
     if (command === "topicadd") {
         if (commandData !== undefined) {
+            var commandDataPlusSetter = commandData + " - " + html_escape(sys.name(src));
             if (SESSION.channels(channel).topic.length > 0) {
-                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandData);
+                SESSION.channels(channel).setTopic(src, SESSION.channels(channel).topic + Config.topic_delimiter + commandDataPlusSetter);
             } else {
-                SESSION.channels(channel).setTopic(src, commandData);
+                SESSION.channels(channel).setTopic(src, commandDataPlusSetter);
             }
             return;
         }
