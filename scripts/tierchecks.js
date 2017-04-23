@@ -214,7 +214,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Hackmons"];
+    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
