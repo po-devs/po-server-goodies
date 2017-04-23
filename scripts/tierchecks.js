@@ -660,7 +660,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "SM Balanced Ha
     }
     for (var i = 0; i < 6; i++) {
         if (primals.contains(sys.teamPoke(src, team, i))) {
-            ret.push("The Pokemon '{0}' is banned on tier '" + tier + "'.".format(sys.pokemon(sys.teamPoke(src,team,i))));
+            ret.push(("The Pokemon '{0}' is banned on tier '" + tier + "'.").format(sys.pokemon(sys.teamPoke(src,team,i))));
         }
     }    
     return ret;
