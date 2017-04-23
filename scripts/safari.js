@@ -7617,7 +7617,7 @@ function Safari() {
             if (possibleResults.contains("none")) {
                 possibleResults.splice(possibleResults.indexOf("none"), 1);
             }
-            player.balls.mushroom -= 1;
+            
             player.mushroomTheme = possibleResults.random();
             player.mushroomDeadline = now() + itemData.mushroom.duration * 60 * 1000;
             player.records.mushroomsEaten += 1;
