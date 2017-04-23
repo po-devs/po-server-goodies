@@ -217,7 +217,7 @@ TierChecker.prototype.find_good_tier = function(src, team) {
     var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
-        if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
+        if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true) === true) {
             sys.changeTier(src, team, testtier);
             if (testtier == "Battle Factory" || testtier == "Battle Factory 6v6") {
                 require('battlefactory.js').generateTeam(src, team);
@@ -662,7 +662,7 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "SM Balanced Ha
         if (primals.contains(sys.teamPoke(src, team, i))) {
             ret.push(("The Pokemon '{0}' is banned on tier '" + tier + "'.").format(sys.pokemon(sys.teamPoke(src,team,i))));
         }
-    }    
+    }  
     return ret;
 });
 
