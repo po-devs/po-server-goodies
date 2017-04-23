@@ -652,9 +652,12 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons"], function primalBan(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "SM Balanced Hackmons"], function primalBan(src, team, tier) {
     var ret = [];
-    var primals = [sys.pokeNum("Primal Groudon"), sys.pokeNum("Primal Kyogre")];
+    var primals = [sys.pokeNum("Primal Groudon")];
+    if (tier === "ORAS Balanced Hackmons") {
+        primals.push(sys.pokeNum("Primal Kyogre"));
+    }
     for (var i = 0; i < 6; i++) {
         if (primals.contains(sys.teamPoke(src, team, i))) {
             ret.push("The Pokemon '{0}' is banned on tier 'ORAS Balanced Hackmons'.".format(sys.pokemon(sys.teamPoke(src,team,i))));
