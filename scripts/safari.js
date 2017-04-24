@@ -25869,8 +25869,8 @@ function Safari() {
                 var winners = [], pokeWinners = [], maxCaught = 0, maxBST = 0, player, contestInfo = { finished: now() }, fullWinners = [];
                 for (var e in contestCatchers) {
                     if (contestCatchers.hasOwnProperty(e)) {
+                        player = getAvatarOff(e);
                         if (contestCatchers[e].length >= maxCaught) {
-                            player = getAvatarOff(e);
                             if (player) {
                                 if (contestCatchers[e].length > maxCaught) {
                                     winners = [];
@@ -25878,12 +25878,12 @@ function Safari() {
                                     fullWinners = [];
                                     maxCaught = contestCatchers[e].length;
                                 }
-                                safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
                                 winners.push(e);
                                 pokeWinners.push(poke(player.party[0]));
                                 fullWinners.push(e.toCorrectCase() + " (using " + poke(player.party[0]) + ")");
                             }
                         }
+                        safari.missionProgress(player, "contest", "caught", 1, { caught: contestCatchers[e].length });
                     }
                 }
                 var tieBreaker = [], bst, name, top = winners.length, catchersBST = {}, allContestants = [];
