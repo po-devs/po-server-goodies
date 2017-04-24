@@ -4686,7 +4686,7 @@ function Safari() {
             }
             if (contestCount > 0 || currentPokemon) {
                 pendingActiveChanges[player.id] = "load:"+targetId;
-                safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(player.party.map(poke), "and") + ") will be loaded in the next opportunity!", safchan);
+                safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(toLoad.map(poke), "and") + ") will be loaded in the next opportunity!", safchan);
                 return;
             }
 
@@ -9027,7 +9027,7 @@ function Safari() {
             if (obj.count >= obj.goal || obj.day !== today) {
                 continue;
             }
-            if (obj.objective === mission.objective && obj.type === mission.type && obj.target === mission.type) {
+            if (obj.objective === mission.objective && obj.type === mission.type && obj.target === mission.target) {
                 return true;
             }
             if (obj.target === "cross" && mission.target === "cross") {
@@ -21198,6 +21198,9 @@ function Safari() {
             if (redoBase || player.secretBaseCache.length !== SECRET_BASE_WIDTH * SECRET_BASE_HEIGHT) {
                 this.sanitizeBase(player);
             }
+            if (player.missions.length === 0) {
+                this.renewMissions(player);
+            }
             while (player.inbox.length > player.unreadInbox.length) {
                 player.unreadInbox.push(false);
             }
@@ -24675,28 +24678,6 @@ function Safari() {
                 safari.checkNewMonth();
                 return true;
             } */
-            if (command === "clearmonthlb") { //One-time command to turn Monthly LB into Weekly - Remove after use
-                safaribot.sendMessage(src, "Resetting Monthly LB!", safchan);
-                for (var e in monthlyLeaderboards) {
-                    monthlyLeaderboards[e].clear();
-                }
-                for (e in monthlyLeaderboardTypes) {
-                    monthlyLeaderboards[e] = new MemoryHash(monthlyLeaderboardTypes[e].file);
-                }
-                safari.updateLeaderboards();
-                return true;
-            }
-            if (command === "assignmissions") { //One-time command to assign daily missions to people who get daily rewards before the update - Remove after use
-                var onChannel = sys.playersOfChannel(safchan), player;
-                for (var e = 0; e < onChannel.length; e++) {
-                    player = getAvatar(onChannel[e]);
-                    if (player && (!player.missions || player.missions.length === 0)) {
-                        safari.renewMissions(player);
-                    }
-                }
-                safaribot.sendMessage(src, "Missions assigned!", safchan);
-                return true;
-            }
             if (command === "addraffle") {
                 var info = commandData.split(":");
                 var input = getInput(info[0]);
