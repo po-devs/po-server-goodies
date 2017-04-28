@@ -2970,7 +2970,7 @@ function Safari() {
                 }
             }
         }
-        if (isRare(pokeId) && !dexNum) {
+        if ((isRare(num) || shiny) && !dexNum) {
             amount = 1;
             if ((isLegendary(num) || shiny) && contestCount > 0 && contestCount % 2 === 0) {
                 wildEvent = true;
@@ -3908,7 +3908,7 @@ function Safari() {
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
-            this.missionProgress(player, "catch", currentPokemon, 1, { ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount });
+            this.missionProgress(player, "catch", currentPokemon, 1, { ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -3928,7 +3928,7 @@ function Safari() {
         } else {
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
             var keep = false;
-            if (chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)) || crystalEffect.effect === "fisherman") {
+            if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
                 keep = true;
                 player.balls[ball] += 1;
             }
@@ -4158,6 +4158,7 @@ function Safari() {
         }
     };
 
+    /* Photos */
     this.takePhoto = function(src, data, bypass, suppress) {
         if (!validPlayers("self", src)) {
             return;
@@ -5043,6 +5044,7 @@ function Safari() {
             safaribot.sendMessage(src, "For Duplicate: Type a number greater than 1. e.g.: /find duplicate 3 (will display all Pokémon that you have at least 3 copies of)", safchan);
             safaribot.sendMessage(src, "For Region: Select any valid region (" +  readable(generations.slice(1, generations.length), "or") + ") to display all currently owned Pokémon from that region", safchan);
             safaribot.sendMessage(src, "For Color: Select any valid color (" +  readable(Object.keys(pokeColors), "or") + ") to display all currently owned Pokémon with that color", safchan);
+            safaribot.sendMessage(src, "For Start: Type one or more letters to find Pokémon with name starting with that letter sequence.", safchan);
             safaribot.sendMessage(src, "For Number and BST: There are 4 ways to search with those parameters:", safchan);
             safaribot.sendMessage(src, "-Exact value. e.g.: /find bst 500 (displays all Pokémon with BST of exactly 500)", safchan);
             safaribot.sendMessage(src, "-Greater than. e.g.: /find bst 400 > (displays all Pokémon with BST of 400 or more)", safchan);
@@ -5139,6 +5141,10 @@ function Safari() {
                 case "canlearn":
                     crit = "move";
                     break;
+                case "start":
+                case "starting":
+                    crit = "start";
+                    break;
                 default:
                     crit = "abc";
             }
@@ -5159,6 +5165,15 @@ function Safari() {
                 }
             });
             return "with " + val + " in their name";
+        }
+        if (crit == "start") {
+            val = val.toLowerCase();
+            current.forEach(function(x){
+                if (sys.pokemon(x).toLowerCase().indexOf(val) === 0) {
+                    list.push(x);
+                }
+            });
+            return "with name starting with " + cap(val) + "";
         }
         else if (crit == "number") {
             def = rangeFilter(src, current, list, val, mode, "Pokédex Number", info, crit);
@@ -7572,8 +7587,8 @@ function Safari() {
         if (item === "scale") {
             var colors = Object.keys(pokeColors);
             if (!info.target || !colors.contains(info.target.toLowerCase())) {
-                safaribot.sendMessage(src, "To change a Pokémon's color, use /use Pokémon:Color. Colors can be " + readable(colors, "or") + ".", safchan);
-                safaribot.sendMessage(src, "Importat: This won't turn the Pokémon into shiny or change its image. It will only count as a different color for contest buffs/nerfs.", safchan);
+                safaribot.sendMessage(src, "To change a Pokémon's color, use /use scale:Color. Colors can be " + readable(colors.map(cap), "or") + ".", safchan);
+                safaribot.sendMessage(src, "Important: This won't turn the Pokémon into shiny or change its image. It will only count as a different color for contest buffs/nerfs.", safchan);
                 return;
             }
             var c = info.target.toLowerCase();
@@ -8923,6 +8938,7 @@ function Safari() {
         rafflePlayers.save();
     };
     
+    /* Missions */
     this.viewMissions = function(src) {
         if (!validPlayers("self", src)) {
             return;
@@ -8986,48 +9002,51 @@ function Safari() {
     this.generateMission = function(level) {
         var mission = missionsData[level].random();
         var newMission = JSON.parse(JSON.stringify(mission));
-        
+        var targetDesc;
         if (newMission.template) {
             newMission.target = newMission.target.random();
-            var targetDesc;
-            
-            switch (newMission.type) {
-                case "move":
-                    targetDesc = sys.move(sys.moveNum(newMission.target));
-                break;
-                case "where":
-                    targetDesc = an(themeName(newMission.target));
-                break;
-                case "mood":
-                    targetDesc = an(newMission.target);
-                break;
-                case "score":
-                    targetDesc = photoQuality[newMission.target];
-                break;
-                case "what":
-                case "amt":
-                    targetDesc = newMission.target;
-                break;
-                default:
-                    targetDesc = cap(newMission.target);
-            }
-            newMission.desc = newMission.desc.format(targetDesc);
-            
             delete newMission.template;
         }
-        
+            
+        switch (newMission.type) {
+            case "move":
+                targetDesc = sys.move(sys.moveNum(newMission.target));
+            break;
+            case "where":
+                targetDesc = an(themeName(newMission.target));
+            break;
+            case "mood":
+                targetDesc = an(newMission.target);
+            break;
+            case "score":
+                targetDesc = photoQuality[newMission.target];
+            break;
+            case "what":
+            case "amt":
+                targetDesc = newMission.target;
+            break;
+            default:
+                if (typeof newMission.target === "string") {
+                    targetDesc = cap(newMission.target);
+                } else {
+                    targetDesc = newMission.target;
+                }
+        }
+        newMission.desc = newMission.desc.replace(/\$\{0\}/g, "$"+addComma(newMission.goal));
+        newMission.desc = newMission.desc.format(newMission.goal, targetDesc);
         newMission.reward = missionsData.rewards[level].random();
         
         return newMission;
     };
     this.checkMissionConflicts = function(mission, list, today) {
         var obj, e;
+        var noTargetDuplicates = ["playContest", "catchContest", "winContest", "towerFloor", "arenaSilver", ];
         for (e = list.length; e--; ) {
             obj = list[e];
             if (obj.count >= obj.goal || obj.day !== today) {
                 continue;
             }
-            if (obj.objective === mission.objective && obj.type === mission.type && obj.target === mission.target) {
+            if (obj.objective === mission.objective && obj.type === mission.type && (noTargetDuplicates.contains(obj.objective) || obj.target === mission.target)) {
                 return true;
             }
             if (obj.target === "cross" && mission.target === "cross") {
@@ -9087,7 +9106,7 @@ function Safari() {
                 out = (action === "catch" && this.pokeMatchesMission(target, mission.type, mission.target) && data.clone ? value : 0);
                 break;
             case "catchWithPoke":
-                out = (action === "catch" && this.pokeMatchesMission(data.active, mission.type, mission.target) ? value : 0);
+                out = (action === "catch" && this.pokeMatchesMission(data.active, mission.type, mission.target, data) ? value : 0);
                 break; 
             case "catchWithBall":
                 out = (action === "catch" && data.ball === mission.target ? value : 0);
@@ -9137,10 +9156,10 @@ function Safari() {
         }
         return out;
     };
-    this.pokeMatchesMission = function(id, type, target) {
+    this.pokeMatchesMission = function(id, type, target, data) {
         switch (type) {
             case "type": return hasType(id, sys.type(sys.typeNum(target)));
-            case "color": return getPokeColor(id) === target;
+            case "color": return (data && data.color ? data.color : getPokeColor(id)) === target;
             case "region": return generation(id, true).toLowerCase() === target.toLowerCase();
             case "bst": return isInRange(getBST(id), target);
             case "height": return isInRange(parseFloat(pokedex.getHeight(id)), target);
@@ -26064,7 +26083,7 @@ function Safari() {
                 safari.runPendingActive();
                 checkUpdate();
             } else {
-                if (!currentPokemon && chance(0.089743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
+                if (!currentPokemon && chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
                     safari.createWild(null, null, amt);
                 }
