@@ -458,7 +458,7 @@ serverStartUp : function() {
 },
 
 init : function() {
-    script.superAdmins = ["Mahnmut", "Atli"];
+    script.superAdmins = ["Mahnmut", "Atli", "E.T."];
     script.rules = {
         "1": {
             "english": [
