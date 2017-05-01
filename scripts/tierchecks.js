@@ -71,6 +71,112 @@ var lcmoves = {
     "Rufflet":["Wing Attack","Scary Face","Slash","Defog","Air Slash","Crush Claw","Whirlwind","Brave Bird","Thrash"]
 };
 
+var legality = {
+    Alolan: { // ANNOYING
+        "Raticate": ["Work Up", "Thunderbolt", "Thunder", "Charge Beam", "Thunder Wave", "Wild Charge", "Screech", "Flame Wheel", "Bite", "Last Resort"],
+        "Sandslash": [],
+        "Ninetales": [],
+        "Dugtrio": [],
+        "Persian": [],
+        "Golem": [],
+        "Muk": [],
+        "Exeggutor": [],
+        "Marowak": []
+    },
+    Event: {
+        "Celebrate": {
+            "Bulbasaur": {"min_level": 5, "hidden": true, "shiny": false},
+            "Ivysaur": {"min_level": 16, "hidden": true, "shiny": false},
+            "Venusaur": {"min_level": 32, "hidden": true, "shiny": false},
+            "Charmander": {"min_level": 5, "hidden": true, "shiny": false},
+            "Charmeleon": {"min_level": 16, "hidden": true, "shiny": false},
+            "Charizard": {"min_level": 36, "hidden": true, "shiny": false},
+            "Squirtle": {"min_level": 5, "hidden": true, "shiny": false},
+            "Wartortle": {"min_level": 16, "hidden": true, "shiny": false},
+            "Blastoise": {"min_level": 36, "hidden": true, "shiny": false},
+            "Alolan Vulpix": {"min_level": 10, "hidden": false, "shiny": false},
+            "Alolan Ninetales": {"min_level": 10, "hidden": false, "shiny": false},
+            "Comfey": {"min_level": 10, "hidden": false, "shiny": false},
+            "Eevee": {"min_level": 10, "hidden": false, "shiny": false},
+            "Pikachu": {"min_level": 10, "hidden": false, "shiny": false},
+            "Raichu": {"min_level": 10, "hidden": false, "shiny": false},
+            "Alolan Raichu": {"min_level": 10, "hidden": false, "shiny": false},
+            "Rayquaza": {"min_level": 100, "hidden": false, "shiny": true},
+            "Ho-Oh": {"min_level": 50, "hidden": false, "shiny": true},
+            "Magikarp": {"hidden": false, "shiny": ""},
+            "Gyarados": {"min_level": 20, "hidden": false, "shiny": ""},
+            "Sylveon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Glaceon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Leafeon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Umbreon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Espeon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Flareon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Jolteon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Vaporeon": {"min_level": 10, "hidden": false, "shiny": false}
+        },
+        "Happy Hour": {
+            "Munchlax": {"min_level": 5, "hidden": false, "shiny": false},
+            "Snorlax": {"min_level": 6, "hidden": false, "shiny": false},
+            "Eevee": {"min_level": 10, "hidden": false, "shiny": false},
+            "Sylveon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Glaceon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Leafeon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Umbreon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Espeon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Flareon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Jolteon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Vaporeon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Greninja": {"min_level": 100, "hidden": true, "shiny": false},
+            "Meowth": {"min_level": 20, "hidden": false, "shiny": false},
+            "Persian": {"min_level": 28, "hidden": false, "shiny": false},
+            "Alolan Persian": {"min_level": 21, "hidden": false, "shiny": false},
+            "Delibird": {"min_level": 10, "hidden": false, "shiny": false},
+            "Pikachu": {"min_level": 99, "hidden": false, "shiny": false},
+            "Raichu": {"min_level": 99, "hidden": false, "shiny": false},
+            "Alolan Raichu": {"min_level": 99, "hidden": false, "shiny": false},
+            "Magikarp": {"hidden": false, "shiny": ""},
+            "Gyarados": {"min_level": 20, "hidden": false, "shiny": ""},
+            "Jirachi": {"min_level": 25, "hidden": false, "shiny": true},
+            "Inkay": {"min_level": 10, "hidden": false, "shiny": false},
+            "Malamar": {"min_level": 30, "hidden": false, "shiny": false}
+        },
+        "Hold Back": {
+            "Munchlax": {"min_level": 5, "hidden": false, "shiny": false},
+            "Snorlax": {"min_level": 6, "hidden": false, "shiny": false},
+            "Eevee": {"min_level": 10, "hidden": false, "shiny": false},
+            "Sylveon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Glaceon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Leafeon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Umbreon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Espeon": {"min_level": 11, "hidden": false, "shiny": false},
+            "Flareon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Jolteon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Vaporeon": {"min_level": 10, "hidden": false, "shiny": false},
+            "Samurott": {"min_level": 50, "hidden": true, "shiny": false},
+            "Emboar": {"min_level": 50, "hidden": true, "shiny": false},
+            "Serperior": {"min_level": 50, "hidden": true, "shiny": false},
+            "Mareep": {"min_level": 10, "hidden": false, "shiny": false},
+            "Flaaffy": {"min_level": 15, "hidden": false, "shiny": false},
+            "Ampharos": {"min_level": 30, "hidden": false, "shiny": false},
+            "Beldum": {"min_level": 5, "hidden": false, "shiny": true},
+            "Metang": {"min_level": 20, "hidden": false, "shiny": true},
+            "Metagross": {"min_level": 45, "hidden": false, "shiny": true},
+            "Celebi": {"min_level": 10}
+        },
+        "Hold Hands": {
+            "Pikachu": {"min_level": 10, "hidden": "", "shiny": ""},
+            "Raichu": {"min_level": 10, "hidden": "", "shiny": ""},
+            "Alolan Raichu": {"min_level": 10, "hidden": "", "shiny": ""},
+            "Charizard": {"min_level": 36, "hidden": false, "shiny": true},
+            "Vivillon-Fancy": {"min_level": 12, "hidden": false, "shiny": false}
+        },
+        "V-Create": {
+            "Victini": {"min_level": 15, "hidden": false, "shiny": false},
+            "Rayquaza": {"min_level": 100, "hidden": false, "shiny": false}
+        }
+    }
+};
+
 function TierChecker() {
     this.checkers = [];
 }
@@ -108,7 +214,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Hackmons"];
+    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -232,7 +338,7 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
-tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "ORAS LC"], function littleCupCheck(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "ORAS LC", "SM LC"], function littleCupCheck(src, team, tier) {
     var ret = [];
     var gen = sys.gen(src, team);
     var check = (gen > 5 ? ["Treecko", "Mudkip", "Turtwig", "Chimchar", "Piplup"].map(sys.pokeNum) : lcpokemons);
@@ -241,10 +347,18 @@ tier_checker.add_new_check(INCLUDING, ["BW2 LC", "BW2 LC Ubers", "BW2 UU LC", "O
         if (x !== 0 && sys.hasDreamWorldAbility(src, team, i) && check.indexOf(x) != -1 ) {
             ret.push(sys.pokemon(x) + " is not allowed with a " + (gen > 5 ? "Hidden":"Dream World") + " Ability in " + tier + ".");
         }
-        if (x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) {
-            for (var j = 0; j < 4; j++) {
-                if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
-                    ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
+        if ((x !== 0 && lcmoves.hasOwnProperty(sys.pokemon(x))) || (sys.pokemon(x) === "Eevee" && gen > 6)) {
+            if (gen < 7) {
+                for (var j = 0; j < 4; j++) {
+                    if (lcmoves[sys.pokemon(x)].indexOf(sys.move(sys.teamPokeMove(src, team, i, j))) !== -1) {
+                        ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, j)) + ".");
+                    }
+                }
+            } else { //Eevee check
+                for (var k = 0; k < 4; k++) {
+                    if (["Celebrate", "Happy Hour"].indexOf(sys.move(sys.teamPokeMove(src, team, i, k))) !== -1) {
+                        ret.push(sys.pokemon(x) + " is not allowed in " + tier + " with the move " + sys.move(sys.teamPokeMove(src, team, i, k)) + ".");
+                    }
                 }
             }
         }
@@ -538,12 +652,15 @@ tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "Inverted Balan
     }
 });
 
-tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons"], function primalBan(src, team, tier) {
+tier_checker.add_new_check(INCLUDING, ["ORAS Balanced Hackmons", "SM Balanced Hackmons"], function primalBan(src, team, tier) {
     var ret = [];
-    var primals = [sys.pokeNum("Primal Groudon"), sys.pokeNum("Primal Kyogre")];
+    var primals = [sys.pokeNum("Primal Groudon")];
+    if (tier === "ORAS Balanced Hackmons") {
+        primals.push(sys.pokeNum("Primal Kyogre"));
+    }
     for (var i = 0; i < 6; i++) {
         if (primals.contains(sys.teamPoke(src, team, i))) {
-            ret.push("The Pokemon '{0}' is banned on tier 'ORAS Balanced Hackmons'.".format(sys.pokemon(sys.teamPoke(src,team,i))));
+            ret.push(("The Pokemon '{0}' is banned on tier '" + tier + "'.").format(sys.pokemon(sys.teamPoke(src,team,i))));
         }
     }    
     return ret;
@@ -597,6 +714,16 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
     return ret;
 });
 
+tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, tier) {
+    var ret = [];
+    for (var i = 0; i < 6; i++) {
+        if (sys.teamPoke(src, team, i) === sys.pokeNum("Floette-Eternal")) {
+            ret.push("The Pokemon 'Floette-Eternal' is banned in tier '" + tier + "'.");
+        }
+    }    
+    return ret;    
+});
+
 //use this to tier alolans if tiers.xml won't work
 tier_checker.add_new_check(INCLUDING, ["SM UU"], function alolanCheck(src, team, tier) {
     var p, i, uuBans;
@@ -618,6 +745,49 @@ tier_checker.add_new_check(EXCLUDING, challenge_cups.concat(hackmons), function 
         for (var i = 0; i < 6; i++) {
             if (!letters.contains(sys.teamPoke(src, team, i))) {
                 sys.changePokeShine(src, team, i, false);
+            }
+        }
+    }
+});
+
+tier_checker.add_new_check(EXCLUDING, hackmons, function resolveLegality(src, team, tier) {
+    for (var p = 0; p < 6; p++) {
+        var pokeNum = sys.teamPoke(src, team, p),
+            pokeName = sys.pokemon(pokeNum),
+            baseName = sys.pokemon(utilities.baseForme(pokeName));
+        var alolan = pokeName.indexOf("Alolan ") === 0;
+        for (var m = 0; m < 4; m++) {
+            var moveNum = sys.teamPokeMove(src, team, p, m),
+                moveName = sys.move(moveNum);
+            if (alolan && baseName in legality.Alolan && legality.Alolan[baseName].contains(moveName)) {
+                return [pokeName + " cannot learn the move " + moveName + "."];
+            }
+            else if (moveName in legality.Event && pokeName in legality.Event[moveName]) {
+                var constraints = legality.Event[moveName][pokeName], c;
+                for (c in constraints) {
+                    var legal = function() {
+                        var val = constraints[c];
+                        switch(c) {
+                            case "min_level":
+                                return [sys.teamPokeLevel(src, team, p) >= val, pokeName + " must be at least level " + val + " to be compatible with event move " + moveName + "."];
+                            case "hidden":
+                                var ability = sys.ability(sys.teamPokeAbility(src, team, p)),
+                                    hiddenability = sys.ability(sys.pokeAbility(pokeNum, 2)),
+                                    abilities = [sys.ability(sys.pokeAbility(pokeNum, 0))];
+                                if (sys.pokeAbility(pokeNum, 1)) {
+                                    abilities.push(sys.ability(sys.pokeAbility(pokeNum, 1)));
+                                }
+                                return [typeof val === "boolean" ? (val ? hiddenability && ability === hiddenability : abilities.contains(ability)) : true, pokeName + " must have " + (typeof val === "boolean" && val ? hiddenability : abilities.join(" or ")) + " to be compatible with event move " + moveName + "."];
+                            case "shiny":
+                                return [typeof val === "boolean" ? sys.teamPokeShine(src, team, p) === val : true, pokeName + (val ? " must be" : " cannot be") + " Shiny to be compatible with event move " + moveName + "."];
+                            default:
+                                return [true, ""];
+                        }
+                    }();
+                    if (!legal[0]) {
+                        return [legal[1]];
+                    }
+                }
             }
         }
     }

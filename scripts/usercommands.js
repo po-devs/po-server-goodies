@@ -718,7 +718,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             tiers = ["SM Ubers", "SM OU", "SM UU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
-            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) ? base : pokeId;
+            var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) && pokeId !== sys.pokeNum("Floette-Eternal") ? base : pokeId;
             
             if (isMega && sys.isItemBannedFromTier(stone, tier)) {
                 indirectBan = true;
@@ -1002,7 +1002,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, sys.pokemon(pokeId) + " " + (canLearn ? "can" : "can't") + " learn " + sys.move(moveId) + ".", channel);
         return;
     }
-    if (command === "wiki") {
+  /*  if (command === "wiki") {
         var poke = sys.pokeNum(commandData);
         if (!poke) {
             normalbot.sendMessage(src, "No such pokemon!", channel);
@@ -1011,7 +1011,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         var pokeName = sys.pokemon(poke);
         normalbot.sendMessage(src, pokeName + "'s wikipage is here: http://wiki.pokemon-online.eu/page/" + pokeName, channel);
         return;
-    }
+    } */
     if (command === "wall") {
         if (!isNonNegative(SESSION.global().coins)) {
             SESSION.global().coins = 0;
@@ -1127,7 +1127,7 @@ exports.help = [
     "/nature [nature]: Shows the effects of a nature. Leave blank to show all natures.",
     "/pokemon [Pokémon]: Displays basic information for that Pokémon. Pokédex number can also be used.",
     "/tier [Pokémon]: Displays the tiers a pokémon is allowed in.",
-    "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
+   // "/wiki [Pokémon]: Shows that Pokémon's wiki page.",
     "*** User Info ***",
     "/battlecount: Shows the ranking of another user. Format is /battlecount name:tier.",
     "/myalts: Lists your alts.",

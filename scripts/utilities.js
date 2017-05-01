@@ -178,13 +178,30 @@ exports = {
         var parts = s.split(" ");
         var secs = 0;
         for (var i = 0; i < parts.length; ++i) {
-            var c = (parts[i][parts[i].length-1]).toLowerCase();
+            var c = parts[i][parts[i].length - 1];
+            if (c === undefined) {
+                continue;
+            }
             var mul = 60;
-            if (c == "s") { mul = 1; }
-            else if (c == "m") { mul = 60; }
-            else if (c == "h") { mul = 60*60; }
-            else if (c == "d") { mul = 24*60*60; }
-            else if (c == "w") { mul = 7*24*60*60; }
+            switch (c.toLowerCase()) {
+                case "s":
+                    mul = 1;
+                    break;
+                case "m":
+                    mul = 60;
+                    break;
+                case "h":
+                    mul = 60 * 60;
+                    break;
+                case "d":
+                    mul = 24 * 60 * 60;
+                    break;
+                case "w":
+                    mul = 7 * 24 * 60 * 60;
+                    break;
+                default:
+                    break;
+            }
             secs += mul * parseInt(parts[i], 10);
         }
         return secs;
