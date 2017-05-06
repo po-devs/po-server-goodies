@@ -432,7 +432,7 @@ function Safari() {
         shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false},
         entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
         coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
-        fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
+        fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
         
         mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
         crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 30, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
@@ -615,7 +615,7 @@ function Safari() {
             burn: "A potion used to heal burns. Use /burn to give it to someone who may need it.",
             entry: "A Raffle Entry that can win a spectacular prize if you own the correct one at the time of drawing. Simply hold onto your ticket safely until the time of the drawing. Nothing more is needed on your part!",
             coupon: "A coupon holding a special offer to those interested in decorating their Secret Base. Can be traded for a Decoration at the Decor.",
-            fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\".",
+            fossil: "A rare fossil often desired by archaeologists. Use it to enter the Pyramid without paying the entry fee by typing \"/quest pyramid:fossil:Name1:Name2\". You also receive " + (itemData.fossil.bonusRate * 100) + "% more points during that run.",
             form: "A form that you can fill to start an event. Use it with  \"/use form\" for more details.",
             pack: "A wonderful package that could contain equally wonderful prizes! Use with \"/use pack\". Obtained from Official Events and Pyramid.",
             fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
@@ -5143,6 +5143,7 @@ function Safari() {
                     break;
                 case "start":
                 case "starting":
+                case "initial":
                     crit = "start";
                     break;
                 default:
@@ -7782,7 +7783,7 @@ function Safari() {
         info = data.split(":"),
         target = info[0],
         targetPlayer = getAvatarOff(target),
-        msg = info.splice(1).join(":");
+        msg = html_escape(info.splice(1).join(":"));
         
         if (player.balls.mail <= 0) {
             safaribot.sendMessage(src, "You need " + an(finishName("mail")) + " to use this command!", safchan);
@@ -7819,7 +7820,9 @@ function Safari() {
             return;
         }
         player.monoSecondary = ["2", "2nd", "two", "true", "yes"].contains(data.toLowerCase()) ? true : false;
-        safaribot.sendMessage(src, "Your " + finishName("mono") + " will always use your Pokémon's " + (player.monoSecondary ? "secondary" : "main") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "!", safchan);
+        var active = player.party[0];
+        var t = player.monoSecondary && sys.type(sys.pokeType2(active)) !== "???" ? sys.type(sys.pokeType2(active)) : sys.type(sys.pokeType1(active));
+        safaribot.sendHtmlMessage(src, "Your " + finishName("mono") + " will always use your Pokémon's " + toColor((player.monoSecondary ? "secondary" : "main"), "blue") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "! Currently using <b>" + poke(active) + "</b>'s " + typeIcon(t) + "!", safchan);
         this.saveGame(player);
     };
     this.randomFortune = function() {
@@ -13624,7 +13627,7 @@ function Safari() {
                     var leaderPlayer = getAvatarOff(leader);
                     cost = Math.round(cost * (1 - this.getFortune(leaderPlayer, "pyrdiscount", 0, null, true)));
                     var players = [leader].concat(Object.keys(req.invites));
-                    var unavailable = [], n, p;
+                    var unavailable = [], n, p, m;
                     for (e = 0; e < players.length; e++) {
                         n = players[e];
                         if (!sys.id(n)) {
@@ -13642,8 +13645,8 @@ function Safari() {
                         if (this.isBattling(n) || this.isInAuction(n) || (currentEvent && currentEvent.isInEvent(n))) {
                             unavailable.push(n + " is already participating in another activity");
                         }
-                        for (var p in currentPyramids) {
-                            if (currentPyramids[p].isInPyramid(n)) {
+                        for (m in currentPyramids) {
+                            if (currentPyramids[m].isInPyramid(n)) {
                                 unavailable.push(n + " is already participating in a Pyramid quest");
                             }
                         }
@@ -15545,6 +15548,11 @@ function Safari() {
         if (stmBonus > 0) {
             this.points += stmBonus;
             this.sendToViewers("You received a bonus " + plural(stmBonus, "Point") + " from your remaining stamina!");
+        }
+        if (this.usingVoucher) {
+            var voucherPoints = Math.round(this.points * itemData.fossil.bonusRate);
+            this.points += voucherPoints;
+            this.sendToViewers("You received a bonus " + plural(voucherPoints, "Point") + " for using " + an(finishName("fossil")) + "!");
         }
         if (this.finishMode === "cleared") {
             var finishBonus = Math.round(this.points * 0.10);
@@ -19904,6 +19912,7 @@ function Safari() {
         var showSlot = function(n) {
             var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
             var c2 = remain.contains(n) ? '#555555' : '#FCD116';
+            // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
             return '<background color="......'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
         };
         this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
@@ -23592,7 +23601,7 @@ function Safari() {
                     return true;
                 }
                 sys.sendMessage(src, "", safchan);
-                safaribot.sendHtmlMessage(src, "<b>{0}</b>'s Information | IDnum: {1} | Original Name: {2}".format(player.id.toCorrectCase(), player.idnum, player.altlog[0]), safchan);
+                safaribot.sendHtmlMessage(src, "<b>{0}</b>'s Information | IDnum: {1} | Original Name: {2} {3} {4}".format(player.id.toCorrectCase(), player.idnum, player.altlog[0], (player.locked ? " [Locked]" : ""), player.tradeban > now() ? " [Tradebanned]" : ""), safchan);
                 safaribot.sendMessage(src, "Recent Alts (Safari): {0}".format(player.altlog.slice(-10).join(", ")), safchan);
                 safaribot.sendHtmlMessage(src, "Recent Alts (Server): " + link("/aliases " + player.id) + " or " + link("/aliases ~" + player.id) + (sys.id(commandData) ? " (on " + sys.os(sys.id(commandData)) + ")" : ""), safchan);
                 safaribot.sendMessage(src, "Created: {0} | Tutorial Finished: {1} | Tutorial Duration {2}".format(new Date(player.created).toUTCString(), new Date(player.tutorialFinished).toUTCString(), utilities.getTimeString((player.tutorialFinished - player.created) / 1000)), safchan);
@@ -25805,9 +25814,9 @@ function Safari() {
                         //Now toggle it correctly again
                         isBaited = temp;
                     }
-                    preparationFirst = null;
-                    preparationThrows = {};
                 }
+                preparationFirst = null;
+                preparationThrows = {};
             }
         }
         if (contestCooldown === 180) {
