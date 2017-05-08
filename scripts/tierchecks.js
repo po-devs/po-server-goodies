@@ -214,7 +214,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
+    var testPath = ["SM LC", "SM LU", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -725,13 +725,19 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, t
 });
 
 //use this to tier alolans if tiers.xml won't work
-tier_checker.add_new_check(INCLUDING, ["SM UU"], function alolanCheck(src, team, tier) {
-    var p, i, uuBans;
+tier_checker.add_new_check(INCLUDING, ["SM UU", "SM LU"], function alolanCheck(src, team, tier) {
+    var p, i, j, uuBans, luBans;
     uuBans = ["Alolan Marowak"];
+    luBans = ["Alolan Muk"];
     for (p = 0; p < 6; p++) {
         for (i = 0; i < uuBans.length; i++) {
             if (uuBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
                 return ["You are not allowed to use " + uuBans[i] + " in " + tier + "."];
+            }
+        }
+        for (j = 0; j < luBans.length; j++) {
+            if (luBans[j] === sys.pokemon(sys.teamPoke(src, team, p))) {
+                return ["You are not allowed to use " + luBans[j] + " in " + tier + "."];
             }
         }
     }
