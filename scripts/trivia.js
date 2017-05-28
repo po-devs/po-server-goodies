@@ -2750,10 +2750,26 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
 }, "Displays when the next event game will start.");
 
 addUserCommand(["start"], function (src, commandData) {
+    if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+        Trivia.sendPM(src, "You cannot join when muted!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(sys.name(src))) {
+        Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+        return;
+    }
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start a trivia game, format /start [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include all difficulty levels). Only Trivia Admins may start category games.");
 
 addUserCommand(["speed"], function (src, commandData) {
+    if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+        Trivia.sendPM(src, "You cannot join when muted!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(sys.name(src))) {
+        Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+        return;
+    }
     Trivia.startTrivia(src, commandData, "speed");
 }, "Allows you to start a speed trivia game, format /speed [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include all difficulty levels). Only Trivia Admins may start category games.");
 
@@ -5075,6 +5091,14 @@ module.exports = {
         var joined = Trivia.playerPlaying(src);
         if (Trivia.started) {
             if (!joined && Trivia.phase === "answer") {
+                if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+                    Trivia.sendPM(src, "You cannot join when muted!", channel);
+                    return true;
+                }
+                if (!sys.dbRegistered(sys.name(src))) {
+                    Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+                    return true;
+                }
                 if (Trivia.scoreType === "elimination" && Trivia.phase === "answer") {
                     if (Trivia.round > Trivia.maxPoints) {
                         var canJoin = false;
