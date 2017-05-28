@@ -725,19 +725,25 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, t
 });
 
 //use this to tier alolans if tiers.xml won't work
-tier_checker.add_new_check(INCLUDING, ["SM UU", "SM LU"], function alolanCheck(src, team, tier) {
-    var p, i, j, uuBans, luBans;
+tier_checker.add_new_check(INCLUDING, ["SM UU", "SM LU"], function alolanUUCheck(src, team, tier) {
+    var p, i, uuBans;
     uuBans = ["Alolan Marowak"];
-    luBans = ["Alolan Muk"];
     for (p = 0; p < 6; p++) {
         for (i = 0; i < uuBans.length; i++) {
             if (uuBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
                 return ["You are not allowed to use " + uuBans[i] + " in " + tier + "."];
             }
         }
-        for (j = 0; j < luBans.length; j++) {
-            if (luBans[j] === sys.pokemon(sys.teamPoke(src, team, p))) {
-                return ["You are not allowed to use " + luBans[j] + " in " + tier + "."];
+    }
+});
+
+tier_checker.add_new_check(INCLUDING, ["SM LU"], function alolanLUCheck(src, team, tier) {
+    var p, i, luBans;
+    luBans = ["Alolan Muk"];
+    for (p = 0; p < 6; p++) {
+        for (i = 0; i < luBans.length; i++) {
+            if (luBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
+                return ["You are not allowed to use " + luBans[i] + " in " + tier + "."];
             }
         }
     }
