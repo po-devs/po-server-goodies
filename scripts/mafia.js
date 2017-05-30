@@ -3918,7 +3918,7 @@ function Mafia(mafiachan) {
                         revenge = true;
                         rmsg = mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
                     }
-                    else if (mafia.dayDistract[target.name].type === "distract") {
+                    else if (mafia.dayDistract[player.name].type === "distract") {
                         gamemsg(srcname, formatArgs(mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
                         return true;
                     }
