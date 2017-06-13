@@ -737,6 +737,19 @@ tier_checker.add_new_check(INCLUDING, ["SM UU", "SM LU"], function alolanUUCheck
     }
 });
 
+tier_checker.add_new_check(EXCLUDING, hackmons, function smeargleThing(src, team, tier) { // delete after this is legal
+    var p, m;
+    for (p = 0; p < 6; p++) {
+        if (sys.teamPoke(src, team, p) === sys.pokeNum("Smeargle")) {
+            for (m = 0; m < 4; m++) {
+                if (sys.teamPokeMove(src, team, p, m) === sys.moveNum("Spectral Thief")) {
+                    return ["Smeargle with the move \"Spectral Thief\" are not permitted in " + tier + "."];
+                }
+            }
+        }
+    }
+});
+
 tier_checker.add_new_check(INCLUDING, ["SM LU"], function alolanLUCheck(src, team, tier) {
     var p, i, luBans;
     luBans = ["Alolan Muk"];
