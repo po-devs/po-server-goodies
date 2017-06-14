@@ -765,7 +765,7 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaLegalities(src,
             }
             for (i = 0; i < 6; i++) {
                 if (sys.teamPokeDV(src, team, p, i) < ivs[i]) {
-                    return ["Greninja with Battle Bond must have the following IV spread: " + ivs.join("/")];
+                    return ["Greninja with Battle Bond must have the following minimum IV spread: " + ivs.join("/")];
                 }
             }
         }
