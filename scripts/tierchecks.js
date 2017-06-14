@@ -750,12 +750,23 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function smeargleThing(src, team
     }
 });
 
-tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaHpLock(src, team) {
-    var p, m;
+tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaLegalities(src, team) {
+    var p, m, i;
+    var ivs = [20, 31, 20, 31, 20, 31];
     for (p = 0; p < 6; p++) {
         if (sys.teamPokeAbility(src, team, p) === 215) { // battle bond
-            if (sys.teamPokeHiddenPower(src, team, p) !== 7) { // ghost
-                return ["The Hidden Power type of " + sys.pokemon(sys.teamPoke(src, team, p)) + " must be Ghost."];
+            for (m = 0; m < 4; m++) {
+                if (sys.teamPokeMove(src, team, p, m) !== 237) {
+                    continue;
+                }
+                if (sys.teamPokeHiddenPower(src, team, p) !== 7) { // ghost
+                    return ["The Hidden Power type of Greninja with Battle Bond must be Ghost."];
+                }
+            }
+            for (i = 0; i < 6; i++) {
+                if (sys.teamPokeDV(src, team, p, i) < ivs[i]) {
+                    return ["Greninja with Battle Bond must have the following IV spread: " + ivs.join("/")];
+                }
             }
         }
     }
