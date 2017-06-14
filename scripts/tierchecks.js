@@ -755,7 +755,7 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaHpLock(src, tea
     for (p = 0; p < 6; p++) {
         var poke = sys.teamPoke(src, team, p);
         if ([66194, 131730].contains(poke)) { // ash greninja
-            if (sys.teamPokeHiddenPower(src, team, p)) !== 7) { // ghost
+            if (sys.teamPokeHiddenPower(src, team, p) !== 7) { // ghost
                 return ["The Hidden Power type of " + sys.pokemon(poke) + " must be Ghost."];
             }
         }
