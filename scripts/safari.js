@@ -292,6 +292,7 @@ function Safari() {
         altlog: [],
         tradeban: 0,
         truesalt: 0,
+        srate: 1,
         trackers: [],
         monoSecondary: false,
         auctionWarns: 0,
@@ -435,7 +436,7 @@ function Safari() {
         fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
         
         mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
-        crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 30, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
+        crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
         scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
         mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: false },
         brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
@@ -492,7 +493,7 @@ function Safari() {
         chef: {icon: 423, name: "chef", fullName: "Chef", aliases: ["chef"], acqReq: 500, record: "baitNothing", rate: 12, effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.", noAcq: "Fail to attract {0} more Pokémon with Bait"},
         battle: {icon: 386, name: "battle", fullName: "Battle Girl", aliases: ["battle girl", "battle", "battlegirl"], acqReq: 100, record: "arenaPoints", rate: 20, effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.", noAcq: "Accumulate {0} more Arena Points"},
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
-        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST"},
+        ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)"},
         rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
@@ -569,24 +570,24 @@ function Safari() {
         { name: "discount", val: {"0.02": 4, "0.03": 3, "0.04": 2, "0.05": 1}, deadline: [10, 30], interval: 2, desc: "Items from /buy will be {Percent} cheaper for {Time} (except for Silver Coin items)" }
     ];
     var zCrystalData = {
-        "Normal" : { name: "Normalium Z", effect: "evolution", chance: 0.09, description: "have a 9% chance to automatically evolve a Pokémon caught" },
-        "Fairy" : { name: "Fairium Z", effect: "evolution", chance: 0.09, description: "have a 9% chance to automatically evolve a Pokémon caught" },
-        "Fighting" : { name: "Fightinium Z", effect: "double", chance: 0.8, description: "have a 80%  of throwing 2 balls at once" },
-        "Bug" : { name: "Buginium Z", effect: "double", chance: 0.8, description: "have a 80%  of throwing 2 balls at once" },
-        "Flying" : { name: "Flyinium Z", effect: "priority", chance: 0.75, rate: [2, 5], description: "have a 75% chance of getting increased priority when throwing balls" },
-        "Electric" : { name: "Electrium Z", effect: "priority", chance: 0.75,  rate: [2, 5], description: "have a 75% chance of getting increased priority when throwing balls" },
-        "Poison" : { name: "Poisonium Z", effect: "gacha", chance: 0.45, description: "have a 45% chance to use a free Gachapon Ticket when throwing a ball" },
-        "Rock" : { name: "Rockium Z", effect: "gacha", chance: 0.45, description: "have a 45% chance to use a free Gachapon Ticket when throwing a ball" },
-        "Ground" : { name: "Groundium Z", effect: "silver", chance: 0.45, rate: [1, 4], description: "have a 45% chance to gain some Silver Coins when successfully catching a Pokémon" },
-        "Steel" : { name: "Steelium Z", effect: "silver", chance: 0.45, rate: [1, 4], description: "have a 45% chance to gain some Silver Coins when successfully catching a Pokémon" },
-        "Ghost" : { name: "Ghostium Z", effect: "photo", chance: 0.9, description: "have a 90% chance to automatically take a photo when throwing balls" },
-        "Fire" : { name: "Firium Z", effect: "photo", chance: 0.9, description: "have a 90% chance to automatically take a photo when throwing balls" },
-        "Grass" : { name: "Grassium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a 90% chance of having half cooldown after throwing balls" },
-        "Psychic" : { name: "Psychium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a 90% chance of having half cooldown after throwing balls" },
-        "Water" : { name: "Waterium Z", effect: "fisherman", chance: 0.85, description: "have a 85% chance to retrieve the ball you threw if it fails to catch" },
-        "Ice" : { name: "Icium Z", effect: "fisherman", chance: 0.85, description: "have a 85% chance to retrieve the ball you threw if it fails to catch" },
-        "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.08, description: "have a 8% chance to clone a Pokémon caught" },
-        "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.08, description: "have a 8% chance to clone a Pokémon caught" }
+        "Normal" : { name: "Normalium Z", effect: "evolution", chance: 0.12, description: "have a {0}% chance to automatically evolve a Pokémon caught" },
+        "Fairy" : { name: "Fairium Z", effect: "evolution", chance: 0.12, description: "have a {0}% chance to automatically evolve a Pokémon caught" },
+        "Fighting" : { name: "Fightinium Z", effect: "double", chance: 0.8, description: "have a {0}%  of throwing 2 balls at once" },
+        "Bug" : { name: "Buginium Z", effect: "double", chance: 0.8, description: "have a {0}%  of throwing 2 balls at once" },
+        "Flying" : { name: "Flyinium Z", effect: "priority", chance: 0.75, rate: [2, 5], description: "have a {0}% chance of getting increased priority when throwing balls" },
+        "Electric" : { name: "Electrium Z", effect: "priority", chance: 0.75,  rate: [2, 5], description: "have a {0}% chance of getting increased priority when throwing balls" },
+        "Poison" : { name: "Poisonium Z", effect: "gacha", chance: 0.45, description: "have a {0}% chance to use a free Gachapon Ticket when throwing a ball" },
+        "Rock" : { name: "Rockium Z", effect: "gacha", chance: 0.45, description: "have a {0}% chance to use a free Gachapon Ticket when throwing a ball" },
+        "Ground" : { name: "Groundium Z", effect: "silver", chance: 0.48, rate: [1, 4], description: "have a {0}% chance to gain some Silver Coins when successfully catching a Pokémon" },
+        "Steel" : { name: "Steelium Z", effect: "silver", chance: 0.48, rate: [1, 4], description: "have a {0}% chance to gain some Silver Coins when successfully catching a Pokémon" },
+        "Ghost" : { name: "Ghostium Z", effect: "photo", chance: 0.9, description: "have a {0}% chance to automatically take a photo when throwing balls" },
+        "Fire" : { name: "Firium Z", effect: "photo", chance: 0.9, description: "have a {0}% chance to automatically take a photo when throwing balls" },
+        "Grass" : { name: "Grassium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
+        "Psychic" : { name: "Psychium Z", effect: "cooldown", chance: 0.9, rate: 0.5, description: "have a {0}% chance of having half cooldown after throwing balls" },
+        "Water" : { name: "Waterium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
+        "Ice" : { name: "Icium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
+        "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
+        "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" }
     };
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
@@ -601,7 +602,7 @@ function Safari() {
             bait: "A tasty treat used to attract wild Pokémon. Has " + an(itemData.bait.successRate*100) + "% success rate with an approximate " + itemData.bait.successCD + " second cooldown on success, and an approximate " + itemData.bait.failCD + " second cooldown on failure. Use with \"/bait\".",
             golden: "A premium bait used to attract wild Pokémon. Has " + an(itemData.golden.successRate*100) + "% success rate and can be used more often than normal Baits. Use with \"/gbait\".",
             gacha: "A ticket that allows you to try the Gachapon Machine to get a random reward! " + cdSeconds("gacha") + " Use with \"/gacha\".",
-            rock: "A small rock that can be thrown to potentially stun another player for a short period of time. " + cdSeconds("rock", "throwCD") + " Use with \"/snowball [Player]\".",
+            rock: "A small rock that can be thrown to potentially stun another player for a short period of time. " + cdSeconds("rock", "throwCD") + " Use with \"/rock [Player]\".",
             rare: "Can be smashed and transformed into around " + (itemData.rare.charges + Math.floor(itemData.rare.maxVar/2)) + " Candy Dusts. Use with \"/use rare\". Found with Itemfinder and obtained in Pyramid.",
             dust: "What you obtain after smashing a Rare Candy into powder. Has the power to evolve Pokémon. Use with \"/evolve [Pokémon]\".",
             spray: "A spray that affects the genetic code of a Pokémon, making them devolve and generating some Candy Dust. Use with \"/spray [Pokémon]\". Obtained from Prize Packs and Pyramid.",
@@ -1881,8 +1882,7 @@ function Safari() {
         if (sys.os(sys.id(name)) !== "android") {
             newregex1 = "<font style='BACKGROUND-COLOR: #FCD116'>" + htmlname.toCorrectCase() + "</font><ping/>";
         } else {
-            // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
-            newregex1 = "<background color='......#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
+            newregex1 = "<background color='#FCD116'>" + htmlname.toCorrectCase() + "</background><ping/>";
         }
         var flashregex = new RegExp(flashtag,"g");
         newmessage = message.replace(regex,newregex1).replace(flashregex,"");
@@ -2117,8 +2117,7 @@ function Safari() {
         }
         var bg = colors[type].bg;
         
-        // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
-        return "<background color='......"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
+        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
@@ -3671,7 +3670,7 @@ function Safari() {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
             finalChance = Math.min(finalChance, maxCloneRate);
         }
-        if (player.truesalt >= now()) {
+        if (player.truesalt >= now() && chance(player.srate)) {
             finalChance = 0;
         }
 
@@ -3816,7 +3815,7 @@ function Safari() {
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
             } else {
-                var stype = ball === "mono" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
+                var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
@@ -4500,7 +4499,7 @@ function Safari() {
             }
             if (player.zcrystalDeadline >= now()) {
                 var type = sys.type(sys.pokeType1(player.zcrystalUser));
-                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -6136,7 +6135,7 @@ function Safari() {
         player.records[golden ? "goldenBaitUsed" : "baitUsed"] += 1;
 
         var perkBonus = getPerkBonus(player, "honey");
-        if (player.truesalt < now() && chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
+        if ((player.truesalt < now() || chance(player.srate) === false) && chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
             if (golden) {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
@@ -6199,10 +6198,7 @@ function Safari() {
             safaribot.sendMessage(src, "Please wait " + timeLeftString(player.cooldowns.rock) + " before trying to a throw another " + finishName(item) + "!", safchan);
             return;
         }
-
-        player.balls[item] -= 1;
-        player.records.rocksThrown += 1;
-
+        
         var rng = Math.random();
         var rng2 = Math.random();
         
@@ -6220,13 +6216,16 @@ function Safari() {
             return;
         }
         
+        player.balls[item] -= 1;
+        player.records.rocksThrown += 1;
+        
         player.rockTargets.push(id);
         if (player.rockTargets.length > 10) {
             player.rockTargets.shift();
         }
 
         var success = (preparationPhase > 0 ? 0.15 : itemData.rock.successRate) + this.getFortune(player, "rockaccuracy", 0);
-        if (id === preparationFirst || player.truesalt >= now()) {
+        if (id === preparationFirst || (player.truesalt >= now() && chance(player.srate))) {
             success = 0;
         }
 
@@ -6418,7 +6417,7 @@ function Safari() {
 
         var targetName = utilities.non_flashing(commandData.toCorrectCase());
         sendAll("", true, true);
-        sendAll(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!");
+        safaribot.sendMessage(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!", safchan);
         safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
         sendAll("", true, true);
 
@@ -6482,7 +6481,7 @@ function Safari() {
         }
 
         var giveReward = true;
-        if (player.truesalt > now()) {
+        if (player.truesalt > now() && chance(player.srate)) {
             reward = ["rock", "wild", "rock", "rock", "rock", "rock", "wild", "safari"].random();
             giveReward = false;
         }
@@ -6980,7 +6979,7 @@ function Safari() {
 
         var giveReward = true;
         var showMsg = true;
-        if (player.truesalt >= now()) {
+        if (player.truesalt >= now() && chance(player.srate)) {
             reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
         }
         switch (reward) {
@@ -7029,7 +7028,7 @@ function Safari() {
             }
             break;
             case "mushroom": {
-                safaribot.sendMessage(src, "Bep-Bep-Bep-Bep-Bep. Your Itemfinder leads you to a log lying in the ground. Right beside the log, you notice a weird " + finishName(reward) + "!", safchan);
+                safaribot.sendMessage(src, "Bep-Bep-Bep-Bep-Bep. Your Itemfinder leads you to a badger. And another badger. And another badger. Oh, " + an(finishName(reward)) + "! And a snake!", safchan);
             }
             break;
             case "cometshard": {
@@ -7605,7 +7604,7 @@ function Safari() {
         if (item === "crystal") {
             var active = player.party[0];
             var type = sys.type(sys.pokeType1(active));
-            var buffDesc = zCrystalData[type].description;
+            var buffDesc = zCrystalData[type].description.format(zCrystalData[type].chance * 100);
             if (info.target !== "confirm") {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
@@ -8570,7 +8569,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "No online player with " + input.name + " in their shop found!", safchan);
         }
         
-        player.cooldowns.price = currentTime + 60*1000;
+        player.cooldowns.price = currentTime + 30*1000;
         this.saveGame(player);
     };
     this.editShop = function(src, data, editNPCShop, isSilver) {
@@ -8946,7 +8945,7 @@ function Safari() {
         if (!validPlayers("self", src)) {
             return;
         }
-        var player = getAvatar(src), today = getDay(now()), m, g, finished = [];
+        var player = getAvatar(src), today = player.lastLogin, m, g, finished = [];
         sys.sendMessage(src, "", safchan);
         sys.sendMessage(src, "*** CURRENT DAILY MISSIONS ***", safchan);
         for (var e = 0; e < player.missions.length; e++) {
@@ -9678,7 +9677,7 @@ function Safari() {
                 useBonus = player1.quests.tower.bonusPower;
             }
             this.selfPowerMin = 10 + costumeBonus + useBonus;
-            this.selfPowerMax = (100 + costumeBonus + useBonus) * (player1.truesalt >= now() ? 0.35 : 1);
+            this.selfPowerMax = (100 + costumeBonus + useBonus) * (player1.truesalt >= now() && chance(player1.srate) ? 0.35 : 1);
 
             this.name2 = player2.name;
             this.team2 = player2.party.concat().shuffle();
@@ -15375,7 +15374,7 @@ function Safari() {
         }
         if (this.quitWarning) {
             this.sendToViewers("");
-            this.sendToViewers("The party leader (" + this.leader.toCorrectCase() + ") can finish this Pyramid quest by typing " + link("/pyr quit") + ", or keep going by waiting a few seconds.");
+            this.sendToViewers("The party leader (" + this.leader.toCorrectCase() + ") can finish this Pyramid quest by typing " + link("/pyr quit", null, true) + ", or keep going by waiting a few seconds.");
             this.sendToViewers("");
             this.quitWarning = false;
         }
@@ -15471,7 +15470,7 @@ function Safari() {
 
                             this.sendToViewers("You cleared the level " + this.level + "! Stamina restored: " + staminaStr.join(", "));
                             this.updateStatus(0, stmBonus);
-                            this.sendMessage(this.leader, "You can go up one floor or quit the Pyramid now. To leave now, type " + link("/pyr quit") + ". To keep going, just wait a few seconds!");
+                            this.sendMessage(this.leader, "You can go up one floor or quit the Pyramid now. To leave now, type " + link("/pyr quit", null, true) + ". To keep going, just wait a few seconds!");
                             this.sendToViewers("");
                             this.movingFloor = true;
                             this.quitWarning = true;
@@ -19912,8 +19911,7 @@ function Safari() {
         var showSlot = function(n) {
             var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
             var c2 = remain.contains(n) ? '#555555' : '#FCD116';
-            // The ...... is a hack to bypass an Android bug, remove it whenever it gets fixed
-            return '<background color="......'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
+            return '<background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
         };
         this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
         this.sendMessage(viewer, " " + card.slice(5, 10).map(showSlot).join(" "), null, null, true);
@@ -25774,7 +25772,7 @@ function Safari() {
                     
                     for (i in preparationThrows) {
                         p = getAvatarOff(i);
-                        if (p && p.truesalt >= n) {
+                        if (p && p.truesalt >= n && chance(p.srate)) {
                             throwChances[i] = 0.1;
                         } else {
                             aType = sys.type(sys.pokeType1(p.party[0]));
