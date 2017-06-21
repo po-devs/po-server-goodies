@@ -768,6 +768,9 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaLegalities(src,
                     return ["Greninja with Battle Bond must have the following minimum IV spread: " + ivs.join("/")];
                 }
             }
+            if (sys.teamPokeShine(src, team, p)) {
+                return ["Greninja with Battle Bond cannot be Shiny."];
+            }
         }
     }
 });
