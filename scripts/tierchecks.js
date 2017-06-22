@@ -724,19 +724,6 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, t
     return ret;    
 });
 
-//use this to tier alolans if tiers.xml won't work
-tier_checker.add_new_check(INCLUDING, ["SM UU", "SM LU"], function alolanUUCheck(src, team, tier) {
-    var p, i, uuBans;
-    uuBans = ["Alolan Marowak"];
-    for (p = 0; p < 6; p++) {
-        for (i = 0; i < uuBans.length; i++) {
-            if (uuBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
-                return ["You are not allowed to use " + uuBans[i] + " in " + tier + "."];
-            }
-        }
-    }
-});
-
 tier_checker.add_new_check(EXCLUDING, hackmons, function smeargleThing(src, team, tier) { // delete after this is legal
     var p, m;
     for (p = 0; p < 6; p++) {
@@ -770,18 +757,6 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaLegalities(src,
             }
             if (sys.teamPokeShine(src, team, p)) {
                 return ["Greninja with Battle Bond cannot be Shiny."];
-            }
-        }
-    }
-});
-
-tier_checker.add_new_check(INCLUDING, ["SM LU"], function alolanLUCheck(src, team, tier) {
-    var p, i, luBans;
-    luBans = ["Alolan Muk"];
-    for (p = 0; p < 6; p++) {
-        for (i = 0; i < luBans.length; i++) {
-            if (luBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
-                return ["You are not allowed to use " + luBans[i] + " in " + tier + "."];
             }
         }
     }
