@@ -376,6 +376,7 @@ function TriviaGame() {
     this.lbDisabled = false;
     this.lastvote = 0;
     this.votes = {};
+    this.votesType = {};
     this.voters = [];
     this.voting = true;
 }
@@ -1567,8 +1568,8 @@ TriviaGame.prototype.event = function() {
 TriviaGame.prototype.startVoting = function () {
     sendChanAll("", triviachan);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", triviachan);
-    this.sendAll("Voting for a category game has begun! Type /vote [category] to vote for a game!", triviachan);
-    this.sendAll("A list of categories can be found by typing /categories.", triviachan);
+    this.sendAll("Voting for a category game has begun! Type /vote [category]*[gameType (optional)] to vote for a game!", triviachan);
+    this.sendAll("A list of categories can be found by typing /cats.", triviachan);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", triviachan);
     sendChanAll("", triviachan);
 
@@ -1582,8 +1583,17 @@ TriviaGame.prototype.startVoting = function () {
 TriviaGame.prototype.countVotes = function () {
 
     var catVotes = [];
+    var knowTot = 0, speedTot = 0;
     for (var i in triviaCategories) catVotes.push(0);
     for (var p in this.votes) if (this.votes.hasOwnProperty(p)) catVotes[this.votes[p]]++;
+    for (var q in this.votesType) {
+        if (!this.votesType.hasOwnProperty(q)) { continue; }
+        if (this.votesType[q] === "know") {
+            knowTot++;
+        } else {
+            speedTot++;
+        }
+    }
 
     var max = Math.max.apply(Math, catVotes);
     var indexes = [], i = -1;
@@ -1605,28 +1615,37 @@ TriviaGame.prototype.countVotes = function () {
     }
 
     var winner = indexes[Math.floor(Math.random() * indexes.length)];
-
-    if ((Math.random() < 0.5) && (triviaCategories[winner] !== "Mental Math")) {
+    if (knowTot > speedTot && triviaCategories[winner] !== "Mental Math") {
         this.scoreType = "knowledge";
         Trivia.startGame("14*" + triviaCategories[winner]);
-    }
-    else {
-        this.scoreType = "speed";
-        Trivia.startGame("30*" + triviaCategories[winner]);
+    } else {
+        if (speedTot > knowTot){
+            this.scoreType = "speed";
+            Trivia.startGame("30*" + triviaCategories[winner]);
+        } else {
+            if (Math.random() < 0.5 && triviaCategories[winner] !== "Mental Math") {
+                this.scoreType = "knowledge";
+                Trivia.startGame("14*" + triviaCategories[winner]);
+            } else {
+                this.scoreType = "speed";
+                Trivia.startGame("30*" + triviaCategories[winner]);
+            }
+        }
     }
 };
 
-TriviaGame.prototype.voteCat = function (src, cat) {
-    if (this.votes.hasOwnProperty(this.key(src))) {
+TriviaGame.prototype.voteCat = function (src, cat, type) {
+    if (this.votes.hasOwnProperty(this.key(src)) && this.votesType.hasOwnProperty(this.key(src))) {
         if (this.votes[this.key(src)] === cat) {
             Trivia.sendPM(src, "You already voted for " + triviaCategories[cat] + "!", triviachan);
         } else {
-            Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + "!", triviachan);
+            Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + ((type === "know") ? " (knowledge)!" : " (speed)!"), triviachan);
         }
     } else {
-        Trivia.sendAll(sys.name(src) + " voted for " + triviaCategories[cat] + "!", triviachan);
+        Trivia.sendAll(sys.name(src) + " voted for " + triviaCategories[cat] + ((type === "know") ? " (knowledge)!" : " (speed)!"), triviachan);
     }
     this.votes[this.key(src)] = cat;
+    this.votesType[this.key(src)] = type;
 };
 
 TriviaGame.prototype.resetTrivia = function () {
@@ -2866,8 +2885,17 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         Trivia.sendPM(src, "Please register before playing Trivia.", channel);
         return;
     }
-
     var category = utilities.html_escape(commandData).toLowerCase().trim();
+    var catAndType = "";
+    if (category.indexOf("*") !== -1) {
+        catAndType = category.split("*");
+        if (catAndType[1].toLowerCase() !== "know" && catAndType[1].toLowerCase() !== "knowledge" && catAndType[1].toLowerCase() !== "speed") {
+            Trivia.sendPM(src, "'" + catAndType[1] + "' is not a valid game type. Valid game types are 'know' and 'speed'.");
+            return;
+        }
+        category = catAndType[0];
+    }
+
     if (trivData.equivalentCats.hasOwnProperty(category)) {
         category = trivData.equivalentCats[category].toLowerCase();
     }
@@ -2896,8 +2924,11 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         }
     }
     if (!alreadyVoted) { Trivia.voters.push(sys.name(src)); }
-    Trivia.voteCat(src, cat);
-}, "Vote for a category game.");
+    var type = "";
+    if (catAndType === "") { type = "know"; }
+    else { type = catAndType[1]; }
+    Trivia.voteCat(src, cat, type);
+}, "Vote for a category game. Usage is /vote [category]*[gameMode(optional)]");
 
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
@@ -3809,7 +3840,7 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
+    triviabot.sendHtmlMessage(src, "<b>Matching questions with '" + search + "' are: </b>", channel);
     var all = triviaq.all(),
         b, q, output = [], answer;
     for (b in all) {
@@ -3859,7 +3890,7 @@ addAdminCommand(["search"], function (src, commandData, channel) {
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
+    triviabot.sendHtmlMessage(src, "<b>Matching questions with '" + search + "' are: </b>", channel);
     var all = triviaq.all(),
         b, q, output = [];
     var re = new RegExp("\\b" + search + "\\b", "i");
