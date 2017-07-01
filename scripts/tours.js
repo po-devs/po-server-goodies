@@ -28,7 +28,7 @@ var singlesonlytiers = ["Gen 5 1v1", "Gen 5 1v1 Ubers", "CC 1v1", "Wifi CC 1v1",
 //Tiers with Team Preview state that can't be modified
 var previewlockedtiers = ["CC 1v1", "Wifi CC 1v1", "Wifi Ubers", "Wifi OU", "No Preview Ubers", "No Preview OU", "Wifi Triples", "Wifi Uber Triples", "No Preview OU Triples", "No Preview Uber Triples", "Wifi OU Doubles", "Wifi Uber Doubles", "No Preview OU Doubles", "No Preview Uber Doubles"];
 //Tiers used when queue is empty
-var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "SM Ubers", "SM OU", "SM UU", "SM LU", "Battle Factory 6v6", "Monotype", "SM 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
+var autotiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "SM Ubers", "SM OU", "SM UU", "SM LU", "SM NU", "Battle Factory 6v6", "Monotype", "SM 1v1", "Hackmons Challenge Cup", "Inverted Challenge Cup"];
 
 //Clause List
 var clauselist = ["Sleep Clause", "Freeze Clause", "Disallow Spects", "Item Clause", "Challenge Cup", "No Timeout", "Species Clause", "Team Preview", "Self-KO Clause", "Inverted Battle"];
