@@ -6887,8 +6887,8 @@ function Mafia(mafiachan) {
             "/passma: To give your Mafia Admin powers to an alt of yours.",
             "/add: To add a Mafia Theme.",
             "/enable: To enable a previously disabled Mafia Theme.",
-            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak.",
-            "/disableunder X: Disables all themes that support less than X players. (X must be over 30). You will need to manually re-enable."],
+            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak."],
+///            "/disableunder X: Disables all themes that support less than X players. (X must be over 30). You will need to manually re-enable."],
         sma: ["/push: To force a user into the current theme during sign ups.",
             "/supdate: To silently add or update a theme.",
             "/remove: To remove a Mafia Theme! Use /sremove for a silent removal.",
@@ -8052,28 +8052,28 @@ function Mafia(mafiachan) {
             msg(src, name + " isn't set to be slain!");
             return;
         }
-        if (command === "disableunder") {
-            if (commandData > 45 || commandData < 30) {
-                msg(src, "You must specify a number over 30 and under 45 for mass disabling.");
-                return;
-            }
-            var themes = mafia.themeManager.themes;
-            var disableThemes = [];
-            for (var x in themes) {
-                var each = themes[x];
-                if (each["roles" + each.roleLists].length >+ commandData) {
-                    continue;
-                }
-                mafia.themeManager.disable(src, x, true);
-                disableThemes.push(themes[x].name);
-            }
-            if (disableThemes.length) {
-                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled all themes under " + commandData + " players (" + disableThemes.join(", ") + ").");
-            } else {
-                msg(src, "No themes matching that criteria found.");
-            }
-            return;
-        }
+///        if (command === "disableunder") {
+///            if (commandData > 45 || commandData < 30) {
+///                msg(src, "You must specify a number over 30 and under 45 for mass disabling.");
+///                return;
+///            }
+///            var themes = mafia.themeManager.themes;
+///            var disableThemes = [];
+///            for (var x in themes) {
+///                var each = themes[x];
+///                if (each["roles" + each.roleLists].length >+ commandData) {
+///                    continue;
+///                }
+///                mafia.themeManager.disable(src, x, true);
+///                disableThemes.push(themes[x].name);
+///            }
+///            if (disableThemes.length) {
+///                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled all themes under " + commandData + " players (" + disableThemes.join(", ") + ").");
+///            } else {
+///                msg(src, "No themes matching that criteria found.");
+///            }
+///            return;
+///        }
 
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");
