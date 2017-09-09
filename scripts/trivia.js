@@ -373,6 +373,7 @@ function TriviaGame() {
     this.ticks = -1;
     this.suggestion = {};
     this.inactivity = 0;
+    this.afkCounter = 0;
     this.lbDisabled = false;
     this.lastvote = 0;
     this.votes = {};
@@ -1264,6 +1265,17 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return;
     }
 
+    if (answeredCorrectly.length === 0 && wrongAnswers.length === 0) {
+        this.afkCounter++;
+        if (this.afkCounter === 10) { // if 10 rounds pass without anyone answering a question, assume everyone went afk and end the game
+            this.htmlAll("The game automatically ended due to inactivity.");
+            this.resetTrivia();
+            runUpdate();
+            return;
+        }
+    }
+    else { this.afkCounter = 0; }
+
     if ((totalPlayers === 1) && (leaderboard[0]) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
         this.lbDisabled = true;
     }
@@ -1599,14 +1611,17 @@ TriviaGame.prototype.countVotes = function () {
     var indexes = [], i = -1;
 
     if (max === 0) {
-        if (Math.random() < 0.5) {
+        Trivia.sendAll("There were no votes, so a category game will not be started.", triviachan);
+        Trivia.sendAll("You can use /start [goal] or /speed [goal] to start a new game!", triviachan);
+        // The autostarted games proved to be more annoying than helpful as of late, but leaving this here in case the feature is re-enabled later.
+        /*if (Math.random() < 0.5) {
             this.scoreType = "knowledge";
             Trivia.startGame("12");
         }
         else {
             this.scoreType = "speed";
             Trivia.startGame("25");
-        }
+        }*/
         return;
     }
 
@@ -1668,6 +1683,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.ticks = -1;
     this.suggestion = {};
     this.inactivity = 0;
+    this.afkCounter = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
     this.voters = [];
