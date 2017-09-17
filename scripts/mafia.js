@@ -6869,10 +6869,12 @@ function Mafia(mafiachan) {
             "/disable: To disable a Mafia Theme. Only the Theme Author or an MA can disable a theme.",
             "/disabledc: To opt out of dead chat for the current game only. Use /enabledc to re-enable.",
             "/seedisabled: Lists all disabled themes (excluding non-peak).",
-            "/nonpeaks: Lists all non-peak themes. Also states the status of non-peak themes as a whole."],
+            "/nonpeaks: Lists all non-peak themes. Also states the status of non-peak themes as a whole.",
+            "/eventthemes: Lists the event theme pool."],
         ma: ["/slay: To slay users in a Mafia game. Use /unslay to cancel.",
             "/shove: To remove users before a game starts. Use /unshove to cancel.",
             "/warn: To warn a user for violation of a rule. Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.",
+            "/warnhelp: View in-depth explanation on usage of the /warn command.",
             "/unwarn: To remove a warning from a user.",
             "/warnlog: To check relevant warnings for a user. Consider this record before banning.",
             "/mafiawarns: To check all users that have active warnings. Can also use /allwarns or /whodungoofd.",
@@ -6903,7 +6905,8 @@ function Mafia(mafiachan) {
             "/featurelink: To change the link used for Featured Theme Text. Leave blank to clear.",
             "/featureint: To change how often the \"Featured Theme\" message displays. Time is in minutes between 30 and 240. Leave blank to reset to 60 minutes.",
             "/forcefeature: To force the \"Featured Theme\" message to display.",
-            "/enableall: Enables all disabled themes, excluding non-peak."],
+            "/enableall: Enables all disabled themes, excluding non-peak.",
+            "/aliases: View the aliases of a user."],
         owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
     };
