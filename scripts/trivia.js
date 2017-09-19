@@ -380,6 +380,7 @@ function TriviaGame() {
     this.votesType = {};
     this.voters = [];
     this.voting = true;
+    this.votingAborted = false;
 }
 
 TriviaGame.prototype.htmlAll = function (html) {
@@ -1615,6 +1616,7 @@ TriviaGame.prototype.countVotes = function () {
     if (max === 0) {
         Trivia.sendAll("There were no votes, so a category game will not be started.", triviachan);
         Trivia.sendAll("You can use /start [goal] or /speed [goal] to start a new game!", triviachan);
+        Trivia.votingAborted = true;
         // The autostarted games proved to be more annoying than helpful as of late, but leaving this here in case the feature is re-enabled later.
         /*if (Math.random() < 0.5) {
             this.scoreType = "knowledge";
@@ -1689,6 +1691,7 @@ TriviaGame.prototype.resetTrivia = function () {
     this.lbDisabled = false;
     this.suddenDeath = false;
     this.voters = [];
+    this.votingAborted = false;
     if (trivData.eventFlag) { trivData.hiddenCategories.push("Pop Quiz"); }
     trivData.eventFlag = false;
     eventElimPlayers = [];
@@ -2891,7 +2894,7 @@ addUserCommand(["categories", "cats"], function (src, commandData, channel) {
 }, "Allows you to view the trivia categories");
 
 addUserCommand(["vote"], function (src, commandData, channel) {
-    if (Trivia.phase !== "countvotes") {
+    if (Trivia.phase !== "countvotes" || Trivia.votingAborted === true) {
         Trivia.sendPM(src, "Voting is not currently in progress!", channel);
         return;
     }
