@@ -22,7 +22,7 @@ var MemoryHash = require('memoryhash.js').MemoryHash;
 var triviachan, revchan;
 var triviabot = new Bot("Metagross");
 
-var triviaCategories = ["Anagram: Pokémon", "Anime/Manga", "Animals", "Art", "Comics", "Food/Drink", "Games", "Geography", "History", "Internet", "Language", "Literature", "Math", "Mental Math", "Miscellaneous", "Movies", "Music", "Mythology", "Pokémon", "Pokémon Online", "Politics", "Religion", "Science", "Social Science", "Society", "Space", "Sports", "Technology", "Television", "Video Games"];
+var triviaCategories = ["Anagram: Pokémon", "Anime/Manga", "Animals", "Art", "Base Stats", "Comics", "Food/Drink", "Games", "Geography", "History", "Internet", "Language", "Literature", "Math", "Mental Math", "Miscellaneous", "Movies", "Music", "Mythology", "Pokémon", "Pokémon Online", "Pokémon Without Vowels", "Politics", "Religion", "Science", "Social Science", "Society", "Space", "Sports", "Technology", "Television", "Video Games", "Who's That Pokémon?"];
 var specialCategories = ["Mental Math"];
 var lastCatGame = 0;
 var lastEventType = 'None.';
@@ -373,11 +373,14 @@ function TriviaGame() {
     this.ticks = -1;
     this.suggestion = {};
     this.inactivity = 0;
+    this.afkCounter = 0;
     this.lbDisabled = false;
     this.lastvote = 0;
     this.votes = {};
+    this.votesType = {};
     this.voters = [];
     this.voting = true;
+    this.votingAborted = false;
 }
 
 TriviaGame.prototype.htmlAll = function (html) {
@@ -1263,6 +1266,17 @@ TriviaGame.prototype.finalizeAnswers = function () {
         return;
     }
 
+    if (answeredCorrectly.length === 0 && wrongAnswers.length === 0) {
+        this.afkCounter++;
+        if (this.afkCounter === 10) { // if 10 rounds pass without anyone answering a question, assume everyone went afk and end the game
+            this.htmlAll("The game automatically ended due to inactivity.");
+            this.resetTrivia();
+            runUpdate();
+            return;
+        }
+    }
+    else { this.afkCounter = 0; }
+
     if ((totalPlayers === 1) && (leaderboard[0]) && (parseInt(leaderboard[0][1]) >= (this.maxPoints / 2))) {
         this.lbDisabled = true;
     }
@@ -1300,11 +1314,13 @@ TriviaGame.prototype.finalizeAnswers = function () {
         }
     }
 
-    var neededWinners = 1;             //winners needed to end game
+    var neededWinners = 1;             //winners needed to end game, always 1 for non-event games
     if (trivData.eventFlag && this.scoreType !== "elimination"){  //for event know and event speed, extend the game
+        neededWinners = 4;
         if(totalPlayers > 3) { neededWinners = 3; }
-        if(totalPlayers === 3) { neededWinners = 2; }
-        //otherwise, it's just 1.
+        if(totalPlayers === 3 && this.round >= 10) { neededWinners = 2; } // include round to give players more time to win if player count drops
+        if(totalPlayers === 2 && this.round >= 10) { neededWinners = 1; }
+        if(leaderboard[0][1] >= (this.maxPoints*3)) { neededWinners = 1; } // ends games sooner when some people dominate and the rest struggle / afk
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
          /*if (trivData.eventFlag) {
@@ -1567,8 +1583,8 @@ TriviaGame.prototype.event = function() {
 TriviaGame.prototype.startVoting = function () {
     sendChanAll("", triviachan);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", triviachan);
-    this.sendAll("Voting for a category game has begun! Type /vote [category] to vote for a game!", triviachan);
-    this.sendAll("A list of categories can be found by typing /categories.", triviachan);
+    this.sendAll("Voting for a category game has begun! Type /vote [category]*[gameType (optional)] to vote for a game!", triviachan);
+    this.sendAll("A list of categories can be found by typing /cats.", triviachan);
     sendChanAll("»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»»:", triviachan);
     sendChanAll("", triviachan);
 
@@ -1582,21 +1598,34 @@ TriviaGame.prototype.startVoting = function () {
 TriviaGame.prototype.countVotes = function () {
 
     var catVotes = [];
+    var knowTot = 0, speedTot = 0;
     for (var i in triviaCategories) catVotes.push(0);
     for (var p in this.votes) if (this.votes.hasOwnProperty(p)) catVotes[this.votes[p]]++;
+    for (var q in this.votesType) {
+        if (!this.votesType.hasOwnProperty(q)) { continue; }
+        if (this.votesType[q] === "know") {
+            knowTot++;
+        } else {
+            speedTot++;
+        }
+    }
 
     var max = Math.max.apply(Math, catVotes);
     var indexes = [], i = -1;
 
     if (max === 0) {
-        if (Math.random() < 0.5) {
+        Trivia.sendAll("There were no votes, so a category game will not be started.", triviachan);
+        Trivia.sendAll("You can use /start [goal] or /speed [goal] to start a new game!", triviachan);
+        Trivia.votingAborted = true;
+        // The autostarted games proved to be more annoying than helpful as of late, but leaving this here in case the feature is re-enabled later.
+        /*if (Math.random() < 0.5) {
             this.scoreType = "knowledge";
             Trivia.startGame("12");
         }
         else {
             this.scoreType = "speed";
             Trivia.startGame("25");
-        }
+        }*/
         return;
     }
 
@@ -1605,28 +1634,37 @@ TriviaGame.prototype.countVotes = function () {
     }
 
     var winner = indexes[Math.floor(Math.random() * indexes.length)];
-
-    if ((Math.random() < 0.5) && (triviaCategories[winner] !== "Mental Math")) {
+    if (knowTot > speedTot && triviaCategories[winner] !== "Mental Math") {
         this.scoreType = "knowledge";
         Trivia.startGame("14*" + triviaCategories[winner]);
-    }
-    else {
-        this.scoreType = "speed";
-        Trivia.startGame("30*" + triviaCategories[winner]);
+    } else {
+        if (speedTot > knowTot){
+            this.scoreType = "speed";
+            Trivia.startGame("30*" + triviaCategories[winner]);
+        } else {
+            if (Math.random() < 0.5 && triviaCategories[winner] !== "Mental Math") {
+                this.scoreType = "knowledge";
+                Trivia.startGame("14*" + triviaCategories[winner]);
+            } else {
+                this.scoreType = "speed";
+                Trivia.startGame("30*" + triviaCategories[winner]);
+            }
+        }
     }
 };
 
-TriviaGame.prototype.voteCat = function (src, cat) {
-    if (this.votes.hasOwnProperty(this.key(src))) {
+TriviaGame.prototype.voteCat = function (src, cat, type) {
+    if (this.votes.hasOwnProperty(this.key(src)) && this.votesType.hasOwnProperty(this.key(src))) {
         if (this.votes[this.key(src)] === cat) {
             Trivia.sendPM(src, "You already voted for " + triviaCategories[cat] + "!", triviachan);
         } else {
-            Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + "!", triviachan);
+            Trivia.sendAll(sys.name(src) + " changed their vote to " + triviaCategories[cat] + ((type === "know") ? " (knowledge)!" : " (speed)!"), triviachan);
         }
     } else {
-        Trivia.sendAll(sys.name(src) + " voted for " + triviaCategories[cat] + "!", triviachan);
+        Trivia.sendAll(sys.name(src) + " voted for " + triviaCategories[cat] + ((type === "know") ? " (knowledge)!" : " (speed)!"), triviachan);
     }
     this.votes[this.key(src)] = cat;
+    this.votesType[this.key(src)] = type;
 };
 
 TriviaGame.prototype.resetTrivia = function () {
@@ -1649,9 +1687,11 @@ TriviaGame.prototype.resetTrivia = function () {
     this.ticks = -1;
     this.suggestion = {};
     this.inactivity = 0;
+    this.afkCounter = 0;
     this.lbDisabled = false;
     this.suddenDeath = false;
     this.voters = [];
+    this.votingAborted = false;
     if (trivData.eventFlag) { trivData.hiddenCategories.push("Pop Quiz"); }
     trivData.eventFlag = false;
     eventElimPlayers = [];
@@ -2750,10 +2790,26 @@ addUserCommand(["nextevent"], function (src, commandData, channel) {
 }, "Displays when the next event game will start.");
 
 addUserCommand(["start"], function (src, commandData) {
+    if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+        Trivia.sendPM(src, "You cannot join when muted!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(sys.name(src))) {
+        Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+        return;
+    }
     Trivia.startTrivia(src, commandData, "knowledge");
 }, "Allows you to start a trivia game, format /start [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include all difficulty levels). Only Trivia Admins may start category games.");
 
 addUserCommand(["speed"], function (src, commandData) {
+    if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+        Trivia.sendPM(src, "You cannot join when muted!", channel);
+        return;
+    }
+    if (!sys.dbRegistered(sys.name(src))) {
+        Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+        return;
+    }
     Trivia.startTrivia(src, commandData, "speed");
 }, "Allows you to start a speed trivia game, format /speed [number][:difficulty][*category1][*category2][...]. Leave number blank for random. Difficulties are easy, intermediate (int for short), and hard (leave blank to include all difficulty levels). Only Trivia Admins may start category games.");
 
@@ -2838,7 +2894,7 @@ addUserCommand(["categories", "cats"], function (src, commandData, channel) {
 }, "Allows you to view the trivia categories");
 
 addUserCommand(["vote"], function (src, commandData, channel) {
-    if (Trivia.phase !== "countvotes") {
+    if (Trivia.phase !== "countvotes" || Trivia.votingAborted === true) {
         Trivia.sendPM(src, "Voting is not currently in progress!", channel);
         return;
     }
@@ -2850,8 +2906,17 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         Trivia.sendPM(src, "Please register before playing Trivia.", channel);
         return;
     }
-
     var category = utilities.html_escape(commandData).toLowerCase().trim();
+    var catAndType = "";
+    if (category.indexOf("*") !== -1) {
+        catAndType = category.split("*");
+        if (catAndType[1].toLowerCase() !== "know" && catAndType[1].toLowerCase() !== "knowledge" && catAndType[1].toLowerCase() !== "speed") {
+            Trivia.sendPM(src, "'" + catAndType[1] + "' is not a valid game type. Valid game types are 'know' and 'speed'.");
+            return;
+        }
+        category = catAndType[0];
+    }
+
     if (trivData.equivalentCats.hasOwnProperty(category)) {
         category = trivData.equivalentCats[category].toLowerCase();
     }
@@ -2880,8 +2945,11 @@ addUserCommand(["vote"], function (src, commandData, channel) {
         }
     }
     if (!alreadyVoted) { Trivia.voters.push(sys.name(src)); }
-    Trivia.voteCat(src, cat);
-}, "Vote for a category game.");
+    var type = "";
+    if (catAndType === "") { type = "know"; }
+    else { type = catAndType[1]; }
+    Trivia.voteCat(src, cat, type);
+}, "Vote for a category game. Usage is /vote [category]*[gameMode(optional)]");
 
 addUserCommand(["leaderboard", "lb"], function (src, commandData, channel){
     extLB.showLeaders(src, commandData, channel);
@@ -3793,7 +3861,7 @@ addAdminCommand(["apropos"], function (src, commandData, channel) {
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
+    triviabot.sendHtmlMessage(src, "<b>Matching questions with '" + search + "' are: </b>", channel);
     var all = triviaq.all(),
         b, q, output = [], answer;
     for (b in all) {
@@ -3843,7 +3911,7 @@ addAdminCommand(["search"], function (src, commandData, channel) {
             return;
         }
     }
-    Trivia.sendPM(src, "Matching questions with '" + search + "' are: ", channel);
+    triviabot.sendHtmlMessage(src, "<b>Matching questions with '" + search + "' are: </b>", channel);
     var all = triviaq.all(),
         b, q, output = [];
     var re = new RegExp("\\b" + search + "\\b", "i");
@@ -5075,6 +5143,14 @@ module.exports = {
         var joined = Trivia.playerPlaying(src);
         if (Trivia.started) {
             if (!joined && Trivia.phase === "answer") {
+                if (SESSION.users(src).mute.active || isTrivia("muted", sys.ip(src)) || !SESSION.channels(triviachan).canTalk(src)) {
+                    Trivia.sendPM(src, "You cannot join when muted!", channel);
+                    return true;
+                }
+                if (!sys.dbRegistered(sys.name(src))) {
+                    Trivia.sendPM(src, "Please register before playing Trivia.", channel);
+                    return true;
+                }
                 if (Trivia.scoreType === "elimination" && Trivia.phase === "answer") {
                     if (Trivia.round > Trivia.maxPoints) {
                         var canJoin = false;

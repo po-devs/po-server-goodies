@@ -214,7 +214,7 @@ TierChecker.prototype.has_legal_team_for_tier = function(src, team, tier, silent
 
 TierChecker.prototype.find_good_tier = function(src, team) {
     // TODO: write up
-    var testPath = ["SM LC", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
+    var testPath = ["SM LC", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers", "Anything Goes", "SM Balanced Hackmons", "SM Hackmons", "Battle Factory 6v6", "Challenge Cup", "ORAS Balanced Hackmons", "ORAS Hackmons"];
     for (var i = 0; i < testPath.length; ++i) {
         var testtier = testPath[i];
         if (sys.hasLegalTeamForTier(src, team, testtier) && this.has_legal_team_for_tier(src, team, testtier, true)) {
@@ -724,14 +724,26 @@ tier_checker.add_new_check(EXCLUDING, hackmons, function banEternal(src, team, t
     return ret;    
 });
 
-//use this to tier alolans if tiers.xml won't work
-tier_checker.add_new_check(INCLUDING, ["SM UU"], function alolanCheck(src, team, tier) {
-    var p, i, uuBans;
-    uuBans = ["Alolan Marowak"];
+tier_checker.add_new_check(EXCLUDING, hackmons, function greninjaLegalities(src, team) {
+    var p, m, i;
+    var ivs = [20, 31, 20, 31, 20, 31];
     for (p = 0; p < 6; p++) {
-        for (i = 0; i < uuBans.length; i++) {
-            if (uuBans[i] === sys.pokemon(sys.teamPoke(src, team, p))) {
-                return ["You are not allowed to use " + uuBans[i] + " in " + tier + "."];
+        if (sys.teamPokeAbility(src, team, p) === 215) { // battle bond
+            for (m = 0; m < 4; m++) {
+                if (sys.teamPokeMove(src, team, p, m) !== 237) {
+                    continue;
+                }
+                if (sys.teamPokeHiddenPower(src, team, p) !== 7) { // ghost
+                    return ["The Hidden Power type of Greninja with Battle Bond must be Ghost."];
+                }
+            }
+            for (i = 0; i < 6; i++) {
+                if (sys.teamPokeDV(src, team, p, i) < ivs[i]) {
+                    return ["Greninja with Battle Bond must have the following minimum IV spread: " + ivs.join("/")];
+                }
+            }
+            if (sys.teamPokeShine(src, team, p)) {
+                return ["Greninja with Battle Bond cannot be Shiny."];
             }
         }
     }

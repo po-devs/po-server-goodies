@@ -2340,7 +2340,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
     }
     */
     if (sys.loggedIn(sys.id("Blinky"))) {
-        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + ":::" + sys.name(dest) + ":::" + tier + " # BATTLE", staffchannel);
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + ":::" + sys.name(dest) + ":::" + tier + ":::" + bid + " # BATTLE", staffchannel);
     }
 },
 
@@ -2371,6 +2371,9 @@ beforeBattleEnded : function(src, dest, desc, bid) {
             normalbot.sendAll(srcname + "'s IP: " + srcIP + " | " + destname + "'s IP: " + destIP, watchchannel);
             sys.appendToFile(Config.dataDir + "watchNamesLog.txt", srcname + ":::" + destname + ":::" + (tie ? "tie" : srcname) + ":::" + (desc === "forfeit" ? "Forfeit" : "N/A") + ":::" + (tier ? tier: "N/A") + "::: " + (time ? getTimeString(sys.time() - time) : "N/A") + ":::" + srcIP + ":::" + destIP + "\n");
         }
+    }
+    if (sys.loggedIn(sys.id("Blinky"))) {
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + srcname + ":::" + destname + ":::" + (tie ? "#tie" : srcname) + (desc === "forfeit" ? " (by forfeit)" : "") + ":::" + (tier ? tier : "") + ":::" + (time ? getTimeString(sys.time() - time) : "") + " # BATTLEENDED", staffchannel);
     }
 },
 

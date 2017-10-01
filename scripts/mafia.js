@@ -3918,7 +3918,7 @@ function Mafia(mafiachan) {
                         revenge = true;
                         rmsg = mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "~Self~ tried to attack ~Target~, but they were ~Target~ was just bait for someone to kill ~Self~!";
                     }
-                    else if (mafia.dayDistract[target.name].type === "distract") {
+                    else if (mafia.dayDistract[player.name].type === "distract") {
                         gamemsg(srcname, formatArgs(mafia.dayDistract[player.name].msg ? mafia.dayDistract[player.name].msg : "You couldn't ~Action~ ~Target~ because you were Distracted!", dayargs), undefined, undefined, true);
                         return true;
                     }
@@ -6869,10 +6869,12 @@ function Mafia(mafiachan) {
             "/disable: To disable a Mafia Theme. Only the Theme Author or an MA can disable a theme.",
             "/disabledc: To opt out of dead chat for the current game only. Use /enabledc to re-enable.",
             "/seedisabled: Lists all disabled themes (excluding non-peak).",
-            "/nonpeaks: Lists all non-peak themes. Also states the status of non-peak themes as a whole."],
+            "/nonpeaks: Lists all non-peak themes. Also states the status of non-peak themes as a whole.",
+            "/eventthemes: Lists the event theme pool."],
         ma: ["/slay: To slay users in a Mafia game. Use /unslay to cancel.",
             "/shove: To remove users before a game starts. Use /unshove to cancel.",
             "/warn: To warn a user for violation of a rule. Syntax is /warn <user>:<rule>:<duration>:<comments>:<shove>.",
+            "/warnhelp: View in-depth explanation on usage of the /warn command.",
             "/unwarn: To remove a warning from a user.",
             "/warnlog: To check relevant warnings for a user. Consider this record before banning.",
             "/mafiawarns: To check all users that have active warnings. Can also use /allwarns or /whodungoofd.",
@@ -6887,8 +6889,8 @@ function Mafia(mafiachan) {
             "/passma: To give your Mafia Admin powers to an alt of yours.",
             "/add: To add a Mafia Theme.",
             "/enable: To enable a previously disabled Mafia Theme.",
-            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak.",
-            "/disableunder X: Disables all themes that support less than X players. (X must be over 30). You will need to manually re-enable."],
+            "/enablenonpeak: To enable all non-peak Mafia Themes. Disable with /disablenonpeak."],
+///            "/disableunder X: Disables all themes that support less than X players. (X must be over 30). You will need to manually re-enable."],
         sma: ["/push: To force a user into the current theme during sign ups.",
             "/supdate: To silently add or update a theme.",
             "/remove: To remove a Mafia Theme! Use /sremove for a silent removal.",
@@ -6903,7 +6905,8 @@ function Mafia(mafiachan) {
             "/featurelink: To change the link used for Featured Theme Text. Leave blank to clear.",
             "/featureint: To change how often the \"Featured Theme\" message displays. Time is in minutes between 30 and 240. Leave blank to reset to 60 minutes.",
             "/forcefeature: To force the \"Featured Theme\" message to display.",
-            "/enableall: Enables all disabled themes, excluding non-peak."],
+            "/enableall: Enables all disabled themes, excluding non-peak.",
+            "/aliases: View the aliases of a user."],
         owner: ["/mafiasuperadmin: To promote a user to Super Mafia Admin. Use /smafiasuperadmin for a silent promotion.",
             "/mafiasuperadminoff: To demote a user from Super Mafia Admin. Use /smafiasuperadminoff for a silent demotion."]
     };
@@ -8052,28 +8055,28 @@ function Mafia(mafiachan) {
             msg(src, name + " isn't set to be slain!");
             return;
         }
-        if (command === "disableunder") {
-            if (commandData > 45 || commandData < 30) {
-                msg(src, "You must specify a number over 30 and under 45 for mass disabling.");
-                return;
-            }
-            var themes = mafia.themeManager.themes;
-            var disableThemes = [];
-            for (var x in themes) {
-                var each = themes[x];
-                if (each["roles" + each.roleLists].length >+ commandData) {
-                    continue;
-                }
-                mafia.themeManager.disable(src, x, true);
-                disableThemes.push(themes[x].name);
-            }
-            if (disableThemes.length) {
-                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled all themes under " + commandData + " players (" + disableThemes.join(", ") + ").");
-            } else {
-                msg(src, "No themes matching that criteria found.");
-            }
-            return;
-        }
+///        if (command === "disableunder") {
+///            if (commandData > 45 || commandData < 30) {
+///                msg(src, "You must specify a number over 30 and under 45 for mass disabling.");
+///                return;
+///            }
+///            var themes = mafia.themeManager.themes;
+///            var disableThemes = [];
+///            for (var x in themes) {
+///                var each = themes[x];
+///                if (each["roles" + each.roleLists].length >+ commandData) {
+///                    continue;
+///                }
+///                mafia.themeManager.disable(src, x, true);
+///                disableThemes.push(themes[x].name);
+///            }
+///            if (disableThemes.length) {
+///                dualBroadcast("±" + mafiabot.name + ": " + nonFlashing(sys.name(src)) + " disabled all themes under " + commandData + " players (" + disableThemes.join(", ") + ").");
+///            } else {
+///                msg(src, "No themes matching that criteria found.");
+///            }
+///            return;
+///        }
 
         if (!this.isMafiaSuperAdmin(src))
             throw ("no valid command");

@@ -1519,7 +1519,16 @@ function generateTeam(src, team, tier) {
                 }
                 if (filteredSets.length > 0) {
                     var tmp = filteredSets[sys.rand(0, filteredSets.length)];
-                    if (sys.isPokeBannedFromTier(tmp.pokeId, tier)) {
+                    var isBanned = false;
+                    for (var move in tmp.moveIds) {
+                        if (sys.isMoveBannedFromTier(tmp.moveIds[move], tier)) {
+                            isBanned = true;
+                        }
+                    }
+                    if (sys.isPokeBannedFromTier(tmp.pokeId, tier) || sys.isItemBannedFromTier(tmp.itemId, tier) || sys.isAbilityBannedFromTier(tmp.abilityId, tier)) {
+                        isBanned = true;
+                    }
+                    if (isBanned) {
                         continue;
                     }
                     teamInfo[p] = tmp;
