@@ -202,6 +202,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendMessage(src, "", channel);
         return;
     }
+    /* Hiding this for now--can be restored during another league season.
     if (command === "league") {
         if (!Object.keys(script.league).length) {
             return;
@@ -217,7 +218,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.sendMessage(src, "", channel);
         return;
-    }
+    }*/
     if (command === "rules" || command === "rule") {
         if (commandData === "mafia") {
             require("mafia.js").showRules(src, channel);
