@@ -202,6 +202,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         sys.sendMessage(src, "", channel);
         return;
     }
+    /* Hiding this for now--can be restored during another league season.
     if (command === "league") {
         if (!Object.keys(script.league).length) {
             return;
@@ -217,7 +218,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         }
         sys.sendMessage(src, "", channel);
         return;
-    }
+    }*/
     if (command === "rules" || command === "rule") {
         if (commandData === "mafia") {
             require("mafia.js").showRules(src, channel);
@@ -709,12 +710,12 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
             return ret;
         })(pokeId);
 
-        var tiers = ["SM Ubers", "SM OU", "SM UU", "SM LU", "SM NU", "SM LC"];
+        var tiers = ["SM Ubers", "SM OU", "SM UU", "SM LU", "SM NU", "SM PU", "SM LC"];
         var allowed = [], x, i;
         // gen 7s, alolan formes, greninja-unbonded/ash greninja, zygarde-10%/zygarde-100%
         // this is redundant, but I'll leave it for now in case this covers multiple gens again at some point.
         if (base > 721 || commandData.toLowerCase().indexOf("alolan ") === 0 || (base === 658 && commandData !== "greninja") || (base === 718 && commandData.toLowerCase() !== "zygarde")) {
-            tiers = ["SM Ubers", "SM OU", "SM UU", "SM LU", "SM NU", "SM LC"];
+            tiers = ["SM Ubers", "SM OU", "SM UU", "SM LU", "SM NU", "SM PU", "SM LC"];
         }
         for (x = 0; x < tiers.length; x++) {
             var tier = tiers[x], indirectBan, usingId = isMega || isInBattleForme || !sys.isDifferent(pokeId) && pokeId !== sys.pokeNum("Floette-Eternal") ? base : pokeId;
@@ -1112,7 +1113,7 @@ exports.help = [
     "/contributors: Lists contributors to Pokémon Online.",
     "/guide: Links to client guides and more. Inputing client type can list different guides.", // the code for this is in scripts.js
     "/intier [tier]: Displays all unidled players in a specific tier.",
-    "/league: Lists gym leaders and elite four of the PO league.",
+  //  "/league: Lists gym leaders and elite four of the PO league.",
     "/notice: Allows you to view current events.",
     "/players: Shows the number of players online. Can accept an operating system as argument to see how many users are using it.",
     "/topchannels: To view the most populated channels.",
