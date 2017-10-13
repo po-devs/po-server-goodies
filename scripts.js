@@ -2340,7 +2340,7 @@ afterBattleStarted: function(src, dest, clauses, rated, mode, bid, team1, team2)
     }
     */
     if (sys.loggedIn(sys.id("Blinky"))) {
-        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + ":::" + sys.name(dest) + ":::" + tier + ":::" + bid + " # BATTLE", staffchannel);
+        sys.sendMessage(sys.id("Blinky"), "±Luxray: " + sys.name(src) + ":::" + sys.name(dest) + ":::" + (rated ? "Rated " : "") + tier + ":::" + bid + " # BATTLE", staffchannel);
     }
 },
 
