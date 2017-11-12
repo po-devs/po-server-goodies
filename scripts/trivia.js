@@ -379,7 +379,7 @@ function TriviaGame() {
     this.votes = {};
     this.votesType = {};
     this.voters = [];
-    this.voting = true;
+    this.voting = false;
     this.votingAborted = false;
 }
 
