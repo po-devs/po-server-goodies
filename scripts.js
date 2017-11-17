@@ -1506,7 +1506,7 @@ cookieBanned: function(src) {
     }
     var cookie = sys.cookie(src) ? sys.cookie(src) : "none";
     if (script.namesToUnban.get(sys.name(src).toLowerCase()) === "true") {
-        kickbot.sendAll(sys.name(src) + " was un" + cookie + " by cookie", staffchannel);
+        kickbot.sendAll(sys.name(src) + " was un" + cookie.split(" ")[0] + " by cookie", staffchannel);
         sys.removeCookie(src);
         script.namesToUnban.remove(sys.name(src).toLowerCase());
     } else if (cookie === "banned" || cookie.substr(0, 6) === "banned") { //backwards compatability
