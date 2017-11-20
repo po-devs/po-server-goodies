@@ -1320,7 +1320,7 @@ TriviaGame.prototype.finalizeAnswers = function () {
         if(totalPlayers > 3) { neededWinners = 3; }
         if(totalPlayers === 3 && this.round >= 10) { neededWinners = 2; } // include round to give players more time to win if player count drops
         if(totalPlayers === 2 && this.round >= 10) { neededWinners = 1; }
-        if(leaderboard[0][1] >= (this.maxPoints*3)) { neededWinners = 1; } // ends games sooner when some people dominate and the rest struggle / afk
+        if(leaderboard.length > 0 && leaderboard[0][1] >= (this.maxPoints*3)) { neededWinners = 1; } // ends games sooner when some people dominate and the rest struggle / afk
     }
      if (winners.length > (neededWinners - 1) || (this.scoreType === "elimination" && leaderboard.length === 0)) {
          /*if (trivData.eventFlag) {
