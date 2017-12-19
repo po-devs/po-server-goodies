@@ -3631,12 +3631,12 @@ function tourstart(tier, starter, key, parameters) {
             sendBotAll("Queue in Tournaments is low.", staffchan, true);
         }
         else {
-            sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 2 random tiers."), staffchan, true);
+            sendBotAll("Queue in Tournaments is empty" + (activeAuthCount === 0 ? " and there are no megausers logged on." : ". Automatically adding up to 6 random tiers."), staffchan, true);
 
             var tourarray = autotiers.shuffle();
             var checked = 0;
             var toursAdded = 0;
-            while (checked < tourarray.length && toursAdded < 2) {
+            while (checked < tourarray.length && toursAdded < 6) {
                 var tourtier = tourarray[checked];
                 var lasttours = getListOfTours(tourconfig.norepeat);
                 var lastindex = lasttours.indexOf(tourtier);
