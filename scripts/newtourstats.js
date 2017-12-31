@@ -1021,7 +1021,7 @@ function clearRankings(month) {
 }
 
 function clearEventRankings(month) {
-    if (!month) {
+    if (month === undefined) {
         return false;
     }
     if (month == "all") {
