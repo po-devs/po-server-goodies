@@ -973,7 +973,7 @@ function getEventWinners(name) {
 }
 
 function clearRankings(month) {
-    if (!month) {
+    if (month === undefined) {
         return false;
     }
     if (month == "all") {
