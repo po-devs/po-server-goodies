@@ -387,7 +387,7 @@ function Safari() {
 
     /* Item Variables */
     var itemCap = 999;
-    var moneyCap = 9999999;
+    var moneyCap = 49999999;
     var editableItemProps = {
         fullName: "string", plural: "string", icon: "number", price: ["number", "array"], aliases: "array",
         ballBonus: "number", bonusRate: "number", maxRate: "number", maxBonus: "number", cooldown: "number", bstBonus: "number", minBstBonus: "number", shinyBonus: "number",
@@ -2693,6 +2693,7 @@ function Safari() {
                 }
             }
         }
+        safari.sanitize(player);
 
         if (rawResult) {
             return out;
@@ -3110,7 +3111,7 @@ function Safari() {
         }
         safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + contestThemes[currentTheme].name + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
-            safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules), safchan);
+            safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
         sys.sendAll(separator, safchan);
 
@@ -3356,7 +3357,7 @@ function Safari() {
 
         return out;
     };
-    this.translateRules = function(rules) {
+    this.translateRules = function(rules, colored) {
         var out = [], list, e;
 
         if (!rules) {
@@ -3415,33 +3416,41 @@ function Safari() {
                 buffed.push(cap(i));
             }
         }
+        
+        var optionalColor = function(msg, isColored, color) {
+            if (isColored) {
+                return toColor(msg, color);
+            } else {
+                return msg;
+            }
+        };
 
         if (buffed.length > 0) {
-            out.push("Buffed: " + readable(buffed, "and") + " Pokémon");
+            out.push(optionalColor("Buffed: " + readable(buffed, "and") + " Pokémon", colored, "blue"));
         }
         if (nerfed.length > 0) {
-            out.push("Nerfed: " + readable(nerfed, "and") + " Pokémon");
+            out.push(optionalColor("Nerfed: " + readable(nerfed, "and") + " Pokémon", colored, "red"));
         }
 
         var inver = rules.inver;
         var invertedBST = rules.invertedBST;
         var defensive = rules.defensive;
         if (inver && defensive) {
-            out.push("Weakness Mode");
+            out.push(optionalColor("Weakness Mode", colored, "purple"));
             if (invertedBST) {
-                out.push("Inverted BST");
+                out.push(optionalColor("Inverted BST", colored, "purple"));
             }
         } else if (inver && invertedBST) {
-            out.push("Inverted BST & Type Effectiveness");
+            out.push(optionalColor("Inverted BST & Type Effectiveness", colored, "purple"));
         } else {
             if (inver) {
-                out.push("Inverted Type Effectiveness");
+                out.push(optionalColor("Inverted Type Effectiveness", colored, "purple"));
             }
             if (invertedBST) {
-                out.push("Inverted BST");
+                out.push(optionalColor("Inverted BST", colored, "purple"));
             }
             if (defensive) {
-                out.push("Resistance Mode");
+                out.push(optionalColor("Resistance Mode", colored, "purple"));
             }
         }
 
@@ -3449,10 +3458,10 @@ function Safari() {
             out.push("Recommended BST: " + rules.minBST + "~" + rules.maxBST);
         } else {
             if ("minBST" in rules) {
-                out.push("Recommended BST: " + rules.minBST + " or more");
+                out.push(optionalColor("Recommended BST: " + rules.minBST + " or more", colored, "red"));
             }
             if ("maxBST" in rules) {
-                out.push("Recommended BST: " + rules.maxBST + " or less");
+                out.push(optionalColor("Recommended BST: " + rules.maxBST + " or less", colored, "red"));
             }
         }
         if ("excludeBalls" in rules && rules.excludeBalls.length > 0) {
@@ -3463,9 +3472,9 @@ function Safari() {
                         list.push(allBalls[e]);
                     }
                 }
-                out.push("Allowed Balls: " + readable(list.map(cap), "and"));
+                out.push(optionalColor("Allowed Balls: " + readable(list.map(cap), "and"), colored, "red"));
             } else {
-                out.push("Forbidden Balls: " + readable(rules.excludeBalls.map(cap), "and"));
+                out.push(optionalColor("Forbidden Balls: " + readable(rules.excludeBalls.map(cap), "and"), colored, "red"));
             }
         }
         if ("rewards" in rules) {
@@ -3474,7 +3483,7 @@ function Safari() {
                 list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
             }
             if (list.length > 1 || list[0] !== "10 Gachapon Tickets") {
-                out.push("Reward: " + readable(list, "and"));
+                out.push(optionalColor("Reward: " + readable(list, "and"), colored, "darkgreen"));
             }
         }
 
@@ -3877,6 +3886,9 @@ function Safari() {
                 var luxuryAmount = Math.floor(wildStats/2 * perkBonus);
                 safaribot.sendAll((player.balls.scarf > 0 ? "The Fashionable " : "") + name + " found $" + addComma(luxuryAmount) + " on the ground after catching " + pokeName + "!" , safchan);
                 player.money += luxuryAmount;
+                if (player.money > moneyCap) {
+                    player.money = moneyCap;
+                }
                 player.records.luxuryEarnings += luxuryAmount;
             }
             if (crystalEffect.effect === "silver") {
@@ -5814,6 +5826,11 @@ function Safari() {
                 tutorMsg(src, "Congratulations! You have completed the tutorial.");
                 welcomePack(src, true);
                 player.tutorialFinished = now();
+                
+                var tutDuration = (player.tutorialFinished - player.created) / 1000;
+                if (tutDuration < 300) {
+                    sys.appendToFile(miscLog, now() + "|||" + sys.name(src) + "|||used finished the tutorial in "+utilities.getTimeString(tutDuration)+"\n");
+                }
             }
             break;
         }
@@ -6135,7 +6152,7 @@ function Safari() {
         player.records[golden ? "goldenBaitUsed" : "baitUsed"] += 1;
 
         var perkBonus = getPerkBonus(player, "honey");
-        if ((player.truesalt < now() || chance(player.srate) === false) && chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
+        if (chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
             safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
             if (golden) {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
@@ -6158,7 +6175,7 @@ function Safari() {
                 p.amt = 1;
             } else {
                 var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
-                safari.createWild(null, null, 1, null, player.party[0], player, null, golden, where);
+                safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
             }
             currentPokemonAction = "eating";
             safari.throwBall(src, commandData, true);
@@ -6417,7 +6434,7 @@ function Safari() {
 
         var targetName = utilities.non_flashing(commandData.toCorrectCase());
         sendAll("", true, true);
-        safaribot.sendMessage(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!", safchan);
+        safaribot.sendAll(sys.name(src) + " gave " + an(sName) + " to " + targetName + "!", safchan);
         safaribot.sendMessage(targetId, "You received " + plural(1, item) + "!", safchan);
         sendAll("", true, true);
 
@@ -6448,7 +6465,7 @@ function Safari() {
             return;
         }
 
-        if (cantBecause(src, "use the Gachapon Machine", ["item", "auction", "battle", "pyramid", "event", "tutorial"], "gacha")) {
+        if (cantBecause(src, "use the Gachapon Machine", ["item", "auction", "battle", "pyramid", "event", "tutorial"], (freeUse ? null : "gacha"))) {
             return;
         }
         var currentTime = now();
@@ -7204,7 +7221,7 @@ function Safari() {
             safaribot.sendMessage(src, itemsLeft(player, "egg"), safchan);
             sys.sendMessage(src, "", safchan);
             player.records.eggsHatched += 1;
-            this.missionProgress(player, "hatch", id, 1, {});
+            this.missionProgress(player, "hatch", id, 1 + (twins ? 1 : 0), {});
             if (isRare(id)) {
                 sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::hatched from Egg"+(twins ? " (Twins)" : "")+"::" + sys.name(src) + "\n");
                 player.records.rareHatched +=1;
@@ -8008,7 +8025,8 @@ function Safari() {
             safaribot.sendMessage(src, "You sold " + readable(out, "and") +  " for $" + addComma(totalMoney) + "! You now have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
             this.missionProgress(player, "pawn", itemsPawned.join(","), amountPawned, { price: totalMoney });
         } else {
-            safaribot.sendMessage(src, "Huh? You didn't actually sell anything... If you change your mind, I'll be happy to buy from you! You still have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
+            var remaining = remaining.length > 0 ? readable(remaining, "and") : "no pawnable item";
+            safaribot.sendMessage(src, "Huh? You didn't actually sell anything... If you change your mind, I'll be happy to buy from you! You currently have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
         }
         if (this.getFortune(player, "crown", 0, null, true)) {
             this.useFortuneCharge(player, "crown", 1);
@@ -8062,6 +8080,9 @@ function Safari() {
         }
 
         player.money += price;
+        if (player.money > moneyCap) {
+            player.money = moneyCap;
+        }
         player.records.pokeSoldEarnings += price;
 
         safaribot.sendMessage(src, "You sold your " + info.name + " for $" + addComma(price) + "! You now have $" + addComma(player.money) + ".", safchan);
@@ -8981,7 +9002,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.renewMissions = function(player) {
-        var today = getDay(now()), missions = player.missions, e, m;
+        var today = player.lastLogin, missions = player.missions, e, m;
         for (e = missions.length; e--; ) {
             m = missions[e];
             if (m.finished || m.goal > m.count) {
@@ -10112,9 +10133,41 @@ function Safari() {
                 this.player1Input = Object.keys(this.p1MoveCodes).random();
             }
             
+            var checkWin = function() {
+                var defeated = true;
+                for (i = 0; i < self.team1.length; i++) {
+                    if (self.team1[i].hp > 0) {
+                        defeated = false;
+                        break;
+                    }
+                }
+                if (defeated) {
+                    self.finishBattle(2);
+                    return true;
+                }
+                defeated = true;
+                for (i = 0; i < self.team2.length; i++) {
+                    if (self.team2[i].hp > 0) {
+                        defeated = false;
+                        break;
+                    }
+                }
+                if (defeated) {
+                    self.finishBattle(1);
+                    return true;
+                }
+            };
+            
             var move1 = this.p1MoveCodes[this.player1Input];
             if (this.npcBattle) {
                 this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
+                if (this.player2Input === false) {
+                    if (checkWin()) {
+                        return;
+                    } else {
+                        this.sendToViewers("Error during battle. Please contact a Safari Admin.");
+                    }
+                }
             } else if (this.player2Input === null) {
                 this.player2Input = Object.keys(this.p2MoveCodes).random();
             }
@@ -10198,31 +10251,6 @@ function Safari() {
                 this.protectCount2 = 0;
             }
             this.usedProtect2 = false;
-            
-            var checkWin = function() {
-                var defeated = true;
-                for (i = 0; i < self.team1.length; i++) {
-                    if (self.team1[i].hp > 0) {
-                        defeated = false;
-                        break;
-                    }
-                }
-                if (defeated) {
-                    self.finishBattle(2);
-                    return true;
-                }
-                defeated = true;
-                for (i = 0; i < self.team2.length; i++) {
-                    if (self.team2[i].hp > 0) {
-                        defeated = false;
-                        break;
-                    }
-                }
-                if (defeated) {
-                    self.finishBattle(1);
-                    return true;
-                }
-            };
             
             if (checkWin()) {
                 return;
@@ -10993,6 +11021,10 @@ function Safari() {
                 oppAlive++;
             }
         }
+        if (alive === 0 || oppAlive === 0) {
+            return false;
+        }
+        
         for (e in moves) {
             c = 0;
             move = moves[e];
@@ -12310,8 +12342,8 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "Journal") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
-
+            safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
+            
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -12638,6 +12670,9 @@ function Safari() {
                 }
 
                 player.money = Math.min(player.money + payout, moneyCap);
+                if (player.money > moneyCap) {
+                    player.money = moneyCap;
+                }
 
                 var stole = 1, costumed = player.costume === "rocket", theft = "", kept = "", stoleList = [], keptList = [];
                 quest.requests = quest.requests.shuffle(); //Shuffle to make it more random
@@ -13909,7 +13944,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Alchemist: So that's the thing, I'm eager to play around with those things. With those I believe I can completely reshape some Pokémon! If you have some, use " + link("/quest alchemist:philosopher:Pokémon", null, true) + " and I will see if I can change their form!", safchan);
         } else {
             var base = pokeInfo.species(info.num);
-            var eligible = { "201" : { "cost" : 1, "forms" : [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673] }, "412" : { "cost" : 1, "forms" : [412, 65948, 131484] }, "422" : { "cost" : 1, "forms" : [422, 65958] }, "423" : { "cost" : 1, "forms" : [423, 65959] }, "550" : { "cost" : 1, "forms" : [550, 66086] }, "585" : { "cost" : 1, "forms" : [585, 66121, 131657, 197193] }, "586" : { "cost" : 1, "forms" : [586, 66122, 131658, 197194] }, "666" : { "cost" : 1, "forms" : [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850] }, "669" : { "cost" : 1, "forms" : [669, 66205, 131741, 197277, 262813] }, "671" : { "cost" : 1, "forms" : [671, 66207, 131743, 197279, 262815] }, "710" : { "cost" : 1, "forms" : [710, 66246, 131782, 197318] }, "711" : { "cost" : 1, "forms" : [711, 66247, 131783, 197319] }, "741" : { "cost" : 1, "forms" : [741, 66277, 131813, 197349] }, "745" : { "cost" : 1, "forms" : [745, 66281] }, "351" : { "cost" : 2, "forms" : [351, 65887, 131423, 262495] }, "413" : { "cost" : 2, "forms" : [413, 65949, 131485] }, "421" : { "cost" : 2, "forms" : [421, 65957] }, "676" : { "cost" : 2, "forms" : [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500] }, "19" : { "cost" : 3, "forms" : [19, 65555] }, "20" : { "cost" : 3, "forms" : [20, 65556] }, "25" : { "cost" : 3, "forms" : [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457] }, "26" : { "cost" : 3, "forms" : [26, 65562] }, "27" : { "cost" : 3, "forms" : [27, 65563] }, "28" : { "cost" : 3, "forms" : [28, 65564] }, "50" : { "cost" : 3, "forms" : [50, 65586] }, "51" : { "cost" : 3, "forms" : [51, 65587] }, "52" : { "cost" : 3, "forms" : [52, 65588] }, "53" : { "cost" : 3, "forms" : [53, 65589] }, "74" : { "cost" : 3, "forms" : [74, 65610] }, "75" : { "cost" : 3, "forms" : [75, 65611] }, "76" : { "cost" : 3, "forms" : [76, 65612] }, "88" : { "cost" : 3, "forms" : [88, 65624] }, "89" : { "cost" : 3, "forms" : [89, 65625] }, "103" : { "cost" : 3, "forms" : [103, 65639] }, "105" : { "cost" : 3, "forms" : [105, 65641] }, "670" : { "cost" : 3, "forms" : [670, 66206, 131742, 197278, 262814, 328350] }, "678" : { "cost" : 3, "forms" : [678, 66214] }, "681" : { "cost" : 3, "forms" : [681, 66217] }, "658" : { "cost" : 4, "forms" : [658, 131730] }, "746" : { "cost" : 4, "forms" : [746, 66282] }, "774" : { "cost" : 4, "forms" : [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526] }, "801" : { "cost" : 4, "forms" : [801, 66337] }, "386" : { "cost" : 5, "forms" : [386, 65922, 131458, 196994] }, "487" : { "cost" : 5, "forms" : [487, 66023] }, "641" : { "cost" : 5, "forms" : [641, 66177] }, "642" : { "cost" : 5, "forms" : [642, 66178] }, "645" : { "cost" : 5, "forms" : [645, 66181] }, "647" : { "cost" : 5, "forms" : [647, 66183] }, "649" : { "cost" : 5, "forms" : [649, 66185, 131721, 197257, 262793] }, "479" : { "cost" : 8, "forms" : [479, 66015, 131551, 197087, 262623, 328159] }, "492" : { "cost" : 8, "forms" : [492, 66028] }, "555" : { "cost" : 8, "forms" : [555, 66091] }, "648" : { "cost" : 8, "forms" : [648, 66184] }, "773" : { "cost" : 8, "forms" : [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493" : { "cost" : 10, "forms" : [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646" : { "cost" : 10, "forms" : [646, 66182, 131718] }, "718" : { "cost" : 10, "forms" : [718, 66254, 131790] }, "720" : { "cost" : 10, "forms" : [720, 66256] } } ;
+            var eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673] }, "412": { "cost": 1, "forms": [412, 65948, 131484] }, "422": { "cost": 1, "forms": [422, 65958] }, "423": { "cost": 1, "forms": [423, 65959] }, "550": { "cost": 1, "forms": [550, 66086] }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193] }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194] }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850] }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813] }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815] }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318] }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319] }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349] }, "745": { "cost": 1, "forms": [745, 66281] }, "351": { "cost": 2, "forms": [351, 65887, 131423, 262495] }, "413": { "cost": 2, "forms": [413, 65949, 131485] }, "421": { "cost": 2, "forms": [421, 65957] }, "676": { "cost": 2, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500] }, "19": { "cost": 3, "forms": [19, 65555] }, "20": { "cost": 3, "forms": [20, 65556] }, "25": { "cost": 3, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457] }, "26": { "cost": 3, "forms": [26, 65562] }, "27": { "cost": 3, "forms": [27, 65563] }, "28": { "cost": 3, "forms": [28, 65564] }, "37": { "cost": 3, "forms": [37, 65573] }, "38": { "cost": 3, "forms": [38, 65574] }, "50": { "cost": 3, "forms": [50, 65586] }, "51": { "cost": 3, "forms": [51, 65587] }, "52": { "cost": 3, "forms": [52, 65588] }, "53": { "cost": 3, "forms": [53, 65589] }, "74": { "cost": 3, "forms": [74, 65610] }, "75": { "cost": 3, "forms": [75, 65611] }, "76": { "cost": 3, "forms": [76, 65612] }, "88": { "cost": 3, "forms": [88, 65624] }, "89": { "cost": 3, "forms": [89, 65625] }, "103": { "cost": 3, "forms": [103, 65639] }, "105": { "cost": 3, "forms": [105, 65641] }, "670": { "cost": 3, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 3, "forms": [678, 66214] }, "681": { "cost": 3, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 4, "forms": [746, 66282] }, "774": { "cost": 4, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526] }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 8, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 8, "forms": [492, 66028] }, "555": { "cost": 8, "forms": [555, 66091] }, "648": { "cost": 8, "forms": [648, 66184] }, "773": { "cost": 8, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 10, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] } };
             if (!eligible.hasOwnProperty(base)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Doesn't look like I can transform this Pokémon into anything!", safchan);
                 return;
@@ -14327,7 +14362,7 @@ function Safari() {
                     eliteHall.push({
                         name: name,
                         color: player.nameColor,
-                        party: player.party,
+                        party: player.party.concat(),
                         costume: player.costume,
                         time: now()
                     });
@@ -15702,6 +15737,9 @@ function Safari() {
         if (player && reward.item !== "stamina") {
             if (reward.item === "money") {
                 player.money += reward.amount;
+                if (player.money > moneyCap) {
+                    player.money = moneyCap;
+                }
                 player.records.pyramidMoney += reward.amount;
             } else {
                 rewardCapCheck(player, reward.item, reward.amount);
@@ -20257,7 +20295,7 @@ function Safari() {
             var sec = contestCount%60;
             safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? contestThemes[currentTheme].name : "Default") + ".", safchan);
             if (currentRules) {
-                safaribot.sendMessage(src, "Contest's Rules: " + this.translateRules(currentRules), safchan);
+                safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
             safaribot.sendMessage(src, "Time until the Contest ends: " + plural(min, "minute") + ", " + plural(sec, "seconds") + ".", safchan);
         } else {
@@ -20273,7 +20311,7 @@ function Safari() {
                     for (n = 0; n < nextTheme.length; n++) {
                         t = nextTheme[n];
                         if (nextRules && t in nextRules) {
-                            safaribot.sendMessage(src, "--- Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t]), safchan);
+                            safaribot.sendHtmlMessage(src, "--- Rules for " + themeName(t) + ": " + this.translateRules(nextRules[t], true), safchan);
                         }
                     }
                 }
@@ -23577,7 +23615,7 @@ function Safari() {
                 });
                 safari.showLogList(src, command, commandData, list, "ID Numbers", function(x) {
                     var n = x.substr(x.indexOf(": ") + 2);
-                    return x + " [" + link("/analyze " + n, "Analyze", true) + "]";
+                    return x + " [" + link("/analyze " + n + ":", "Analyze", true) + "]" + " [" + link("/identify " + n, "Identify", false) + "]";
                 }, null, true);
                 return true;
             }
@@ -25845,7 +25883,7 @@ function Safari() {
                 } else {
                     nextRules[t] = safari.pickRules(t);
                 }
-                rulesDesc.push("Rules for " + themeName(t) + " --- " + safari.translateRules(nextRules[t]));
+                rulesDesc.push("Rules for " + themeName(t) + " --- " + safari.translateRules(nextRules[t], true));
             }
             contestVotingCount--;
             contestVotes = null;
@@ -25857,7 +25895,7 @@ function Safari() {
             sys.sendAll(separator, safchan);
             safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Pokéballs you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
-                safaribot.sendAll(" --- " + rulesDesc[n], safchan);
+                safaribot.sendHtmlAll(" --- " + rulesDesc[n], safchan);
             }
             if (contestVotes) {
                 safaribot.sendHtmlAll("You can choose which theme will be started! Type " + readable(nextTheme.map(function(x){ return link("/vote " + themeName(x)); }), "or") + " to choose!", safchan);
@@ -26050,7 +26088,7 @@ function Safari() {
 
                 contestInfo.themeId = currentTheme ? currentTheme : "none";
                 contestInfo.theme = currentTheme ? contestThemes[currentTheme].name : "Default";
-                contestInfo.rules = safari.translateRules(currentRules);
+                contestInfo.rules = safari.translateRules(currentRules, true);
                 lastContests.push(contestInfo);
                 if (lastContests.length > 10) {
                     lastContests.shift();
