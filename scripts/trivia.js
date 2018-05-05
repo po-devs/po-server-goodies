@@ -808,7 +808,14 @@ TriviaGame.prototype.startTriviaRound = function () {
                 }
                 qOKAY = false; // just in case the question was okay, but failed the android + who's that pokemon check
             }
-            if (i === 300) {
+
+            // try adjusting difficulty before giving up and posting mental math if a question can't be found
+            if (i === 300 && this.catGame === true) {
+                if (this.difficulty === "easy" || this.difficulty === "intermediate") {
+                    this.difficulty = "hard"
+                }
+            }
+            if (i === 600) {
                 this.catGame = true;
                 this.usingCats = specialCategories;
                 this.startTriviaRound();
