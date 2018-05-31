@@ -6510,6 +6510,7 @@ function Mafia(mafiachan) {
 
     this.invalidName = function (src) {
         var name = sys.name(src);
+        /*
         for (var x = 0; x < name.length; x++) {
             var code = name.charCodeAt(x);
             if (name[x] != ' ' && name[x] != '.' && (code < 'a'.charCodeAt(0) || code > 'z'.charCodeAt(0))
@@ -6519,6 +6520,7 @@ function Mafia(mafiachan) {
                 return true;
             }
         }
+        */
 
         var botNames = ["Kill", "Slay", "Game", "Murkrow", "Rule", "Rules", "Hint", "Dratini", "Exploud", "Blaziken", "Chatot"];
         if (botNames.indexOf(name) !== -1) {
