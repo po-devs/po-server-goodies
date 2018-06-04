@@ -3422,7 +3422,7 @@ function Mafia(mafiachan) {
                 gamemsgAll("The " + mafia.theme.trside(winSide) + " (" + readable(players, "and") + ") wins!");
             }
             mafia.saveCurrentGame(mafia.theme.trside(winSide));
-            if (rolesWin in theme) {
+            if ("rolesWin" in theme) {
                 var r;
                 for (var p in players) {
                     r = players[p].role.translation;
