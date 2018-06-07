@@ -4536,7 +4536,7 @@ function Safari() {
         }
 
         var info, id, slots = 10;
-        if (!["save", "load"].contains(action)) {
+        if (!["save", "delete", "load"].contains(action)) {
             info = getInputPokemon(targetId);
             if (!info.num) {
                 safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
