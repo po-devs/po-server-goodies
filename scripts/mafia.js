@@ -28,7 +28,7 @@ function Mafia(mafiachan) {
         this.nextEventTime = new Date().getTime() + 1 * 60 * 60 * 1000;
     }
     if (!this.defaultEventInterval) {
-        this.defaultEventInterval = 2 * 60 * 60 * 1000;
+        this.defaultEventInterval = 1 * 60 * 60 * 1000;
     }
     if (sys.getVal("mafia_eventQueue") !== "") {
         this.eventQueue = sys.getVal("mafia_eventQueue").split(",");
@@ -724,6 +724,9 @@ function Mafia(mafiachan) {
             theme.noplur = plain_theme.noplur;
             theme.rolesAreNames = plain_theme.rolesAreNames;
             theme.macro = plain_theme.macro === undefined ? true : plain_theme.macro;
+            if (plain_theme.rolesWin) {
+                theme.rolesWin = true;
+            }
             theme.generateRoleInfo();
             theme.generateSideInfo();
             theme.generatePriorityInfo();
@@ -1524,6 +1527,7 @@ function Mafia(mafiachan) {
         this.nightBomb = {};
         this.dayDistract = {};
         this.voteBlock = {};
+        this.tutorial = {};
         this.bot = defaultGameBot;
     };
     this.lastAdvertise = 0;
@@ -5965,6 +5969,14 @@ function Mafia(mafiachan) {
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg, undefined, undefined, true);
 
+                if (Object.keys(mafia.tutorial).indexOf( name ) !== -1) {
+                    if (mafia.tutorial[name] === true) {
+                        var tut = (role.tutorialmsg || "This role doesn't have any tutorial information yet!");
+                        tut = toColor(tut, "blue");
+                        gamemsg(player.name, tut, undefined, "Tutorial", true);
+                    }
+                }
+
                 if (role.actions.updateCharges) {
                     var charges = [], e, c;
                     if ("night" in role.actions) {
@@ -6537,12 +6549,12 @@ function Mafia(mafiachan) {
             msg(src, "You must change it if you want to play!");
             return true;
         }
-
+        /*
         if (name.length > Config.Mafia.max_name_length) {
             msg(src, "You're not allowed to have more than " + Config.Mafia.max_name_length + " letters in your name!");
             msg(src, "You must change it if you want to join!");
             return true;
-        }
+        } */
 
         //Prevents names with too many capital letters (7 in total, 5 consecutive)
         if (name.length >= 5) {
@@ -6955,6 +6967,26 @@ function Mafia(mafiachan) {
     this.handleCommandOld = function (src, command, commandData, channel) {
         var name, x, player, target;
         var srcname = sys.name(src);
+
+        if (command === "tutorial") {
+            if (!(this.tutorial)) {
+                return;
+            }
+            if (commandData === "on") {
+                this.tutorial[srcname] = true;
+                gamemsg(srcname, "You've enabled tutorials for this theme!");
+                return;
+            }
+            else if (commandData === "off") {
+                this.tutorial[srcname] = false;
+                gamemsg(srcname, "You've disabled tutorials for this theme!");
+                return;
+            }
+            else {
+                gamemsg(srcname, "Type /tutorial on to enable tutorial mode or /tutorial off to disable it!");
+                return;
+            }
+        }
         if (this.state == "entry") {
             if (command == "join") {
                 if (!this.canJoin(src)) {
