@@ -4499,7 +4499,7 @@ function Safari() {
         var player = getAvatar(src);
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
-            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
             if (player.fortune.deadline > now() || player.fortune.limit > 0) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("cookie") + "'s Effect:</b> \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
@@ -4658,6 +4658,19 @@ function Safari() {
             }
 
             safaribot.sendMessage(src, "Saved your current party to slot " + (num + 1) + "!", safchan);
+            this.saveGame(player);
+        } else if (action === "delete") {
+            if (cantBecause(src, "modify your party", ["tutorial"])) {
+                return;
+            }
+            var num = targetId - 1;
+            if (num > slots-1 || num < 0) {
+                safaribot.sendMessage(src, targetId + " is not a valid slot!", safchan);
+                return;
+            }
+            player.savedParties.splice(num, 1);
+            
+            safaribot.sendMessage(src, "Deleted saved party at slot " + targetId + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
             if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
@@ -22075,6 +22088,9 @@ function Safari() {
             if (command === "psave") {
                 safari.manageParty(src, "save:" + commandData);
                 return true;
+            }
+            if (command === "pdelete") {
+                safari.manageParty(src, "delete:" + commandData);
             }
             if (command === "active") {
                 safari.manageParty(src, "active:" + commandData);
