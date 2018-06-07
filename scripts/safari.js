@@ -12282,7 +12282,7 @@ function Safari() {
                 }
             }
         }
-        var maxSize = 40;
+        var maxSize = 100;
         if (list.length > maxSize) {
             safaribot.sendMessage(src, "You can only add up to " + maxSize + " Items/Pokémon to your Tradeblocked list.", safchan);
             return;
