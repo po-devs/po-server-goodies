@@ -4664,7 +4664,7 @@ function Safari() {
                 return;
             }
             var num = targetId - 1;
-            if (num > slots-1 || num < 0) {
+            if (num > slots-1 || num < 0 || targetId > player.savedParties.length) {
                 safaribot.sendMessage(src, targetId + " is not a valid slot!", safchan);
                 return;
             }
@@ -22091,6 +22091,7 @@ function Safari() {
             }
             if (command === "pdelete") {
                 safari.manageParty(src, "delete:" + commandData);
+                return true;
             }
             if (command === "active") {
                 safari.manageParty(src, "active:" + commandData);
