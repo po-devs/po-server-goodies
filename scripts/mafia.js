@@ -3413,7 +3413,7 @@ function Mafia(mafiachan) {
         };
         var winByDeadRoles;
         var winSide;
-        var players = [];
+        var players = [], roles = [];
         var goodPeople = [];
         var gameFinished = function gameFinished() {
             if (slay) {
@@ -3427,10 +3427,8 @@ function Mafia(mafiachan) {
             }
             mafia.saveCurrentGame(mafia.theme.trside(winSide));
             if ("rolesWin" in mafia.theme) {
-                var r;
-                for (var p in players) {
-                    r = players[p].role.translation;
-                    mafia.mafiaStats.result(r);
+                for (var p in roles) {
+                    mafia.mafiaStats.result(p);
                 }
             }
             else {
@@ -3491,6 +3489,7 @@ function Mafia(mafiachan) {
                 }
                 winSide = mafia.players[p].role.side;
                 players = [];
+                roles = [];
                 goodPeople = [];
                 if (winByDeadRoles) {
                     players = mafia.getPlayersForTeam(winSide);
@@ -3499,6 +3498,7 @@ function Mafia(mafiachan) {
                             ws = mafia.players[x].role.winningSides;
                             if (players.indexOf(x) == -1 && (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0))) {
                                 players.push(x);
+                                roles.push(mafia.players[x].role.translation);
                             }
                         }
                     }
@@ -3516,11 +3516,13 @@ function Mafia(mafiachan) {
                             ws = mafia.players[x].role.winningSides;
                             if (ws == "*" || (Array.isArray(ws) && ws.indexOf(winSide) >= 0)) {
                                 players.push(x);
+                                roles.push(mafia.players[x].role.translation);
                                 continue; // inner
                             }
                         }
                         if (mafia.players[x].role.side == winSide) {
                             players.push(x);
+                            roles.push(mafia.players[x].role.translation);
                         } else if (winSide == 'village') {
                                 // if winSide = villy all people must be good people
                             continue outer;
@@ -5969,10 +5971,10 @@ function Mafia(mafiachan) {
                 var help2msg = (role.help2 || "");
                 gamemsg(player.name, help2msg, undefined, undefined, true);
 
-                if (Object.keys(mafia.tutorial).indexOf( name ) !== -1) {
+                if (Object.keys(mafia.tutorial).indexOf( player.name ) !== -1) {
                     if (mafia.tutorial[name] === true) {
                         var tut = (role.tutorialmsg || "This role doesn't have any tutorial information yet!");
-                        tut = toColor(tut, "blue");
+                        tut = toColor(tut, "#0094ff");
                         gamemsg(player.name, tut, undefined, "Tutorial", true);
                     }
                 }
@@ -6969,16 +6971,16 @@ function Mafia(mafiachan) {
         var srcname = sys.name(src);
 
         if (command === "tutorial") {
-            if (!(this.tutorial)) {
+            if (!(mafia.tutorial)) {
                 return;
             }
             if (commandData === "on") {
-                this.tutorial[srcname] = true;
+                mafia.tutorial[srcname] = true;
                 gamemsg(srcname, "You've enabled tutorials for this theme!");
                 return;
             }
             else if (commandData === "off") {
-                this.tutorial[srcname] = false;
+                mafia.tutorial[srcname] = false;
                 gamemsg(srcname, "You've disabled tutorials for this theme!");
                 return;
             }
