@@ -3615,12 +3615,9 @@ function Safari() {
             }
         }
 
-        var tiers = ["SM LC", "ORAS NU", "ORAS LU", "SM UU", "SM OU", "SM Ubers"];
+        var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
         var tierChance = 0.02, isGen7 = generation(parseInt(wild, 10)) === 7;
         for (var x = 0; x < tiers.length; x++) {
-            if (isGen7 && tiers[x].indexOf("SM ") === -1) { // Workaround while SM tiers are not complete
-                continue;
-            }
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = catchTierChance[x];
                 break;
