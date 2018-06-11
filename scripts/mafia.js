@@ -3428,7 +3428,7 @@ function Mafia(mafiachan) {
             mafia.saveCurrentGame(mafia.theme.trside(winSide));
             if ("rolesWin" in mafia.theme) {
                 for (var p in roles) {
-                    mafia.mafiaStats.result(p);
+                    mafia.mafiaStats.result(roles[p]);
                 }
             }
             else {
