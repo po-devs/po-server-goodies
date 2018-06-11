@@ -8712,7 +8712,7 @@ this.beforeChatMessage = function (src, message, channel) {
                 sys.sendMessage(src, x, channel);
             });
             if (SESSION.channels(mafiachan).isChannelMember(src)) {
-                this.commands.member.forEach(function (x) {
+                this.commands.queue.forEach(function (x) {
                     sys.sendMessage(src, x, channel);
                 });
                 
