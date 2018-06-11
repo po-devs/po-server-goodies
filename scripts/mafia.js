@@ -5975,7 +5975,7 @@ function Mafia(mafiachan) {
                     if (mafia.tutorial[name] === true) {
                         var tut = (role.tutorialmsg || "This role doesn't have any tutorial information yet!");
                         tut = toColor(tut, "#0094ff");
-                        gamemsg(player.name, tut, undefined, "Tutorial", true);
+                        gamemsg(player.name, tut, "Tutorial", undefined, true);
                     }
                 }
 
