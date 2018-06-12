@@ -88,8 +88,7 @@ function mafiaStats() {
     };
     this.saveData = function () {
         var data = this.data,
-            theme = this.theme,
-            players = this.players;
+            theme = this.theme;
         if (!data[theme]) {
             data[theme] = {};
         }
@@ -311,7 +310,7 @@ function mafiaStats() {
             }
             output.push(format.format(x + 1, player.capitalization, player.totalStarts, player.totalStarts === 1 ? "" : "s", favorite, player.themes[favorite], player.themes[favorite] === 1 ? "" : "s"));
         }
-        output.splice(1, 0, "<i>Total Games Started: " + total + "</i>")
+        output.splice(1, 0, "<i>Total Games Started: " + total + "</i>");
         return output;
     };
     this.update = function () {
