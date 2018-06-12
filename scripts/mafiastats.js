@@ -1,6 +1,5 @@
 /* mafiastats.js 
     TODO:
-    Add starting stats
     Allow for past stats to be saved (currently the data deletes itself every month)
     Add more templates for easier html editing (some done)
     Add table with wins/players for specific themes
@@ -57,14 +56,20 @@ function mafiaStats() {
         this.players = 0;
         this.theme = null;
     };
-    this.result = function (result) {
-        if (result === "dead") {
+    this.result = function (result, done) {
+        if (result === null) {
             this.clear();
             return;
         }
-        this.saveData(result);
+        if (result !== "") {
+            this.saveResult(result);
+        }
+        if (done !== false) {
+            this.saveData();
+            this.clear();
+        }
     };
-    this.saveData = function (result) {
+    this.saveResult = function (result) {
         var data = this.data,
             theme = this.theme,
             players = this.players;
@@ -79,6 +84,13 @@ function mafiaStats() {
         }
         else {
             data[theme][result][players] = 1;
+        }    
+    };
+    this.saveData = function () {
+        var data = this.data,
+            theme = this.theme;
+        if (!data[theme]) {
+            data[theme] = {};
         }
         if (data[theme].gamesPlayed) {
             data[theme].gamesPlayed += 1;
@@ -88,7 +100,6 @@ function mafiaStats() {
         }
         this.saveHourData();
         this.saveFile();
-        this.clear();
     };
     this.saveHourData = function () {
         var data = this.data,
@@ -107,6 +118,47 @@ function mafiaStats() {
         data.hoursData[date.getUTCHours()].players += players;
         data.hoursData[date.getUTCHours()].gamesPlayed += 1;
     };
+    this.updateStartData = function (name, theme) {
+        var data = this.data, lname = name.toLowerCase();
+        if (!data.userData) {
+            data.userData = {};
+        }
+        if (!data.userData.hasOwnProperty(lname)) {
+            data.userData[lname] = {};
+            data.userData[lname].themes = {};
+            data.userData[lname].capitalization = name;
+            if (name === "*Event") {
+                data.userData[lname].capitalization = "<i>Event</i>";
+            }
+            if (name === "*voted") {
+                data.userData[lname].capitalization = "<i>voted</i>";
+            }
+            data.userData[lname].totalStarts = 0;
+            data.userData[lname].totalJoins = 0;
+        }
+        if (!data.userData[lname].themes.hasOwnProperty(theme)) {
+            data.userData[lname].themes[theme] = 1;
+        } else {
+            data.userData[lname].themes[theme] += 1;
+        }
+        data.userData[lname].totalStarts += 1;
+    };
+    this.updateJoinData = function (players) {
+        var data = this.data;
+        if (Array.isArray(players)) {
+            for (var x = 0; x < players.length; x++) {
+                var lname = players[x].toLowerCase();
+                if (!data.userData.hasOwnProperty(lname)) {
+                    data.userData[lname] = {};
+                    data.userData[lname].themes = {};
+                    data.userData[lname].capitalization = players[x];
+                    data.userData[lname].totalStarts = 0;
+                    data.userData[lname].totalJoins = 0;
+                }
+                data.userData[lname].totalJoins += 1;
+            }
+        }
+    };
     this.compileData = function () {
         var data = this.getData();
         var gamesPlayed = data[0];
@@ -116,13 +168,18 @@ function mafiaStats() {
         output.push("<i>Total Games Played: " + total + "</i>");
         output.push("");
         for (var x = 0; x < gamesPlayed.length; x++) {
-            output.push(++count + ": <b><a href = '" + gamesPlayed[x][0].replace(/\ /g, "_") + "_stats.html'> " + gamesPlayed[x][0] + "</a></b>. Played " + gamesPlayed[x][1] + " times. Average players: " + gamesPlayed[x][2]);
+            output.push(++count + ": <b><a href = '" + gamesPlayed[x][0].replace(/\ /g, "_") + "_stats.html'> " + gamesPlayed[x][0] + "</a></b>. Played " + gamesPlayed[x][1] + " time" + (gamesPlayed[x][1] === 1 ? "" : "s") + ". Average players: " + gamesPlayed[x][2]);
             this.compileWinData(gamesPlayed[x][0]);
         }
         output.push("");
         var hourData = this.compileHourData();
         for (var x = 0; x < hourData.length; x++) {
             output.push(hourData[x]);
+        }
+        output.push("");
+        var startData = this.compileStartData();
+        for (var x = 0; x < startData.length; x++) {
+            output.push(startData[x]);
         }
         output.push("");
         var date = new Date();
@@ -136,7 +193,7 @@ function mafiaStats() {
         var keys = Object.keys(data);
         var total = 0;
         for (var x = 0; x < keys.length; x++) {
-            if (keys[x] !== "hoursData") { //should have really planned ahead...
+            if (keys[x] !== "hoursData" && keys[x] !== "userData") { //should have really planned ahead...
                 var average = this.getAverage(keys[x]);
                 total += data[keys[x]].gamesPlayed;
                 gamesPlayed.push([keys[x], data[keys[x]].gamesPlayed, average]);
@@ -170,7 +227,7 @@ function mafiaStats() {
         }
         var keys = Object.keys(tData);
         var totalTeam = [];
-        var gameTotal = 0;
+        //var gameTotal = 0;
         for (var x = 0; x < keys.length; x++) {
             if (keys[x] !== "gamesPlayed") {
                 var total = 0;
@@ -180,7 +237,7 @@ function mafiaStats() {
                     totalPlayers += tKeys[y] * tData[keys[x]][tKeys[y]];
                     total += tData[keys[x]][tKeys[y]];
                 }
-                gameTotal += total;
+                //gameTotal += total;
                 var average = Math.round(totalPlayers / total * 100) / 100;
                 totalTeam.push([keys[x], total, average]);
             }
@@ -189,11 +246,11 @@ function mafiaStats() {
             return b[1] - a[1];
         });
         if (returnval) {
-            return [totalTeam, gameTotal];
+            return [totalTeam, tData.gamesPlayed];
         }
         var count = 0;
         var output = [html.title.format("Times Won")];
-        output.push("<i>Theme Played: " + gameTotal + " times</i>");
+        output.push("<i>Theme Played: " + tData.gamesPlayed + " times</i>");
         output.push("");
         for (var x = 0; x < totalTeam.length; x++) {
             output.push(++count + ": <b>" + totalTeam[x][0] + "</b>. Times Won: " + totalTeam[x][1] + ". Average Players per win: " + totalTeam[x][2]);
@@ -223,6 +280,37 @@ function mafiaStats() {
             var average = Math.round(hData[x].players / hData[x].gamesPlayed * 100) / 100;
             output.push("Games Played between " + x + ":00 and " + x + ":59, " + hData[x].gamesPlayed + ". Average Players: " + (average ? average : "0"));
         }
+        return output;
+    };
+    this.compileStartData = function () {
+        var sData = this.data.userData;
+        if (!sData) {
+            sData = {};
+        }
+        var output = [html.title.format("Games Started Per Player")];
+        output.push("");
+        var total = 0;
+        var keys = Object.keys(sData).sort(function(a, b) { return sData[b].totalStarts - sData[a].totalStarts; });
+        var format = "{0}. {1}. Started {2} game{3}. Favorite: {4} (Started {5} time{6})";
+        for (var x = 0; x < keys.length; x++) {
+            var player = sData[keys[x]];
+            if (player.totalStarts === 0) {
+                break;
+            }
+            total += player.totalStarts;
+            var favorite = null;
+            for (var t in player.themes) {
+                if (favorite === null) {
+                    favorite = t;
+                } else {
+                    if (player.themes[t] > player.themes[favorite]) {
+                        favorite = t;
+                    }
+                }
+            }
+            output.push(format.format(x + 1, player.capitalization, player.totalStarts, player.totalStarts === 1 ? "" : "s", favorite, player.themes[favorite], player.themes[favorite] === 1 ? "" : "s"));
+        }
+        output.splice(1, 0, "<i>Total Games Started: " + total + "</i>");
         return output;
     };
     this.update = function () {
@@ -278,6 +366,29 @@ function mafiaStats() {
         }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "±Stats: For more details, check http://server.pokemon-online.eu/mafiathemes/" + theme + "_stats.html", channel);
+    };
+    this.getTopPlayers = function (src, channel, amount) {
+        var data = this.data.userData;
+        if (!data) {
+            data = {};
+        }
+        amount = parseInt(amount, 10);
+        if (amount === undefined || isNaN(amount) || amount <= 0) {
+            amount = 10;
+        }     
+        var keys = Object.keys(data).sort(function(a, b) { return data[b].totalJoins - data[a].totalJoins; });         
+        sys.sendMessage(src, "", channel);
+        sys.sendMessage(src, "*** TOP " + amount + " ACTIVE PLAYERS ***", channel);
+        sys.sendMessage(src, "Total Unique Player Names: " + keys.length, channel);
+        sys.sendMessage(src, "", channel);
+        var format = "{0}: {1} joined {2} game{3}";
+        for (var x = 0; x < amount; x++) {
+            if (x >= keys.length) {
+                break;
+            }
+            var player = data[keys[x]];
+            sys.sendMessage(src, format.format(x + 1, player.capitalization, player.totalJoins, player.totalJoins === 1 ? "" : "s"), channel);
+        }
     };
     this.createTable = function (theme) {
         var themeData = require("mafia.js").themeManager.themes[theme.toLowerCase()];
