@@ -30,7 +30,7 @@ function Mafia(mafiachan) {
     if (sys.getVal("mafia_defaultEventInterval") !== "" && !isNaN(sys.getVal("mafia_defaultEventInterval"))) {
         this.defaultEventInterval = +sys.getVal("mafia_defaultEventInterval");
     } else {
-        this.defaultEventInterval = new Date().getTime() + 1 * 60 * 60 * 1000;
+        this.defaultEventInterval = 1 * 60 * 60 * 1000;
     }
     if (sys.getVal("mafia_eventQueue") !== "") {
         this.eventQueue = sys.getVal("mafia_eventQueue").split(",");
@@ -3293,16 +3293,11 @@ function Mafia(mafiachan) {
             var voteHaxData = mafia.players[p].role.actions.voteHax,
                 haxmsg = voteHaxData.msg ? voteHaxData.msg : "~Player~ voted for ~Target~!",
                 haxperc = voteHaxData.chance ? voteHaxData.chance : 1;
-                var avoid = player.role.actions.avoidVoteHax;
-            if (Array.isArray(avoid)) {
-                if (avoid.indexOf(mafia.players[p].role.role) !== -1) {
-                    avoid = true;
-                }
-                else {
-                    avoid = false;
-                }
+            var avoid = false, avoidVoteHax = player.role.actions.avoidVoteHax;
+            if (Array.isArray(avoidVoteHax)) {
+                avoid = avoidVoteHax.indexOf(mafia.players[p].role.role) !== -1;
             }
-            if (haxperc > Math.random() && (!avoid)) {
+            if (haxperc > Math.random() && !avoid) {
                 gamemsg(p, haxmsg.replace(/~Target~/g, commandData).replace(/~Player~/g, name).replace(/~Role~/g, colorizeRole(player.role.role)));
             }
         }
@@ -8014,11 +8009,10 @@ function Mafia(mafiachan) {
             if (!theme) {
                 var x = parseInt(commandData, 10);
                 if (!isNaN(x)) {
-                    x++;
-                    if (x < 0 || x >= mafia.queue.length) {
+                    if (x < 1 || x > mafia.queue.length) {
                         msg(src, "Theme #" + x + " could not be found in the queue!");
                     } else {
-                        var t = mafia.queue.splice(x, 1)[0];
+                        var t = mafia.queue.splice(x - 1, 1)[0];
                         msgAll(nonFlashing(sys.name(src)) + " removed " + t[1] + " from the queue.");
                         //msgAll(nonFlashing(sys.name(src)) + " removed " + t[1] + " from the Mafia theme queue.", sachannel);
                     }
@@ -8026,6 +8020,7 @@ function Mafia(mafiachan) {
                     msg(src, "No such theme!");
                 }
             } else {
+                theme = casedtheme(theme);
                 for (var i = 0; i < mafia.queue.length; i++) {
                     var q = mafia.queue[i];
                     if (q[1] === theme) {
@@ -8424,13 +8419,14 @@ function Mafia(mafiachan) {
                     break;
                 case "time":
                     if (!isNaN(data[1])) {
-                        this.nextEventTime = new Date().getTime() + 1000 * (+data[1]);
+                        this.nextEventTime = new Date().getTime() + 60000 * (+data[1]);
                         sys.saveVal("mafia_nextEventTime", this.nextEventTime);
+                        mafiabot.sendHtmlMessage(src, "The next event will start in <b>" + getTimeString(60 * (+data[1])) + "</b>", channel);
                         //this.showEvent; // this doesn't exist???
                     }
                     break;
                 case "interval":
-                    var interval = +data[1];
+                    var interval = +data[1] * 60;
                     if (!isNaN(data[1]) && interval > 0) {
                         this.defaultEventInterval = interval * 1000;
                         sys.saveVal("mafia_defaultEventInterval", interval * 1000);
