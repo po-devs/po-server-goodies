@@ -3615,12 +3615,9 @@ function Safari() {
             }
         }
 
-        var tiers = ["SM LC", "ORAS NU", "ORAS LU", "SM UU", "SM OU", "SM Ubers"];
+        var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
         var tierChance = 0.02, isGen7 = generation(parseInt(wild, 10)) === 7;
         for (var x = 0; x < tiers.length; x++) {
-            if (isGen7 && tiers[x].indexOf("SM ") === -1) { // Workaround while SM tiers are not complete
-                continue;
-            }
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = catchTierChance[x];
                 break;
@@ -4499,7 +4496,7 @@ function Safari() {
         var player = getAvatar(src);
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
-            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot] and /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
+            safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
             if (player.fortune.deadline > now() || player.fortune.limit > 0) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("cookie") + "'s Effect:</b> \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
@@ -4536,7 +4533,7 @@ function Safari() {
         }
 
         var info, id, slots = 10;
-        if (!["save", "load"].contains(action)) {
+        if (!["save", "delete", "load"].contains(action)) {
             info = getInputPokemon(targetId);
             if (!info.num) {
                 safaribot.sendMessage(src, "Invalid Pokémon!", safchan);
@@ -4658,6 +4655,19 @@ function Safari() {
             }
 
             safaribot.sendMessage(src, "Saved your current party to slot " + (num + 1) + "!", safchan);
+            this.saveGame(player);
+        } else if (action === "delete") {
+            if (cantBecause(src, "modify your party", ["tutorial"])) {
+                return;
+            }
+            var num = targetId - 1;
+            if (num > slots-1 || num < 0 || targetId > player.savedParties.length) {
+                safaribot.sendMessage(src, targetId + " is not a valid slot!", safchan);
+                return;
+            }
+            player.savedParties.splice(num, 1);
+            
+            safaribot.sendMessage(src, "Deleted saved party at slot " + targetId + "!", safchan);
             this.saveGame(player);
         } else if (action === "load") {
             if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid", "tutorial"])) {
@@ -12282,7 +12292,7 @@ function Safari() {
                 }
             }
         }
-        var maxSize = 40;
+        var maxSize = 100;
         if (list.length > maxSize) {
             safaribot.sendMessage(src, "You can only add up to " + maxSize + " Items/Pokémon to your Tradeblocked list.", safchan);
             return;
@@ -22074,6 +22084,10 @@ function Safari() {
             }
             if (command === "psave") {
                 safari.manageParty(src, "save:" + commandData);
+                return true;
+            }
+            if (command === "pdelete") {
+                safari.manageParty(src, "delete:" + commandData);
                 return true;
             }
             if (command === "active") {
