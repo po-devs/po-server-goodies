@@ -6902,7 +6902,7 @@ function Mafia(mafiachan) {
 
     this.commands = {
         user: ["/mafiaadmins: To get a list of current Mafia Admins.",
-            "/start: To starts a Game of Mafia with specified theme. Can also use /starttheme.",
+            "/start: To start a Game of Mafia with specified theme. Can also use /starttheme.",
             "/vote: To start voting for a new game theme or vote! Can also use /votetheme.",
             "/join: To join a Mafia game.",
             "/unjoin: To unjoin a Mafia game during signups.",
