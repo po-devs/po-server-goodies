@@ -119,44 +119,72 @@ function mafiaStats() {
         data.hoursData[date.getUTCHours()].gamesPlayed += 1;
     };
     this.updateStartData = function (name, theme) {
-        var data = this.data, lname = name.toLowerCase();
-        if (!data.userData) {
-            data.userData = {};
+        if (!this.data.userData) {
+            this.data.userData = {
+                startData: {},
+                joinData: {}
+            };
+        } else if (!this.data.userData.startData) {
+            this.data.userData.startData = {};
         }
-        if (!data.userData.hasOwnProperty(lname)) {
-            data.userData[lname] = {};
-            data.userData[lname].themes = {};
-            data.userData[lname].capitalization = name;
+        var startData = this.data.userData.startData, lname = name.toLowerCase();
+        if (!startData.hasOwnProperty(lname)) {
+            startData[lname] = {};
+            startData[lname].themes = {};
+            startData[lname].capitalization = name;
             if (name === "*Event") {
-                data.userData[lname].capitalization = "<i>Event</i>";
+                startData[lname].capitalization = "<i>Event</i>";
             }
             if (name === "*voted") {
-                data.userData[lname].capitalization = "<i>voted</i>";
+                startData[lname].capitalization = "<i>voted</i>";
             }
-            data.userData[lname].totalStarts = 0;
-            data.userData[lname].totalJoins = 0;
+            startData[lname].totalStarts = 0;
         }
-        if (!data.userData[lname].themes.hasOwnProperty(theme)) {
-            data.userData[lname].themes[theme] = 1;
+        if (!startData[lname].themes.hasOwnProperty(theme)) {
+            startData[lname].themes[theme] = 1;
         } else {
-            data.userData[lname].themes[theme] += 1;
+            startData[lname].themes[theme] += 1;
         }
-        data.userData[lname].totalStarts += 1;
+        startData[lname].totalStarts += 1;
     };
     this.updateJoinData = function (players) {
-        var data = this.data;
+        if (!this.data.userData) {
+            this.data.userData = {
+                startData: {},
+                joinData: {}
+            };
+        } else if (!this.data.userData.joinData) {
+            this.data.userData.joinData = {};
+        }
+        var joinData = this.data.userData.joinData;
         if (Array.isArray(players)) {
             for (var x = 0; x < players.length; x++) {
-                var lname = players[x].toLowerCase();
-                if (!data.userData.hasOwnProperty(lname)) {
-                    data.userData[lname] = {};
-                    data.userData[lname].themes = {};
-                    data.userData[lname].capitalization = players[x];
-                    data.userData[lname].totalStarts = 0;
-                    data.userData[lname].totalJoins = 0;
+                var player = players[x];
+                var id = sys.id(player);
+                var ip = id !== -1 && id !== undefined ? sys.ip(id) : sys.dbIp(player);
+                if (ip !== undefined) {
+                    if (!joinData.hasOwnProperty(ip)) {
+                        joinData[ip] = {};
+                        joinData[ip].names = [player];
+                        joinData[ip].totalJoins = 0;
+                    }
+                    var playerData = joinData[ip];
+                    playerData.totalJoins += 1;
+                    if (playerData.names.indexOf(player) === -1) {
+                        playerData.names.push(player);
+                    }
                 }
-                data.userData[lname].totalJoins += 1;
             }
+        }
+    };
+    this.resetJoinData = function() {
+        if (!this.data.userData) {
+            this.data.userData = {
+                startData: {},
+                joinData: {}
+            };
+        } else {
+            this.data.userData.joinData = {};
         }
     };
     this.compileData = function () {
@@ -283,7 +311,7 @@ function mafiaStats() {
         return output;
     };
     this.compileStartData = function () {
-        var sData = this.data.userData;
+        var sData = this.data.userData.startData;
         if (!sData) {
             sData = {};
         }
@@ -291,7 +319,7 @@ function mafiaStats() {
         output.push("");
         var total = 0;
         var keys = Object.keys(sData).sort(function(a, b) { return sData[b].totalStarts - sData[a].totalStarts; });
-        var format = "{0}. {1}. Started {2} game{3}. Favorite: {4} (Started {5} time{6})";
+        var format = "{0}. {1}. Started {2} game{3}. Favorite: {4} (started {5} time{6})";
         for (var x = 0; x < keys.length; x++) {
             var player = sData[keys[x]];
             if (player.totalStarts === 0) {
@@ -345,7 +373,7 @@ function mafiaStats() {
         sys.sendMessage(src, "", channel);
         var count = 0;
         for (var x = 0; x < gamesPlayed.length; x++) {
-            sys.sendMessage(src, ++count + ": " + gamesPlayed[x][0] + ". Played " + gamesPlayed[x][1] + " times. Average Players: " + gamesPlayed[x][2], channel);
+            sys.sendMessage(src, ++count + ": " + gamesPlayed[x][0] + ". Played " + gamesPlayed[x][1] + " time" + (gamesPlayed[x][1] === 1 ? "" : "s") + ". Average Players: " + gamesPlayed[x][2], channel);
         }
     };
     this.getWinData = function (src, channel, theme) {
@@ -367,27 +395,28 @@ function mafiaStats() {
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "±Stats: For more details, check http://server.pokemon-online.eu/mafiathemes/" + theme + "_stats.html", channel);
     };
-    this.getTopPlayers = function (src, channel, amount) {
-        var data = this.data.userData;
+    this.getTopPlayers = function (src, channel, min) {
+        var data = this.data.userData.joinData;
         if (!data) {
             data = {};
         }
-        amount = parseInt(amount, 10);
-        if (amount === undefined || isNaN(amount) || amount <= 0) {
-            amount = 10;
-        }     
-        var keys = Object.keys(data).sort(function(a, b) { return data[b].totalJoins - data[a].totalJoins; });         
+        min = parseInt(min, 10);
+        if (min === undefined || isNaN(min) || min <= 0) {
+            min = 5;
+        }
+        var keys = Object.keys(data).sort(function(a, b) { return data[b].totalJoins - data[a].totalJoins; }).filter(function(p) { return data[p].totalJoins >= min; });         
         sys.sendMessage(src, "", channel);
-        sys.sendMessage(src, "*** TOP " + amount + " ACTIVE PLAYERS ***", channel);
-        sys.sendMessage(src, "Total Unique Player Names: " + keys.length, channel);
+        sys.sendMessage(src, "*** Players Who Have Played At Least " + min + " Game" + (min === 1 ? "" : "s") + " ***", channel);
+        //sys.sendMessage(src, "Total Unique Players: " + keys.length, channel);
         sys.sendMessage(src, "", channel);
-        var format = "{0}: {1} joined {2} game{3}";
-        for (var x = 0; x < amount; x++) {
-            if (x >= keys.length) {
-                break;
+        if (keys.length === 0) {
+            sys.sendMessage(src, "No players meet this criterion.", channel);
+        } else {
+            var format = "{0}: {1} joined {2} game{3} [IP: {4}{5}]";
+            for (var x = 0; x < keys.length; x++) {
+                var player = data[keys[x]];
+                sys.sendMessage(src, format.format(x + 1, player.names[0], player.totalJoins, player.totalJoins === 1 ? "" : "s", keys[x], player.names.length > 1 ? "; Other Names: " + player.names.slice(1).join(", ") : ""), channel);
             }
-            var player = data[keys[x]];
-            sys.sendMessage(src, format.format(x + 1, player.capitalization, player.totalJoins, player.totalJoins === 1 ? "" : "s"), channel);
         }
     };
     this.createTable = function (theme) {

@@ -8,8 +8,9 @@ function mafiaChecker() {
         noMinor,
         noFatal,
         globalStats,
-        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10" ],
-        badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "detained", "detainlist", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "enabletours", "disabletours", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme", "warn", "rescind", "warnlog", "votecount"];
+        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "dummy", "dummy2", "dummy3", "dummy4", "dummy5", "dummy6", "dummy7", "dummy8", "dummy9", "dummy10"],
+        badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme", "warn", "rescind", "warnlog", "votecount", "vc", "whisper", "w", "tutorial", "teamtalk", "tt", "spawn", "tips", "pg", "topthemes", "windata", "update", "supdate", "nextevent", "eventthemes", "madmins", "disabledc", "enabledc", "seedisabled", "nonpeaks", "mywarns", "queue", "enqueue", "enq", "dequeue", "deq", "warnhelp", "unwarn", "checkwarns", "mafiawarns", "allwarns", "whodungoofd", "targetlog", "passmas", "enablenonpeak", "disablenonpeak", "unshove", "unslay", "enablequeue", "disablequeue", "topplayers", "resetjoindata", "mafiaversion", "smafiaadmin", "smafiasadmin", "smafiasuperadmin", "aliases", "smafiaadminoff", "smafiasadminoff", "smafiasuperadminoff", "sremove", "event", "delayevent", "updatestats", "featureint", "enableall"],
+        dummy = /^dummy(?:\d+)?$/;
     
     this.checkTheme = function(raw) {
         minorErrors = [];
@@ -335,8 +336,24 @@ function mafiaChecker() {
             
             if (checkType(role.actions, ["object"], "'" + yourRole + ".actions")) {
                 act = "Role " + yourRole + ".actions";
-                checkAttributes(role.actions, [], ["night", "standby", "hax", "standbyHax", "voteHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "avoidVoteHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "revealexposerif", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions), act);
-
+                var attributes = ["night", "standby", "hax", "standbyHax", "voteHax", "onDeath", "onDeadRoles", "initialCondition", "stats", "avoidHax", "avoidStandbyHax", "avoidVoteHax", "daykill", "daykillrevengemsg", "daykillevademsg", "daykillmissmsg", "revealexposermsg", "expose", "exposerevengemsg", "exposeevademsg", "exposemissmsg", "revealexposerif", "vote", "voteshield", "voteMultiplier", "addVote", "setVote", "addVoteshield", "setVoteshield", "startup", "onlist", "onteam", "lynch", "teamTalk", "noVote", "noVoteMsg", "preventTeamvote", "updateTeam", "teamUtilities", "updateCharges", "updateVote"].concat(possibleNightActions);
+                var lower = attributes.map(function(x) { return x.toLowerCase(); });
+                if (typeof role.actions == "object") {
+                    for (e in role.actions) {
+                        if (attributes.indexOf(e) === -1 && !dummy.test(e)) {
+                            if (lower.indexOf(e.toLowerCase()) !== -1) {
+                                addMinorError('Attribute "' + e + '" for "' + act + '" should be written as "' + attributes[lower.indexOf(e.toLowerCase())] + '".');
+                            } else if (dummy.test(e.toLowerCase())) {
+                                addMinorError('Attribute "' + e + '" for "' + act + '" should be written as "' + e.toLowerCase() + '".');
+                            } else {
+                                addMinorError(act + ' has an extra attribute "' + e + '".');
+                            }
+                        }
+                    }
+                } else {
+                    addFatalError(act + ' is not a valid object.');
+                }                
+                
                 if (checkType(role.actions.night, ["object"], act + ".night")) {
                     for (e in role.actions.night) {
                         action = role.actions.night[e];
@@ -344,7 +361,7 @@ function mafiaChecker() {
                         if (checkType(action, ["object"], comm)) {
                             command = e;
                             commonMandatory = ["target", "common", "priority"];
-                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "rechargeMsg", "broadcastmsg", "inputmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "compulsory", "noRepeat", "pierce", "pierceChance", "noFollow", "haxMultiplier", "maxHax", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide", "macro", "pinpoint", "pinpointFailMsg", "pinpointBroadcastFailMsg", "addVote", "addVoteshield", "alternateTargets"];
+                            commonOptional = ["broadcast", "command", "limit", "msg", "failChance", "charges", "recharge", "initialrecharge", "rechargeMsg", "broadcastmsg", "inputmsg", "chargesmsg", "clearCharges", "addCharges", "suicideChance", "suicidemsg", "restrict", "cancel", "ignoreDistract", "compulsory", "noRepeat", "pierce", "pierceChance", "noFollow", "haxMultiplier", "maxHax", "userMustBeVisited", "targetMustBeVisited", "userMustVisit", "targetMustVisit", "bypass", "hide", "macro", "pinpoint", "pinpointFailMsg", "pinpointBroadcastFailMsg", "addVote", "addVoteDuration", "addVoteshield", "addVoteshieldDuration", "alternateTargets"];
                             commandList = [];
                             if ("command" in action) {
                                 if (Array.isArray(action.command)) {
@@ -359,109 +376,98 @@ function mafiaChecker() {
                             } else {
                                 commandList.push(command);
                             }
-                            if (commandList.indexOf("kill") !== -1)
-                                commonOptional = commonOptional.concat(["msg", "killmsg"]);
-                            if (commandList.indexOf("inspect") !== -1)
-                                commonOptional = commonOptional.concat(["Sight", "inspectMsg"]);
-                            if (commandList.indexOf("distract") !== -1)
-                                commonOptional = commonOptional.concat(["distractmsg", "teammsg", "onlyUser", "distractActions"]);
-                            if (commandList.indexOf("protect") !== -1)
-                                commonOptional = commonOptional.concat(["protectmsg"]);
-                            if (commandList.indexOf("bomb") !== -1)
-                                commonOptional = commonOptional.concat(["bombMsg"]);
-                            if (commandList.indexOf("dayprotect") !== -1)
-                                commonOptional = commonOptional.concat(["dayProtectMsg", "dayProtectType"]);
-                            if (commandList.indexOf("daydistract") !== -1)
-                                commonOptional = commonOptional.concat(["dayDistractMsg", "dayDistractType"]);
-                            if (commandList.indexOf("voteblock") !== -1)
-                                commonOptional = commonOptional.concat(["voteBlockMsg", "voteBlockDuration"]);
-                            if (commandList.indexOf("safeguard") !== -1)
-                                commonOptional = commonOptional.concat(["safeguardmsg"]);
-                            if (commandList.indexOf("poison") !== -1)
-                                commonOptional = commonOptional.concat(["count", "poisonDeadMessage", "poisonmsg", "poisontarmsg"]);
-                            if (commandList.indexOf("stalk") !== -1) {
-                                commonOptional = commonOptional.concat(["stalkmsg", "novisitmsg"]);
-                            }
-                            if (commandList.indexOf("watch") !== -1) {
-                                commonOptional = commonOptional.concat(["watchmsg", "watchFirst", "watchLast", "watchRandom"]);
-                            }
-                            if (commandList.indexOf("convert") !== -1) {
-                                commonMandatory = commonMandatory.concat(["newRole"]);
-                                commonOptional = commonOptional.concat(["canConvert", "convertmsg", "usermsg", "convertusermsg", "tarmsg", "convertfailmsg", "silent", "silentConvert", "unlimitedSelfConvert", "convertKeepSide"]);
-                            }
-                            if (commandList.indexOf("massconvert") !== -1) {
-                                commonMandatory = commonMandatory.concat(["convertRoles"]);
-                                commonOptional = commonOptional.concat(["silentMassConvert", "massconvertmsg", "singlemassconvertmsg", "silent"]);
-                            }
-                            if (commandList.indexOf("copy") !== -1) {
-                                commonMandatory = commonMandatory.concat(["copyAs"]);
-                                commonOptional = commonOptional.concat(["canCopy", "copymsg", "copyfailmsg", "usermsg", "copyusermsg", "silent", "silentCopy", "copyKeepSide"]);
-                            }
-                            if (commandList.indexOf("indoctrinate") !== -1) {
-                                commonMandatory = commonMandatory.concat(["newSide"]);
-                                commonOptional = commonOptional.concat(["indoctrinateusermsg", "indoctrinatemsg"]);
-                            }
-                            if (commandList.indexOf("curse") !== -1) {
-                                commonMandatory = commonMandatory.concat(["cursedRole"]);
-                                commonOptional = commonOptional.concat(["curseCount", "canCurse", "curseConvertMessage", "cursemsg", "cursefailmsg", "silent", "silentCurse"]);
-                            }
-                            if (commandList.indexOf("detox") !== -1) {
-                                commonOptional = commonOptional.concat(["msg", "targetmsg", "detoxmsg", "detoxfailmsg", "silent"]);
-                            }
-                            if (commandList.indexOf("dispel") !== -1) {
-                                commonOptional = commonOptional.concat(["msg", "targetmsg", "dispelmsg", "dispelfailmsg", "silent"]);
-                            }
-                            if (commandList.indexOf("shield") !== -1) {
-                                commonOptional = commonOptional.concat(["shieldActions", "shieldmsg"]);
-                            }
-                            if (commandList.indexOf("guard") !== -1) {
-                                commonMandatory = commonMandatory.concat(["guardActions"]);
-                                commonOptional = commonOptional.concat(["guardmsg"]);
-                            }
-                            if (commandList.indexOf("disguise") !== -1) {
-                                commonMandatory = commonMandatory.concat(["disguiseRole"]);
-                                commonOptional = commonOptional.concat(["disguisemsg", "disguiseCount"]);
-                            }
-                            if (commandList.indexOf("redirect") !== -1) {
-                                commonMandatory = commonMandatory.concat(["redirectTarget"]);
-                                commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg", "redirectActions"]);
-                            }
-                            for (var st in globalStats) {
-                            	if (commandList.indexOf("stat:" + st) !== -1) {
-                                	commonMandatory = commonMandatory.concat("stat:" + st);
-                            	}
-                            }
-                            if (commandList.indexOf("dummy") !== -1) {
-                                commonOptional = commonOptional.concat(["dummyusermsg", "dummytargetmsg", "dummybroadcastmsg", "dummyPierce"]);
-                            }
-                            if (commandList.indexOf("dummy2") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy2usermsg", "dummy2targetmsg", "dummy2broadcastmsg", "dummy2Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy3") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy3usermsg", "dummy3targetmsg", "dummy3broadcastmsg", "dummy3Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy4") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy4usermsg", "dummy4targetmsg", "dummy4broadcastmsg", "dummy4Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy5") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy5usermsg", "dummy5targetmsg", "dummy5broadcastmsg", "dummy5Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy6") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy6usermsg", "dummy6targetmsg", "dummy6broadcastmsg", "dummy6Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy7") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy7usermsg", "dummy7targetmsg", "dummy7broadcastmsg", "dummy7Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy8") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy8usermsg", "dummy8targetmsg", "dummy8broadcastmsg", "dummy8Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy9") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy9usermsg", "dummy9targetmsg", "dummy9broadcastmsg", "dummy9Pierce"]);
-                            }
-                            if (commandList.indexOf("dummy10") !== -1) {
-                                commonOptional = commonOptional.concat(["dummy10usermsg", "dummy10targetmsg", "dummy10broadcastmsg", "dummy10Pierce"]);
+                            for (var i = 0; i < commandList.length; i++) {
+                                var c = commandList[i];
+                                switch (c) {
+                                    case "kill":
+                                        commonOptional = commonOptional.concat(["msg", "killmsg"]);
+                                        break;
+                                    case "inspect":
+                                        commonOptional = commonOptional.concat(["Sight", "inspectMsg"]);
+                                        break;
+                                    case "distract":
+                                        commonOptional = commonOptional.concat(["distractmsg", "teammsg", "onlyUser", "distractActions"]);
+                                        break;
+                                    case "protect":
+                                        commonOptional = commonOptional.concat(["protectmsg"]);
+                                        break;
+                                    case "bomb":
+                                        commonOptional = commonOptional.concat(["bombMsg"]);
+                                        break;
+                                    case "dayprotect":
+                                        commonOptional = commonOptional.concat(["dayProtectMsg", "dayProtectType"]);
+                                        break;
+                                    case "daydistract":
+                                        commonOptional = commonOptional.concat(["dayDistractMsg", "dayDistractType"]);
+                                        break;
+                                    case "voteblock":
+                                        commonOptional = commonOptional.concat(["voteBlockMsg", "voteBlockDuration"]);
+                                        break;
+                                    case "safeguard":
+                                        commonOptional = commonOptional.concat(["safeguardmsg"]);
+                                        break;
+                                    case "poison":
+                                        commonOptional = commonOptional.concat(["count", "poisonDeadMessage", "poisonmsg", "poisontarmsg"]);
+                                        break;
+                                    case "stalk":
+                                        commonOptional = commonOptional.concat(["stalkmsg", "novisitmsg"]);
+                                        break;
+                                    case "watch":
+                                        commonOptional = commonOptional.concat(["watchmsg", "watchFirst", "watchLast", "watchRandom"]);
+                                        break;
+                                    case "convert":
+                                        commonMandatory = commonMandatory.concat(["newRole"]);
+                                        commonOptional = commonOptional.concat(["canConvert", "convertmsg", "usermsg", "convertusermsg", "tarmsg", "convertfailmsg", "silent", "silentConvert", "unlimitedSelfConvert", "convertKeepSide"]);
+                                        break;
+                                    case "massconvert":
+                                        commonMandatory = commonMandatory.concat(["convertRoles"]);
+                                        commonOptional = commonOptional.concat(["silentMassConvert", "massconvertmsg", "singlemassconvertmsg", "silent"]);
+                                        break;
+                                    case "copy":
+                                        commonMandatory = commonMandatory.concat(["copyAs"]);
+                                        commonOptional = commonOptional.concat(["canCopy", "copymsg", "copyfailmsg", "usermsg", "copyusermsg", "silent", "silentCopy", "copyKeepSide"]);
+                                        break;
+                                    case "indoctrinate":
+                                        commonMandatory = commonMandatory.concat(["newSide"]);
+                                        commonOptional = commonOptional.concat(["indoctrinateusermsg", "indoctrinatemsg"]);
+                                        break;
+                                    case "curse":
+                                        commonMandatory = commonMandatory.concat(["cursedRole"]);
+                                        commonOptional = commonOptional.concat(["curseCount", "canCurse", "curseConvertMessage", "cursemsg", "cursefailmsg", "silent", "silentCurse"]);
+                                        break;
+                                    case "detox":
+                                        commonOptional = commonOptional.concat(["msg", "targetmsg", "detoxmsg", "detoxfailmsg", "silent"]);
+                                        break;
+                                    case "dispel":
+                                        commonOptional = commonOptional.concat(["msg", "targetmsg", "dispelmsg", "dispelfailmsg", "silent"]);
+                                        break;
+                                    case "shield":
+                                        commonOptional = commonOptional.concat(["shieldActions", "shieldmsg"]);
+                                        break;
+                                    case "guard":
+                                        commonMandatory = commonMandatory.concat(["guardActions"]);
+                                        commonOptional = commonOptional.concat(["guardmsg"]);
+                                        break;
+                                    case "disguise":
+                                        commonMandatory = commonMandatory.concat(["disguiseRole"]);
+                                        commonOptional = commonOptional.concat(["disguisemsg", "disguiseCount"]);
+                                        break;
+                                    case "redirect":
+                                        commonMandatory = commonMandatory.concat(["redirectTarget"]);
+                                        commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg", "redirectActions"]);
+                                        break;
+                                    default:
+                                    if (dummy.test(c)) {
+                                        commonOptional = commonOptional.concat([c + "usermsg", c + "targetmsg", c + "broadcastmsg", c + "Pierce"])
+                                    }
+                                }
                             }
                             
+                            for (var st in globalStats) {
+                                if (commandList.indexOf("stat:" + st) !== -1) {
+                                    commonMandatory = commonMandatory.concat("stat:" + st);
+                                }
+                            }                            
 
                             commonNightActions(act, action, e);
                             checkAttributes(action, commonMandatory, commonOptional, comm);
@@ -491,15 +497,15 @@ function mafiaChecker() {
                                     checkValidValue(action.redirectTarget, ["OnlySelf", "AnyButSelf", "OnlyTarget", "AnyButTarget", "Any"], comm + ".redirectActions");
                                 } else if (command == "protect") {
                                     checkType(action.protectmsg, ["string"], comm + ".protectmsg");
-                                }else if (command == "bomb") {
+                                } else if (command == "bomb") {
                                     checkType(action.bombmsg, ["string"], comm + ".bombmsg");
-                                }else if (command == "dayprotect") {
+                                } else if (command == "dayprotect") {
                                     checkType(action.dayProtectMsg, ["string"], comm + ".dayProtectMsg");
                                     checkValidValue(action.dayProtectType, ["protect", "revenge"], comm + ".dayProtectType");
-                                }else if (command == "daydistract") {
+                                } else if (command == "daydistract") {
                                     checkType(action.dayDistractMsg, ["string"], comm + ".dayDistractMsg");
                                     checkValidValue(action.dayDistractType, ["distract", "revenge"], comm + ".dayDistractType");
-                                }else if (command == "voteblock") {
+                                } else if (command == "voteblock") {
                                     checkType(action.voteBlockMsg, ["string"], comm + ".voteBlockMsg");
                                     checkType(action.voteBlockDuration, ["number"], comm + ".voteBlockDuration");
                                 } else if (command == "safeguard") {
@@ -696,7 +702,7 @@ function mafiaChecker() {
                                     }
                                     checkType(action.disguiseCount, ["number"], comm + ".disguiseCount");
                                     checkType(action.disguisemsg, ["string"], comm + ".disguisemsg");
-                                } else if (command == "dummy" || command == "dummy2" || command == "dummy3" || command == "dummy4" || command == "dummy5" || command == "dummy6" || command == "dummy7" || command == "dummy8" || command == "dummy9" || command == "dummy10") {
+                                } else if (dummy.test(command)) {
                                     checkType(action[command + "usermsg"], ["string"], comm + "." + command + "usermsg");
                                     checkType(action[command + "targetmsg"], ["string"], comm + "." + command + "targetmsg");
                                     checkType(action[command + "broadcastmsg"], ["string"], comm + "." + command + "broadcastmsg");
@@ -949,10 +955,10 @@ function mafiaChecker() {
                 checkType(role.actions.noVoteMsg, ["string"], act + ".noVoteMsg");
                 
                 //Defensive Modes
-                for (e in possibleNightActions) {
-                    if (possibleNightActions[e] in role.actions && typeof role.actions[possibleNightActions[e]] !== "function" && checkType(role.actions[possibleNightActions[e]], ["object"], act + "." + possibleNightActions[e])) {
-                        command = possibleNightActions[e];
-                        action = role.actions[command];
+                for (e in role.actions) {
+                    command = e;
+                    action = role.actions[command];
+                    if ((possibleNightActions.indexOf(command) !== -1 || dummy.test(command)) && typeof action !== "function" && checkType(action, ["object"], act + "." + e)) {
                         comm = act + "." + command;
                         if (command == "inspect") {
                             checkAttributes(action, [], ["mode", "broadcastMsg", "seenSide", "revealSide", "revealAs", "msg", "targetmsg", "hookermsg", "evadechargemsg", "count", "poisonDeadMessage", "silent"], comm);
@@ -1360,7 +1366,7 @@ function mafiaChecker() {
     Theme.prototype.checkOnDeath = function(action, comm, extra, isLynch) {
         var e;
         
-        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert"].concat(extra), comm);
+        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert", "detoxRoles", "detoxmsg"].concat(extra), comm);
                     
         checkType(action.onslay, ["boolean"], comm + ".onslay");
         
@@ -1378,7 +1384,7 @@ function mafiaChecker() {
         }
         if (checkType(action.singlekillmsg, ["string"], comm + ".singlekillmsg")) {
             if (!("killRoles" in action)) {
-                addMinorError("'singlekillmsg' found at " + comm + ", but there's no 'singlekillmsg'");
+                addMinorError("'singlekillmsg' found at " + comm + ", but there's no 'killRoles'");
             }
             if ("killmsg" in action) {
                 addMinorError(comm + " has both 'killmsg' and 'singlekillmsg', so 'killmsg' won't be used");
@@ -1404,7 +1410,7 @@ function mafiaChecker() {
         }
         if (checkType(action.singlepoisonmsg, ["string"], comm + ".singlepoisonmsg")) {
             if (!("poisonRoles" in action)) {
-                addMinorError("'singlepoisonmsg' found at " + comm + ", but there's no 'singlepoisonmsg'");
+                addMinorError("'singlepoisonmsg' found at " + comm + ", but there's no 'poisonRoles'");
             }
             if ("poisonmsg" in action) {
                 addMinorError(comm + " has both 'poisonmsg' and 'singlepoisonmsg', so 'poisonmsg' won't be used");
@@ -1417,9 +1423,9 @@ function mafiaChecker() {
                 checkValidRole(action.detoxRoles[i], comm + ".detoxRoles");
             }
         }
-        if (checkType(action.detoxMsg, ["string"], comm + ".detoxMsg")) {
+        if (checkType(action.detoxmsg, ["string"], comm + ".detoxmsg")) {
             if (!("detoxRoles" in action)) {
-                addMinorError("'detoxMsg' found at " + comm + ", but there's no 'detoxRoles'");
+                addMinorError("'detoxmsg' found at " + comm + ", but there's no 'detoxRoles'");
             }
         }
         
@@ -1437,7 +1443,7 @@ function mafiaChecker() {
         }
         if (checkType(action.singleconvertmsg, ["string"], comm + ".singleconvertmsg")) {
             if (!("convertRoles" in action)) {
-                addMinorError("'singleconvertmsg' found at " + comm + ", but there's no 'singleconvertmsg'");
+                addMinorError("'singleconvertmsg' found at " + comm + ", but there's no 'convertRoles'");
             }
             if ("convertmsg" in action) {
                 addMinorError(comm + " has both 'convertmsg' and 'singleconvertmsg', so 'convertmsg' won't be used");
@@ -1469,7 +1475,7 @@ function mafiaChecker() {
         }
         if (checkType(action.singlecursemsg, ["string"], comm + ".singlecursemsg")) {
             if (!("curseRoles" in action)) {
-                addMinorError("'singlecursemsg' found at " + comm + ", but there's no 'singlecursemsg'");
+                addMinorError("'singlecursemsg' found at " + comm + ", but there's no 'curseRoles'");
             }
             if ("cursemsg" in action) {
                 addMinorError(comm + " has both 'cursemsg' and 'singlecursemsg', so 'cursemsg' won't be used");
@@ -1687,17 +1693,25 @@ function mafiaChecker() {
         if (checkType(action.command, ["string", "array", "object"], act + ".command")) {
             if (Array.isArray(action.command)) {
                 for (c in action.command) {
-                    checkValidValue(action.command[c], possibleNightActions, act + ".command");
+                    if (!dummy.test(action.command[c])) {
+                        checkValidValue(action.command[c], possibleNightActions, act + ".command");
+                    }
                 }
             } else if (typeof action.command === "object") {
                 for (c in action.command) {
-                    checkValidValue(c, possibleNightActions, act + ".command");
+                    if (!dummy.test(c)) {
+                        checkValidValue(c, possibleNightActions, act + ".command");
+                    }
                 }
             } else if (typeof action.command === "string") {
-                checkValidValue(action.command, possibleNightActions, act + ".command");
+                if (!dummy.test(action.command)) {
+                    checkValidValue(action.command, possibleNightActions, act + ".command");
+                }
             }
         } else {
-            checkValidValue(command, possibleNightActions, yourRole + ".night");
+            if (!dummy.test(command)) {
+                checkValidValue(command, possibleNightActions, yourRole + ".night");
+            }
         }
         checkType(action.limit, ["number"], act + ".limit");
         checkType(action.failChance, ["number"], act + ".failChance");
@@ -1715,6 +1729,7 @@ function mafiaChecker() {
         checkType(action.redirectActions, ["array"], act + ".redirectActions");
         checkType(action.restrict, ["array"], act + ".restrict");
         checkType(action.cancel, ["array"], act + ".cancel");
+        checkType(action.pinpoint, ["boolean"], act + ".pinpoint");
         checkType(action.pinpointFailMsg, ["string"], act + ".pinpointFailMsg");
         checkType(action.pinpointBroadcastFailMsg, ["string"], act + ".pinpointBroadcastFailMsg");
         checkType(action.ignoreDistract, ["boolean"], act + ".ignoreDistract");
@@ -1731,6 +1746,13 @@ function mafiaChecker() {
         checkType(action.targetMustBeVisited, ["boolean"], act + ".targetMustBeVisited");
         checkType(action.targetMustVisit, ["boolean"], act + ".targetMustVisit");
         checkType(action.userMustVisit, ["boolean"], act + ".userMustVisit");
+        checkType(action.hide, ["boolean"], act + ".hide");
+        checkType(action.macro, ["boolean"], act + ".macro");
+        checkType(action.addVote, ["number"], act + ".addVote");
+        checkType(action.addVoteDuration, ["number"], act + ".addVoteDuration");
+        checkType(action.addVoteshield, ["number"], act + ".addVoteshield");
+        checkType(action.addVoteshieldDuration, ["number"], act + ".addVoteshieldDuration");
+        checkType(action.alternateTargets, ["boolean"], act + ".alternateTargets");
         if (checkType(action.bypass, ["array"], act + ".bypass")) {
             for (c in action.bypass) {
                 checkValidValue(action.bypass[c], ["ignore", "ChangeTarget", "killattacker", "poisonattacker", "identify", "die", "evadeChance", "evadeCharges", "killif", "resistance"], act + ".bypass");
