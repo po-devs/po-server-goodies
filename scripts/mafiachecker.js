@@ -713,7 +713,7 @@ function mafiaChecker() {
                     }
                 }
                 if (checkType(role.actions.standby, ["object"], act + ".standby")) {
-                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg", "macro", "compulsory" ];
+                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg", "macro", "compulsory", "silentMassConvert"];
                     for (e in role.actions.standby) {
                         action = role.actions.standby[e];
                         comm = act + ".standby." + e;
@@ -741,7 +741,7 @@ function mafiaChecker() {
                             } else if (command == "expose") {
                                 checkAttributes(action, ["target"], ["command", "limit", "msg", "exposemsg", "revealChance", "revealmsg", "recharge", "initialrecharge", "exposedtargetmsg", "charges", "chargesmsg", "clearCharges", "addCharges"].concat(appendActions), comm);
                                 
-                                checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf"], comm + ".target");
+                                checkValidValue(action.target, ["Any", "Self", "AnyButTeam", "AnyButRole", "AnyButSelf", "OnlySelf", "OnlyTeam", "OnlyTeammates"], comm + ".target");
                                 checkType(action.limit, ["number"], comm + ".limit");
                                 checkType(action.msg, ["string"], comm + ".msg");
                                 checkType(action.exposemsg, ["string"], comm + ".exposemsg");
