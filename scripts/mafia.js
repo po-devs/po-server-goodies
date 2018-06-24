@@ -653,6 +653,7 @@ function Mafia(mafiachan) {
             theme.roleLists = i - 1;
             if (theme.roleLists === 0)
                 throw "This theme has no roles1, it can not be played.";
+            theme.memory = plain_theme.memory;
             theme.spawnPacks = plain_theme.spawnPacks;
             theme.villageCantLoseRoles = plain_theme.villageCantLoseRoles;
             theme.minplayers = plain_theme.minplayers;
@@ -2511,6 +2512,57 @@ function Mafia(mafiachan) {
                     }
                 }
             }
+            if ("exposeMemory" in onDeath) {
+                var data = onDeath.exposeMemory, p, hit, expose = [];
+                for (var c in data) {
+                    p = data[c];
+                    if (Object.keys(mafia.theme.memory).indexOf( p ) === -1) {
+                        continue;
+                    }
+                    if (mafia.theme.memory[p] !== "player") {
+                        continue;
+                    }
+                    hit = player.memory[p];
+                    if ((typeof hit === "object") && (hit !== null)) {
+                        if ((mafia.isInGame(hit.name))) {
+                            expose.push( hit );
+                        }
+                    }
+                }
+                for (r = 0; r < expose.length; ++r) {
+                    if (expose.length > 0) {
+                        actionMessage = (onDeath.exposemsg || "Before " + (onLynch ? "being lynched" : "dying") + ", ~Self~ exposed ~Target~ as the ~Role~!").replace(/~Self~/g, player.name).replace(/~Target~/g, expose[r].name).replace(/~Role~/g, expose[r].role.translation);
+                        mafia.onDeathMsg.push(actionMessage);
+                        needSeparator = true;
+                    }
+                }
+            }
+            if ("killMemory" in onDeath) {
+                var data = onDeath.killMemory, p, hit, kill = [];
+                for (var c in data) {
+                    p = data[c];
+                    if (Object.keys(mafia.theme.memory).indexOf( p ) === -1) {
+                        continue;
+                    }
+                    if (mafia.theme.memory[p] !== "player") {
+                        continue;
+                    }
+                    hit = player.memory[p];
+                    if ((typeof hit === "object") && (hit !== null)) {
+                        if ((mafia.isInGame(hit.name))) {
+                            kill.push( hit );
+                        }
+                    }
+                }
+                for (r = 0; r < kill.length; ++r) {
+                    if (kill.length > 0) {
+                        actionMessage = (onDeath.killmsg || "Due to ~Self~ " + (onLynch ? "being lynched" : "dying") + ", ~Target~ (~Role~) was killed too!").replace(/~Self~/g, player.name).replace(/~Target~/g, kill[r].name).replace(/~Role~/g, kill[r].role.translation);
+                        mafia.onDeathMsg.push(actionMessage);
+                        this.removePlayer( kill[r] );
+                        needSeparator = true;
+                    }
+                }
+            }
             if ("convert" in onDeath) {
                 var newRole = onDeath.convert.newRole, oldRole = player.role.translation, p = mafia.players[player],
                     cMsg = onDeath.convert.msg ? onDeath.convert.msg : "The ~Old~ survived and became a ~New~!";
@@ -3143,6 +3195,39 @@ function Mafia(mafiachan) {
                 }
                 else if (player.role.actions.standby[act].clearCharges) {
                     mafia.setChargesFor(player, "standby", act, undefined);
+                }
+            }
+        }
+        if ("memory" in player.role.actions) {
+            var type, info;
+            for (act in player.role.actions.memory) {
+                if (!(act in mafia.theme.memory)) {
+                    //Invalid memory, must be declared in the theme's code
+                    break;
+                } 
+                var type = mafia.theme.memory[act];
+                var info = player.role.actions.memory[act];
+                switch (type) {
+                    case "player": 
+                        if (info === "~Self~") {
+                            player.memory[act] = player;
+                        }
+                        break;
+                    case "role": 
+                        if (info === "~Role~") {
+                            player.memory[act] = player.role;
+                        }
+                        break;
+                    case "value": 
+                        if (!(isNaN(info))) {
+                            player.memory[act] = info;
+                        }
+                        break;
+                    case "integer": 
+                        if (!(isNaN(info))) {
+                            player.memory[act] = Math.max(Math.floor(info), 0);
+                        }
+                        break;
                 }
             }
         }
@@ -4338,6 +4423,39 @@ function Mafia(mafiachan) {
                         initPlayer.silentCurse = condition.curse.silentCurse || false;
                     }
                 }
+                if ("memory" in mafia.theme) {
+                    initPlayer.memory = {};
+                    var info, data, type;
+                    for (var m in mafia.theme.memory) {
+                        /*
+                        if (Object.keys(initPlayer.role.actions.memory).indexOf(m) !== -1) {
+                            data = initPlayer.role.actions.memory[m];
+                        }*/
+                        type = mafia.theme.memory[m];
+                        switch (type) {
+                            case "player": 
+                                initPlayer.memory[m] = null;
+                                break;
+                            case "role": 
+                                initPlayer.memory[m] = ""
+                                break;
+                            case "value": 
+                                if (isNaN(data)) {
+                                    initPlayer.memory[m] = 0;
+                                    break;
+                                }
+                                initPlayer.memory[m] = data;
+                                break;
+                            case "integer": 
+                                if (isNaN(data)) {
+                                    initPlayer.memory[m] = 0;
+                                    break;
+                                }
+                                initPlayer.memory[m] = Math.max(Math.floor(data), 0);
+                                break;
+                        }
+                    }
+                }
                 if (typeof mafia.theme.roles[playerRole].side == "object") {
                     if ("random" in mafia.theme.roles[playerRole].side) {
                         var side = randomSample(mafia.theme.roles[playerRole].side.random);
@@ -4643,7 +4761,7 @@ function Mafia(mafiachan) {
                             var finalCurseCount = Action.curseCount || 2;
                             var commandIsDummy = isDummyCommand.test(command);
 
-                            if (["kill", "protect", "bomb", "dayprotect", "inspect", "distract", "daydistract", "poison", "safeguard", "stalk", "watch", "convert", "indoctrinate", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "voteBlock"].indexOf(command) === -1 && !commandIsDummy) {
+                            if (["kill", "protect", "bomb", "dayprotect", "inspect", "distract", "daydistract", "poison", "safeguard", "stalk", "watch", "convert", "indoctrinate", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "voteBlock", "memory"].indexOf(command) === -1 && !commandIsDummy) {
                                 continue;
                             }
                             if ((!mafia.isInGame(target)) && command != "stalk" && command != "watch") {
@@ -4930,6 +5048,107 @@ function Mafia(mafiachan) {
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                            else if (command == "memory") {
+                                var data = Action.setMemory, piece, val, total, hold, isInteger = false;
+                                var obj = (Action.memoryFor === "target" ? target : player);
+                                for (var entry in data) {
+                                    if ((Object.keys(mafia.theme.memory)).indexOf(entry) === -1) {
+                                        //This piece of memory doesn't exist, something went wrong
+                                        continue;
+                                    }
+                                    var type = mafia.theme.memory[entry];
+                                    switch (type) {
+                                        case "player":
+                                            if (data[entry] === "~Self~") {
+                                                obj.memory[entry] = player;
+                                            }
+                                            else if (data[entry] === "~Target~") {
+                                                player.memory[entry] = target;
+                                            }
+                                            break;
+                                        case "role":
+                                            if (data[entry] === "~Role~") {
+                                                obj.memory[entry] = player.role;
+                                            }
+                                            else if (data[entry] === "~TargetRole~") {
+                                                obj.memory[entry] = target.role;
+                                            }
+                                            break;
+                                        case "integer":
+                                            isInteger = true;
+                                        case "value":
+                                            total = 0;
+                                            piece = data[entry];
+                                            if ("set" in piece) {
+                                                hold = piece.set[0];
+                                                if (typeof hold === "string") {
+                                                    if (hold.slice(0,5) === "self:") {
+                                                        hold = hold.slice(5);
+                                                        if ((hold in player.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = player.memory[hold];
+                                                        }
+                                                    }
+                                                    else if (hold.slice(0,7) === "target:") {
+                                                        hold = hold.slice(7);
+                                                        if ((hold in target.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = target.memory[hold];
+                                                        }
+                                                    }
+                                                }
+                                                if (!(isNan(hold)) && (!(isNan(piece.set[1])))) { //Do not change this to an ELSE statement
+                                                    total = hold * piece.set[1];
+                                                }
+                                            }
+                                            else {
+                                                total = obj.memory[entry];
+                                            }
+                                            if ("add" in piece) {
+                                                for (var i in piece.add) {
+                                                    var sum = piece.add[i];
+                                                    hold = sum[0];
+                                                    if (typeof hold === "string") {
+                                                        if (hold.slice(0,5) === "self:") {
+                                                            hold = hold.slice(5);
+                                                            if ((hold in player.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                                hold = player.memory[hold];
+                                                            }
+                                                        }
+                                                        else if (hold.slice(0,7) === "target:") {
+                                                            hold = hold.slice(7);
+                                                            if ((hold in target.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                                hold = target.memory[hold];
+                                                            }
+                                                        }
+                                                    }
+                                                    if (!(isNan(hold)) && (!(isNan(sum[1])))) { //Do not change this to an ELSE statement
+                                                        total += (hold * sum[1]);
+                                                    }
+                                                }
+                                            }
+                                            if ("max" in piece) {
+                                                hold = piece.set[0];
+                                                if (typeof hold === "string") {
+                                                    if (hold.slice(0,5) === "self:") {
+                                                        hold = hold.slice(5);
+                                                        if ((hold in player.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = player.memory[hold];
+                                                        }
+                                                    }
+                                                    else if (hold.slice(0,7) === "target:") {
+                                                        hold = hold.slice(7);
+                                                        if ((hold in target.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = target.memory[hold];
+                                                        }
+                                                    }
+                                                }
+                                                if (!(isNan(hold)) && (!(isNan(piece.set[1])))) { //Do not change this to an ELSE statement
+                                                    total = Math.min(hold * piece.set[1], total);
+                                                }
+                                            }
+                                            break;
                                     }
                                 }
                             }
