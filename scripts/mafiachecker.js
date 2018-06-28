@@ -8,7 +8,7 @@ function mafiaChecker() {
         noMinor,
         noFatal,
         globalStats,
-        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "dummy"],
+        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "memory", "dummy"],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme", "warn", "rescind", "warnlog", "votecount", "vc", "whisper", "w", "tutorial", "teamtalk", "tt", "spawn", "tips", "pg", "topthemes", "windata", "update", "supdate", "nextevent", "eventthemes", "madmins", "disabledc", "enabledc", "seedisabled", "nonpeaks", "mywarns", "queue", "enqueue", "enq", "dequeue", "deq", "warnhelp", "unwarn", "checkwarns", "mafiawarns", "allwarns", "whodungoofd", "targetlog", "passmas", "enablenonpeak", "disablenonpeak", "unshove", "unslay", "enablequeue", "disablequeue", "topplayers", "resetjoindata", "mafiaversion", "smafiaadmin", "smafiasadmin", "smafiasuperadmin", "aliases", "smafiaadminoff", "smafiasadminoff", "smafiasuperadminoff", "sremove", "event", "delayevent", "updatestats", "featureint", "enableall"],
         dummy = /^dummy(?:\d+)?$/;
     
@@ -43,13 +43,16 @@ function mafiaChecker() {
             }
         }
         
+        //Lets us look at the memory in their raw form for checking later
+        theme.memory = raw.memory;
+        
         try {
             var i=2, lists = [];
             while ("roles"+i in raw) {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "rolesWin", "bot", "borderColor", "stats"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "rolesWin", "bot", "borderColor", "memory"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -87,7 +90,7 @@ function mafiaChecker() {
             checkType(raw.threadlink, ["string"], "'theme.threadlink'");
             checkType(raw.altname, ["string"], "'theme.altname'");
             checkType(raw.variables, ["object"], "'theme.variables'");
-            checkType(raw.stats, ["object"], "'theme.stats'");
+            checkType(raw.memory, ["object"], "theme.memory");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
             checkValidValue(raw.noplur, [true, false], "theme.noplur");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
@@ -456,6 +459,9 @@ function mafiaChecker() {
                                         commonMandatory = commonMandatory.concat(["redirectTarget"]);
                                         commonOptional = commonOptional.concat(["redirectMsg", "redirectTargetMsg", "redirectActions"]);
                                         break;
+                                    case "memory":
+                                        commonMandatory = commonMandatory.concat(["setMemory", "memoryFor"]);
+                                        break;
                                     default:
                                     if (dummy.test(c)) {
                                         commonOptional = commonOptional.concat([c + "usermsg", c + "targetmsg", c + "broadcastmsg", c + "Pierce"]);
@@ -531,6 +537,26 @@ function mafiaChecker() {
                                     else if (Array.isArray(action.newSide)) {
                                         for (var i = 0; i < action.newSide.length; i++) {
                                             checkValidSide(action.newSide[i])
+                                        }
+                                    }
+                                } else if (command == "memory") {
+                                    checkType(action.memoryFor, ["string"], comm + ".memoryFor");
+                                    if ((action.memoryFor !== "self") && (action.memoryFor !== "target")) {
+                                        addFatalError(comm + "memoryFor must be a valid input (either self or target)");
+                                    }
+                                    checkType(action.setMemory, ["object"], comm + ".setMemory");
+                                    if (typeof action.setMemory === "object") {
+                                        for (var a in action.setMemory) {
+                                            if (Object.keys(theme.memory).indexOf( a ) === -1) {
+                                                addFatalError(comm + "setMemory " + a + " is not a valid memory for this theme.");
+                                            }
+                                            else {
+                                                if (theme.memory[a] === "player") {
+                                                    if ((action.setMemory[a] !== "~Self~") && (action.setMemory[a] !== "~Target~")) {
+                                                        addFatalError(comm + "setMemory " + a + " can only be ~Self~ or ~Target~.");
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 } else if (command == "convert") {
@@ -1366,7 +1392,7 @@ function mafiaChecker() {
     Theme.prototype.checkOnDeath = function(action, comm, extra, isLynch) {
         var e;
         
-        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert", "detoxRoles", "detoxmsg"].concat(extra), comm);
+        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "exposeMemory", "killMemory", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert", "detoxRoles", "detoxmsg"].concat(extra), comm);
                     
         checkType(action.onslay, ["boolean"], comm + ".onslay");
         
@@ -1376,9 +1402,25 @@ function mafiaChecker() {
                 checkValidRole(action.killRoles[e], comm + ".killRoles");
             }
         }
+        if (checkType(action.killMemory, ["array"], comm + ".killMemory")) {
+            for (e in action.killMemory) {
+                var f = action.killMemory[e];
+                if (!(f in theme.memory)) {
+                    addFatalError(comm + ".killMemory has nonexistant memory " + f + ".");
+                }
+            }
+        }
+        if (checkType(action.exposeMemory, ["array"], comm + ".exposeMemory")) {
+            for (e in action.exposeMemory) {
+                var f = action.exposeMemory[e];
+                if (!(f in theme.memory)) {
+                    addFatalError(comm + ".exposeMemory has nonexistant memory " + f + ".");
+                }
+            }
+        }
         
         if (checkType(action.killmsg, ["string"], comm + ".killmsg")) {
-            if (!("killRoles" in action)) {
+            if (!(("killRoles" in action) || ("killMemory" in action))) {
                 addMinorError("'killmsg' found at " + comm + ", but there's no 'killRoles'");
             }
         }
@@ -1490,7 +1532,7 @@ function mafiaChecker() {
             }
         }
         if (checkType(action.exposemsg, ["string"], comm + ".exposemsg")) {
-            if (!("exposeRoles" in action)) {
+            if (!(("exposeRoles" in action) || ("exposeMemory" in action))) {
                 addMinorError("'exposemsg' found at " + comm + ", but there's no 'exposeRoles'");
             }
         }
