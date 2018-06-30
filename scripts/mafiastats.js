@@ -395,27 +395,35 @@ function mafiaStats() {
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "±Stats: For more details, check http://server.pokemon-online.eu/mafiathemes/" + theme + "_stats.html", channel);
     };
-    this.getTopPlayers = function (src, channel, min) {
+    this.getTopPlayers = function (src, channel, min, returnval) {
         var data = this.data.userData.joinData;
         if (!data) {
             data = {};
         }
         min = parseInt(min, 10);
         if (min === undefined || isNaN(min) || min <= 0) {
-            min = 5;
+            min = 1;
         }
-        var keys = Object.keys(data).sort(function(a, b) { return data[b].totalJoins - data[a].totalJoins; }).filter(function(p) { return data[p].totalJoins >= min; });         
+        var keys = Object.keys(data).sort(function(a, b) { return data[b].totalJoins - data[a].totalJoins; }).filter(function(p) { return data[p].totalJoins >= min; });
+        if (returnval) {
+            var ret = {};
+            for (var x = 0; x < keys.length; x++) {
+                var player = data[keys[x]];
+                ret[player.names[0]] = player.names.slice(1);
+            }
+            return ret;
+        }
         sys.sendMessage(src, "", channel);
         sys.sendMessage(src, "*** Players Who Have Played At Least " + min + " Game" + (min === 1 ? "" : "s") + " ***", channel);
         //sys.sendMessage(src, "Total Unique Players: " + keys.length, channel);
         sys.sendMessage(src, "", channel);
         if (keys.length === 0) {
-            sys.sendMessage(src, "No players meet this criterion.", channel);
+            sys.sendMessage(src, "No players have played " + min + " games!", channel);
         } else {
-            var format = "{0}: {1} joined {2} game{3} [IP: {4}{5}]";
+            var format = "{0}: {1} joined {2} game{3}{4}";
             for (var x = 0; x < keys.length; x++) {
                 var player = data[keys[x]];
-                sys.sendMessage(src, format.format(x + 1, player.names[0], player.totalJoins, player.totalJoins === 1 ? "" : "s", keys[x], player.names.length > 1 ? "; Other Names: " + player.names.slice(1).join(", ") : ""), channel);
+                sys.sendMessage(src, format.format(x + 1, player.names[0], player.totalJoins, player.totalJoins === 1 ? "" : "s", player.names.length > 1 ? " [Other Names: " + player.names.slice(1).join(", ")  + "]" : ""), channel);
             }
         }
     };

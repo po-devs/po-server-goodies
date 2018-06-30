@@ -8,7 +8,7 @@ function mafiaChecker() {
         noMinor,
         noFatal,
         globalStats,
-        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "memory", "dummy"],
+        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "memory", "dummy", "voteblock"],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme", "warn", "rescind", "warnlog", "votecount", "vc", "whisper", "w", "tutorial", "teamtalk", "tt", "spawn", "tips", "pg", "topthemes", "windata", "update", "supdate", "nextevent", "eventthemes", "madmins", "disabledc", "enabledc", "seedisabled", "nonpeaks", "mywarns", "queue", "enqueue", "enq", "dequeue", "deq", "warnhelp", "unwarn", "checkwarns", "mafiawarns", "allwarns", "whodungoofd", "targetlog", "passmas", "enablenonpeak", "disablenonpeak", "unshove", "unslay", "enablequeue", "disablequeue", "topplayers", "resetjoindata", "mafiaversion", "smafiaadmin", "smafiasadmin", "smafiasuperadmin", "aliases", "smafiaadminoff", "smafiasadminoff", "smafiasuperadminoff", "sremove", "event", "delayevent", "updatestats", "featureint", "enableall"],
         dummy = /^dummy(?:\d+)?$/;
     
@@ -739,7 +739,7 @@ function mafiaChecker() {
                     }
                 }
                 if (checkType(role.actions.standby, ["object"], act + ".standby")) {
-                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg", "macro", "compulsory", "silentMassConvert"];
+                    var appendActions = ["newRole", "canConvert", "silent", "convertmsg", "convertusermsg", "tarmsg", "copyAs", "canCopy", "copymsg", "copyusermsg", "convertRoles", "singlemassconvertmsg", "massconvertmsg", "macro", "compulsory", "silentMassConvert", "silentCopy", "silent", "copyfailmsg"];
                     for (e in role.actions.standby) {
                         action = role.actions.standby[e];
                         comm = act + ".standby." + e;
@@ -1392,7 +1392,7 @@ function mafiaChecker() {
     Theme.prototype.checkOnDeath = function(action, comm, extra, isLynch) {
         var e;
         
-        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "exposeMemory", "killMemory", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert", "detoxRoles", "detoxmsg"].concat(extra), comm);
+        checkAttributes(action, [], ["killRoles", "poisonRoles", "convertRoles", "curseRoles", "exposeRoles", "killmsg", "exposeMemory", "killMemory", "convertmsg", "curseCount", "cursemsg", "curseConvertMessage", "poisonmsg", "poisonDeadMessage", "exposemsg", "singlekillmsg", "singlepoisonmsg", "singleconvertmsg", "singlecursemsg", "silentConvert", "silentCurse", "convert", "detoxRoles", "detoxmsg", "singledetoxmsg"].concat(extra), comm);
                     
         checkType(action.onslay, ["boolean"], comm + ".onslay");
         
@@ -1406,7 +1406,7 @@ function mafiaChecker() {
             for (e in action.killMemory) {
                 var f = action.killMemory[e];
                 if (!(f in theme.memory)) {
-                    addFatalError(comm + ".killMemory has nonexistant memory " + f + ".");
+                    addFatalError(comm + ".killMemory has nonexistent memory " + f + ".");
                 }
             }
         }
@@ -1414,7 +1414,7 @@ function mafiaChecker() {
             for (e in action.exposeMemory) {
                 var f = action.exposeMemory[e];
                 if (!(f in theme.memory)) {
-                    addFatalError(comm + ".exposeMemory has nonexistant memory " + f + ".");
+                    addFatalError(comm + ".exposeMemory has nonexistent memory " + f + ".");
                 }
             }
         }
@@ -1468,6 +1468,14 @@ function mafiaChecker() {
         if (checkType(action.detoxmsg, ["string"], comm + ".detoxmsg")) {
             if (!("detoxRoles" in action)) {
                 addMinorError("'detoxmsg' found at " + comm + ", but there's no 'detoxRoles'");
+            }
+        }
+        if (checkType(action.singledetoxmsg, ["string"], comm + ".singledetoxmsg")) {
+            if (!("detoxRoles" in action)) {
+                addMinorError("'singledetoxmsg' found at " + comm + ", but there's no 'detoxRoles'");
+            }
+            if ("detoxmsg" in action) {
+                addMinorError(comm + " has both 'detoxmsg' and 'singledetoxmsg', so 'detoxmsg' won't be used");
             }
         }
         
