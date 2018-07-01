@@ -3616,7 +3616,7 @@ function Safari() {
         }
 
         var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
-        var tierChance = 0.02, isGen7 = generation(parseInt(wild, 10)) === 7;
+        var tierChance = 0.02;
         for (var x = 0; x < tiers.length; x++) {
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = catchTierChance[x];
