@@ -6151,7 +6151,6 @@ function Mafia(mafiachan) {
             
             for (var p in mafia.players) {
                 p = mafia.players[p];
-                gamemsgAll(JSON.stringify(p), undefined, undefined, true);
                 if (p.frenzy !== undefined) {
                     mafia.kill(p);
                 }
