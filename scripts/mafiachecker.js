@@ -8,7 +8,7 @@ function mafiaChecker() {
         noMinor,
         noFatal,
         globalStats,
-        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "memory", "dummy", "voteblock"],
+        possibleNightActions = ["kill", "protect", "bomb", "dayprotect", "daydistract", "inspect", "distract", "poison", "safeguard", "stalk", "watch", "convert", "curse", "copy", "indoctrinate", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "memory", "dummy", "voteblock", "silence", "frenzy"],
         badCommands = ["me", "commands", "start", "votetheme", "starttheme", "help", "roles", "sides", "myrole", "mafiarules", "themes", "themeinfo", "changelog", "details", "priority", "flashme", "playedgames", "update", "join", "unjoin", "mafiaadmins", "mafiaban", "mafiaunban", "passma", "mafiaadmin", "mafiaadminoff", "mafiasadmin", "mafiasuperadmin", "mafiasadminoff", "mafiasuperadminoff", "push", "slay", "shove", "end", "readlog", "add", "remove", "disable", "enable", "updateafter", "importold", "mafiaban", "mafiaunban", "mafiabans", "ban", "mute", "kick", "k", "mas", "ck", "cmute", "admin", "op", "owner", "invite", "member", "deadmin", "deregister", "deop", "demember", "deadmin", "lt", "featured", "featuretheme", "featurelink", "featuretext", "forcefeature", "ctogglecaps", "ctoggleflood", "topic", "cauth", "register", "deinvite", "cmeon", "cmeoff", "csilence", "csilenceoff", "cunmute", "cmutes", "cbans", "inviteonly", "ctoggleswear", "tempban", "say", "pokemon", "nature", "natures", "item", "ability", "notice", "featuredtheme", "warn", "rescind", "warnlog", "votecount", "vc", "whisper", "w", "tutorial", "teamtalk", "tt", "spawn", "tips", "pg", "topthemes", "windata", "update", "supdate", "nextevent", "eventthemes", "madmins", "disabledc", "enabledc", "seedisabled", "nonpeaks", "mywarns", "queue", "enqueue", "enq", "dequeue", "deq", "warnhelp", "unwarn", "checkwarns", "mafiawarns", "allwarns", "whodungoofd", "targetlog", "passmas", "enablenonpeak", "disablenonpeak", "unshove", "unslay", "enablequeue", "disablequeue", "topplayers", "resetjoindata", "mafiaversion", "smafiaadmin", "smafiasadmin", "smafiasuperadmin", "aliases", "smafiaadminoff", "smafiasadminoff", "smafiasuperadminoff", "sremove", "event", "delayevent", "updatestats", "featureint", "enableall"],
         dummy = /^dummy(?:\d+)?$/;
     
@@ -52,7 +52,7 @@ function mafiaChecker() {
                 lists.push("roles"+i);
                 ++i;
             }
-            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "noplur", "nolynch", "votesniping", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "rolesWin", "bot", "borderColor", "memory"].concat(lists), "Your theme");
+            checkAttributes(raw, ["name", "sides", "roles", "roles1"], ["villageCantLoseRoles", "author", "summary", "border", "killmsg", "killusermsg", "votemsg", "silentvotemsg", "lynchmsg", "tiedvotemsg", "novotemsg", "drawmsg", "minplayers", "votemods", "noplur", "nolynch", "votesniping", "lynchties", "checkNoVoters", "quickOnDeadRoles", "ticks", "silentVote", "delayedConversionMsg", "nonPeak", "changelog", "changelog2", "threadlink", "altname", "tips", "closedSetup", "macro", "variables", "spawnPacks", "silentNight", "rolesAreNames", "rolesWin", "bot", "borderColor", "memory"].concat(lists), "Your theme");
 
             if (checkType(raw.name, ["string"], "'theme.name'")) {
                 if (raw.name[raw.name.length - 1] == " ") {
@@ -82,6 +82,7 @@ function mafiaChecker() {
             checkType(raw.killmsg, ["string"], "'theme.killmsg'");
             checkType(raw.killusermsg, ["string"], "'theme.killusermsg'");
             checkType(raw.votemsg, ["string"], "'theme.votemsg'");
+            checkType(raw.silentvotemsg, ["string"], "'theme.silentvotemsg'");
             checkType(raw.lynchmsg, ["string"], "'theme.lynchmsg'");
             checkType(raw.tiedvotemsg, ["string"], "'theme.tiedvotemsg'");
             checkType(raw.novotemsg, ["string"], "'theme.novotemsg'");
@@ -91,10 +92,12 @@ function mafiaChecker() {
             checkType(raw.altname, ["string"], "'theme.altname'");
             checkType(raw.variables, ["object"], "'theme.variables'");
             checkType(raw.memory, ["object"], "theme.memory");
+            checkType(raw.variables, ["object"], "'theme.votemods'");
             checkValidValue(raw.nolynch, [true, false], "theme.nolynch");
             checkValidValue(raw.noplur, [true, false], "theme.noplur");
             checkValidValue(raw.votesniping, [true, false], "theme.votesniping");
             checkValidValue(raw.silentVote, [true, false], "theme.silentVote");
+            checkValidValue(raw.lynchties, [true, false], "theme.lynchties");
             checkValidValue(raw.checkNoVoters, [true, false], "theme.checkNoVoters");
             checkValidValue(raw.quickOnDeadRoles, [true, false], "theme.quickOnDeadRoles");
             checkValidValue(raw.delayedConversionMsg, [true, false], "theme.delayedConversionMsg");
@@ -461,6 +464,11 @@ function mafiaChecker() {
                                         break;
                                     case "memory":
                                         commonMandatory = commonMandatory.concat(["setMemory", "memoryFor"]);
+                                        break;
+                                    case "silence":
+                                        commonMandatory = commonMandatory.concat(["silenceCount"]);
+                                        break;
+                                    case "frenzy":
                                         break;
                                     default:
                                     if (dummy.test(c)) {

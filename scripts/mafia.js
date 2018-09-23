@@ -667,7 +667,9 @@ function Mafia(mafiachan) {
             theme.ticks = plain_theme.ticks;
             theme.votesniping = plain_theme.votesniping;
             theme.silentVote = plain_theme.silentVote;
+            theme.lynchties = plain_theme.lynchties;
             theme.votemsg = plain_theme.votemsg;
+            theme.silentvotemsg = plain_theme.silentvotemsg;
             theme.checkNoVoters = plain_theme.checkNoVoters;
             theme.quickOnDeadRoles = plain_theme.quickOnDeadRoles;
             theme.name = plain_theme.name;
@@ -698,6 +700,7 @@ function Mafia(mafiachan) {
             theme.novotemsg = plain_theme.novotemsg;
             theme.delayedConversionMsg = plain_theme.delayedConversionMsg || false;
             theme.noplur = plain_theme.noplur;
+            theme.votemods = plain_theme.votemods;
             theme.rolesAreNames = plain_theme.rolesAreNames;
             theme.macro = plain_theme.macro === undefined ? true : plain_theme.macro;
             if (plain_theme.rolesWin) {
@@ -1492,6 +1495,7 @@ function Mafia(mafiachan) {
         this.votedBy = {};
         this.votedByArchive = {};
         this.voteCount = 0;
+        this.silentvoteCount = 0;
         this.lynchees = [];
         this.ips = [];
         this.numjoins = {};
@@ -3321,7 +3325,7 @@ function Mafia(mafiachan) {
         }
     };
     this.voteForPlayer = function(src, commandData, canVoteTeam) {
-        var silentVote = mafia.theme.silentVote;
+        var silentVote = mafia.theme.silentVote || mafia.silentvoteCount > 0;
         var name = sys.name(src);
         SESSION.users(src).mafia_start = (new Date()).getTime();
         if (!this.isInGame(commandData)) {
@@ -3371,7 +3375,7 @@ function Mafia(mafiachan) {
             }
         }
         if (silentVote !== undefined && silentVote) {
-            var votemsg = mafia.theme.votemsg ? mafia.theme.votemsg : "~Player~ voted!";
+            var votemsg = mafia.theme.silentvotemsg ? mafia.theme.silentvotemsg : (mafia.theme.votemsg ? mafia.theme.votemsg : "~Player~ voted!");
             gamemsg(name, "You voted for " + commandData + "!");
             gamemsgAll(votemsg.replace(/~Player~/g, name).replace(/~Target~/g, commandData));
         } else {
@@ -4715,7 +4719,7 @@ function Mafia(mafiachan) {
                         if (pos === -1) {
                             targetData = "*";
                             targetRedirect = targetName.substring(pos2 + 1);
-                            targetName = targetName.substring(0, pos);
+                            targetName = targetName.substring(0, pos2);
                         }
                         else {
                             targetRedirect = targetName.substring(pos2 + 1);
@@ -4801,7 +4805,7 @@ function Mafia(mafiachan) {
                             var finalCurseCount = Action.curseCount || 2;
                             var commandIsDummy = isDummyCommand.test(command);
 
-                            if (["kill", "protect", "bomb", "dayprotect", "inspect", "distract", "daydistract", "poison", "safeguard", "stalk", "watch", "convert", "indoctrinate", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "voteBlock", "voteblock", "memory"].indexOf(command) === -1 && !commandIsDummy) {
+                            if (["kill", "protect", "bomb", "dayprotect", "inspect", "distract", "daydistract", "poison", "safeguard", "stalk", "watch", "convert", "indoctrinate", "copy", "curse", "detox", "dispel", "shield", "guard", "massconvert", "disguise", "redirect", "voteBlock", "voteblock", "memory", "silence", "frenzy"].indexOf(command) === -1 && !commandIsDummy) {
                                 continue;
                             }
                             if ((!mafia.isInGame(target)) && command != "stalk" && command != "watch") {
@@ -5593,6 +5597,15 @@ function Mafia(mafiachan) {
                                 var disguisemsg = ("disguisemsg" in Action ? Action.disguisemsg : "You disguised your target (~Target~) as ~Disguise~!").replace(/~Disguise~/g, mafia.theme.trrole(target.disguiseRole));
                                 gamemsg(player.name, formatArgs(disguisemsg, nightargs), undefined, undefined, true);
                             }
+                            else if (command == "silence") {
+                                mafia.silentvoteCount = Math.max(mafia.silentvoteCount, Action.silenceCount);
+                                gamemsgAll("The next vote has been silenced!", undefined, undefined, true);
+                            }
+                            else if (command == "frenzy") {
+                                target.frenzy = targetRedirect;
+                                var frenzymsg = ("frenzymsg" in Action ? Action.frenzymsg : "You must vote for your obsession (~RedirectTarget~) today or succumb to madness.");
+                                gamemsg(target.name, formatArgs(frenzymsg, nightargs), undefined, undefined, true);
+                            }
                             if ("addVote" in Action && mafia.isInGame(target.name) && targets.length > 0) {
                                 var dur = Math.floor("addVoteDuration" in Action ? Action.addVoteDuration : -1);
                                 target.addVote = {
@@ -5924,6 +5937,9 @@ function Mafia(mafiachan) {
                 var target = mafia.votes[pname];
                 // target play have been killed meanwhile by slay
                 if (!mafia.isInGame(target)) continue;
+                if (player.frenzy !== undefined && target == player.frenzy) {
+                    player.frenzy = undefined;
+                }
                 if (!voted.hasOwnProperty(target)) {
                     voted[target] = 0;
                     voters[target] = [];
@@ -5955,6 +5971,7 @@ function Mafia(mafiachan) {
                 }
                 voters[target].push(pname);
             }
+            
             var tie = true, maxi = 0, downed = noPlayer, voteshield;
             for (var x in voted) {
                 player = mafia.players[x];
@@ -5969,6 +5986,31 @@ function Mafia(mafiachan) {
                 for (var m in multipliers[x]) {
                     voted[x] *= multipliers[x][m];
                 }
+            }
+            if (mafia.theme.hasOwnProperty("votemods")) {
+                var premods = voted;
+                Array.prototype.sort.call(premods, function(a, b){return this[b]-this[a]});
+                for (var m in mafia.theme.votemods) {
+                    var mod = mafia.theme.votemods[m];
+                    switch (mod.modtype) {
+                        case "votecountordinal":
+                            var ordinal = 0, temp;
+                            for (var x in premods) {
+                                if (temp === undefined || premods[x] != temp) {
+                                    temp = premods[x];
+                                    ordinal++;
+                                }
+                                if (ordinal == mod.ordinal) {
+                                    voted[x] += mod.amount;
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            for (var x in voted) {
                 if (voted[x] == maxi) {
                     tie = true;
                 } else if (voted[x] > maxi) {
@@ -5978,12 +6020,8 @@ function Mafia(mafiachan) {
                 }
             }
 
-            if (mafia.theme.noplur && mafia.playerCount()/2 >= maxi) { //Checks if someone actually gets lynched
-                tie = true;
+            if (mafia.theme.noplur && mafia.playerCount()/2 >= maxi || (tie && !(mafia.theme.lynchties !== undefined && mafia.theme.lynchties))) { //Checks if someone actually gets lynched
                 downed = noPlayer;
-            }
-
-            if (tie) {
                 this.lynchees.push("No one");
                 currentStalk.push("Lynched: No one");
                 var votetiemsg = maxi > 0 ? mafia.theme.tiedvotemsg : mafia.theme.novotemsg;
@@ -6004,116 +6042,126 @@ function Mafia(mafiachan) {
                 gamemsgAll(null, votetiemsg);
 
                 mafia.collectedSlay();
-                if (mafia.testWin()) {
-                    return;
-                }
-                sendBorder();
             } else {
-                this.lynchees.push(downed);
-                var lynched = mafia.players[downed];
-                currentStalk.push("Lynched: " + lynched.name + " (" + lynched.role.translation + ")");
-                if ("lynch" in lynched.role.actions) {
-                    //Handled the same, no reason to duplicate code
-                    mafia.actionBeforeDeath(lynched, true);
-                    gamemsgAllArray(mafia.onDeathMsg);
-                    //Then we run only lynch things
-                    var lyn = lynched.role.actions.lynch;
-                    if ("killVoters" in lyn) {
-                        var votersList = voters[downed].concat(),
-                            r,
-                            target;
-
-                        if (votersList.indexOf(downed) !== -1) {
-                            votersList.splice(votersList.indexOf(downed), 1);
-                        }
-
-                        votersList = getFirstLast(votersList, ("first" in lyn.killVoters ? lyn.killVoters.first : 1), lyn.killVoters.last  || 0, lyn.killVoters.random  || 0);
-
-                        var actionMessage = (lyn.killVoters.message || "±Kill: ~Target~ died for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
-                        if (actionMessage.indexOf(":") === -1) {
-                            actionMessage = "±Kill: " + actionMessage;
-                        }
-                        gamemsgAll(actionMessage);
-                        for (r in votersList) {
-                            target = votersList[r];
-                            if (mafia.isInGame(target)) {
-                                mafia.kill(mafia.players[target]);
-                            }
-                        }
-                    }
-                    if ("convertVoters" in lyn) {
-                        var votersList = voters[downed].concat(),
-                            convertList = lyn.convertVoters.newRole,
-                            r,
-                            target;
-
-                        if (votersList.indexOf(downed) !== -1) {
-                            votersList.splice(votersList.indexOf(downed), 1);
-                        }
-                        votersList = getFirstLast(votersList, ("first" in lyn.convertVoters ? lyn.convertVoters.first : 1), lyn.convertVoters.last  || 0, lyn.convertVoters.random  || 0);
-
-                        for (r in votersList) {
-                            target = votersList[r];
-                            if (mafia.isInGame(target)) {
-                                target = mafia.players[target];
-
-                                var possibleRoles = Object.keys(convertList).shuffle();
-                                for (var nr in possibleRoles) {
-                                    if (convertList[possibleRoles[nr]].indexOf(target.role.role) != -1) {
-                                        mafia.setPlayerRole(target, possibleRoles[nr]);
-                                        break;
+                for (var x in voted) {
+                    if (voted[x] == maxi) {
+                        downed = x;
+                        this.lynchees.push(downed);
+                        var lynched = mafia.players[downed];
+                        currentStalk.push("Lynched: " + lynched.name + " (" + lynched.role.translation + ")");
+                        if ("lynch" in lynched.role.actions) {
+                            //Handled the same, no reason to duplicate code
+                            mafia.actionBeforeDeath(lynched, true);
+                            gamemsgAllArray(mafia.onDeathMsg);
+                            //Then we run only lynch things
+                            var lyn = lynched.role.actions.lynch;
+                            if ("killVoters" in lyn) {
+                                var votersList = voters[downed].concat(),
+                                    r,
+                                    target;
+        
+                                if (votersList.indexOf(downed) !== -1) {
+                                    votersList.splice(votersList.indexOf(downed), 1);
+                                }
+        
+                                votersList = getFirstLast(votersList, ("first" in lyn.killVoters ? lyn.killVoters.first : 1), lyn.killVoters.last  || 0, lyn.killVoters.random  || 0);
+        
+                                var actionMessage = (lyn.killVoters.message || "±Kill: ~Target~ died for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
+                                if (actionMessage.indexOf(":") === -1) {
+                                    actionMessage = "±Kill: " + actionMessage;
+                                }
+                                gamemsgAll(actionMessage);
+                                for (r in votersList) {
+                                    target = votersList[r];
+                                    if (mafia.isInGame(target)) {
+                                        mafia.kill(mafia.players[target]);
                                     }
                                 }
-                            } else {
-                                votersList.splice(votersList.indexOf(target), 1);
+                            }
+                            if ("convertVoters" in lyn) {
+                                var votersList = voters[downed].concat(),
+                                    convertList = lyn.convertVoters.newRole,
+                                    r,
+                                    target;
+        
+                                if (votersList.indexOf(downed) !== -1) {
+                                    votersList.splice(votersList.indexOf(downed), 1);
+                                }
+                                votersList = getFirstLast(votersList, ("first" in lyn.convertVoters ? lyn.convertVoters.first : 1), lyn.convertVoters.last  || 0, lyn.convertVoters.random  || 0);
+        
+                                for (r in votersList) {
+                                    target = votersList[r];
+                                    if (mafia.isInGame(target)) {
+                                        target = mafia.players[target];
+        
+                                        var possibleRoles = Object.keys(convertList).shuffle();
+                                        for (var nr in possibleRoles) {
+                                            if (convertList[possibleRoles[nr]].indexOf(target.role.role) != -1) {
+                                                mafia.setPlayerRole(target, possibleRoles[nr]);
+                                                break;
+                                            }
+                                        }
+                                    } else {
+                                        votersList.splice(votersList.indexOf(target), 1);
+                                    }
+                                }
+                                if (votersList.length > 0) {
+                                    var actionMessage = ("message" in lyn.convertVoters ? lyn.convertVoters.message : "~Target~ transformed for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
+                                    gamemsgAll(actionMessage, undefined, undefined, true);
+        
+                                    for (r in votersList) {
+                                        mafia.showOwnRole(sys.id(votersList[r]));
+                                    }
+                                }
                             }
                         }
-                        if (votersList.length > 0) {
-                            var actionMessage = ("message" in lyn.convertVoters ? lyn.convertVoters.message : "~Target~ transformed for having voted for ~Self~!").replace(/~Self~/g, lynched.name).replace(/~Target~/g, readable(votersList, "and"));
-                            gamemsgAll(actionMessage, undefined, undefined, true);
-
-                            for (r in votersList) {
-                                mafia.showOwnRole(sys.id(votersList[r]));
+        
+                        if ("lynch" in lynched.role.actions && "convertTo" in lynched.role.actions.lynch) {
+                            var newRole = lynched.role.actions.lynch.convertTo;
+                            var allmsg = (lynched.role.actions.lynch.lynchmsg || lynched.role.actions.lynch.convertmsg || "~Self~, the ~Old~ survived the lynch and became a ~New~!").replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
+                            gamemsgAll(allmsg, undefined, undefined, true); //lynchmsg || convertmsg || default msg. Will still allow convertTo and convertRoles in same object, but would require lynchmsg
+                            if (Array.isArray(newRole)) {
+                                newRole = newRole.random;
+                            }
+                            mafia.setPlayerRole(lynched, newRole);
+                            mafia.showOwnRole(sys.id(downed));
+                        } else {
+                            var roleName = typeof mafia.players[downed].role.actions.lynch == "object" && typeof mafia.players[downed].role.actions.lynch.revealAs == "string" ? colorizeRole(mafia.players[downed].role.actions.lynch.revealAs) : colorizeRole(mafia.players[downed].role.role);
+                            var lynchmsg = (mafia.theme.lynchmsg || "~Player~ (~Role~) was removed from the game!").replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
+                            var preventDeath = false;
+                            mafia.sendKillMsg = false;
+                            if (!("lynch" in lynched.role.actions)){
+                                //Now we run it so it checks for onDeath if there was no onLynch
+                                preventDeath = mafia.actionBeforeDeath(lynched, false);
+                                gamemsgAllArray(mafia.onDeathMsg, undefined, undefined, true);
+                            }
+                            if ((mafia.sendKillMsg) || (!preventDeath)) {
+                                gamemsgAll(lynchmsg, undefined, undefined, true);
+                            }
+                            if (!preventDeath) {
+                                mafia.removePlayer(mafia.players[downed]);
                             }
                         }
                     }
                 }
-
-                if ("lynch" in lynched.role.actions && "convertTo" in lynched.role.actions.lynch) {
-                    var newRole = lynched.role.actions.lynch.convertTo;
-                    var allmsg = (lynched.role.actions.lynch.lynchmsg || lynched.role.actions.lynch.convertmsg || "~Self~, the ~Old~ survived the lynch and became a ~New~!").replace(/~Self~/g, downed).replace(/~Old~/g, lynched.role.translation).replace(/~New~/g, mafia.theme.trrole(newRole)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
-                    gamemsgAll(allmsg, undefined, undefined, true); //lynchmsg || convertmsg || default msg. Will still allow convertTo and convertRoles in same object, but would require lynchmsg
-                    if (Array.isArray(newRole)) {
-                        newRole = newRole.random;
-                    }
-                    mafia.setPlayerRole(lynched, newRole);
-                    mafia.showOwnRole(sys.id(downed));
-                } else {
-                    var roleName = typeof mafia.players[downed].role.actions.lynch == "object" && typeof mafia.players[downed].role.actions.lynch.revealAs == "string" ? colorizeRole(mafia.players[downed].role.actions.lynch.revealAs) : colorizeRole(mafia.players[downed].role.role);
-                    var lynchmsg = (mafia.theme.lynchmsg || "~Player~ (~Role~) was removed from the game!").replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
-                    var preventDeath = false;
-                    mafia.sendKillMsg = false;
-                    if (!("lynch" in lynched.role.actions)){
-                        //Now we run it so it checks for onDeath if there was no onLynch
-                        preventDeath = mafia.actionBeforeDeath(lynched, false);
-                        gamemsgAllArray(mafia.onDeathMsg, undefined, undefined, true);
-                    }
-                    if ((mafia.sendKillMsg) || (!preventDeath)) {
-                        gamemsgAll(lynchmsg, undefined, undefined, true);
-                    }
-                    if (!preventDeath) {
-                        mafia.removePlayer(mafia.players[downed]);
-                    }
-                }
-
+                
                 mafia.collectedSlay();
                 mafia.onDeadRoles();
-                if (mafia.testWin()) {
-                    return;
-                }
-                sendBorder();
             }
-
+            
+            for (var p in mafia.players) {
+                p = mafia.players[p];
+                gamemsgAll(JSON.stringify(p), undefined, undefined, true);
+                if (p.frenzy !== undefined) {
+                    mafia.kill(p);
+                }
+            }
+            
+            if (mafia.testWin()) {
+                return;
+            }
+            sendBorder();
+            
             for (var p in mafia.players) {
                 p = mafia.players[p];
                 if (("duration" in p.addVote) && (p.addVote.duration > 0)) {
@@ -6129,6 +6177,7 @@ function Mafia(mafiachan) {
                     }
                 }
             }
+            mafia.silentvoteCount--;
 
             if (mafia.theme.closedSetup !== "full") {
                 mafia.sendRolesList();
@@ -9125,7 +9174,7 @@ this.beforeChatMessage = function (src, message, channel) {
                         gamemsg(srcname, phase + " " + number + state, "±Time");
                         sys.sendHtmlMessage(src, border, mafiachan);
                         this.showOwnRole(src);
-                        if (mafia.state === "day" && !mafia.theme.silentVote) {
+                        if (mafia.state === "day" && !mafia.theme.silentVote && !mafia.silentvoteCount > 0) {
                             this.showVoteCount(srcname, []);
                         }
                     } else {
