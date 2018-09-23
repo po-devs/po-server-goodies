@@ -7076,7 +7076,7 @@ function Mafia(mafiachan) {
                 }
             }
         }
-        var redi = command === "redirect";
+        var redi = command === "redirect" || command === "frenzy";
         if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "redirect")) {
             redi = true;
         }
