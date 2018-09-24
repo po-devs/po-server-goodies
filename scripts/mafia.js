@@ -1039,7 +1039,7 @@ function Mafia(mafiachan) {
                                 abilities += " bypassing the modes " + readable(ability.bypass, "and");
                             }
                             if ("avoidHax" in role.actions && role.actions.avoidHax.indexOf(a) != -1) {
-                                abilities += "(Cannot be detected by spies) ";
+                                abilities += " (Cannot be detected by spies)";
                             }
                             abilities += ". ";
                         }
@@ -3368,7 +3368,7 @@ function Mafia(mafiachan) {
                     mafia.teamVoters[name] = commandData;
                     return;
                 } else if (Array.isArray(teamvote) && teamvote.indexOf(target.role.role) !== -1) {
-                    gamemsg(name, "This person is your teammate! To vote them, use " + htmlLink("/Teamvote" + commandData.toCorrectCase()) + " or simply " + htmlLink("/Vote " + commandData.toCorrectCase())  + "  again.", undefined, undefined, true);
+                    gamemsg(name, "This person is your teammate! To vote them, use " + htmlLink("/Teamvote " + commandData.toCorrectCase()) + " or simply " + htmlLink("/Vote " + commandData.toCorrectCase())  + "  again.", undefined, undefined, true);
                     mafia.teamVoters[name] = commandData;
                     return;
                 }
@@ -3733,7 +3733,7 @@ function Mafia(mafiachan) {
                     return true;
                 }
                 var charge = mafia.getCharges(player, "standby", commandName);
-                var chargetxt = (action.chargesmsg || "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
+                var chargetxt = (chargesmsg in action ? action.chargesmsg : "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
                 gamemsg(player.name, chargetxt);
             }
         };
@@ -4692,7 +4692,7 @@ function Mafia(mafiachan) {
                     }
                     if (mafia.getCharges(player, "night", o.action) !== undefined && targets.length > 0) {
                         var charge = mafia.getCharges(player, "night", o.action);
-                        var chargetxt = ( Action.chargesmsg || "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
+                        var chargetxt = (chargesmsg in Action ? Action.chargesmsg : "You have ~Charges~ charges remaining").replace(/~Charges~/g, charge);
                         gamemsg(player.name, chargetxt);
                     }
 
