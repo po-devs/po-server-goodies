@@ -5988,46 +5988,16 @@ function Mafia(mafiachan) {
                 }
             }
             if (mafia.theme.hasOwnProperty("votemods")) {
-                var premods = {};
-                var premodsSorted = {};
-                for (var x in voted) {
-                    premods[x] = voted[x];
-                }
-                
-                while (Object.keys(premods).length > 0) {
-                    var maxVoted = [];
-                    var maxv = undefined;
-                    for (var x in premods) {
-                        if (premods[x] == maxv) {
-                            var temp = {};
-                            temp[x] = premods[x];
-                            maxVoted.push(temp);
-                        } else if (maxv === undefined || premods[x] > maxv) {
-                            maxv = premods[x];
-                            maxVoted = [];
-                            var temp = {};
-                            temp[x] = premods[x];
-                            maxVoted.push(temp);
-                        }
-                    }
-                    for (var x in maxVoted) {
-                        var target = Object.keys(maxVoted[x])[0];
-                        premodsSorted[target] = premods[target];
-                        delete premods[target];
-                    }
-                }
-                for (var x in voted) {
-                    premods[x] = voted[x];
-                }
-
+                var premods = voted;
+                Array.prototype.sort.call(premods, function(a, b){return this[b]-this[a]});
                 for (var m in mafia.theme.votemods) {
                     var mod = mafia.theme.votemods[m];
                     switch (mod.modtype) {
                         case "votecountordinal":
                             var ordinal = 0, temp;
-                            for (var x in premodsSorted) {
-                                if (temp === undefined || premodsSorted[x] != temp) {
-                                    temp = premodsSorted[x];
+                            for (var x in premods) {
+                                if (temp === undefined || premods[x] != temp) {
+                                    temp = premods[x];
                                     ordinal++;
                                 }
                                 if (ordinal == mod.ordinal) {
@@ -6160,7 +6130,7 @@ function Mafia(mafiachan) {
                             var lynchmsg = (mafia.theme.lynchmsg || "~Player~ (~Role~) was removed from the game!").replace(/~Player~/g, downed).replace(/~Role~/g, roleName).replace(/~Side~/g, mafia.theme.trside(mafia.players[downed].role.side)).replace(/~Count~/g, Math.round(maxi * 100) / 100);
                             var preventDeath = false;
                             mafia.sendKillMsg = false;
-                            if (!("lynch" in lynched.role.actions)) {
+                            if (!("lynch" in lynched.role.actions)){
                                 //Now we run it so it checks for onDeath if there was no onLynch
                                 preventDeath = mafia.actionBeforeDeath(lynched, false);
                                 gamemsgAllArray(mafia.onDeathMsg, undefined, undefined, true);
@@ -7111,12 +7081,6 @@ function Mafia(mafiachan) {
             redi = true;
         }
         if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.indexOf("redirect") !== -1)) {
-            redi = true;
-        }
-        if (("command" in player.role.actions.night[command]) && (player.role.actions.night[command].command === "frenzy")) {
-            redi = true;
-        }
-        if (("command" in player.role.actions.night[command]) && (Array.isArray(player.role.actions.night[command].command)) && (player.role.actions.night[command].command.indexOf("frenzy") !== -1)) {
             redi = true;
         }
 
