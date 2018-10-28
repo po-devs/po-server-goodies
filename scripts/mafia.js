@@ -2385,6 +2385,7 @@ function Mafia(mafiachan) {
         if (this.players[player.name].role.actions.reviveAs) {
             mafia.setPlayerRole( player,this.players[player.name].role.actions.reviveAs );
         }
+        this.dead.splice(this.dead.indexOf( player.name ), 1);
         gamemsgAllArray(mafia.onReviveMsg, undefined, undefined, true);
         //delete this.deadRoles[player.name];
     };
