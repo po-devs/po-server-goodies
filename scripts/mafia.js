@@ -1451,12 +1451,14 @@ function Mafia(mafiachan) {
     this.correctCase = function (string) {
         var lstring = string.toLowerCase().trim(); // try to trim around if there's extra whitespace
         for (var x in this.players) {
-            if (x.toLowerCase() == lstring)
+            if (x.toLowerCase() == lstring) {
                 return this.players[x].name;
+            }
         }
         for (var y in this.deadRoles) {
-            if (y.toLowerCase() == lstring)
+            if (y.toLowerCase() == lstring) {
                 return this.deadRoles[y].name;
+            }
         }
         return noPlayer;
     };
