@@ -2378,7 +2378,7 @@ function Mafia(mafiachan) {
         return out;
     };
     this.revivePlayer = function (player,noOnRevive) {
-        this.players[ player.name ] = this.deadRoles[ player.name ];
+        this.players[ player.name ] = this.duplicatePlayer( this.deadRoles[ player.name ] );
         if (!(noOnRevive)) {
             this.actionAfterRevive( this.players[ player.name ],false );
         }
@@ -2387,7 +2387,7 @@ function Mafia(mafiachan) {
         }
         this.dead.splice(this.dead.indexOf( player.name ), 1);
         gamemsgAllArray(mafia.onReviveMsg, undefined, undefined, true);
-        //delete this.deadRoles[player.name];
+        delete this.deadRoles[player.name];
     };
     this.actionBeforeDeath = function (player, onLynch, showborder) {
         mafia.onDeathMsg = [];
@@ -2513,7 +2513,9 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = (onDeath.convertmsg || "Because ~Self~ "+verb+", the ~Old~ became a ~New~!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/, mafia.theme.trrole(newRole));
-                            mafia.onDeathMsg.push(actionMessage);
+                            if (onDeath.convertmsg !== "") {
+                                mafia.onDeathMsg.push(actionMessage);
+                            }
                         }
                         needSeparator = true;
                     }
@@ -2545,7 +2547,9 @@ function Mafia(mafiachan) {
                             singleAffected = singleAffected.concat(affected);
                         } else {
                             actionMessage = (onDeath.cursemsg || "Because ~Self~ "+verb+", the ~Old~ got cursed and will become a ~New~ soon!").replace(/~Self~/g, player.name).replace(/~Target~/g, readable(affected, "and")).replace(/~Old~/g, mafia.theme.trrole(r)).replace(/~New~/g, mafia.theme.trrole(cursedRole)).replace(/~Count~/g, count || 2);
-                            mafia.onDeathMsg.push(actionMessage);
+                            if (onDeath.cursemsg !== "") {
+                                mafia.onDeathMsg.push(actionMessage);
+                            }
                         }
                         needSeparator = true;
                     }
@@ -6457,7 +6461,7 @@ function Mafia(mafiachan) {
             }
             mafia.silentvoteCount--;
 
-            if (mafia.theme.closedSetup !== "full") {
+            if (mafia.theme.closedSetup !== "full" && mafia.theme.closedSetup !== "night1") {
                 mafia.sendRolesList();
             }
             mafia.sendCurrentPlayers();
