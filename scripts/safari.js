@@ -910,9 +910,9 @@ function Safari() {
             excludeTypes: [], //Types that will be excluded even if it matches the type above
             include: [16, 17, 18, 25, 163, 164], //Pokémon that do not match any of the criteria above, but will be included anyway
             exclude: [492, 649], //Pokémon that matches all of the previous criteria, but will be excluded anyway,
-            customBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
-            maxBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
-            minBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
+            editBST: { "289": 600 }, //Makes a pokémon count as a different BST for this theme. In the example, Pokémon #289 (Slaking) will be considered a 600 BST Pokémon for this theme.
+            ceilBST: 600, //Choose a different maximum BST for pokémon to spawn. Optional, defaults to 600.
+            floorBST: 300 //Choose a different minimum BST for pokémon to spawn. Optional, defaults to 300.
         }
     */
     var contestThemes = {};
@@ -2117,7 +2117,7 @@ function Safari() {
         }
         var bg = colors[type].bg;
         
-        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
+        return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
     }
     function generation(pokeNum, wordy) {
         var num = pokeInfo.species(pokeNum);
@@ -2881,9 +2881,10 @@ function Safari() {
             pokeId,
             goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
             shiny = sys.rand(0, shinyChance - (goldenBonus ? itemData.golden.shinyBonus : 0)) < 1,
-            maxStats,
+            statCap,
             amount = amt || 1,
             ignoreForms = false;
+            canLegend = true;
 
         if (amount > 1) {
             shiny = false;
@@ -2892,6 +2893,7 @@ function Safari() {
             shiny = true;
         }
         if (dexNum) {
+            //Forced spawn of a specific mon
             num = parseInt(dexNum, 10);
             pokeId = poke(num);
             if (makeShiny) {
@@ -2901,18 +2903,26 @@ function Safari() {
             var cTheme = themeOverride || currentTheme;
             if (cTheme) {
                 var theme = contestThemes[cTheme];
-                maxStats = sys.rand(theme.minBST || 300, theme.maxBST || 601);
-                var list = [], bst, e, id;
-                for (e = 1; e < 803; e++) {
-                    bst = "customBST" in theme && e in theme.customBST ? theme.customBST[e] : getBST(e);
-                    if (this.validForTheme(e, cTheme) && bst <= maxStats) {
-                        list.push(e);
+                statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
+                if (!(goldenBonus) && (leader)) {
+                    canLegend = false;
+                }
+                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.25;
+                for (i = 1; i < 803; i++) {
+                    bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                    if (bst > 600) {
+                        extrabst = (bst - 600);
+                        bst = 600;
+                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                    }
+                    if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
+                        list.push(i);
                     }
                 }
-                for (e in theme.include) {
-                    id = theme.include[e];
-                    bst = "customBST" in theme && id in theme.customBST ? theme.customBST[id] : getBST(id);
-                    if (this.validForTheme(id, cTheme) && bst <= maxStats && list.indexOf(id) === -1) {
+                for (h in theme.include) {
+                    id = theme.include[h];
+                    bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                    if (this.validForTheme(id, cTheme) && bst <= statCap && list.indexOf(id) === -1) {
                         list.push(id);
                     }
                 }
@@ -2924,10 +2934,10 @@ function Safari() {
                 ignoreForms = true;
             }
             else {
-                var defTheme = contestThemes.hasOwnProperty("none") ? contestThemes.none : {"name":"Default","types":[],"excludeTypes":[],"include":[],"exclude":[],"customBST":{},"minBST":300,"maxBST":600,"icon":0};
-                var maxRoll = bstLimit || defTheme.maxBST + (goldenBonus ? itemData.golden.bstBonus : 0);
+                var defTheme = contestThemes.hasOwnProperty("none") ? contestThemes.none : {"name":"Default","types":[],"excludeTypes":[],"include":[],"exclude":[],"editBST":{},"floorBST":300,"ceilBST":600,"icon":0};
+                var maxRoll = bstLimit || 601 + (goldenBonus ? itemData.golden.bstBonus : 0);
                 var bst;
-                maxStats = sys.rand(defTheme.minBST + (goldenBonus ? itemData.golden.minBstBonus : 0), maxRoll);
+                statCap = sys.rand(300 + (goldenBonus ? itemData.golden.minBstBonus : 0), maxRoll);
                 if (leader) {
                     var list = [], loops = 0, found = false,
                         atk1 = sys.type(sys.pokeType1(leader)),
@@ -2936,12 +2946,14 @@ function Safari() {
 
                     do {
                         num = sys.rand(1, 803);
-                        bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
-                        if (bst <= maxStats) {
+                        bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
+                        if (bst <= statCap) {
                             var typeBonus = this.checkEffective(atk1, atk2, sys.type(sys.pokeType1(num)), sys.type(sys.pokeType2(num)), false, player.costume === "inver");
-                            if (typeBonus > 1) {
-                                found = true;
-                                break;
+                            if ((typeBonus > 1)) {
+                                if (bst < 600 || (!(isLegendary(num))) || goldenBonus) {
+                                    found = true;
+                                    break;
+                                }
                             } else {
                                 list.push(num);
                             }
@@ -2953,9 +2965,9 @@ function Safari() {
                         if (list.length === 0) {
                             do {
                                 num = sys.rand(1, 803);
-                                bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
+                                bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                                 pokeId = poke(num + (shiny ? "" : 0));
-                            } while (!pokeId || bst > maxStats);
+                            } while (!pokeId || bst > statCap);
                         } else {
                             num = list[sys.rand(0, list.length)];
                         }
@@ -2964,9 +2976,9 @@ function Safari() {
                 } else {
                     do {
                         num = sys.rand(1, 803);
-                        bst = defTheme.hasOwnProperty("customBST") && defTheme.customBST.hasOwnProperty(""+num) ? defTheme.customBST[""+num] : getBST(num);
+                        bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         pokeId = poke(num + (shiny ? "" : 0));
-                    } while (!pokeId || bst > maxStats);
+                    } while (!pokeId || bst > statCap);
                 }
             }
         }
@@ -3503,7 +3515,7 @@ function Safari() {
         if (theme.include.indexOf(pokeNum) !== -1) {
             return true;
         }
-        var bst = theme.customBST[pokeNum] || getBST(pokeNum);
+        var bst = theme.editBST[pokeNum] || getBST(pokeNum);
         if (bst > theme.maxBST) {
             return false;
         }
@@ -19959,13 +19971,13 @@ function Safari() {
         var showSlot = function(n) {
             var c = remain.contains(n) ? '#DDDDDD' : '#FCD116';
             var c2 = remain.contains(n) ? '#555555' : '#FCD116';
-            return '<background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
+            return '<background color="'+c2+'"><font style="background-color:'+c+';"> ' + pokeInfo.icon(n) + ' </font></background>';
         };
-        this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(5, 10).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(10, 15).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(15, 20).map(showSlot).join(" "), null, null, true);
-        this.sendMessage(viewer, " " + card.slice(20, 25).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(0, 5).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(5, 10).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(10, 15).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(15, 20).map(showSlot).join(" "), null, null, true);
+        this.sendMessage(viewer, " " + card.slice(20, 25).map(showSlot).join(" "), null, null, true);
     };
     Bingo.prototype.fillCard = function(name) {
         var card = this.cards[name], remain = this.remainingNumbers.concat().shuffle(), n;
@@ -26151,3 +26163,4 @@ function Safari() {
     };
 }
 module.exports = new Safari();
+  
