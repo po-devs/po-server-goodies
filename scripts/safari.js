@@ -6226,7 +6226,13 @@ function Safari() {
         if (hax) {
             if (currentPokemon) {
                 safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
+<<<<<<< HEAD
                 safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
+=======
+                if (command === "scare") {
+                    safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
+                }
+>>>>>>> d8715a3d5f4bf6605c72e9e84cc3f807b9ccde9f
                 if (isRare(currentPokemon)) {
                     sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
                 }
