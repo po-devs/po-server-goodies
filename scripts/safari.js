@@ -2876,7 +2876,7 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest) {
         var num,
             pokeId,
             goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
@@ -2982,79 +2982,89 @@ function Safari() {
                 }
             }
         }
-        if ((isRare(num) || shiny) && !dexNum) {
-            amount = 1;
-            if ((isLegendary(num) || shiny) && contestCount > 0 && contestCount % 2 === 0) {
-                wildEvent = true;
+        if (spawnTest) {
+            var m = "";
+            if (isLegendary(num)) {
+                m = "LEGEND: "
             }
+            m += sys.pokemon(num) + " ";
+            return m;
         }
-
-        if (!ignoreForms && num in wildForms) {
-            var pickedForm = sys.rand(0, wildForms[num] + 1);
-            num = pokeInfo.calcForme(num, pickedForm);
-        }
-        pokeId = poke(num + (shiny ? "" : 0));
-        currentPokemon = shiny ? "" + num : num;
-        currentPokemonCount = lastPokemonCount = amount;
-        currentThrows = getMaxThrows(num, amount, shiny);
-
-        var disguise, appearance, multiplier = 1;
-        if (appearAs) {
-            disguise = true;
-            appearance = appearAs.num;
-            //At this point changing shiny is purely aesthetic and won't affect the caught pokemon
-            shiny = appearAs.shiny;
-        } else {
-            disguise = [132, 151, 570, 571].contains(num);
-            if (disguise && chance(0.6)) {
-                appearance = sys.rand(1,803);
-                if (shiny) {
-                    multiplier = 5;
+        else {
+            if ((isRare(num) || shiny) && !dexNum) {
+                amount = 1;
+                if ((isLegendary(num) || shiny) && contestCount > 0 && contestCount % 2 === 0) {
+                    wildEvent = true;
                 }
+            }
+
+            if (!ignoreForms && num in wildForms) {
+                var pickedForm = sys.rand(0, wildForms[num] + 1);
+                num = pokeInfo.calcForme(num, pickedForm);
+            }
+            pokeId = poke(num + (shiny ? "" : 0));
+            currentPokemon = shiny ? "" + num : num;
+            currentPokemonCount = lastPokemonCount = amount;
+            currentThrows = getMaxThrows(num, amount, shiny);
+
+            var disguise, appearance, multiplier = 1;
+            if (appearAs) {
+                disguise = true;
+                appearance = appearAs.num;
+                //At this point changing shiny is purely aesthetic and won't affect the caught pokemon
+                shiny = appearAs.shiny;
             } else {
+                disguise = [132, 151, 570, 571].contains(num);
+                if (disguise && chance(0.6)) {
+                    appearance = sys.rand(1,803);
+                    if (shiny) {
+                        multiplier = 5;
+                    }
+                } else {
+                    disguise = false;
+                }
+            }
+            currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
+            var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
+            var currentId = poke(currentPokemonDisplay);
+
+            if (currentDisplay === currentPokemon) {
                 disguise = false;
             }
-        }
-        currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
-        var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
-        var currentId = poke(currentPokemonDisplay);
+            var t1 = sys.type(sys.pokeType1(currentPokemon));
+            var t2 = sys.type(sys.pokeType2(currentPokemon));
+            currentPokemonAction = photoActions.Any.concat(photoActions[t1], (t2 !== "???" ? photoActions[t2] : [])).random();
+            currentPokemonMoodRate = sys.rand(1, 31);
+            var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
+            currentPokemonMood = photoMood[mood].random();
+            
+            var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
-        if (currentDisplay === currentPokemon) {
-            disguise = false;
-        }
-        var t1 = sys.type(sys.pokeType1(currentPokemon));
-        var t2 = sys.type(sys.pokeType2(currentPokemon));
-        currentPokemonAction = photoActions.Any.concat(photoActions[t1], (t2 !== "???" ? photoActions[t2] : [])).random();
-        currentPokemonMoodRate = sys.rand(1, 31);
-        var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
-        currentPokemonMood = photoMood[mood].random();
-        
-        var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
-
-        var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
-        var appmsg = wildPokemonMessage.format(currentId, bst, term);
-        if (amount > 1) {
-            var ret = [];
-            ret += "<hr><center>" + appmsg + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
-            for (var i = 0; i < amount; i++) {
-                ret += pokeInfo.sprite(currentPokemonDisplay);
+            var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
+            var appmsg = wildPokemonMessage.format(currentId, bst, term);
+            if (amount > 1) {
+                var ret = [];
+                ret += "<hr><center>" + appmsg + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "");
+                for (var i = 0; i < amount; i++) {
+                    ret += pokeInfo.sprite(currentPokemonDisplay);
+                }
+                ret += "</center><hr>";
+                sendAll(ret, true, true);
+            } else {
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", true, true);
             }
-            ret += "</center><hr>";
-            sendAll(ret, true, true);
-        } else {
-            sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", true, true);
+            var onChannel = sys.playersOfChannel(safchan);
+            for (var e in onChannel) {
+                ballMacro(onChannel[e]);
+            }
+            preparationPhase = sys.rand(5, 8);
+            preparationThrows = {};
+            preparationFirst = null;
+            if (contestCount > 0) {
+                this.compileThrowers();
+            }
+            lastWild = now();
         }
-        var onChannel = sys.playersOfChannel(safchan);
-        for (var e in onChannel) {
-            ballMacro(onChannel[e]);
-        }
-        preparationPhase = sys.rand(5, 8);
-        preparationThrows = {};
-        preparationFirst = null;
-        if (contestCount > 0) {
-            this.compileThrowers();
-        }
-        lastWild = now();
     };
     this.startContest = function(commandData) {
         if (currentPokemon && isRare(currentPokemon)) {
@@ -6077,7 +6087,7 @@ function Safari() {
     };
 
     /* Items */
-    this.throwBait = function (src, commandData, golden, hax) {
+    this.throwBait = function (src, commandData, golden, hax, iterations) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -6192,14 +6202,23 @@ function Safari() {
                 lastBaiters.push(sys.name(src).toLowerCase());
             }
 
-            var p = player.nextSpawn;
-            if (p.pokemon.num) {
-                safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
-                p.pokemon = p.disguise = {};
-                p.amt = 1;
-            } else {
-                var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
-                safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+            if (iterations) {
+                var out = "Spawned: ";
+                for (x = 0; x < 300; x++) {
+                    out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
+                }
+                safaribot.sendMessage(src, out, safchan);
+            }
+            else {
+                var p = player.nextSpawn;
+                if (p.pokemon.num) {
+                    safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
+                    p.pokemon = p.disguise = {};
+                    p.amt = 1;
+                } else {
+                    var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
+                    safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
+                }
             }
             currentPokemonAction = "eating";
             safari.throwBall(src, commandData, true);
@@ -24481,6 +24500,10 @@ function Safari() {
             }
             if (command === "gbtest") {
                 safari.throwBait(src, commandData, true, true);
+                return true;
+            }
+            if (command === "gb300") {
+                safari.throwBait(src, commandData, true, true, true);
                 return true;
             }
             if (command === "tourgift") {
