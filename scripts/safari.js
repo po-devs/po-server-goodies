@@ -6077,7 +6077,7 @@ function Safari() {
     };
 
     /* Items */
-    this.throwBait = function (src, commandData, golden) {
+    this.throwBait = function (src, commandData, golden, hax) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -6148,26 +6148,28 @@ function Safari() {
         } else if (l >= 1 && list[l] - list[l-1] < 1800) {
             slip = 1;
         }
-        if (slip) {
-            var n = now(), amt = sys.rand(2, 3 + slip) * 1000;
-            player.cooldowns.bait = (player.cooldowns.bait > n ? player.cooldowns.bait : n) + amt;
-            safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
-            return;
-        }
-        if (golden) {
-            if (goldenBaitCooldown > 0) {
-                safaribot.sendMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+        if (!(hax)) {
+            if (slip) {
+                var n = now(), amt = sys.rand(2, 3 + slip) * 1000;
+                player.cooldowns.bait = (player.cooldowns.bait > n ? player.cooldowns.bait : n) + amt;
+                safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
                 return;
             }
-        } else {
-            if (baitCooldown > 0) {
-                safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+            if (golden) {
+                if (goldenBaitCooldown > 0) {
+                    safaribot.sendMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+                    return;
+                }
+            } else {
+                if (baitCooldown > 0) {
+                    safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+                    return;
+                }
+            }
+            if (player.cooldowns.bait > now()) {
+                safaribot.sendMessage(src, "You can't use " + bName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again!", safchan);
                 return;
             }
-        }
-        if (player.cooldowns.bait > now()) {
-            safaribot.sendMessage(src, "You can't use " + bName + " now! Please wait " + timeLeftString(player.cooldowns.bait) + " before throwing again!", safchan);
-            return;
         }
 
         player.balls[item] -= 1;
@@ -6221,6 +6223,24 @@ function Safari() {
         }
         safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
         this.saveGame(player);
+        if (hax) {
+            if (currentPokemon) {
+                safaribot.sendMessage(src, "You glared at the Wild Pokémon until they ran away!", safchan);
+                if (command === "scare") {
+                    safaribot.sendAll(sys.name(src) + " scared " + (currentPokemonCount > 1 ? "all " : "") + "the " + poke(currentDisplay) + " away!", safchan);
+                }
+                if (isRare(currentPokemon)) {
+                    sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::was " + command + "d by " + sys.name(src) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+                }
+                resetVars(true);
+                if (contestCount <= 0) {
+                    safari.runPendingActive();
+                }
+            }
+            checkUpdate();
+            return true;
+            }
+        }
     };
     this.throwRock = function (src, commandData) {
         if (!validPlayers("both", src, commandData, "You cannot throw  " + an(finishName("rock")) + " at yourself!")) {
@@ -24404,6 +24424,7 @@ function Safari() {
                     break;
                     case "ball":
                     case "bait":
+                    case "golden":
                     case "stick":
                     case "costume":
                     case "rock":
@@ -24459,6 +24480,10 @@ function Safari() {
                 } else {
                     safaribot.sendMessage(src, "This is not a valid quest. Valid quests are: " + readable(allQuests, "and") + ".", safchan);
                 }
+                return true;
+            }
+            if (command === "gbtest") {
+                safari.throwBait(src, commandData, true, true);
                 return true;
             }
             if (command === "tourgift") {
