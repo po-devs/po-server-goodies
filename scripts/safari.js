@@ -6239,7 +6239,6 @@ function Safari() {
             }
             checkUpdate();
             return true;
-            }
         }
     };
     this.throwRock = function (src, commandData) {
