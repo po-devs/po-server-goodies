@@ -2038,7 +2038,7 @@ function Mafia(mafiachan) {
         }
 
         if (src === null) {
-            //mafia.mafiaStats.updateStartData("*voted", this.theme.name);
+            mafia.mafiaStats.updateStartData("*voted", this.theme.name);
         } else if (src == "Event") {
             sendBorder();
             if (this.theme.name == defaultThemeName) {
@@ -2049,7 +2049,7 @@ function Mafia(mafiachan) {
             gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!", undefined, undefined, true);
             sendBorder();
             sendChanAll("", mafiachan);
-            //mafia.mafiaStats.updateStartData("*Event", this.theme.name);
+            mafia.mafiaStats.updateStartData("*Event", this.theme.name);
         } else {
             sendChanAll("", mafiachan);
             sendBorder();
@@ -2061,7 +2061,7 @@ function Mafia(mafiachan) {
             gamemsgAll("Type <a href=\"po:send//join\">/Join</a> to enter the game!", undefined, undefined, true);
             sendBorder();
             sendChanAll("", mafiachan);
-            //mafia.mafiaStats.updateStartData(srcname, this.theme.name);            
+            mafia.mafiaStats.updateStartData(srcname, this.theme.name);            
         }
 
         var playerson = sys.playerIds();
@@ -4732,7 +4732,7 @@ function Mafia(mafiachan) {
             }
 
             currentStalk.push("Players: " + Object.keys(mafia.players).map(name_trrole, mafia.theme).join(", "));
-            //mafia.mafiaStats.updateJoinData(mafia.signups);
+            mafia.mafiaStats.updateJoinData(mafia.signups);
             gameNight.gamesPlayed++;
             if (mafia.signups.length >= 17) {
                 for (var i = 0; i < mafia.signups.length; i++) {
