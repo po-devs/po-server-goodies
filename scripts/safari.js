@@ -3884,12 +3884,12 @@ function Safari() {
             if (ball === "mono") {
                 player.records.catchMono += 1;
             }
-            if (ball === "clone") {
-                player.records.catchClone += 1;
-            }
 
             var clonedAmount = 0;
             if (ball === "clone" || crystalEffect.effect === "clone") {
+                if (ball === "clone") {
+                    player.records.catchClone += 1;
+                }
                 var costumed = player.costume === "scientist";
                 if (costumed && chance(costumeData.scientist.bonusChance) && !isLegend && !isShiny) {
                     //TWO CLONES
@@ -15511,8 +15511,7 @@ function Safari() {
             this.movingFloor = false;
         }
         else if (this.currentRoom === null) {
-            var cont = true, x = this.recentRooms.length;
-            while (cont) {
+            for (var x = 0; x <= this.recentRooms.length; x++) {
                 var type = randomSample({
                     horde: 11,
                     riddle: 11,
@@ -15523,10 +15522,7 @@ function Safari() {
                     empty: 9,
                     strong: 13
                 });
-                if ((this.recentRooms.indexOf(type) > x) || this.recentRooms.indexOf(type) === -1) {
-                    cont = false;
-                }
-                x--;
+                if (!this.recentRooms.slice(0, this.recentRooms.length - x).contains(type)) { break; }
             }
             this.room++;
             var roomDuration = 2;
