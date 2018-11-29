@@ -4526,6 +4526,7 @@ function Mafia(mafiachan) {
             savePlayedGames(true);
             mafia.mafiaStats.players = mafia.signups.length;
             mafia.mafiaStats.theme = mafia.theme.name;
+            mafia.passed = [];
 
             currentStalk.push("*** ::: ::: Log for " + mafia.theme.name + "-themed mafia game ::: ::: ***");
             var minp;
@@ -4822,6 +4823,7 @@ function Mafia(mafiachan) {
             gamemsgAll(null, "Times Up! ");
 
             mafia.compilePhaseStalk("NIGHT PHASE " + mafia.time.nights);
+            mafia.passed = [];
 
             var nightkill = false;
             var getTeam = function (role, commonTarget) {
@@ -5026,6 +5028,31 @@ function Mafia(mafiachan) {
                         if ("userMustVisit" in Action) {
                             if (Action.userMustVisit != player.name in stalkTargets) {
                                 gamemsg(player.name, "Your " + o.action + " didn't work because you were " + (Action.userMustVisit ? "not " : "") + "visiting someone else during the night!");
+                                continue;
+                            }
+                        }
+                        if ("checkMemory" in Action) {
+                            var value = Action.checkMemory.value;
+                            var stat = Action.checkMemory.stat;
+                            var consume = Action.checkMemory.consume;
+                            var msg = Action.checkMemory.msg ? Action.checkMemory.msg : "";
+                            var failmsg = Action.checkMemory.failmsg ? Action.checkMemory.failmsg : "";
+                            if (isNaN(value)) {
+                                value = 1;
+                            }
+                            if (!(player.memory[stat])) {
+                                continue;
+                            }
+                            if (player.memory[stat] >= value) {
+                                msg = msg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
+                                gamemsg(player.name, msg );
+                                if (consume) {
+                                    player.memory[stat] = (player.memory[stat] - value);
+                                }
+                            }
+                            else {
+                                failmsg = failmsg.replace(/~Command~/g, o.action).replace(/~Stat~/g, stat).replace(/~Required~/g, value).replace(/~Amount~/g, player.memory[stat]);
+                                gamemsg(player.name, failmsg );
                                 continue;
                             }
                         }
@@ -5432,6 +5459,27 @@ function Mafia(mafiachan) {
                                                     total = Math.min(hold * piece.set[1], total);
                                                 }
                                             }
+                                            if ("min" in piece) {
+                                                hold = piece.set[0];
+                                                if (typeof hold === "string") {
+                                                    if (hold.slice(0,5) === "self:") {
+                                                        hold = hold.slice(5);
+                                                        if ((hold in player.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = player.memory[hold];
+                                                        }
+                                                    }
+                                                    else if (hold.slice(0,7) === "target:") {
+                                                        hold = hold.slice(7);
+                                                        if ((hold in target.memory) && ((mafia.theme.memory[hold] === "value") || (mafia.theme.memory[hold] === "integer"))) {
+                                                            hold = target.memory[hold];
+                                                        }
+                                                    }
+                                                }
+                                                if (!(isNan(hold)) && (!(isNan(piece.set[1])))) { //Do not change this to an ELSE statement
+                                                    total = Math.max(hold * piece.set[1], total);
+                                                }
+                                            }
+                                            obj.memory[entry] = total;
                                             break;
                                     }
                                 }
@@ -6082,6 +6130,7 @@ function Mafia(mafiachan) {
             this.eventTimeBoost();
 
             mafia.compilePhaseStalk("STANDBY PHASE " + mafia.time.days);
+            mafia.passed = [];
 
             if (Object.keys(mafia.usersToSlay).length !== 0) {
                 sendBorder();
@@ -6171,6 +6220,7 @@ function Mafia(mafiachan) {
         day: function () {
             sendBorder();
             gamemsgAll(null, "Times Up! ");
+            mafia.passed = [];
 
             mafia.compilePhaseStalk("VOTING PHASE " + mafia.time.days);
 
@@ -7792,6 +7842,59 @@ function Mafia(mafiachan) {
             }
             return;
         }
+        if (command === "pass") {
+            if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
+                name = sys.name(src);
+
+                if (!mafia.passed) {
+                    mafia.passed = [];
+                }
+
+                if (mafia.passed.indexOf(name) !== -1) {
+                    mafia.passed.push(name);
+
+                    if ((mafia.passed.length >= (Object.keys(this.players).length))) {
+                        gamemsgAll( toColor( "All players have passed, so the game continues to the next phase.", "#367be2" ), mafiachan);
+                        mafia.ticks = 0;
+                    }
+                    else if ((mafia.passed.length === (Object.keys(this.players).length)) - 1) {
+                        for (var p in this.players) {
+                            if ((mafia.passed.indexOf(this.players[p].name)) === -1) {
+                                break;
+                            }
+                        }
+                        gamemsg(this.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
+                    }
+                    else {
+                        gamemsg(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
+                    }
+                }
+                else {
+                    gamemsg(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
+                }
+
+                player = mafia.players[name];
+                if (player.role.actions && ("teamTalk" in player.role.actions || "teamUtilities" in player.role.actions)) {
+                    var partners = [];
+                    if (Array.isArray(player.role.actions.teamTalk)) {
+                        for (x in player.role.actions.teamTalk) {
+                            partners = partners.concat(mafia.getPlayersForRole(player.role.actions.teamTalk[x]));
+                        }
+                        partners.push(name);
+                        partners = removeDuplicates(partners);
+                    } else {
+                        partners = mafia.getPlayersForTeam(player.role.side);
+                    }
+                    for (x in partners) {
+                        var id = sys.id(partners[x]);
+                        if (id !== undefined && sys.isInChannel(id, mafiachan)) {
+                            sys.sendMessage(id, name + ": [Team] " + commandData, mafiachan);
+                        }
+                    }
+                    return;
+                }
+            }
+        }
         if (command === "tt" || command === "teamtalk") {
             if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
                 name = sys.name(src);
@@ -8831,6 +8934,10 @@ function Mafia(mafiachan) {
                 msgAll(sys.name(src) + " passed their " + (sMA ? "Super Mafia Admin powers" : "Mafia auth") + " to " + commandData, sachannel);
             }
             return;
+        }
+        if (command === "forcepass") {
+            gamemsgAll( toColor( sys.name(src) + " ended the current phase.", "#367be2" ), mafiachan);
+            mafia.ticks = 0;
         }
         if (command === "enablenonpeak" || command === "disablenonpeak") {
             mafia.nonPeak(src, command === "enablenonpeak");
