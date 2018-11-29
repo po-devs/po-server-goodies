@@ -502,7 +502,7 @@ function Safari() {
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)"},
         rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
-        flower: {icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomEaten", rate: 20, rate2: 0.05, effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trianer! Also reduces cooldown while using Mono Balls.", noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms."},
+        flower: {icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomEaten", rate: 20, rate2: 0.05, effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.", noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms."},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
         fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2, effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!", noAcq: "Bait {0} more pure Water-type Pokémon"},
@@ -15560,7 +15560,7 @@ function Safari() {
             }
             this.currentRoom.turnToAdvance = this.turn + roomDuration;
             this.recentRooms.unshift(type);
-            this.recentRooms = this.recentRooms.slice(0,Math.min( 3,this.recentRooms.legnth ));
+            this.recentRooms = this.recentRooms.slice(0,Math.min( 3,this.recentRooms.length ));
         }
         else {
             if (this.turn < this.currentRoom.turnToAdvance) {
