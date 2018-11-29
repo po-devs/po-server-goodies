@@ -16358,7 +16358,7 @@ function Safari() {
     BlockedRoom.prototype.advance = function() {
         var m, p, dmg, pow, stamina = {}, turnDealt = {}, turnDamage = 0, avi,
             defeated = false,
-            choices = this.getAvatars();
+            choices = this.getChoices();
 
         this.sendAll("");
         for (p in choices) {
