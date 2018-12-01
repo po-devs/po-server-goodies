@@ -7850,7 +7850,7 @@ function Mafia(mafiachan) {
                     mafia.passed = [];
                 }
 
-                if (mafia.passed.indexOf(name) !== -1) {
+                if (mafia.passed.indexOf(name) === -1) {
                     mafia.passed.push(name);
 
                     if ((mafia.passed.length >= (Object.keys(this.players).length))) {
@@ -7858,12 +7858,12 @@ function Mafia(mafiachan) {
                         mafia.ticks = 0;
                     }
                     else if ((mafia.passed.length === (Object.keys(this.players).length)) - 1) {
-                        for (var p in this.players) {
-                            if ((mafia.passed.indexOf(this.players[p].name)) === -1) {
+                        for (var p in mafia.players) {
+                            if ((mafia.passed.indexOf(mafia.players[p].name)) === -1) {
                                 break;
                             }
                         }
-                        gamemsg(this.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
+                        gamemsg(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
                     }
                     else {
                         gamemsg(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
@@ -7872,27 +7872,7 @@ function Mafia(mafiachan) {
                 else {
                     gamemsg(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
                 }
-
-                player = mafia.players[name];
-                if (player.role.actions && ("teamTalk" in player.role.actions || "teamUtilities" in player.role.actions)) {
-                    var partners = [];
-                    if (Array.isArray(player.role.actions.teamTalk)) {
-                        for (x in player.role.actions.teamTalk) {
-                            partners = partners.concat(mafia.getPlayersForRole(player.role.actions.teamTalk[x]));
-                        }
-                        partners.push(name);
-                        partners = removeDuplicates(partners);
-                    } else {
-                        partners = mafia.getPlayersForTeam(player.role.side);
-                    }
-                    for (x in partners) {
-                        var id = sys.id(partners[x]);
-                        if (id !== undefined && sys.isInChannel(id, mafiachan)) {
-                            sys.sendMessage(id, name + ": [Team] " + commandData, mafiachan);
-                        }
-                    }
-                    return;
-                }
+                return;
             }
         }
         if (command === "tt" || command === "teamtalk") {
