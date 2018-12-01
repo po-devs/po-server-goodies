@@ -512,8 +512,8 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                 'bans' : bans,
                 'client' : tar ? sys.os(tar) : "Unknown",
                 'version' : tar ? sys.version(tar) : "Unknown",
-                'teams' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) ? teams : "Unknown",
-                'uniqueid' : tar && (sys.auth(src) > 2 || isSuperAdmin(src)) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
+                'teams' : tar && (sys.auth(src) > 1) ? teams : "Unknown",
+                'uniqueid' : tar && (sys.auth(src) > 1) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
             };
             sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
         } else if (command == "userinfo") {
@@ -587,6 +587,9 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                         version = ""; //dead things like webclient
                     }
                     data.push("Client Type: " + utilities.capitalize(sys.os(tar)) + version);
+                    if (sys.auth(src) > 1) {
+                        data.push("Unique ID: " + (sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"));
+                    }
                 }
                 if (authLevel > 0) {
                     var stats = script.authStats[name.toLowerCase()] || {};

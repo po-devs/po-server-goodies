@@ -7851,6 +7851,7 @@ function Mafia(mafiachan) {
                 }
 
                 if (mafia.passed.indexOf(name) === -1) {
+                  
                     mafia.passed.push(name);
 
                     if ((mafia.passed.length >= (Object.keys(this.players).length))) {
@@ -7858,6 +7859,7 @@ function Mafia(mafiachan) {
                         mafia.ticks = 0;
                     }
                     else if ((mafia.passed.length === (Object.keys(this.players).length)) - 1) {
+
                         for (var p in mafia.players) {
                             if ((mafia.passed.indexOf(mafia.players[p].name)) === -1) {
                                 break;
@@ -7872,7 +7874,9 @@ function Mafia(mafiachan) {
                 else {
                     gamemsg(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
                 }
+
                 return;
+
             }
         }
         if (command === "tt" || command === "teamtalk") {
