@@ -613,13 +613,14 @@ function Safari() {
         "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" }
     };
+    var itemHelp, perkHelp, ballHelp;
+    updateItemHelp();
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
     var allCostumes = Object.keys(costumeData);
 
-    var itemHelp, perkHelp, ballHelp;
     var updateItemHelp = function() {
         itemHelp = {
             silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
