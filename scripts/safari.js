@@ -30,7 +30,7 @@ function Safari() {
     var themesFile = "scriptdata/safari/themes.txt";
     var decorationsFile = "scriptdata/safari/decorations.txt";
     var missionsFile = "scriptdata/safari/missions.txt";
-    var trialsFile = "scriptdata/safari/missions.txt";
+    var trialsFile = "scriptdata/safari/trials.txt";
     var fortunesFile = "scriptdata/safari/fortunes.txt";
     var tradeLog = "scriptdata/safaritrades.txt";
     var rareTradeLog = "scriptdata/safari/raretrades.txt";
@@ -9454,7 +9454,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src), m, g, finished = [];
-        if (!safari.events.hasOwnProperty("trialsEnabled")) {
+        if (!safari.events) {
             safaribot.sendMessage(src, "Trials is currently not in session!", safchan);
             return;
         }
@@ -25659,7 +25659,7 @@ function Safari() {
                     sys.webCall(url, function (resp) {
                         try {
                             trialsData = JSON.parse(resp);
-                            sys.write(trialsFile, resp);
+                            //sys.write(trialsFile, resp);
                             permObj.add("trialsurl", url);
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
