@@ -2056,6 +2056,9 @@ function Safari() {
                 info = info.substr(1);
             }
             info = itemAlias(info, true);
+            if (!(allItems)) {
+                return false;
+            }
             if (allItems.indexOf(info) === -1) {
                 return false;
             }
