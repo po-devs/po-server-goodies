@@ -9125,7 +9125,12 @@ function Safari() {
         this.saveGame(player);
     };
     this.generateMission = function(level) {
-        var mission = missionsData[level].random();
+        try {
+            var mission = missionsData[level].random();
+        }
+        catch (err) {
+            return false;
+        }
         var newMission = JSON.parse(JSON.stringify(mission));
         var targetDesc;
         if (newMission.template) {
