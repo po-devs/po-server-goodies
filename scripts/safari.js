@@ -26069,7 +26069,7 @@ function Safari() {
         sys.sendAll("1", safchan);
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
-        sys.sendAll("2", safchan);
+        sys.sendAll("2", safchan); /*
         rawPlayers = new MemoryHash(saveFiles);
         cookedPlayers = new MemoryHash(deletedSaveFiles);
         backupPlayers1 = new MemoryHash(saveBackupFile1);
@@ -26082,7 +26082,7 @@ function Safari() {
         saltBans = new MemoryHash(saltbansFile);
         idnumList = new MemoryHash(idnumFile);
         permObj = new MemoryHash(permFile);
-        configObj = new MemoryHash(configFile);
+        configObj = new MemoryHash(configFile); */
         sys.sendAll("3", safchan);
         safari.loadConfigurables();
         sys.sendAll("4", safchan);
