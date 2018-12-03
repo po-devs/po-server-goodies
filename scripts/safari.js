@@ -615,6 +615,7 @@ function Safari() {
     };
 
     var itemHelp, perkHelp, ballHelp;
+    updateItemData();
     var updateItemHelp = function() {
         itemHelp = {
             silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
@@ -689,7 +690,7 @@ function Safari() {
     var allItems = currentItems.concat(retiredItems, "permfinder");
     var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
     var allCostumes = Object.keys(costumeData);
-    
+
     var costumeHelp = {};
     var decorations = {};
     var missionsData = {};
