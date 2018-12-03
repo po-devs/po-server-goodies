@@ -9413,11 +9413,11 @@ function Safari() {
 
         var k, m, l;
         while (player.trials.missions.length < 5) {
-            l = this.findTrials(player,safari.trialsData[player.trials.level + ""]);
+            l = this.findTrials(player,safari.events.trialsData[player.trials.level + ""]);
             if (l.length === 0) {
                 player.trials.level++;
                 if (player.trials.level <= 7) {
-                    l = this.findTrials(player,safari.trialsData[player.trials.level + ""]);
+                    l = this.findTrials(player,safari.events.trialsData[player.trials.level + ""]);
                 }
                 else {
                     /* Completed all trials */
