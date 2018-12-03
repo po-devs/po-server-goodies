@@ -26154,6 +26154,7 @@ function Safari() {
             var data = JSON.parse(sys.getFileContent(missionsFile));
             missionsData = data || {};
         } catch (err) {
+            missionsData = {};
         }
         var oldData = fortuneData;
         try {
