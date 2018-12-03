@@ -2322,7 +2322,7 @@ function Safari() {
                 ret += "<br />";
             }
             for (var i = 0; i < arr.length; i++) {
-                sys.sendAll(item, safchan);
+                sys.sendAll(arr[i], safchan);
                 item = itemData[arr[i]];
                 if (item.name === "itemfinder") {
                     item2 = player.balls.itemfinder + player.balls.permfinder;
