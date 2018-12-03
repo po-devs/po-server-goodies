@@ -26019,6 +26019,7 @@ function Safari() {
     /* Events */
     this.init = function () {
         var name = defaultChannel;
+        sys.sendAll("1", safchan);
         if (sys.existChannel(name)) {
             safchan = sys.channelId(name);
         }
@@ -26027,6 +26028,7 @@ function Safari() {
         }
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
+        sys.sendAll("2", safchan);
         rawPlayers = new MemoryHash(saveFiles);
         cookedPlayers = new MemoryHash(deletedSaveFiles);
         backupPlayers1 = new MemoryHash(saveBackupFile1);
@@ -26040,7 +26042,9 @@ function Safari() {
         idnumList = new MemoryHash(idnumFile);
         permObj = new MemoryHash(permFile);
         configObj = new MemoryHash(configFile);
+        sys.sendAll("3", safchan);
         safari.loadConfigurables();
+        sys.sendAll("4", safchan);
         var parseFromPerm = function(name, defaultVal) {
             var out;
             try {
@@ -26050,6 +26054,7 @@ function Safari() {
             }
             return out;
         };
+        sys.sendAll("5", safchan);
         npcShop = parseFromPerm("npcShop", {});
         recipeData = parseFromPerm("alchemistRecipes", {});
         gymData = parseFromPerm("gyms", {});
@@ -26059,6 +26064,7 @@ function Safari() {
         gachaItems = parseFromPerm("gachaRates", gachaItems);
         finderItems = parseFromPerm("finderRates", finderItems);
         packItems = parseFromPerm("packRates", packItems);
+        sys.sendAll("6", safchan);
         
         dailyBoost = parseFromPerm("dailyBoost", null);
         if (dailyBoost === null) {
@@ -26073,6 +26079,7 @@ function Safari() {
             contestThemes = data || contestThemes;
         } catch (err) {
         }
+        sys.sendAll("7", safchan);
         photographQuest = parseFromPerm("photographQuest", {});
         safari.updatePhotographQuest();
         
@@ -26081,6 +26088,7 @@ function Safari() {
         mAuctionsData = parseFromPerm("mAuctions", []);
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
+        sys.sendAll("8", safchan);
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
@@ -26120,6 +26128,7 @@ function Safari() {
         } catch (err) {
         }
         updateItemHelp();
+        sys.sendAll("9", safchan);
         
         try {
             var data = JSON.parse(sys.getFileContent(decorationsFile));
@@ -26143,6 +26152,7 @@ function Safari() {
             monthlyLeaderboards[e] = new MemoryHash(monthlyLeaderboardTypes[e].file);
         }
         lastIdAssigned = loadLastId();
+        sys.sendAll("10", safchan);
 
         var template = permObj.get("playerTemplate");
         if (template) {
@@ -26152,8 +26162,10 @@ function Safari() {
                 safari.sanitizeAll();
             }
         }
+        sys.sendAll("11", safchan);
         permObj.add("playerTemplate", JSON.stringify(playerTemplate));
         permObj.save();
+        sys.sendAll("12", safchan);
 
         this.updateLeaderboards();
         sys.sendHtmlAll(openedMessage, safchan);
@@ -26163,6 +26175,7 @@ function Safari() {
         if (goldenBaitCooldown < 10) {
             goldenBaitCooldown = sys.rand(10, 13);
         }
+        sys.sendAll("13", safchan);
         this.updateMAuctions();
     };
     this.afterChannelJoin = function (src, channel) {
