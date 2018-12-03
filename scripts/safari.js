@@ -30,7 +30,6 @@ function Safari() {
     var themesFile = "scriptdata/safari/themes.txt";
     var decorationsFile = "scriptdata/safari/decorations.txt";
     var missionsFile = "scriptdata/safari/missions.txt";
-    var trialsFile = "scriptdata/safari/trials.txt";
     var fortunesFile = "scriptdata/safari/fortunes.txt";
     var tradeLog = "scriptdata/safaritrades.txt";
     var rareTradeLog = "scriptdata/safari/raretrades.txt";
@@ -25648,7 +25647,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadtrials" || command === "loadtrial") {
-                var cThemes = trialsData;
+                var cThemes = trialsData ? trialsData : {};
                 var url = commandData === "*" ? (permObj.get("trialsurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
