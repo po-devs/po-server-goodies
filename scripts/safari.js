@@ -474,8 +474,8 @@ function Safari() {
             philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
 
             //??? related items
-            dew: {name: "dew", fullName: "Mystical Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
-            ldew: {name: "ldew", fullName: "Legendary Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
+            dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
+            ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 8018, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
             
 
             //Perks
@@ -2313,6 +2313,7 @@ function Safari() {
     }
     function bagRow (player, arr, isAndroid, textOnly, first) {
         var ret = [], item, item2;
+        updateItemData();
         if (textOnly) {
             if (first) {
                 ret += "<br /><b>Inventory</b><br />";
@@ -2321,6 +2322,7 @@ function Safari() {
                 ret += "<br />";
             }
             for (var i = 0; i < arr.length; i++) {
+                sys.sendAll(item, safchan);
                 item = itemData[arr[i]];
                 if (item.name === "itemfinder") {
                     item2 = player.balls.itemfinder + player.balls.permfinder;
