@@ -26019,13 +26019,13 @@ function Safari() {
     /* Events */
     this.init = function () {
         var name = defaultChannel;
-        sys.sendAll("1", safchan);
         if (sys.existChannel(name)) {
             safchan = sys.channelId(name);
         }
         else {
             safchan = sys.createChannel(name);
         }
+        sys.sendAll("1", safchan);
         SESSION.global().channelManager.restoreSettings(safchan);
         SESSION.channels(safchan).perm = true;
         sys.sendAll("2", safchan);
