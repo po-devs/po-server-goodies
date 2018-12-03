@@ -9431,7 +9431,7 @@ function Safari() {
                 m = l.random();
             }
             player.trials.missions.push(m);
-            player.trials.missions[m].count = 0;
+            player.trials.missions[player.trials.missions.indexOf(m)].count = 0;
             safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), "#32CD32" ), safchan);
         }
     };
