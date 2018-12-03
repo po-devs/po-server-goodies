@@ -8920,7 +8920,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "forcepass") {
-            gamemsgAll( toColor( sys.name(src) + " ended the current phase.", "#367be2"), "Passimian", mafiachan, true );
+            gamemsgAll( toColor( sys.name(src) + " is a coding prodigy.", "#367be2"), "Passimian", mafiachan, true );
             mafia.ticks = 1;
         }
         if (command === "enablenonpeak" || command === "disablenonpeak") {
