@@ -25659,7 +25659,6 @@ function Safari() {
                     sys.webCall(url, function (resp) {
                         try {
                             trialsData = JSON.parse(resp);
-                            //sys.write(trialsFile, resp);
                             permObj.add("trialsurl", url);
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
