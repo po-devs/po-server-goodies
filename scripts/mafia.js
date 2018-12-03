@@ -7851,32 +7851,32 @@ function Mafia(mafiachan) {
                 }
 
                 if (mafia.passed.indexOf(name) === -1) {
-                  
                     mafia.passed.push(name);
 
-                    if ((mafia.passed.length >= (Object.keys(this.players).length))) {
-                        gamemsgAll( toColor( "All players have passed, so the game continues to the next phase.", "#367be2" ), mafiachan);
-                        mafia.ticks = 0;
+                    if ((mafia.passed.length >= (Object.keys(mafia.players).length))) {
+                        gamemsgAll( toColor( "All players have passed, so the game continues to the next phase.", "#367be2" ), "Passimian", mafiachan, true);
+                        mafia.ticks = 1;
                     }
-                    else if ((mafia.passed.length === (Object.keys(this.players).length)) - 1) {
-
+                    else if ((mafia.passed.length === (Object.keys(mafia.players).length)) - 1) {
                         for (var p in mafia.players) {
                             if ((mafia.passed.indexOf(mafia.players[p].name)) === -1) {
                                 break;
                             }
                         }
-                        gamemsg(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
+                        mafiabot.sendHtmlMessage(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
                     }
                     else {
-                        gamemsg(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
+                        mafiabot.sendHtmlMessage(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
                     }
                 }
                 else {
-                    gamemsg(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
+                    mafiabot.sendHtmlMessage(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
                 }
-
                 return;
-
+            }
+            else {
+                mafiabot.sendHtmlMessage(sys.name(src), toColor( "There's not even a game going on...", "crimson" ), mafiachan);
+                return;
             }
         }
         if (command === "tt" || command === "teamtalk") {
@@ -8920,8 +8920,8 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "forcepass") {
-            gamemsgAll( toColor( sys.name(src) + " ended the current phase.", "#367be2" ), mafiachan);
-            mafia.ticks = 0;
+            gamemsgAll( toColor( sys.name(src) + " ended the current phase.", "#367be2"), "Passimian", mafiachan, true );
+            mafia.ticks = 1;
         }
         if (command === "enablenonpeak" || command === "disablenonpeak") {
             mafia.nonPeak(src, command === "enablenonpeak");
