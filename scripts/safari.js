@@ -9413,11 +9413,11 @@ function Safari() {
 
         var k, m, l;
         while (player.trials.missions.length < 5) {
-            l = findTrials(player,safari.trialsData[player.trials.level + ""]);
+            l = this.findTrials(player,safari.trialsData[player.trials.level + ""]);
             if (l.length === 0) {
                 player.trials.level++;
                 if (player.trials.level <= 7) {
-                    l = findTrials(player,safari.trialsData[player.trials.level + ""]);
+                    l = this.findTrials(player,safari.trialsData[player.trials.level + ""]);
                 }
                 else {
                     /* Completed all trials */
@@ -9432,7 +9432,7 @@ function Safari() {
             }
             player.trials.missions.push(m);
             player.trials.missions[m].count = 0;
-            sys.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), "#32CD32" ), safchan);
+            safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), "#32CD32" ), safchan);
         }
     };
     this.findTrials = function(player,tier) {
