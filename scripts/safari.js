@@ -26204,7 +26204,11 @@ function Safari() {
         if (goldenBaitCooldown < 10) {
             goldenBaitCooldown = sys.rand(10, 13);
         }
-        sys.sendAll("13", safchan);
+        sys.sendAll("13 finished", safchan);
+        if (!itemData.dew) {
+            itemData.dew = {name: "dew", fullName: "Mystical Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
+            itemData.ldew = {name: "ldew", fullName: "Legendary Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
+        }
         this.updateMAuctions();
     };
     this.afterChannelJoin = function (src, channel) {
