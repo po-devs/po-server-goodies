@@ -3966,7 +3966,7 @@ function Safari() {
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
-            this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
+            this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -13630,7 +13630,7 @@ function Safari() {
                 }
 
                 var k = Object.keys(effectiveness); m = [], y;
-                for (var t in k)
+                for (var t in k) {
                     y = true;
                     for (var p in player.party) {
                         if (!hasType(player.party[p],k[t])) {
@@ -25750,12 +25750,15 @@ function Safari() {
             }
             if (command === "enabletrials") {
                 safariEvents( src,"trials",true );
+                return true;
             }
             if (command === "disabletrials") {
                 safariEvents( src,"trials",false );
+                return true;
             }
             if (command === "finishtrials") {
                 endTrials();
+                return true;
             }
             if (command === "nextspawn") {
                 if (commandData === "*") {
