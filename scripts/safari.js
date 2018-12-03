@@ -20842,7 +20842,10 @@ function Safari() {
                         color: data.nameColor || "#000000",
                         value: 0
                     };
-                    player.value = monthlyLeaderboards[i].get(e) || 0;
+                    try {
+                        player.value = monthlyLeaderboards[i].get(e) || 0;
+                    }
+                    catch (err) {};
                     if (player.value === 0 || player.value == "0") {
                         continue;
                     }
@@ -20881,14 +20884,19 @@ function Safari() {
     };
     this.addToMonthlyLeaderboards = function(name, record, value) {
         name = name.toLowerCase();
-        var val = monthlyLeaderboards[record].get(name) || 0;
-        if (typeof val != "number") {
-            val = parseInt(val, 10);
-            if (isNaN(val)) {
-                val = 0;
+        try {
+            var val = monthlyLeaderboards[record].get(name) || 0;
+            if (typeof val != "number") {
+                val = parseInt(val, 10);
+                if (isNaN(val)) {
+                    val = 0;
+                }
             }
+            monthlyLeaderboards[record].add(name, val + value);
         }
-        monthlyLeaderboards[record].add(name, val + value);
+        catch (err) {
+            return false;
+        }
     };
     this.loadConfigurables = function() {
         var val;
