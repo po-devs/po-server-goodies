@@ -9374,11 +9374,11 @@ function Safari() {
         switch (what) {
             case "trials":
                 if (enable && (!(safari.events.trialsData))) {
-                    sys.sendMessage(src,"Use /loadtrials [url] to load trials before enabling them!");
+                    safaribot.sendMessage(src,"Use /loadtrials [url] to load trials before enabling them!");
                 }
                 else {
                     safari.events.trialsEnabled = (enable ? true : false);
-                    sys.sendMessage(src,"Event Trials " + (enable ? "enabled" : "disabled") + "!" );
+                    safaribot.sendMessage(src,"Event Trials " + (enable ? "enabled" : "disabled") + "!" );
                     if (!(enable)) {
                         safari.events.trialsData = null;
                     }
@@ -9449,11 +9449,11 @@ function Safari() {
         }
         var player = getAvatar(src), m, g, finished = [];
         if (!safari.events.hasOwnProperty("trialsEnabled")) {
-            sys.sendMessage(src, "Trials is currently not in session!", safchan);
+            safaribot.sendMessage(src, "Trials is currently not in session!", safchan);
             return;
         }
         if ((!safari.events.trialsEnabled)) {
-            sys.sendMessage(src, "Trials is currently not in session!", safchan);
+            safaribot.sendMessage(src, "Trials is currently not in session!", safchan);
             return;
         }
         var name = safari.events.trialsData.name;
@@ -9474,14 +9474,14 @@ function Safari() {
             }
         }
         sys.sendMessage(src, "", safchan);
-        sys.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
+        safaribot.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
         for (var e = 0; e < player.trials.missions.length; e++) {
             m = player.trials.missions[e];
             if (m.count >= m.goal) {
                 finished.push(m);
             }
             g = Math.min(m.count, m.goal) + "/" + m.goal;
-            sys.sendHtmlMessage(src, "<b>" + (e+1) + ".</b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), safchan);
+            safaribot.sendHtmlMessage(src, "<b>" + (e+1) + ".</b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), safchan);
             
         }
         
@@ -26216,10 +26216,6 @@ function Safari() {
             goldenBaitCooldown = sys.rand(10, 13);
         }
         sys.sendAll("13", safchan);
-        if (!itemData.dew) {
-            itemData.dew = {name: "dew", fullName: "Mystical Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
-            itemData.ldew = {name: "ldew", fullName: "Legendary Dew", type: "unknown", icon: 8016, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
-        }
         sys.sendAll("14 finished", safchan);
         this.updateMAuctions();
     };
