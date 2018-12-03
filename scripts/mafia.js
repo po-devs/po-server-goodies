@@ -7865,9 +7865,7 @@ function Mafia(mafiachan) {
                         }
                         mafiabot.sendHtmlMessage(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
                     }
-                    else {
-                        mafiabot.sendHtmlMessage(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
-                    }
+                    mafiabot.sendHtmlMessage(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
                 }
                 else {
                     mafiabot.sendHtmlMessage(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
@@ -8920,8 +8918,9 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "forcepass") {
-            gamemsgAll( toColor( sys.name(src) + " is a coding prodigy.", "#367be2"), "Passimian", mafiachan, true );
+            gamemsgAll( toColor( sys.name(src) + " forced the game to the next phase.", "#367be2"), "Passimian", mafiachan, true );
             mafia.ticks = 1;
+            return;
         }
         if (command === "enablenonpeak" || command === "disablenonpeak") {
             mafia.nonPeak(src, command === "enablenonpeak");

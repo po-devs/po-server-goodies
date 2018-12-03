@@ -2313,7 +2313,6 @@ function Safari() {
     }
     function bagRow (player, arr, isAndroid, textOnly, first) {
         var ret = [], item, item2;
-        updateItemData();
         if (textOnly) {
             if (first) {
                 ret += "<br /><b>Inventory</b><br />";
@@ -2322,7 +2321,6 @@ function Safari() {
                 ret += "<br />";
             }
             for (var i = 0; i < arr.length; i++) {
-                sys.sendAll(arr[i], safchan);
                 item = itemData[arr[i]];
                 if (item.name === "itemfinder") {
                     item2 = player.balls.itemfinder + player.balls.permfinder;
