@@ -9442,7 +9442,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src), m, g, finished = [];
-        if (!safari.events.trialsEnabled) {
+        if (!safari.events.hasOwnProperty("trialsEnabled") || (!safari.events.trialsEnabled)) {
             sys.sendMessage(src, "Trials is currently not in session!", safchan);
             return;
         }
@@ -25774,11 +25774,11 @@ function Safari() {
                 return true;
             }
             if (command === "enabletrials") {
-                safariEvents( src,"trials",true );
+                safari.safariEvents( src,"trials",true );
                 return true;
             }
             if (command === "disabletrials") {
-                safariEvents( src,"trials",false );
+                safari.safariEvents( src,"trials",false );
                 return true;
             }
             if (command === "finishtrials") {
