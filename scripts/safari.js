@@ -9443,7 +9443,7 @@ function Safari() {
         for (var t in tier) {
             k = tier[t];
             if ((player.trials.pastIDs.indexOf(k.id) === -1) && (player.trials.currentIDs.indexOf(k.id) === -1) ) {
-                l.push(k);
+                out.push(k);
             }
         }
         return out;
