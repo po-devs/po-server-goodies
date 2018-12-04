@@ -9363,6 +9363,7 @@ function Safari() {
             case "ability": return canHaveAbility(id, sys.abilityNum(target));
             case "move": return canLearnMove(id, sys.moveNum(target));
             case "name": return sys.pokemon(id)[0].toLowerCase() === target.toLowerCase();
+            case "fullname": return sys.pokemon(id).toLowerCase() === target.toLowerCase();
             case "any": return true;
         }
         return false;
@@ -25833,9 +25834,9 @@ function Safari() {
                 safari.safariEvents( src,"trials",false );
                 return true;
             }
-            if (command === "releasetrials") {
+            if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.releaseTrials( src,info[0],info[1] );
+                safari.releaseTrial( src,info[0],info[1] );
                 return true;
             }
             if (command === "finishtrials") {
