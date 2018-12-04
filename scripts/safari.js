@@ -9580,7 +9580,7 @@ function Safari() {
             player = t[p];
             id = player.id;
             points = player.trials.points;
-            playersPoints.push({
+            playerPoints.push({
                 id: id,
                 points: points
             });
