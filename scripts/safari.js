@@ -9572,6 +9572,30 @@ function Safari() {
         }
         sys.sendMessage(src, "", safchan);
     };
+    this.viewTrialsLb = function(src,num) {
+        var t = safari.events.trialsParticipants, player, points;
+        var playersPoints = [];
+        var limit = parseInt(num, 10);
+
+        for (var p in t) {
+            player = t[p];
+            id = player.id;
+            points = player.trials.points;
+            playersPoints.push({
+                id: id,
+                points: points
+            });
+        }
+        playerPoints.sort(function(a, b) { 
+            return a.points - b.points;
+        })
+        var j = 1;
+        for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + "", safchan);
+            j++;
+        }
+        return out;
+    };
     this.endTrials = function() {
         var t = safari.events.trialsParticipants, player, points;
         var playersPoints = [];
@@ -9593,7 +9617,9 @@ function Safari() {
                     break;
                 }
             }
-            g = giveStuff(player, toStuffObj(rew));
+            for (var h in rew) {
+                g = giveStuff(player, toStuffObj(rew[h]));
+            }
             safaribot.sendHtmlMessage(id, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
         }
         playerPoints.sort(function(a, b) { 
@@ -25866,6 +25892,10 @@ function Safari() {
             }
             if (command === "trialsbonus") {
                 safari.grantTrialsBonusPoints( src,getAvatarOff(commandData) );
+                return true;
+            }
+            if (command === "trialslb") {
+                safari.viewTrialsLb();
                 return true;
             }
             if (command === "finishtrials") {
