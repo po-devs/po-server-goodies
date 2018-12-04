@@ -9473,8 +9473,10 @@ function Safari() {
         if ((player.trials) && (player.trials.name !== name)) {
             //Unloads the data from last trials session if it exists
             player.trials = null;
+            sys.sendAll("Reset trials for name being wrong", safchan);
         }
         if (!player.trials) {
+            sys.sendAll("Generating trials in viewtrials", safchan);
             player.trials = {};
             player.trials.missions = [];
             player.trials.pastIDs = [];
