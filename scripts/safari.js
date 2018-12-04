@@ -382,7 +382,8 @@ function Safari() {
             pastIDs: [],
             currentIDs: [],
             level: 1,
-            points: 0
+            points: 0,
+            bonusPointsReceived: false
         },
         nextSpawn: {
             pokemon: {},
@@ -9423,6 +9424,7 @@ function Safari() {
             player.trials.level = 1;
             player.trials.points = 0;
             player.trials.name = "";
+            player.trials.bonusPointsReceived = false;
             if (safari.events.trialsParticipants.indexOf(player) === -1) {
                 safari.events.trialsParticipants.push(player);
             }
@@ -9458,14 +9460,13 @@ function Safari() {
         for (var e = 0; e < player.trials.missions.length; e++) {
             m = player.trials.missions[e];
             d = m.id;
-            if (m.id !== id) {
-                continue;
+            if (m.id === id) {
+                var k = player.trials.missions.indexOf(m);
+                player.trials.missions.splice(k, 1);
+                player.trials.currentIDs.splice(player.trials.currentIDs.indexOf(d), 1);
+                this.assignTrials(src,player); //sends the new trial to the auth, but whatever
+                return;
             }
-            var k = player.trials.missions.indexOf(m);
-            player.trials.missions.splice(k, 1);
-            player.trials.currentIDs.splice(player.trials.currentIDs.indexOf(d), 1);
-            this.assignTrials(src,player); //sends the new trial to the auth, but whatever
-            return;
         }
         safaribot.sendMessage(src, "No ID " + id + " found in target's missions",safchan);
         return;
@@ -9475,9 +9476,9 @@ function Safari() {
         if (player.trials.bonusPointsReceived === false) {
             player.trials.bonusPointsReceived = true;
             player.trials.points += 10;
-            safaribot.sendMessage(src, "Bonus 10 points granted to " + player.name + "!",safchan);
+            safaribot.sendMessage(src, "Bonus 10 points granted to " + player.id + "!",safchan);
         }
-        safaribot.sendMessage(src, player.name + " already received their bonus points!",safchan);
+        safaribot.sendMessage(src, player.id + " already received their bonus points!",safchan);
         return;
     };
     this.findTrials = function(player,tier) {
