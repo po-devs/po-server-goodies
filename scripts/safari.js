@@ -9408,9 +9408,6 @@ function Safari() {
                     if (!(enable)) {
                         safari.events.trialsData = null;
                     }
-                    else {
-                        safari.events.trialsParticipants = [];
-                    }
                 }
                 break;
         }
@@ -9424,17 +9421,7 @@ function Safari() {
             return;
         }
         if (!player.trials)  {
-            player.trials = {};
-            player.trials.missions = [];
-            player.trials.pastIDs = [];
-            player.trials.currentIDs = [];
-            player.trials.level = 1;
-            player.trials.points = 0;
-            player.trials.name = "";
-            player.trials.bonusPointsReceived = false;
-            if (safari.events.trialsParticipants.indexOf(player) === -1) {
-                safari.events.trialsParticipants.push(player);
-            }
+            return;
         }
 
         var k, m, l;
@@ -9448,6 +9435,7 @@ function Safari() {
                 else {
                     /* Completed all trials */
                     l = null;
+                    player.trials.level--;
                 }
             }
             if (!(l)) {
@@ -9524,7 +9512,7 @@ function Safari() {
         }
         var name = safari.events.trialsData.name;
         if ((player.trials) && (player.trials.name !== name)) {
-            //Unloads the data from last trials session if it exists
+            /* Unloads the data from last trials session if it exists */
             player.trials = null;
         }
         if (!player.trials) {
@@ -9535,6 +9523,7 @@ function Safari() {
             player.trials.level = 1;
             player.trials.points = 0;
             player.trials.name = name;
+            player.trials.bonusPointsReceived = false;
             if (safari.events.trialsParticipants.indexOf(player) === -1) {
                 safari.events.trialsParticipants.push(player);
             }
@@ -9591,7 +9580,7 @@ function Safari() {
         var j = 1;
         limit = Math.min(playerPoints.length, limit);
         for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
-            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + "", safchan);
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             j++;
         }
         return;
@@ -9636,6 +9625,7 @@ function Safari() {
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id + " " + g + "!!", "#BA55D3"), safchan);
             j++;
         }
+        safari.events.trialsParticipants = [];
         return;
     };
     
