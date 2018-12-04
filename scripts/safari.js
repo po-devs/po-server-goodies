@@ -9220,7 +9220,7 @@ function Safari() {
         }
         if ( (safari.events) && (safari.events.trialsEnabled) && (player.trials)) {
             for (e = player.trials.missions.length; e--; ) {
-                m = player.missions[e];
+                m = player.trials.missions[e];
                 if (!m.finished && m.count < m.goal) {
                     p = this.countProgress(m, action, target, value, data);
                     if (p) {
