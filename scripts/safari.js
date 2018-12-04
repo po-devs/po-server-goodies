@@ -9503,6 +9503,7 @@ function Safari() {
         var clearedAny = false, rew;
         for (e = 0; e < finished.length; e++) {
             m = finished[e];
+            sys.sendAll("Trial " + m.id + " completed", safchan);
             clearedAny = true;
             rew = safari.events.trialsData.rewards[player.trials.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
             g = giveStuff(player, toStuffObj(rew));
