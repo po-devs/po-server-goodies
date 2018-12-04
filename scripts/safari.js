@@ -9594,7 +9594,7 @@ function Safari() {
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + "", safchan);
             j++;
         }
-        return out;
+        return;
     };
     this.endTrials = function() {
         var t = safari.events.trialsParticipants, player, points;
@@ -9636,7 +9636,7 @@ function Safari() {
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id + " " + g + "!!", "#BA55D3"), safchan);
             j++;
         }
-        return out;
+        return;
     };
     
     /* Secret Base */
