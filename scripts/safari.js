@@ -376,6 +376,7 @@ function Safari() {
             }
         },
         missions: [],
+        trials: {},
         nextSpawn: {
             pokemon: {},
             amt: 1,
