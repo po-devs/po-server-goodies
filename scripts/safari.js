@@ -9454,7 +9454,7 @@ function Safari() {
         }
     };
     this.releaseTrial = function(src,player,id) {
-        var k, m, d, out = [];
+        var k, m, d;
         for (var e = 0; e < player.trials.missions.length; e++) {
             m = player.trials.missions[e];
             d = m.id;
@@ -9467,7 +9467,17 @@ function Safari() {
             this.assignTrials(src,player); //sends the new trial to the auth, but whatever
             return;
         }
-        safaribot.sendMessage(src, "Not ID " + id + " found in target's missions",safchan);
+        safaribot.sendMessage(src, "No ID " + id + " found in target's missions",safchan);
+        return;
+    };
+    this.grantTrialsBonusPoints = function(src,player) {
+        var k, m, d, out = [];
+        if (player.trials.bonusPointsReceived === false) {
+            player.trials.bonusPointsReceived = true;
+            player.trials.points += 10;
+            safaribot.sendMessage(src, "Bonus 10 points granted to " + player.name + "!",safchan);
+        }
+        safaribot.sendMessage(src, player.name + " already received their bonus points!",safchan);
         return;
     };
     this.findTrials = function(player,tier) {
@@ -25836,7 +25846,11 @@ function Safari() {
             }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.releaseTrial( src,getAvatarOff(info[0]),info[1] );
+                safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
+                return true;
+            }
+            if (command === "trialsbonus") {
+                safari.trialsbonus( src,getAvatarOff(commandData) );
                 return true;
             }
             if (command === "finishtrials") {
