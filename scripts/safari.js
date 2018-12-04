@@ -9416,6 +9416,7 @@ function Safari() {
             if (safari.events.trialsParticipants.indexOf(player) === -1) {
                 safari.events.trialsParticipants.push(player);
             }
+            sys.sendAll("Generating trials in assignTrials", safchan);
         }
 
         var k, m, l;
