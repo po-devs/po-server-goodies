@@ -25881,7 +25881,7 @@ function Safari() {
                 return true;
             }
             if (command === "trialslb") {
-                safari.viewTrialsLb();
+                safari.viewTrialsLb( src,commandData );
                 return true;
             }
             if (command === "finishtrials") {
