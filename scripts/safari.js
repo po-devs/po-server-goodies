@@ -9579,7 +9579,7 @@ function Safari() {
         })
         var j = 1;
         limit = Math.min(playerPoints.length, limit);
-        for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
+        for (var i = playerPoints.length; i--; i <= playerPoints.length - limit) {
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             j++;
         }
@@ -9587,7 +9587,7 @@ function Safari() {
     };
     this.endTrials = function() {
         var t = safari.events.trialsParticipants, player, points;
-        var playerPoints = [];
+        var playerPoints = [], src;
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
 
@@ -9609,6 +9609,7 @@ function Safari() {
             for (var h in rew) {
                 g = giveStuff(player, toStuffObj(rew[h]));
             }
+            src = sys.id(player.id);
             safaribot.sendHtmlMessage(id, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
         }
         playerPoints.sort(function(a, b) { 
@@ -9618,11 +9619,12 @@ function Safari() {
         var limit = Math.min(playerPoints.length, 2);
         for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
             player = getAvatarOff(playerPoints[i].id);
-            id = sys.id(player.id);
+            src = sys.id(player.id);
             rew = top[j+""];
             rew = rew.random();
-            safaribot.sendHtmlMessage(id, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
-            safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id + " " + g + "!!", "#BA55D3"), safchan);
+            g = giveStuff(player, toStuffObj(rew));
+            safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
+            safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
         }
         safari.events.trialsParticipants = [];
