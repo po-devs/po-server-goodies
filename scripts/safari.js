@@ -9599,7 +9599,7 @@ function Safari() {
     };
     this.endTrials = function() {
         var t = safari.events.trialsParticipants, player, points;
-        var playersPoints = [];
+        var playerPoints = [];
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
 
