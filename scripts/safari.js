@@ -9284,7 +9284,7 @@ function Safari() {
                 out = (action === "rockWindow" ? value : 0);
                 break; 
             case "getShocked":
-                out = (action === "finderShocked" ? value : 0);
+                out = (action === "getShocked" ? value : 0);
                 break; 
             case "playContest":
                 out = (action === "contest" && data.thrown >= mission.target ? value : 0);
@@ -9425,7 +9425,6 @@ function Safari() {
             if (safari.events.trialsParticipants.indexOf(player) === -1) {
                 safari.events.trialsParticipants.push(player);
             }
-            sys.sendAll("Generating trials in assignTrials", safchan);
         }
 
         var k, m, l;
