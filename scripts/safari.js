@@ -9459,7 +9459,7 @@ function Safari() {
             m = player.trials.missions[e];
             d = m.id;
             if (m.id !== id) {
-                break;
+                continue;
             }
             var k = player.trials.missions.indexOf(m);
             player.trials.missions.splice(k, 1);
