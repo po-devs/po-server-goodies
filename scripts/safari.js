@@ -9573,7 +9573,7 @@ function Safari() {
     };
     this.viewTrialsLb = function(src,num) {
         var t = safari.events.trialsParticipants, player, points;
-        var playersPoints = [];
+        var playerPoints = [];
         var limit = parseInt(num, 10);
 
         for (var p in t) {
@@ -9606,7 +9606,7 @@ function Safari() {
             player = t[p];
             id = player.id;
             points = player.trials.points;
-            playersPoints.push({
+            playerPoints.push({
                 id: id,
                 points: points
             });
@@ -13764,15 +13764,8 @@ function Safari() {
                         m.push(k[t]);
                     }
                 }
-                var canEvolve = true;
-                for (var p in player.party) {
-                    if (evolutions.hasOwnProperty(player.party[p]+"")) {
-                        canEvolve = false;
-                        break;
-                    }
-                }
 
-                safari.missionProgress(player, "tower", count, 1, {mono: m, canEvolve: canEvolve});
+                safari.missionProgress(player, "tower", count, 1, {mono: m});
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
