@@ -9436,7 +9436,7 @@ function Safari() {
             }
             player.trials.missions.push(m);
             player.trials.missions[player.trials.missions.indexOf(m)].count = 0;
-            player.currentIDs.push(player.trials.missions.indexOf(m).id);
+            player.currentIDs.push(player.trials.missions[player.trials.missions.indexOf(m)].id);
             safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " (" + plural(m.points, "trials point") + ")", "#32CD32" ), safchan);
         }
     };
