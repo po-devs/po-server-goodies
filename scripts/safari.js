@@ -8941,6 +8941,8 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
             }
             
+            safari.trialsLogin(player);
+
             reward = {};
             for (e = player.secretBase.length; e--; ) {
                 temp = randomSample(decorations[player.secretBase[e].deco].drops);
@@ -9043,6 +9045,8 @@ function Safari() {
                 reward[t] += temp[t];
             }
         }
+
+        safari.trialsLogin(player);
 
         var out = giveStuff(player, reward, true);
         var gainedmsg = readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : "");
@@ -9457,7 +9461,8 @@ function Safari() {
     };
     this.releaseTrial = function(src,player,id) {
         var k, m, d;
-        for (var e = 0; e < player.trials.missions.length; e++) {
+        player.trials.missions.shuffle();
+        for (var e = player.trials.missions.length; e--) {
             m = player.trials.missions[e];
             d = m.id;
             if (m.id === id) {
@@ -9471,12 +9476,20 @@ function Safari() {
         safaribot.sendMessage(src, "No ID " + id + " found in target's missions",safchan);
         return;
     };
+    this.trialsLogin = function(player) {
+        if (player.trials && safari.events.trialsEnabled) {
+            player.trials.points += 1;
+            safaribot.sendMessage(sys.id(name), "You received +1 bonus Trials point for logging in today!",safchan);
+        }
+        return;
+    };
     this.grantTrialsBonusPoints = function(src,player) {
         var k, m, d, out = [];
         if (player.trials.bonusPointsReceived === false) {
             player.trials.bonusPointsReceived = true;
             player.trials.points += 10;
             safaribot.sendMessage(src, "Bonus 10 points granted to " + player.id + "!",safchan);
+            return;
         }
         safaribot.sendMessage(src, player.id + " already received their bonus points!",safchan);
         return;
@@ -9560,7 +9573,8 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.endTrials = function() {
-        var t = safari.events.trialsParticipants, player, points, playersPoints = [];
+        var t = safari.events.trialsParticipants, player, points;
+        var playersPoints = [];
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
 
