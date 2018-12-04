@@ -9467,7 +9467,7 @@ function Safari() {
             this.assignTrials(src,player); //sends the new trial to the auth, but whatever
             return;
         }
-        safaribot.sendMessage(src, "Not ID " + id + " found in target's missions",safcan);
+        safaribot.sendMessage(src, "Not ID " + id + " found in target's missions",safchan);
         return;
     };
     this.findTrials = function(player,tier) {
