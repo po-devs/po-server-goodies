@@ -9462,7 +9462,7 @@ function Safari() {
     this.releaseTrial = function(src,player,id) {
         var k, m, d;
         player.trials.missions.shuffle();
-        for (var e = player.trials.missions.length; e--) {
+        for (var e = player.trials.missions.length; e--; ) {
             m = player.trials.missions[e];
             d = m.id;
             if (m.id === id) {
