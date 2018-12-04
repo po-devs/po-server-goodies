@@ -9219,11 +9219,9 @@ function Safari() {
             }
         }
         if ( (safari.events) && (safari.events.trialsEnabled) && (player.trials)) {
-            sys.sendAll("101");
             for (e = player.trials.missions.length; e--; ) {
                 m = player.trials.missions[e];
-                sys.sendAll(m.id);
-                if (!m.finished && m.count < m.goal) {
+                if (m.count < m.goal) {
                     p = this.countProgress(m, action, target, value, data);
                     if (p) {
                         m.count = Math.min(m.count + p, m.goal);
@@ -9501,7 +9499,7 @@ function Safari() {
         for (e = 0; e < finished.length; e++) {
             m = finished[e];
             clearedAny = true;
-            rew = safari.events.trialsData.rewards[this.player.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
+            rew = safari.events.trialsData.rewards[player.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
             g = giveStuff(player, toStuffObj(rew));
             player.trials.points += m.points;
             safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "trials point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
