@@ -9590,6 +9590,7 @@ function Safari() {
             return a.points - b.points;
         })
         var j = 1;
+        limit = Math.min(playerPoints.length, limit);
         for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + "", safchan);
             j++;
