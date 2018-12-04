@@ -9502,8 +9502,7 @@ function Safari() {
         for (e = 0; e < finished.length; e++) {
             m = finished[e];
             clearedAny = true;
-            rew = safari.events.trialsData.rewards[player.level + ""];
-            rew = rew[Math.floor(Math.random() * rew.length)]; //Gives rewards based on player's current level, not the mission's level
+            rew = safari.events.trialsData.rewards[player.trials.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
             g = giveStuff(player, toStuffObj(rew));
             player.trials.points += m.points;
             safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "trials point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
