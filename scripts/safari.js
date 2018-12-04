@@ -9606,11 +9606,11 @@ function Safari() {
                     break;
                 }
             }
+            src = sys.id(player.id);
             for (var h in rew) {
                 g = giveStuff(player, toStuffObj(rew[h]));
+                safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
             }
-            src = sys.id(player.id);
-            safaribot.sendHtmlMessage(id, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
         }
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
