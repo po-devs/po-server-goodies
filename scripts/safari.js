@@ -25836,7 +25836,7 @@ function Safari() {
             }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.releaseTrial( src,info[0],info[1] );
+                safari.releaseTrial( src,getAvatarOff([0]),info[1] );
                 return true;
             }
             if (command === "finishtrials") {
