@@ -25850,7 +25850,7 @@ function Safari() {
                 return true;
             }
             if (command === "trialsbonus") {
-                safari.trialsbonus( src,getAvatarOff(commandData) );
+                safari.grantTrialsBonusPoints( src,getAvatarOff(commandData) );
                 return true;
             }
             if (command === "finishtrials") {
