@@ -15827,6 +15827,9 @@ function Safari() {
         this.parties[p2.id] = p2.party.slice(0, 3);
         this.parties[p3.id] = p3.party.slice(0, 3);
 
+        this.bannedHazard = this.parties[p1.id][2];
+        this.bannedHazard = (this.bannedHazard % 10);
+
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
         this.sendToViewers("");
@@ -17605,8 +17608,7 @@ function Safari() {
         };
         var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * 1.4)), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
-        var lastMember = this.parties[this.leader][2], n = lastMember % 10;
-        var blockedHazard = Object.keys(this.hazardNames)[n];
+        var blockedHazard = Object.keys(this.hazardNames)[this.bannedHazard];
 
         while (cont) {
             maxsize = max - x;
