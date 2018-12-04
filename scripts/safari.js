@@ -17859,7 +17859,9 @@ function Safari() {
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
                 for (var k in id) {
+                    sys.sendAll( id[k] + " " + sys.ability(this.hazardAbilites[e]) );
                     if (canHaveAbility(id[k],this.hazardAbilites[e])) {
+                        sys.sendAll( "" );
                         if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
                             ab = sys.ability(this.hazardAbilites[e]);
                             obstacles[e] -= 1;
