@@ -3683,7 +3683,7 @@ function Safari() {
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader, 10)) ? dailyBoost.bonus : 1;
         var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
         var rulesMod = currentRules ? this.getRulesMod(player.party[0], currentRules, scaleColor) : 1;
-        var costumeMod = 1, usingStarter = false;
+        var costumeMod = 1;
         if (player.party[0] === player.starter || player.starter2.contains(player.party[0])) {
             if (player.costume === "preschooler") {
                 var c = costumeData.preschooler;
@@ -3698,7 +3698,6 @@ function Safari() {
                 }
             }
             costumeMod += this.getFortune(player, "preschooler", 0);
-            usingStarter = true;
         }
 
         if (ball === "premier") {
@@ -3988,6 +3987,11 @@ function Safari() {
             }
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
+            }
+
+            var usingStarter = false;
+            if (player.party[0] === player.starter) {
+                usingStarter = true;
             }
             this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             if (amt < 1) {
@@ -9432,6 +9436,7 @@ function Safari() {
             }
             player.trials.missions.push(m);
             player.trials.missions[player.trials.missions.indexOf(m)].count = 0;
+            player.currentIDs.push([player.trials.missions.indexOf(m)].id) = 0;
             safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " (" + plural(m.points, "trials point") + ")", "#32CD32" ), safchan);
         }
     };
