@@ -9311,7 +9311,7 @@ function Safari() {
                 out = (action === "tower" && target >= mission.target ? value : 0);
                 break; 
             case "scientistSilver":
-                out = (action === "scientist" && data.silver > mission.target ? data.silver : 0);
+                out = (action === "scientist" ? data.silver : 0);
                 break; 
             case "arenaSilver":
                 out = (action === "arena" && data.silver > mission.target ? data.silver : 0);
@@ -9451,6 +9451,23 @@ function Safari() {
             player.trials.currentIDs.push(player.trials.missions[player.trials.missions.indexOf(m)].id);
             safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " (" + plural(m.points, "trials point") + ")", "#32CD32" ), safchan);
         }
+    };
+    this.releaseTrial = function(src,player,id) {
+        var k, m, d, out = [];
+        for (var e = 0; e < player.trials.missions.length; e++) {
+            m = player.trials.missions[e];
+            d = m.id;
+            if (m.id !== id) {
+                break;
+            }
+            var k = player.trials.missions.indexOf(m);
+            player.trials.missions.splice(k, 1);
+            player.trials.currentIDs.splice(player.trials.currentIDs.indexOf(d), 1);
+            this.assignTrials(src,player); //sends the new trial to the auth, but whatever
+            return;
+        }
+        safaribot.sendMessage(src, "Not ID " + id + " found in target's missions",safcan);
+        return;
     };
     this.findTrials = function(player,tier) {
         var k, out = [];
@@ -13206,7 +13223,7 @@ function Safari() {
             player.quests.scientist.cooldown = quest.expires;
             player.quests.scientist.pokemon = id;
 
-            safari.missionProgress(player, "scientist", 1, rew, {})
+            safari.missionProgress(player, "scientist", 1, rew, {silver: rew});
 
             player.balls.silver += rew;
             if (this.getFortune(player, "scientistreward", 0, null, true)) {
@@ -25816,8 +25833,13 @@ function Safari() {
                 safari.safariEvents( src,"trials",false );
                 return true;
             }
+            if (command === "releasetrials") {
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                safari.releaseTrials( src,info[0],info[1] );
+                return true;
+            }
             if (command === "finishtrials") {
-                endTrials();
+                safari.endTrials();
                 return true;
             }
             if (command === "nextspawn") {
