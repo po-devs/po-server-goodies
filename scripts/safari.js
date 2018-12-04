@@ -377,6 +377,7 @@ function Safari() {
         },
         missions: [],
         trials: {
+            name: "",
             missions: [],
             pastIDs: [],
             currentIDs: [],
@@ -9420,6 +9421,7 @@ function Safari() {
             player.trials.currentIDs = [];
             player.trials.level = 1;
             player.trials.points = 0;
+            player.trials.name = "";
             if (safari.events.trialsParticipants.indexOf(player) === -1) {
                 safari.events.trialsParticipants.push(player);
             }
