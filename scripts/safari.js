@@ -13700,7 +13700,7 @@ function Safari() {
                     }
                 }
 
-                var k = Object.keys(effectiveness); m = [], y;
+                var k = Object.keys(effectiveness), m = [], y;
                 for (var t in k) {
                     y = true;
                     for (var p in player.party) {
@@ -25836,7 +25836,7 @@ function Safari() {
             }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.releaseTrial( src,getAvatarOff([0]),info[1] );
+                safari.releaseTrial( src,getAvatarOff(info[0]),info[1] );
                 return true;
             }
             if (command === "finishtrials") {
