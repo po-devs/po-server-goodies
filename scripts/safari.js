@@ -376,7 +376,13 @@ function Safari() {
             }
         },
         missions: [],
-        trials: {},
+        trials: {
+            missions: [],
+            pastIDs: [],
+            currentIDs: [],
+            level: 1,
+            points: 0
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
