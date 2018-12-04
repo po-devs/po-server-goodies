@@ -9505,13 +9505,14 @@ function Safari() {
         var clearedAny = false, rew;
         for (e = 0; e < finished.length; e++) {
             m = finished[e];
-            sys.sendAll("Trial " + m.id + " completed", safchan);
             clearedAny = true;
             rew = safari.events.trialsData.rewards[player.trials.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
             g = giveStuff(player, toStuffObj(rew));
             player.trials.points += m.points;
             safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "trials point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
-            player.trials.missions.splice(player.trials.missions.indexOf(m), 1);
+            sys.sendAll("Trial " + m.id + " completed", safchan);
+            var k = player.trials.missions.indexOf(m);
+            player.trials.missions.splice(k, 1);
         }
         this.assignTrials(src,player);
         if (clearedAny) {
