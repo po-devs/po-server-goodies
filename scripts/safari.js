@@ -17855,7 +17855,7 @@ function Safari() {
         var ineffective = [];
         var treasureTo;
         var points = 0, stamina = {};
-        var list, e, p, id, m, ab, mv, mid, total = 0;
+        var list, e, p, id, m, ab, mv, mid, total = 0, par;
 
         for (e in hazards) {
             list = hazards[e];
@@ -17865,11 +17865,11 @@ function Safari() {
             }
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
+                par = this.parties[id];
                 sys.sendAll( id );
-                for (var k in id) {
-                    sys.sendAll( id[k] + " " + sys.ability(this.hazardAbilites[e]) );
-                    if (canHaveAbility(id[k],this.hazardAbilites[e])) {
-                        sys.sendAll( "" );
+                for (var k in par) {
+                    sys.sendAll( par[k] + " " + sys.ability(this.hazardAbilites[e]) );
+                    if (canHaveAbility(par[k],this.hazardAbilites[e])) {
                         if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
                             ab = sys.ability(this.hazardAbilites[e]);
                             obstacles[e] -= 1;
