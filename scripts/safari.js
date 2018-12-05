@@ -17865,7 +17865,7 @@ function Safari() {
             }
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
-                par = this.parties[id];
+                par = this.pyr.parties[id];
                 sys.sendAll( id );
                 for (var k in par) {
                     sys.sendAll( par[k] + " " + sys.ability(this.hazardAbilites[e]) );
