@@ -15889,9 +15889,9 @@ function Safari() {
         this.parties[p3.id] = p3.party.slice(0, 3);
 
         this.bannedHazard = this.parties[p1.id][2];
-        sys.sendAll(this.bannedHazard);
+        sys.sendAll(this.bannedHazard, safchan);
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
-        sys.sendAll(this.bannedHazard);
+        sys.sendAll(this.bannedHazard, safchan);
 
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
@@ -17911,7 +17911,7 @@ function Safari() {
         var ineffective = [];
         var treasureTo;
         var points = 0, stamina = {};
-        var list, e, p, id, m, ab, mv, mid, total = 0, par;
+        var list, e, p, id, m, ab, mv, mid, total = 0, par, usedAbilities = [];
 
         for (e in hazards) {
             list = hazards[e];
@@ -17923,7 +17923,7 @@ function Safari() {
                 id = alive[p];
                 par = this.pyr.parties[id];
                 for (var k in par) {
-                    if (canHaveAbility(par[k],this.hazardAbilites[e])) {
+                    if ((canHaveAbility(par[k],this.hazardAbilites[e])) && (usedAbilities.indexOf(this.hazardAbilites[e]) === -1)) {
                         if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
                             ab = sys.ability(this.hazardAbilites[e]);
                             obstacles[e] -= 1;
@@ -17935,6 +17935,7 @@ function Safari() {
                                 effective[e] = [];
                             }
                             effective[e].push(sys.pokemon(par[k]) + "'s " + ab);
+                            usedAbilities.push(this.hazardAbilites[e]);
                             break;
                         }
                     }
