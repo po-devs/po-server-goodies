@@ -434,7 +434,7 @@ function Safari() {
 
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+            rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -450,13 +450,9 @@ function Safari() {
             dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
             dummy3: {name: "dummy3", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
 
-<<<<<<< HEAD
             silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false, cap: 9999},
             shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false, cap: 9999},
-=======
-            silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
-            shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false},
->>>>>>> 22218961d63f94f756ac2e87940a3c7ceba09878
+
             entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
             coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
             fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
@@ -9583,9 +9579,9 @@ function Safari() {
             player.trials.points = 0;
             player.trials.name = name;
             player.trials.bonusPointsReceived = false;
-            if (safari.events.trialsParticipants.indexOf(player) === -1) {
-                safari.events.trialsParticipants.push(player);
-            }
+        }
+        if (safari.events.trialsParticipants.indexOf(player) === -1) {
+            safari.events.trialsParticipants.push(player);
         }
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
@@ -25822,6 +25818,9 @@ function Safari() {
                         try {
                             trialsData = JSON.parse(resp);
                             permObj.add("trialsurl", url);
+                            if (!safari.hasOwnProperty("events")) {
+                                safari.events = {trialsEnabled: false};
+                            }
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
                             safari.sanitizeAll();
