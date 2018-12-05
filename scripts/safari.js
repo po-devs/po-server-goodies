@@ -25819,7 +25819,7 @@ function Safari() {
                             trialsData = JSON.parse(resp);
                             permObj.add("trialsurl", url);
                             if (!safari.hasOwnProperty("events")) {
-                                safari.events = {trialsEnabled: false};
+                                safari.events = {trialsEnabled: false, trialsParticipants: []};
                             }
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
