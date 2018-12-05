@@ -3000,10 +3000,10 @@ function Safari() {
             if (cTheme) {
                 var theme = contestThemes[cTheme];
                 statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
-                if (!(goldenBonus) && (leader)) {
+                if ((!(goldenBonus) && (leader)) || ((chance(0.65)) && (!(leader)))) {
                     canLegend = false;
                 }
-                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.25;
+                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.1;
                 for (i = 1; i < 803; i++) {
                     bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                     if (bst > 600) {
@@ -3018,7 +3018,12 @@ function Safari() {
                 for (h in theme.include) {
                     id = theme.include[h];
                     bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
-                    if (this.validForTheme(id, cTheme) && bst <= statCap && list.indexOf(id) === -1) {
+                    if (bst > 600) {
+                        extrabst = (bst - 600);
+                        bst = 600;
+                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                    }
+                    if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                         list.push(id);
                     }
                 }
@@ -9401,7 +9406,7 @@ function Safari() {
                 out = (action === "shadyFromMafia" ? value : 0);
                 break; 
             case "winMonger":
-                out = (action === "winMonger" && target === mission.target ? value : 0);
+                out = (action === "winMonger" && (target.indexOf( mission.target > -1 ? value : 0);
                 break; 
             case "winTour":
                 out = (action === "winTour" ? value : 0);
@@ -15749,7 +15754,7 @@ function Safari() {
             var out = giveStuff(winner, toStuffObj(obj.reward));
             winner.records.shadyUsed += price;
             winner.records.mongerAuctionsWon += 1;
-            safari.missionProgress(player,"winMonger",obj.rewardName,1,{});
+            safari.missionProgress(winner,"winMonger",obj.rewardName,1,{});
             this.saveGame(winner);
             sys.sendAll("", safchan);
             safaribot.sendAll(winner.id.toCorrectCase() + " paid " + plural(price, "shady") + " and won the Monger Auction for " + obj.rewardName + "!", safchan);
