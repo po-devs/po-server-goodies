@@ -16842,10 +16842,10 @@ function Safari() {
             var staminaStr = [], members = this.pyr.names, id;
             var averageDamage = Math.floor(7 + 1.4 * this.level);
             if (this.maxhp * 0.2 >= this.hp) {
-                averageDamage = averageDamage 0.67;
+                averageDamage = averageDamage*0.67;
             }
             if (this.maxhp * 0.1 >= this.hp) {
-                averageDamage = averageDamage 0.5;
+                averageDamage = averageDamage*0.5;
             }
             for (p in members) {
                 id = members[p];
