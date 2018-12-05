@@ -9307,7 +9307,7 @@ function Safari() {
                 out = (action === "collector" && mission.target === data.amount ? value : 0);
                 break; 
             case "towerFloorMono":
-                out = (action === "tower" && target >= mission.target && data.mono.indexOf(mission.type) !== -1 ? value : 0);
+                out = (action === "tower" && target >= mission.target && data.unique && data.mono.indexOf(mission.type) !== -1 ? value : 0);
                 break; 
             case "towerFloorCanEvolve":
                 out = (action === "tower" && target >= mission.target && data.canEvolve === true ? value : 0);
@@ -9467,9 +9467,9 @@ function Safari() {
         return;
     };
     this.trialsLogin = function(player) {
-        if (player.trials && safari.events.trialsEnabled) {
+        if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
             player.trials.points += 1;
-            safaribot.sendMessage(sys.id(name), "You received +1 bonus Trials point for logging in today!",safchan);
+            safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
         }
         return;
     };
@@ -13744,7 +13744,7 @@ function Safari() {
                     }
                 }
 
-                var k = Object.keys(effectiveness), m = [], y;
+                var k = Object.keys(effectiveness), m = [], y, l = [], u = true;
                 for (var t in k) {
                     y = true;
                     for (var p in player.party) {
@@ -13756,8 +13756,15 @@ function Safari() {
                         m.push(k[t]);
                     }
                 }
+                for (var p in player.party) {
+                    if (l.indexOf(player.party[p]) !== -1) {
+                        u = false;
+                        break;
+                    }
+                    l.push(player.party[p]);
+                }
 
-                safari.missionProgress(player, "tower", count, 1, {mono: m});
+                safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u});
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
