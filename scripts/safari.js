@@ -154,6 +154,8 @@ function Safari() {
             scale: 0,
             mushroom: 0,
             brush: 0,
+            dew: 0,
+            ldew: 0,
             dummy: 0,
             dummy2: 0,
             dummy3: 0
@@ -197,6 +199,13 @@ function Safari() {
             baitAttracted: 0,
             baitNothing: 0,
             baitWater: 0,
+            catchQuick: 0,
+            catchClone: 0,
+            catchSpy: 0,
+            catchHeavy: 0,
+            catchLuxury: 0,
+            catchMono: 0,
+            catchMyth: 0,
             itemsFound: 0,
             collectorEarnings: 0,
             collectorGiven: 0,
@@ -367,6 +376,15 @@ function Safari() {
             }
         },
         missions: [],
+        trials: {
+            name: "",
+            missions: [],
+            pastIDs: [],
+            currentIDs: [],
+            level: 1,
+            points: 0,
+            bonusPointsReceived: false
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
@@ -395,91 +413,102 @@ function Safari() {
         charges: "number", minVar: "number", maxVar: "number", tradeReq: "number", threshold: "number", legendaryChance: "number", shinyChance: "number",
         tradable: "boolean", cap: "number"
     };
-    var itemData = {
-        //Balls
-        safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], tradable: false},
-        great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 75, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
-        ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
-        master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
+    var itemData;
 
-        myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-        heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
-        quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
-        luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
-        premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
-        spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
-        clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
-        mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 10000, aliases:["monoball", "mono", "mono ball"], tradable: true},
+    var updateItemData = function() {
+        itemData = {
+            //Balls
+            safari: {name: "safari", fullName: "Safari Ball", type: "ball", icon: 309, price: 30, ballBonus: 1, cooldown: 6000, aliases:["safariball", "safari", "safari ball"], tradable: false},
+            great: {name: "great", fullName: "Great Ball", type: "ball", icon: 306, price: 75, ballBonus: 1.5, cooldown: 9000, aliases:["greatball", "great", "great ball"], tradable: false},
+            ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
+            master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
-        //Other Items
-        //Seasonal change. Rock icon is 206, Snowball is 334
-        rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
-        bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
-        golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
-        gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
-        spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 5000, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
-        mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 10000, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
-        stick: {name: "stick", fullName: "Stick", type: "items", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
-        itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 50, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
-        permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 50, aliases:["permfinder"], tradable: false},
-        dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
-        salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false, invisible: true},
-        burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, threshold: 96, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
-        dummy: {name: "dummy", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
-        dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
-        dummy3: {name: "dummy3", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
+            myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
+            heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
+            luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
+            premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
+            spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
+            clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
+            mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 10000, aliases:["monoball", "mono", "mono ball"], tradable: true},
 
-        silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
-        shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false},
-        entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
-        coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
-        fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
-        
-        mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
-        crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
-        scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
-        mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: false },
-        brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
-        
-        //Consumables (for useItem)
-        rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
-        gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 1000, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
-        pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 5000, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
-        egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 5000, aliases:["egg"], tradable: true},
-        bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 50000, shinyChance: 32, legendaryChance: 128, aliases:["bright", "bright egg", "brightegg"], tradable: true},
-        water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
-        cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 5000, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
-        soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true},
-        form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
-        cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
+            //Other Items
+            //Seasonal change. Rock icon is 206, Snowball is 334
+            rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+            bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
+            golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
+            gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
+            spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 5000, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
+            mega: {name: "mega", fullName: "Mega Stone", type: "items", icon: 2001, price: 10000, aliases:["mega", "mega stone", "megastone"], duration: 3, tradable: true},
+            stick: {name: "stick", fullName: "Stick", type: "items", icon: 164, price: 99999, cooldown: 20000, aliases:["stick","sticks"], tradable: false, cap: 1},
+            itemfinder: {name: "itemfinder", fullName: "Itemfinder Charge", type: "items", icon: 69, price: 50, cooldown: 9000, charges: 30, aliases:["itemfinder", "finder", "item finder"], tradable: false},
+            permfinder: {name: "permfinder", fullName: "Itemfinder Bonus Charges", type: "items", icon: 0, price: 50, aliases:["permfinder"], tradable: false},
+            dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 1999},
+            salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false, invisible: true},
+            burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, threshold: 96, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
+            dummy: {name: "dummy", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
+            dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
+            dummy3: {name: "dummy3", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
 
-        //Alchemy related items
-        materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
-        fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
-        blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
-        whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
-        philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
+            silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false},
+            shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false},
+            entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
+            coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
+            fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
+            
+            mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
+            crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
+            scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
+            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: false },
+            brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
+            
+            //Consumables (for useItem)
+            rare: {name: "rare", fullName: "Rare Candy", type: "consumable", icon: 117, price: 5000, charges: 230, minVar: 0, maxVar: 30, aliases:["rare", "rarecandy", "rare candy", "candy"], tradable: true},
+            gem: {name: "gem", fullName: "Ampere Gem", type: "consumable", icon: 245, price: 1000, charges: 20, aliases:["gem", "ampere", "ampere gem", "amperegem"], tradable: true},
+            pack: {name: "pack", fullName: "Prize Pack", type: "consumable", icon: 59, price: 5000, aliases:["prize", "pack", "prizepack", "prize pack"], tradable: true},
+            egg: {name: "egg", fullName: "Egg", type: "consumable", icon: 94, price: 5000, aliases:["egg"], tradable: true},
+            bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 50000, shinyChance: 32, legendaryChance: 128, aliases:["bright", "bright egg", "brightegg"], tradable: true},
+            water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
+            cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 5000, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
+            soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true},
+            form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
+            cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
 
-        //Perks
-        amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
-        honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 1000, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], tradable: true},
-        soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], tradable: true},
-        crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 5000, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], tradable: true, tradeReq: 10},
-        scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
-        battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
-        eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
-        lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 15000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
-        box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
+            //Alchemy related items
+            materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
+            fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
+            blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
+            whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
+            fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
+            philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
 
-        //Valuables
-        pearl: {name: "pearl", fullName: "Pearl", type: "valuables", icon: 111, price: 500, aliases:["pearl"], tradable: true},
-        stardust: {name: "stardust", fullName: "Stardust", type: "valuables", icon: 135, price: 750, aliases:["stardust"], tradable: true},
-        bigpearl: {name: "bigpearl", fullName: "Big Pearl", type: "valuables", icon: 46, price: 1500, aliases:["bigpearl", "big pearl"], tradable: true},
-        starpiece: {name: "starpiece", fullName: "Star Piece", type: "valuables", icon: 134, price: 3000, aliases:["starpiece", "star piece"], tradable: true},
-        nugget: {name: "nugget", fullName: "Nugget", type: "valuables", icon: 108, price: 4000, aliases:["nugget"], tradable: true},
-        bignugget: {name: "bignugget", fullName: "Big Nugget", type: "valuables", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], tradable: true},
-        cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "shard", "cometshard"], tradable: true}
+            //??? related items
+            dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
+            ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 8018, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
+            
+
+            //Perks
+            amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
+            honey: {name: "honey", fullName: "Honey", type: "perk", icon: 82, price: 1000, bonusRate: 0.03, maxRate: 0.3, aliases:["honey"], tradable: true},
+            soothe: {name: "soothe", fullName: "Soothe Bell", type: "perk", icon: 35, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["soothe", "soothebell", "soothe bell", "bell"], tradable: true},
+            crown: {name: "crown", fullName: "Relic Crown", type: "perk", icon: 278, price: 5000, bonusRate: 0.01, maxRate: 0.1, aliases:["crown", "reliccrown", "relic crown", "relic"], tradable: true, tradeReq: 10},
+            scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
+            battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
+            eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
+            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 15000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
+            box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
+
+            //Valuables
+            pearl: {name: "pearl", fullName: "Pearl", type: "valuables", icon: 111, price: 500, aliases:["pearl"], tradable: true},
+            stardust: {name: "stardust", fullName: "Stardust", type: "valuables", icon: 135, price: 750, aliases:["stardust"], tradable: true},
+            bigpearl: {name: "bigpearl", fullName: "Big Pearl", type: "valuables", icon: 46, price: 1500, aliases:["bigpearl", "big pearl"], tradable: true},
+            starpiece: {name: "starpiece", fullName: "Star Piece", type: "valuables", icon: 134, price: 3000, aliases:["starpiece", "star piece"], tradable: true},
+            nugget: {name: "nugget", fullName: "Nugget", type: "valuables", icon: 108, price: 4000, aliases:["nugget"], tradable: true},
+            bignugget: {name: "bignugget", fullName: "Big Nugget", type: "valuables", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], tradable: true},
+            cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "shard", "cometshard"], tradable: true}
+        };
     };
+
     var editableCostumeProps = {
         fullName: "string", icon: "number", aliases: "array", rate: "number", rate2: "number", bonusChance: "number",
         acqReq: "number", acqReq2: "number", record: "string", record2: "string", noAcq: "string",
@@ -495,6 +524,7 @@ function Safari() {
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)"},
         rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
+        flower: {icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05, effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.", noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms."},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
         fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2, effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!", noAcq: "Bait {0} more pure Water-type Pokémon"},
@@ -520,7 +550,9 @@ function Safari() {
     mono: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTE5NkM1NDcwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTE5NkM1NDYwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Puecb4wAAAAqUExURfj4+Hp6es3NzZqamlZWVqamptra2oKCgrq6uk1NTTAwMHt7e2ZmZgAAAAV/T5sAAAAOdFJOU/////////////////8ARcDcyAAAAJdJREFUeNqskkkSwyAMBAW20AL5/3cjhALYKZ+SPlHThcBj4PUA/CDU+RKq1ZkqhFINSHehlI8QHMaF1gzghpmp6SYOgMyDtkQ/N3/y2poPc8ExxWLL7yKwfAniS35OIWZEZMyhU5YwEFB63Nc6r5tEAEAGafuOAqnv8LigbpWYSak4qJcSsUSMeq8dnXvtzz/qD4/hLcAAPMwYmRr6Be0AAAAASUVORK5CYII=",
     blkapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSCrGq9k4AAAF6SURBVEjH7ZUhc4MwFMd/9CaYAwcSOZm6dg5Zu49RyzfY1WH7MbBI3A5H5GRl4qjEMdELayGBdpvcu+MueSH/f97/vbzAvy2YZ3MKIXoAKaV3PR+bWZ+zJxv4R74D4DWjT5OA9/0WgLIokeHOgAP0S0SeC1yfFABvR0mxFwBESXxDkqYpAFmWOUlWY0dZlJRFOczTJBjGhtSAmy/Pc6eMq7Gmh/oybhoJwH6X3JXMOI6tJJMcpEnAoT6TJgHr0VrTyEGeqqoGf1VVCCFQSs0nWQjRb6IzmwjW6+nJax3gh9wAj6MA+ut8rFwhG4mMHcsT/st2ViYhxHKZ1jpgE50HklpfkrwEfvc9+OyeQX/P2yAxof8NwUAy1Kb+FcEkB23bTn6yVYejdSz3IiFE7zpxFEXWaJRSaK1RSk1utFWitm0Jw3Di11qjtca15y6JpJRe13UPa911nbUfeTM13fu+b41kfHIX+CzB9TtgIzLAD7XrJaKfPDj/tmhf5K2wqRPvPAwAAAAASUVORK5CYII=",
     whtapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSFEulyy0AAAGDSURBVEjH7VUteMIwEH3lQyA7N9wqwR1yrpXMIdkUm8RVTyEBVzlQbG5VgCxqwzVqRXaK4jo5l6n0Y03Sdj+Sp3KX9L171y854IQSGKokEXEAYIwZx3EeYv9HICK+X475fjnmRMTdnp3Fi0GLCyxf3jgRcZ240gER8dWoDwBI3ncAgLsZw8MtAQCaFy0E/hzXs+gbSafT0bqp5ROBP0fgz7PYscxsLUTzCMNQ28ZavqdT1gAA7MItAKDvWJVaO/IWShHJgWOZmLIG2Me5RLILt1J7BK4u2yh1QESczANc+lRWrhItc1HTHRYtEngKYkyeg0IBlYu6qkoyD5mIqLqMXAdJwHY9bKbDLB5MHtG2mr++yXVV0na9bB0n6Z8EpH+wWfvSoShOKpGtXqPyt4iI+MhbKAms5pnSTRQniJMU98Mb6UYrW7RZ+7C7PSkfJyniJIXum0otYowZgeZwEYK1r3yPjKJX1en2lE7ylevICwWO54BKSBCXzYVKA+NfB84JeXwBn+m8UXJeocMAAAAASUVORK5CYII=",
-    brush:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASBQTFRFkGgY////BQUFEQsPCwsLEAsPERQUExMTAxAGExYULCMWEhcTExkUEhASEhgTExgTEhkTExoUFB8VMi0kPS4RIyQmLiUMFSYZFxURHGQqIGEvIVctIVcuIVkvIVovIl0wIl4wImAxJGcxJGkyJGsyJW80JjEnJjEoJnA1J3M2KXA8LigTMJtHMZ9JMaFKMaJKMnVNMqVMM6RMM6dMM6hNPS4RQDYaQkJCSXBSTDkPUnFZXEocXEojZk4bgXyAhIaEin2HiriWj2kTkGgYlGsNlo2Vl7SHo3sjpHYHrHwGrX0IsX8GsYACspwutYMGt4YMuYUGuYkNwp0tyZtdypYRy68vy9XN29jb46sV8L8x8b4z9M06/882/9k+/+c///JCeaP/DAAAABd0Uk5TAADBwcbQ0trc3+Dh4+Tl5efq6/L5/PxuAN84AAAAtklEQVQoz3WRRQLCQBAEF3d3d3ddIEGDu7v8/xdwTpo5Th16uoaI/gxBS3O8B4EplXUgYExWPBQAfazqpSDDEC35KAjXRgp+Cq7ShHMBCs5VhfNBCnooXeUQBQUTrYqbguaKzrkhBkrkvUtXwnfF1dSWYn8k5UvkrO3BZJyW8e1y9vlivTnYBNqbzetuthzqhOB0v+22LCsAmc/reZyywg863499nQWvZVYMwxEEfmsCgYhgAOcLypgZUUeZxsMAAAAASUVORK5CYII="
+    brush:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASBQTFRFkGgY////BQUFEQsPCwsLEAsPERQUExMTAxAGExYULCMWEhcTExkUEhASEhgTExgTEhkTExoUFB8VMi0kPS4RIyQmLiUMFSYZFxURHGQqIGEvIVctIVcuIVkvIVovIl0wIl4wImAxJGcxJGkyJGsyJW80JjEnJjEoJnA1J3M2KXA8LigTMJtHMZ9JMaFKMaJKMnVNMqVMM6RMM6dMM6hNPS4RQDYaQkJCSXBSTDkPUnFZXEocXEojZk4bgXyAhIaEin2HiriWj2kTkGgYlGsNlo2Vl7SHo3sjpHYHrHwGrX0IsX8GsYACspwutYMGt4YMuYUGuYkNwp0tyZtdypYRy68vy9XN29jb46sV8L8x8b4z9M06/882/9k+/+c///JCeaP/DAAAABd0Uk5TAADBwcbQ0trc3+Dh4+Tl5efq6/L5/PxuAN84AAAAtklEQVQoz3WRRQLCQBAEF3d3d3ddIEGDu7v8/xdwTpo5Th16uoaI/gxBS3O8B4EplXUgYExWPBQAfazqpSDDEC35KAjXRgp+Cq7ShHMBCs5VhfNBCnooXeUQBQUTrYqbguaKzrkhBkrkvUtXwnfF1dSWYn8k5UvkrO3BZJyW8e1y9vlivTnYBNqbzetuthzqhOB0v+22LCsAmc/reZyywg863499nQWvZVYMwxEEfmsCgYhgAOcLypgZUUeZxsMAAAAASUVORK5CYII=",
+    dew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAIeSURBVEgNY/wPBAw0BEw0NBts9NC3gIWYINLWqwMr+/V9OZhm44wE09OnJzDYWSvhNYIRXySrqqoygAzT1oxmMND9hmHQrn2HGZ4+nsxw+/ZtDDmYAE4LQIYbGm3BajBMM4yevzCMYfbs2QwODg4wITiN1QJkw83NNeCKT568AWZfuMzF8OjRLQZxMVkGc9P/DCD+rVtFDBfOb4WrhTGwxgEoWEBBAjLcygamFERrMFy79gjqKzWGly8fAw2XBVv2n8EeWSGcjZFMQREKCnNCAOQDAX4RsOFycmoM6mr+DLDEgKwXwwKQJLYIRdYEChKQoR8+vgHTIMt+/viOrATOxggiSFIMBCuAhDlqHNy5zw6UY4bHAchwGIDobYJxwTRWH4BkQK4EgZlzHjGALAJhkNiXL8xgcWQffP56muHPv49gcXQCwwJYJgIFE8hAGA2zEGRAeooc3ByYD5QUfoLzDFwCysCwAKYA2XCYGIwG+Qoc7j8R4a6uLguTRqGx5gMLy80Mft4y8GBC1gFKmj+RDAYFT3RYIMOR468Ztm11Q1YKZmNEMkj07Rtgprm8BexKDB1AAZChyACUX/YfbAQKEWkBqGwB5WZhkT64OeiGgiSc7G0YAvxsGTKy9MBFBVwxEgNrEMHkYYUdL7cpWAiUclQUfzDw8PwD5/LeyYsZbl/vJq+wg1kComE5lOrFNbIl5LJxJlNyDUTXN/QtAADGIeh6uqcO+gAAAABJRU5ErkJggg==",
+    ldew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAF7SURBVEgNY2AYBcM+BBiJ9aGKisp/ZLV37twhSi9BRSCDf3EkMcxbVIBsPkNS3AQGth/zGAhZhNcCkOEzVl0CGzxp8nkUC/JyDcH8jDA9vJbgtABmuJUGxFxrn1UoFsjKq4L5IIvwWcKEoguJAwoWZPD21TNkLsPjh7fBfJDP0NUiK8RqAcj1oDAHaQa5XMNsAkOlnz0DzBIYDbMEpBakB9lgGBurBSDJ0hJIkKRZQILC3Eyd4capArAlMMtgFsHUwgxFpnFaMG+hE8OF0wcZZp2ABEVAzSyGG7u+MWxoSWMAWQYCIDZIDUgtLoDVAliYwlwKokEAZAkyAPFhcjA9yPIgNt5UtHr/PoYT0x+DXXzy1E24y0Hs9k0HwT5gNP7GEOrohDOpsqDbiI2PbDhIHhREG6DBhE09shhOH4AUgVIGyBcg8P8sF5iGESCXgwA+18PU4qXldNr+gyw6//gRCgaJgeTwagZK4vUBsmb0dE6oDELWO8oe5iEAADxVp9OTQ+ImAAAAAElFTkSuQmCC"
     };
     var base64costumes = {
     rocket: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAABWCAMAAABiiJHFAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QzAzQUIwNkRDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzAzQUIwNkVDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDMDNBQjA2QkM5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDMDNBQjA2Q0M5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnEdDvwAAABgUExURdZfRmh5e0JOTygtLqOtt/zm411sbTtFR+XUz3qGh4KVldfLyJinqmF5hVQ0LjM9P/He2m5DO7uwrZ5SRJqSj25+ga24usrAv42dn+p7ZlJfYL7G0bCloN7j7EVUVQAAAF8gpikAAAAgdFJOU/////////////////////////////////////////8AXFwb7QAABTJJREFUeNrsmOlyozoQRrVgCQG2AFvAaBz5/d9yuoVYxOIFz/1za76qVJxKcmhard7I4z8R+Yf9h/2/YjlzFuQYk/xvYbW2gvYSQlgn2V/AcimMUsZ4KBjsmHNS8++wXAuVKeAqOgpMdpzzL7DcqU5RYbJshkVZ/YL7DKtF1lH46sDgGCvYC+4TrKNZJihA11QhtX7qYPKEqoxQCF1SqbCIfcbdxUpqhFMeuqYyrZ9z97BSgAPB3hWT+tjVL7hknwoRS9eaUz/GWkql2ISCB0bqPncHK4x121A3g+rdMCM7PgDHvobum7uNZcLZLShbUvfM3cWKJdOumfvmbmO1syJmOrkJ/czah3RiEKbvHeanvoWMCHkVxZ4gP44E4PIVAKR5+HwwbtHeGRK+ZF/O5PiQI7dszgWH+GgzU+4azD+QGMObcmnnsSZmCYEfyrfOvyqjUcIZcuLRfGtzBaWQdhRDOKTHxeU9ghVlbs6uS5IOzyqkA8ms45oq64PhCFaldW1dkSSF+d0Y7pigKiuSQlHX/BSdEvyQb29lfbu5pAFzf34KZjqVoIqC6t8/8LROH6q8qmxVLdq8bZKfU8dN0hWem1DuH6CO9QkivYPyMs3b/CeTJgkqoMkpjmMfNTihzU+nU5nWN3NrUIDz39u2MQexolZ1Wp68yjJN8zxvQXme4ufaHm2W1O1e16dJJSrFJ4Fn6uOt3a02t/IUq0Qs2Hv7omO83UW9wNZ5iian9Lu2WSzMvdcpKjffYeV94YTWY2/fzg62XjoXVLNvsQ89HVsfCml6F99POjA/tJ6Zp21b3/M0V/L7AcoXCZWXJVwGuM1p2r409Q1sXx+1A17pL1jtvh/3oI7JUCpV7gPrzvjXWGxxXcByS7EPe1kcX2L7Mm41n5dwLVGvStl+VyPtMH7MGpwBC8Kx+tM+QQco1lpf2MdORM71EdY3HGaiwuw8ciOq/KBZ4kxbQ+mcio2j3KB+gOU2U8yaBbXvSFfktztGoHad6meniDr0unOxt9tmmPRBfiZbUQN6pv0YXmBxzIc5X7Bt6ATvj3KXG2M19VRsN91rsf2ONMZahUsJA43cMDu8g93gknjYh0k/M/S5B0bJ/dEkwjqjPqAupt9dbL+bCjHAXnvhySxFojXK7BbI7UOD0GVL126ASZxdfSp0m1h/zS4VSMs1dkiWAU2i1cQ8vcjFoV+q65X8QpGL7BPQHDu4eollcXqRen44VSD2InqFhVSKq81hPzZiuYjTy9xaVv2KVbEoXXorGc4tuOJBg0l8XiOVza2dsKS3+hqwfD7A4gpC+InQWTJe2yi54HFMIdZjybWqpL6MWB1P3JyF1YZVRUGGhIh5QE5UjofLIuwF6lf4WA3YwJW9uZ4rTDJgtYWwmsV/OA05ZMBLj4X/rrwT/PP11Pb0lc35nYktmiRg7RCwISKXtYsjrBojDHyAhz51af75+HJwbAJnFo+1wvplAVjAPDVeJ8ALXgn5NYbYVS/qLh+XJc4yitMQ6VsiSAYCOq0+E+jHFnbSlS+TC+fjsWibZR06gQuYZZumMxhTDNuCF1hyWecsrkesAZEHM0VRNE0BGdHbG14u5lbBzsrzr5eNZkn3ntD2DCLWZgUYm2TmfBbwi+GvY+zFG4lN2OQGvtEKw/8zjy2EzhK0FX+CSNCPfezojmqvtcPdk8c2irMiUMFcLaeGeelc/+qX67W6POsYufDYgnEHRcFjz3z648hcjs6t+Fs7MEhmArAUoiNQz7MMv/ZCxd/ZA3r9EWAAv0eboM/sqZQAAAAASUVORK5CYII="
@@ -589,13 +621,9 @@ function Safari() {
         "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" }
     };
-    var currentItems = Object.keys(itemData);
-    var retiredItems = [];
-    var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
-    var allCostumes = Object.keys(costumeData);
 
     var itemHelp, perkHelp, ballHelp;
+    updateItemData();
     var updateItemHelp = function() {
         itemHelp = {
             silver: "Rare coins that can be used to purchase valuable items. Obtained from quests and contests.",
@@ -636,6 +664,8 @@ function Safari() {
             scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
+            dew: "Currently unknown what this can be used for.",
+            ldew: "A mysterious substance radiating an aura of light. Currently unknown what this can be used for."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -662,9 +692,17 @@ function Safari() {
             mono: "A monochromatic Pokéball that forces your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy."
         };
     };
+    updateItemHelp();
+    var currentItems = Object.keys(itemData);
+    var retiredItems = [];
+    var allItems = currentItems.concat(retiredItems, "permfinder");
+    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
+    var allCostumes = Object.keys(costumeData);
+
     var costumeHelp = {};
     var decorations = {};
     var missionsData = {};
+    var trialsData = {};
     var SECRET_BASE_WIDTH = 7;
     var SECRET_BASE_HEIGHT = 5;
 
@@ -2005,6 +2043,60 @@ function Safari() {
         return moves.contains(move);
     }
     function canHaveAbility(num, abilityNum) {
+        var megaAbilities = {
+            "65539": 47,
+            "65542": 181, 
+            "131078": 70,
+            "65545": 178,
+            "65551": 91,
+            "65554": 99,
+            "65601": 36,
+            "65630": 23, 
+            "65651": 185,
+            "65663": 184,
+            "65666": 104,
+            "65678": 181,
+            "65686": 80, 
+            "131222": 15,
+            "65717": 104,
+            "65744": 159,
+            "65748": 101,
+            "65750": 92,
+            "65765": 94,
+            "65784": 45,
+            "65790": 31,
+            "65793": 3,
+            "65796": 33,
+            "65818": 182,
+            "65838": 156,
+            "65839": 37,
+            "65842": 111,
+            "65844": 74,
+            "65846": 22, 
+            "65855": 173,
+            "65859": 125,
+            "65870": 182,
+            "65890": 158,
+            "65895": 156,
+            "65898": 174,
+            "65909": 184,
+            "65912": 181,
+            "65916": 26,
+            "65917": 26,
+            "65918": 189,
+            "65919": 190,
+            "65920": 191,
+            "65964": 113,
+            "65981": 159,
+            "65984": 91,
+            "65996": 117,
+            "66011": 39, 
+            "66067": 131,
+            "66255": 156
+        };
+        if (megaAbilities.hasOwnProperty(num+"")) {
+            return (megaAbilities[num+""] === abilityNum);
+        }
         return [0,1,2].map(function(x) { return sys.pokeAbility(num, x); }).contains(abilityNum);
     }
     function getBST(pokeNum) {
@@ -2026,6 +2118,9 @@ function Safari() {
                 info = info.substr(1);
             }
             info = itemAlias(info, true);
+            if (!(allItems)) {
+                return false;
+            }
             if (allItems.indexOf(info) === -1) {
                 return false;
             }
@@ -3842,6 +3937,7 @@ function Safari() {
             }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
+                player.records.catchSpy += 1;
             } else {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
@@ -3863,8 +3959,24 @@ function Safari() {
             }
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
+            if (ball === "myth") {
+                player.records.catchMyth += 1;
+            }
+            if (ball === "heavy") {
+                player.records.catchHeavy += 1;
+            }
+            if (ball === "quick") {
+                player.records.catchQuick += 1;
+            }
+            if (ball === "mono") {
+                player.records.catchMono += 1;
+            }
+
             var clonedAmount = 0;
             if (ball === "clone" || crystalEffect.effect === "clone") {
+                if (ball === "clone") {
+                    player.records.catchClone += 1;
+                }
                 var costumed = player.costume === "scientist";
                 if (costumed && chance(costumeData.scientist.bonusChance) && !isLegend && !isShiny) {
                     //TWO CLONES
@@ -3909,6 +4021,7 @@ function Safari() {
                     player.money = moneyCap;
                 }
                 player.records.luxuryEarnings += luxuryAmount;
+                player.records.catchLuxury += 1;
             }
             if (crystalEffect.effect === "silver") {
                 var gained = sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]);
@@ -3938,7 +4051,12 @@ function Safari() {
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
-            this.missionProgress(player, "catch", currentPokemon, 1, { ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
+
+            var usingStarter = false;
+            if (player.party[0] === player.starter) {
+                usingStarter = true;
+            }
+            this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -4920,7 +5038,7 @@ function Safari() {
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "bait", "golden"];
         var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
         var line4 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "blkapricorn", "whtapricorn", "materia", "fragment", "philosopher", "soda", "cookie"];
-        var line5 = ["rock", "stick", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush"];
+        var line5 = ["rock", "stick", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush", "dew", "ldew"];
 
         var out = "";
         out += bagRow(player, line1, isAndroid, textOnly, true);
@@ -6230,7 +6348,9 @@ function Safari() {
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
-            this.missionProgress(player, "bait", currentPokemon, 1, { bait: (golden ? "golden" : "bait") });
+            var botd = (player.party[0] === dailyBoost.pokemon ? true : false);
+            this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
+
 
             if (nextGachaSpawn <= now() + 9 * 1000) {
                 nextGachaSpawn = now() + sys.rand(8, 11) * 1000;
@@ -6407,6 +6527,7 @@ function Safari() {
                 player.records.rocksWindowLost += dropped;
                 target.records.rocksDodgedWindow += 1;
                 target.records.rocksWindowEarned += dropped;
+                safari.missionProgress(player,"rockWindow",0,1,{})
             }
             else if (rng2 < 0.45) {
                 var onChannel = sys.playersOfChannel(safchan);
@@ -7068,6 +7189,7 @@ function Safari() {
                 showMsg = false;
                 safaribot.sendHtmlMessage(src, "<b>Pi-ka-CHUUU!</b> You were shocked by a wild Pikachu while looking for items! On the bright side, your Itemfinder slightly recharged due to the shock.", safchan);
                 safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
+                safari.missionProgress(player,"getShocked",0,1,{});
             }
             break;
             case "crown": {
@@ -8873,6 +8995,8 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
             }
             
+            safari.trialsLogin(player);
+
             reward = {};
             for (e = player.secretBase.length; e--; ) {
                 temp = randomSample(decorations[player.secretBase[e].deco].drops);
@@ -8975,6 +9099,8 @@ function Safari() {
                 reward[t] += temp[t];
             }
         }
+
+        safari.trialsLogin(player);
 
         var out = giveStuff(player, reward, true);
         var gainedmsg = readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : "");
@@ -9081,7 +9207,12 @@ function Safari() {
         this.saveGame(player);
     };
     this.generateMission = function(level) {
-        var mission = missionsData[level].random();
+        try {
+            var mission = missionsData[level].random();
+        }
+        catch (err) {
+            return false;
+        }
         var newMission = JSON.parse(JSON.stringify(mission));
         var targetDesc;
         if (newMission.template) {
@@ -9143,15 +9274,25 @@ function Safari() {
         // value  = How many of target this action accomplished (How many Pokémon were caught, how much money was earned, etc)
         // data   = Other info (Pokémon used, Pokéball used, etc
         var e, m, p;
-        if (!player.missions) {
-            return;
+        if (player.missions) {
+            for (e = player.missions.length; e--; ) {
+                m = player.missions[e];
+                if (!m.finished && m.count < m.goal) {
+                    p = this.countProgress(m, action, target, value, data);
+                    if (p) {
+                        m.count = Math.min(m.count + p, m.goal);
+                    }
+                }
+            }
         }
-        for (e = player.missions.length; e--; ) {
-            m = player.missions[e];
-            if (!m.finished && m.count < m.goal) {
-                p = this.countProgress(m, action, target, value, data);
-                if (p) {
-                    m.count = Math.min(m.count + p, m.goal);
+        if ((safari.events) && (safari.events.trialsEnabled) && (player.trials)) {
+            for (e = player.trials.missions.length; e--; ) {
+                m = player.trials.missions[e];
+                if (m.count < m.goal) {
+                    p = this.countProgress(m, action, target, value, data);
+                    if (p) {
+                        m.count = Math.min(m.count + p, m.goal);
+                    }
                 }
             }
         }
@@ -9159,11 +9300,17 @@ function Safari() {
     this.countProgress = function(mission, action, target, value, data) {
         var out = 0;
         switch (mission.objective) {
+            case "catchPokeWithStarter":
+                out = (action === "catch" && data.starter && this.pokeMatchesMission(target, mission.type, mission.target) ? value : 0);
+                break;
             case "catchPoke":
                 out = (action === "catch" && this.pokeMatchesMission(target, mission.type, mission.target) ? value : 0);
                 break;
             case "contestPoke":
                 out = (action === "catch" && this.pokeMatchesMission(target, mission.type, mission.target) && contestCount > 0 ? value : 0);
+                break; 
+            case "baitWithBotD":
+                out = (action === "bait" && data.botd && this.pokeMatchesMission(target, mission.type, mission.target) ? value : 0);
                 break; 
             case "baitPoke":
                 out = (action === "bait" && this.pokeMatchesMission(target, mission.type, mission.target) ? value : 0);
@@ -9192,6 +9339,12 @@ function Safari() {
             case "catchWithBall":
                 out = (action === "catch" && data.ball === mission.target ? value : 0);
                 break; 
+            case "rockWindow":
+                out = (action === "rockWindow" ? value : 0);
+                break; 
+            case "getShocked":
+                out = (action === "getShocked" ? value : 0);
+                break; 
             case "playContest":
                 out = (action === "contest" && data.thrown >= mission.target ? value : 0);
                 break; 
@@ -9201,11 +9354,23 @@ function Safari() {
             case "winContest":
                 out = (action === "contest" && data.won ? value : 0);
                 break; 
+            case "winContestTheme":
+                out = (action === "contest" && data.won && data.theme === mission.target ? value : 0);
+                break; 
             case "collectorLevel":
                 out = (action === "collector" && mission.target === data.amount ? value : 0);
                 break; 
+            case "towerFloorMono":
+                out = (action === "tower" && target >= mission.target && data.unique && data.mono.indexOf(mission.type) !== -1 ? value : 0);
+                break; 
+            case "towerFloorCanEvolve":
+                out = (action === "tower" && target >= mission.target && data.canEvolve === true ? value : 0);
+                break; 
             case "towerFloor":
                 out = (action === "tower" && target >= mission.target ? value : 0);
+                break; 
+            case "scientistSilver":
+                out = (action === "scientist" ? data.silver : 0);
                 break; 
             case "arenaSilver":
                 out = (action === "arena" && data.silver > mission.target ? data.silver : 0);
@@ -9228,6 +9393,18 @@ function Safari() {
             case "pokePhoto":
                 out = (action === "photo" && this.photoMatchesMission(data.photo, mission.type, mission.target) ? value : 0);
                 break; 
+            case "sodaFromTrivia":
+                out = (action === "soda" ? value : 0);
+                break; 
+            case "shadyFromMafia":
+                out = (action === "shady" ? value : 0);
+                break; 
+            case "winMonger":
+                out = (action === "winMonger" && target === mission.target ? value : 0);
+                break; 
+            case "winTour":
+                out = (action === "winTour" ? value : 0);
+                break; 
             case "toursCross":
             case "triviaCross":
             case "mafiaCross":
@@ -9248,6 +9425,7 @@ function Safari() {
             case "ability": return canHaveAbility(id, sys.abilityNum(target));
             case "move": return canLearnMove(id, sys.moveNum(target));
             case "name": return sys.pokemon(id)[0].toLowerCase() === target.toLowerCase();
+            case "fullname": return sys.pokemon(id).toLowerCase() === target.toLowerCase();
             case "any": return true;
         }
         return false;
@@ -9262,6 +9440,249 @@ function Safari() {
             case "score": return photo.score >= target;
         }
         return false;
+    };
+
+    /* Events */
+    this.safariEvents = function(src,what,enable) {
+        if (!safari.events) {
+            safari.events = {
+                trialsEnabled: false,
+                trialsData: null,
+                trialsParticipants: []
+            };
+        }
+        switch (what) {
+            case "trials":
+                if (enable && (!(safari.events.trialsData))) {
+                    safaribot.sendMessage(src,"Use /loadtrials [url] to load trials before enabling them!");
+                }
+                else {
+                    safari.events.trialsEnabled = (enable ? true : false);
+                    safaribot.sendMessage(src,"Event Trials " + (enable ? "enabled" : "disabled") + "!" );
+                    if (!(enable)) {
+                        safari.events.trialsData = null;
+                    }
+                }
+                break;
+        }
+    }
+    /* Trials */
+    this.assignTrials = function(src,player) {
+        if (!player)  {
+            return;
+        }
+        if (!safari.events.trialsEnabled)  {
+            return;
+        }
+        if (!player.trials)  {
+            return;
+        }
+
+        var k, m, l;
+        while (player.trials.missions.length < 5) {
+            l = this.findTrials(player,safari.events.trialsData[player.trials.level + ""]);
+            if (l.length === 0) {
+                player.trials.level++;
+                if (player.trials.level <= 7) {
+                    l = this.findTrials(player,safari.events.trialsData[player.trials.level + ""]);
+                }
+                else {
+                    /* Completed all trials */
+                    l = null;
+                    player.trials.level--;
+                }
+            }
+            if (!(l)) {
+                return; //Could not find any new missions to give, so it gives nothing
+            }
+            else {
+                m = JSON.parse(JSON.stringify(l.random()));
+            }
+            player.trials.missions.push(m);
+            player.trials.missions[player.trials.missions.indexOf(m)].count = 0;
+            player.trials.currentIDs.push(player.trials.missions[player.trials.missions.indexOf(m)].id);
+            safaribot.sendHtmlMessage(src, toColor( "<b> New Trial: </b> " + m.desc + " (" + plural(m.points, "trials point") + ")", "#32CD32" ), safchan);
+        }
+    };
+    this.releaseTrial = function(src,player,id) {
+        var k, m, d;
+        for (var e = player.trials.missions.length; e--; ) {
+            m = player.trials.missions[e];
+            d = m.id;
+            if (m.id === id) {
+                var k = player.trials.missions.indexOf(m);
+                player.trials.missions.splice(k, 1);
+                player.trials.currentIDs.splice(player.trials.currentIDs.indexOf(d), 1);
+                this.assignTrials(src,player); //sends the new trial to the auth, but whatever
+                return;
+            }
+        }
+        safaribot.sendMessage(src, "No ID " + id + " found in target's missions",safchan);
+        return;
+    };
+    this.trialsLogin = function(player) {
+        if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
+            player.trials.points += 1;
+            safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
+        }
+        return;
+    };
+    this.grantTrialsBonusPoints = function(src,player) {
+        var k, m, d, out = [];
+        if (player.trials.bonusPointsReceived === false) {
+            player.trials.bonusPointsReceived = true;
+            player.trials.points += 10;
+            safaribot.sendMessage(src, "Bonus 10 points granted to " + player.id + "!",safchan);
+            return;
+        }
+        safaribot.sendMessage(src, player.id + " already received their bonus points!",safchan);
+        return;
+    };
+    this.findTrials = function(player,tier) {
+        var k, out = [];
+        if (!tier) {
+            return null;
+        }
+        for (var t in tier) {
+            k = tier[t];
+            if ((player.trials.pastIDs.indexOf(k.id) === -1) && (player.trials.currentIDs.indexOf(k.id) === -1) ) {
+                out.push(k);
+            }
+        }
+        return out;
+    };
+    this.viewTrials = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src), m, g, finished = [];
+        if (!safari.events) {
+            safaribot.sendMessage(src, "Trials is currently not in session!", safchan);
+            return;
+        }
+        if ((!safari.events.trialsEnabled)) {
+            safaribot.sendMessage(src, "Trials is currently not in session!", safchan);
+            return;
+        }
+        var name = safari.events.trialsData.name;
+        if ((player.trials) && (player.trials.name !== name)) {
+            /* Unloads the data from last trials session if it exists */
+            player.trials = null;
+        }
+        if (!player.trials) {
+            player.trials = {};
+            player.trials.missions = [];
+            player.trials.pastIDs = [];
+            player.trials.currentIDs = [];
+            player.trials.level = 1;
+            player.trials.points = 0;
+            player.trials.name = name;
+            player.trials.bonusPointsReceived = false;
+            if (safari.events.trialsParticipants.indexOf(player) === -1) {
+                safari.events.trialsParticipants.push(player);
+            }
+        }
+        sys.sendMessage(src, "", safchan);
+        safaribot.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
+        for (var e = 0; e < player.trials.missions.length; e++) {
+            m = player.trials.missions[e];
+            if (m.count >= m.goal) {
+                finished.push(m);
+            }
+            g = Math.min(m.count, m.goal) + "/" + m.goal;
+            safaribot.sendHtmlMessage(src, "<b>" + (e+1) + ".</b> " + m.desc + " " + (m.count >= m.goal ? toColor("(" + g + ")", "blue") : "("+g+")") + " + " + plural(m.points, "trials point"), safchan);
+            
+        }
+        
+        var clearedAny = false, rew;
+        for (e = 0; e < finished.length; e++) {
+            m = finished[e];
+            clearedAny = true;
+            rew = safari.events.trialsData.rewards[player.trials.level + ""].random(); //Gives rewards based on player's current level, not the mission's level
+            g = giveStuff(player, toStuffObj(rew));
+            player.trials.points += m.points;
+            safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "trials point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
+            var k = player.trials.missions.indexOf(m);
+            player.trials.missions.splice(k, 1);
+        }
+        this.assignTrials(src,player);
+        if (clearedAny) {
+            safaribot.sendMessage(src, "You now have " + plural(player.trials.points, "trials point") + "!", safchan);
+        }
+        else {
+            safaribot.sendMessage(src, "You have " + plural(player.trials.points, "trials point") + "!", safchan);
+        }
+        sys.sendMessage(src, "", safchan);
+    };
+    this.viewTrialsLb = function(src,num) {
+        var t = safari.events.trialsParticipants, player, points;
+        var playerPoints = [];
+        var limit = parseInt(num, 10);
+
+        for (var p in t) {
+            player = t[p];
+            id = player.id;
+            points = player.trials.points;
+            playerPoints.push({
+                id: id,
+                points: points
+            });
+        }
+        playerPoints.sort(function(a, b) { 
+            return a.points - b.points;
+        })
+        var j = 1;
+        limit = Math.min(playerPoints.length, limit);
+        for (var i = playerPoints.length; i--; i <= playerPoints.length - limit) {
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+            j++;
+        }
+        return;
+    };
+    this.endTrials = function() {
+        var t = safari.events.trialsParticipants, player, points;
+        var playerPoints = [], src;
+        var strata = safari.events.trialsData.payout.strata, k, id;
+        var top = safari.events.trialsData.payout.top;
+
+        for (var p in t) {
+            player = t[p];
+            id = player.id;
+            points = player.trials.points;
+            playerPoints.push({
+                id: id,
+                points: points
+            });
+            for (var s in strata) {
+                k = strata[s];
+                rew = k.prizes;
+                if (k.range[0] <= points && k.range[1] >= points) {
+                    break;
+                }
+            }
+            src = sys.id(player.id);
+            for (var h in rew) {
+                g = giveStuff(player, toStuffObj(rew[h]));
+                safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
+            }
+        }
+        playerPoints.sort(function(a, b) { 
+            return a.points - b.points;
+        })
+        var j = 1;
+        var limit = Math.min(playerPoints.length, 2);
+        for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
+            player = getAvatarOff(playerPoints[i].id);
+            src = sys.id(player.id);
+            rew = top[j+""];
+            rew = rew.random();
+            g = giveStuff(player, toStuffObj(rew));
+            safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
+            safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
+            j++;
+        }
+        safari.events.trialsParticipants = [];
+        return;
     };
     
     /* Secret Base */
@@ -12901,6 +13322,8 @@ function Safari() {
             player.quests.scientist.cooldown = quest.expires;
             player.quests.scientist.pokemon = id;
 
+            safari.missionProgress(player, "scientist", 1, rew, {silver: rew});
+
             player.balls.silver += rew;
             if (this.getFortune(player, "scientistreward", 0, null, true)) {
                 this.useFortuneCharge(player, "scientistreward", 1);
@@ -13374,8 +13797,28 @@ function Safari() {
                         player.ninjaParty = player.party.concat();
                     }
                 }
-                
-                safari.missionProgress(player, "tower", count, 1, {});
+
+                var k = Object.keys(effectiveness), m = [], y, l = [], u = true;
+                for (var t in k) {
+                    y = true;
+                    for (var p in player.party) {
+                        if (!hasType(player.party[p],k[t])) {
+                            y = false;
+                        }
+                    }
+                    if (y) {
+                        m.push(k[t]);
+                    }
+                }
+                for (var p in player.party) {
+                    if (l.indexOf(player.party[p]) !== -1) {
+                        u = false;
+                        break;
+                    }
+                    l.push(player.party[p]);
+                }
+
+                safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u});
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
@@ -15305,6 +15748,7 @@ function Safari() {
             var out = giveStuff(winner, toStuffObj(obj.reward));
             winner.records.shadyUsed += price;
             winner.records.mongerAuctionsWon += 1;
+            safari.missionProgress(player,"winMonger",obj.rewardName,1,{});
             this.saveGame(winner);
             sys.sendAll("", safchan);
             safaribot.sendAll(winner.id.toCorrectCase() + " paid " + plural(price, "shady") + " and won the Monger Auction for " + obj.rewardName + "!", safchan);
@@ -15425,6 +15869,8 @@ function Safari() {
         this.stamina[p2.id] = 300 + Math.floor(300 * p2.quests.pyramid.bonusStamina);
         this.stamina[p3.id] = 300 + Math.floor(300 * p3.quests.pyramid.bonusStamina);
 
+        this.recentRooms = [];
+
         p1.quests.pyramid.bonusStamina = 0;
         p2.quests.pyramid.bonusStamina = 0;
         p3.quests.pyramid.bonusStamina = 0;
@@ -15441,6 +15887,9 @@ function Safari() {
         this.parties[p1.id] = p1.party.slice(0, 3);
         this.parties[p2.id] = p2.party.slice(0, 3);
         this.parties[p3.id] = p3.party.slice(0, 3);
+
+        this.bannedHazard = this.parties[p1.id][2];
+        this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
@@ -15483,16 +15932,19 @@ function Safari() {
             this.movingFloor = false;
         }
         else if (this.currentRoom === null) {
-            var type = randomSample({
-                horde: 11,
-                riddle: 11,
-                hazard: 12,
-                blocked: 13,
-                trainer: 13,
-                defense: 13,
-                empty: 9,
-                strong: 13
-            });
+            for (var x = 0; x <= this.recentRooms.length; x++) {
+                var type = randomSample({
+                    horde: 11,
+                    riddle: 11,
+                    hazard: 12,
+                    blocked: 13,
+                    trainer: 13,
+                    defense: 13,
+                    empty: 9,
+                    strong: 13
+                });
+                if (!this.recentRooms.slice(0, this.recentRooms.length - x).contains(type)) { break; }
+            }
             this.room++;
             var roomDuration = 2;
             switch (type) {
@@ -15524,6 +15976,8 @@ function Safari() {
                 break;
             }
             this.currentRoom.turnToAdvance = this.turn + roomDuration;
+            this.recentRooms.unshift(type);
+            this.recentRooms = this.recentRooms.slice(0,Math.min( 3,this.recentRooms.length ));
         }
         else {
             if (this.turn < this.currentRoom.turnToAdvance) {
@@ -16019,7 +16473,7 @@ function Safari() {
         return true;
     };
     HordeRoom.prototype.advance = function() {
-        var members = this.pyr.names, id, choice, m, p, dmg, opp, res, defeated = {}, stamina = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke, nerfed = {};
+        var members = this.pyr.names, id, choice, m, p, dmg, opp, res, defeated = {}, stamina = {}, defeatedCount = 0, points = 0, attackers = {}, attackersNames, lastAttacker = 0, l, n, treasureWinner, treasurePoke, nerfed = {}, avi, playerBonus = null;
 
         attackers = this.getChoices();
         attackersNames = Object.keys(attackers);
@@ -16031,8 +16485,16 @@ function Safari() {
                 n = p % (attackersNames.length);
                 id = attackersNames[n];
                 choice = attackers[id];
+                avi = getAvatarOff(id);
 
-                res = calcDamage(choice, opp, null, this.hordePower);
+                if ((sys.type(sys.pokeType2(choice)) === "???") && (avi.costume === "flower") && (!(isLegendary(choice)))) {
+                    playerBonus = [30, 120];
+                }
+                else {
+                    playerBonus = null;
+                }
+
+                res = calcDamage(choice, opp, playerBonus, this.hordePower);
                 lastAttacker = n + 1;
                 if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
                     res.power[0] = Math.round(res.power[0] * 0.25);
@@ -16104,8 +16566,8 @@ function Safari() {
 
         this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 773, 784, 66256, 66184,66028].concat(legendaries).concat(megaPokemon);
         this.opponent = this.opponentList.random();
-        this.opponentHP = 220 + 170 * level;
-        this.opponentPower = 9 + 6 * level;
+        this.opponentHP = 410 + 150 * level;
+        this.opponentPower = 13 + 4 * level;
         this.isRevealed = false;
         if ([151, 571].contains(this.opponent)) {
             this.disguise = this.opponentList.random();
@@ -16176,7 +16638,8 @@ function Safari() {
             opp = this.opponent,
             defeated = false,
             choices = this.getChoices(),
-            attackerNames = Object.keys(choices);
+            attackerNames = Object.keys(choices),
+            playerBonus = null;
 
         this.sendAll("");
         if (["run", "runaway", "run away", "flee"].contains(choices[this.pyr.leader])) {
@@ -16194,8 +16657,16 @@ function Safari() {
 
         for (p in choices) {
             m = choices[p];
+            avi = getAvatarOff(p);
 
-            res = calcDamage(m, opp, [15 + 15 * this.level, 80 + 20 * this.level]);
+            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(m)))) {
+                playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
+            }
+            else {
+                playerBonus = [15 + 15 * this.level, 80 + 20 * this.level];
+            }
+
+            res = calcDamage(m, opp, playerBonus);
             if (this.opponentHP > 0) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
                 if (res.power[0] > 0) {
@@ -16226,7 +16697,7 @@ function Safari() {
         }
 
         if (defeated) {
-            var pointsRange = [48 + 32 * this.level, 30 + 20 * this.level, 6 + 6 * this.level, -10 - 8 * this.level];
+            var pointsRange = [48 + 32 * this.level, 30 + 20 * this.level, 6 + 6 * this.level, 2 + 2 * this.level, -10 - 8 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("<b>{0}</b>'s HP dropped to 0! The {0} has fainted! Points gained: {1}".format(poke(opp), plural(points, "Point")));
             this.pyr.updateStatus(points, stamina);
@@ -16268,9 +16739,10 @@ function Safari() {
             }
         }
         this.revealedTypes = [this.types[0]];
-        this.hp = 860 + 210 * level;
+        this.hp = 1080 + 200 * level;
+        this.maxhp = this.hp;
         this.dealt = {};
-        this.treasureGoal = Math.round(this.hp * (1.65 - this.level * 0.07));
+        this.treasureGoal = Math.round(this.hp * (1.45 - this.level * 0.07));
 
         this.treasures = {
             pack: { chance: 1 * level, item: "pack", amount: 1 },
@@ -16302,14 +16774,23 @@ function Safari() {
         return this.pokeInParty(id, commandData);
     };
     BlockedRoom.prototype.advance = function() {
-        var m, p, dmg, pow, stamina = {}, turnDealt = {}, turnDamage = 0,
+        var m, p, dmg, pow, stamina = {}, turnDealt = {}, turnDamage = 0, avi,
             defeated = false,
             choices = this.getChoices();
 
         this.sendAll("");
         for (p in choices) {
             m = choices[p];
-            pow = sys.rand(130 + this.level * 15, 240 + this.level * 37);
+
+            avi = getAvatarOff(p);
+
+            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(m)))) {
+                pow = sys.rand(150 + this.level * 15, 260 + this.level * 37);
+            }
+            else {
+                pow = sys.rand(130 + this.level * 15, 240 + this.level * 37);
+            }
+
             dmg = Math.round(pow * safari.checkEffective(sys.type(sys.pokeType1(m)), sys.type(sys.pokeType2(m)), this.types[0], this.types[1], this.types[2]));
             if (!this.dealt.hasOwnProperty(p)) {
                 this.dealt[p] = 0;
@@ -16341,7 +16822,7 @@ function Safari() {
                 }
             }
 
-            var pointsRange = [48 + 32 * this.level, 28 + 18 * this.level, 10 + 6 * this.level, -6 - 6 * this.level];
+            var pointsRange = [48 + 36 * this.level, 28 + 18 * this.level, 10 + 6 * this.level,  2 + 3 * this.level, -3 - 4 * this.level, -7 - 8 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
@@ -16353,13 +16834,19 @@ function Safari() {
             this.passed = true;
         } else {
             var rt = this.revealedTypes.length;
-            if (rt < this.types.length) {
+            if ((rt < this.types.length) && (rt < 2)) {
                 this.revealedTypes.push(this.types[rt]);
                 this.sendAll("The statue's {0} type is revealed to be <b>{1}</b>! You now know the statue is {2}-type!".format(getOrdinal(rt+1), typeIcon(this.types[rt]), toColor(this.revealedTypes.map(typeIcon).join(" / "), "blue")));
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = 5 + 6 * this.level;
+            var averageDamage = Math.floor(7 + 1.4 * this.level);
+            if (this.maxhp * 0.2 >= this.hp) {
+                averageDamage = averageDamage*0.67;
+            }
+            if (this.maxhp * 0.1 >= this.hp) {
+                averageDamage = averageDamage*0.5;
+            }
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -16723,7 +17210,7 @@ function Safari() {
                 if (!isTreasure) {
                     this.cluesSearched[p]++;
                     if (this.cluesSearched[p] > 1) {
-                        stamina[p] =  -1 - Math.round((this.answerType === "move" ? 1.5 : 2) * this.level);
+                        stamina[p] = (Math.round((this.cluesSearched[p] * -1.5) - (this.answerType === "move" ? 1.5 : 2) * (this.level + 2)));
                     }
                 }
 
@@ -16804,12 +17291,12 @@ function Safari() {
                 this.individualmsg[p] = "Nominate yourself to battle by typing " + link("/pyr me") + "!";
             }
         }
-        this.trainerPower = [9 + level * 7, 85 + level * 15];
+        this.trainerPower = [12 + level * 8, 90 + level * 16];
 
         this.trainerTeam = [];
         var num, bst = 285 + 25 * level, maxLegend = Math.floor((level-1)/3) + 1;
         var main = this.inverted ? Object.keys(effectiveness).slice(1).random() : Object.keys(effectiveness).random();
-        var mono = chance(0.4);
+        var mono = chance(0.15);
         var m = mono ? 3 : 2;
         while (this.trainerTeam.length < m) {
             num = sys.rand(1, 803);
@@ -16897,6 +17384,8 @@ function Safari() {
         var id = this.battler, name = id.toCorrectCase(), m, p, opp, res, points = 0, stamina = {};
 
         var party = this.pyr.parties[id].concat().shuffle();
+        var isFlowerGirl = (getAvatarOff(id).costume === "flower" ? true : false);
+        var playerBonus = null;
         stamina[id] = 0;
         this.sendAll("");
 
@@ -16905,7 +17394,14 @@ function Safari() {
             m = party[p];
             opp = this.trainerTeam[p];
 
-            res = calcDamage(m, opp, null, this.trainerPower, this.inverted);
+            if ((sys.type(sys.pokeType2(m)) === "???") && (isFlowerGirl) && (!(isLegendary(m)))) {
+                playerBonus = [30, 120];
+            }
+            else {
+                playerBonus = null;
+            }
+
+            res = calcDamage(m, opp, playerBonus, this.trainerPower, this.inverted);
 
             result = "{0} {2} ({4}) x ({5}) {3} {1}";
             if (res.power[0] == res.power[1]) {
@@ -16928,7 +17424,7 @@ function Safari() {
                 if (res.power[0] < res.power[1]) {
                     oppScore++;
                 }
-                stamina[id] -= 2 * this.level;
+                stamina[id] -= (4 + this.level);
             }
         }
 
@@ -16941,10 +17437,13 @@ function Safari() {
                 getTreasure(id, reward);
             }
         } else {
-            stamina[id] -= 4 + 5 * this.level;
+            stamina[id] -= 3 + this.level;
             this.sendAll("{3} couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
         }
-        points = [-6 - 4 * this.level, 0, 30 + 20 * this.level, 48 + 32 * this.level][score];
+        if (oppScore > 1) {
+            stamina[id] -= 16 + 4 * this.level;
+        }
+        points = [-10 - 6 * this.level, 0, 28 + 18 * this.level, 52 + 36 * this.level][score];
         if (stamina[id] === 0) {
             delete stamina[id];
         }
@@ -17132,7 +17631,20 @@ function Safari() {
             "ice":[498,257,503],
             "flame":[56,410,16],
             "electric":[50,300,435],
-            "dark":[430,497,425]
+            "dark":[430,497,425],
+            "barrier":[100,442,523]
+        };
+        this.hazardAbilites = {
+            "plants": 181,
+            "water": 33,
+            "boulder": 140,
+            "toxic": 81,
+            "pit": 26,
+            "ice": 49,
+            "flame": 18,
+            "electric": 159,
+            "dark": 35,
+            "barrier": 151
         };
         this.validMoves = [];
         for (var c in this.hazardMoves) {
@@ -17147,7 +17659,8 @@ function Safari() {
             "ice": "Ice Pillar",
             "flame": "Flamethrower",
             "electric": "Electric Fence",
-            "dark": "Darkness"
+            "dark": "Darkness",
+            "barrier": "Barrier"
         };
         this.hazardPlural = {
             "plants": "Plants",
@@ -17158,14 +17671,32 @@ function Safari() {
             "ice": "Ice Pillars",
             "flame": "Flamethrowers",
             "electric": "Electric Fences",
-            "dark": "Darkness"
+            "dark": "Darkness",
+            "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(3 + level, 5 + level), order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max;
+        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * 1.4)), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+
+        var blockedHazard = this.pyr.bannedHazard;
+
+        while (cont) {
+            maxsize = max - x;
+            x++;
+            if (x > max * 0.5) {
+                cont = false;
+            }
+            if ((maxsize <= 7) && (chance(0.85 - level))) {
+                cont = false;
+            }
+        }
+
         do {
             this.hazards = {};
             count = 0;
             for (e = 0; e < order.length; e++) {
-                val = sys.rand(0, 7);
+                if (order[e] === blockedHazard) {
+                    continue;
+                }
+                val = sys.rand(0, maxsize);
                 if (max - val < 0) {
                     val = max;
                 }
@@ -17257,7 +17788,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = sys.rand(3, Math.ceil(count*0.75)), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor( level * 0.5 ) + sys.rand(3, Math.ceil(count*0.7))),count-2), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -17385,13 +17916,35 @@ function Safari() {
         var ineffective = [];
         var treasureTo;
         var points = 0, stamina = {};
-        var list, e, p, id, m, mv, mid, total = 0;
+        var list, e, p, id, m, ab, mv, mid, total = 0, par, usedAbilities = [];
 
         for (e in hazards) {
             list = hazards[e];
             if (obstacles.hasOwnProperty(e)) {
                 cleared[e] = 0;
                 total += obstacles[e];
+            }
+            for (p = 0; p < alive.length; p++) {
+                id = alive[p];
+                par = this.pyr.parties[id];
+                for (var k in par) {
+                    if ((canHaveAbility(par[k],this.hazardAbilites[e])) && (usedAbilities.indexOf(this.hazardAbilites[e]) === -1)) {
+                        if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
+                            ab = sys.ability(this.hazardAbilites[e]);
+                            obstacles[e] -= 1;
+                            cleared[e]++;
+                            if (obstacles[e] === 0 && e === this.treasureLocation) {
+                                treasureTo = id;
+                            }
+                            if (!effective.hasOwnProperty(e)) {
+                                effective[e] = [];
+                            }
+                            effective[e].push(sys.pokemon(par[k]) + "'s " + ab);
+                            usedAbilities.push(this.hazardAbilites[e]);
+                            break;
+                        }
+                    }
+                }
             }
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
@@ -17488,11 +18041,11 @@ function Safari() {
                 if (!stamina.hasOwnProperty(p)) {
                     stamina[p] = 0;
                 }
-                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * this.level * (count === 0 ? 0.5 : 1));
+                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.8) + 6) * (count === 0 ? 0.5 : 1)));
             }
         }
         if (struggled.length > 0) {
-            var struggleStm = 1 + 5 * this.level;
+            var struggleStm = 3 + 5 * this.level;
             this.sendAll(readable(struggled.map(function(x){ return x.toCorrectCase(); })) + " lost " + struggleStm + " stamina because of " + readable(struggleUsers) + "!");
             for (p = struggled.length; p--; ) {
                 id = struggled[p];
@@ -17506,7 +18059,10 @@ function Safari() {
         if (notCleared.length > 0) {
             var mercy = Math.round(total * 0.25);
             if (count > mercy) {
-                var stmLost = (count + 2 - mercy) * (this.level + 2);
+                var stmLost = (count + 2 - mercy) * (this.level + 5);
+                if (mercy < count) {
+                    stmLost += (this.level + 5);
+                }
                 if (stmLost > 0) {
                     this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
                     for (var p = alive.length; p--; ) {
@@ -17524,6 +18080,9 @@ function Safari() {
             }
         }
         points = Math.round((16 + 3 * this.level) * (total - count));
+        if (notCleared.length === 0) {
+            points += (5 * this.level);
+        }
 
         this.sendAll("");
         var perc = Math.round(count / total * 100);
@@ -17567,7 +18126,7 @@ function Safari() {
         this.traps = {};
         for (p = 0; p < 3; p++) {
             this.traps[types.shift()] = {
-                stamina: -(3 + this.level * 5)
+                stamina: -(15 + this.level * 3)
             };
         }
         this.treasures = {};
@@ -20450,7 +21009,10 @@ function Safari() {
                         color: data.nameColor || "#000000",
                         value: 0
                     };
-                    player.value = monthlyLeaderboards[i].get(e) || 0;
+                    try {
+                        player.value = monthlyLeaderboards[i].get(e) || 0;
+                    }
+                    catch (err) {};
                     if (player.value === 0 || player.value == "0") {
                         continue;
                     }
@@ -20489,14 +21051,19 @@ function Safari() {
     };
     this.addToMonthlyLeaderboards = function(name, record, value) {
         name = name.toLowerCase();
-        var val = monthlyLeaderboards[record].get(name) || 0;
-        if (typeof val != "number") {
-            val = parseInt(val, 10);
-            if (isNaN(val)) {
-                val = 0;
+        try {
+            var val = monthlyLeaderboards[record].get(name) || 0;
+            if (typeof val != "number") {
+                val = parseInt(val, 10);
+                if (isNaN(val)) {
+                    val = 0;
+                }
             }
+            monthlyLeaderboards[record].add(name, val + value);
         }
-        monthlyLeaderboards[record].add(name, val + value);
+        catch (err) {
+            return false;
+        }
     };
     this.loadConfigurables = function() {
         var val;
@@ -21462,6 +22029,9 @@ function Safari() {
         }
         
         this.missionProgress(player, "cross", "tours", 1, {});
+        if (placing === 1) {
+            this.missionProgress(player, "winTour", "tours", 1, {});
+        }
         this.inboxMessage(player, "You won " + rew + " from an Event Tour!", isPlaying(name));
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -21491,6 +22061,7 @@ function Safari() {
         }
         
         this.missionProgress(player, "cross", "trivia", 1, {});
+        this.missionProgress(player, "sodaFromTrivia", "trivia", (4 - placing), {});
         this.inboxMessage(player, "You won " + rew + " from an Event Trivia Game!", isPlaying(name));
         this.sanitize(player);
         safaribot.sendHtmlAll("<b>" + getOrdinal(placing) + "</b>: " + html_escape(name.toCorrectCase()) + " <i>(" + rew + ")</i>", safchan);
@@ -21510,6 +22081,7 @@ function Safari() {
             }
             player.balls.shady += amt;
             this.missionProgress(player, "cross", "mafia", 1, {});
+            this.missionProgress(player, "shadyFromMafia", "mafia", amt, {});
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
             
@@ -21876,7 +22448,8 @@ function Safari() {
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
-            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw."
+            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
+            "/trials: Shows you your current trials missions. Only works while trials is in session."
         ];
         var help = userHelp;
         var adminHelp = [
@@ -21932,7 +22505,12 @@ function Safari() {
             "/updateafter [abort/cancel/stop]: Updates Safari at next available opportunity. Use any of the command data listed to cancel the pending update.",
             "/nextspawn [player]։[pokemon]։[amount]։[disguise]: Makes a player's next spawn equal to [amount] of [pokemon] diguised as [disguise]. Amount and Disguse are optional. Affects Bait and Gacha.",
             "/loginmercy [number]: Sets a number of days that will not break the player's consecutive login if they miss it (use when server is down for too long).",
-            "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards."
+            "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards.",
+            "/enabletrials: Enables trials session. Make sure trials is loaded first. Use /disabletrials to turn it off (this doesn't wipe data).",
+            "/loadtrials [JSON]: Loads trials data from a json file",
+            "/releasetrial [player][id]: Removes target ID from player's trials listing if they have it.",
+            "/trialsbonus [player]: Gives the target player a bonus 10 points (can only be used once per session.",
+            "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -22246,6 +22824,10 @@ function Safari() {
             }
             if (command === "mission" || command === "missions") {
                 safari.viewMissions(src, commandData);
+                return true;
+            }
+            if (command === "trials" || command === "trial") {
+                safari.viewTrials(src, commandData);
                 return true;
             }
             if (command === "forfeit") {
@@ -25222,6 +25804,33 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "loadtrials" || command === "loadtrial") {
+                var cThemes = trialsData ? trialsData : {};
+                var url = commandData === "*" ? (permObj.get("trialsurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading trials from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            trialsData = JSON.parse(resp);
+                            permObj.add("trialsurl", url);
+                            safari.events.trialsData = trialsData;
+                            safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            trialsData = cThemes;
+                            safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    trialsData = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
             if (command === "loadfortune" || command === "loadfortunes") {
                 var cThemes = fortuneData;
                 var url = commandData === "*" ? (permObj.get("fortunesurl") || commandData) : commandData;
@@ -25334,6 +25943,31 @@ function Safari() {
                 } catch (err) {
                     safaribot.sendMessage(src, "Error when trying to edit data: " + err + (err.lineNumber ? " on line " + err.lineNumber : ""), safchan);
                 }
+                return true;
+            }
+            if (command === "enabletrials") {
+                safari.safariEvents( src,"trials",true );
+                return true;
+            }
+            if (command === "disabletrials") {
+                safari.safariEvents( src,"trials",false );
+                return true;
+            }
+            if (command === "releasetrial") {
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
+                return true;
+            }
+            if (command === "trialsbonus") {
+                safari.grantTrialsBonusPoints( src,getAvatarOff(commandData) );
+                return true;
+            }
+            if (command === "trialslb") {
+                safari.viewTrialsLb( src,commandData );
+                return true;
+            }
+            if (command === "finishtrials") {
+                safari.endTrials();
                 return true;
             }
             if (command === "nextspawn") {
@@ -25650,7 +26284,10 @@ function Safari() {
         } catch (err) {
         }
         photographQuest = parseFromPerm("photographQuest", {});
-        safari.updatePhotographQuest();
+        try {
+            safari.updatePhotographQuest();
+        }catch (err) {
+        }
         
         lastLeaderboards = parseFromPerm("lastLeaderboards", null);
         rafflePrizeObj = parseFromPerm("rafflePrize", null);
@@ -25696,6 +26333,7 @@ function Safari() {
         } catch (err) {
         }
         updateItemHelp();
+        updateItemData();
         
         try {
             var data = JSON.parse(sys.getFileContent(decorationsFile));
@@ -25706,6 +26344,7 @@ function Safari() {
             var data = JSON.parse(sys.getFileContent(missionsFile));
             missionsData = data || {};
         } catch (err) {
+            missionsData = {};
         }
         var oldData = fortuneData;
         try {
@@ -26142,7 +26781,8 @@ function Safari() {
                                 }
                             }
                             player.records.contestsWon += 1;
-                            safari.missionProgress(player, "contest", "won", 1, { won: true });
+                            var c = currentTheme ? contestThemes[currentTheme].name : "Default";
+                            safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c });
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
