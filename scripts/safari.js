@@ -471,7 +471,7 @@ function Safari() {
             bright: {name: "bright", fullName: "Bright Egg", type: "consumable", icon: 94, price: 50000, shinyChance: 32, legendaryChance: 128, aliases:["bright", "bright egg", "brightegg"], tradable: true},
             water: {name: "water", fullName: "Fresh Water", type: "consumable", icon: 73, price: 3000, bonusRate: 0.1, aliases:["fresh", "fresh water", "water"], tradable: true},
             cherry: {name: "cherry", fullName: "Cherry Delight", type: "consumable", icon: 341, price: 5000, bonusRate: 10, aliases: ["cherry", "delight", "cherry delight", "cherrydelight"], tradable: true},
-            soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true},
+            soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true, cap: 9999},
             form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
 
@@ -9395,10 +9395,10 @@ function Safari() {
                 out = (action === "photo" && this.photoMatchesMission(data.photo, mission.type, mission.target) ? value : 0);
                 break; 
             case "sodaFromTrivia":
-                out = (action === "soda" ? value : 0);
+                out = (action === "sodaFromTrivia" ? value : 0);
                 break; 
             case "shadyFromMafia":
-                out = (action === "shady" ? value : 0);
+                out = (action === "shadyFromMafia" ? value : 0);
                 break; 
             case "winMonger":
                 out = (action === "winMonger" && target === mission.target ? value : 0);
