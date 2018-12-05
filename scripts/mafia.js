@@ -7857,7 +7857,7 @@ function Mafia(mafiachan) {
                         gamemsgAll( toColor( "All players have passed, so the game continues to the next phase.", "#367be2" ), "Passimian", mafiachan, true);
                         mafia.ticks = 1;
                     }
-                    else if ((mafia.passed.length === (Object.keys(mafia.players).length)) - 1) {
+                    else if ((mafia.passed.length === ((Object.keys(mafia.players).length)) - 1)) {
                         for (var p in mafia.players) {
                             if ((mafia.passed.indexOf(mafia.players[p].name)) === -1) {
                                 break;
@@ -7865,10 +7865,10 @@ function Mafia(mafiachan) {
                         }
                         mafiabot.sendHtmlMessage(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
                     }
-                    mafiabot.sendHtmlMessage(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
+                    mafiabot.sendHtmlMessage(src, toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
                 }
                 else {
-                    mafiabot.sendHtmlMessage(sys.name(src), toColor( "You already passed!", "crimson" ), mafiachan);
+                    mafiabot.sendHtmlMessage(src, toColor( "You already passed!", "crimson" ), mafiachan);
                 }
                 return;
             }
