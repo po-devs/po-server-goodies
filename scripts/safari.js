@@ -9231,7 +9231,7 @@ function Safari() {
                 }
             }
         }
-        if ( (safari.events) && (safari.events.trialsEnabled) && (player.trials)) {
+        if ((safari.events) && (safari.events.trialsEnabled) && (player.trials)) {
             for (e = player.trials.missions.length; e--; ) {
                 m = player.trials.missions[e];
                 if (m.count < m.goal) {
@@ -9442,7 +9442,7 @@ function Safari() {
                 return; //Could not find any new missions to give, so it gives nothing
             }
             else {
-                m = l.random();
+                m = JSON.parse(JSON.stringify(l.random()));
             }
             player.trials.missions.push(m);
             player.trials.missions[player.trials.missions.indexOf(m)].count = 0;
