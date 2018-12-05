@@ -434,7 +434,7 @@ function Safari() {
 
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
+            rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -22448,7 +22448,8 @@ function Safari() {
             "/themes: View available contest themes.",
             "/contestrules: For information about contest rules.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
-            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw."
+            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
+            "/trials: Shows you your current trials missions. Only works while trials is in session."
         ];
         var help = userHelp;
         var adminHelp = [
@@ -22504,7 +22505,12 @@ function Safari() {
             "/updateafter [abort/cancel/stop]: Updates Safari at next available opportunity. Use any of the command data listed to cancel the pending update.",
             "/nextspawn [player]։[pokemon]։[amount]։[disguise]: Makes a player's next spawn equal to [amount] of [pokemon] diguised as [disguise]. Amount and Disguse are optional. Affects Bait and Gacha.",
             "/loginmercy [number]: Sets a number of days that will not break the player's consecutive login if they miss it (use when server is down for too long).",
-            "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards."
+            "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards.",
+            "/enabletrials: Enables trials session. Make sure trials is loaded first. Use /disabletrials to turn it off (this doesn't wipe data).",
+            "/loadtrials [JSON]: Loads trials data from a json file",
+            "/releasetrial [player][id]: Removes target ID from player's trials listing if they have it.",
+            "/trialsbonus [player]: Gives the target player a bonus 10 points (can only be used once per session.",
+            "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
