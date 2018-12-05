@@ -2095,7 +2095,7 @@ function Safari() {
             "66255": 156
         };
         if (megaAbilities.hasOwnProperty(num+"")) {
-            return megaAbilities[num+""];
+            return (megaAbilities[num+""] === abilityNum);
         }
         return [0,1,2].map(function(x) { return sys.pokeAbility(num, x); }).contains(abilityNum);
     }
@@ -16659,7 +16659,7 @@ function Safari() {
             m = choices[p];
             avi = getAvatarOff(p);
 
-            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(choice)))) {
+            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(m)))) {
                 playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
             }
             else {
