@@ -9406,7 +9406,7 @@ function Safari() {
                 out = (action === "shadyFromMafia" ? value : 0);
                 break; 
             case "winMonger":
-                out = (action === "winMonger" && (target.indexOf( mission.target > -1 ? value : 0);
+                out = (action === "winMonger" && (target.indexOf( mission.target ) > -1 ) ? value : 0);
                 break; 
             case "winTour":
                 out = (action === "winTour" ? value : 0);
