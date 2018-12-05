@@ -15889,9 +15889,7 @@ function Safari() {
         this.parties[p3.id] = p3.party.slice(0, 3);
 
         this.bannedHazard = this.parties[p1.id][2];
-        sys.sendAll(this.bannedHazard, safchan);
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
-        sys.sendAll(this.bannedHazard, safchan);
 
         this.sendToViewers("");
         this.sendToViewers(readable(this.fullNames, "and") + " are entering the Pyramid!");
@@ -16742,8 +16740,9 @@ function Safari() {
         }
         this.revealedTypes = [this.types[0]];
         this.hp = 1080 + 200 * level;
+        this.maxhp = this.hp;
         this.dealt = {};
-        this.treasureGoal = Math.round(this.hp * (1.65 - this.level * 0.07));
+        this.treasureGoal = Math.round(this.hp * (1.45 - this.level * 0.07));
 
         this.treasures = {
             pack: { chance: 1 * level, item: "pack", amount: 1 },
@@ -16841,7 +16840,13 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(6 + 1.4 * this.level);
+            var averageDamage = Math.floor(7 + 1.4 * this.level);
+            if (this.maxhp * 0.2 >= this.hp) {
+                averageDamage = averageDamage 0.67;
+            }
+            if (this.maxhp * 0.1 >= this.hp) {
+                averageDamage = averageDamage 0.5;
+            }
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -17286,7 +17291,7 @@ function Safari() {
                 this.individualmsg[p] = "Nominate yourself to battle by typing " + link("/pyr me") + "!";
             }
         }
-        this.trainerPower = [9 + level * 7, 85 + level * 15];
+        this.trainerPower = [12 + level * 8, 90 + level * 16];
 
         this.trainerTeam = [];
         var num, bst = 285 + 25 * level, maxLegend = Math.floor((level-1)/3) + 1;
@@ -17436,7 +17441,7 @@ function Safari() {
             this.sendAll("{3} couldn't beat {0}! Final score {2} x {1}".format(this.trainerName, "<b>" + score + "</b>", "<b>" + oppScore + "</b>", name));
         }
         if (oppScore > 1) {
-            stamina[id] -= 14 + 4 * this.level;
+            stamina[id] -= 16 + 4 * this.level;
         }
         points = [-10 - 6 * this.level, 0, 28 + 18 * this.level, 52 + 36 * this.level][score];
         if (stamina[id] === 0) {
@@ -18036,7 +18041,7 @@ function Safari() {
                 if (!stamina.hasOwnProperty(p)) {
                     stamina[p] = 0;
                 }
-                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.8) + 3) * (count === 0 ? 0.5 : 1)));
+                stamina[p] -= Math.round(Math.max(wasted[p] - this.wasteCap, 0) * (((this.level * 0.8) + 6) * (count === 0 ? 0.5 : 1)));
             }
         }
         if (struggled.length > 0) {
@@ -18055,6 +18060,9 @@ function Safari() {
             var mercy = Math.round(total * 0.25);
             if (count > mercy) {
                 var stmLost = (count + 2 - mercy) * (this.level + 5);
+                if (mercy < count) {
+                    stmLost += (this.level + 5);
+                }
                 if (stmLost > 0) {
                     this.sendAll("The following hazards haven't been cleared: <b>" + readable(notCleared) + "</b>! The party loses " + stmLost + " Stamina!");
                     for (var p = alive.length; p--; ) {
