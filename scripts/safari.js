@@ -17642,7 +17642,6 @@ function Safari() {
             "barrier": 151
         };
         this.validMoves = [];
-        this.hazards = 
         for (var c in this.hazardMoves) {
             this.validMoves = this.validMoves.concat(this.hazardMoves[c]);
         }
