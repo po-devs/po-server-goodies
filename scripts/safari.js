@@ -16760,7 +16760,7 @@ function Safari() {
                 }
             }
 
-            var pointsRange = [48 + 32 * this.level, 28 + 18 * this.level, 10 + 6 * this.level, -6 - 6 * this.level];
+            var pointsRange = [48 + 36 * this.level, 28 + 18 * this.level, 10 + 6 * this.level,  2 + 3 * this.level, -3 - 4 * this.level, -7 - 8 * this.level];
             var points = pointsRange[Math.min(this.attacks-1, pointsRange.length-1)];
             this.sendAll("The {0}-type statue's HP dropped to 0! The statue was destroyed! Points gained: {1}".format(this.types.map(typeIcon).join(" / "), plural(points, "Point")));
             if (totalDealt >= this.treasureGoal) {
@@ -16778,7 +16778,7 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = 10 + 2 * this.level;
+            var averageDamage = Math.floor(7 + 1.75 * this.level);
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -17720,7 +17720,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = (Math.floor( level * 0.67 ) + sys.rand(3, Math.ceil(count*0.75))), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor( level * 0.5 ) + sys.rand(3, Math.ceil(count*0.7))),count-2), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -17858,6 +17858,7 @@ function Safari() {
             }
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
+                sys.sendAll( id );
                 for (var k in id) {
                     sys.sendAll( id[k] + " " + sys.ability(this.hazardAbilites[e]) );
                     if (canHaveAbility(id[k],this.hazardAbilites[e])) {
@@ -17872,7 +17873,7 @@ function Safari() {
                             if (!effective.hasOwnProperty(e)) {
                                 effective[e] = [];
                             }
-                            effective[e].push(users[id][mid] + "'s " + ab);
+                            effective[e].push(users[id][k] + "'s " + ab);
                         }
                     }
                 }
