@@ -17640,6 +17640,7 @@ function Safari() {
             "barrier": 151
         };
         this.validMoves = [];
+        this.hazards = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"];
         for (var c in this.hazardMoves) {
             this.validMoves = this.validMoves.concat(this.hazardMoves[c]);
         }
@@ -17669,7 +17670,7 @@ function Safari() {
         };
         var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * 1.4)), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
-        var blockedHazard = Object.keys(this.hazardNames)[this.bannedHazard];
+        var blockedHazard = Object.keys(this.hazards)[this.pyr.bannedHazard];
 
         while (cont) {
             maxsize = max - x;
@@ -17933,6 +17934,7 @@ function Safari() {
                                 effective[e] = [];
                             }
                             effective[e].push(sys.pokemon(par[k]) + "'s " + ab);
+                            break;
                         }
                     }
                 }
