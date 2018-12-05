@@ -2043,6 +2043,60 @@ function Safari() {
         return moves.contains(move);
     }
     function canHaveAbility(num, abilityNum) {
+        var megaAbilities = {
+            "65539": 47,
+            "65542": 181, 
+            "131078": 70,
+            "65545": 178,
+            "65551": 91,
+            "65554": 99,
+            "65601": 36,
+            "65630": 23, 
+            "65651": 185,
+            "65663": 184,
+            "65666": 104,
+            "65678": 181,
+            "65686": 80, 
+            "131222": 15,
+            "65717": 104,
+            "65744": 159,
+            "65748": 101,
+            "65750": 92,
+            "65765": 94,
+            "65784": 45,
+            "65790": 31,
+            "65793": 3,
+            "65796": 33,
+            "65818": 182,
+            "65838": 156,
+            "65839": 37,
+            "65842": 111,
+            "65844": 74,
+            "65846": 22, 
+            "65855": 173,
+            "65859": 125,
+            "65870": 182,
+            "65890": 158,
+            "65895": 156,
+            "65898": 174,
+            "65909": 184,
+            "65912": 181,
+            "65916": 26,
+            "65917": 26,
+            "65918": 189,
+            "65919": 190,
+            "65920": 191,
+            "65964": 113,
+            "65981": 159,
+            "65984": 91,
+            "65996": 117,
+            "66011": 39, 
+            "66067": 131,
+            "66255": 156
+        };
+        if (megaAbilities.hasOwnProperty(num+"")) {
+            return megaAbilities[num+""];
+        }
         return [0,1,2].map(function(x) { return sys.pokeAbility(num, x); }).contains(abilityNum);
     }
     function getBST(pokeNum) {
@@ -16512,8 +16566,8 @@ function Safari() {
 
         this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 773, 784, 66256, 66184,66028].concat(legendaries).concat(megaPokemon);
         this.opponent = this.opponentList.random();
-        this.opponentHP = 400 + 150 * level;
-        this.opponentPower = 11 + 4 * level;
+        this.opponentHP = 410 + 150 * level;
+        this.opponentPower = 13 + 4 * level;
         this.isRevealed = false;
         if ([151, 571].contains(this.opponent)) {
             this.disguise = this.opponentList.random();
@@ -16785,7 +16839,7 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(7 + 1.75 * this.level);
+            var averageDamage = Math.floor(6 + 1.4 * this.level);
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -17866,9 +17920,7 @@ function Safari() {
             for (p = 0; p < alive.length; p++) {
                 id = alive[p];
                 par = this.pyr.parties[id];
-                sys.sendAll( id );
                 for (var k in par) {
-                    sys.sendAll( par[k] + " " + sys.ability(this.hazardAbilites[e]) );
                     if (canHaveAbility(par[k],this.hazardAbilites[e])) {
                         if (obstacles.hasOwnProperty(e) && obstacles[e] > 0) {
                             ab = sys.ability(this.hazardAbilites[e]);
@@ -17880,7 +17932,7 @@ function Safari() {
                             if (!effective.hasOwnProperty(e)) {
                                 effective[e] = [];
                             }
-                            effective[e].push(users[id][k] + "'s " + ab);
+                            effective[e].push(sys.pokemon(par[k]) + "'s " + ab);
                         }
                     }
                 }
