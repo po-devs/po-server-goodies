@@ -3006,6 +3006,7 @@ function Safari() {
                 var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.1;
                 for (i = 1; i < 803; i++) {
                     bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                    extrabstChance = 1;
                     if (bst > 600) {
                         extrabst = (bst - 600);
                         bst = 600;
@@ -3018,6 +3019,7 @@ function Safari() {
                 for (h in theme.include) {
                     id = theme.include[h];
                     bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                    extrabstChance = 1;
                     if (bst > 600) {
                         extrabst = (bst - 600);
                         bst = 600;
