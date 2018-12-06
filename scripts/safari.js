@@ -9696,6 +9696,7 @@ function Safari() {
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
         for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
+            player = getAvatarOff(playerPoints[i].id);
             src = sys.id(player.id);
             rew = top[j+""];
             rew = rew.random();
