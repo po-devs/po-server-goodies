@@ -9638,9 +9638,18 @@ function Safari() {
             return a.points - b.points;
         })
         var j = 1;
+        var received = [], p;
         limit = Math.min(playerPoints.length, limit);
         for (var i = playerPoints.length; i--; i <= playerPoints.length - limit) {
+            p = getAvatarOff(playerPoints[i].id);
+            if (!p) {
+                continue;
+            }
+            if (received.indexOf(playerPoints[i].id) !== -1) {
+                continue;
+            }
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+            received.push(playerPoints[i].id);
             j++;
         }
         return;
@@ -9650,10 +9659,19 @@ function Safari() {
         var playerPoints = [], src;
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
+        var received = [], p;
 
         for (var p in t) {
             player = t[p];
             id = player.id;
+            p = getAvatarOff(id);
+            if (!p) {
+                continue;
+            }
+            if (received.indexOf(p.id) !== -1) {
+                continue;
+            }
+            received.push(p.id);
             points = player.trials.points;
             playerPoints.push({
                 id: id,
@@ -9678,7 +9696,6 @@ function Safari() {
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
         for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
-            player = getAvatarOff(playerPoints[i].id);
             src = sys.id(player.id);
             rew = top[j+""];
             rew = rew.random();
