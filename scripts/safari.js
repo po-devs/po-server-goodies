@@ -9641,11 +9641,7 @@ function Safari() {
         })
         var j = 1;
         var received = [], p;
-        if (!limit) {
-            limit = playerPoints.length;
-        }
-        limit = Math.min(playerPoints.length, limit);
-        for (var i = 0; i++; i <= limit) {
+        for (var i = 0; i++; i <= playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
