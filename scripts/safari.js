@@ -525,7 +525,7 @@ function Safari() {
         scientist: {icon: 431, name: "scientist", fullName: "Scientist", aliases: ["scientist"], acqReq: 6, record: "pokesCloned", acqReq2: 50, record2: "scientistEarnings", rate: 0.02, bonusChance: 0.05, effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!", noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest"},
         ninja: {icon: 434, name: "ninja", fullName: "Ninja Boy", aliases: ["ninja boy", "ninja", "ninjaboy"], acqReq: 10, specialAcq: true, rate: 0.1, thresh: 499, effect: "A master in ninjutsu. Able to lurk amongst the shadow and create diversions to sneak past a small number of Trainers in the Battle Tower.", noAcq: "Reach Floor 11 of Battle Tower using a team of Pokémon with &lt;500 BST (without using Battle Girl costume)"},
         rocket: {icon: 999, name: "rocket", fullName: "Rocket", aliases: ["rocket"], acqReq: 100, record: "notBaitedCaught", acqReq2: 150000, record2: "pokeSoldEarnings", rate: 0.05, rate2: 0.03, effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!", noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon"},
-        flower: {icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05, effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.", noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms"},
+        flower: {icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05, effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.", noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms."},
 
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
         fisherman: {icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2, effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!", noAcq: "Bait {0} more pure Water-type Pokémon"},
@@ -3000,10 +3000,10 @@ function Safari() {
             if (cTheme) {
                 var theme = contestThemes[cTheme];
                 statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
-                if ((!(goldenBonus) && (leader))) {
+                if ((!(goldenBonus) && (leader)) || ((chance(0.65)) && (!(leader)))) {
                     canLegend = false;
                 }
-                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
+                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.1;
                 for (i = 1; i < 803; i++) {
                     bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                     extrabstChance = 1;
@@ -6356,7 +6356,7 @@ function Safari() {
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
-            var botd = dailyBoost.pokemon ==  pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;f
+            var botd = (player.party[0] === dailyBoost.pokemon ? true : false);
             this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
 
 
@@ -9637,15 +9637,12 @@ function Safari() {
             });
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         })
         var j = 1;
         var received = [], p;
-        if (!limit) {
-            limit = playerPoints.length;
-        }
         limit = Math.min(playerPoints.length, limit);
-        for (var i = 0; i++; i <= limit) {
+        for (var i = playerPoints.length; i--; i <= playerPoints.length - limit) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
@@ -9696,11 +9693,11 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         })
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
-        for (var i = 0; i++; i <= limit) {
+        for (var i = playerPoints.length; i--; i < playerPoints.length - limit) {
             player = getAvatarOff(playerPoints[i].id);
             src = sys.id(player.id);
             rew = top[j+""];
@@ -15736,11 +15733,11 @@ function Safari() {
     };
     this.createMAuction = function(index, set) {
         var rewards = [
-            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden", "@form", "@fossil"],
-            ["@form", "2@golden", "@fossil", "@rare", "@fossil"],
-            ["@form"],
-            ["@burn", "@nugget", "15@silver", "5@gem", "2@pack", "@nugget", "@fossil"],
-            ["10@myth", "15@luxury", "10@quick", "15@spy", "10@heavy", "10@clone", "2@egg", "2@golden", "@form"],
+            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "@bignugget"],
+            ["@form", "2@golden", "@fossil", "@rare"],
+            ["@burn", "@nugget", "15@silver", "5@gem"],
+            ["2@pack", "@fossil", "2@egg","2@golden", "@form"],
+            ["10@myth", "15@luxury", "10@quick", "15@spy", "10@heavy", "10@clone"],
             ["@fossil"]
         ];
         var out = {
