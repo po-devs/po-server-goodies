@@ -9637,11 +9637,12 @@ function Safari() {
             });
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
-        })
+            return a.points - b.points;
+        });
+        playerPoints.reverse();
         var j = 1;
         var received = [], p;
-        for (var i = 0; i++; i <= playerPoints.length) {
+        for (var i = 0; i++; i < playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
@@ -9692,11 +9693,12 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         })
+        playerPoints.reverse();
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
-        for (var i = 0; i++; i <= limit) {
+        for (var i = playerPoints.length; i++; i <= limit) {
             player = getAvatarOff(playerPoints[i].id);
             src = sys.id(player.id);
             rew = top[j+""];
