@@ -6356,7 +6356,7 @@ function Safari() {
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
-            var botd = dailyBoost.pokemon ==  pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;f
+            var botd = dailyBoost.pokemon ==  pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;
             this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
 
 
