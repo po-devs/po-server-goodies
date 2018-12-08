@@ -9531,6 +9531,9 @@ function Safari() {
     this.trialsLogin = function(player) {
         if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
             player.trials.points += 1;
+            if (safari.events.trialsParticipants.indexOf(player) === -1) {
+                safari.events.trialsParticipants.push(player)
+            }
             safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
         }
         return;
