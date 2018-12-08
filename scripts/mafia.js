@@ -3740,6 +3740,15 @@ function Mafia(mafiachan) {
             mafia.isEvent = false;
             runUpdate();
             this.advertiseFeaturedTheme();
+            
+            if (mafia.isEvent) {
+                mafia.rewardSafariTime = new Date().getTime() + 5 * 60 * 1000;
+                for (var m in mafia.allPlayers) {
+                    mafia.rewardSafariPlayers.push(mafia.allPlayers[m].toLowerCase());
+                }
+                mafia.distributeEvent = true;
+                mafia.isEvent = false;
+            }
             return true;
         }
 
@@ -7843,7 +7852,7 @@ function Mafia(mafiachan) {
             return;
         }
         if (command === "pass") {
-            if (mafia.isInGame(sys.name(src)) && ["night", "day", "standby"].indexOf(mafia.state) !== -1)  {
+            if (mafia.isInGame(sys.name(src)) && ["night", "standby"].indexOf(mafia.state) !== -1)  {
                 name = sys.name(src);
 
                 if (!mafia.passed) {
@@ -7856,19 +7865,18 @@ function Mafia(mafiachan) {
 
                     if ((mafia.passed.length >= (Object.keys(this.players).length))) {
                         gamemsgAll( toColor( "All players have passed, so the game continues to the next phase.", "#367be2" ), mafiachan);
-                        mafia.ticks = 0;
+                        mafia.ticks = 1;
                     }
-                    else if ((mafia.passed.length === (Object.keys(this.players).length)) - 1) {
-
+                    else {
+                        gamemsg(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
+                    }
+                    if ((mafia.passed.length === ((Object.keys(this.players).length) - 1))) {
                         for (var p in mafia.players) {
                             if ((mafia.passed.indexOf(mafia.players[p].name)) === -1) {
                                 break;
                             }
                         }
-                        gamemsg(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type /pass to continue to the next phase.", "crimson" ), mafiachan);
-                    }
-                    else {
-                        gamemsg(sys.name(src), toColor( "The next phase will begin once all players have passed.", "#367be2" ), mafiachan);
+                        gamemsg(mafia.players[p].name, toColor( "All other players have passed. If you are ready, type <a href=\"po:send//pass\">/pass</a> to continue to the next phase.", "crimson" ), mafiachan);
                     }
                 }
                 else {
@@ -7877,6 +7885,9 @@ function Mafia(mafiachan) {
 
                 return;
 
+            }
+            else {
+                gamemsg(sys.name(src), toColor( "You can only pass night and standby phases!", "crimson" ), mafiachan);
             }
         }
         if (command === "tt" || command === "teamtalk") {
@@ -8921,7 +8932,7 @@ function Mafia(mafiachan) {
         }
         if (command === "forcepass") {
             gamemsgAll( toColor( sys.name(src) + " ended the current phase.", "#367be2" ), mafiachan);
-            mafia.ticks = 0;
+            mafia.ticks = 1;
         }
         if (command === "enablenonpeak" || command === "disablenonpeak") {
             mafia.nonPeak(src, command === "enablenonpeak");

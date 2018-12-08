@@ -6356,7 +6356,7 @@ function Safari() {
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
-            var botd = dailyBoost.pokemon ==  pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;f
+            var botd = dailyBoost.pokemon == pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;
             this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
 
 
@@ -9641,11 +9641,7 @@ function Safari() {
         })
         var j = 1;
         var received = [], p;
-        if (!limit) {
-            limit = playerPoints.length;
-        }
-        limit = Math.min(playerPoints.length, limit);
-        for (var i = 0; i++; i <= limit) {
+        for (var i = 0; i++; i <= playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
