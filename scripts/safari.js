@@ -9520,6 +9520,7 @@ function Safari() {
             if (m.id === id) {
                 var k = player.trials.missions.indexOf(m);
                 player.trials.missions.splice(k, 1);
+                player.trials.currentIDs.splice(player.trials.currentIDs.indexOf(d), 1);
                 this.assignTrials(src,player); //sends the new trial to the auth, but whatever
                 return;
             }
@@ -9651,10 +9652,9 @@ function Safari() {
             return a.points - b.points;
         });
         playerPoints.reverse();
-        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in trials: ", safchan);
         var j = 1;
         var received = [], p;
-        for (var i in playerPoints.length) {
+        for (var i = 0; i++; i < playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
@@ -9710,7 +9710,7 @@ function Safari() {
         playerPoints.reverse();
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
-        for (var i in playerPoints) {
+        for (var i = 0; i++; i <= limit) {
             player = getAvatarOff(playerPoints[i].id);
             src = sys.id(player.id);
             rew = top[j+""];
@@ -9719,9 +9719,6 @@ function Safari() {
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
-            if (j >= 2) {
-                break;
-            }
         }
         safari.events.trialsParticipants = [];
         return;
