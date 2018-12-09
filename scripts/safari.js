@@ -9526,11 +9526,23 @@ function Safari() {
             }
         }
         safaribot.sendMessage(src, "No ID " + id + " found in target's missions",safchan);
+        player.trials.currentIDs.push(id);
         return;
+    };
+    this.setTrialsPoints = function(src,target,num) {
+        if (!target.trials) {
+            return;
+        }
+        var old = target.trials.points;
+        target.trials.points = num;
+        safaribot.sendMessage(src, "Changed " + target.id + "'s trial points from " + old + " to " + target.trials.points + ".",safchan);
     };
     this.trialsLogin = function(player) {
         if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
             player.trials.points += 1;
+            if (safari.events.trialsParticipants.indexOf(player) === -1) {
+                safari.events.trialsParticipants.push(player)
+            }
             safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
         }
         return;
@@ -9637,11 +9649,12 @@ function Safari() {
             });
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
-        })
+            return a.points - b.points;
+        });
+        playerPoints.reverse();
         var j = 1;
         var received = [], p;
-        for (var i = 0; i++; i <= playerPoints.length) {
+        for (var i = 0; i++; i < playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
             if (!p) {
                 continue;
@@ -9692,8 +9705,9 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         })
+        playerPoints.reverse();
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
         for (var i = 0; i++; i <= limit) {
@@ -22533,7 +22547,8 @@ function Safari() {
             "/refundLogin [player]։[previousStreak]։[daysToAdd]: Changes a player's consecutive logins streak and give them the appropriate rewards.",
             "/enabletrials: Enables trials session. Make sure trials is loaded first. Use /disabletrials to turn it off (this doesn't wipe data).",
             "/loadtrials [JSON]: Loads trials data from a json file",
-            "/releasetrial [player][id]: Removes target ID from player's trials listing if they have it.",
+            "/releasetrial [player]:[id]: Removes target ID from player's trials listing if they have it, and prevents them from getting it again even if they don't.",
+            "/trialspoints [player]:[number]: Set their points.",
             "/trialsbonus [player]: Gives the target player a bonus 10 points (can only be used once per session.",
             "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
@@ -25984,6 +25999,11 @@ function Safari() {
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
+                return true;
+            }
+            if (command === "trialspoints") {
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                safari.setTrialsPoints( src,getAvatarOff(info[0]),parseInt(info[1]) );
                 return true;
             }
             if (command === "trialsbonus") {
