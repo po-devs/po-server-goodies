@@ -10303,6 +10303,8 @@ function Safari() {
             if (i >= safari.events.spiritDuelsTeams.length) {
                 i = 0;
             }
+            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
+            safari.inboxMessage(sys.id(player.id), "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
             //Print "player joined team X"
         }
         safari.events.spiritDuelsSignups = [];
@@ -10751,7 +10753,7 @@ function Safari() {
             }
         }
 
-        return out;
+       safaribot.sendMessage( src,out,safchan );
     };
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
