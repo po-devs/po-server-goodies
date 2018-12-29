@@ -398,6 +398,15 @@ function Safari() {
             points: 0,
             bonusPointsReceived: false
         },
+        spiritDuels: {
+            rank: 0,
+            rankName: "Grunt",
+            team: "None",
+            exp: 0,
+            box: [],
+            skills: [],
+            skillChoices: {}
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
@@ -10273,7 +10282,7 @@ function Safari() {
         safari.events.spiritDuelsSignups.shuffle();
         var i = 0, player, oldBox;
         for (var p in safari.events.spiritDuelsSignups) {
-            player = getAvatorOff(safari.events.spiritDuelsSignups[p]);
+            player = getAvatarOff(safari.events.spiritDuelsSignups[p]);
             if (player.spiritDuels && player.spiritDuels.box.length > 0) {
                 oldBox = box;
             }
