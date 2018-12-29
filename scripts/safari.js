@@ -3160,7 +3160,7 @@ function Safari() {
                 var theme = contestThemes[cTheme];
                 if (spiritMon) {
                     statCap = [700, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
-                    statCap -= (25 * sys.random(0, 1));
+                    statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
                     for (i = 1; i < 803; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
