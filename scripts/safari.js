@@ -9852,15 +9852,10 @@ function Safari() {
                 }
                 break;
             case "duels":
-                if (enable && (!(safari.events.spiritDuelsData))) {
-                    safaribot.sendMessage(src,"Use /loadspiritduels [url] to load trials before enabling them!");
-                }
-                else {
-                    safari.events.spiritDuelsEnabled = (enable ? true : false);
-                    safaribot.sendMessage(src,"Event Spirit Duels " + (enable ? "enabled" : "disabled") + "!" );
-                    if (!(enable)) {
-                        safari.events.spiritDuelsData = {};
-                    }
+                safari.events.spiritDuelsEnabled = (enable ? true : false);
+                safaribot.sendMessage(src,"Event Spirit Duels " + (enable ? "enabled" : "disabled") + "!" );
+                if (!(enable)) {
+                    safari.events.spiritDuelsData = {};
                 }
                 break;
         }
@@ -27097,7 +27092,6 @@ function Safari() {
                             safaribot.sendMessage(src, "Duels successfully loaded!", safchan);
                             safari.sanitizeAll();
                         } catch (error) {
-                            trialsData = cThemes;
                             safaribot.sendMessage(src, "Couldn't load Duels from " + url + "! Error: " + error, safchan);
                         }
                     });
