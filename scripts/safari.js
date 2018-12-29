@@ -27791,7 +27791,7 @@ function Safari() {
                 }
             }
         }
-        if (safari.hasAttribute("events") && contestCooldown % 7 === 0) {
+        if (safari.getAttribute("events") && contestCooldown % 7 === 0) {
             if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
                 var finished = safari.spiritDuelTurn();
                 if (finished) {
