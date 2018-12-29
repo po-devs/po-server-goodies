@@ -10676,7 +10676,9 @@ function Safari() {
     this.spiritDuelsCommand = function( src,command,commandData ) {
         //Shows them their spirit monns
         var player = getAvatar(src);
-        safaribot.sendMessage( src,"Command is " + command + ":" + commandData,safchan );
+        if (!spiritDuelsEnabled) {
+            safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
+        }
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
@@ -10698,7 +10700,7 @@ function Safari() {
         }
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].indexOf(id);
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(id);
             if (k > -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
                 safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
