@@ -10731,9 +10731,7 @@ function Safari() {
         var maxPages,
             list = player.spiritDuels.box;
 
-        if (isNaN(page) && typeof num === "string" && num.toLowerCase() !== "all") {
-            page = 1;
-        } 
+        var page = 1;
         if (!isNaN(page) && num != "all") {
             maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
 
