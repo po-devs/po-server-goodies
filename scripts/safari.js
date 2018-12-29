@@ -4242,6 +4242,7 @@ function Safari() {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
             else {
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
                 safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
                 if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
@@ -10313,6 +10314,8 @@ function Safari() {
             Do rewards and stuff here
             Print the team rankings and their rates
         */
+        sendAll("The losing team is " + safari.events.spiritDuelsTeams[0].name, true);
+        
         for (var p in safari.events.spiritDuelsTeams[0].players) {
             player = getAvatorOff(safari.events.spiritDuelsTeams[0].players[p]);
             safari.events.spiritDuelsSignups.push(player.id);
@@ -10400,11 +10403,11 @@ function Safari() {
         var res;
         if (step === 0) {
             /* Send everyone messages letting them know that the fight is starting */
-            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/watchduel", "Watch") + "]", true);
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 2) {
             /* Sends everyone another message letting them know that the fight is starting */
-            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/watchduel", "Watch") + "]", true);
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
             this.spiritDuelsMessage("Preparations complete, Duel about to begin!")
@@ -10677,7 +10680,36 @@ function Safari() {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
             case "active": this.activeSpiritMon(src,player,commandData); break;
+            case "join": this.joinSpiritDuels(src,player); break;
+            case "watch": this.watchSpiritDuels(src,player); break;
         }
+        return;
+    };
+    this.joinSpiritDuels = function( src,player ) {
+        //Shows them their spirit monns
+        var id = player.id;
+        if (!safari.events.spiritDuelsEnabled) {
+            return false;
+        }
+        if (!safari.events.spiritDuelsTeams) {
+            return false;
+        }
+        var k;
+        for (var t in safari.events.spiritDuelsTeams) {
+            k = safari.events.spiritDuelsTeams[t].indexOf(id);
+            if (k > -1) {
+                team = safari.events.spiritDuelsTeams[t].name;
+                safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
+                return false;
+            }
+        }
+        k = safari.events.spiritDuelsSignups.indexOf(id);
+        if (k > -1) {
+            safaribot.sendMessage( src,"You are already signed up!",safchan );
+            return false;
+        }
+        safari.events.spiritDuelsSignups.push(id);
+        safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
         return;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
@@ -10750,9 +10782,9 @@ function Safari() {
             sys.sendHtmlMessage(sys.id(list[e]), msg, safchan);
         }
     };
-    this.watchSpiritDuel = function(src) {
-        safari.events.spiritDuelsViewers.push(getAvatarOff(src).id);
-        this.spiritDuelsMessage(getAvatarOff(src).id + " is watching this Spirit Duel!");
+    this.watchSpiritDuel = function(src,player) {
+        safari.events.spiritDuelsViewers.push(player.id);
+        this.spiritDuelsMessage(player.id + " is watching this Spirit Duel!");
     };
 
     /* Secret Base */
@@ -27251,6 +27283,14 @@ function Safari() {
             }
             if (command === "finishtrials") {
                 safari.endTrials();
+                return true;
+            }
+            if (command === "startduels") {
+                safari.assignDuelsTeams();
+                return true;
+            }
+            if (command === "nextduels" || command === "nextduel") {
+                safari.progressDuels();
                 return true;
             }
             if (command === "nextspawn") {
