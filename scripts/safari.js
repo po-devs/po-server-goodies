@@ -775,6 +775,7 @@ function Safari() {
     };
 
     var itemHelp, perkHelp, ballHelp;
+    var allBalls;
     updateItemData();
     var updateItemHelp = function() {
         itemHelp = {
@@ -850,12 +851,12 @@ function Safari() {
             spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events.",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
+        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "trueheavy", "photo", "mirror", "inver", "cherish", "master"];
     };
     updateItemHelp();
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
     var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "trueheavy", "photo", "mirror", "inver", "cherish", "master"];
     var allCostumes = Object.keys(costumeData);
 
     var costumeHelp = {};
