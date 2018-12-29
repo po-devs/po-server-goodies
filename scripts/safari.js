@@ -2531,7 +2531,12 @@ function Safari() {
         }
     }
     function isBall(item) {
-        return item in itemData && itemData[item].type === "ball";
+        for (var i in itemData) {
+            if (itemData[i].aliases.indexOf(item) !== -1 && itemData[i].type === "ball") {
+                return true;
+            }
+        }
+        return false;
     }
     function bagRow (player, arr, isAndroid, textOnly, first, title) {
         var ret = [], item, item2;
