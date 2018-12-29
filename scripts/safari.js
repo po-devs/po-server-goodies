@@ -27078,7 +27078,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadspiritduels" || command === "loadspiritduel") {
-                var cThemes = spiritDuelsData ? spiritDuelsData : {};
+                var cThemes = {};
                 var url = commandData === "*" ? (permObj.get("duelsurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
