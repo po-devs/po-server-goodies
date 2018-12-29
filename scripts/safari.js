@@ -10676,7 +10676,7 @@ function Safari() {
     this.spiritDuelsCommand = function( src,command,commandData ) {
         //Shows them their spirit monns
         var player = getAvatar(src);
-        if (!spiritDuelsEnabled) {
+        if (!safari.events.spiritDuelsEnabled) {
             safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
         }
         switch (command) {
