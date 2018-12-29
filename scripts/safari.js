@@ -10284,7 +10284,7 @@ function Safari() {
         for (var p in safari.events.spiritDuelsSignups) {
             player = getAvatarOff(safari.events.spiritDuelsSignups[p]);
             if (player.spiritDuels && player.spiritDuels.box.length > 0) {
-                oldBox = box;
+                oldBox = player.spiritDuels.box;
             }
             else {
                 oldBox = [19];
@@ -10732,7 +10732,7 @@ function Safari() {
             list = player.spiritDuels.box;
 
         var page = 1;
-        if (!isNaN(page) && num != "all") {
+        if (!isNaN(page)) {
             maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
 
             if (page > maxPages) {
