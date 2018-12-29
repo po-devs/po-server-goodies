@@ -605,15 +605,19 @@ function Safari() {
             //Alchemy related items
             materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
-            blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
-            whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
             philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
 
             //??? related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
             ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 8018, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
-            
+            blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
+            whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
+            grnapricorn: {name: "grnapricorn", fullName: "Green Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["grnapricorn", "green apricorn", "grnapricorn"], tradable: true},
+            redapricorn: {name: "redapricorn", fullName: "Red Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["redapricorn", "red apricorn"], tradable: true},
+            bluapricorn: {name: "bluapricorn", fullName: "Blue Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["bluapricorn", "blue apricorn", "blueapricorn"], tradable: true},
+            ylwapricorn: {name: "ylwapricorn", fullName: "Yellow Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["ylwapricorn", "yellow apricorn", "yellowapricorn"], tradable: true},
+            pnkapricorn: {name: "pnkapricorn", fullName: "Pink Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["pnkapricorn", "pink apricorn", "pnkapricorn"], tradable: true},
 
             //Perks
             amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
