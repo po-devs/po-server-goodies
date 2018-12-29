@@ -23861,7 +23861,7 @@ function Safari() {
             }
             if (command === "spiritduel" || command === "spiritduels") {
                 var info = commandData.split(":");
-                safari.spiritDuelsCommand(src, commandData[0], commandData[1]);
+                safari.spiritDuelsCommand(src, info[0], info[1]);
                 return true;
             }
             if (command === "spiritskill" || command === "spiritskills") {
