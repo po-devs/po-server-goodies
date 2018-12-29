@@ -2523,14 +2523,16 @@ function Safari() {
     function isBall(item) {
         return item in itemData && itemData[item].type === "ball";
     }
-    function bagRow (player, arr, isAndroid, textOnly, first) {
+    function bagRow (player, arr, isAndroid, textOnly, first, title) {
         var ret = [], item, item2;
         if (textOnly) {
             if (first) {
-                ret += "<br /><b>Inventory</b><br />";
                 ret += "Money: $" + addComma(player.money) + " | ";
             } else {
                 ret += "<br />";
+            }
+            if (title) {
+                ret += "<br /><b>" + title + "</b><br />";
             }
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
@@ -5348,28 +5350,28 @@ function Safari() {
         var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "philosopher", "soda", "cookie"];
         var line7 = ["mega", "spray", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush"];
 
-        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares"].indexOf(search) === -1) {
+        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities"].indexOf(search) === -1) {
             search = "*";
         }
         var out = "";
         if ((search === "*") || (search === "wallet")) {
-            out += bagRow(player, line1, isAndroid, textOnly, true);
+            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet");
         }
         if ((search === "*") || (search === "balls") || (search === "ball")) {
-            out += bagRow(player, line2, isAndroid, textOnly, true);
-            out += bagRow(player, line3, isAndroid, textOnly, true);
+            out += bagRow(player, line2, isAndroid, textOnly, false, "Pokéballs");
+            out += bagRow(player, line3, isAndroid, textOnly, false);
         }
         if ((search === "*") || (search === "apricorns") || (search === "apricorn")) {
-            out += bagRow(player, line4, isAndroid, textOnly, true);
+            out += bagRow(player, line4, isAndroid, textOnly, false, "Apricorns");
         }
         if ((search === "*") || (search === "perks") || (search === "perk")) {
-            out += bagRow(player, line5, isAndroid, textOnly, true);
+            out += bagRow(player, line5, isAndroid, textOnly, false, "Perks");
         }
         if ((search === "*") || (search === "pawnables") || (search === "pawnable") || (search === "pawn") || (search === "pawns")) {
-            out += bagRow(player, line6, isAndroid, textOnly, true);
+            out += bagRow(player, line6, isAndroid, textOnly, false, "Pawnables");
         }
-        if ((search === "*") || (search === "rare") || (search === "rares")) {
-            out += bagRow(player, line7, isAndroid, textOnly, true);
+        if ((search === "*") || (search === "rare") || (search === "rarities") || (search === "rares")) {
+            out += bagRow(player, line7, isAndroid, textOnly, false, "Rarities");
         }
         out += (textOnly ? "" : "</table>");
         return out;
