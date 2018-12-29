@@ -10676,12 +10676,14 @@ function Safari() {
     this.spiritDuelsCommand = function( src,command,commandData ) {
         //Shows them their spirit monns
         var player = getAvatar(src);
+        safaribot.sendMessage( src,"Command is " + command + ":" + commandData,safchan );
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
             case "active": this.activeSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
+            default: safaribot.sendMessage( src,"That's not a command!",safchan );
         }
         return;
     };
