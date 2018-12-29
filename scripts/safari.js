@@ -206,6 +206,15 @@ function Safari() {
             catchLuxury: 0,
             catchMono: 0,
             catchMyth: 0,
+            catchSpirit: 0,
+            catchLightning: 0,
+            catchMirror: 0,
+            catchInvert: 0,
+            catchTrueheavy: 0,
+            catchPhoto: 0,
+            catchFriend: 0,
+            catchLove: 0,
+            catchCherish: 0,
             itemsFound: 0,
             collectorEarnings: 0,
             collectorGiven: 0,
@@ -296,6 +305,7 @@ function Safari() {
         visible: true,
         trading: true,
         tradeBlacklist: [],
+        lastSold: {},
         flashme: false,
         locked: false,
         altlog: [],
@@ -328,8 +338,11 @@ function Safari() {
             baseView: 0,
             unown: 0,
             burn: 0,
-            price: 0
+            price: 0,
+            unsell: 0
         },
+        cherished: [],
+        freebaits: 0,
         shop: {},
         quests: {
             collector: {
@@ -415,6 +428,111 @@ function Safari() {
     };
     var itemData;
 
+
+    var loadApricornRecipes = function () {
+        return (
+        {
+            "luxury": {
+                "reward": "20@luxury",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "ylwapricorn": 20
+                }
+            },
+            "mono": {
+                "reward": "20@mono",
+                "ingredients": {
+                    "blkapricorn": 20,
+                    "whtapricorn": 20
+                }
+            },
+            "myth": {
+                "reward": "20@myth",
+                "ingredients": {
+                    "blkapricorn": 5,
+                    "pnkapricorn": 15,
+                    "grnapricorn": 20
+                }
+            },
+            "quick": {
+                "reward": "20@quick",
+                "ingredients": {
+                    "grnpricorn": 10,
+                    "bluapricorn": 15,
+                    "whtapricorn": 15
+                }
+            },
+            "level": {
+                "reward": "20@heavy",
+                "ingredients": {
+                    "blkapricorn": 20,
+                    "grnapricorn": 10,
+                    "ylwapricorn": 10
+                }
+            },
+            "spy": {
+                "reward": "20@spy",
+                "ingredients": {
+                    "redapricorn": 5,
+                    "pnkapricorn": 15,
+                    "whtapricorn": 20
+                }
+            },
+            "lightning": {
+                "reward": "20@lightning",
+                "ingredients": {
+                    "ylwapricorn": 20,
+                    "whtapricorn": 20,
+                    "dew": 18
+                }
+            },
+            "heavy": {
+                "reward": "20@trueheavy",
+                "ingredients": {
+                    "blkapricorn": 20,
+                    "bluapricorn": 10,
+                    "redapricorn": 10,
+                    "dew": 20
+                }
+            },
+            "photo": {
+                "reward": "20@photo",
+                "ingredients": {
+                    "redapricorn": 20,
+                    "whtapricorn": 10,
+                    "blkapricorn": 10,
+                    "dew": 24
+                }
+            },
+            "mirror": {
+                "reward": "20@mirror",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "ylwapricorn": 10,
+                    "pnkapricorn": 10,
+                    "dew": 32
+                }
+            },
+            "inver": {
+                "reward": "20@inver",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "redapricorn": 20,
+                    "dew": 44
+                }
+            },
+            "cherish": {
+                "reward": "2@cherish",
+                "ingredients": {
+                    "pnkapricorn": 40,
+                    "ldew": 10
+                }
+            }
+        }
+        );
+    }
+    var gymData = {};
+
     var updateItemData = function() {
         itemData = {
             //Balls
@@ -423,15 +541,24 @@ function Safari() {
             ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
             master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
-            myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-            heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.25, cooldown: 15000, aliases:["mythball", "myth", "myth ball"], tradable: true},
+            heavy: {name: "level", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
             quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
             premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
-            spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
+            spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 0.25, cooldown: 16000, aliases:["spyball", "spy", "spy ball"], tradable: true},
             clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
-            mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 10000, aliases:["monoball", "mono", "mono ball"], tradable: true},
+            mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["monoball", "mono", "mono ball"], tradable: true},
 
+            spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10},
+
+            lightning: {name: "lightning", fullName: "Lightning Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 14000, aliases:["lightningball", "lightning", "lightning ball"], tradable: true},
+            trueheavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
+            mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 5, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
+            inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
+            cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 326, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false},
+            
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
             rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
@@ -496,7 +623,7 @@ function Safari() {
             scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
             battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
             eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
-            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 15000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
+            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 16000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
             box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
 
             //Valuables
@@ -573,20 +700,31 @@ function Safari() {
     };
     var gachaItems = {
         safari: 95, great: 50, ultra: 30, luxury: 35, myth: 12, quick: 12, heavy: 20, clone: 25,
-        bait: 95, rock: 135, gem: 9, dust: 60,
+        bait: 95, rock: 120, gem: 9, dust: 60,
         wild: 70,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1,
-        whtapricorn: 9
+        whtapricorn: 24
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20,
+        rare: 4, recharge: 10, spy: 20, rock: 6, bait: 20,
         pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
+        hint: 5,
         blkapricorn: 10
     };
     var finderMissRate = 0.80;
+    var safariHints = [
+        "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use /bag wallet, /bag balls, /bag apricorns, /bag perks, /bag pawnables, and /bag rare to see specific rows!",
+        "Like to go to the Pyramid with your friends? Use Pokémon that know specific moves to clear hazards! Type /quest pyramid to get started!",
+        "Bored? Why not challenge the Arena! Type /quest arena:help to see the strong trainers there!",
+        "Look where you're walking while itemfindering!",
+        "... Oh, it's just an ad. \"Test your knowledge in #Trivia!\" it says.",
+        "... Oh, it's just an ad. \"Test your bluffing skills in #Mafia!\" it says.",
+        "... Oh, it's just an ad. \"Test your verbosity in #Hangman!\" it says.",
+        "Every day you play, you can bait 5 times without getting the full cooldown! Isn't that neat?"    
+    ];
     var packItems = {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
@@ -687,17 +825,24 @@ function Safari() {
             luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Gachapon and found with Itemfinder.",
             myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Gachapon.",
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Gachapon and Pyramid.",
-            heavy: "An industrial Pokéball that works better against hardier and stronger Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon and Pyramid.",
+            heavy: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
-            mono: "A monochromatic Pokéball that forces your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy."
+            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
+            mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy.",
+            lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Alchemy.",
+            trueheavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("trueheavy") + " Obtained from Alchemy.",
+            photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
+            mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
+            inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
+            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events.",
+            cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
     };
     updateItemHelp();
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
     var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
+    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "trueheavy", "photo", "mirror", "inver", "cherish", "master"];
     var allCostumes = Object.keys(costumeData);
 
     var costumeHelp = {};
@@ -726,7 +871,7 @@ function Safari() {
     var wildEvent = false;
     var isBaited = false;
     var resolvingThrows = false;
-    var catchTierChance = [0.20, 0.18, 0.14, 0.11, 0.07, 0.03];
+    var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
 
     /* Leaderboard Variables */
     var leaderboards = {};
@@ -1171,7 +1316,6 @@ function Safari() {
         }
     };
     var recipeData = {};
-    var gymData = {};
     var eliteData = [];
     var eliteHall = [];
     
@@ -2474,7 +2618,7 @@ function Safari() {
         return ret;
     }
     function toUsableBall(player, ball) {
-        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "master"];
+        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "trueheavy", "photo", "mirror", "inver", "spirit", "cherish", "master"];
 
         var startFrom = 0;
         if (ball == ballOrder[0]) {
@@ -2522,7 +2666,7 @@ function Safari() {
         }
     }
     function isBallAvailable(player, ball) {
-        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master");
+        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit));
     }
     function getCap(item) {
         return item in itemData ? (itemData[item].cap || itemCap) : itemCap;
@@ -2972,7 +3116,7 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest, spiritMon) {
         var num,
             pokeId,
             goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
@@ -2999,34 +3143,47 @@ function Safari() {
             var cTheme = themeOverride || currentTheme;
             if (cTheme) {
                 var theme = contestThemes[cTheme];
-                statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
-                if ((!(goldenBonus) && (leader))) {
-                    canLegend = false;
-                }
-                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
-                for (i = 1; i < 803; i++) {
-                    bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
-                    extrabstChance = 1;
-                    if (bst > 600) {
-                        extrabst = (bst - 600);
-                        bst = 600;
-                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
-                    }
-                    if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
-                        list.push(i);
+                if (spiritMon) {
+                    statCap = [700, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
+                    statCap -= (25 * sys.random(0, 1));
+                    shiny = false;
+                    for (i = 1; i < 803; i++) {
+                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        if (this.validForTheme(i, cTheme) && bst <= statCap) {
+                            list.push(i);
+                        }
                     }
                 }
-                for (h in theme.include) {
-                    id = theme.include[h];
-                    bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
-                    extrabstChance = 1;
-                    if (bst > 600) {
-                        extrabst = (bst - 600);
-                        bst = 600;
-                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                else {
+                    statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
+                    if ((!(goldenBonus) && (leader))) {
+                        canLegend = false;
                     }
-                    if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
-                        list.push(id);
+                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
+                    for (i = 1; i < 803; i++) {
+                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        extrabstChance = 1;
+                        if (bst > 600) {
+                            extrabst = (bst - 600);
+                            bst = 600;
+                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                        }
+                        if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
+                            list.push(i);
+                        }
+                    }
+                    for (h in theme.include) {
+                        id = theme.include[h];
+                        bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                        extrabstChance = 1;
+                        if (bst > 600) {
+                            extrabst = (bst - 600);
+                            bst = 600;
+                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                        }
+                        if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
+                            list.push(id);
+                        }
                     }
                 }
                 if (list.length === 0) {
@@ -3144,6 +3301,9 @@ function Safari() {
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
+            if (spiritMon) {
+                term = "Spirit Realm "
+            }
             var appmsg = wildPokemonMessage.format(currentId, bst, term);
             if (amount > 1) {
                 var ret = [];
@@ -3178,6 +3338,8 @@ function Safari() {
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
+        spiritSpawn = true;
+        wildSpirit = false;
         
         var votesResult;
         if (commandData.toLowerCase() === "none") {
@@ -3704,8 +3866,10 @@ function Safari() {
         var shinyChance = isShiny ? 0.30 : 1;
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
+        var spiritMonBonus = wildSpirit ? 0.50 : 1;
+        var flowerGirlBonus = 1;
 
-        var userStats = getBST(player.party[0]);
+        var userStats = (getBST(player.party[0]) + (ball === "heavy" ? 80 : 0)) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
         var evioBonus = 0;
         if (userStats <= itemData.eviolite.threshold) {
             evioBonus = getPerkBonus(player, "eviolite");
@@ -3713,19 +3877,14 @@ function Safari() {
         }
         var wildStats = getBST(wild);
         var statsBonus = (userStats - wildStats) / 8000;
+        var wildWeight = pokedex.getWeight(wild);
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0)) {
             userStats -= evioBonus;
             statsBonus = (userStats - wildStats) / -8000;
         }
-        if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
-            if (ballBonus > itemData[ball].maxBonus) {
-                ballBonus = itemData[ball].maxBonus;
-            }
-        }
         var typeBonus;
         var pType1 = sys.type(sys.pokeType1(player.party[0])), pType2 = sys.type(sys.pokeType2(player.party[0])), wType1 = sys.type(sys.pokeType1(wild)), wType2 = sys.type(sys.pokeType2(wild));
-        var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective(wType1, wType2, (pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", false, !inverse);
@@ -3737,6 +3896,129 @@ function Safari() {
                 typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", wType1, wType2, false, inverse);
             } else {
                 typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse);
+            }
+        }
+        if (ball === "heavy" && wildStats >= 450) {
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
+            if (ballBonus > itemData[ball].maxBonus) {
+                ballBonus = itemData[ball].maxBonus;
+            }
+        }
+        if (ball === "trueheavy") {
+            if (wildWeight >= 360) {
+                ballBonus = 4;
+            }
+            else if (wildWeight >= 280) {
+                ballBonus = 3.5;
+            }
+            else if (wildWeight >= 200) {
+                ballBonus = 3;
+            }
+            else if (wildWeight >= 150) {
+                ballBonus = 2.75;
+            }
+            else if (wildWeight >= 120) {
+                ballBonus = 2.5;
+            }
+            else if (wildWeight >= 100) {
+                ballBonus = 2;
+            }
+            else if (wildWeight >= 90) {
+                ballBonus = 1.5;
+            }
+            else if (wildWeight >= 80) {
+                ballBonus = 1.25;
+            }
+            else if (wildWeight >= 65) {
+                ballBonus = 1;
+            }
+            else if (wildWeight >= 50) {
+                ballBonus = 0.75;
+            }
+            else if (wildWeight >= 35) {
+                ballBonus = 0.5;
+            }
+            else {
+                ballBonus = 0.25;
+            }
+            typeBonus = ((1 + typeBonus) / 2);
+        }
+        var eventChance = (wildEvent ? 0.4 : 1);
+        if (ball === "myth") {
+            shinyChance = 1;
+            legendaryChance = 1;
+            eventChance = Math.max(0.75, eventChance);
+            rulesMod = 1;
+            if (isLegend || isShiny){
+                ballBonus = itemData[ball].bonusRate;
+            } else {
+                typeBonus = 1;
+            }
+        }
+        if (ball === "cherish") {
+            legendaryChance = 1;
+            eventChance = 1;
+        }
+        if (ball === "lightning") {
+            legendaryChance = 1;
+            eventChance = Math.max(0.75, eventChance);
+        }
+        if (ball === "inver") {
+            legendaryChance = Math.max(0.75, legendaryChance);
+        }
+        if (ball === "spirit") {
+            legendaryChance = 1;
+            eventChance = 1;
+            ballBonus = 1;
+            if (safari.spiritDuelsEnabled) {
+                for (var s in player.spiritDuels.skills) {
+                    if (player.spiritDuels.skills[s].type === "catch") {
+                        ballBonus *= player.spiritDuels.skills[s].val;
+                    }
+                }
+            }
+        }
+        if (ball === "mirror") {
+            typeBonus = 1;
+            legendaryChance = Math.max(0.75, legendaryChance);
+            ballBonus = 0.25;
+            if (hasType(sys.pokeType1(player.party[0]), wild)) {
+                ballBonus = Math.max(1.1, ballBonus + 0.25);
+            }
+            else if (hasType(sys.pokeType2(player.party[0]), wild)) {
+                ballBonus = Math.max(1.1, ballBonus + 0.25);
+            }
+            var ab = [];
+            ab.push(sys.pokeAbility(player.party[0], 0));
+            ab.push(sys.pokeAbility(player.party[0], 1));
+            ab.push(sys.pokeAbility(player.party[0], 2));
+            for (var a in ab) {
+                if (canHaveAbility(wild, ab[a])) {
+                    ballBonus = Math.max(1.5, ballBonus + 0.5);
+                }
+            }
+            if (getPokeColor(player.party[0]) === getPokeColor(wild)) {
+                ballBonus += 1.5;
+            }
+            var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"], st;
+            for (var s in stats) {
+                st = stats[s];
+                if (Math.abs(sys.pokeBaseStats(player.party[0])[st] - sys.pokeBaseStats(wild))[st] <= 10) {
+                    ballBonus *= 1.3;
+                }
+            }
+            if (ballBonus > itemData[ball].maxBonus) {
+                ballBonus = itemData[ball].maxBonus;
+            }
+        }
+        if (ball === "photo") {
+            ballBonus = 1;
+            legendaryChance = Math.max(0.75, legendaryChance);
+            for (i = player.photos.length; i--; ) {
+                if (safari.photoMatchesRequest(player.photos[i], {species: wild})) {
+                    ballBonus = itemData[ball].bonusRate;
+                    break;
+                }
             }
         }
 
@@ -3778,25 +4060,16 @@ function Safari() {
                 ballBonus = itemData.premier.bonusRate;
             }
         }
-
-        var eventChance = (wildEvent ? 0.4 : 1);
-        if (ball === "myth") {
-            shinyChance = 1;
-            legendaryChance = 1;
-            eventChance = 1;
-            rulesMod = 1;
-            if (isLegend || isShiny){
-                ballBonus = itemData[ball].bonusRate;
-            } else {
-                typeBonus = 1;
-            }
+        else if ((player.costume === "flower") && (hasType(player.party[0], "???"))) {
+            flowerGirlBonus = 1.125;
         }
+
         var ballbuff = 1 + this.getFortune(player, "ballbuff", 0, ball);
         var anyballbuff = this.getFortune(player, "anyballbuff", 0);
         var typebuff = 1 + (this.getFortune(player, "typebuff", 0, pType1) || this.getFortune(player, "typebuff", 0, pType2));
         var wildtypebuff = 1 + (this.getFortune(player, "typebuffwild", 0, wType1) || this.getFortune(player, "typebuffwild", 0, wType2));
 
-        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * flowerGirlBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
             finalChance = Math.min(finalChance, maxCloneRate);
@@ -3874,6 +4147,10 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
+        if (wildSpirit && ball !== "spirit") {
+            safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
+            return;
+        }
         var ballName = finishName(ball);
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball)) {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
@@ -3946,20 +4223,28 @@ function Safari() {
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
-            } else {
+            } else if (ball == "spirit") {
+                safari.catchSpiritMon(player, currentPokemon);
+                player.records.catchSpirit += 1;
+                var team = player.spiritDuels.team;
+                var title = player.spiritDuels.rankName;
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]), safchan);
+                wildSpirit = false;
+            } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
-            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-            
-            if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
-                var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
-                player.pokemon.push(evolved);
-                sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
-            } else {
-                player.pokemon.push(currentPokemon);
+            else {
+                safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
+                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
+                    player.pokemon.push(evolved);
+                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
+                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+                } else {
+                    player.pokemon.push(currentPokemon);
+                }
             }
             player.records.pokesCaught += 1;
             if (isBaited) {
@@ -4043,6 +4328,9 @@ function Safari() {
             this.fullBoxWarning(src);
 
             var penalty = 2 * (1 - getPerkBonus(player, "soothe") - this.getFortune(player, "soothe", 0));
+            if (ball === "spy") {
+                penalty = 0.25;
+            }
             cooldown *= penalty;
             if (contestCount > 0) {
                 var nameLower = name.toLowerCase();
@@ -4083,10 +4371,15 @@ function Safari() {
             }
         } else {
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
-            var keep = false;
-            if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
-                keep = true;
+            if ((ball === "spirit") || (ball === "cherish")) {
                 player.balls[ball] += 1;
+            }
+            else {
+                var keep = false;
+                if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
+                    keep = true;
+                    player.balls[ball] += 1;
+                }
             }
             pokeName = poke(currentDisplay);
             safaribot.sendHtmlMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
@@ -4168,6 +4461,7 @@ function Safari() {
         ];
         if (isRare(currentPokemon)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+            runmsgs = [ "The wild {0} was obliterated by a grumpy old safari coder!" ];
         }
 
         sys.sendAll("", safchan);
@@ -4614,13 +4908,13 @@ function Safari() {
 
         sys.sendHtmlMessage(src, this.showParty(id, false, src, textOnly), safchan);
     };
-    this.viewItems = function(src, textOnly) {
+    this.viewItems = function(src, textOnly, search) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
-        sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly), safchan);
+        sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly, search), safchan);
     };
     this.viewCostumes = function(src) {
         if (!validPlayers("self", src)) {
@@ -5040,20 +5334,39 @@ function Safari() {
         out += "<br/>";
         return out;
     };
-    this.showBag = function(player, isAndroid, textOnly) {
+    this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega",];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "bait", "golden"];
-        var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
-        var line4 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "blkapricorn", "whtapricorn", "materia", "fragment", "philosopher", "soda", "cookie"];
-        var line5 = ["rock", "stick", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush", "dew", "ldew"];
+        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "stick", "rock"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono"];
+        var line3 = ["lightning", "trueheavy", "photo", "mirror", "inver", "spirit", "cherish", "bait", "golden"];
+        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "ldew", "materia", "fragment"];
+        var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
+        var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "philosopher", "soda", "cookie"];
+        var line7 = ["mega", "spray", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush"];
 
+        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares"].indexOf(search) === -1) {
+            search = "*";
+        }
         var out = "";
-        out += bagRow(player, line1, isAndroid, textOnly, true);
-        out += bagRow(player, line2, isAndroid, textOnly);
-        out += bagRow(player, line3, isAndroid, textOnly);
-        out += bagRow(player, line4, isAndroid, textOnly);
-        out += bagRow(player, line5, isAndroid, textOnly);
+        if ((search === "*") || (search === "wallet")) {
+            out += bagRow(player, line1, isAndroid, textOnly, true);
+        }
+        if ((search === "*") || (search === "balls") || (search === "ball")) {
+            out += bagRow(player, line2, isAndroid, textOnly, true);
+            out += bagRow(player, line3, isAndroid, textOnly, true);
+        }
+        if ((search === "*") || (search === "apricorns") || (search === "apricorn")) {
+            out += bagRow(player, line4, isAndroid, textOnly, true);
+        }
+        if ((search === "*") || (search === "perks") || (search === "perk")) {
+            out += bagRow(player, line5, isAndroid, textOnly, true);
+        }
+        if ((search === "*") || (search === "pawnables") || (search === "pawnable") || (search === "pawn") || (search === "pawns")) {
+            out += bagRow(player, line6, isAndroid, textOnly, true);
+        }
+        if ((search === "*") || (search === "rare") || (search === "rares")) {
+            out += bagRow(player, line7, isAndroid, textOnly, true);
+        }
         out += (textOnly ? "" : "</table>");
         return out;
     };
@@ -6298,8 +6611,13 @@ function Safari() {
                 }
             } else {
                 if (baitCooldown > 0) {
-                    safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
-                    return;
+                    if (player.freebaits <= 0) {
+                        safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+                        return;
+                    }
+                    else {
+                        player.freebaits--;
+                    }
                 }
             }
             if (player.cooldowns.bait > now()) {
@@ -6318,6 +6636,7 @@ function Safari() {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
             } else {
                 baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
+                player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
             }
             player.records.baitAttracted += 1;
 
@@ -7265,6 +7584,12 @@ function Safari() {
             /* falls through*/
             case "luxury": {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
+            }
+            break;
+            case "hint": {
+                var hint = safariHints.random();
+                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
+                safaribot.sendMessage(src, "±Hint: " + hint, safchan);
             }
             break;
             default:
@@ -8282,6 +8607,11 @@ function Safari() {
             theft = "but stole it back";
         } else {
             this.removePokemon(src, id);
+            player.lastSold = {
+                mon: info,
+                price: price
+            };
+
             /*if (isRare(id) && player.tradeban <= now()) {
                 sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("<b><font color=tomato>Haha! " + sys.name(src) + " just sold their " + info.name + " to the shop! You should make fun of them with " + link("/rock " + sys.name(src)) + "!</font></b>", safchan);
@@ -8298,6 +8628,42 @@ function Safari() {
         if (isRare(id)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + "::\n");
         }
+        this.saveGame(player);
+    };
+    this.undoSell = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var currentTime = now();
+        if (player.cooldowns.unsell <= currentTime) {
+            safaribot.sendMessage(src, "You've been trying to unsell too often lately! Please wait " + timeLeftString(player.cooldowns.unsell) + " to unsell again.", safchan);
+            return;
+        }
+        if (player.costume === "rocket") {
+            safaribot.sendMessage(src, "Team Rocket members are not allowed to undo their wicked ways! You must change costumes to undo selling a Pokémon!", safchan);
+            return;
+        }
+        if (player.lastSold === {}) {
+            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon!", safchan);
+            return;
+        }
+
+        var last = player.lastSold;
+        if (last.price > player.money) {
+            safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because you used the money you earned from selling your last Pokémon!", safchan);
+            return;
+        }
+
+        player.records.pokeSoldEarnings -= last.price;
+        player.money -= last.price;
+        var mon = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
+        player.pokemon.push(mon);
+
+        safaribot.sendMessage(src, "You quickly turned around and got your " + last.mon.name + " back! (You lost $" + last.price + ")", safchan);
+        player.lastSold = {};
+        player.cooldowns.unsell = currentTime + (6 * 60 * 1000);
+
         this.saveGame(player);
     };
     this.showPrices = function(src, shop, command, seller) {
@@ -9004,6 +9370,12 @@ function Safari() {
             }
             
             safari.trialsLogin(player);
+            if (safari.events.spiritDuelsEnabled) {
+                var out = giveStuff(player, "5@spirit", true);
+                safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
+                this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
+            }
+            player.freebaits = 5;
 
             reward = {};
             for (e = player.secretBase.length; e--; ) {
@@ -9455,8 +9827,9 @@ function Safari() {
         if (!safari.events) {
             safari.events = {
                 trialsEnabled: false,
-                trialsData: null,
-                trialsParticipants: []
+                trialsData: {},
+                spiritDuelsEnabled: false,
+                spiritDuelsData: {}
             };
         }
         switch (what) {
@@ -9468,7 +9841,19 @@ function Safari() {
                     safari.events.trialsEnabled = (enable ? true : false);
                     safaribot.sendMessage(src,"Event Trials " + (enable ? "enabled" : "disabled") + "!" );
                     if (!(enable)) {
-                        safari.events.trialsData = null;
+                        safari.events.trialsData = {};
+                    }
+                }
+                break;
+            case "duels":
+                if (enable && (!(safari.events.spiritDuelsData))) {
+                    safaribot.sendMessage(src,"Use /loadspiritduels [url] to load trials before enabling them!");
+                }
+                else {
+                    safari.events.spiritDuelsEnabled = (enable ? true : false);
+                    safaribot.sendMessage(src,"Event Spirit Duels " + (enable ? "enabled" : "disabled") + "!" );
+                    if (!(enable)) {
+                        safari.events.spiritDuelsData = {};
                     }
                 }
                 break;
@@ -9539,9 +9924,6 @@ function Safari() {
     this.trialsLogin = function(player) {
         if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
             player.trials.points += 1;
-            if (safari.events.trialsParticipants.indexOf(player) === -1) {
-                safari.events.trialsParticipants.push(player)
-            }
             safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
         }
         return;
@@ -9598,9 +9980,6 @@ function Safari() {
             player.trials.name = name;
             player.trials.bonusPointsReceived = false;
         }
-        if (safari.events.trialsParticipants.indexOf(player) === -1) {
-            safari.events.trialsParticipants.push(player);
-        }
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
         for (var e = 0; e < player.trials.missions.length; e++) {
@@ -9634,13 +10013,19 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.viewTrialsLb = function(src,num) {
-        var t = safari.events.trialsParticipants, player, points;
+        var t = Object.keys(rawPlayers), player, points;
         var playerPoints = [];
         var limit = parseInt(num, 10);
 
         for (var p in t) {
-            player = t[p];
+            player = getAvatorOff(t[p]);
             id = player.id;
+            if (!player.trials) {
+                continue;
+            }
+            if (player.trials.points <= 0) {
+                continue;
+            }
             points = player.trials.points;
             playerPoints.push({
                 id: id,
@@ -9659,7 +10044,7 @@ function Safari() {
             if (!p) {
                 continue;
             }
-            if (received.indexOf(playerPoints[i].id) !== -1) {
+            if (received.indexOf(playerPoints[i].id) > -1) {
                 continue;
             }
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
@@ -9669,23 +10054,28 @@ function Safari() {
         return;
     };
     this.endTrials = function() {
-        var t = safari.events.trialsParticipants, player, points;
+        var t = Object.keys(rawPlayers), player, points;
         var playerPoints = [], src;
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
-        var received = [], p;
+        p;
 
         for (var p in t) {
-            player = t[p];
+            player = getAvatorOff(t[p]);
             id = player.id;
-            p = getAvatarOff(id);
-            if (!p) {
+            if (!player) {
                 continue;
             }
-            if (received.indexOf(p.id) !== -1) {
+            if (received.indexOf(id) !== -1) {
                 continue;
             }
-            received.push(p.id);
+            if (!player.trials) {
+                continue;
+            }
+            if (player.trials.points <= 0) {
+                continue;
+            }
+            received.push(player.id);
             points = player.trials.points;
             playerPoints.push({
                 id: id,
@@ -9719,14 +10109,649 @@ function Safari() {
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
-            if (j >= 2) {
+            if (j >= 3) {
                 break;
             }
         }
-        safari.events.trialsParticipants = [];
         return;
     };
-    
+    /* Spirit Duels */
+    this.loadDuels = function( src,data ) {
+        //Just loads the data
+        safari.events.spiritDuelsTeams = [];
+        safari.events.spiritDuelsSignups = [];
+        var m;
+        for (var k in data.teams) {
+            m = data.teams[k];
+            safari.events.spiritDuelsTeams.push({
+                players: [],
+                name: m.name,
+                skills: m.skills,
+                alive: true,
+                won: 0,
+                fought: 0,
+                rate: 0
+            });
+        }
+        safari.events.spiritDuelsRanks = [
+            {rank: "Grunt", exp: 0},
+            {rank: "Ensign", exp: 3000},
+            {rank: "Officer Trainee", exp: 6000},
+            {rank: "Secretary Officer", exp: 10000},
+            {rank: "Squadron Leader", exp: 15000},
+            {rank: "Field Lieutenant", exp: 21000},
+            {rank: "Commander", exp: 30000},
+            {rank: "Vice Admiral", exp: 35000},
+            {rank: "Admin", exp: 40000},
+            {rank: "Supreme Master", exp: 50000}
+        ];
+        safari.events.spiritDuelsSkills = {
+            "Ensign": [
+                {type: "type", target: "Poison", val: 20, desc: "Poison type Spirits receive a fighting advantage."},
+                {type: "type", target: "Bug", val: 20, desc: "Bug type Spirits receive a fighting advantage."},
+                {type: "type", target: "Normal", val: 20, desc: "Normal type Spirits receive a fighting advantage."},
+                {type: "region", target: "Kanto", val: 10, desc: "Spirits from Kanto receive a slight fighting advantage."},
+                {type: "region", target: "Alola", val: 10, desc: "Spirits from Alola receive a slight fighting advantage."},
+                {type: "color", target: "Green", val: 12, desc: "Green Spirits receive a fighting advantage."},
+                {type: "color", target: "Yellow", val: 12, desc: "Yellow Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 3, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.06, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.1, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Officer Trainee": [
+                {type: "type", target: "Psychic", val: 22, desc: "Psychic type Spirits receive a fighting advantage."},
+                {type: "type", target: "Grass", val: 22, desc: "Grass type Spirits receive a fighting advantage."},
+                {type: "type", target: "Ice", val: 22, desc: "Ice type Spirits receive a fighting advantage."},
+                {type: "region", target: "Johto", val: 12, desc: "Spirits from Johto receive a slight fighting advantage."},
+                {type: "region", target: "Kalos", val: 12, desc: "Spirits from Kalos receive a slight fighting advantage."},
+                {type: "color", target: "Red", val: 13, desc: "Red Spirits receive a fighting advantage."},
+                {type: "color", target: "Purple", val: 13, desc: "Purple Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 4, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.12, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.2, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Secretary Officer": [
+                {type: "type", target: "Flying", val: 24, desc: "Flying type Spirits receive a fighting advantage."},
+                {type: "type", target: "Fighting", val: 24, desc: "Fighting type Spirits receive a fighting advantage."},
+                {type: "type", target: "Rock", val: 24, desc: "Rock type Spirits receive a fighting advantage."},
+                {type: "region", target: "Hoenn", val: 14, desc: "Spirits from Hoenn receive a slight fighting advantage."},
+                {type: "region", target: "Unova", val: 14, desc: "Spirits from Unova receive a slight fighting advantage."},
+                {type: "color", target: "Black", val: 14, desc: "Black Spirits receive a fighting advantage."},
+                {type: "color", target: "White", val: 14, desc: "White Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 5, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.18, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.3, desc: "Generate Spirit Duels EXP at a higher rate."},
+            ],
+            "Squadron Leader": [
+                {type: "type", target: "Fire", val: 24, desc: "Fire type Spirits receive a fighting advantage."},
+                {type: "type", target: "Water", val: 24, desc: "Water type Spirits receive a fighting advantage."},
+                {type: "type", target: "Electric", val: 24, desc: "Electric type Spirits receive a fighting advantage."},
+                {type: "region", target: "Sinnoh", val: 15, desc: "Spirits from Sinnoh receive a slight fighting advantage."},
+                {type: "region", target: "Kanto", val: 15, desc: "Spirits from Kanto receive a slight fighting advantage."},
+                {type: "color", target: "Blue", val: 15, desc: "Blue Spirits receive a fighting advantage."},
+                {type: "color", target: "Grey", val: 15, desc: "Grey Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 6, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.24, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.4, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Field Lieutenant": [
+                {type: "type", target: "Ground", val: 25, desc: "Ground type Spirits receive a fighting advantage."},
+                {type: "type", target: "Fairy", val: 25, desc: "Fairy type Spirits receive a fighting advantage."},
+                {type: "type", target: "Dark", val: 25, desc: "Dark type Spirits receive a fighting advantage."},
+                {type: "region", target: "Johto", val: 16, desc: "Spirits from Johto receive a slight fighting advantage."},
+                {type: "region", target: "Unova", val: 16, desc: "Spirits from Unova receive a slight fighting advantage."},
+                {type: "move", target: "Dual Chop", val: 30, desc: "Spirits that can know Dual Chop receive a fighting advantage."},
+                {type: "move", target: "Solar Beam", val: 30, desc: "Spirits that can know Solar Beam receive a fighting advantage."},
+                {type: "move", target: "Double Kick", val: 30, desc: "Spirits that can know Double Kick receive a fighting advantage."},
+                {type: "any", target: "", val: 7, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.3, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "catch", target: "cooldown", val: 1.1, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Commander": [
+                {type: "type", target: "Ghost", val: 25, desc: "Ghost type Spirits receive a fighting advantage."},
+                {type: "type", target: "Steel", val: 25, desc: "Steel type Spirits receive a fighting advantage."},
+                {type: "type", target: "Dragon", val: 25, desc: "Dragon type Spirits receive a fighting advantage."},
+                {type: "region", target: "Hoenn", val: 17, desc: "Spirits from Hoenn receive a slight fighting advantage."},
+                {type: "region", target: "Kalos", val: 17, desc: "Spirits from Kalos receive a slight fighting advantage."},
+                {type: "move", target: "Earthquake", val: 32, desc: "Spirits that can know Earthquake receive a fighting advantage."},
+                {type: "move", target: "Calm Mind", val: 32, desc: "Spirits that can know Calm Mind receive a fighting advantage."},
+                {type: "move", target: "Taunt", val: 32, desc: "Spirits that can know Taunt receive a fighting advantage."},
+                {type: "attack", target: "", val: 12, desc: "Spirits with high Attack stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.17, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Vice Admiral": [
+                {type: "singletype", target: "", val: 37, desc: "Single-type Spirits receive a major fighting advantage."},
+                {type: "move", target: "Overheat", val: 34, desc: "Spirits that can know Overheat receive a fighting advantage."},
+                {type: "move", target: "Megahorn", val: 34, desc: "Spirits that can know Megahorn receive a fighting advantage."},
+                {type: "move", target: "Stored Power", val: 34, desc: "Spirits that can know Stored Power receive a fighting advantage."},
+                {type: "move", target: "Charge Beam", val: 34, desc: "Spirits that can know Charge Beam receive a fighting advantage."},
+                {type: "catch", target: "rate", val: 1.4, desc: "Catch rate with Spirit Balls raised."},
+                {type: "spattack", target: "", val: 14, desc: "Spirits with high Special Attack stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.24, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Admin": [
+                {type: "singletype", target: "", val: 42, desc: "Single-type Spirits receive a major fighting advantage."},
+                {type: "move", target: "Hydro Pump", val: 35, desc: "Spirits that can know Hydro Pump receive a fighting advantage."},
+                {type: "move", target: "Giga Drain", val: 35, desc: "Spirits that can know Giga Drain receive a fighting advantage."},
+                {type: "move", target: "Hurricane", val: 35, desc: "Spirits that can know Hurricane receive a fighting advantage."},
+                {type: "move", target: "Power Gem", val: 35, desc: "Spirits that can know Power Gem receive a fighting advantage."},
+                {type: "speed", target: "", val: 16, desc: "Spirits with high Speed stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.35, desc: "Catch cooldown on Spirit Balls reduced."}
+            ],
+            "Supreme Master": [
+                {type: "move", target: "Wood Hammer", val: 40, desc: "Spirits that can know Wood Hammer receive a fighting advantage."},
+                {type: "move", target: "Smart Strike", val: 40, desc: "Spirits that can know Smart Strike receive a fighting advantage."},
+                {type: "move", target: "Moonblast", val: 40, desc: "Spirits that can know Moonblast receive a fighting advantage."},
+                {type: "move", target: "Electro Ball", val: 40, desc: "Spirits that can know Electro Ball receive a fighting advantage."},
+                {type: "move", target: "Psyshock", val: 40, desc: "Spirits that can know Psyshock receive a fighting advantage."}
+            ]
+        }
+    };
+    this.pushDuelTeam = function( src,player,data ) {
+        //Pushes a player into a team 
+
+        for (var t in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[t].name !== data) {
+                continue;
+            }
+            safari.events.spiritDuelsTeams[t].players.push(player);
+            player.spiritDuels = {
+                rank: 0,
+                rankName: "Grunt",
+                team: safari.events.spiritDuelsTeams[t].name,
+                exp: 0,
+                box: [],
+                skills: [],
+                skillChoices: {}
+            };
+        }
+    };
+    this.assignDuelsTeams = function( src,data ) {
+        //Takes everyone from signups and puts them in teams
+        safari.events.spiritDuelsSignups.shuffle();
+        var i = 0, player, oldBox;
+        for (var p in safari.events.spiritDuelsSignups) {
+            player = getAvatorOff(safari.events.spiritDuelsSignups[p]);
+            if (player.spiritDuels && player.spiritDuels.box.length > 0) {
+                oldBox = box;
+            }
+            else {
+                oldBox = [19];
+            }
+            safari.events.spiritDuelsTeams[i].players.push(player);
+            player.spiritDuels = {
+                rank: 0,
+                rankName: "Grunt",
+                team: safari.events.spiritDuelsTeams[i].name,
+                exp: 0,
+                box: oldBox,
+                skills: [],
+                skillChoices: {}
+            };
+            i++;
+            if (i >= safari.events.spiritDuelsTeams.length) {
+                i = 0;
+            }
+            //Print "player joined team X"
+        }
+        safari.events.spiritDuelsSignups = [];
+    };
+    this.progressDuels = function( src ) {
+        //Counts everyone's scores
+        //The one with the least points is eliminated
+        //eliminated players are forced to join another team and lose their skills, get set back to grunt
+        var team, player;
+        for (var t in safari.events.spiritDuelsTeams) {
+            team = safari.events.spiritDuelsTeams[t];
+            team.rate = (team.won / team.fought);
+        }
+        safari.events.spiritDuelsTeams.sort( function(a, b) {
+            return a.rate - b.rate;
+        });
+        /*
+            Do rewards and stuff here
+            Print the team rankings and their rates
+        */
+        for (var p in safari.events.spiritDuelsTeams[0].players) {
+            player = getAvatorOff(safari.events.spiritDuelsTeams[0].players[p]);
+            safari.events.spiritDuelsSignups.push(player.id);
+        }
+        safari.events.spiritDuelsTeams[0].alive = false;
+        safari.events.spiritDuelsTeams.slice(1);
+        safari.events.spiritDuelsTeams.sort( function(a, b) {
+            return b.players.length - a.players.length;
+        });
+        this.assignDuelsTeams();
+    };
+    this.prepareNextSpiritDuel = function() {
+        //Creates a matchup between two teams
+        //Should use a formula that makes teams with similar records fight
+        if (chance(0.4)) {
+            safari.events.spiritDuelsTeams.sort( function(a, b) {
+                return a.fought - b.fought;
+            });
+        }
+        else {
+            safari.events.spiritDuelsTeams.shuffle();
+        }
+        //Add some print or something to say which teams are up
+    };
+    this.startSpiritDuel = function() {
+        //Creates horde v horde battle
+        safari.events.spiritDuelsViewers = [];
+        var team1 = [], team2 = [];
+        var army1 = safari.events.spiritDuelsTeams[0].players;
+        var army2 = safari.events.spiritDuelsTeams[1].players;
+        var enlistPerPlayer1 = (army1.length >= 5 ? 3 : (army1.length >= 4 ? 4 : 5));
+        var enlistPerPlayer2 = (army2.length >= 5 ? 3 : (army2.length >= 4 ? 4 : 5));
+
+        var p, j;
+        for (var a in army1) {
+            p = getAvatarOff(army1[a].id);
+            j = 0;
+            for (var i = 0; i < enlistPerPlayer1; i++) {
+                team1.push({
+                    mon: p.spiritDuels.box[j],
+                    owner: p,
+                    won: 0,
+                    fought: 0,
+                    rate: 0,
+                    alive: true
+                });
+                j++;
+                if (j > p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        for (var a in army2) {
+            p = getAvatarOff(army2[a].id);
+            j = 0;
+            for (var i = 0; i < enlistPerPlayer2; i++) {
+                team2.push({
+                    mon: p.spiritDuels.box[j],
+                    owner: p,
+                    won: 0,
+                    fought: 0,
+                    rate: 0,
+                    alive: true
+                });
+                j++;
+                if (j > p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        team1.shuffle();
+        team2.shuffle();
+        var smaller = Math.min(team1.length, team2.length);
+        safari.events.sd1 = team1.slice(0, smaller);
+        safari.events.sd2 = team2.slice(0, smaller);
+        safari.events.sdStep = 0;
+    };
+    this.spiritDuelTurn = function() {
+        var step = safari.events.sdStep;
+        var team1 = safari.events.sd1.shuffle(), team2 = safari.events.sd2.shuffle();
+        var fighter1 = {}, fighter2 = {}, victory1 = true, victory2 = true;
+        var team1fighters = "", team2fighters = "";
+        var boost1 = 0, boost2 = 0;
+        var range1 = [10, 100], range2 = [10, 100];
+        var res;
+        if (step === 0) {
+            /* Send everyone messages letting them know that the fight is starting */
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/watchduel", "Watch") + "]", true);
+        }
+        else if (step === 2) {
+            /* Sends everyone another message letting them know that the fight is starting */
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/watchduel", "Watch") + "]", true);
+        }
+        else if (step === 4) {
+            this.spiritDuelsMessage("Preparations complete, Duel about to begin!")
+        }
+        else if (step >= 5) {
+            /* Needs print functions */
+            for (var a in team1) {
+                team1[a].won = 0;
+                team1[a].fought = 0;
+            }
+            for (var a in team2) {
+                team2[a].won = 0;
+                team2[a].fought = 0;
+            }
+            victory1 = true;
+            victory2 = true;
+            for (var a in team1) {
+                fighter1 = team1[a];
+                if (!fighter1.alive) {
+                    continue;
+                }
+                boost1 = spiritMonBoost(fighter1.owner, fighter1.mon);
+                range1 = [10 + boost, 100 + boost];
+                for (var b in team2) {
+                    fighter2 = team2[b];
+                    if (!fighter2.alive) {
+                        continue;
+                    }
+                    boost2 = spiritMonBoost(fighter2.owner, fighter2.mon);
+                    range2 = [10 + boost2, 100 + boost2];
+                    res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
+                    if (res[0] >= res[1]) {
+                        fighter1.won++;
+                    }
+                    if (res[1] >= res[0]) {
+                        fighter2.won++;
+                    }
+                    fighter1.fought++;
+                    fighter2.fought++;
+                }
+            }
+            for (var a in team1) {
+                team1[a].rate = (team1[a].won / team1[a].fought);
+                if (team1[a].rate < 0.5) {
+                    team1[a].alive = false;
+                }
+                else {
+                    victory2 = false;
+                }
+                team1fighters += team1[a].owner + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+            }
+            this.spiritDuelsMessage( team1fighters );
+            for (var a in team2) {
+                team2[a].rate = (team2[a].won / team2[a].fought);
+                if (team2[a].rate < 0.5) {
+                    team2[a].alive = false;
+                }
+                else {
+                    victory1 = false;
+                }
+                team2fighters += team2[a].owner + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+            }
+            this.spiritDuelsMessage( team2fighters );
+            if (victory1 || victory2) {
+                if (victory1 && victory2) {
+                    //This shouldn't happen
+                }
+                else if (victory1) {
+                    safari.events.spiritDuelsTeams[0].won++;
+                }
+                else if (victory2) {
+                    safari.events.spiritDuelsTeams[1].won++;
+                }
+                safari.events.spiritDuelsTeams[0].fought++;
+                safari.events.spiritDuelsTeams[1].fought++;
+                safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
+                safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
+                //Print who won and stuff
+                this.spiritDuelsViewers = [];
+                safari.prepareNextSpiritDuel();
+            }
+        }
+    };
+    this.spiritMonBoost = function( player,mon ) {
+        //Adds buffs according to a mon's owner's skills
+        var out = 0, data, active, mult;
+        for (var s in player.spiritDuels.skills) {
+            data = player.spiritDuels.skills[s];
+            target = data.target;
+            mult = 1;
+            active = false
+            switch (data.type) {
+                case "type": 
+                    if (hasType(target, sys.type(sys.typeNum(mon)))) {
+                        active = true;
+                    }
+                    break;
+                case "color": 
+                    if (getPokeColor(mon) === target) {
+                        active = true;
+                    }
+                    break;
+                case "region": 
+                    if (generation(mon, true).toLowerCase() === target.toLowerCase()) {
+                        active = true;
+                    }
+                    break;
+                case "move": 
+                    if (canLearnMove(mon, sys.moveNum(target))) {
+                        active = true;
+                    }
+                    break;
+                case "name":
+                    if (sys.pokemon(mon)[0].toLowerCase() === target.toLowerCase()) {
+                        active = true;
+                    }
+                    break;
+                case "attack":
+                    if (sys.pokeBaseStats(mon).Attack >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "spattack":
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "speed":
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "any":
+                    active = true;
+                    break;
+            }
+            if (active) {
+                out += (data.val * mult);
+            }
+        }
+        if (isLegendary(mon)) {
+            out += 25;
+        }
+        return out;
+    };
+    this.catchSpiritMon = function( player,mon ) {
+        //Adds the mon to player's spirit box
+        //Also increases their EXP
+        var id = parseInt(mon, 10), exp;
+        player.spiritDuels.box.push(mon);
+        exp = (getBST(id) * isLegendary(id) ? 6 : 1);
+        for (var s in player.spiritDuels.skills) {
+            if (player.spiritDuels.skills[s].type === "exp") {
+                exp *= player.spiritDuels.skills[s].val;
+            }
+        }
+        player.spiritDuels.exp += (getBST(id) * isLegendary(id) ? 7 : 1);
+        this.levelupSpiritRank(player);
+    };
+    this.levelupSpiritRank = function( player ) {
+        //Grabs a skill
+        var nextLevel = safari.events.rank + 1;
+        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
+            return;
+        }
+        if (player.spiritDuels.exp >= safari.events.spiritDuelsRanks[nextLevel].exp) {
+            safari.events.rank++;
+            safari.events.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
+            canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
+            player.spiritDuels.skillChoices = canLearn;
+        }
+    };
+    this.showSpiritSkill = function( src,player ) {
+        //Shows them their spirit monns
+        var skill, msg = "", letters = ["a", "b", "c"], i = 0;
+        msg = "Choose one of these skills with /spiritskill [letter]!"
+        for (var s in player.spiritDuels.skillChoices) {
+            skill = player.spiritDuels.skillChoices[s];
+            msg += "[" + letters[i] + "] " + skill.desc + ". \n";
+            i++;
+        }
+        //send msg
+    };
+    this.chooseSpiritSkill = function( src,player,commandData ) {
+        //Shows them their spirit monns
+        var skill, msg = "", letters = ["a", "b", "c"], i = 0;
+        if (player.spiritDuels.skillChoices === {}) {
+            //send msg
+        }
+        if (letters.indexOf(commandData) === -1) {
+            this.showSpiritSkill( src,player );
+        }
+        for (var s in player.spiritDuels.skillChoices) {
+            if (letters[i] === commandData) {
+                player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[i])) );
+                player.spiritDuels.skillChoices = {};
+                //send msg
+                return;
+            }
+            i++;
+        }
+        return;
+    };
+    this.spiritDuelsCommand = function( src,command,commandData ) {
+        //Shows them their spirit monns
+        var player = getAvatarOff(src);
+        switch (command) {
+            case "box": this.showSpiritBox(src,player,false,false); break;
+            case "boxt": this.showSpiritBox(src,player,false,true); break;
+            case "active": this.activeSpiritMon(src,player,commandData); break;
+        }
+        return;
+    };
+    this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
+        //Shows them their spirit monns
+        var out = "";
+        var maxPages,
+            list = player.spiritDuels.box;
+
+        if (isNaN(page) && typeof num === "string" && num.toLowerCase() !== "all") {
+            page = 1;
+        } 
+        if (!isNaN(page) && num != "all") {
+            maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
+
+            if (page > maxPages) {
+                page = maxPages;
+            }
+            list = list.slice(12 * (page - 1), 12 * (page - 1) + 12);
+        }
+
+        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
+        if (textOnly) {
+            out += this.listPokemonText(list, label);
+        } else {
+            out += this.listPokemon(list, label);
+            if (isAndroid) {
+                out += "<br />";
+            }
+        }
+
+        return out;
+    };
+    this.activeSpiritMon = function( src,player,data ) {
+        //Adds the spirit mons to the front of their spirit box if they have it
+        //num = data.getMonNumber(data) || data if data is a number
+        var x = player.spiritDuels.box.indexOf(data);
+        if (x === -1) {
+            //u don't have it
+        }
+        else {
+            player.spiritDuels.box.slice(x, 1);
+            player.spiritDuels.box.unshift(data);
+        }
+    };
+    this.spiritDuelsUpdateAlt = function( name1, name2 ) {
+        if (!safari.events.spiritDuelsEnabled) {
+            return false;
+        }
+        if (!safari.events.spiritDuelsTeams) {
+            return false;
+        }
+        var k;
+        for (var t in safari.events.spiritDuelsTeams) {
+            k = safari.events.spiritDuelsTeams[t].indexOf(name1);
+            if (k > -1) {
+                safari.events.spiritDuelsTeams[t].splice(k, 1);
+                safari.events.spiritDuelsTeams[t].push(name2);
+            }
+        }
+        k = safari.events.spiritDuelsSignups.indexOf(name1);
+        if (k > -1) {
+            safari.events.spiritDuelsSignups.splice(k, 1);
+            safari.events.spiritDuelsSignups.push(name2);
+        }
+    };
+    this.spiritDuelsMessage = function(msg) {
+        var e;
+        var list = removeDuplicates(this.spiritDuelsViewers);
+        for (e = 0 ; e < list.length; e++) {
+            sys.sendHtmlMessage(sys.id(list[e]), msg, safchan);
+        }
+    };
+    this.watchSpiritDuel = function(src) {
+        safari.events.spiritDuelsViewers.push(getAvatarOff(src).id);
+        this.spiritDuelsMessage(getAvatarOff(src).id + " is watching this Spirit Duel!");
+    };
+
     /* Secret Base */
     this.viewDecorations = function(src) {
         if (!validPlayers("self", src)) {
@@ -14280,6 +15305,161 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
         }
     };
+    this.apricornQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        var trainerSprite = '<img src="' + base64trainers.arborist + '">';
+        if (stopQuests.alchemist) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ah, I'm mighty tired. Maybe come back anot'er time, will ya?", safchan);
+            return;
+        }
+        var recipes = apricornToBallData;
+        var validItems = Object.keys(recipes);
+        if (!data[0] || data[0].toLowerCase() === "help") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here apricorns to make some neat stuff, alright? (Use /quest arborist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
+                return " " + link("/quest alchemist:" + x, cap(x, true)) + " <small>(CD: " + recipes[x].cooldown + "h)</small>";
+            }), safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+
+        var item = data[0].toLowerCase();
+        if (!validItems.contains(item)) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Aww, shucks. That ain't sumthin' I know how to make, you see? (To view available recipes use " + link("/quest arborist:help") + ")", safchan);
+            return;
+        }
+        var rec = recipes[item];
+
+        var recipeString = translateStuff(rec.ingredients, true);
+        var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
+        var cc = 0;
+        var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
+        var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
+        possibleRewards = readable(possibleRewards, "or");
+
+        var canMake = true, progress = [], asset, val, req, pokeIng = 0;
+        for (var e in rec.ingredients) {
+            asset = translateAsset(e);
+            if (asset.type == "item") {
+                val = player.balls[asset.id];
+                req = plural(rec.ingredients[e], asset.input);
+            } else if (asset.type == "money") {
+                val = player.money;
+                req = addComma(rec.ingredients[e]);
+            } else {
+                val = countRepeated(player.pokemon, asset.id);
+                pokeIng += val;
+                req = rec.ingredients[e] + " " +  asset.name;
+            }
+            if (val < rec.ingredients[e]) {
+                canMake = false;
+            }
+            if (asset.type === "money") {
+                progress.push("$" + addComma(val) + "/$" + addComma(req));
+            } else {
+                progress.push(val + "/" + req);
+            }
+        }
+        if (!data[1] || data[1].toLowerCase() !== "finish") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborst:" + item + ":finish") + " to create an item)", safchan);
+            safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+
+        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+
+        if (!canMake) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+            return;
+        }
+
+        for (e in rec.ingredients) {
+            asset = translateAsset(e);
+            if (asset.type == "poke") {
+                if (!canLosePokemon(src, asset.input, "give", false, rec.ingredients[e])) {
+                    return;
+                }
+            }
+        }
+        var hasRaffle = false;
+        var cantHold = [], pokeRew = 0, ing, reward = Array.isArray(rec.reward) ? rec.reward.random() : rec.reward;
+        
+        for (e in reward) {
+            asset = translateAsset(e);
+            ing = rec.ingredients[e] || 0;
+            if (asset.type == "item") {
+                if (player.balls[asset.id] - ing + reward[e] > getCap(asset.id)) {
+                    cantHold.push(asset.name);
+                }
+                if (asset.id === "entry") {
+                    hasRaffle = true;
+                }
+            } else if (asset.type == "money") {
+                if (player.money - ing + reward[e] > moneyCap) {
+                    cantHold.push("money");
+                }
+            } else {
+                pokeRew += reward[e];
+            }
+        }
+        if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
+            cantHold.push("Pokémon");
+        }
+        if (cantHold.length > 0) {
+            safaribot.sendHtmlMessage(src, trainerSprite + readable(cantHold) + " mus' be your favorite thing" + (cantHold.length > 1 ? "s" : "") + " or sumthin' cuz y'already plum full of " + (cantHold.length > 1 ? "those" : "that") + "!", safchan);
+            return;
+        }
+        if (hasRaffle && !rafflePrizeObj) {
+            safaribot.sendMessage(src, "There is no raffle going on right now so any entry that you obtain now would be invalid!", safchan);
+            return;
+        }
+
+        safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id + " by making some darn good Pokéballs!!", safchan);
+        var lostPoke = false, lostRare = [];
+        var ingUsed = {};
+        for (var e in rec.ingredients) {
+            ingUsed[e] = -rec.ingredients[e];
+            asset = translateAsset(e);
+            if (asset.type === "poke") {
+                lostPoke = true;
+                if (isRare(asset.id)) {
+                    lostRare.push(poke(asset.id));
+                }
+            }
+        }
+        for (e in reward) {
+            asset = translateAsset(e);
+            if (asset.type === "poke" && reward[e] < 0) {
+                lostPoke = true;
+                if (isRare(asset.id)) {
+                    lostRare.push(poke(asset.id));
+                }
+            }
+        }
+        giveStuff(player, ingUsed, true);
+        var rew = giveStuff(player, reward, true);
+        safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
+        safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
+        if (rec.records) {
+            for (e in rec.records) {
+                player.records[e] += rec.records[e];
+            }
+        }
+        if (lostPoke) {
+            this.logLostCommand(sys.name(src), "quest arborist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
+            if (lostRare.length > 0) {
+                sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Arborist by " + sys.name(src) + "::\n");
+            }
+        }
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
+        this.saveGame(player);
+    };
     this.alchemyQuest = function(src, data) {
         var player = getAvatar(src);
         if (cantBecause(src, "start a quest", ["tutorial"])) {
@@ -17716,7 +18896,7 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * 1.4)), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
@@ -17733,12 +18913,13 @@ function Safari() {
 
         do {
             this.hazards = {};
+            max = total;
             count = 0;
             for (e = 0; e < order.length; e++) {
                 if (order[e] === blockedHazard) {
                     continue;
                 }
-                val = sys.rand(0, maxsize);
+                val = sys.rand(1, maxsize);
                 if (max - val < 0) {
                     val = max;
                 }
@@ -17830,7 +19011,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor( level * 0.5 ) + sys.rand(3, Math.ceil(count*0.7))),count-2), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( level * 0.9 ) + sys.rand(3, Math.ceil( level*1.2 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.7), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -21502,6 +22683,8 @@ function Safari() {
                 target.nameColor = script.getColor(src);
                 this.saveGame(player);
                 this.saveGame(target);
+
+                safari.spiritDuelsUpdateAlt(name1, name2);
             } catch (err) {
                 if (byAuth) {
                     safaribot.sendMessage(user, "Alt Transfer aborted due to an error during the operation! [" + err + (err.lineNumber ? " at line " + err.lineNumber : "") + "]", safchan);
@@ -22639,6 +23822,15 @@ function Safari() {
                 safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
+            if (command === "spiritduel" || command === "spiritduels") {
+                var info = commandData.split(":");
+                safari.spiritDuelsCommand(src, commandData[0], commandData[1]);
+                return true;
+            }
+            if (command === "spiritskill" || command === "spiritskills") {
+                safari.chooseSpiritSkill(src, commandData);
+                return true;
+            }
             if (command === "photo") {
                 safari.takePhoto(src, commandData);
                 return true;
@@ -22778,7 +23970,7 @@ function Safari() {
                 return true;
             }
             if (command === "bag" || command === "bagt") {
-                safari.viewItems(src, command === "bagt");
+                safari.viewItems(src, command === "bagt", commandData);
                 return true;
             }
             if (command === "box" || command === "boxt" || command === "boxs") {
@@ -25861,7 +27053,7 @@ function Safari() {
                             trialsData = JSON.parse(resp);
                             permObj.add("trialsurl", url);
                             if (!safari.hasOwnProperty("events")) {
-                                safari.events = {trialsEnabled: false, trialsParticipants: []};
+                                safari.events = {trialsEnabled: false};
                             }
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
@@ -25869,6 +27061,36 @@ function Safari() {
                         } catch (error) {
                             trialsData = cThemes;
                             safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    trialsData = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
+            if (command === "loadspiritduels" || command === "loadspiritduel") {
+                var cThemes = spiritDuelsData ? spiritDuelsData : {};
+                var url = commandData === "*" ? (permObj.get("duelsurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading Spirit Duels from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            data = JSON.parse(resp);
+                            permObj.add("duelsurl", url);
+                            if (!safari.hasOwnProperty("events")) {
+                                safari.events = {spiritDuelsEnabled: false};
+                            }
+                            safari.loadDuels(src, data);
+                            safaribot.sendMessage(src, "Duels successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            trialsData = cThemes;
+                            safaribot.sendMessage(src, "Couldn't load Duels from " + url + "! Error: " + error, safchan);
                         }
                     });
                 } catch (err) {
@@ -25997,6 +27219,14 @@ function Safari() {
             }
             if (command === "disabletrials") {
                 safari.safariEvents( src,"trials",false );
+                return true;
+            }
+            if (command === "enableduels") {
+                safari.safariEvents( src,"duels",true );
+                return true;
+            }
+            if (command === "disableduels") {
+                safari.safariEvents( src,"duels",false );
                 return true;
             }
             if (command === "releasetrial") {
@@ -26320,6 +27550,7 @@ function Safari() {
         gachaItems = parseFromPerm("gachaRates", gachaItems);
         finderItems = parseFromPerm("finderRates", finderItems);
         packItems = parseFromPerm("packRates", packItems);
+        apricornToBallData = loadApricornRecipes();
         
         dailyBoost = parseFromPerm("dailyBoost", null);
         if (dailyBoost === null) {
@@ -26385,6 +27616,9 @@ function Safari() {
         }
         updateItemHelp();
         updateItemData();
+
+        spiritSpawn = false;
+        wildSpirit = false;
         
         try {
             var data = JSON.parse(sys.getFileContent(decorationsFile));
@@ -26557,6 +27791,14 @@ function Safari() {
                 }
             }
         }
+        if (safari.hasAttribute("events") && contestCooldown % 7 === 0) {
+            if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
+                var finished = safari.spiritDuelTurn();
+                if (finished) {
+                    checkUpdate();
+                }
+            }
+        }
 
         if (successfulBaitCount <= 0) {
             lastBaitersDecay--;
@@ -26577,7 +27819,7 @@ function Safari() {
                             aType = sys.type(sys.pokeType1(p.party[0]));
                             crystalEffect = !["master", "photo"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === p.party[0] && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
                             
-                            throwChances[i] = size * (preparationThrows[i] == "quick" ? itemData.quick.bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
+                            throwChances[i] = size * (["quick", "lightning", "spy"].indexOf(preparationThrows[i]) !== -1 ? itemData[preparationThrows[i]].bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
                         }
                     }
                     while (Object.keys(throwChances).length) {
@@ -26892,7 +28134,14 @@ function Safari() {
             } else {
                 if (!currentPokemon && chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    safari.createWild(null, null, amt);
+                    if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
+                        spiritSpawn = false;
+                        wildSpirit = true;
+                        safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
+                    }
+                    else {
+                        safari.createWild(null, null, amt);
+                    }
                 }
             }
         }
