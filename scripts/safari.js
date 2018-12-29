@@ -2538,6 +2538,14 @@ function Safari() {
         }
         return false;
     }
+    function getBall(item) {
+        for (var i in itemData) {
+            if (itemData[i].aliases.indexOf(item) !== -1 && itemData[i].type === "ball") {
+                return i;
+            }
+        }
+        return "safari";
+    }
     function bagRow (player, arr, isAndroid, textOnly, first, title) {
         var ret = [], item, item2;
         if (textOnly) {
@@ -4147,6 +4155,7 @@ function Safari() {
             }
             return;
         }
+        ball = getBall(ball);
         var ball = itemAlias(data, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
