@@ -10675,7 +10675,7 @@ function Safari() {
     };
     this.spiritDuelsCommand = function( src,command,commandData ) {
         //Shows them their spirit monns
-        var player = getAvatarOff(src);
+        var player = getAvatar(src);
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
             case "boxt": this.showSpiritBox(src,player,false,true); break;
