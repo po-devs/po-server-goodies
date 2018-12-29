@@ -10029,7 +10029,7 @@ function Safari() {
         var limit = parseInt(num, 10);
 
         for (var p in t) {
-            player = getAvatorOff(t[p]);
+            player = getAvatarOff(t[p]);
             id = player.id;
             if (!player.trials) {
                 continue;
@@ -10072,7 +10072,7 @@ function Safari() {
         p;
 
         for (var p in t) {
-            player = getAvatorOff(t[p]);
+            player = getAvatarOff(t[p]);
             id = player.id;
             if (!player) {
                 continue;
@@ -10326,7 +10326,7 @@ function Safari() {
         sendAll("The losing team is " + safari.events.spiritDuelsTeams[0].name, true);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
-            player = getAvatorOff(safari.events.spiritDuelsTeams[0].players[p]);
+            player = getAvatarOff(safari.events.spiritDuelsTeams[0].players[p]);
             safari.events.spiritDuelsSignups.push(player.id);
         }
         safari.events.spiritDuelsTeams[0].alive = false;
