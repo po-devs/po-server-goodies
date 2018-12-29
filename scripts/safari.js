@@ -10484,8 +10484,10 @@ function Safari() {
                 //Print who won and stuff
                 this.spiritDuelsViewers = [];
                 safari.prepareNextSpiritDuel();
+                return true;
             }
         }
+        return false;
     };
     this.spiritMonBoost = function( player,mon ) {
         //Adds buffs according to a mon's owner's skills
@@ -27791,7 +27793,7 @@ function Safari() {
                 }
             }
         }
-        if (safari.getAttribute("events") && contestCooldown % 7 === 0) {
+        if (safari.events && contestCooldown % 7 === 0) {
             if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
                 var finished = safari.spiritDuelTurn();
                 if (finished) {
