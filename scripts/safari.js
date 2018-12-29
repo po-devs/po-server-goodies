@@ -3313,6 +3313,7 @@ function Safari() {
             currentPokemonMoodRate = sys.rand(1, 31);
             var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
             currentPokemonMood = photoMood[mood].random();
+            wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
             
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
