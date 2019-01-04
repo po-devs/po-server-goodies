@@ -4177,7 +4177,7 @@ function Safari() {
             }
             return;
         }
-        ball = getBall(ball);
+        ball = getBall(data);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4307,7 +4307,7 @@ function Safari() {
 
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
-                player.cherished.push(currentPokemon);
+                player.cherished.push(getPokemonInfo(currentPokemon).num);
             }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
@@ -4988,6 +4988,14 @@ function Safari() {
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid, textOnly, shopLink), safchan);
     };
+    this.viewCherished = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var isAndroid = (sys.os(src) === "android");
+        sys.sendHtmlMessage(src, this.showCherished(player, (data === "*" ? 1 : data), isAndroid, textOnly), safchan);
+    };
     this.manageParty = function(src, data) {
         if (!validPlayers("self", src)) {
             return;
@@ -5355,6 +5363,31 @@ function Safari() {
                     out += " ";
                 }
                 out += "[<a href='po:send//box" + (shopLink ? "s" : (textOnly? "t" : "" )) + " " + (page + 1) + "'>" + utilities.html_escape("Box " + (page + 1) + " >") + "</a>]";
+            }
+        }
+        return out;
+    };
+    this.showCherished = function(player, isAndroid, textOnly) {
+        var out = "";
+        var maxPages,
+            list = player.cherished,
+
+        if (!isNaN(page) && num != "all") {
+            maxPages = Math.floor(list.length / (perBox)) + (list.length % perBox === 0 ? 0 : 1);
+
+            if (page > maxPages) {
+                page = maxPages;
+            }
+            list = list.slice(perBox * (page - 1), perBox * (page - 1) + perBox);
+        }
+
+        var label = "Cherished (" + player.cherished.length + "/96)";
+        if (textOnly) {
+            out += this.listPokemonText(list, label);
+        } else {
+            out += this.listPokemon(list, label);
+            if (isAndroid) {
+                out += "<br />";
             }
         }
         return out;
@@ -24101,6 +24134,10 @@ function Safari() {
             }
             if (command === "box" || command === "boxt" || command === "boxs") {
                 safari.viewBox(src, commandData, (command === "boxt" || command === "boxs"), command === "boxs");
+                return true;
+            }
+            if (command === "cherish" || command === "cherished") {
+                safari.viewCherished(src);
                 return true;
             }
             if (command === "album") {
