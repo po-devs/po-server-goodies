@@ -854,7 +854,7 @@ function Safari() {
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
-            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events.",
+            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. (Max capaity: 10)",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
         allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "trueheavy", "photo", "mirror", "inver", "cherish", "master"];
@@ -4265,7 +4265,7 @@ function Safari() {
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " poke(player.party[0]), safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + poke(player.party[0]), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
@@ -4290,6 +4290,10 @@ function Safari() {
             }
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
+            if (ball === "cherish") {
+                player.records.catchCherish += 1;
+                player.cherished.push(currentPokemon);
+            }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
             }
