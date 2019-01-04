@@ -27792,6 +27792,13 @@ function Safari() {
 
         spiritSpawn = false;
         wildSpirit = false;
+
+        if (!safari.hasOwnProperty("events")) {
+            safari.events = {
+                spiritDuelsEnabled: false,
+                trialsEnabled: false
+            };
+        }
         
         try {
             var data = JSON.parse(sys.getFileContent(decorationsFile));
