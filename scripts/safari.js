@@ -10382,6 +10382,7 @@ function Safari() {
             //Print "player joined team X"
         }
         safari.events.spiritDuelsSignups = [];
+        spiritDuelsBattling = true;
     };
     this.progressDuels = function( src ) {
         //Counts everyone's scores
@@ -28307,6 +28308,11 @@ function Safari() {
                     var mercy = parseInt(permObj.get("loginDaysDown"), 10);
                     if (mercy > 0) {
                         permObj.add("loginDaysDown", 0);
+                    }
+                }
+                if (safari.events.spiritDuelsEnabled) {
+                    if (safari.events.spiritDuelsBattling) {
+                        safari.events.currentSpiritDuel = true;
                     }
                 }
                 safari.runPendingActive();
