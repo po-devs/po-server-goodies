@@ -1893,6 +1893,15 @@ function Safari() {
             return result.slice(-upper, -lower);
         }
     }
+    function countDuplicates(arr, val) {
+        var out = 0;
+        for (var i in arr) {
+            if (arr[i] === val) {
+                out++;
+            }
+        }
+        return out;
+    }
     function removeDuplicates(arr, onlyNumbers) {
         if (onlyNumbers) {
             var result = [];
@@ -3904,20 +3913,26 @@ function Safari() {
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
         var flowerGirlBonus = 1;
+        var cherishBonus = Math.min(countDuplicates(player.cherished, getPokemonInfo(player.party[0]).num), 10);
 
-        var userStats = (getBST(player.party[0]) + (ball === "heavy" ? 80 : 0)) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
+        var userStats = (getBST(player.party[0]));
         var evioBonus = 0;
         if (userStats <= itemData.eviolite.threshold) {
             evioBonus = getPerkBonus(player, "eviolite");
             userStats += evioBonus;
         }
         var wildStats = getBST(wild);
-        var statsBonus = (userStats - wildStats) / 8000;
-        var wildWeight = pokedex.getWeight(wild);
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0)) {
             userStats -= evioBonus;
+            userStats -= (cherishBonus * 6);
             statsBonus = (userStats - wildStats) / -8000;
         }
+        else {
+            userStats += 0 + (ball === "heavy" ? 80 : 0) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
+            userStats += (cherishBonus * 6);
+            var statsBonus = (userStats - wildStats) / 8000;
+        }
+        var wildWeight = pokedex.getWeight(wild);
         var typeBonus;
         var pType1 = sys.type(sys.pokeType1(player.party[0])), pType2 = sys.type(sys.pokeType2(player.party[0])), wType1 = sys.type(sys.pokeType1(wild)), wType2 = sys.type(sys.pokeType2(wild));
         var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
@@ -4162,7 +4177,6 @@ function Safari() {
             return;
         }
         ball = getBall(ball);
-        var ball = itemAlias(ball, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -15431,7 +15445,7 @@ function Safari() {
         if (!data[0] || data[0].toLowerCase() === "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here apricorns to make some neat stuff, alright? (Use /quest arborist:[recipe name] to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
-                return " " + link("/quest alchemist:" + x, cap(x, true)) + " <small>(CD: " + recipes[x].cooldown + "h)</small>";
+                return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
             }), safchan);
             sys.sendMessage(src, "", safchan);
             return;
