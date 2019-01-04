@@ -10664,13 +10664,13 @@ function Safari() {
     };
     this.levelupSpiritRank = function( player ) {
         //Grabs a skill
-        var nextLevel = safari.events.rank + 1;
+        var nextLevel = player.spiritDuels.rank + 1;
         if (nextLevel >= safari.events.spiritDuelsRanks.length) {
             return;
         }
         if (player.spiritDuels.exp >= safari.events.spiritDuelsRanks[nextLevel].exp) {
-            safari.events.rank++;
-            safari.events.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
+            player.spiritDuels.rank++;
+            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
         }
@@ -10723,7 +10723,7 @@ function Safari() {
         return;
     };
     this.joinSpiritDuels = function( src,player ) {
-        //Shows them their spirit monns
+        //Joins duels to be assigned a team next time
         var id = player.id;
         if (!safari.events.spiritDuelsEnabled) {
             return false;
@@ -10780,13 +10780,16 @@ function Safari() {
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         //num = data.getMonNumber(data) || data if data is a number
-        var x = player.spiritDuels.box.indexOf(data);
+        data = getInputPokemon(data);
+        var x = player.spiritDuels.box.indexOf(data.num);
         if (x === -1) {
-            //u don't have it
+            //you don't have it
+            safaribot.sendMessage( src,"You don't have that Spirit Pokémon!",safchan );
         }
         else {
             player.spiritDuels.box.slice(x, 1);
             player.spiritDuels.box.unshift(data);
+            safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
         }
     };
     this.spiritDuelsUpdateAlt = function( name1, name2 ) {
