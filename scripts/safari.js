@@ -1372,7 +1372,7 @@ function Safari() {
     };
     
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "decoration": false, "league": false, "journal": false, "monger": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "journal": false, "monger": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -4162,7 +4162,7 @@ function Safari() {
             return;
         }
         ball = getBall(ball);
-        var ball = itemAlias(data, true);
+        var ball = itemAlias(ball, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4265,7 +4265,7 @@ function Safari() {
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]), safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " poke(player.party[0]), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
@@ -10783,13 +10783,40 @@ function Safari() {
         data = getInputPokemon(data);
         var x = player.spiritDuels.box.indexOf(data.num);
         if (x === -1) {
-            //you don't have it
             safaribot.sendMessage( src,"You don't have that Spirit Pokémon!",safchan );
         }
         else {
             player.spiritDuels.box.slice(x, 1);
-            player.spiritDuels.box.unshift(data);
+            player.spiritDuels.box.unshift(data.num);
             safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
+        }
+    };
+    this.bestowSpiritMon = function( src,cmd ) {
+        //Adds the spirit mons to the front of their spirit box if they have it
+        //num = data.getMonNumber(data) || data if data is a number
+        var cmd = commandData.split(":");
+        var player = getAvatarOff(cmd[0]);
+        var data = getInputPokemon(cmd[1]);
+        if (cmd.length > 1) {
+            var num = parseInt(cmd[2], 10);
+        }
+        else {
+            num = 1;
+        }
+        var i;
+        if (num === -1) {
+            i = player.spiritDuels.box.indexOf(data.num);
+            if (i === -1) {
+                safaribot.sendMessage( src,player.id + " doesn't have that Spirit Pokémon!",safchan );
+                return;
+            }
+            player.spiritDuels.box.slice(i, 1);
+            safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
+        }
+        else {
+            player.spiritDuels.box.push(data.num);
+            safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Spirit Team.",safchan );
+            return;
         }
     };
     this.spiritDuelsUpdateAlt = function( name1, name2 ) {
@@ -13955,6 +13982,8 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+
             safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest league", "League") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.league ? " <b>[Disabled]</b>" : ""), safchan);
@@ -14010,6 +14039,11 @@ function Safari() {
             case "alchemist":
             case "booooom!":
                 this.alchemyQuest(src, args);
+            break;
+            case "arbor":
+            case "arborist":
+            case "sphere maniac":
+                this.arboristQuest(src, args);
             break;
             case "decor":
             case "decoration":
@@ -15378,7 +15412,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
         }
     };
-    this.apricornQuest = function(src, data) {
+    this.arboristQuest = function(src, data) {
         var player = getAvatar(src);
         if (cantBecause(src, "start a quest", ["tutorial"])) {
             return;
