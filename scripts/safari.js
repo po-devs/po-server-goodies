@@ -2701,7 +2701,7 @@ function Safari() {
         }
     }
     function isBallAvailable(player, ball) {
-        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit));
+        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
     }
     function getCap(item) {
         return item in itemData ? (itemData[item].cap || itemCap) : itemCap;
@@ -13986,7 +13986,7 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]" + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
             
@@ -26571,6 +26571,9 @@ function Safari() {
                 }
                 checkUpdate();
                 return true;
+            }
+            if (command === "bestowspirit") {
+                safari.bestowSpiritMon(src,commandData);
             }
             if (command === "bestow") {
                 var cmd = commandData.split(":");
