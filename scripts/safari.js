@@ -4178,6 +4178,13 @@ function Safari() {
             return;
         }
         ball = getBall(data);
+        var ballName = finishName(ball);
+        if (ball === "heavy") {
+            ballName = "level";
+        }
+        else if (ball === "trueheavy") {
+            ballName = "heavy";
+        }
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4203,7 +4210,6 @@ function Safari() {
             safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
             return;
         }
-        var ballName = finishName(ball);
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball)) {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
             return;
@@ -10839,7 +10845,7 @@ function Safari() {
             safaribot.sendMessage( src,"You don't have that Spirit Pokémon!",safchan );
         }
         else {
-            player.spiritDuels.box.slice(x, 1);
+            player.spiritDuels.box.splice(x, 1);
             player.spiritDuels.box.unshift(data.num);
             safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
         }
@@ -15524,7 +15530,7 @@ function Safari() {
             }
         }
         if (!data[1] || data[1].toLowerCase() !== "finish") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborst:" + item + ":finish") + " to create an item)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
             safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
             sys.sendMessage(src, "", safchan);
             return;
