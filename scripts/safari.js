@@ -98,6 +98,12 @@ function Safari() {
             quick: 0,
             luxury: 0,
             mono: 0,
+            mirror: 0,
+            photo: 0,
+            spirit: 0,
+            lightning: 0,
+            cherish: 0,
+            trueheavy: 0,
             bait: 0,
             golden: 0,
             rock: 0,
@@ -141,6 +147,11 @@ function Safari() {
             cherry: 0,
             blkapricorn: 0,
             whtapricorn: 0,
+            pnkapricorn: 0,
+            ylwapricorn: 0,
+            bluapricorn: 0,
+            redapricorn: 0,
+            grnapricorn: 0,
             coupon: 0,
             fossil: 0,
             form: 0,
@@ -206,6 +217,15 @@ function Safari() {
             catchLuxury: 0,
             catchMono: 0,
             catchMyth: 0,
+            catchSpirit: 0,
+            catchLightning: 0,
+            catchMirror: 0,
+            catchInvert: 0,
+            catchLevel: 0,
+            catchPhoto: 0,
+            catchFriend: 0,
+            catchLove: 0,
+            catchCherish: 0,
             itemsFound: 0,
             collectorEarnings: 0,
             collectorGiven: 0,
@@ -296,6 +316,7 @@ function Safari() {
         visible: true,
         trading: true,
         tradeBlacklist: [],
+        lastSold: {},
         flashme: false,
         locked: false,
         altlog: [],
@@ -328,8 +349,11 @@ function Safari() {
             baseView: 0,
             unown: 0,
             burn: 0,
-            price: 0
+            price: 0,
+            unsell: 0
         },
+        cherished: [],
+        freebaits: 0,
         shop: {},
         quests: {
             collector: {
@@ -385,6 +409,15 @@ function Safari() {
             points: 0,
             bonusPointsReceived: false
         },
+        spiritDuels: {
+            rank: 0,
+            rankName: "Grunt",
+            team: "None",
+            exp: 0,
+            box: [],
+            skills: [],
+            skillChoices: {}
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
@@ -415,6 +448,111 @@ function Safari() {
     };
     var itemData;
 
+
+    var loadApricornRecipes = function () {
+        return (
+        {
+            "luxury": {
+                "reward": "20@luxury",
+                "ingredients": {
+                    "blkapricorn": 10,
+                    "redapricorn": 20,
+                    "ylwapricorn": 10
+                }
+            },
+            "mono": {
+                "reward": "20@mono",
+                "ingredients": {
+                    "blkapricorn": 20,
+                    "whtapricorn": 20
+                }
+            },
+            "myth": {
+                "reward": "20@myth",
+                "ingredients": {
+                    "redapricorn": 5,
+                    "pnkapricorn": 20,
+                    "grnapricorn": 15
+                }
+            },
+            "quick": {
+                "reward": "20@quick",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "ylwapricorn": 20
+                }
+            },
+            "level": {
+                "reward": "20@level",
+                "ingredients": {
+                    "whtapricorn": 15,
+                    "grnapricorn": 15,
+                    "pnkapricorn": 10
+                }
+            },
+            "spy": {
+                "reward": "20@spy",
+                "ingredients": {
+                    "whtapricorn": 5,
+                    "bluapricorn": 20,
+                    "blkapricorn": 15
+                }
+            },
+            "lightning": {
+                "reward": "20@lightning",
+                "ingredients": {
+                    "ylwapricorn": 20,
+                    "whtapricorn": 20,
+                    "dew": 18
+                }
+            },
+            "heavy": {
+                "reward": "20@heavy",
+                "ingredients": {
+                    "blkapricorn": 20,
+                    "bluapricorn": 10,
+                    "redapricorn": 10,
+                    "dew": 20
+                }
+            },
+            "photo": {
+                "reward": "20@photo",
+                "ingredients": {
+                    "redapricorn": 20,
+                    "whtapricorn": 10,
+                    "blkapricorn": 10,
+                    "dew": 24
+                }
+            },
+            "mirror": {
+                "reward": "20@mirror",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "ylwapricorn": 10,
+                    "pnkapricorn": 10,
+                    "dew": 32
+                }
+            },
+            "inver": {
+                "reward": "20@inver",
+                "ingredients": {
+                    "bluapricorn": 20,
+                    "redapricorn": 20,
+                    "dew": 44
+                }
+            },
+            "cherish": {
+                "reward": "2@cherish",
+                "ingredients": {
+                    "pnkapricorn": 40,
+                    "ldew": 10
+                }
+            }
+        }
+        );
+    }
+    var gymData = {};
+
     var updateItemData = function() {
         itemData = {
             //Balls
@@ -423,15 +561,24 @@ function Safari() {
             ultra: {name: "ultra", fullName: "Ultra Ball", type: "ball", icon: 307, price: 180, ballBonus: 2, cooldown: 12000, aliases:["ultraball", "ultra", "ultra ball"], tradable: false},
             master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
-            myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.5, cooldown: 9000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-            heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.5, maxBonus: 3, cooldown: 12000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.25, cooldown: 15000, aliases:["mythball", "myth", "myth ball"], tradable: true},
+            level: {name: "level", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
             quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
             premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
-            spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 1.25, cooldown: 9000, aliases:["spyball", "spy", "spy ball"], tradable: true},
+            spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 328, price: 500, ballBonus: 1.25, bonusRate: 0.25, cooldown: 16000, aliases:["spyball", "spy", "spy ball"], tradable: true},
             clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
-            mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 10000, aliases:["monoball", "mono", "mono ball"], tradable: true},
+            mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["monoball", "mono", "mono ball"], tradable: true},
 
+            spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10},
+
+            lightning: {name: "lightning", fullName: "Lightning Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 12000, aliases:["lightningball", "lightning", "lightning ball"], tradable: true},
+            heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
+            mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 5, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
+            inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
+            cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 328, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false},
+            
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
             rock: {name: "snow", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
@@ -478,15 +625,19 @@ function Safari() {
             //Alchemy related items
             materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
-            blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
-            whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
             philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
 
-            //??? related items
+            //Pokéball related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
             ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 8018, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
-            
+            blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
+            whtapricorn: {name: "whtapricorn", fullName: "White Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["whiteapricorn", "white apricorn", "whtapricorn"], tradable: true},
+            grnapricorn: {name: "grnapricorn", fullName: "Green Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["grnapricorn", "green apricorn", "grnapricorn"], tradable: true},
+            redapricorn: {name: "redapricorn", fullName: "Red Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["redapricorn", "red apricorn"], tradable: true},
+            bluapricorn: {name: "bluapricorn", fullName: "Blue Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["bluapricorn", "blue apricorn", "blueapricorn"], tradable: true},
+            ylwapricorn: {name: "ylwapricorn", fullName: "Yellow Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["ylwapricorn", "yellow apricorn", "yellowapricorn"], tradable: true},
+            pnkapricorn: {name: "pnkapricorn", fullName: "Pink Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["pnkapricorn", "pink apricorn", "pinkapricorn"], tradable: true},
 
             //Perks
             amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
@@ -496,7 +647,7 @@ function Safari() {
             scarf: {name: "scarf", fullName: "Silk Scarf", type: "perk", icon: 31, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["scarf", "silkscarf", "silk scarf", "silk"], tradable: true},
             battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
             eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
-            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 15000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
+            lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 16000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
             box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
 
             //Valuables
@@ -549,8 +700,19 @@ function Safari() {
     pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAJ1BMVEX////w8PDw6Ijo0FD4yDjgqDjAqFComEDYcDiIaDg4YABYUDgwMDDaxm2rAAAADXRSTlMA////////////////LQRBrQAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAw0lEQVR4nH3PMQrCQBAFUA8wjeQGAQ+gA2vEY0jA3kJQGxsXJZ2FE0iXIg7JEey0SLpAICmcQ5nd1ZRO9R87w/JHo38jUg8ZAirkh4YoZvmyKYk5vzu1y6oHxfYQcM9cElkILpkr9wJJqvIncmYgt1QhKh2ZrbpZnPqsC7MFM3+utY7sCfjhCs/8SgzaSbhGxNIh8OmKeHibvXZKQY+dtkcOF4ejpzaoLhGYj7rxGHGrHxbQeX0+C7iqkpn86y4y9B7mAwpHT1Z1wCFpAAAAAElFTkSuQmCC",
     fragment: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJFBMVEUAAAAxMTGcakFKSmq9i1rerHu0rM32xZzu7v+Ui6zVze7///+kAd76AAAAAXRSTlMAQObYZgAAAAFiS0dECx/XxMAAAAAJb0ZGcwAAAAMAAAADAHeTl6MAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfeCxISIDTCst7zAAAACXZwQWcAAAAeAAAAHgD4T+E9AAAAoUlEQVQY02NgwAcYBQURHCElJQRPWEnFBc5jNHJxCREUgHKSjUNDXAOhUmJpIi6hhVCOxCwTl3Aoh7FrhqGzMVSP2MrmiWaGMInM5pkzLCEyEm0rm6dlNkM5q8CciWBVWatmWKalzQBrYkzLAnPAmqAciCbGaSubZ07LnAnlZCI4DJIzm6elZUItYpScYTlzJsRokLcbBQUbBWDeEwAjVAAAUGwxQVWp15AAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDMtMDJUMTc6MTk6MzYtMDY6MDDWjJb5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTExLTE4VDE4OjMyOjUyLTA2OjAwZ+O8ygAAAABJRU5ErkJggg==",
     mono: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTE5NkM1NDcwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTE5NkM1NDYwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Puecb4wAAAAqUExURfj4+Hp6es3NzZqamlZWVqamptra2oKCgrq6uk1NTTAwMHt7e2ZmZgAAAAV/T5sAAAAOdFJOU/////////////////8ARcDcyAAAAJdJREFUeNqskkkSwyAMBAW20AL5/3cjhALYKZ+SPlHThcBj4PUA/CDU+RKq1ZkqhFINSHehlI8QHMaF1gzghpmp6SYOgMyDtkQ/N3/y2poPc8ExxWLL7yKwfAniS35OIWZEZMyhU5YwEFB63Nc6r5tEAEAGafuOAqnv8LigbpWYSak4qJcSsUSMeq8dnXvtzz/qD4/hLcAAPMwYmRr6Be0AAAAASUVORK5CYII=",
+    level: "data:image/png;base64,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",
+    spy: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFd0lEQVRYhe2Wa2yTZRTHf8/by9u1sNW1QDccY9w25oLzMj/gFfEWED8YSFggIaABI2qEeCNEJX7BBEVRiZp4C14wOpWYGJ2oXCdeCSJ2MGRuTF27du26rt363h4/tIAbHUzUT/pPTt7kfZ5z/v9zznOD//FfhzgHHzdQClQBgdy/34GW3Df9bwkoBpY5HaK+evKoSbVVhd4SvxNTQiiS4WBLMhY81teq6fJN4DWg558S4AQWKj7/hvo5pWPXLhhNwK9imBJLwg+tdlpDNuw2gaX3s/urNj5r+j0U7tZWAQ2A8XcEKMBT1NbdceWdtzq3Vn2OAzPnKGncr7J1pwt5YrYET4HE507y3dcHtO9/ij8NPHgmAttZMt/E7Ll3jb33Ydu9pYeosXec1Gxa8PrnBST7FYTgpBmmINGv4g+U2qLdvZenUyk3sBOw/qqAJdRetm7++ieVd665iJkTZmAk9iP1RLY0AnRTcKDVjqIMdpSAJW24PR7isVidpmktwKG/IsCPb8yHrFrnabhxJlNHe3A4CpFaDL33h1wVBFNKTGZUGMhcDwpUyVivxawLNXrTgkSfRNhstkS85wrLsl4GBoYS2YcRsJzrbi7G58fMBTel5JfeOONyGZ7IdHKJyZRSA9MUmBIcNvixzc57TTYsaaGqKsV+X6CrM7QM2DiSCozCqW7k7jXjcKp8353A73Sw+ehx7j7iokgMUOmM4BQmp9awQFEkliVoCjp4ubEA04LeRC+GYeByuYh2RcYAbwD6n8ny7YIaKmv28dgzozANkDKbqgCEwAZcEfqGxfoepp1v4lYl3UmFY502fvzFzvFINidd1wiHwlkSIWgJNvf0p9N1wM9na0E1k6uy5FnvQTJ9oXYKmvbzgaliWgIpQVGyltOIlJJYd+ykj5QSt8ft7U+npw0VMGT9AhBAVYcpDnQFyvn2qlvQ1ALsisRhB5tyavYJck3TBvk5nE6ACUPj5RMAiTgkhztJBUmvn/jY8aeNWJZFNBIllUohxMhO+XwtiJLqg442KKuA0YWnRlqC2FqPMC3aQcCpZOudQyaTIR6Lo2laXnJd0wF+HYmAQzQfTFMx1U0mA2PGgbcYXniCks42LqipoTnYTEjLUHvpJUgkfX19pFNphBCnkVuWRTKRIBGP9zKk/5C/0YXAPsXhqLbGBGDGpZBOMT3SwdPPPEekK0qgdDwP3LeK4x1tlJaVIaUcRCyEIJPJkIjHiXfHyAxkkNI6AFzOkOs63zmQAUoWLVpyVV11NeG9X5AKHuS221dgmZJZs29g+6eN3DRnLu+8/Raji4rQNZ3MwAB9ySTdkSidv/5GJBTC7XJz7bXXUzahnGPHjm4CdoykBQCbd+364p6PPt5euO6RtSxdupSengQTK+yoqgu32wMSpCU5GmxGCEFBgRuv10tV5XQurL2ImTOvpKysnHgsxorlS2LAS/mIzrRU75gzd96z7zW8a29s/ITly1ewZu2jWJakqKiIrW9twTAMntq0GUWx4VJduD0ehBDous7AwABd4TBrHlpt7Pty7wrglTNw5YUTeHXlXffIvlRKrl69Wnq9XnnxJXWyfGKFnDJ1mtyx+2vZ2h4+zYJH2uWuPd/K+QsWSuD5XKy8ONtmdQIvzpk7b/H6x5+w9yQSfPVlE8U+P1dfMwu73TFosmEYJJNJ2tvb2LhhvbF3766XgJUM8xYYiQAAF7Bs/Pll6+vrFxfOX1BPsc93ctA0TQxdR9N1IuEw27Y1sO2Dhp5QqPN+YAugDRd4pAJOIACs9Hg8t1ZNv2BiZWWV+7zzigFBPN7N4eZg+vDhYGs6nX6fbNlDIwl6Ls/yQmASUEP2pQwQBYJAK9B7DjH/x38YfwBzpVO74CT4BgAAAABJRU5ErkJggg==",
+    lightning: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAALVBMVEX////4+Pjw8Ijw6DjYyPD40DjYyDigoMD4kDiwoDh4eIDYWDiYSDhIUFAwMDCoRyskAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAnklEQVQY02NgIB7wvXv3AM5+nV41D8Z7sbl8cfY+qESrmrHZjm6I1ItAkeXGHd37YJxVxRkQDl9HkxeIs/sBmNNmXm6csRvK2WZsbNYB5ZxILi/O7t69B8y5Y373utns3WfBnLt3C2vT5ty9C7bo1V1B2bt3764D2/NEqrD27t0ldRDnOK5a4uLiDnXpcxcguw7mhefl5XUPsHmOCAAAthZLiL/xEWcAAAAASUVORK5CYII=",
+    photo: "data:image/png;base64,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",
+    mirror: "data:image/png;base64,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",
+    inver: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXZwQWcAAAAgAAAAIACH+pydAAABFklEQVRIx+2VPRKCMBCFORKlJWVKjuERUlp6DI6QI1B6BEtLS0u6yMuwzHPJ36A2jsWbjJF8XzYusXHONd9M8/sC0/e+bVvfdZ3nOXzmuV0CgTAQsfbkRYzsEmChgBjMc8aN3thztpoiPIwAUTC3VjcLEJkrCgAPoAU+TZM/3O5RiVTCR1Yl4N2nBLoSpCgIu6ddAZyC6yow4qi0ZCN46ZQEWMP59ygKuOyURMPXKmoEAGx6nsAbOHWQOdoKAfX4erZL9EvHLSrPVAk4wzCGTsLIRxEy71g/nxXoNkUAl2gYB2uq34Pr5RGAWKQriIHxPL6vEsQkEszFkoIXLzssTEEFnIMXr2u5jgWk89Z1HRPp/P+TP5In7fXcIz+jPNIAAAAASUVORK5CYII=",
     blkapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSCrGq9k4AAAF6SURBVEjH7ZUhc4MwFMd/9CaYAwcSOZm6dg5Zu49RyzfY1WH7MbBI3A5H5GRl4qjEMdELayGBdpvcu+MueSH/f97/vbzAvy2YZ3MKIXoAKaV3PR+bWZ+zJxv4R74D4DWjT5OA9/0WgLIokeHOgAP0S0SeC1yfFABvR0mxFwBESXxDkqYpAFmWOUlWY0dZlJRFOczTJBjGhtSAmy/Pc6eMq7Gmh/oybhoJwH6X3JXMOI6tJJMcpEnAoT6TJgHr0VrTyEGeqqoGf1VVCCFQSs0nWQjRb6IzmwjW6+nJax3gh9wAj6MA+ut8rFwhG4mMHcsT/st2ViYhxHKZ1jpgE50HklpfkrwEfvc9+OyeQX/P2yAxof8NwUAy1Kb+FcEkB23bTn6yVYejdSz3IiFE7zpxFEXWaJRSaK1RSk1utFWitm0Jw3Di11qjtca15y6JpJRe13UPa911nbUfeTM13fu+b41kfHIX+CzB9TtgIzLAD7XrJaKfPDj/tmhf5K2wqRPvPAwAAAAASUVORK5CYII=",
     whtapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAAZiS0dEAP8A/wD/oL2nkwAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB9kKBwQSFEulyy0AAAGDSURBVEjH7VUteMIwEH3lQyA7N9wqwR1yrpXMIdkUm8RVTyEBVzlQbG5VgCxqwzVqRXaK4jo5l6n0Y03Sdj+Sp3KX9L171y854IQSGKokEXEAYIwZx3EeYv9HICK+X475fjnmRMTdnp3Fi0GLCyxf3jgRcZ240gER8dWoDwBI3ncAgLsZw8MtAQCaFy0E/hzXs+gbSafT0bqp5ROBP0fgz7PYscxsLUTzCMNQ28ZavqdT1gAA7MItAKDvWJVaO/IWShHJgWOZmLIG2Me5RLILt1J7BK4u2yh1QESczANc+lRWrhItc1HTHRYtEngKYkyeg0IBlYu6qkoyD5mIqLqMXAdJwHY9bKbDLB5MHtG2mr++yXVV0na9bB0n6Z8EpH+wWfvSoShOKpGtXqPyt4iI+MhbKAms5pnSTRQniJMU98Mb6UYrW7RZ+7C7PSkfJyniJIXum0otYowZgeZwEYK1r3yPjKJX1en2lE7ylevICwWO54BKSBCXzYVKA+NfB84JeXwBn+m8UXJeocMAAAAASUVORK5CYII=",
+    ylwapricorn: "data:image/png;base64,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",
+    redapricorn: "data:image/png;base64,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",
+    bluapricorn: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAHjSURBVEgN7VS/S0JRFD6+hEBolUCKHCywNsNB3KKlqdU9qbEG/SNeQ0NEP2yJqKipqSWKhiiQxCUblCgMIVqdkvLVd2/n/bo3X+3e4d57zvnOd875nlei/gpQIKSLJxIJC/5GoyHibPuxHPf73XbYbeAOssrqjHCnCmRlYkO0vpwW9vHhBeVP6uJuDFa+sTlPIyLg2zwTuMlf6q8COl+q0Wl+UtxHxofJXWTR/BD+y1LSntbHT8oEIMDKTEtSTMCLi8IG+VZBpi/RA1EpaekkMzgZJwBmVXpu7mriUpwblY6A/bF5JOT1w5QJ0LFZbRPOjA+NovwNtotIlRLJe8qHlqanAL5BNtqmbBQSqZ1fvzlyIV0SO7xyipxHKo9EDpSIJWKfedakvasKm9qz+65O4ZkAWegSU2ChCHcdRC4SNJtS4KC8QJTetaH7tzuk68wGBFyUAsCLIj+JxkCZuqSOHsBrh5VvEKJ7O8gXvNq/rHBkU4F5XjKi+CU9tVYUIBzdz7RWLjSASeOxNeVFayXCFBZNKUVAYkTKih8O3eTwKxLhNY/FzhH710KO7q9CkYhZIdVza1Y7CWNwTsQ3qNPpaMkR/7UAgiiCU1eIiRHXdQ4/Vs8CEuIUYpvPXsSM6Z+BCnwBQaWtVDNDeVwAAAAASUVORK5CYII=",
+    grnapricorn: "data:image/png;base64,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",
+    pnkapricorn: "data:image/png;base64,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",
     brush:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASBQTFRFkGgY////BQUFEQsPCwsLEAsPERQUExMTAxAGExYULCMWEhcTExkUEhASEhgTExgTEhkTExoUFB8VMi0kPS4RIyQmLiUMFSYZFxURHGQqIGEvIVctIVcuIVkvIVovIl0wIl4wImAxJGcxJGkyJGsyJW80JjEnJjEoJnA1J3M2KXA8LigTMJtHMZ9JMaFKMaJKMnVNMqVMM6RMM6dMM6hNPS4RQDYaQkJCSXBSTDkPUnFZXEocXEojZk4bgXyAhIaEin2HiriWj2kTkGgYlGsNlo2Vl7SHo3sjpHYHrHwGrX0IsX8GsYACspwutYMGt4YMuYUGuYkNwp0tyZtdypYRy68vy9XN29jb46sV8L8x8b4z9M06/882/9k+/+c///JCeaP/DAAAABd0Uk5TAADBwcbQ0trc3+Dh4+Tl5efq6/L5/PxuAN84AAAAtklEQVQoz3WRRQLCQBAEF3d3d3ddIEGDu7v8/xdwTpo5Th16uoaI/gxBS3O8B4EplXUgYExWPBQAfazqpSDDEC35KAjXRgp+Cq7ShHMBCs5VhfNBCnooXeUQBQUTrYqbguaKzrkhBkrkvUtXwnfF1dSWYn8k5UvkrO3BZJyW8e1y9vlivTnYBNqbzetuthzqhOB0v+22LCsAmc/reZyywg863499nQWvZVYMwxEEfmsCgYhgAOcLypgZUUeZxsMAAAAASUVORK5CYII=",
     dew:"data:image/png;base64,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",
     ldew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAF7SURBVEgNY2AYBcM+BBiJ9aGKisp/ZLV37twhSi9BRSCDf3EkMcxbVIBsPkNS3AQGth/zGAhZhNcCkOEzVl0CGzxp8nkUC/JyDcH8jDA9vJbgtABmuJUGxFxrn1UoFsjKq4L5IIvwWcKEoguJAwoWZPD21TNkLsPjh7fBfJDP0NUiK8RqAcj1oDAHaQa5XMNsAkOlnz0DzBIYDbMEpBakB9lgGBurBSDJ0hJIkKRZQILC3Eyd4capArAlMMtgFsHUwgxFpnFaMG+hE8OF0wcZZp2ABEVAzSyGG7u+MWxoSWMAWQYCIDZIDUgtLoDVAliYwlwKokEAZAkyAPFhcjA9yPIgNt5UtHr/PoYT0x+DXXzy1E24y0Hs9k0HwT5gNP7GEOrohDOpsqDbiI2PbDhIHhREG6DBhE09shhOH4AUgVIGyBcg8P8sF5iGESCXgwA+18PU4qXldNr+gyw6//gRCgaJgeTwagZK4vUBsmb0dE6oDELWO8oe5iEAADxVp9OTQ+ImAAAAAElFTkSuQmCC"
@@ -565,6 +727,7 @@ function Safari() {
         wonder: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTIzRTMwQTlGNDdCMTFFNTg2MjdDNzEwNjcyQTIzRTkiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTIzRTMwQUFGNDdCMTFFNTg2MjdDNzEwNjcyQTIzRTkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5MjNFMzBBN0Y0N0IxMUU1ODYyN0M3MTA2NzJBMjNFOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5MjNFMzBBOEY0N0IxMUU1ODYyN0M3MTA2NzJBMjNFOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pqi2bP0AAAAwUExURfjwaNCYcPj4+Ki40GAoIPjQuPig8NiYAIhIiNhwUHhIMCgoKLg4GPDAAAAAAAAAACeUxKwAAAAQdFJOU////////////////////wDgI10ZAAABAklEQVR42oSTC7KDIAxFTfhY8sH97/Zd1LYq8HoHNZAzkoSwbD+0PObaNAdUlyadAerNvU7/ILt/WVzGgLjvBD4yBU4NgYv/SnwAvQP6BNTMvn5MtAfKG9lN7bawUrDe1Ixui02kOU6ZSA+QfQgz6oFNibgSUa6cSQd1UEksKaUsnEWHlSS4i6Wcqa+kHHFSMkt0RChXQLAYY0TwqkgHJmC5AErMKEBcfcWIMJnPQM8tNAS0WvQAeYSJ+aPUenClHB7VYcsFDhjTlrPiDHmxMVCLe2Fu7zoGcNo4BgA2A1ZkihzXCQDilV8YV/89C7SlyK2nn1ev1uP55/L+vN2d/gQYAF8VM2lHYAE7AAAAAElFTkSuQmCC",
         tower: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAMFBMVEX///8AAAApQ08pcIFClKpJSU1Lq9BmLg9ubm5xSC2jycjPlm/cmhnork/u7vf3z7a4KRbKAAAAAXRSTlMAQObYZgAAASdJREFUKM9jYCAXMCkbKaDwVVxcnJBFlFOcTdyMEHxGsxRjY7dkAYQON5CKFIQeZbc0F5e0FIQeWZc0IHC5COMryZi4paWlOB9UgvI9dxqbOKk4G8+eAhZhMsvcZGysDcLTkkHmMroBBZT2/1YCCqSAbGZ0SVE0Wvz/v5WykJsL2CkizkbSD///l9uobOIIcaexkeR/IJiobAxxq5KhAqP07/0bBZiEIbYYAyUCJSeKApUag20BCrC2npwTEQBigZQIGzIwtp69EyEAYoH1CDBIxNy9e7SRgRHiX2UBzg7xs3cKOyYwQvyryDB/YaR44VSpnwxCUO9Kbwzt6AiV3ogIQtETHR09gQJIgRpz5sxRAeR4EJ0oGYgSUZIHZSaiCDAKMAoQG8sAZEpOkN/TuWMAAAAASUVORK5CYII=",
         pyramid: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAKlBMVEX///8AAAAuIhI0bC9KKRJLQyttZStxSC2JUC+mhS7EpUzPlm/UbjH3z7bDGGp+AAAAAXRSTlMAQObYZgAAAShJREFUKM+NkT9Lw0AYxu++Qd9W26Zbi36Ajo5KsWbooBCwZCrIYcZCByGT4J8TXYJp8LJ1zLuHFI7uDhm7Fb+Ld/R6yeDgs92P5/1z70PI3wKl+pumiFmjBhxUimqGqXYsK4tzK5Seo6rD10dZfr/ZLhQzDVK0NT1EIRBXtiRP9ZTMNw4K23yKuPQnsCfOaitzz/PlpBeZrSAEKaEAs1tbROGPUuGI2R4w1tmMF7s5YwcwO1psduPztgWtIYQFtIYGUOBnCUDwyc1Y0n11E86D+OHRbNp9EuL+RYgrAyhXIAkU4A0DXMaChLH4ANaXIkBMxN27AXLE9AnZSJop0HQ1iPs2ieaJLrno2yMf3wyUTq+rGLwBwMCrYqDlnJBOWYtOf4IC+Z9+Ab4jceSsepITAAAAAElFTkSuQmCC",
+        arborist: "data:image/png;base64,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",
         alchemist: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAtUExURXCYOOCoiPjQyPj4+ChQEHhIMKjIiLiwoOCImPjgyPCoqJBAUNBgYAAAAP///2PjC4AAAAAPdFJOU///////////////////ANTcmKEAAAEJSURBVHjavJPRcoUgDESDiEI22///3C7aVrTc6dyX7jiDuocQSLCPP2T/DeDQSwCoh27IACC8hlQ9MAO+/QcxAPUC6gSADLhHuEMgZoD8U5gAh794ba1qGIgRWJZoUizLFFCAw++EQjyAM4NI3U8xZmFXAI/MDjAfxAMA9TOjAxrciTtAejjal6APcgQ0XWtESS3pKWK1Cu8RVEoHWYpeddS4RxCB0CpmKZkpfoDPoyaMji3nDU778YdqrmbkJpFm6+9qsq0mJme5tjZOgETl4K4cmCaANqJOqiq2KkJOOorqmDj9fZ8Bfadd+75fe7i3PUtKZEqFry4O+wFinP+8WT058r27+SnAAFJzMLawCe3JAAAAAElFTkSuQmCC",
         decor: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpQTFRFAAAARi1GbUtQLy4v98+2iXVrz5Zv7HV1rUxLcUgt7u73o8nIbS8rAAAARr4BKgAAAA50Uk5T/////////////////wBFwNzIAAAA70lEQVR42pyTgXLEIAhEV1Eiav7/d7vYa3s34nXaHaNkeAOSAO5fhL8BWDoCQMpUekGebLprTmtDBECWfxGCCEg/QAoASJL6maLSRAB4iCUGiAB49CUa2ABT8fxJHodaDEgp8gYQ+klIBPhX1g4H0BX7HW6BlC+gyA54lVYesqc6v08vzbQol3nJEeC3NPM7xoBgtKHKDbIDJNAz2hgNoyMh+JsjDzQK6B0WAD13tOtqoKnFdkBznxc1SZQQUMxrcnkMRD3JBAwxPcmhq3PzFC2fgcpX1CNAX4U/x8liVwIvU7GP3n2/Gb3/TfeHAAMAaGMlUpM6VNUAAAAASUVORK5CYII=",
         league: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC1QTFRF////AAAASTAoZi4PaVBpamqObS8rcUgtjImvkIhztKbDw4tQyMjUzOPR47OPqukgZwAAAAF0Uk5TAEDm2GYAAADqSURBVCjPY2DADhglJQVQ+WfOHEQWAfLPnJmIpGDmmTlz5sxEKGGcM3GipORJhIDkTOnduzfOROiRnL7v3bvXlXABxi2z3wHBTm8B3AL7QAIv4QIM0nWh796FPt+IsHa7IBBUIzlVTlB6o+BDJKdLg8zYiOy5fTNnvkb2HKP4632FyAKyCwUFpS4iKVi79Jpt1C2EEtlbrYutItYilEjdEF1mFdi7EGHrQpCAFNxexucCooutAhnr4J57JyC6dFUgkIIpEWQ0XLpKWEAQyV6ztLRkFJemJYqloQoIMKIKKAkAEXJcCoIRcQAA4RtXiYv0j40AAAAASUVORK5CYII=",
@@ -572,27 +735,39 @@ function Safari() {
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC"
     };
     var gachaItems = {
-        safari: 95, great: 50, ultra: 30, luxury: 35, myth: 12, quick: 12, heavy: 20, clone: 25,
-        bait: 95, rock: 135, gem: 9, dust: 60,
+        safari: 95, great: 50, ultra: 30, bluapricorn: 25, grnapricorn: 24, pnkapricorn: 36,
+        bait: 90, rock: 120, gem: 9, dust: 60,
         wild: 70,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1,
-        whtapricorn: 9
+        whtapricorn: 45
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 11, bait: 20,
-        pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
-        blkapricorn: 10
+        rare: 4, recharge: 10, pnkapricorn: 20, rock: 1, bait: 20,
+        pearl: 10, stardust: 7, bigpearl: 3, grnapricorn: 15, gacha: 16,
+        hint: 15,
+        blkapricorn: 30
     };
     var finderMissRate = 0.80;
+    var safariHints = [
+        "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use /bag wallet, /bag balls, /bag apricorns, /bag perks, /bag pawnables, and /bag rare to see specific rows!",
+        "Like to go to the Pyramid with your friends? Use Pokémon that know specific moves to clear hazards! Type /quest pyramid to get started!",
+        "Bored? Why not challenge the Arena! Type /quest arena:help to see the strong trainers there!",
+        "Look where you're walking while itemfindering!",
+        "... Oh, it's just an ad. \"Test your knowledge in #Trivia!\" it says.",
+        "... Oh, it's just an ad. \"Test your bluffing skills in #Mafia!\" it says.",
+        "... Oh, it's just an ad. \"Test your verbosity in #Hangman!\" it says.",
+        "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
+        "Log in 31 days in a row to get a Master Ball!"
+    ];
     var packItems = {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
         honey: 6, eviolite: 6,
         rare: 3, spray: 2, nugget: 6,
-        quick: 5, luxury: 6, clone: 6,
+        pnkapricorn: 5, grnapricorn: 6, bluapricorn: 6,
         rock: 8, bait: 8, silver: 9,
         gem: 6, gacha: 12,
         mega: 1
@@ -624,6 +799,7 @@ function Safari() {
     };
 
     var itemHelp, perkHelp, ballHelp;
+    var allBalls;
     updateItemData();
     var updateItemHelp = function() {
         itemHelp = {
@@ -665,8 +841,8 @@ function Safari() {
             scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
-            dew: "Currently unknown what this can be used for.",
-            ldew: "A mysterious substance radiating an aura of light. Currently unknown what this can be used for."
+            dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
+            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -687,17 +863,24 @@ function Safari() {
             luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Gachapon and found with Itemfinder.",
             myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Gachapon.",
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Gachapon and Pyramid.",
-            heavy: "An industrial Pokéball that works better against hardier and stronger Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon and Pyramid.",
+            level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Gachapon and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
-            mono: "A monochromatic Pokéball that forces your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy."
+            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
+            mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy.",
+            lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Alchemy.",
+            heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Alchemy.",
+            photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
+            mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
+            inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
+            spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. (Max capaity: 10)",
+            cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
+        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "inver", "cherish", "master"];
     };
     updateItemHelp();
     var currentItems = Object.keys(itemData);
     var retiredItems = [];
     var allItems = currentItems.concat(retiredItems, "permfinder");
-    var allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "master"];
     var allCostumes = Object.keys(costumeData);
 
     var costumeHelp = {};
@@ -726,7 +909,7 @@ function Safari() {
     var wildEvent = false;
     var isBaited = false;
     var resolvingThrows = false;
-    var catchTierChance = [0.20, 0.18, 0.14, 0.11, 0.07, 0.03];
+    var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
 
     /* Leaderboard Variables */
     var leaderboards = {};
@@ -908,6 +1091,30 @@ function Safari() {
                 "defaultSet": {
                     "gacha": 10
                 },
+                "whtapricorn": {
+                    "gacha": 10,
+                    "whtapricorn": 10
+                },
+                "blkapricorn": {
+                    "gacha": 10,
+                    "blkapricorn": 6
+                },
+                "grnapricorn": {
+                    "gacha": 10,
+                    "grnapricorn": 10
+                },
+                "bluapricorn": {
+                    "gacha": 10,
+                    "bluapricorn": 8
+                },
+                "ylwapricorn": {
+                    "gacha": 10,
+                    "ylwapricorn": 12
+                },
+                "redapricorn": {
+                    "gacha": 10,
+                    "redapricorn": 6
+                },
                 "silver": {
                     "gacha": 15,
                     "silver": 3
@@ -933,7 +1140,13 @@ function Safari() {
                 }
             },
             "chance": {
-                "defaultSet": 0.74,
+                "whtapricorn": 0.11,
+                "blkapricorn": 0.11,
+                "bluapricorn": 0.11,
+                "pnkapricorn": 0.11,
+                "ylwapricorn": 0.10,
+                "grnapricorn": 0.10,
+                "redapricorn": 0.10,
                 "silver": 0.05,
                 "gem": 0.05,
                 "nugget": 0.05,
@@ -1171,7 +1384,6 @@ function Safari() {
         }
     };
     var recipeData = {};
-    var gymData = {};
     var eliteData = [];
     var eliteHall = [];
     
@@ -1208,7 +1420,7 @@ function Safari() {
     };
     
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "decoration": false, "league": false, "journal": false, "monger": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "journal": false, "monger": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var pyramidRequests = {};
@@ -1729,6 +1941,15 @@ function Safari() {
             return result.slice(-upper, -lower);
         }
     }
+    function countDuplicates(arr, val) {
+        var out = 0;
+        for (var i in arr) {
+            if (arr[i] === val) {
+                out++;
+            }
+        }
+        return out;
+    }
     function removeDuplicates(arr, onlyNumbers) {
         if (onlyNumbers) {
             var result = [];
@@ -1959,12 +2180,12 @@ function Safari() {
     function escapeRegExp(str) { //From http://stackoverflow.com/a/6969486
         return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     }
-    function itemsLeft(player, item) {
+    function itemsLeft(player, item, itemName) {
         var amt = player.balls[item];
         if (amt === 0) {
             return "You have no more " + es(finishName(item)) + " left! ";
         } else {
-            return "You still have " + plural(amt, item) + " left! ";
+            return "You still have " + plural(amt, finishName(item)) + " left! ";
         }
     }
     function typeNull(str, output) {
@@ -2373,16 +2594,31 @@ function Safari() {
         }
     }
     function isBall(item) {
-        return item in itemData && itemData[item].type === "ball";
+        for (var i in itemData) {
+            if (itemData[i].aliases.indexOf(item) !== -1 && itemData[i].type === "ball") {
+                return true;
+            }
+        }
+        return false;
     }
-    function bagRow (player, arr, isAndroid, textOnly, first) {
+    function getBall(item) {
+        for (var i in itemData) {
+            if (itemData[i].aliases.indexOf(item) !== -1 && itemData[i].type === "ball") {
+                return i;
+            }
+        }
+        return "safari";
+    }
+    function bagRow (player, arr, isAndroid, textOnly, first, title) {
         var ret = [], item, item2;
         if (textOnly) {
             if (first) {
-                ret += "<br /><b>Inventory</b><br />";
                 ret += "Money: $" + addComma(player.money) + " | ";
             } else {
                 ret += "<br />";
+            }
+            if (title) {
+                ret += "<br /><b>" + title + "</b><br />";
             }
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
@@ -2474,7 +2710,7 @@ function Safari() {
         return ret;
     }
     function toUsableBall(player, ball) {
-        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "master"];
+        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "level", "photo", "mirror", "inver", "spirit", "cherish", "master"];
 
         var startFrom = 0;
         if (ball == ballOrder[0]) {
@@ -2522,7 +2758,7 @@ function Safari() {
         }
     }
     function isBallAvailable(player, ball) {
-        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master");
+        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
     }
     function getCap(item) {
         return item in itemData ? (itemData[item].cap || itemCap) : itemCap;
@@ -2972,7 +3208,7 @@ function Safari() {
     }
 
     /* Wild Pokemon & Contests */
-    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest) {
+    this.createWild = function(dexNum, makeShiny, amt, bstLimit, leader, player, appearAs, goldenBait, themeOverride, spawnTest, spiritMon) {
         var num,
             pokeId,
             goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
@@ -2999,34 +3235,47 @@ function Safari() {
             var cTheme = themeOverride || currentTheme;
             if (cTheme) {
                 var theme = contestThemes[cTheme];
-                statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
-                if ((!(goldenBonus) && (leader))) {
-                    canLegend = false;
-                }
-                var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
-                for (i = 1; i < 803; i++) {
-                    bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
-                    extrabstChance = 1;
-                    if (bst > 600) {
-                        extrabst = (bst - 600);
-                        bst = 600;
-                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
-                    }
-                    if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
-                        list.push(i);
+                if (spiritMon) {
+                    statCap = [700, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
+                    statCap -= (25 * sys.rand(0, 1));
+                    shiny = false;
+                    for (i = 1; i < 803; i++) {
+                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        if (this.validForTheme(i, cTheme) && bst <= statCap) {
+                            list.push(i);
+                        }
                     }
                 }
-                for (h in theme.include) {
-                    id = theme.include[h];
-                    bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
-                    extrabstChance = 1;
-                    if (bst > 600) {
-                        extrabst = (bst - 600);
-                        bst = 600;
-                        extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                else {
+                    statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
+                    if ((!(goldenBonus) && (leader))) {
+                        canLegend = false;
                     }
-                    if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
-                        list.push(id);
+                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
+                    for (i = 1; i < 803; i++) {
+                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        extrabstChance = 1;
+                        if (bst > 600) {
+                            extrabst = (bst - 600);
+                            bst = 600;
+                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                        }
+                        if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
+                            list.push(i);
+                        }
+                    }
+                    for (h in theme.include) {
+                        id = theme.include[h];
+                        bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
+                        extrabstChance = 1;
+                        if (bst > 600) {
+                            extrabst = (bst - 600);
+                            bst = 600;
+                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                        }
+                        if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
+                            list.push(id);
+                        }
                     }
                 }
                 if (list.length === 0) {
@@ -3070,7 +3319,7 @@ function Safari() {
                                 num = sys.rand(1, 803);
                                 bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                                 pokeId = poke(num + (shiny ? "" : 0));
-                            } while (!pokeId || bst > statCap);
+                            } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                         } else {
                             num = list[sys.rand(0, list.length)];
                         }
@@ -3081,7 +3330,7 @@ function Safari() {
                         num = sys.rand(1, 803);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         pokeId = poke(num + (shiny ? "" : 0));
-                    } while (!pokeId || bst > statCap);
+                    } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                 }
             }
         }
@@ -3140,10 +3389,14 @@ function Safari() {
             currentPokemonMoodRate = sys.rand(1, 31);
             var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
             currentPokemonMood = photoMood[mood].random();
+            wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
             
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
 
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
+            if (spiritMon) {
+                term = "Spirit Realm "
+            }
             var appmsg = wildPokemonMessage.format(currentId, bst, term);
             if (amount > 1) {
                 var ret = [];
@@ -3178,6 +3431,8 @@ function Safari() {
         this.runPendingActive();
         contestCooldown = contestCooldownLength;
         contestCount = contestDuration;
+        spiritSpawn = true;
+        wildSpirit = false;
         
         var votesResult;
         if (commandData.toLowerCase() === "none") {
@@ -3704,28 +3959,31 @@ function Safari() {
         var shinyChance = isShiny ? 0.30 : 1;
         var isLegend = isLegendary(wild);
         var legendaryChance = isLegend ? 0.50 : 1;
+        var spiritMonBonus = wildSpirit ? 0.50 : 1;
+        var flowerGirlBonus = 1;
+        var cherishBonus = Math.min(countDuplicates(player.cherished, getPokemonInfo(player.party[0]).num), 10);
 
-        var userStats = getBST(player.party[0]);
+        var userStats = (getBST(player.party[0]));
         var evioBonus = 0;
         if (userStats <= itemData.eviolite.threshold) {
             evioBonus = getPerkBonus(player, "eviolite");
             userStats += evioBonus;
         }
         var wildStats = getBST(wild);
-        var statsBonus = (userStats - wildStats) / 8000;
         if ((currentRules && currentRules.invertedBST) || this.getFortune(player, "invertbst", 0)) {
             userStats -= evioBonus;
+            userStats -= (cherishBonus * 6);
             statsBonus = (userStats - wildStats) / -8000;
         }
-        if (ball === "heavy" && wildStats >= 450) {
-            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
-            if (ballBonus > itemData[ball].maxBonus) {
-                ballBonus = itemData[ball].maxBonus;
-            }
+        else {
+            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
+            userStats += (cherishBonus * 6);
+            var statsBonus = (userStats - wildStats) / 8000;
         }
+        var wildWeight = pokedex.getWeight(wild);
         var typeBonus;
         var pType1 = sys.type(sys.pokeType1(player.party[0])), pType2 = sys.type(sys.pokeType2(player.party[0])), wType1 = sys.type(sys.pokeType1(wild)), wType2 = sys.type(sys.pokeType2(wild));
-        var inverse = (player.costume === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
+        var inverse = (player.costume === "inver" || ball === "inver" || (currentRules && currentRules.inver)) || (this.getFortune(player, "inver", 0) !== 0);
         if ((currentRules && currentRules.defensive) || (this.getFortune(player, "resistance", 0) !== 0)) {
             if (ball === "mono") {
                 typeBonus = this.checkEffective(wType1, wType2, (pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", false, !inverse);
@@ -3737,6 +3995,129 @@ function Safari() {
                 typeBonus = this.checkEffective((pType2 === "???" || !player.monoSecondary ? pType1 : pType2), "???", wType1, wType2, false, inverse);
             } else {
                 typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse);
+            }
+        }
+        if (ball === "level" && wildStats >= 450) {
+            ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
+            if (ballBonus > itemData[ball].maxBonus) {
+                ballBonus = itemData[ball].maxBonus;
+            }
+        }
+        if (ball === "heavy") {
+            if (wildWeight >= 360) {
+                ballBonus = 4;
+            }
+            else if (wildWeight >= 280) {
+                ballBonus = 3.5;
+            }
+            else if (wildWeight >= 200) {
+                ballBonus = 3;
+            }
+            else if (wildWeight >= 150) {
+                ballBonus = 2.75;
+            }
+            else if (wildWeight >= 120) {
+                ballBonus = 2.5;
+            }
+            else if (wildWeight >= 100) {
+                ballBonus = 2;
+            }
+            else if (wildWeight >= 90) {
+                ballBonus = 1.5;
+            }
+            else if (wildWeight >= 80) {
+                ballBonus = 1.25;
+            }
+            else if (wildWeight >= 65) {
+                ballBonus = 1;
+            }
+            else if (wildWeight >= 50) {
+                ballBonus = 0.75;
+            }
+            else if (wildWeight >= 35) {
+                ballBonus = 0.5;
+            }
+            else {
+                ballBonus = 0.25;
+            }
+            typeBonus = ((1 + typeBonus) / 2);
+        }
+        var eventChance = (wildEvent ? 0.4 : 1);
+        if (ball === "myth") {
+            shinyChance = 1;
+            legendaryChance = 1;
+            eventChance = Math.max(0.75, eventChance);
+            rulesMod = 1;
+            if (isLegend || isShiny){
+                ballBonus = itemData[ball].bonusRate;
+            } else {
+                typeBonus = 1;
+            }
+        }
+        if (ball === "cherish") {
+            legendaryChance = 1;
+            eventChance = 1;
+        }
+        if (ball === "lightning") {
+            legendaryChance = 1;
+            eventChance = Math.max(0.75, eventChance);
+        }
+        if (ball === "inver") {
+            legendaryChance = Math.max(0.75, legendaryChance);
+        }
+        if (ball === "spirit") {
+            legendaryChance = 1;
+            eventChance = 1;
+            ballBonus = 1;
+            if (safari.spiritDuelsEnabled) {
+                for (var s in player.spiritDuels.skills) {
+                    if (player.spiritDuels.skills[s].type === "catch") {
+                        ballBonus *= player.spiritDuels.skills[s].val;
+                    }
+                }
+            }
+        }
+        if (ball === "mirror") {
+            typeBonus = 1;
+            legendaryChance = Math.max(0.75, legendaryChance);
+            ballBonus = 0.25;
+            if (hasType(sys.pokeType1(player.party[0]), wild)) {
+                ballBonus = Math.max(1.1, ballBonus + 0.25);
+            }
+            else if (hasType(sys.pokeType2(player.party[0]), wild)) {
+                ballBonus = Math.max(1.1, ballBonus + 0.25);
+            }
+            var ab = [];
+            ab.push(sys.pokeAbility(player.party[0], 0));
+            ab.push(sys.pokeAbility(player.party[0], 1));
+            ab.push(sys.pokeAbility(player.party[0], 2));
+            for (var a in ab) {
+                if (canHaveAbility(wild, ab[a])) {
+                    ballBonus = Math.max(1.5, ballBonus + 0.5);
+                }
+            }
+            if (getPokeColor(player.party[0]) === getPokeColor(wild)) {
+                ballBonus += 1.5;
+            }
+            var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"], st;
+            for (var s in stats) {
+                st = stats[s];
+                if (Math.abs(sys.pokeBaseStats(player.party[0])[st] - sys.pokeBaseStats(wild))[st] <= 10) {
+                    ballBonus *= 1.3;
+                }
+            }
+            if (ballBonus > itemData[ball].maxBonus) {
+                ballBonus = itemData[ball].maxBonus;
+            }
+        }
+        if (ball === "photo") {
+            ballBonus = 1;
+            legendaryChance = Math.max(0.75, legendaryChance);
+            for (i = player.photos.length; i--; ) {
+                if (safari.photoMatchesRequest(player.photos[i], {species: wild})) {
+                    ballBonus = itemData[ball].bonusRate;
+                    break;
+                }
             }
         }
 
@@ -3778,25 +4159,16 @@ function Safari() {
                 ballBonus = itemData.premier.bonusRate;
             }
         }
-
-        var eventChance = (wildEvent ? 0.4 : 1);
-        if (ball === "myth") {
-            shinyChance = 1;
-            legendaryChance = 1;
-            eventChance = 1;
-            rulesMod = 1;
-            if (isLegend || isShiny){
-                ballBonus = itemData[ball].bonusRate;
-            } else {
-                typeBonus = 1;
-            }
+        else if ((player.costume === "flower") && (hasType(player.party[0], "???"))) {
+            flowerGirlBonus = 1.125;
         }
+
         var ballbuff = 1 + this.getFortune(player, "ballbuff", 0, ball);
         var anyballbuff = this.getFortune(player, "anyballbuff", 0);
         var typebuff = 1 + (this.getFortune(player, "typebuff", 0, pType1) || this.getFortune(player, "typebuff", 0, pType2));
         var wildtypebuff = 1 + (this.getFortune(player, "typebuffwild", 0, wType1) || this.getFortune(player, "typebuffwild", 0, wType2));
 
-        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
+        var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * flowerGirlBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
             finalChance = Math.min(finalChance, maxCloneRate);
@@ -3852,7 +4224,8 @@ function Safari() {
             }
             return;
         }
-        var ball = itemAlias(data, true);
+        ball = getBall(data);
+        var ballName = itemAlias(ball, false, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -3874,7 +4247,10 @@ function Safari() {
             safaribot.sendMessage(src, "This is an Event Pokémon, you cannot use " + es(finishName("master")) + "!", safchan);
             return;
         }
-        var ballName = finishName(ball);
+        if (wildSpirit && ball !== "spirit") {
+            safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
+            return;
+        }
         if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball)) {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
             return;
@@ -3946,20 +4322,29 @@ function Safari() {
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
-            } else {
+            } else if (ball == "spirit") {
+                safari.catchSpiritMon(player, currentPokemon);
+                player.records.catchSpirit += 1;
+                var team = player.spiritDuels.team;
+                var title = player.spiritDuels.rankName;
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + poke(player.party[0]), safchan);
+                wildSpirit = false;
+            } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
-            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-            
-            if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
-                var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
-                player.pokemon.push(evolved);
-                sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
-            } else {
-                player.pokemon.push(currentPokemon);
+            else {
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
+                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
+                    player.pokemon.push(evolved);
+                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
+                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+                } else {
+                    player.pokemon.push(currentPokemon);
+                }
             }
             player.records.pokesCaught += 1;
             if (isBaited) {
@@ -3967,8 +4352,15 @@ function Safari() {
             }
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
+            if (ball === "cherish") {
+                player.records.catchCherish += 1;
+                player.cherished.push(getPokemonInfo(currentPokemon).num);
+            }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
+            }
+            if (ball === "level") {
+                player.records.catchLevel += 1;
             }
             if (ball === "heavy") {
                 player.records.catchHeavy += 1;
@@ -4014,7 +4406,7 @@ function Safari() {
                     }
                     player.records.pokesCloned += clonedAmount;
                     if (discarded > 0) {
-                        safaribot.sendMessage(src, "Oh damn! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
+                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
                     }
                 }
             }
@@ -4043,6 +4435,9 @@ function Safari() {
             this.fullBoxWarning(src);
 
             var penalty = 2 * (1 - getPerkBonus(player, "soothe") - this.getFortune(player, "soothe", 0));
+            if (ball === "spy") {
+                penalty *= 0.25;
+            }
             cooldown *= penalty;
             if (contestCount > 0) {
                 var nameLower = name.toLowerCase();
@@ -4070,6 +4465,7 @@ function Safari() {
                 currentPokemon = null;
                 currentDisplay = null;
                 wildEvent = false;
+                wildSpirit = false;
                 isBaited = false;
                 if (contestCount <= 0) {
                     this.runPendingActive();
@@ -4083,10 +4479,15 @@ function Safari() {
             }
         } else {
             cooldown = cooldown * (1 - this.getFortune(player, "soothe", 0));
-            var keep = false;
-            if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
-                keep = true;
+            if ((ball === "spirit") || (ball === "cherish")) {
                 player.balls[ball] += 1;
+            }
+            else {
+                var keep = false;
+                if (!freeThrow && (crystalEffect.effect === "fisherman" || chance((player.costume === "fisherman" ? costumeData.fisherman.rate : 0) + this.getFortune(player, "fisherman", 0)))) {
+                    keep = true;
+                    player.balls[ball] += 1;
+                }
             }
             pokeName = poke(currentDisplay);
             safaribot.sendHtmlMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
@@ -4168,6 +4569,7 @@ function Safari() {
         ];
         if (isRare(currentPokemon)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + "::fled" + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "::\n");
+            runmsgs = [ "The wild {0} was obliterated by a grumpy old safari coder!" ];
         }
 
         sys.sendAll("", safchan);
@@ -4614,13 +5016,13 @@ function Safari() {
 
         sys.sendHtmlMessage(src, this.showParty(id, false, src, textOnly), safchan);
     };
-    this.viewItems = function(src, textOnly) {
+    this.viewItems = function(src, textOnly, search) {
         if (!validPlayers("self", src)) {
             return;
         }
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
-        sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly), safchan);
+        sys.sendHtmlMessage(src, this.showBag(player, isAndroid, textOnly, search), safchan);
     };
     this.viewCostumes = function(src) {
         if (!validPlayers("self", src)) {
@@ -4636,6 +5038,14 @@ function Safari() {
         var player = getAvatar(src);
         var isAndroid = (sys.os(src) === "android");
         sys.sendHtmlMessage(src, this.showBox(player, (data === "*" ? 1 : data), isAndroid, textOnly, shopLink), safchan);
+    };
+    this.viewCherished = function(src, textOnly) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var isAndroid = (sys.os(src) === "android");
+        sys.sendHtmlMessage(src, this.showCherished(player, isAndroid, textOnly), safchan);
     };
     this.manageParty = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -5008,6 +5418,21 @@ function Safari() {
         }
         return out;
     };
+    this.showCherished = function(player, isAndroid, textOnly) {
+        var out = "";
+        var list = player.cherished;
+
+        var label = "Cherished (" + player.cherished.length + "/96)";
+        if (textOnly) {
+            out += this.listPokemonText(list, label);
+        } else {
+            out += this.listPokemon(list, label);
+            if (isAndroid) {
+                out += "<br />";
+            }
+        }
+        return out;
+    };
     this.listPokemon = function(list, title) {
         var out = "", normal = [], count = 0, rowSize = 12, e;
         for (e in list) {
@@ -5040,20 +5465,39 @@ function Safari() {
         out += "<br/>";
         return out;
     };
-    this.showBag = function(player, isAndroid, textOnly) {
+    this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "spray", "mega",];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "bait", "golden"];
-        var line3 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
-        var line4 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "blkapricorn", "whtapricorn", "materia", "fragment", "philosopher", "soda", "cookie"];
-        var line5 = ["rock", "stick", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush", "dew", "ldew"];
+        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "stick", "rock"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "spy", "clone", "premier", "mono"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "inver", "spirit", "cherish", "bait", "golden"];
+        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "ldew", "materia", "fragment"];
+        var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
+        var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "philosopher", "soda", "cookie"];
+        var line7 = ["mega", "spray", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush"];
 
+        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities"].indexOf(search) === -1) {
+            search = "*";
+        }
         var out = "";
-        out += bagRow(player, line1, isAndroid, textOnly, true);
-        out += bagRow(player, line2, isAndroid, textOnly);
-        out += bagRow(player, line3, isAndroid, textOnly);
-        out += bagRow(player, line4, isAndroid, textOnly);
-        out += bagRow(player, line5, isAndroid, textOnly);
+        if ((search === "*") || (search === "wallet")) {
+            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet");
+        }
+        if ((search === "*") || (search === "balls") || (search === "ball")) {
+            out += bagRow(player, line2, isAndroid, textOnly, false, "Pokéballs");
+            out += bagRow(player, line3, isAndroid, textOnly, false);
+        }
+        if ((search === "*") || (search === "apricorns") || (search === "apricorn")) {
+            out += bagRow(player, line4, isAndroid, textOnly, false, "Apricorns");
+        }
+        if ((search === "*") || (search === "perks") || (search === "perk")) {
+            out += bagRow(player, line5, isAndroid, textOnly, false, "Perks");
+        }
+        if ((search === "*") || (search === "pawnables") || (search === "pawnable") || (search === "pawn") || (search === "pawns")) {
+            out += bagRow(player, line6, isAndroid, textOnly, false, "Pawnables");
+        }
+        if ((search === "*") || (search === "rare") || (search === "rarities") || (search === "rares")) {
+            out += bagRow(player, line7, isAndroid, textOnly, false, "Rarities");
+        }
         out += (textOnly ? "" : "</table>");
         return out;
     };
@@ -6298,8 +6742,13 @@ function Safari() {
                 }
             } else {
                 if (baitCooldown > 0) {
-                    safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
-                    return;
+                    if (player.freebaits <= 0) {
+                        safaribot.sendMessage(src, "Please wait " + plural(baitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
+                        return;
+                    }
+                    else {
+                        player.freebaits--;
+                    }
                 }
             }
             if (player.cooldowns.bait > now()) {
@@ -6318,6 +6767,7 @@ function Safari() {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
             } else {
                 baitCooldown = successfulBaitCount = itemData[item].successCD + sys.rand(0,9);
+                player.cooldowns.bait = now() + (itemData[item].failCD + sys.rand(0,4)) * 1000;
             }
             player.records.baitAttracted += 1;
 
@@ -7267,6 +7717,12 @@ function Safari() {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
             }
             break;
+            case "hint": {
+                var hint = safariHints.random();
+                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
+                safaribot.sendMessage(src, "±Hint: " + hint, safchan);
+            }
+            break;
             default:
                 safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                 giveReward = false;
@@ -7364,7 +7820,7 @@ function Safari() {
                 case "bait": amount = 10; break;
                 case "gacha": amount = 10; break;
                 case "silver": amount = 8; break;
-                case "clone": case "luxury": case "quick": amount = 5; break;
+                case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
             }
             safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
             if (reward === "mega") {
@@ -7538,10 +7994,9 @@ function Safari() {
                     ["10@rock"],
                     ["3@pearl"],
                     ["50@dust"],
-                    ["2@blkapricorn", "2@whtapricorn"],
-                    ["3@quick", "3@heavy"],
-                    ["3@myth", "3@clone"],
-                    ["4@clone", "4@premier"],
+                    ["4@blkapricorn", "4@whtapricorn"],
+                    ["3@pnkapricorn", "3@bluapricorn"],
+                    ["3@grnapricorn", "3@ylwapricorn"],
                     ["5@luxury", "5@spy"],
                     ["5@gacha", "1@gem"]
                 ],
@@ -7551,11 +8006,9 @@ function Safari() {
                     { reward: "3@pearl", rewardUnderdog: "4@pearl", rewardFavorite: "2@pearl" },
                     { reward: "50@dust", rewardUnderdog: "70@dust", rewardFavorite: "40@dust" },
                     { reward: "4@silver", rewardUnderdog: "6@silver", rewardFavorite: "3@silver" },
-                    { reward: "4@luxury", rewardUnderdog: "6@luxury", rewardFavorite: "3@luxury" },
-                    { reward: "4@spy", rewardUnderdog: "6@spy", rewardFavorite: "3@spy" },
-                    { reward: "4@clone", rewardUnderdog: "6@clone", rewardFavorite: "3@clone" },
-                    { reward: "3@heavy", rewardUnderdog: "5@heavy", rewardFavorite: "2@heavy" },
-                    { reward: "3@quick", rewardUnderdog: "5@quick", rewardFavorite: "2@quick" },
+                    { reward: "4@bluapricorn", rewardUnderdog: "6@bluapricorn", rewardFavorite: "3@bluapricorn" },
+                    { reward: "3@grnapricorn", rewardUnderdog: "5@grnapricorn", rewardFavorite: "2@grnapricorn" },
+                    { reward: "3@ylwapricorn", rewardUnderdog: "5@ylwapricorn", rewardFavorite: "2@ylwapricorn" },
                     { reward: "3@myth", rewardUnderdog: "5@myth", rewardFavorite: "2@myth" },
                     { reward: "6@gacha"}
                 ],
@@ -8282,6 +8735,11 @@ function Safari() {
             theft = "but stole it back";
         } else {
             this.removePokemon(src, id);
+            player.lastSold = {
+                mon: info,
+                price: price
+            };
+
             /*if (isRare(id) && player.tradeban <= now()) {
                 sys.sendAll("", safchan);
                 safaribot.sendHtmlAll("<b><font color=tomato>Haha! " + sys.name(src) + " just sold their " + info.name + " to the shop! You should make fun of them with " + link("/rock " + sys.name(src)) + "!</font></b>", safchan);
@@ -8298,6 +8756,42 @@ function Safari() {
         if (isRare(id)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + "::\n");
         }
+        this.saveGame(player);
+    };
+    this.undoSell = function(src) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var currentTime = now();
+        if (player.cooldowns.unsell <= currentTime) {
+            safaribot.sendMessage(src, "You've been trying to unsell too often lately! Please wait " + timeLeftString(player.cooldowns.unsell) + " to unsell again.", safchan);
+            return;
+        }
+        if (player.costume === "rocket") {
+            safaribot.sendMessage(src, "Team Rocket members are not allowed to undo their wicked ways! You must change costumes to undo selling a Pokémon!", safchan);
+            return;
+        }
+        if (player.lastSold === {}) {
+            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon!", safchan);
+            return;
+        }
+
+        var last = player.lastSold;
+        if (last.price > player.money) {
+            safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because you used the money you earned from selling your last Pokémon!", safchan);
+            return;
+        }
+
+        player.records.pokeSoldEarnings -= last.price;
+        player.money -= last.price;
+        var mon = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
+        player.pokemon.push(mon);
+
+        safaribot.sendMessage(src, "You quickly turned around and got your " + last.mon.name + " back! (You lost $" + last.price + ")", safchan);
+        player.lastSold = {};
+        player.cooldowns.unsell = currentTime + (6 * 60 * 1000);
+
         this.saveGame(player);
     };
     this.showPrices = function(src, shop, command, seller) {
@@ -9004,6 +9498,12 @@ function Safari() {
             }
             
             safari.trialsLogin(player);
+            if (safari.events.spiritDuelsEnabled) {
+                var out = giveStuff(player, "5@spirit", true);
+                safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
+                this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
+            }
+            player.freebaits = 5;
 
             reward = {};
             for (e = player.secretBase.length; e--; ) {
@@ -9059,8 +9559,8 @@ function Safari() {
         var milestoneRewards = {
             "31": { reward: "master", amount: 1 },
             "27": { reward: "gacha", amount: 30 },
-            "24": { reward: "clone", amount: 5 },
-            "21": { reward: "luxury", amount: 5 },
+            "24": { reward: "whtapricorn", amount: 10 },
+            "21": { reward: "blkapricorn", amount: 10 },
             "18": { reward: "gacha", amount: 15 },
             "15": { reward: "rare", amount: 1, repeatAmount: 2 },
             "12": { reward: "bait", amount: 10 },
@@ -9455,8 +9955,9 @@ function Safari() {
         if (!safari.events) {
             safari.events = {
                 trialsEnabled: false,
-                trialsData: null,
-                trialsParticipants: []
+                trialsData: {},
+                spiritDuelsEnabled: false,
+                spiritDuelsData: {}
             };
         }
         switch (what) {
@@ -9468,8 +9969,15 @@ function Safari() {
                     safari.events.trialsEnabled = (enable ? true : false);
                     safaribot.sendMessage(src,"Event Trials " + (enable ? "enabled" : "disabled") + "!" );
                     if (!(enable)) {
-                        safari.events.trialsData = null;
+                        safari.events.trialsData = {};
                     }
+                }
+                break;
+            case "duels":
+                safari.events.spiritDuelsEnabled = (enable ? true : false);
+                safaribot.sendMessage(src,"Event Spirit Duels " + (enable ? "enabled" : "disabled") + "!" );
+                if (!(enable)) {
+                    safari.events.spiritDuelsData = {};
                 }
                 break;
         }
@@ -9539,9 +10047,6 @@ function Safari() {
     this.trialsLogin = function(player) {
         if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
             player.trials.points += 1;
-            if (safari.events.trialsParticipants.indexOf(player) === -1) {
-                safari.events.trialsParticipants.push(player)
-            }
             safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
         }
         return;
@@ -9598,9 +10103,6 @@ function Safari() {
             player.trials.name = name;
             player.trials.bonusPointsReceived = false;
         }
-        if (safari.events.trialsParticipants.indexOf(player) === -1) {
-            safari.events.trialsParticipants.push(player);
-        }
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, toColor( "*** " + name + " Trials ***", "#BA55D3" ), safchan);
         for (var e = 0; e < player.trials.missions.length; e++) {
@@ -9634,13 +10136,19 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.viewTrialsLb = function(src,num) {
-        var t = safari.events.trialsParticipants, player, points;
+        var t = Object.keys(rawPlayers), player, points;
         var playerPoints = [];
         var limit = parseInt(num, 10);
 
         for (var p in t) {
-            player = t[p];
+            player = getAvatarOff(t[p]);
             id = player.id;
+            if (!player.trials) {
+                continue;
+            }
+            if (player.trials.points <= 0) {
+                continue;
+            }
             points = player.trials.points;
             playerPoints.push({
                 id: id,
@@ -9659,7 +10167,7 @@ function Safari() {
             if (!p) {
                 continue;
             }
-            if (received.indexOf(playerPoints[i].id) !== -1) {
+            if (received.indexOf(playerPoints[i].id) > -1) {
                 continue;
             }
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
@@ -9669,23 +10177,28 @@ function Safari() {
         return;
     };
     this.endTrials = function() {
-        var t = safari.events.trialsParticipants, player, points;
+        var t = Object.keys(rawPlayers), player, points;
         var playerPoints = [], src;
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
-        var received = [], p;
+        p;
 
         for (var p in t) {
-            player = t[p];
+            player = getAvatarOff(t[p]);
             id = player.id;
-            p = getAvatarOff(id);
-            if (!p) {
+            if (!player) {
                 continue;
             }
-            if (received.indexOf(p.id) !== -1) {
+            if (received.indexOf(id) !== -1) {
                 continue;
             }
-            received.push(p.id);
+            if (!player.trials) {
+                continue;
+            }
+            if (player.trials.points <= 0) {
+                continue;
+            }
+            received.push(player.id);
             points = player.trials.points;
             playerPoints.push({
                 id: id,
@@ -9719,14 +10232,747 @@ function Safari() {
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
-            if (j >= 2) {
+            if (j >= 3) {
                 break;
             }
         }
-        safari.events.trialsParticipants = [];
         return;
     };
-    
+    /* Spirit Duels */
+    this.loadDuels = function( src,data ) {
+        //Just loads the data
+        safari.events.spiritDuelsTeams = [];
+        safari.events.spiritDuelsSignups = [];
+        var m;
+        for (var k in data.teams) {
+            m = data.teams[k];
+            safari.events.spiritDuelsTeams.push({
+                players: [],
+                name: m.name,
+                skills: m.skills,
+                alive: true,
+                won: 0,
+                fought: 0,
+                rate: 0
+            });
+        }
+        safari.events.spiritDuelsRanks = [
+            {rank: "Grunt", exp: 0},
+            {rank: "Ensign", exp: 3000},
+            {rank: "Officer Trainee", exp: 6000},
+            {rank: "Secretary Officer", exp: 10000},
+            {rank: "Squadron Leader", exp: 15000},
+            {rank: "Field Lieutenant", exp: 21000},
+            {rank: "Commander", exp: 30000},
+            {rank: "Vice Admiral", exp: 35000},
+            {rank: "Admin", exp: 40000},
+            {rank: "Supreme Master", exp: 50000}
+        ];
+        safari.events.spiritDuelsSkills = {
+            "Ensign": [
+                {type: "type", target: "Poison", val: 20, desc: "Poison type Spirits receive a fighting advantage."},
+                {type: "type", target: "Bug", val: 20, desc: "Bug type Spirits receive a fighting advantage."},
+                {type: "type", target: "Normal", val: 20, desc: "Normal type Spirits receive a fighting advantage."},
+                {type: "region", target: "Kanto", val: 10, desc: "Spirits from Kanto receive a slight fighting advantage."},
+                {type: "region", target: "Alola", val: 10, desc: "Spirits from Alola receive a slight fighting advantage."},
+                {type: "color", target: "Green", val: 12, desc: "Green Spirits receive a fighting advantage."},
+                {type: "color", target: "Yellow", val: 12, desc: "Yellow Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 3, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.06, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.1, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Officer Trainee": [
+                {type: "type", target: "Psychic", val: 22, desc: "Psychic type Spirits receive a fighting advantage."},
+                {type: "type", target: "Grass", val: 22, desc: "Grass type Spirits receive a fighting advantage."},
+                {type: "type", target: "Ice", val: 22, desc: "Ice type Spirits receive a fighting advantage."},
+                {type: "region", target: "Johto", val: 12, desc: "Spirits from Johto receive a slight fighting advantage."},
+                {type: "region", target: "Kalos", val: 12, desc: "Spirits from Kalos receive a slight fighting advantage."},
+                {type: "color", target: "Red", val: 13, desc: "Red Spirits receive a fighting advantage."},
+                {type: "color", target: "Purple", val: 13, desc: "Purple Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 4, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.12, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.2, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Secretary Officer": [
+                {type: "type", target: "Flying", val: 24, desc: "Flying type Spirits receive a fighting advantage."},
+                {type: "type", target: "Fighting", val: 24, desc: "Fighting type Spirits receive a fighting advantage."},
+                {type: "type", target: "Rock", val: 24, desc: "Rock type Spirits receive a fighting advantage."},
+                {type: "region", target: "Hoenn", val: 14, desc: "Spirits from Hoenn receive a slight fighting advantage."},
+                {type: "region", target: "Unova", val: 14, desc: "Spirits from Unova receive a slight fighting advantage."},
+                {type: "color", target: "Black", val: 14, desc: "Black Spirits receive a fighting advantage."},
+                {type: "color", target: "White", val: 14, desc: "White Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 5, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.18, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.3, desc: "Generate Spirit Duels EXP at a higher rate."},
+            ],
+            "Squadron Leader": [
+                {type: "type", target: "Fire", val: 24, desc: "Fire type Spirits receive a fighting advantage."},
+                {type: "type", target: "Water", val: 24, desc: "Water type Spirits receive a fighting advantage."},
+                {type: "type", target: "Electric", val: 24, desc: "Electric type Spirits receive a fighting advantage."},
+                {type: "region", target: "Sinnoh", val: 15, desc: "Spirits from Sinnoh receive a slight fighting advantage."},
+                {type: "region", target: "Kanto", val: 15, desc: "Spirits from Kanto receive a slight fighting advantage."},
+                {type: "color", target: "Blue", val: 15, desc: "Blue Spirits receive a fighting advantage."},
+                {type: "color", target: "Grey", val: 15, desc: "Grey Spirits receive a fighting advantage."},
+                {type: "any", target: "", val: 6, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.24, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "exp", target: "rate", val: 1.4, desc: "Generate Spirit Duels EXP at a higher rate."}
+            ],
+            "Field Lieutenant": [
+                {type: "type", target: "Ground", val: 25, desc: "Ground type Spirits receive a fighting advantage."},
+                {type: "type", target: "Fairy", val: 25, desc: "Fairy type Spirits receive a fighting advantage."},
+                {type: "type", target: "Dark", val: 25, desc: "Dark type Spirits receive a fighting advantage."},
+                {type: "region", target: "Johto", val: 16, desc: "Spirits from Johto receive a slight fighting advantage."},
+                {type: "region", target: "Unova", val: 16, desc: "Spirits from Unova receive a slight fighting advantage."},
+                {type: "move", target: "Dual Chop", val: 30, desc: "Spirits that can know Dual Chop receive a fighting advantage."},
+                {type: "move", target: "Solar Beam", val: 30, desc: "Spirits that can know Solar Beam receive a fighting advantage."},
+                {type: "move", target: "Double Kick", val: 30, desc: "Spirits that can know Double Kick receive a fighting advantage."},
+                {type: "any", target: "", val: 7, desc: "All Spirits receive a very minor fighting advantage."},
+                {type: "catch", target: "rate", val: 1.3, desc: "Catch rate with Spirit Balls raised slightly."},
+                {type: "catch", target: "cooldown", val: 1.1, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Commander": [
+                {type: "type", target: "Ghost", val: 25, desc: "Ghost type Spirits receive a fighting advantage."},
+                {type: "type", target: "Steel", val: 25, desc: "Steel type Spirits receive a fighting advantage."},
+                {type: "type", target: "Dragon", val: 25, desc: "Dragon type Spirits receive a fighting advantage."},
+                {type: "region", target: "Hoenn", val: 17, desc: "Spirits from Hoenn receive a slight fighting advantage."},
+                {type: "region", target: "Kalos", val: 17, desc: "Spirits from Kalos receive a slight fighting advantage."},
+                {type: "move", target: "Earthquake", val: 32, desc: "Spirits that can know Earthquake receive a fighting advantage."},
+                {type: "move", target: "Calm Mind", val: 32, desc: "Spirits that can know Calm Mind receive a fighting advantage."},
+                {type: "move", target: "Taunt", val: 32, desc: "Spirits that can know Taunt receive a fighting advantage."},
+                {type: "attack", target: "", val: 12, desc: "Spirits with high Attack stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.17, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Vice Admiral": [
+                {type: "singletype", target: "", val: 37, desc: "Single-type Spirits receive a major fighting advantage."},
+                {type: "move", target: "Overheat", val: 34, desc: "Spirits that can know Overheat receive a fighting advantage."},
+                {type: "move", target: "Megahorn", val: 34, desc: "Spirits that can know Megahorn receive a fighting advantage."},
+                {type: "move", target: "Stored Power", val: 34, desc: "Spirits that can know Stored Power receive a fighting advantage."},
+                {type: "move", target: "Charge Beam", val: 34, desc: "Spirits that can know Charge Beam receive a fighting advantage."},
+                {type: "catch", target: "rate", val: 1.4, desc: "Catch rate with Spirit Balls raised."},
+                {type: "spattack", target: "", val: 14, desc: "Spirits with high Special Attack stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.24, desc: "Catch cooldown on Spirit Balls reduced slightly."}
+            ],
+            "Admin": [
+                {type: "singletype", target: "", val: 42, desc: "Single-type Spirits receive a major fighting advantage."},
+                {type: "move", target: "Hydro Pump", val: 35, desc: "Spirits that can know Hydro Pump receive a fighting advantage."},
+                {type: "move", target: "Giga Drain", val: 35, desc: "Spirits that can know Giga Drain receive a fighting advantage."},
+                {type: "move", target: "Hurricane", val: 35, desc: "Spirits that can know Hurricane receive a fighting advantage."},
+                {type: "move", target: "Power Gem", val: 35, desc: "Spirits that can know Power Gem receive a fighting advantage."},
+                {type: "speed", target: "", val: 16, desc: "Spirits with high Speed stat receive a fighting advantage."},
+                {type: "catch", target: "cooldown", val: 1.35, desc: "Catch cooldown on Spirit Balls reduced."}
+            ],
+            "Supreme Master": [
+                {type: "move", target: "Wood Hammer", val: 40, desc: "Spirits that can know Wood Hammer receive a fighting advantage."},
+                {type: "move", target: "Smart Strike", val: 40, desc: "Spirits that can know Smart Strike receive a fighting advantage."},
+                {type: "move", target: "Moonblast", val: 40, desc: "Spirits that can know Moonblast receive a fighting advantage."},
+                {type: "move", target: "Electro Ball", val: 40, desc: "Spirits that can know Electro Ball receive a fighting advantage."},
+                {type: "move", target: "Psyshock", val: 40, desc: "Spirits that can know Psyshock receive a fighting advantage."}
+            ]
+        }
+    };
+    this.pushDuelTeam = function( src,player,data ) {
+        //Pushes a player into a team 
+
+        for (var t in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[t].name !== data) {
+                continue;
+            }
+            safari.events.spiritDuelsTeams[t].players.push(player);
+            player.spiritDuels = {
+                rank: 0,
+                rankName: "Grunt",
+                team: safari.events.spiritDuelsTeams[t].name,
+                exp: 0,
+                box: [],
+                skills: [],
+                skillChoices: {}
+            };
+        }
+    };
+    this.assignDuelsTeams = function( src,data ) {
+        //Takes everyone from signups and puts them in teams
+        safari.events.spiritDuelsSignups.shuffle();
+        var i = 0, player, oldBox;
+        for (var p in safari.events.spiritDuelsSignups) {
+            player = getAvatarOff(safari.events.spiritDuelsSignups[p]);
+            if (player.spiritDuels && player.spiritDuels.box.length > 0) {
+                oldBox = player.spiritDuels.box;
+            }
+            else {
+                oldBox = [19];
+            }
+            safari.events.spiritDuelsTeams[i].players.push(player);
+            player.spiritDuels = {
+                rank: 0,
+                rankName: "Grunt",
+                team: safari.events.spiritDuelsTeams[i].name,
+                exp: 0,
+                box: oldBox,
+                skills: [],
+                skillChoices: {}
+            };
+            i++;
+            if (i >= safari.events.spiritDuelsTeams.length) {
+                i = 0;
+            }
+            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
+            safari.inboxMessage(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
+            //Print "player joined team X"
+        }
+        safari.events.spiritDuelsSignups = [];
+        spiritDuelsBattling = true;
+    };
+    this.spiritDuelsPrizes = function( teams ) {
+        var g = [], i = teams.length, r;
+        var prizes = {
+            "0": ["2@mega", "@bright", "30@dew"],
+            "1": ["2@mega", "25@dew"],
+            "2": ["@mega", "20@dew"],
+            "3": ["@mega", "15@dew"],
+            "4": ["15@dew"],
+            "5": ["10@dew"],
+            "6": ["5@dew"]
+        }
+        for (var t in teams) {
+            g = prizes[i+""];
+            if (teams[t].rate > 0.66) {
+                g.push("5@ldew");
+            }
+            else if (teams[t].rate > 0.5875) {
+                g.push("2@ldew");
+            }
+            if (teams[t].rate > 0.5) {
+                g.push("@amulet");
+            }
+            i--;
+            for (var p in teams[t].players) {
+                giveStuff(getAvatarOff(team[t].players[p]), g);
+            }
+            r = (Math.floor(teams[t].rate * 10000) / 100);
+            sendAll(teams[t].name + " scored %" + r + "and got #" + (i + 1) + "!", true);
+        }
+        sendAll()
+    }
+    this.progressDuels = function( src ) {
+        //Counts everyone's scores
+        //The one with the least points is eliminated
+        //eliminated players are forced to join another team and lose their skills, get set back to grunt
+        var team, player;
+        for (var t in safari.events.spiritDuelsTeams) {
+            team = safari.events.spiritDuelsTeams[t];
+            team.rate = (team.won / team.fought);
+        }
+        safari.events.spiritDuelsTeams.sort( function(a, b) {
+            return a.rate - b.rate;
+        });
+
+        this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
+
+        sendAll(safari.events.spiritDuelsTeams[0].name + " has been eliminated!!", true);
+        
+        for (var p in safari.events.spiritDuelsTeams[0].players) {
+            player = getAvatarOff(safari.events.spiritDuelsTeams[0].players[p]);
+            safari.events.spiritDuelsSignups.push(player.id);
+        }
+        safari.events.spiritDuelsTeams[0].alive = false;
+        safari.events.spiritDuelsTeams.slice(1);
+        safari.events.spiritDuelsTeams.sort( function(a, b) {
+            return b.players.length - a.players.length;
+        });
+        this.assignDuelsTeams();
+    };
+    this.prepareNextSpiritDuel = function() {
+        //Creates a matchup between two teams
+        //Should use a formula that makes teams with similar records fight
+        if (chance(0.4)) {
+            safari.events.spiritDuelsTeams.sort( function(a, b) {
+                return a.fought - b.fought;
+            });
+        }
+        else {
+            safari.events.spiritDuelsTeams.shuffle();
+        }
+        //Add some print or something to say which teams are up
+    };
+    this.startSpiritDuel = function() {
+        //Creates horde v horde battle
+        safari.events.spiritDuelsViewers = [];
+        var team1 = [], team2 = [];
+        var army1 = safari.events.spiritDuelsTeams[0].players;
+        var army2 = safari.events.spiritDuelsTeams[1].players;
+        var enlistPerPlayer1 = (army1.length >= 5 ? 3 : (army1.length >= 4 ? 4 : 5));
+        var enlistPerPlayer2 = (army2.length >= 5 ? 3 : (army2.length >= 4 ? 4 : 5));
+
+        var p, j;
+        for (var a in army1) {
+            p = getAvatarOff(army1[a].id);
+            j = 0;
+            for (var i = 0; i < enlistPerPlayer1; i++) {
+                team1.push({
+                    mon: p.spiritDuels.box[j],
+                    owner: p,
+                    won: 0,
+                    fought: 0,
+                    rate: 0,
+                    alive: true
+                });
+                j++;
+                if (j > p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        for (var a in army2) {
+            p = getAvatarOff(army2[a].id);
+            j = 0;
+            for (var i = 0; i < enlistPerPlayer2; i++) {
+                team2.push({
+                    mon: p.spiritDuels.box[j],
+                    owner: p,
+                    won: 0,
+                    fought: 0,
+                    rate: 0,
+                    alive: true
+                });
+                j++;
+                if (j > p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        team1.shuffle();
+        team2.shuffle();
+        var smaller = Math.min(team1.length, team2.length);
+        safari.events.sd1 = team1.slice(0, smaller);
+        safari.events.sd2 = team2.slice(0, smaller);
+        safari.events.sdStep = 0;
+    };
+    this.spiritDuelTurn = function() {
+        var step = safari.events.sdStep;
+        var team1 = safari.events.sd1.shuffle(), team2 = safari.events.sd2.shuffle();
+        var fighter1 = {}, fighter2 = {}, victory1 = true, victory2 = true;
+        var team1fighters = "", team2fighters = "";
+        var boost1 = 0, boost2 = 0;
+        var range1 = [10, 100], range2 = [10, 100];
+        var res;
+        if (step === 0) {
+            /* Send everyone messages letting them know that the fight is starting */
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
+        }
+        else if (step === 2) {
+            /* Sends everyone another message letting them know that the fight is starting */
+            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
+        }
+        else if (step === 4) {
+            this.spiritDuelsMessage("Preparations complete, Duel about to begin!")
+        }
+        else if (step >= 5) {
+            /* Needs print functions */
+            for (var a in team1) {
+                team1[a].won = 0;
+                team1[a].fought = 0;
+            }
+            for (var a in team2) {
+                team2[a].won = 0;
+                team2[a].fought = 0;
+            }
+            victory1 = true;
+            victory2 = true;
+            for (var a in team1) {
+                fighter1 = team1[a];
+                if (!fighter1.alive) {
+                    continue;
+                }
+                boost1 = spiritMonBoost(fighter1.owner, fighter1.mon);
+                range1 = [10 + boost, 100 + boost];
+                for (var b in team2) {
+                    fighter2 = team2[b];
+                    if (!fighter2.alive) {
+                        continue;
+                    }
+                    boost2 = spiritMonBoost(fighter2.owner, fighter2.mon);
+                    range2 = [10 + boost2, 100 + boost2];
+                    res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
+                    if (res[0] >= res[1]) {
+                        fighter1.won++;
+                    }
+                    if (res[1] >= res[0]) {
+                        fighter2.won++;
+                    }
+                    fighter1.fought++;
+                    fighter2.fought++;
+                }
+            }
+            for (var a in team1) {
+                team1[a].rate = (team1[a].won / team1[a].fought);
+                if (team1[a].rate < 0.5) {
+                    team1[a].alive = false;
+                }
+                else {
+                    victory2 = false;
+                }
+                team1fighters += team1[a].owner + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+            }
+            this.spiritDuelsMessage( team1fighters );
+            for (var a in team2) {
+                team2[a].rate = (team2[a].won / team2[a].fought);
+                if (team2[a].rate < 0.5) {
+                    team2[a].alive = false;
+                }
+                else {
+                    victory1 = false;
+                }
+                team2fighters += team2[a].owner + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+            }
+            this.spiritDuelsMessage( team2fighters );
+            if (victory1 || victory2) {
+                if (victory1 && victory2) {
+                    //This shouldn't happen
+                }
+                else if (victory1) {
+                    safari.events.spiritDuelsTeams[0].won++;
+                }
+                else if (victory2) {
+                    safari.events.spiritDuelsTeams[1].won++;
+                }
+                safari.events.spiritDuelsTeams[0].fought++;
+                safari.events.spiritDuelsTeams[1].fought++;
+                safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
+                safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
+                //Print who won and stuff
+                this.spiritDuelsViewers = [];
+                safari.prepareNextSpiritDuel();
+                return true;
+            }
+        }
+        return false;
+    };
+    this.spiritMonBoost = function( player,mon ) {
+        //Adds buffs according to a mon's owner's skills
+        var out = 0, data, active, mult;
+        for (var s in player.spiritDuels.skills) {
+            data = player.spiritDuels.skills[s];
+            target = data.target;
+            mult = 1;
+            active = false
+            switch (data.type) {
+                case "type": 
+                    if (hasType(target, sys.type(sys.typeNum(mon)))) {
+                        active = true;
+                    }
+                    break;
+                case "color": 
+                    if (getPokeColor(mon) === target) {
+                        active = true;
+                    }
+                    break;
+                case "region": 
+                    if (generation(mon, true).toLowerCase() === target.toLowerCase()) {
+                        active = true;
+                    }
+                    break;
+                case "move": 
+                    if (canLearnMove(mon, sys.moveNum(target))) {
+                        active = true;
+                    }
+                    break;
+                case "name":
+                    if (sys.pokemon(mon)[0].toLowerCase() === target.toLowerCase()) {
+                        active = true;
+                    }
+                    break;
+                case "attack":
+                    if (sys.pokeBaseStats(mon).Attack >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon).Attack >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "spattack":
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon)["Special Attack"] >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "speed":
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 100) {
+                        active = true;
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 110) {
+                        active = true;
+                        mult = 1.2
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 120) {
+                        active = true;
+                        mult = 1.4
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 130) {
+                        active = true;
+                        mult = 1.6
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 140) {
+                        active = true;
+                        mult = 1.8
+                    }
+                    if (sys.pokeBaseStats(mon)["Speed"] >= 150) {
+                        active = true;
+                        mult = 2
+                    }
+                    break;
+                case "any":
+                    active = true;
+                    break;
+            }
+            if (active) {
+                out += (data.val * mult);
+            }
+        }
+        if (isLegendary(mon)) {
+            out += 25;
+        }
+        return out;
+    };
+    this.catchSpiritMon = function( player,mon ) {
+        //Adds the mon to player's spirit box
+        //Also increases their EXP
+        var id = parseInt(mon, 10), exp;
+        player.spiritDuels.box.push(mon);
+        exp = (getBST(id) * isLegendary(id) ? 6 : 1);
+        for (var s in player.spiritDuels.skills) {
+            if (player.spiritDuels.skills[s].type === "exp") {
+                exp *= player.spiritDuels.skills[s].val;
+            }
+        }
+        player.spiritDuels.exp += (getBST(id) * isLegendary(id) ? 7 : 1);
+        this.levelupSpiritRank(player);
+    };
+    this.levelupSpiritRank = function( player ) {
+        //Grabs a skill
+        var nextLevel = player.spiritDuels.rank + 1;
+        if (nextLevel >= safari.events.spiritDuelsRanks.length) {
+            return;
+        }
+        if (player.spiritDuels.exp >= safari.events.spiritDuelsRanks[nextLevel].exp) {
+            player.spiritDuels.rank++;
+            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
+            canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
+            player.spiritDuels.skillChoices = canLearn;
+        }
+    };
+    this.showSpiritSkill = function( src,player ) {
+        //Shows them their spirit monns
+        var skill, msg = "", letters = ["a", "b", "c"], i = 0;
+        msg = "Choose one of these skills with /spiritskill [letter]!"
+        for (var s in player.spiritDuels.skillChoices) {
+            skill = player.spiritDuels.skillChoices[s];
+            msg += "[" + letters[i] + "] " + skill.desc + ". \n";
+            i++;
+        }
+        //send msg
+    };
+    this.chooseSpiritSkill = function( src,player,commandData ) {
+        //Shows them their spirit monns
+        var skill, msg = "", letters = ["a", "b", "c"], i = 0;
+        if (player.spiritDuels.skillChoices === {}) {
+            //send msg
+        }
+        if (letters.indexOf(commandData) === -1) {
+            this.showSpiritSkill( src,player );
+        }
+        for (var s in player.spiritDuels.skillChoices) {
+            if (letters[i] === commandData) {
+                player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[i])) );
+                player.spiritDuels.skillChoices = {};
+                //send msg
+                return;
+            }
+            i++;
+        }
+        return;
+    };
+    this.spiritDuelsCommand = function( src,command,commandData ) {
+        //Shows them their spirit monns
+        var player = getAvatar(src);
+        if (!safari.events.spiritDuelsEnabled) {
+            safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
+        }
+        switch (command) {
+            case "box": this.showSpiritBox(src,player,false,false); break;
+            case "boxt": this.showSpiritBox(src,player,false,true); break;
+            case "active": this.activeSpiritMon(src,player,commandData); break;
+            case "join": this.joinSpiritDuels(src,player); break;
+            case "watch": this.watchSpiritDuels(src,player); break;
+            default: safaribot.sendMessage( src,"That's not a command!",safchan );
+        }
+        return;
+    };
+    this.joinSpiritDuels = function( src,player ) {
+        //Joins duels to be assigned a team next time
+        var id = player.id;
+        if (!safari.events.spiritDuelsEnabled) {
+            return false;
+        }
+        if (!safari.events.spiritDuelsTeams) {
+            return false;
+        }
+        var k;
+        for (var t in safari.events.spiritDuelsTeams) {
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(id);
+            if (k > -1) {
+                team = safari.events.spiritDuelsTeams[t].name;
+                safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
+                return false;
+            }
+        }
+        k = safari.events.spiritDuelsSignups.indexOf(id);
+        if (k > -1) {
+            safaribot.sendMessage( src,"You are already signed up!",safchan );
+            return false;
+        }
+        safari.events.spiritDuelsSignups.push(id);
+        safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
+        return;
+    };
+    this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
+        //Shows them their spirit monns
+        var out = "";
+        var maxPages,
+            list = player.spiritDuels.box;
+
+        var page = 1;
+        if (!isNaN(page)) {
+            maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
+
+            if (page > maxPages) {
+                page = maxPages;
+            }
+            list = list.slice(12 * (page - 1), 12 * (page - 1) + 12);
+        }
+
+        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
+        if (textOnly) {
+            out += this.listPokemonText(list, label);
+        } else {
+            out += this.listPokemon(list, label);
+            if (isAndroid) {
+                out += "<br />";
+            }
+        }
+
+       safaribot.sendHtmlMessage( src,out,safchan );
+    };
+    this.activeSpiritMon = function( src,player,data ) {
+        //Adds the spirit mons to the front of their spirit box if they have it
+        //num = data.getMonNumber(data) || data if data is a number
+        data = getInputPokemon(data);
+        var x = player.spiritDuels.box.indexOf(data.num);
+        if (x === -1) {
+            safaribot.sendMessage( src,"You don't have that Spirit Pokémon!",safchan );
+        }
+        else {
+            player.spiritDuels.box.splice(x, 1);
+            player.spiritDuels.box.unshift(data.num);
+            safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
+        }
+    };
+    this.bestowSpiritMon = function( src,cmd ) {
+        //Adds the spirit mons to the front of their spirit box if they have it
+        //num = data.getMonNumber(data) || data if data is a number
+        var cmd = commandData.split(":");
+        var player = getAvatarOff(cmd[0]);
+        var data = getInputPokemon(cmd[1]);
+        if (cmd.length > 1) {
+            var num = parseInt(cmd[2], 10);
+        }
+        else {
+            num = 1;
+        }
+        var i;
+        if (num === -1) {
+            i = player.spiritDuels.box.indexOf(data.num);
+            if (i === -1) {
+                safaribot.sendMessage( src,player.id + " doesn't have that Spirit Pokémon!",safchan );
+                return;
+            }
+            player.spiritDuels.box.slice(i, 1);
+            safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
+        }
+        else {
+            player.spiritDuels.box.push(data.num);
+            safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Spirit Team.",safchan );
+            return;
+        }
+    };
+    this.spiritDuelsUpdateAlt = function( name1, name2 ) {
+        if (!safari.events.spiritDuelsEnabled) {
+            return false;
+        }
+        if (!safari.events.spiritDuelsTeams) {
+            return false;
+        }
+        var k;
+        for (var t in safari.events.spiritDuelsTeams) {
+            k = safari.events.spiritDuelsTeams[t].indexOf(name1);
+            if (k > -1) {
+                safari.events.spiritDuelsTeams[t].splice(k, 1);
+                safari.events.spiritDuelsTeams[t].push(name2);
+            }
+        }
+        k = safari.events.spiritDuelsSignups.indexOf(name1);
+        if (k > -1) {
+            safari.events.spiritDuelsSignups.splice(k, 1);
+            safari.events.spiritDuelsSignups.push(name2);
+        }
+    };
+    this.spiritDuelsMessage = function(msg) {
+        var e;
+        var list = removeDuplicates(this.spiritDuelsViewers);
+        for (e = 0 ; e < list.length; e++) {
+            sys.sendHtmlMessage(sys.id(list[e]), msg, safchan);
+        }
+    };
+    this.watchSpiritDuel = function(src,player) {
+        safari.events.spiritDuelsViewers.push(player.id);
+        this.spiritDuelsMessage(player.id + " is watching this Spirit Duel!");
+    };
+
     /* Secret Base */
     this.viewDecorations = function(src) {
         if (!validPlayers("self", src)) {
@@ -12857,6 +14103,8 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest alchemist", "Alchemist") + " " + (quest.alchemist.cooldown > n ? "[Available in " + timeLeftString(quest.alchemist.cooldown) + "]" : "[Available]") + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
 
+            safaribot.sendHtmlMessage(src, "-" + link("/quest arborist", "Arborist") + " " + "[Available]" + (stopQuests.alchemist ? " <b>[Disabled]</b>" : ""), safchan);
+
             safaribot.sendHtmlMessage(src, "-" + link("/quest decor", "Decor") + " " + (quest.decor.cooldown > n ? "[Available in " + timeLeftString(quest.decor.cooldown) + "]" : "[Available]") + (stopQuests.decor ? " <b>[Disabled]</b>" : ""), safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest league", "League") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.league ? " <b>[Disabled]</b>" : ""), safchan);
@@ -12912,6 +14160,11 @@ function Safari() {
             case "alchemist":
             case "booooom!":
                 this.alchemyQuest(src, args);
+            break;
+            case "arbor":
+            case "arborist":
+            case "sphere maniac":
+                this.arboristQuest(src, args);
             break;
             case "decor":
             case "decoration":
@@ -13713,7 +14966,7 @@ function Safari() {
                             amt = Math.floor(loop * 1.5);
                         break;
                         case 5:
-                            rew = ["myth", "luxury", "quick", "heavy", "clone"].random();
+                            rew = ["bluapricorn", "ylwapricorn", "grnapricorn", "blkapricorn"].random();
                             amt = Math.floor(loop * 1.25);
                         break;
                     }
@@ -14280,6 +15533,161 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
         }
     };
+    this.arboristQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        var trainerSprite = '<img src="' + base64trainers.arborist + '">';
+        if (stopQuests.alchemist) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ah, I'm mighty tired. Maybe come back anot'er time, will ya?", safchan);
+            return;
+        }
+        var recipes = apricornToBallData;
+        var validItems = Object.keys(recipes);
+        if (!data[0] || data[0].toLowerCase() === "help") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: I can use these here apricorns to make some neat stuff, alright? (Use /quest arborist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
+                return " " + link("/quest arborist:" + x, cap(x, true) + " Ball");
+            }), safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+
+        var item = data[0].toLowerCase();
+        if (!validItems.contains(item)) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Aww, shucks. That ain't sumthin' I know how to make, you see? (To view available recipes use " + link("/quest arborist:help") + ")", safchan);
+            return;
+        }
+        var rec = recipes[item];
+
+        var recipeString = translateStuff(rec.ingredients, true);
+        var colors = ["#FF6347", "#0000FF", "#006400", "#9932CC"];
+        var cc = 0;
+        var possibleRewards = Array.isArray(rec.reward) ? rec.reward.map(function(x){ return translateStuff(x, true); }) : [translateStuff(rec.reward, true)];
+        var coloredRewards = possibleRewards.map(function(x) { cc++; return toColor(x, colors[cc % colors.length]);});
+        possibleRewards = readable(possibleRewards, "or");
+
+        var canMake = true, progress = [], asset, val, req, pokeIng = 0;
+        for (var e in rec.ingredients) {
+            asset = translateAsset(e);
+            if (asset.type == "item") {
+                val = player.balls[asset.id];
+                req = plural(rec.ingredients[e], asset.input);
+            } else if (asset.type == "money") {
+                val = player.money;
+                req = addComma(rec.ingredients[e]);
+            } else {
+                val = countRepeated(player.pokemon, asset.id);
+                pokeIng += val;
+                req = rec.ingredients[e] + " " +  asset.name;
+            }
+            if (val < rec.ingredients[e]) {
+                canMake = false;
+            }
+            if (asset.type === "money") {
+                progress.push("$" + addComma(val) + "/$" + addComma(req));
+            } else {
+                progress.push(val + "/" + req);
+            }
+        }
+        if (!data[1] || data[1].toLowerCase() !== "finish") {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: See them apricorns? Bring 'em here so I can make y'all the sweetest catching materials around, 'kay? (If you have the required materials you can use " + link("/quest arborist:" + item + ":finish") + " to create an item)", safchan);
+            safaribot.sendHtmlMessage(src, "<b>" + cap(item, true) + "</b> Recipe: " + toColor(recipeString, "red") + " --> " + readable(coloredRewards, "or"), safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+
+        if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+
+        if (!canMake) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+            return;
+        }
+
+        for (e in rec.ingredients) {
+            asset = translateAsset(e);
+            if (asset.type == "poke") {
+                if (!canLosePokemon(src, asset.input, "give", false, rec.ingredients[e])) {
+                    return;
+                }
+            }
+        }
+        var hasRaffle = false;
+        var cantHold = [], pokeRew = 0, ing, reward = Array.isArray(rec.reward) ? rec.reward.random() : rec.reward;
+        
+        for (e in reward) {
+            asset = translateAsset(e);
+            ing = rec.ingredients[e] || 0;
+            if (asset.type == "item") {
+                if (player.balls[asset.id] - ing + reward[e] > getCap(asset.id)) {
+                    cantHold.push(asset.name);
+                }
+                if (asset.id === "entry") {
+                    hasRaffle = true;
+                }
+            } else if (asset.type == "money") {
+                if (player.money - ing + reward[e] > moneyCap) {
+                    cantHold.push("money");
+                }
+            } else {
+                pokeRew += reward[e];
+            }
+        }
+        if (pokeRew > 0 && player.pokemon.length - pokeIng + pokeRew > getPerkBonus(player, "box")) {
+            cantHold.push("Pokémon");
+        }
+        if (cantHold.length > 0) {
+            safaribot.sendHtmlMessage(src, trainerSprite + readable(cantHold) + " mus' be your favorite thing" + (cantHold.length > 1 ? "s" : "") + " or sumthin' cuz y'already plum full of " + (cantHold.length > 1 ? "those" : "that") + "!", safchan);
+            return;
+        }
+        if (hasRaffle && !rafflePrizeObj) {
+            safaribot.sendMessage(src, "There is no raffle going on right now so any entry that you obtain now would be invalid!", safchan);
+            return;
+        }
+
+        safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Pokéballs!!", safchan);
+        var lostPoke = false, lostRare = [];
+        var ingUsed = {};
+        for (var e in rec.ingredients) {
+            ingUsed[e] = -rec.ingredients[e];
+            asset = translateAsset(e);
+            if (asset.type === "poke") {
+                lostPoke = true;
+                if (isRare(asset.id)) {
+                    lostRare.push(poke(asset.id));
+                }
+            }
+        }
+        for (e in reward) {
+            asset = translateAsset(e);
+            if (asset.type === "poke" && reward[e] < 0) {
+                lostPoke = true;
+                if (isRare(asset.id)) {
+                    lostRare.push(poke(asset.id));
+                }
+            }
+        }
+        giveStuff(player, ingUsed, true);
+        var rew = giveStuff(player, toStuffObj(reward), true);
+        safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
+        safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
+        if (rec.records) {
+            for (e in rec.records) {
+                player.records[e] += rec.records[e];
+            }
+        }
+        if (lostPoke) {
+            this.logLostCommand(sys.name(src), "quest arborist:" + data.join(":"), "gave " + translateStuff(rec.ingredients));
+            if (lostRare.length > 0) {
+                sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Arborist by " + sys.name(src) + "::\n");
+            }
+        }
+        sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
+        this.saveGame(player);
+    };
     this.alchemyQuest = function(src, data) {
         var player = getAvatar(src);
         if (cantBecause(src, "start a quest", ["tutorial"])) {
@@ -14293,7 +15701,7 @@ function Safari() {
         var recipes = recipeData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Princess Fluffybutt and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hi... Let's make some stuff before I fall asleep again. (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: If ya got some " + finishName("philosopher") + ", we can try some more audacious transmutations! (Use " + link("/quest alchemist:philosopher") + " to view the other recipes)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
                 return " " + link("/quest alchemist:" + x, cap(x, true)) + " <small>(CD: " + recipes[x].cooldown + "h)</small>";
@@ -14308,7 +15716,7 @@ function Safari() {
             return;
         }
         if (!validItems.contains(item)) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: That's not sumthin' I can make, ya silly badonkadonk! (To view available recipes use " + link("/quest alchemist:help") + ")", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: You silly badonkadonk... I don't know how to make that! (To view available recipes use " + link("/quest alchemist:help") + ")", safchan);
             return;
         }
         var rec = recipes[item];
@@ -14802,7 +16210,7 @@ function Safari() {
                 if (next === gym.trainers.length) {
                     var reward = [
                         ["gem", 2],
-                        ["luxury", 7],
+                        ["pnkapricorn", 11],
                         ["gacha", 10],
                         ["dust", 80],
                         ["golden", 2],
@@ -15749,11 +17157,11 @@ function Safari() {
     };
     this.createMAuction = function(index, set) {
         var rewards = [
-            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden", "@form", "@fossil"],
-            ["@form", "2@golden", "@fossil", "@rare", "@fossil"],
-            ["@form"],
+            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden"],
+            ["2@golden", "@fossil", "@rare", "5@grnapricorn"],
+            ["@form", "2@egg", "2@golden", "20@pnkapricorn"],
             ["@burn", "@nugget", "15@silver", "5@gem", "2@pack", "@nugget", "@fossil"],
-            ["10@myth", "15@luxury", "10@quick", "15@spy", "10@heavy", "10@clone", "2@egg", "2@golden", "@form"],
+            ["10@redapricorn", "15@blkapricorn", "10@whtapricorn", "15@pnkapricorn", "10@grnapricorn", "10@bluapricorn"],
             ["@fossil"]
         ];
         var out = {
@@ -16197,7 +17605,7 @@ function Safari() {
             reward.push("1@nugget");
         } 
         if (p >= 1500) {
-            reward.push((this.level * 3) + "@" + ["quick", "heavy", "clone", "premier"].random());
+            reward.push((this.level * 5) + "@" + ["blkapricorn", "whtapricorn", "grnapricorn", "bluapricorn"].random());
         } 
         if (this.finishMode === "cleared"){
             reward.push("5@gem");
@@ -16483,8 +17891,8 @@ function Safari() {
             dust: { chance: 15, item: "dust", amount: 9 * level },
             safari: { chance: 15, item: "safari", amount: 3 * level },
             great: { chance: 12, item: "great", amount: level },
-            quick: { chance: 9, item: "quick", amount: level },
-            spy: { chance: 10, item: "spy", amount: level },
+            pnkapricorn: { chance: 9, item: "pnkapricorn", amount: 2 * level },
+            redapricorn: { chance: 10, item: "redapricorn", amount: level },
             rock: { chance: 12, item: "rock", amount: 4 * level },
             pearl: { chance: 10, item: "pearl", amount: 1 * level },
             stardust: { chance: 7, item: "stardust", amount: 1 * level }
@@ -16650,8 +18058,8 @@ function Safari() {
             bait: { chance: 14, item: "bait", amount: 5 * level },
             dust: { chance: 12, item: "dust", amount: 14 * level },
             myth: { chance: 15, item: "myth", amount: 2 * level },
-            heavy: { chance: 12, item: "heavy", amount: 2 * level },
-            spy: { chance: 15, item: "spy", amount: 2 * level },
+            redapricorn: { chance: 12, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
+            pnkapricorn: { chance: 15, item: "pnkapricorn", amount: 2 * level },
             bigpearl: { chance: 4, item: "bigpearl", amount: level }
         };
 
@@ -16791,7 +18199,7 @@ function Safari() {
             spray: { chance: 2 + level, item: "spray", amount: 1 },
             starpiece: { chance: 3 + level, item: "starpiece", amount: 1 },
             silver: { chance: 14, item: "silver", amount: level },
-            ultra: { chance: 16, item: "ultra", amount: 1 * level },
+            redapricorn: { chance: 18, item: "redapricorn", amount: Math.floor(3 + level/2) },
             quick: { chance: 17, item: "quick", amount: 1 * level },
             clone: { chance: 17, item: "clone", amount: 1 * level },
             rock: { chance: 21, item: "rock", amount: 10 * level },
@@ -16962,8 +18370,8 @@ function Safari() {
             nugget: { chance: 1 * level, item: "nugget", amount: 1 },
             money: { chance: 14, item: "money", amount: 180 * level },
             safari: { chance: 19, item: "safari", amount: 5 * level },
-            myth: { chance: 13, item: "myth", amount: 1 * level },
-            spy: { chance: 14, item: "spy", amount: 1 * level },
+            redapricorn: { chance: 13, item: "redapricorn", amount: 1 * level },
+            grnapricorn: { chance: 14, item: "grnapricorn", amount: 1 * level },
             pearl: { chance: 9, item: "pearl", amount: 1 * level }
         };
         while (treasuresAmt > 0) {
@@ -17376,8 +18784,8 @@ function Safari() {
             silver: { chance: 7, item: "silver", amount: 1 * level },
             gacha: { chance: 12, item: "gacha", amount: 3 * level },
             great: { chance: 10, item: "great", amount: 3 * level },
-            ultra: { chance: 9, item: "ultra", amount: 2 + level },
-            luxury: { chance: 11, item: "luxury", amount: 1 * level },
+            redapricorn: { chance: 9, item: "redapricorn", amount: 2 + level },
+            whtapricorn: { chance: 11, item: "whtapricorn", amount: 1 * level },
             clone: { chance: 11, item: "clone", amount: 1 * level },
             premier: { chance: 8, item: "premier", amount: 2 * level }
         };
@@ -17546,7 +18954,7 @@ function Safari() {
             silver: { chance: 7, item: "silver", amount: 1 * level },
             bait: { chance: 13, item: "bait", amount: 2 * level },
             great: { chance: 13, item: "great", amount: 2 * level },
-            luxury: { chance: 13, item: "luxury", amount: 1 * level },
+            blkapricorn: { chance: 13, item: "blkapricorn", amount: 1 * level },
             quick: { chance: 11, item: "quick", amount: 1 * level },
             rock: { chance: 10, item: "rock", amount: 10 * level },
             stardust: { chance: 6, item: "stardust", amount: 1 * level }
@@ -17716,7 +19124,7 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * 1.4)), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
@@ -17733,12 +19141,13 @@ function Safari() {
 
         do {
             this.hazards = {};
+            max = total;
             count = 0;
             for (e = 0; e < order.length; e++) {
                 if (order[e] === blockedHazard) {
                     continue;
                 }
-                val = sys.rand(0, maxsize);
+                val = sys.rand(1, maxsize);
                 if (max - val < 0) {
                     val = max;
                 }
@@ -17830,7 +19239,7 @@ function Safari() {
             this.treasureLocation = Object.keys(this.hazards).random();
         }
 
-        var known = Math.min((Math.floor( level * 0.5 ) + sys.rand(3, Math.ceil(count*0.7))),count-2), unknown = sys.rand(Math.ceil(level/2), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
+        var known = Math.min((Math.floor(( level * 0.9 ) + sys.rand(3, Math.ceil( level*1.2 )))),count-(2 + Math.floor( level * 0.34))), unknown = sys.rand(Math.ceil(level*0.7), level), display = JSON.parse(JSON.stringify(this.hazards)), h, k = known, n = 0;
         hazList = Object.keys(display);
         var revealed = {};
         total = 0;
@@ -18182,10 +19591,10 @@ function Safari() {
             silver: { chance: 7, item: "silver", amount: 2 * level },
             gacha: { chance: 12, item: "gacha", amount: 4 * level },
             dust: { chance: 16, item: "dust", amount: 10 * level },
-            ultra: { chance: 15, item: "ultra", amount: 3 * level },
-            myth: { chance: 14, item: "myth", amount: 2 * level },
-            luxury: { chance: 18, item: "luxury", amount: 2 * level },
-            heavy: { chance: 14, item: "heavy", amount: 2 * level },
+            redapricorn: { chance: 15, item: "redapricorn", amount: (3 + (2 * level)) },
+            grnapricorn: { chance: 14, item: "grnapricorn", amount: (4 + (2 * level)) },
+            whtapricorn: { chance: 18, item: "whtapricorn", amount: (4 + (2 * level)) },
+            blkapricorn: { chance: 14, item: "blkapricorn", amount: (4 + (2 * level)) },
             premier: { chance: 11, item: "premier", amount: 3 * level },
             pearl: { chance: 10, item: "pearl", amount: 2 + level },
             bigpearl: { chance: 6, item: "bigpearl", amount: 1 * level },
@@ -21502,6 +22911,8 @@ function Safari() {
                 target.nameColor = script.getColor(src);
                 this.saveGame(player);
                 this.saveGame(target);
+
+                safari.spiritDuelsUpdateAlt(name1, name2);
             } catch (err) {
                 if (byAuth) {
                     safaribot.sendMessage(user, "Alt Transfer aborted due to an error during the operation! [" + err + (err.lineNumber ? " at line " + err.lineNumber : "") + "]", safchan);
@@ -22639,6 +24050,15 @@ function Safari() {
                 safari.throwBall(src, commandData, null, null, command);
                 return true;
             }
+            if (command === "spiritduel" || command === "spiritduels") {
+                var info = commandData.split(":");
+                safari.spiritDuelsCommand(src, info[0], info[1]);
+                return true;
+            }
+            if (command === "spiritskill" || command === "spiritskills") {
+                safari.chooseSpiritSkill(src, commandData);
+                return true;
+            }
             if (command === "photo") {
                 safari.takePhoto(src, commandData);
                 return true;
@@ -22778,11 +24198,15 @@ function Safari() {
                 return true;
             }
             if (command === "bag" || command === "bagt") {
-                safari.viewItems(src, command === "bagt");
+                safari.viewItems(src, command === "bagt", commandData);
                 return true;
             }
             if (command === "box" || command === "boxt" || command === "boxs") {
                 safari.viewBox(src, commandData, (command === "boxt" || command === "boxs"), command === "boxs");
+                return true;
+            }
+            if (command === "cherish" || command === "cherisht" || command === "cherished") {
+                safari.viewCherished(src, command === "cherisht");
                 return true;
             }
             if (command === "album") {
@@ -25269,6 +26693,9 @@ function Safari() {
                 checkUpdate();
                 return true;
             }
+            if (command === "bestowspirit") {
+                safari.bestowSpiritMon(src,commandData);
+            }
             if (command === "bestow") {
                 var cmd = commandData.split(":");
                 if (cmd.length < 2) {
@@ -25847,6 +27274,10 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "massitem") {
+                var info = commandData.split(":");
+                this.massConvertItem(info[0], info[1]);
+            }
             if (command === "loadtrials" || command === "loadtrial") {
                 var cThemes = trialsData ? trialsData : {};
                 var url = commandData === "*" ? (permObj.get("trialsurl") || commandData) : commandData;
@@ -25861,7 +27292,7 @@ function Safari() {
                             trialsData = JSON.parse(resp);
                             permObj.add("trialsurl", url);
                             if (!safari.hasOwnProperty("events")) {
-                                safari.events = {trialsEnabled: false, trialsParticipants: []};
+                                safari.events = {trialsEnabled: false};
                             }
                             safari.events.trialsData = trialsData;
                             safaribot.sendMessage(src, "Trials successfully loaded!", safchan);
@@ -25869,6 +27300,35 @@ function Safari() {
                         } catch (error) {
                             trialsData = cThemes;
                             safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    trialsData = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
+            if (command === "loadspiritduels" || command === "loadspiritduel") {
+                var cThemes = {};
+                var url = commandData === "*" ? (permObj.get("duelsurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading Spirit Duels from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            data = JSON.parse(resp);
+                            permObj.add("duelsurl", url);
+                            if (!safari.hasOwnProperty("events")) {
+                                safari.events = {spiritDuelsEnabled: false};
+                            }
+                            safari.loadDuels(src, data);
+                            safaribot.sendMessage(src, "Duels successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            safaribot.sendMessage(src, "Couldn't load Duels from " + url + "! Error: " + error, safchan);
                         }
                     });
                 } catch (err) {
@@ -25999,6 +27459,14 @@ function Safari() {
                 safari.safariEvents( src,"trials",false );
                 return true;
             }
+            if (command === "enableduels") {
+                safari.safariEvents( src,"duels",true );
+                return true;
+            }
+            if (command === "disableduels") {
+                safari.safariEvents( src,"duels",false );
+                return true;
+            }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
@@ -26019,6 +27487,14 @@ function Safari() {
             }
             if (command === "finishtrials") {
                 safari.endTrials();
+                return true;
+            }
+            if (command === "startduels") {
+                safari.assignDuelsTeams();
+                return true;
+            }
+            if (command === "nextduels" || command === "nextduel") {
+                safari.progressDuels();
                 return true;
             }
             if (command === "nextspawn") {
@@ -26320,6 +27796,7 @@ function Safari() {
         gachaItems = parseFromPerm("gachaRates", gachaItems);
         finderItems = parseFromPerm("finderRates", finderItems);
         packItems = parseFromPerm("packRates", packItems);
+        apricornToBallData = loadApricornRecipes();
         
         dailyBoost = parseFromPerm("dailyBoost", null);
         if (dailyBoost === null) {
@@ -26385,6 +27862,16 @@ function Safari() {
         }
         updateItemHelp();
         updateItemData();
+
+        spiritSpawn = false;
+        wildSpirit = false;
+
+        if (!safari.hasOwnProperty("events")) {
+            safari.events = {
+                spiritDuelsEnabled: false,
+                trialsEnabled: false
+            };
+        }
         
         try {
             var data = JSON.parse(sys.getFileContent(decorationsFile));
@@ -26557,6 +28044,14 @@ function Safari() {
                 }
             }
         }
+        if (safari.events && contestCooldown % 7 === 0) {
+            if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
+                var finished = safari.spiritDuelTurn();
+                if (finished) {
+                    checkUpdate();
+                }
+            }
+        }
 
         if (successfulBaitCount <= 0) {
             lastBaitersDecay--;
@@ -26577,7 +28072,7 @@ function Safari() {
                             aType = sys.type(sys.pokeType1(p.party[0]));
                             crystalEffect = !["master", "photo"].contains(preparationThrows[i]) && p.zcrystalDeadline >= now() && p.zcrystalUser === p.party[0] && chance(zCrystalData[aType].chance) ? zCrystalData[aType] : { effect: "none" };
                             
-                            throwChances[i] = size * (preparationThrows[i] == "quick" ? itemData.quick.bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
+                            throwChances[i] = size * (["quick", "lightning", "spy"].indexOf(preparationThrows[i]) !== -1 ? itemData[preparationThrows[i]].bonusRate : 1) * (crystalEffect.effect === "priority" ? sys.rand(crystalEffect.rate[0], crystalEffect.rate[1]) : 1);
                         }
                     }
                     while (Object.keys(throwChances).length) {
@@ -26887,12 +28382,24 @@ function Safari() {
                         permObj.add("loginDaysDown", 0);
                     }
                 }
+                if (safari.events.spiritDuelsEnabled) {
+                    if (safari.events.spiritDuelsBattling) {
+                        safari.events.currentSpiritDuel = true;
+                    }
+                }
                 safari.runPendingActive();
                 checkUpdate();
             } else {
                 if (!currentPokemon && chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    safari.createWild(null, null, amt);
+                    if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
+                        spiritSpawn = false;
+                        wildSpirit = true;
+                        safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
+                    }
+                    else {
+                        safari.createWild(null, null, amt);
+                    }
                 }
             }
         }
