@@ -735,7 +735,7 @@ function Safari() {
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC"
     };
     var gachaItems = {
-        safari: 95, great: 50, ultra: 30, bluapricorn: 25, grnapricorn: 24, pnkapricorn: 36,
+        safari: 95, great: 50, ultra: 30, bluapricorn: 25, grnapricorn: 24, pnkapricorn: 25,
         bait: 90, rock: 120, gem: 9, dust: 60,
         wild: 70,
         gacha: 1,  master: 1,
