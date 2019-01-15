@@ -9963,7 +9963,7 @@ function Safari() {
             num = player.balls[item1];
             player.balls[item2] = num;
             player.balls[item1] = 0;
-            saveGame(player);
+            this.saveGame(player);
         }
     };
 
@@ -27290,6 +27290,10 @@ function Safari() {
                     safaribot.sendMessage(src, "Couldn't load Missions from " + url + "! Error: " + err, safchan);
                 }
                 return true;
+            }
+            if (command === "massitem") {
+                var info = commandData.split(":");
+                this.massConvertItem(info[0], info[1]);
             }
             if (command === "loadtrials" || command === "loadtrial") {
                 var cThemes = trialsData ? trialsData : {};
