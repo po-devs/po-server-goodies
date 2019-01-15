@@ -4336,15 +4336,15 @@ function Safari() {
             }
             else {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
-                safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
-                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
-                    player.pokemon.push(evolved);
-                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
-                } else {
-                    player.pokemon.push(currentPokemon);
-                }
+            }    
+            safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
+            if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
+                player.pokemon.push(evolved);
+                sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
+                sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+            } else {
+                player.pokemon.push(currentPokemon);
             }
             player.records.pokesCaught += 1;
             if (isBaited) {
