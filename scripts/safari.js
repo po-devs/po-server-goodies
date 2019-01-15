@@ -2529,12 +2529,6 @@ function Safari() {
         }
     }
     function finishName(name) {
-        if (name === "heavy") {
-            name = "level";
-        }
-        if (name === "trueheavy") {
-            name = "heavy";
-        }
         return itemAlias(name, true, true);
     }
     function costumeAlias(name, returnGarbage, full) {
