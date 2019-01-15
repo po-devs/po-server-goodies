@@ -147,6 +147,11 @@ function Safari() {
             cherry: 0,
             blkapricorn: 0,
             whtapricorn: 0,
+            pnkapricorn: 0,
+            ylwapricorn: 0,
+            bluapricorn: 0,
+            redapricorn: 0,
+            grnapricorn: 0,
             coupon: 0,
             fossil: 0,
             form: 0,
@@ -632,7 +637,7 @@ function Safari() {
             redapricorn: {name: "redapricorn", fullName: "Red Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["redapricorn", "red apricorn"], tradable: true},
             bluapricorn: {name: "bluapricorn", fullName: "Blue Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["bluapricorn", "blue apricorn", "blueapricorn"], tradable: true},
             ylwapricorn: {name: "ylwapricorn", fullName: "Yellow Apricorn", type: "alchemy", icon: 133, price: 1000, aliases:["ylwapricorn", "yellow apricorn", "yellowapricorn"], tradable: true},
-            pnkapricorn: {name: "pnkapricorn", fullName: "Pink Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["pnkapricorn", "pink apricorn", "pnkapricorn"], tradable: true},
+            pnkapricorn: {name: "pnkapricorn", fullName: "Pink Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["pnkapricorn", "pink apricorn", "pinkapricorn"], tradable: true},
 
             //Perks
             amulet: {name: "amulet", fullName: "Amulet Coin", type: "perk", icon: 42, price: 5000, bonusRate: 0.03, maxRate: 0.3, aliases:["amulet", "amuletcoin", "amulet coin", "coin"], tradable: true, tradeReq: 10},
