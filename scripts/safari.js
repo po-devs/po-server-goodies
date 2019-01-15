@@ -216,7 +216,7 @@ function Safari() {
             catchLightning: 0,
             catchMirror: 0,
             catchInvert: 0,
-            catchTrueheavy: 0,
+            catchLevel: 0,
             catchPhoto: 0,
             catchFriend: 0,
             catchLove: 0,
@@ -478,7 +478,7 @@ function Safari() {
                 }
             },
             "level": {
-                "reward": "20@heavy",
+                "reward": "20@level",
                 "ingredients": {
                     "whtapricorn": 15,
                     "grnapricorn": 15,
@@ -502,7 +502,7 @@ function Safari() {
                 }
             },
             "heavy": {
-                "reward": "20@trueheavy",
+                "reward": "20@heavy",
                 "ingredients": {
                     "blkapricorn": 20,
                     "bluapricorn": 10,
@@ -557,7 +557,7 @@ function Safari() {
             master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
             myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.25, cooldown: 15000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-            heavy: {name: "level", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
+            level: {name: "level", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
             quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
             premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
@@ -568,7 +568,7 @@ function Safari() {
             spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10},
 
             lightning: {name: "lightning", fullName: "Lightning Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 12000, aliases:["lightningball", "lightning", "lightning ball"], tradable: true},
-            trueheavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
             photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
             mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 5, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
             inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
@@ -695,7 +695,7 @@ function Safari() {
     pack: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAAJ1BMVEX////w8PDw6Ijo0FD4yDjgqDjAqFComEDYcDiIaDg4YABYUDgwMDDaxm2rAAAADXRSTlMA////////////////LQRBrQAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAw0lEQVR4nH3PMQrCQBAFUA8wjeQGAQ+gA2vEY0jA3kJQGxsXJZ2FE0iXIg7JEey0SLpAICmcQ5nd1ZRO9R87w/JHo38jUg8ZAirkh4YoZvmyKYk5vzu1y6oHxfYQcM9cElkILpkr9wJJqvIncmYgt1QhKh2ZrbpZnPqsC7MFM3+utY7sCfjhCs/8SgzaSbhGxNIh8OmKeHibvXZKQY+dtkcOF4ejpzaoLhGYj7rxGHGrHxbQeX0+C7iqkpn86y4y9B7mAwpHT1Z1wCFpAAAAAElFTkSuQmCC",
     fragment: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAJFBMVEUAAAAxMTGcakFKSmq9i1rerHu0rM32xZzu7v+Ui6zVze7///+kAd76AAAAAXRSTlMAQObYZgAAAAFiS0dECx/XxMAAAAAJb0ZGcwAAAAMAAAADAHeTl6MAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAHdElNRQfeCxISIDTCst7zAAAACXZwQWcAAAAeAAAAHgD4T+E9AAAAoUlEQVQY02NgwAcYBQURHCElJQRPWEnFBc5jNHJxCREUgHKSjUNDXAOhUmJpIi6hhVCOxCwTl3Aoh7FrhqGzMVSP2MrmiWaGMInM5pkzLCEyEm0rm6dlNkM5q8CciWBVWatmWKalzQBrYkzLAnPAmqAciCbGaSubZ07LnAnlZCI4DJIzm6elZUItYpScYTlzJsRokLcbBQUbBWDeEwAjVAAAUGwxQVWp15AAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTUtMDMtMDJUMTc6MTk6MzYtMDY6MDDWjJb5AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTExLTE4VDE4OjMyOjUyLTA2OjAwZ+O8ygAAAABJRU5ErkJggg==",
     mono: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RTE5NkM1NDcwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RTE5NkM1NDYwMDM5MTFFNjhENTlFMkEzNzYxNTAxMUMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEQjE4NzA3RDM5MDBFNjExOTBGRUJBQkUxRDhCNTE0RiIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Puecb4wAAAAqUExURfj4+Hp6es3NzZqamlZWVqamptra2oKCgrq6uk1NTTAwMHt7e2ZmZgAAAAV/T5sAAAAOdFJOU/////////////////8ARcDcyAAAAJdJREFUeNqskkkSwyAMBAW20AL5/3cjhALYKZ+SPlHThcBj4PUA/CDU+RKq1ZkqhFINSHehlI8QHMaF1gzghpmp6SYOgMyDtkQ/N3/y2poPc8ExxWLL7yKwfAniS35OIWZEZMyhU5YwEFB63Nc6r5tEAEAGafuOAqnv8LigbpWYSak4qJcSsUSMeq8dnXvtzz/qD4/hLcAAPMwYmRr6Be0AAAAASUVORK5CYII=",
-    heavy: "data:image/png;base64,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",
+    level: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFrElEQVRYhe2WaWyUVRSGn/t909k6dJlOZ6YbEGnB0qqIQhRXBMRoZNMQUQyyG4mK0Wj8Y9SY4AZGTdVoVFRkcVcqEkGj/jCAirSACEw3u01rOwzdZubbrj+KpS1TqER/yZt8+X7c3PO+573nnBw4h/87xFncsQN+YDSQCyhAGKg98Y//VwLcwHyEWJSamnp+eka6z+ly2QSCeDxmdRzviHR1doaklO8DG4DovyVAAabbUlLKSktLC+9asphAIMCOb3bS0tp6MpAQxHpi1FRVUV9bF9Z1/UHgI0A7XXB1GAIeSctIf+XmubMD765fz4xp0yktKcHpdLJr926EOJmDLcVGtt+P0+XydHZ23axrmhf4GpBDBbedIfOH/cHgmomTLmHenLnk5uQCYJomlfsrEUL0Re5vZXbATzyWsIebm+6LRiJ24H6GcOJ0DsxMS08vmzzlshTFZiPb0Lh4zBha2tt5a+NGvv3uO4QQOKWF3zLoVNQ+Eaqq0nG8g1SPh3gsNkHTtAZgbzKSoWrAmZUh9t9+28WFoeYCTAUe6mklkOimSnXy5oggUgjyTZ2FiQjp0mSDI5ODNheC3nqoqa7BMi0M3aAmFIoahl5Mb5ecYnMyzJ97g7Pw8bvDXFJ8DMWCAzYXaoqdQlUyytK5Uu9iZbyNTGmiSMlFRqzvspQSaYFlwZSxkrtmeDKAVcN1wK4q7Pjly6yri0bZEEgqQuns+sHPdQcSKJYgQa/1UgikhH02F5vtmUjA6TDJz+qhxFnL9Rfo5GWYRGOSwmXh3ztj8nIGtWcyAfnjzlN/2rfdF7SMvpwAaH7dT+w318lMLdAmJdib5SAtTScnK87IYA8+U8fWKpAnwqsq3PR4W3xnReIq4Of+ZMm64LwJ41N8mKfq9N4YpeGACyFAOC2ybz3GiMldFMt+eRhAtdpHDmCacNk4u3NnRWLCcAQE81yqzUrSuY4CDff4GFqjneCKVhwFGshBJoYVhC5O8bYgWwUoGBwzmQBFMQSiXkHmWQPKVCAI3BFBqBLhthjAYgGtCuK4kvRhld6BdUrRJxPQ2hwxLaVbUcw6ATkmuKC+2aTs3R6O1BiMGamyekkqeYETYyQOhFVED8nJFTgaNgAaB58lG0TycKNxZ0vUco/y2vAZKTTWWVyzPIrHN5Mrpy7iYMjBU+squbrYQW4iBfGnijDEAHYhwJSSvdU6j75znDe2d2vAs0B9f7JkXeAEvs8vGDm5o72BK4rtxDWJZ/RMFi1eSntbO75sP598/BHh/ZvY9oQP80S3qCoYFtS2GHy5J075TzH2HNXIyRvDH3/U1pqmOQloO9MTxIFNc+beMnnKFVex6f332PPNDh6Ycym6bnDDjbP44vNPmTV7His+28jLX3QR1yRNEZMjTQYH63T+7BT4AzlMnDiV5+65icaGep5e8+S2weRDCQBY/+EHmx+9Y+Ei/wdbtrB8+TJ+P3wIrzeLcLiZY5F2VFVFM21s3FcEQJbPR8HEAqYtKKaoaCyFReNwu91Uh0KsW/t0HHhhCK4hsfDaqdMS3d3dsrKyUnq9Xrn6gYflc8+/JF997W2Zm5snV927Wja3RmVDc1TWNbTL6rqWvu9odZP8cfc+OWv2PBN47J+SQ+/qVbZ48VLZ3d0jt27dKouLx8sRI9JkRmamXLJ0pTx4qGYAaX/yXXsq5YqVq6SiKFsBz1AkZ9qIFKBs2vTrl61d+6LN6/MTiURwOBy43W5Mc8C4xLIsYrEYTY2NlL38glVe/tk2y7IWAF1nK+BvJ5bk5eU/c9uChWm3zr+dLK+3dxMSAikluq6jaxodHR1s/6qcLZs3xKuqQmuAdacjH66AvxEE7vV4PPNKSi4cPb6k1BkIBEEI2tvaOHL4kFZR8WtTNHqsHHgRCA0n6Nms5RnAWOBCeme7ArTQu/EcIUmrncM5nA5/AW0maEi2hJyJAAAAAElFTkSuQmCC",
     spy: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFd0lEQVRYhe2Wa2yTZRTHf8/by9u1sNW1QDccY9w25oLzMj/gFfEWED8YSFggIaABI2qEeCNEJX7BBEVRiZp4C14wOpWYGJ2oXCdeCSJ2MGRuTF27du26rt363h4/tIAbHUzUT/pPTt7kfZ5z/v9zznOD//FfhzgHHzdQClQBgdy/34GW3Df9bwkoBpY5HaK+evKoSbVVhd4SvxNTQiiS4WBLMhY81teq6fJN4DWg558S4AQWKj7/hvo5pWPXLhhNwK9imBJLwg+tdlpDNuw2gaX3s/urNj5r+j0U7tZWAQ2A8XcEKMBT1NbdceWdtzq3Vn2OAzPnKGncr7J1pwt5YrYET4HE507y3dcHtO9/ij8NPHgmAttZMt/E7Ll3jb33Ydu9pYeosXec1Gxa8PrnBST7FYTgpBmmINGv4g+U2qLdvZenUyk3sBOw/qqAJdRetm7++ieVd665iJkTZmAk9iP1RLY0AnRTcKDVjqIMdpSAJW24PR7isVidpmktwKG/IsCPb8yHrFrnabhxJlNHe3A4CpFaDL33h1wVBFNKTGZUGMhcDwpUyVivxawLNXrTgkSfRNhstkS85wrLsl4GBoYS2YcRsJzrbi7G58fMBTel5JfeOONyGZ7IdHKJyZRSA9MUmBIcNvixzc57TTYsaaGqKsV+X6CrM7QM2DiSCozCqW7k7jXjcKp8353A73Sw+ehx7j7iokgMUOmM4BQmp9awQFEkliVoCjp4ubEA04LeRC+GYeByuYh2RcYAbwD6n8ny7YIaKmv28dgzozANkDKbqgCEwAZcEfqGxfoepp1v4lYl3UmFY502fvzFzvFINidd1wiHwlkSIWgJNvf0p9N1wM9na0E1k6uy5FnvQTJ9oXYKmvbzgaliWgIpQVGyltOIlJJYd+ykj5QSt8ft7U+npw0VMGT9AhBAVYcpDnQFyvn2qlvQ1ALsisRhB5tyavYJck3TBvk5nE6ACUPj5RMAiTgkhztJBUmvn/jY8aeNWJZFNBIllUohxMhO+XwtiJLqg442KKuA0YWnRlqC2FqPMC3aQcCpZOudQyaTIR6Lo2laXnJd0wF+HYmAQzQfTFMx1U0mA2PGgbcYXniCks42LqipoTnYTEjLUHvpJUgkfX19pFNphBCnkVuWRTKRIBGP9zKk/5C/0YXAPsXhqLbGBGDGpZBOMT3SwdPPPEekK0qgdDwP3LeK4x1tlJaVIaUcRCyEIJPJkIjHiXfHyAxkkNI6AFzOkOs63zmQAUoWLVpyVV11NeG9X5AKHuS221dgmZJZs29g+6eN3DRnLu+8/Raji4rQNZ3MwAB9ySTdkSidv/5GJBTC7XJz7bXXUzahnGPHjm4CdoykBQCbd+364p6PPt5euO6RtSxdupSengQTK+yoqgu32wMSpCU5GmxGCEFBgRuv10tV5XQurL2ImTOvpKysnHgsxorlS2LAS/mIzrRU75gzd96z7zW8a29s/ITly1ewZu2jWJakqKiIrW9twTAMntq0GUWx4VJduD0ehBDous7AwABd4TBrHlpt7Pty7wrglTNw5YUTeHXlXffIvlRKrl69Wnq9XnnxJXWyfGKFnDJ1mtyx+2vZ2h4+zYJH2uWuPd/K+QsWSuD5XKy8ONtmdQIvzpk7b/H6x5+w9yQSfPVlE8U+P1dfMwu73TFosmEYJJNJ2tvb2LhhvbF3766XgJUM8xYYiQAAF7Bs/Pll6+vrFxfOX1BPsc93ctA0TQxdR9N1IuEw27Y1sO2Dhp5QqPN+YAugDRd4pAJOIACs9Hg8t1ZNv2BiZWWV+7zzigFBPN7N4eZg+vDhYGs6nX6fbNlDIwl6Ls/yQmASUEP2pQwQBYJAK9B7DjH/x38YfwBzpVO74CT4BgAAAABJRU5ErkJggg==",
     lightning: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAA3NCSVQICAjb4U/gAAAALVBMVEX////4+Pjw8Ijw6DjYyPD40DjYyDigoMD4kDiwoDh4eIDYWDiYSDhIUFAwMDCoRyskAAAAAXRSTlMAQObYZgAAAAlwSFlzAAAK8AAACvABQqw0mAAAACB0RVh0U29mdHdhcmUATWFjcm9tZWRpYSBGaXJld29ya3MgTVi7kSokAAAAnklEQVQY02NgIB7wvXv3AM5+nV41D8Z7sbl8cfY+qESrmrHZjm6I1ItAkeXGHd37YJxVxRkQDl9HkxeIs/sBmNNmXm6csRvK2WZsbNYB5ZxILi/O7t69B8y5Y373utns3WfBnLt3C2vT5ty9C7bo1V1B2bt3764D2/NEqrD27t0ldRDnOK5a4uLiDnXpcxcguw7mhefl5XUPsHmOCAAAthZLiL/xEWcAAAAASUVORK5CYII=",
     photo: "data:image/png;base64,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",
@@ -858,19 +858,19 @@ function Safari() {
             luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Gachapon and found with Itemfinder.",
             myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Gachapon.",
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Gachapon and Pyramid.",
-            heavy: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon and Pyramid.",
+            level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Gachapon and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon and Pyramid.",
             spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
             mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy.",
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Alchemy.",
-            trueheavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("trueheavy") + " Obtained from Alchemy.",
+            heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Alchemy.",
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
             spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. (Max capaity: 10)",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
-        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "trueheavy", "photo", "mirror", "inver", "cherish", "master"];
+        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "inver", "cherish", "master"];
     };
     updateItemHelp();
     var currentItems = Object.keys(itemData);
@@ -2705,7 +2705,7 @@ function Safari() {
         return ret;
     }
     function toUsableBall(player, ball) {
-        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "trueheavy", "photo", "mirror", "inver", "spirit", "cherish", "master"];
+        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "level", "photo", "mirror", "inver", "spirit", "cherish", "master"];
 
         var startFrom = 0;
         if (ball == ballOrder[0]) {
@@ -3971,7 +3971,7 @@ function Safari() {
             statsBonus = (userStats - wildStats) / -8000;
         }
         else {
-            userStats += 0 + (ball === "heavy" ? 80 : 0) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
+            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???" ? 50 : 0));
             userStats += (cherishBonus * 6);
             var statsBonus = (userStats - wildStats) / 8000;
         }
@@ -3992,13 +3992,13 @@ function Safari() {
                 typeBonus = this.checkEffective(pType1, pType2, wType1, wType2, false, inverse);
             }
         }
-        if (ball === "heavy" && wildStats >= 450) {
+        if (ball === "level" && wildStats >= 450) {
             ballBonus = 1 + itemData[ball].bonusRate * (Math.floor((wildStats - 450) / 30) + 1);
             if (ballBonus > itemData[ball].maxBonus) {
                 ballBonus = itemData[ball].maxBonus;
             }
         }
-        if (ball === "trueheavy") {
+        if (ball === "heavy") {
             if (wildWeight >= 360) {
                 ballBonus = 4;
             }
@@ -4220,14 +4220,7 @@ function Safari() {
             return;
         }
         ball = getBall(data);
-        var placeholder = ball;
-        if (placeholder === "heavy") {
-            placeholder = "level";
-        }
-        if (placeholder === "trueheavy") {
-            placeholder = "heavy";
-        }
-        var ballName = itemAlias(placeholder, false, true);
+        var ballName = itemAlias(ball, false, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4360,6 +4353,9 @@ function Safari() {
             }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
+            }
+            if (ball === "level") {
+                player.records.catchLevel += 1;
             }
             if (ball === "heavy") {
                 player.records.catchHeavy += 1;
@@ -5467,8 +5463,8 @@ function Safari() {
     this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "itemfinder", "gem", "pack", "dust", "rare", "stick", "rock"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono"];
-        var line3 = ["lightning", "trueheavy", "photo", "mirror", "inver", "spirit", "cherish", "bait", "golden"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "spy", "clone", "premier", "mono"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "inver", "spirit", "cherish", "bait", "golden"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "ldew", "materia", "fragment"];
         var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
         var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "philosopher", "soda", "cookie"];
@@ -7993,10 +7989,9 @@ function Safari() {
                     ["10@rock"],
                     ["3@pearl"],
                     ["50@dust"],
-                    ["2@blkapricorn", "2@whtapricorn"],
-                    ["3@quick", "3@heavy"],
-                    ["3@myth", "3@clone"],
-                    ["4@clone", "4@premier"],
+                    ["4@blkapricorn", "4@whtapricorn"],
+                    ["3@pnkapricorn", "3@bluapricorn"],
+                    ["3@grnapricorn", "3@ylwapricorn"],
                     ["5@luxury", "5@spy"],
                     ["5@gacha", "1@gem"]
                 ],
@@ -8006,11 +8001,9 @@ function Safari() {
                     { reward: "3@pearl", rewardUnderdog: "4@pearl", rewardFavorite: "2@pearl" },
                     { reward: "50@dust", rewardUnderdog: "70@dust", rewardFavorite: "40@dust" },
                     { reward: "4@silver", rewardUnderdog: "6@silver", rewardFavorite: "3@silver" },
-                    { reward: "4@luxury", rewardUnderdog: "6@luxury", rewardFavorite: "3@luxury" },
-                    { reward: "4@spy", rewardUnderdog: "6@spy", rewardFavorite: "3@spy" },
-                    { reward: "4@clone", rewardUnderdog: "6@clone", rewardFavorite: "3@clone" },
-                    { reward: "3@heavy", rewardUnderdog: "5@heavy", rewardFavorite: "2@heavy" },
-                    { reward: "3@quick", rewardUnderdog: "5@quick", rewardFavorite: "2@quick" },
+                    { reward: "4@bluapricorn", rewardUnderdog: "6@bluapricorn", rewardFavorite: "3@bluapricorn" },
+                    { reward: "3@grnapricorn", rewardUnderdog: "5@grnapricorn", rewardFavorite: "2@grnapricorn" },
+                    { reward: "3@ylwapricorn", rewardUnderdog: "5@ylwapricorn", rewardFavorite: "2@ylwapricorn" },
                     { reward: "3@myth", rewardUnderdog: "5@myth", rewardFavorite: "2@myth" },
                     { reward: "6@gacha"}
                 ],
@@ -9950,21 +9943,6 @@ function Safari() {
             case "score": return photo.score >= target;
         }
         return false;
-    };
-
-    this.massConvertItem = function(item1, item2) {
-        //Level/Heavy fix
-        var player, num;
-        if (!itemData.hasOwnProperty(item1) || !itemData.hasOwnProperty(item2)) {
-            return;
-        }
-        for (var p in rawPlayers) {
-            player = getAvatarOff(p);
-            num = player.balls[item1];
-            player.balls[item2] = num;
-            player.balls[item1] = 0;
-            this.saveGame(player);
-        }
     };
 
     /* Events */
@@ -17174,11 +17152,11 @@ function Safari() {
     };
     this.createMAuction = function(index, set) {
         var rewards = [
-            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden", "@form", "@fossil"],
-            ["@form", "2@golden", "@fossil", "@rare", "@fossil"],
-            ["@form"],
+            ["5@gem", "5@bigpearl", "3@starpiece", "@nugget", "3@nugget", "@bignugget", "2@golden"],
+            ["2@golden", "@fossil", "@rare", "5@grnapricorn"],
+            ["@form", "2@egg", "2@golden", "20@pnkapricorn"],
             ["@burn", "@nugget", "15@silver", "5@gem", "2@pack", "@nugget", "@fossil"],
-            ["10@myth", "15@luxury", "10@quick", "15@spy", "10@heavy", "10@clone", "2@egg", "2@golden", "@form"],
+            ["10@redapricorn", "15@blkapricorn", "10@whtapricorn", "15@pnkapricorn", "10@grnapricorn", "10@bluapricorn"],
             ["@fossil"]
         ];
         var out = {
