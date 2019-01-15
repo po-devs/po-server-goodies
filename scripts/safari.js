@@ -3314,7 +3314,7 @@ function Safari() {
                                 num = sys.rand(1, 803);
                                 bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                                 pokeId = poke(num + (shiny ? "" : 0));
-                            } while (!pokeId || bst > statCap);
+                            } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                         } else {
                             num = list[sys.rand(0, list.length)];
                         }
@@ -3325,7 +3325,7 @@ function Safari() {
                         num = sys.rand(1, 803);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         pokeId = poke(num + (shiny ? "" : 0));
-                    } while (!pokeId || bst > statCap);
+                    } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
                 }
             }
         }
@@ -4220,7 +4220,7 @@ function Safari() {
             return;
         }
         ball = getBall(data);
-        var ballName = finishName(ball);
+        var ballName = itemAlias(ball, false, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
