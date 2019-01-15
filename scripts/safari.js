@@ -450,8 +450,9 @@ function Safari() {
             "luxury": {
                 "reward": "20@luxury",
                 "ingredients": {
-                    "bluapricorn": 20,
-                    "ylwapricorn": 20
+                    "blkapricorn": 10,
+                    "redapricorn": 20,
+                    "ylwapricorn": 10
                 }
             },
             "mono": {
@@ -464,33 +465,32 @@ function Safari() {
             "myth": {
                 "reward": "20@myth",
                 "ingredients": {
-                    "blkapricorn": 5,
-                    "pnkapricorn": 15,
-                    "grnapricorn": 20
+                    "redapricorn": 5,
+                    "pnkapricorn": 20,
+                    "grnapricorn": 15
                 }
             },
             "quick": {
                 "reward": "20@quick",
                 "ingredients": {
-                    "grnpricorn": 10,
-                    "bluapricorn": 15,
-                    "whtapricorn": 15
+                    "bluapricorn": 20,
+                    "ylwapricorn": 20
                 }
             },
             "level": {
                 "reward": "20@heavy",
                 "ingredients": {
-                    "blkapricorn": 20,
-                    "grnapricorn": 10,
-                    "ylwapricorn": 10
+                    "whtapricorn": 15,
+                    "grnapricorn": 15,
+                    "pnkapricorn": 10
                 }
             },
             "spy": {
                 "reward": "20@spy",
                 "ingredients": {
-                    "redapricorn": 5,
-                    "pnkapricorn": 15,
-                    "whtapricorn": 20
+                    "whtapricorn": 5,
+                    "bluapricorn": 20,
+                    "blkapricorn": 15
                 }
             },
             "lightning": {
@@ -623,7 +623,7 @@ function Safari() {
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
             philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
 
-            //??? related items
+            //Pokéball related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
             ldew: {name: "ldew", fullName: "Legendary Dew", type: "alchemy", icon: 8018, price: 9999, aliases: ["ldew", "legendarydew", "legenddew", "legendary dew"], threshold: 400, tradable: false},
             blkapricorn: {name: "blkapricorn", fullName: "Black Apricorn", type: "alchemy", icon: 59, price: 1000, aliases:["blackapricorn", "black apricorn", "blkapricorn"], tradable: true},
@@ -730,20 +730,20 @@ function Safari() {
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC"
     };
     var gachaItems = {
-        safari: 95, great: 50, ultra: 30, luxury: 35, myth: 12, quick: 12, heavy: 20, clone: 25,
-        bait: 95, rock: 120, gem: 9, dust: 60,
+        safari: 95, great: 50, ultra: 30, bluapricorn: 25, grnapricorn: 24, pnkapricorn: 36,
+        bait: 90, rock: 120, gem: 9, dust: 60,
         wild: 70,
         gacha: 1,  master: 1,
         amulet: 1, soothe: 1, scarf: 1, battery: 1,
         pearl: 15, stardust: 12, bigpearl: 9, starpiece: 5, nugget: 4, bignugget: 1,
-        whtapricorn: 24
+        whtapricorn: 45
     };
     var finderItems = {
         crown: 1, honey: 1, eviolite: 1, fragment: 1,
-        rare: 4, recharge: 10, spy: 20, rock: 6, bait: 20,
-        pearl: 10, stardust: 7, bigpearl: 3, luxury: 15, gacha: 16,
-        hint: 5,
-        blkapricorn: 10
+        rare: 4, recharge: 10, pnkapricorn: 20, rock: 1, bait: 20,
+        pearl: 10, stardust: 7, bigpearl: 3, grnapricorn: 15, gacha: 16,
+        hint: 15,
+        blkapricorn: 30
     };
     var finderMissRate = 0.80;
     var safariHints = [
@@ -754,14 +754,15 @@ function Safari() {
         "... Oh, it's just an ad. \"Test your knowledge in #Trivia!\" it says.",
         "... Oh, it's just an ad. \"Test your bluffing skills in #Mafia!\" it says.",
         "... Oh, it's just an ad. \"Test your verbosity in #Hangman!\" it says.",
-        "Every day you play, you can bait 5 times without getting the full cooldown! Isn't that neat?"    
+        "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
+        "Log in 31 days in a row to get a Master Ball!"
     ];
     var packItems = {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
         honey: 6, eviolite: 6,
         rare: 3, spray: 2, nugget: 6,
-        quick: 5, luxury: 6, clone: 6,
+        pnkapricorn: 5, grnapricorn: 6, bluapricorn: 6,
         rock: 8, bait: 8, silver: 9,
         gem: 6, gacha: 12,
         mega: 1
@@ -835,8 +836,8 @@ function Safari() {
             scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
-            dew: "Currently unknown what this can be used for.",
-            ldew: "A mysterious substance radiating an aura of light. Currently unknown what this can be used for."
+            dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
+            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -859,7 +860,7 @@ function Safari() {
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Gachapon and Pyramid.",
             heavy: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("heavy") + " Obtained from Gachapon and Pyramid.",
             clone: "A mysterious Pokéball with a very low catch rate that can duplicate a pokémon's D.N.A. " + cdSeconds("clone") + " Obtained from Gachapon and Pyramid.",
-            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
+            spy: "A stealthy Pokéball that cannot be tracked. A successful snag with this ball allows for quick follow-up action, but it has low priority. " + cdSeconds("spy") + " Found with Itemfinder and obtained from Pyramid.",
             mono: "A monochromatic Pokéball that enables your active Pokémon to use only one of their types. " + cdSeconds("mono") + " Obtained from Alchemy.",
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Alchemy.",
             trueheavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("trueheavy") + " Obtained from Alchemy.",
@@ -1134,7 +1135,13 @@ function Safari() {
                 }
             },
             "chance": {
-                "defaultSet": 0.74,
+                "whtapricorn": 0.11,
+                "blkapricorn": 0.11,
+                "bluapricorn": 0.11,
+                "pnkapricorn": 0.11,
+                "ylwapricorn": 0.10,
+                "grnapricorn": 0.10,
+                "redapricorn": 0.10,
                 "silver": 0.05,
                 "gem": 0.05,
                 "nugget": 0.05,
@@ -4220,12 +4227,6 @@ function Safari() {
         }
         ball = getBall(data);
         var ballName = finishName(ball);
-        if (ball === "heavy") {
-            ballName = "Level Ball";
-        }
-        else if (ball === "trueheavy") {
-            ballName = "Heavy Ball";
-        }
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4433,7 +4434,7 @@ function Safari() {
 
             var penalty = 2 * (1 - getPerkBonus(player, "soothe") - this.getFortune(player, "soothe", 0));
             if (ball === "spy") {
-                penalty = 0.25;
+                penalty *= 0.25;
             }
             cooldown *= penalty;
             if (contestCount > 0) {
@@ -4462,6 +4463,7 @@ function Safari() {
                 currentPokemon = null;
                 currentDisplay = null;
                 wildEvent = false;
+                wildSpirit = false;
                 isBaited = false;
                 if (contestCount <= 0) {
                     this.runPendingActive();
@@ -7816,7 +7818,7 @@ function Safari() {
                 case "bait": amount = 10; break;
                 case "gacha": amount = 10; break;
                 case "silver": amount = 8; break;
-                case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 10; break;
+                case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
             }
             safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
             if (reward === "mega") {
@@ -15700,7 +15702,7 @@ function Safari() {
         var recipes = recipeData;
         var validItems = Object.keys(recipes);
         if (!data[0] || data[0].toLowerCase() === "help") {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Princess Fluffybutt and I can make ya some items if you bring me materials y'see! (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hi... Let's make some stuff before I fall asleep again. (Use /quest alchemist:[recipe name] to view the required materials)", safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: If ya got some " + finishName("philosopher") + ", we can try some more audacious transmutations! (Use " + link("/quest alchemist:philosopher") + " to view the other recipes)", safchan);
             safaribot.sendHtmlMessage(src, "Available Recipes: " + validItems.map(function(x) {
                 return " " + link("/quest alchemist:" + x, cap(x, true)) + " <small>(CD: " + recipes[x].cooldown + "h)</small>";
@@ -15715,7 +15717,7 @@ function Safari() {
             return;
         }
         if (!validItems.contains(item)) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: That's not sumthin' I can make, ya silly badonkadonk! (To view available recipes use " + link("/quest alchemist:help") + ")", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: You silly badonkadonk... I don't know how to make that! (To view available recipes use " + link("/quest alchemist:help") + ")", safchan);
             return;
         }
         var rec = recipes[item];
@@ -17604,7 +17606,7 @@ function Safari() {
             reward.push("1@nugget");
         } 
         if (p >= 1500) {
-            reward.push((this.level * 3) + "@" + ["quick", "heavy", "clone", "premier"].random());
+            reward.push((this.level * 5) + "@" + ["blkapricorn", "whtapricorn", "grnapricorn", "bluapricorn"].random());
         } 
         if (this.finishMode === "cleared"){
             reward.push("5@gem");
@@ -18057,8 +18059,8 @@ function Safari() {
             bait: { chance: 14, item: "bait", amount: 5 * level },
             dust: { chance: 12, item: "dust", amount: 14 * level },
             myth: { chance: 15, item: "myth", amount: 2 * level },
-            heavy: { chance: 12, item: "heavy", amount: 2 * level },
-            spy: { chance: 15, item: "spy", amount: 2 * level },
+            redapricorn: { chance: 12, item: "redapricorn", amount: Math.floor((5 + (1.5 * level))) },
+            pnkapricorn: { chance: 15, item: "pnkapricorn", amount: 2 * level },
             bigpearl: { chance: 4, item: "bigpearl", amount: level }
         };
 
@@ -18369,8 +18371,8 @@ function Safari() {
             nugget: { chance: 1 * level, item: "nugget", amount: 1 },
             money: { chance: 14, item: "money", amount: 180 * level },
             safari: { chance: 19, item: "safari", amount: 5 * level },
-            myth: { chance: 13, item: "myth", amount: 1 * level },
-            spy: { chance: 14, item: "spy", amount: 1 * level },
+            redapricorn: { chance: 13, item: "redapricorn", amount: 1 * level },
+            grnapricorn: { chance: 14, item: "grnapricorn", amount: 1 * level },
             pearl: { chance: 9, item: "pearl", amount: 1 * level }
         };
         while (treasuresAmt > 0) {
@@ -19593,7 +19595,7 @@ function Safari() {
             redapricorn: { chance: 15, item: "redapricorn", amount: (3 + (2 * level)) },
             grnapricorn: { chance: 14, item: "grnapricorn", amount: (4 + (2 * level)) },
             whtapricorn: { chance: 18, item: "whtapricorn", amount: (4 + (2 * level)) },
-            heavy: { chance: 14, item: "heavy", amount: 2 * level },
+            blkapricorn: { chance: 14, item: "blkapricorn", amount: (4 + (2 * level)) },
             premier: { chance: 11, item: "premier", amount: 3 * level },
             pearl: { chance: 10, item: "pearl", amount: 2 + level },
             bigpearl: { chance: 6, item: "bigpearl", amount: 1 * level },
