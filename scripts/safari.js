@@ -9959,10 +9959,11 @@ function Safari() {
             return;
         }
         for (var p in rawPlayers) {
-            player = rawPlayers.get(p);
+            player = getAvatarOff(p);
             num = player.balls[item1];
             player.balls[item2] = num;
             player.balls[item1] = 0;
+            saveGame(player);
         }
     };
 
