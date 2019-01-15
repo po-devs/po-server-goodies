@@ -557,7 +557,7 @@ function Safari() {
             master: {name: "master", fullName: "Master Ball", type: "ball", icon: 308, price: 10000, ballBonus: 255, cooldown: 90000, aliases:["masterball", "master", "master ball"], tradable: true, cap: 1},
 
             myth: {name: "myth", fullName: "Myth Ball", type: "ball", icon: 329, price: 500, ballBonus: 1, bonusRate: 2.25, cooldown: 15000, aliases:["mythball", "myth", "myth ball"], tradable: true},
-            heavy: {name: "heavy", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
+            heavy: {name: "level", fullName: "Level Ball", type: "ball", icon: 315, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
             quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
             premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
@@ -568,7 +568,7 @@ function Safari() {
             spirit: {name: "spirit", fullName: "Spirit Ball", type: "ball", icon: 327, price: 321, ballBonus: 1.5, bonusRate: 0.5, cooldown: 6000, aliases:["spiritball", "spirit", "spirit ball"], tradable: false, cap: 10},
 
             lightning: {name: "lightning", fullName: "Lightning Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 12000, aliases:["lightningball", "lightning", "lightning ball"], tradable: true},
-            trueheavy: {name: "trueheavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
+            trueheavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
             photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
             mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 326, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 5, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
             inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
@@ -2180,7 +2180,7 @@ function Safari() {
         if (amt === 0) {
             return "You have no more " + es(finishName(item)) + " left! ";
         } else {
-            return "You still have " + plural(amt, item) + " left! ";
+            return "You still have " + plural(amt, finishName(item)) + " left! ";
         }
     }
     function typeNull(str, output) {
@@ -4220,7 +4220,14 @@ function Safari() {
             return;
         }
         ball = getBall(data);
-        var ballName = itemAlias(ball, false, true);
+        var placeholder = ball;
+        if (placeholder === "heavy") {
+            placeholder = "level";
+        }
+        if (placeholder === "trueheavy") {
+            placeholder = "heavy";
+        }
+        var ballName = itemAlias(placeholder, false, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
@@ -4398,7 +4405,7 @@ function Safari() {
                     }
                     player.records.pokesCloned += clonedAmount;
                     if (discarded > 0) {
-                        safaribot.sendMessage(src, "Oh damn! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
+                        safaribot.sendMessage(src, "Oh heck! You didn't have enough space in your boxes for the cloned Pokémon, so you had to let " + plural(discarded, currentPokemon + (typeof currentPokemon === "string" ? "*" : "")) + " go!", safchan);
                     }
                 }
             }
