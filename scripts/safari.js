@@ -9952,6 +9952,20 @@ function Safari() {
         return false;
     };
 
+    this.massConvertItem = function(item1, item2) {
+        //Level/Heavy fix
+        var player, num;
+        if (!itemData.hasOwnProperty(item1) || !itemData.hasOwnProperty(item2)) {
+            return;
+        }
+        for (var p in rawPlayers) {
+            player = rawPlayers.get(p);
+            num = player.balls[item1];
+            player.balls[item2] = num;
+            player.balls[item1] = 0;
+        }
+    };
+
     /* Events */
     this.safariEvents = function(src,what,enable) {
         if (!safari.events) {
