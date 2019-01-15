@@ -15648,7 +15648,7 @@ function Safari() {
             return;
         }
 
-        safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id + " by making some darn good Pokéballs!!", safchan);
+        safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Alright, y'all. Let's help " + player.id.toCorrectCase() + " by making some darn good Pokéballs!!", safchan);
         var lostPoke = false, lostRare = [];
         var ingUsed = {};
         for (var e in rec.ingredients) {
@@ -15671,7 +15671,7 @@ function Safari() {
             }
         }
         giveStuff(player, ingUsed, true);
-        var rew = giveStuff(player, reward, true);
+        var rew = giveStuff(player, toStuffObj(reward), true);
         safaribot.sendMessage(src, "The arborist works in a flurry, and before you know it, you have " + readable(rew.gained) + " in your hands!", safchan);
         safaribot.sendMessage(src, "You received " + readable(rew.gained) + ".", safchan);
         if (rec.records) {
