@@ -10931,7 +10931,7 @@ function Safari() {
             safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
         }
     };
-    this.bestowSpiritMon = function( src,cmd ) {
+    this.bestowSpiritMon = function( src,commandData ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         //num = data.getMonNumber(data) || data if data is a number
         var cmd = commandData.split(":");
@@ -26714,6 +26714,44 @@ function Safari() {
             }
             if (command === "bestowspirit") {
                 safari.bestowSpiritMon(src,commandData);
+            }
+            if (command === "bestowcherish") {
+                //Adds the spirit mons to the front of their spirit box if they have it
+                //num = data.getMonNumber(data) || data if data is a number
+                var cmd = commandData.split(":");
+                var player = getAvatarOff(cmd[0]);
+                var data = getInputPokemon(cmd[1]);
+                if (cmd.length > 1) {
+                    var num = parseInt(cmd[2], 10);
+                }
+                else {
+                    num = 1;
+                }
+                var i;
+                if (num === -1) {
+                    i = player.cherished.indexOf(data.num);
+                    if (i === -1) {
+                        safaribot.sendMessage( src,player.id + " doesn't have that Cherished Pokémon!",safchan );
+                        return;
+                    }
+                    player.cherished.slice(i, 1);
+                    safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Cherished List.",safchan );
+                }
+                else {
+                    player.cherished.push(data.num);
+                    safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Cherished List.",safchan );
+                    return;
+                };
+            }
+            if (command === "clearccherished") {
+                var player = getAvatarOff(commandData);
+                if (!player) {
+                    safaribot.sendMessage(src, "No such player!", safchan);
+                    return true;
+                }
+                player.cherished = [];
+                this.saveGame(player);
+                return true;
             }
             if (command === "bestow") {
                 var cmd = commandData.split(":");
