@@ -99,6 +99,7 @@ function Safari() {
             luxury: 0,
             mono: 0,
             mirror: 0,
+            inver: 0,
             photo: 0,
             spirit: 0,
             lightning: 0,
