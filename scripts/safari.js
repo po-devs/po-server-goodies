@@ -4334,6 +4334,10 @@ function Safari() {
                     player.cooldowns.unown = now() + hours(0.33);
                 }
             }
+            var ch = "";
+            if (player.cherished.indexOf(getInputPokemon(poke(player.party[0])).num) !== -1) {
+                ch = "Cherished ";
+            }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
                 player.records.catchSpy += 1;
@@ -4342,15 +4346,15 @@ function Safari() {
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
                 var title = player.spiritDuels.rankName;
-                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + poke(player.party[0]), safchan);
+                safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(player.party[0]), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
-                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }
             else {
-                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
+                safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
@@ -10660,7 +10664,7 @@ function Safari() {
                 safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
                 safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
                 //Print who won and stuff
-                this.spiritDuelsViewers = [];
+                safari.events.spiritDuelsViewers = [];
                 safari.prepareNextSpiritDuel();
                 return true;
             }
@@ -10887,6 +10891,9 @@ function Safari() {
             return false;
         }
         safari.events.spiritDuelsSignups.push(id);
+        player.balls.spirit += 5;
+        safari.sanitize(player);
+        safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
         return;
     };
@@ -19144,7 +19151,7 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
@@ -26717,8 +26724,6 @@ function Safari() {
                 safari.bestowSpiritMon(src,commandData);
             }
             if (command === "bestowcherish") {
-                //Adds the spirit mons to the front of their spirit box if they have it
-                //num = data.getMonNumber(data) || data if data is a number
                 var cmd = commandData.split(":");
                 var player = getAvatarOff(cmd[0]);
                 var data = getInputPokemon(cmd[1]);
