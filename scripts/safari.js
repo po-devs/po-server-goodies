@@ -10664,7 +10664,7 @@ function Safari() {
                 safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
                 safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
                 //Print who won and stuff
-                this.spiritDuelsViewers = [];
+                safari.events.spiritDuelsViewers = [];
                 safari.prepareNextSpiritDuel();
                 return true;
             }
@@ -10891,6 +10891,9 @@ function Safari() {
             return false;
         }
         safari.events.spiritDuelsSignups.push(id);
+        player.balls.spirit += 5;
+        safari.sanitize(player);
+        safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
         return;
     };
