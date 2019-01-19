@@ -27611,6 +27611,10 @@ function Safari() {
                 safari.progressDuels();
                 return true;
             }
+            if (command === "pushduelteam") {
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                safari.pushDuelTeam(src, getAvatarOff(info[0]), info[1]);
+            }
             if (command === "nextspawn") {
                 if (commandData === "*") {
                     safaribot.sendMessage(src, "Syntax: /nextspawn [player]:[pokemon]:[amount]:[disguise].", safchan);
