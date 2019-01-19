@@ -10404,11 +10404,15 @@ function Safari() {
     };
     this.pushDuelTeam = function( src,player,data ) {
         var oldBox;
+        if (!player) {
+            safaribot.sendMessage( src,"Not a player!",safchan );
+            return false;
+        }
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t].players.push(player);
+            safari.events.spiritDuelsTeams[t].players.push(player.id);
             if (player.spiritDuels) {
                 if (player.spiritDuels.box.length > 0) {
                     oldBox = player.spiritDuels.box;
@@ -10429,7 +10433,10 @@ function Safari() {
                 skills: [],
                 skillChoices: {}
             };
+            safaribot.sendMessage( src,"Added player " + player.id + " to " + data + ".",safchan );
+            return;
         }
+        safaribot.sendMessage( src,"No team exists!",safchan );
     };
     this.assignDuelsTeams = function( src,data ) {
         //Takes everyone from signups and puts them in teams
@@ -10497,7 +10504,7 @@ function Safari() {
             r = (Math.floor(teams[t].rate * 10000) / 100);
             sendAll(teams[t].name + " scored %" + r + "and got #" + (i + 1) + "!", true);
         }
-        sendAll()
+        sendAll();
     }
     this.progressDuels = function( src ) {
         //Counts everyone's scores
@@ -27614,6 +27621,7 @@ function Safari() {
             if (command === "pushduelteam") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.pushDuelTeam(src, getAvatarOff(info[0]), info[1]);
+                return true;
             }
             if (command === "nextspawn") {
                 if (commandData === "*") {
