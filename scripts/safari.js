@@ -10425,8 +10425,13 @@ function Safari() {
         var i = 0, player, oldBox;
         for (var p in safari.events.spiritDuelsSignups) {
             player = getAvatarOff(safari.events.spiritDuelsSignups[p]);
-            if (player.spiritDuels && player.spiritDuels.box.length > 0) {
-                oldBox = player.spiritDuels.box;
+            if (player.spiritDuels) {
+                if (player.spiritDuels.box.length > 0) {
+                    oldBox = player.spiritDuels.box;
+                }
+                else {
+                    oldBox = [19];
+                }
             }
             else {
                 oldBox = [19];
@@ -10465,7 +10470,7 @@ function Safari() {
         for (var t in teams) {
             g = prizes[i+""];
             if (teams[t].rate > 0.66) {
-                g += ",5@ldew";
+                g += ",4@ldew";
             }
             else if (teams[t].rate > 0.5875) {
                 g += ",2@ldew";
@@ -10900,11 +10905,22 @@ function Safari() {
             return false;
         }
         safari.events.spiritDuelsSignups.push(id);
-        player.balls.spirit += 5;
+        if (!player.spiritDuels) {
+            player.spiritDuels = {
+                box: []
+            }
+        }
+        player.rank = 0;
+        player.rankName = "Grunt";
+        player.team = "None";
+        player.exp = 0;
+        player.skills = [];
+        player.skillChoices = {};
+        //player.balls.spirit += 5;
         safari.sanitize(player);
         safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
-        return;
+        return true;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
         //Shows them their spirit monns
