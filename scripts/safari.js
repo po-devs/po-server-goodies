@@ -11044,7 +11044,7 @@ function Safari() {
     };
     this.spiritDuelsMessage = function(msg) {
         var e;
-        var list = this.spiritDuelsViewers;
+        var list = safari.events.spiritDuelsViewers;
         for (e = 0 ; e < list.length; e++) {
             var id = sys.id(list[e]);
             if (!id || !sys.isInChannel(id, safchan)) {
