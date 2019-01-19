@@ -9523,7 +9523,7 @@ function Safari() {
             
             safari.trialsLogin(player);
             if (safari.events.spiritDuelsEnabled) {
-                var out = giveStuff(player, "5@spirit", true);
+                var out = giveStuff(player, toStuffObj("5@spirit"), true);
                 safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
                 this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
             }
@@ -15566,7 +15566,7 @@ function Safari() {
             return;
         }
         var trainerSprite = '<img src="' + base64trainers.arborist + '">';
-        if (stopQuests.alchemist) {
+        if (stopQuests.arborist) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ah, I'm mighty tired. Maybe come back anot'er time, will ya?", safchan);
             return;
         }
