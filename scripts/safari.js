@@ -4345,6 +4345,9 @@ function Safari() {
                 safari.catchSpiritMon(player, currentPokemon);
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
+                if (team === "None") {
+                    team = "Unemployed"
+                }
                 var title = player.spiritDuels.rankName;
                 safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(player.party[0]), safchan);
                 wildSpirit = false;
