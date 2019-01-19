@@ -28354,9 +28354,6 @@ function Safari() {
                     safaribot.sendAll(allContestants.map(function (x) { return x.toCorrectCase() + " " + playerScore(x); }).join(", "), safchan);
                 }
                 sys.sendAll(separator, safchan);
-                if (safari.events.spiritDuelsEnabled) {
-                    safari.startSpiritDuel();
-                }
 
                 var winner, playerId, amt;
                 for (e in contestantsCount) {
@@ -28458,6 +28455,7 @@ function Safari() {
                 if (safari.events.spiritDuelsEnabled) {
                     if (safari.events.spiritDuelsBattling) {
                         safari.events.currentSpiritDuel = true;
+                        safari.startSpiritDuel();
                     }
                 }
                 safari.runPendingActive();
