@@ -11007,7 +11007,7 @@ function Safari() {
             sys.sendHtmlMessage(sys.id(list[e]), msg, safchan);
         }
     };
-    this.watchSpiritDuel = function(src,player) {
+    this.watchSpiritDuels = function(src,player) {
         safari.events.spiritDuelsViewers.push(player.id);
         this.spiritDuelsMessage(player.id + " is watching this Spirit Duel!");
     };
