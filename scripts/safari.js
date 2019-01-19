@@ -10881,7 +10881,7 @@ function Safari() {
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
             k = safari.events.spiritDuelsTeams[t].players.indexOf(id);
-            if (k > -1) {
+            if (k !== -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
                 safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
                 return false;
@@ -19158,7 +19158,7 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
