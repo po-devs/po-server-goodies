@@ -10454,10 +10454,10 @@ function Safari() {
     this.spiritDuelsPrizes = function( teams ) {
         var g = [], i = teams.length, r;
         var prizes = {
-            "0": "2@mega, @bright, 30@dew",
-            "1": "2@mega, 25@dew",
-            "2": "@mega, 20@dew",
-            "3": "@mega, 15@dew",
+            "0": "2@mega,@bright,30@dew",
+            "1": "2@mega,25@dew",
+            "2": "@mega,20@dew",
+            "3": "@mega,15@dew",
             "4": "15@dew",
             "5": "10@dew",
             "6": "5@dew"
@@ -10465,13 +10465,13 @@ function Safari() {
         for (var t in teams) {
             g = prizes[i+""];
             if (teams[t].rate > 0.66) {
-                g += ", 5@ldew";
+                g += ",5@ldew";
             }
             else if (teams[t].rate > 0.5875) {
-                g += ", 2@ldew";
+                g += ",2@ldew";
             }
-            if (teams[t].rate > 0.5) {
-                g += ", 1@ldew";
+            else if (teams[t].rate > 0.5) {
+                g += ",1@ldew";
             }
             i--;
             for (var p in teams[t].players) {
