@@ -3244,7 +3244,7 @@ function Safari() {
         } else {
             var cTheme = themeOverride || currentTheme;
             if (cTheme) {
-                var theme = contestThemes[cTheme];
+                var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
                     statCap = [700, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
@@ -4335,7 +4335,7 @@ function Safari() {
                 }
             }
             var ch = "";
-            if (player.cherished.indexOf(getInputPokemon(poke(player.party[0])).num) !== -1) {
+            if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)) !== -1) {
                 ch = "Cherished ";
             }
             if (ball == "spy") {
@@ -4345,6 +4345,9 @@ function Safari() {
                 safari.catchSpiritMon(player, currentPokemon);
                 player.records.catchSpirit += 1;
                 var team = player.spiritDuels.team;
+                if (team === "None") {
+                    team = "Unemployed"
+                }
                 var title = player.spiritDuels.rankName;
                 safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(player.party[0]), safchan);
                 wildSpirit = false;
@@ -4357,13 +4360,15 @@ function Safari() {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-            if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
-                var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
-                player.pokemon.push(evolved);
-                sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
-            } else {
-                player.pokemon.push(currentPokemon);
+            if (ball !== "spirit") {
+                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
+                    player.pokemon.push(evolved);
+                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
+                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+                } else {
+                    player.pokemon.push(currentPokemon);
+                }
             }
             player.records.pokesCaught += 1;
             if (isBaited) {
@@ -4373,7 +4378,7 @@ function Safari() {
 
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
-                player.cherished.push(getInputPokemon(poke(currentPokemon)).num);
+                player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
             }
             if (ball === "myth") {
                 player.records.catchMyth += 1;
@@ -4848,7 +4853,7 @@ function Safari() {
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
-            safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo") +"!", safchan);
+            safaribot.sendMessage(src, "You can still take " + 20-player.photos.length " photo(s)!", safchan);
         }
         player.cooldowns.ball = currentTime + cooldown;
         this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
@@ -9523,7 +9528,7 @@ function Safari() {
             
             safari.trialsLogin(player);
             if (safari.events.spiritDuelsEnabled) {
-                var out = giveStuff(player, "5@spirit", true);
+                var out = giveStuff(player, toStuffObj("5@spirit"), true);
                 safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
                 this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
             }
@@ -10425,7 +10430,7 @@ function Safari() {
             else {
                 oldBox = [19];
             }
-            safari.events.spiritDuelsTeams[i].players.push(player);
+            safari.events.spiritDuelsTeams[i].players.push(player.id);
             player.spiritDuels = {
                 rank: 0,
                 rankName: "Grunt",
@@ -10435,13 +10440,12 @@ function Safari() {
                 skills: [],
                 skillChoices: {}
             };
+            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
+            safari.inboxMessage(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
             i++;
             if (i >= safari.events.spiritDuelsTeams.length) {
                 i = 0;
             }
-            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
-            safari.inboxMessage(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
-            //Print "player joined team X"
         }
         safari.events.spiritDuelsSignups = [];
         spiritDuelsBattling = true;
@@ -10516,6 +10520,7 @@ function Safari() {
         else {
             safari.events.spiritDuelsTeams.shuffle();
         }
+        sendAll("Next Spirit Duels: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
         //Add some print or something to say which teams are up
     };
     this.startSpiritDuel = function() {
@@ -10588,7 +10593,7 @@ function Safari() {
             sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
-            this.spiritDuelsMessage("Preparations complete, Duel about to begin!")
+            this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
         }
         else if (step >= 5) {
             /* Needs print functions */
@@ -10863,7 +10868,7 @@ function Safari() {
             case "active": this.activeSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
-            default: safaribot.sendMessage( src,"That's not a command!",safchan );
+            default: safaribot.sendMessage( src,"That's not a command! Valid commands are box, boxt, active, join, and watch!",safchan );
         }
         return;
     };
@@ -10879,7 +10884,7 @@ function Safari() {
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
             k = safari.events.spiritDuelsTeams[t].players.indexOf(id);
-            if (k > -1) {
+            if (k !== -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
                 safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
                 return false;
@@ -10927,16 +10932,21 @@ function Safari() {
     };
     this.activeSpiritMon = function( src,player,data ) {
         //Adds the spirit mons to the front of their spirit box if they have it
-        //num = data.getMonNumber(data) || data if data is a number
+        if (!data) {
+            safaribot.sendMessage( src,"The command is /spiritduels active:pokemon!",safchan );
+            return;
+        }
         data = getInputPokemon(data);
         var x = player.spiritDuels.box.indexOf(data.num);
         if (x === -1) {
             safaribot.sendMessage( src,"You don't have that Spirit Pokémon!",safchan );
+            return;
         }
         else {
             player.spiritDuels.box.splice(x, 1);
             player.spiritDuels.box.unshift(data.num);
             safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
+            return;
         }
     };
     this.bestowSpiritMon = function( src,commandData ) {
@@ -15566,7 +15576,7 @@ function Safari() {
             return;
         }
         var trainerSprite = '<img src="' + base64trainers.arborist + '">';
-        if (stopQuests.alchemist) {
+        if (stopQuests.arborist) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arborist: Ah, I'm mighty tired. Maybe come back anot'er time, will ya?", safchan);
             return;
         }
@@ -19151,7 +19161,7 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
@@ -28111,6 +28121,7 @@ function Safari() {
             if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
                 var finished = safari.spiritDuelTurn();
                 if (finished) {
+                    safari.events.currentSpiritDuel = false;
                     checkUpdate();
                 }
             }
@@ -28448,6 +28459,7 @@ function Safari() {
                 if (safari.events.spiritDuelsEnabled) {
                     if (safari.events.spiritDuelsBattling) {
                         safari.events.currentSpiritDuel = true;
+                        safari.startSpiritDuel();
                     }
                 }
                 safari.runPendingActive();
