@@ -10427,7 +10427,7 @@ function Safari() {
             else {
                 oldBox = [19];
             }
-            safari.events.spiritDuelsTeams[i].players.push(player);
+            safari.events.spiritDuelsTeams[i].players.push(player.id);
             player.spiritDuels = {
                 rank: 0,
                 rankName: "Grunt",
@@ -10590,7 +10590,7 @@ function Safari() {
             sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
-            this.spiritDuelsMessage("Preparations complete, Duel about to begin!")
+            this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
         }
         else if (step >= 5) {
             /* Needs print functions */
@@ -28118,6 +28118,7 @@ function Safari() {
             if (safari.events.spiritDuelsEnabled && safari.events.currentSpiritDuel) {
                 var finished = safari.spiritDuelTurn();
                 if (finished) {
+                    safari.events.currentSpiritDuel = false;
                     checkUpdate();
                 }
             }
