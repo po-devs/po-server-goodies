@@ -10009,6 +10009,7 @@ function Safari() {
                 safaribot.sendMessage(src,"Event Spirit Duels " + (enable ? "enabled" : "disabled") + "!" );
                 if (!(enable)) {
                     safari.events.spiritDuelsData = {};
+                    safari.events.spiritDuelsBattling = false;
                 }
                 break;
         }
@@ -10402,8 +10403,6 @@ function Safari() {
         }
     };
     this.pushDuelTeam = function( src,player,data ) {
-        //Pushes a player into a team 
-
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
@@ -10450,29 +10449,29 @@ function Safari() {
             }
         }
         safari.events.spiritDuelsSignups = [];
-        spiritDuelsBattling = true;
+        safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
         var g = [], i = teams.length, r;
         var prizes = {
-            "0": ["2@mega", "@bright", "30@dew"],
-            "1": ["2@mega", "25@dew"],
-            "2": ["@mega", "20@dew"],
-            "3": ["@mega", "15@dew"],
-            "4": ["15@dew"],
-            "5": ["10@dew"],
-            "6": ["5@dew"]
+            "0": "2@mega,@bright,30@dew",
+            "1": "2@mega,25@dew",
+            "2": "@mega,20@dew",
+            "3": "@mega,15@dew",
+            "4": "15@dew",
+            "5": "10@dew",
+            "6": "5@dew"
         }
         for (var t in teams) {
             g = prizes[i+""];
             if (teams[t].rate > 0.66) {
-                g.push("5@ldew");
+                g += ",5@ldew";
             }
             else if (teams[t].rate > 0.5875) {
-                g.push("2@ldew");
+                g += ",2@ldew";
             }
-            if (teams[t].rate > 0.5) {
-                g.push("@amulet");
+            else if (teams[t].rate > 0.5) {
+                g += ",1@ldew";
             }
             i--;
             for (var p in teams[t].players) {
@@ -10522,7 +10521,7 @@ function Safari() {
         else {
             safari.events.spiritDuelsTeams.shuffle();
         }
-        sendAll("Next Spirit Duels: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
+        sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
         //Add some print or something to say which teams are up
     };
     this.startSpiritDuel = function() {
@@ -10657,21 +10656,24 @@ function Safari() {
             }
             this.spiritDuelsMessage( team2fighters );
             if (victory1 || victory2) {
+                var w;
                 if (victory1 && victory2) {
                     //This shouldn't happen
                 }
                 else if (victory1) {
                     safari.events.spiritDuelsTeams[0].won++;
+                    w = safari.events.spiritDuelsTeams[0].name;
                 }
                 else if (victory2) {
                     safari.events.spiritDuelsTeams[1].won++;
+                    w = safari.events.spiritDuelsTeams[1].name;
                 }
                 safari.events.spiritDuelsTeams[0].fought++;
                 safari.events.spiritDuelsTeams[1].fought++;
                 safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
                 safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
-                //Print who won and stuff
                 safari.events.spiritDuelsViewers = [];
+                sendAll( "The winner of the Spirit Duel is " + w + "!!");
                 safari.prepareNextSpiritDuel();
                 return true;
             }
@@ -26731,6 +26733,11 @@ function Safari() {
                 }
                 checkUpdate();
                 return true;
+            }
+            if (command === "forceduel") {
+                safari.events.spiritDuelsBattling = true;
+                safari.events.currentSpiritDuel = true;
+                safari.startSpiritDuel();
             }
             if (command === "bestowspirit") {
                 safari.bestowSpiritMon(src,commandData);
