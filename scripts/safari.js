@@ -10596,7 +10596,7 @@ function Safari() {
     };
     this.spiritDuelTurn = function() {
         var step = safari.events.sdStep;
-        var team1 = safari.events.sd1.shuffle(), team2 = safari.events.sd2.shuffle();
+        var team1 = safari.events.sd1, team2 = safari.events.sd2;
         var fighter1 = {}, fighter2 = {}, victory1 = true, victory2 = true;
         var team1fighters = "", team2fighters = "";
         var boost1 = 0, boost2 = 0;
