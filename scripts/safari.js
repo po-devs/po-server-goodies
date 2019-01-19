@@ -10612,11 +10612,11 @@ function Safari() {
         var res;
         if (step === 0) {
             /* Send everyone messages letting them know that the fight is starting */
-            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
+            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " has commenced! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 2) {
             /* Sends everyone another message letting them know that the fight is starting */
-            sendAll("A Spirit Duel between team " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
+            sendAll("A Spirit Duel between " + safari.events.spiritDuelsTeams[0].name + " and " + safari.events.spiritDuelsTeams[1].name + " is about to begin! [" + link("/spiritduel watch", "Watch") + "]", true);
         }
         else if (step === 4) {
             this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
@@ -10638,14 +10638,14 @@ function Safari() {
                 if (!fighter1.alive) {
                     continue;
                 }
-                boost1 = spiritMonBoost(fighter1.owner, fighter1.mon);
+                boost1 = this.spiritMonBoost(fighter1.owner, fighter1.mon);
                 range1 = [10 + boost, 100 + boost];
                 for (var b in team2) {
                     fighter2 = team2[b];
                     if (!fighter2.alive) {
                         continue;
                     }
-                    boost2 = spiritMonBoost(fighter2.owner, fighter2.mon);
+                    boost2 = this.spiritMonBoost(fighter2.owner, fighter2.mon);
                     range2 = [10 + boost2, 100 + boost2];
                     res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
                     if (res[0] >= res[1]) {
@@ -11044,14 +11044,25 @@ function Safari() {
     };
     this.spiritDuelsMessage = function(msg) {
         var e;
-        var list = removeDuplicates(this.spiritDuelsViewers);
+        var list = this.spiritDuelsViewers;
         for (e = 0 ; e < list.length; e++) {
-            sys.sendHtmlMessage(sys.id(list[e]), msg, safchan);
+            var id = sys.id(list[e]);
+            if (!id || !sys.isInChannel(id, safchan)) {
+                continue;
+            }
+            safaribot.sendHtmlMessage(id, msg, safchan);
         }
     };
     this.watchSpiritDuels = function(src,player) {
-        safari.events.spiritDuelsViewers.push(player.id);
-        this.spiritDuelsMessage(player.id + " is watching this Spirit Duel!");
+        var name = player.id;
+        if (safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()) !== -1) {
+            this.spiritDuelsMessage(name + " stopped watching this battle!");
+            safari.events.spiritDuelsViewers.splice(safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()), 1);
+        } else {
+            safari.events.spiritDuelsViewers.push(name.toLowerCase());
+            this.spiritDuelsMessage(name + " is watching this battle!");
+        }
+        return;
     };
 
     /* Secret Base */
