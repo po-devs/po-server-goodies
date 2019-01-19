@@ -10599,9 +10599,10 @@ function Safari() {
         var smaller = Math.min(team1.length, team2.length);
         safari.events.sd1 = team1.slice(0, smaller).shuffle();
         safari.events.sd2 = team2.slice(0, smaller).shuffle();
-        safari.events.sdStep = 0;
+        safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
+        safari.events.sdStep++;
         var step = safari.events.sdStep;
         var team1 = safari.events.sd1, team2 = safari.events.sd2;
         var fighter1 = {}, fighter2 = {}, victory1 = true, victory2 = true;
