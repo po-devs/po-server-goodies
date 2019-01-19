@@ -4850,7 +4850,7 @@ function Safari() {
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
-            safaribot.sendMessage(src, "You can still take " + plural(20-player.photos.length, "photo") +"!", safchan);
+            safaribot.sendMessage(src, "You can still take " + 20-player.photos.length " photo(s)!", safchan);
         }
         player.cooldowns.ball = currentTime + cooldown;
         this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
@@ -10437,12 +10437,12 @@ function Safari() {
                 skills: [],
                 skillChoices: {}
             };
+            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
+            safari.inboxMessage(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
             i++;
             if (i >= safari.events.spiritDuelsTeams.length) {
                 i = 0;
             }
-            safaribot.sendAll(player.id.toCorrectCase() + " joined " + safari.events.spiritDuelsTeams[i].name + "!", safchan);
-            safari.inboxMessage(player, "You've been assigned to team " + safari.events.spiritDuelsTeams[i].name + "!");
         }
         safari.events.spiritDuelsSignups = [];
         spiritDuelsBattling = true;
