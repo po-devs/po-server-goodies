@@ -4603,6 +4603,8 @@ function Safari() {
         currentDisplay = null;
         currentPokemonCount = lastPokemonCount = 1;
         isBaited = false;
+        wildSpirit = false;
+        spiritSpawn = false;
         if (contestCount <= 0) {
             this.runPendingActive();
         }
@@ -4853,7 +4855,7 @@ function Safari() {
         if (player.photos.length >= 20) {
             safaribot.sendMessage(src, "Your camera's memory is now full! You need to free up some space to take more photos!", safchan);
         } else {
-            safaribot.sendMessage(src, "You can still take " + 20-player.photos.length " photo(s)!", safchan);
+            safaribot.sendMessage(src, "You can still take " + (20-player.photos.length)o + " photo(s)!", safchan);
         }
         player.cooldowns.ball = currentTime + cooldown;
         this.missionProgress(player, "photo", currentPokemon, 1, { photo: photo });
