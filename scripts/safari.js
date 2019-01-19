@@ -4081,7 +4081,7 @@ function Safari() {
         if (ball === "spirit") {
             legendaryChance = 1;
             eventChance = 1;
-            ballBonus = 1;
+            ballBonus = 1.25;
             if (safari.spiritDuelsEnabled) {
                 for (var s in player.spiritDuels.skills) {
                     if (player.spiritDuels.skills[s].type === "catch") {
@@ -10403,17 +10403,29 @@ function Safari() {
         }
     };
     this.pushDuelTeam = function( src,player,data ) {
+        var oldBox;
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
             safari.events.spiritDuelsTeams[t].players.push(player);
+            if (player.spiritDuels) {
+                if (player.spiritDuels.box.length > 0) {
+                    oldBox = player.spiritDuels.box;
+                }
+                else {
+                    oldBox = [19];
+                }
+            }
+            else {
+                oldBox = [19];
+            }
             player.spiritDuels = {
                 rank: 0,
                 rankName: "Grunt",
                 team: safari.events.spiritDuelsTeams[t].name,
                 exp: 0,
-                box: [],
+                box: oldBox,
                 skills: [],
                 skillChoices: {}
             };
@@ -10540,7 +10552,7 @@ function Safari() {
 
         var p, j;
         for (var a in army1) {
-            p = getAvatarOff(army1[a].id);
+            p = getAvatarOff(army1[a]);
             j = 0;
             for (var i = 0; i < enlistPerPlayer1; i++) {
                 team1.push({
@@ -10558,7 +10570,7 @@ function Safari() {
             }
         }
         for (var a in army2) {
-            p = getAvatarOff(army2[a].id);
+            p = getAvatarOff(army2[a]);
             j = 0;
             for (var i = 0; i < enlistPerPlayer2; i++) {
                 team2.push({
@@ -10578,13 +10590,13 @@ function Safari() {
         team1.shuffle();
         team2.shuffle();
         var smaller = Math.min(team1.length, team2.length);
-        safari.events.sd1 = team1.slice(0, smaller);
-        safari.events.sd2 = team2.slice(0, smaller);
+        safari.events.sd1 = team1.slice(0, smaller).shuffle();
+        safari.events.sd2 = team2.slice(0, smaller).shuffle();
         safari.events.sdStep = 0;
     };
     this.spiritDuelTurn = function() {
         var step = safari.events.sdStep;
-        var team1 = safari.events.sd1.shuffle(), team2 = safari.events.sd2.shuffle();
+        var team1 = safari.events.sd1, team2 = safari.events.sd2;
         var fighter1 = {}, fighter2 = {}, victory1 = true, victory2 = true;
         var team1fighters = "", team2fighters = "";
         var boost1 = 0, boost2 = 0;
@@ -10646,7 +10658,9 @@ function Safari() {
                 else {
                     victory2 = false;
                 }
-                team1fighters += team1[a].owner + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+                if (team1[a].alive) {
+                    team1fighters += team1[a].owner + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+                }
             }
             this.spiritDuelsMessage( team1fighters );
             for (var a in team2) {
@@ -10657,7 +10671,9 @@ function Safari() {
                 else {
                     victory1 = false;
                 }
-                team2fighters += team2[a].owner + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+                if (team2[a].alive) {
+                    team2fighters += team2[a].owner + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+                }
             }
             this.spiritDuelsMessage( team2fighters );
             if (victory1 || victory2) {
