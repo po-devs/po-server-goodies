@@ -10491,7 +10491,7 @@ function Safari() {
         }
         for (var t in teams) {
             g = prizes[i+""];
-            if (teams[t].rate > 0.66) {
+            /*if (teams[t].rate > 0.66) {
                 g += ",2@ldew,2@bignugget";
             }
             else if (teams[t].rate > 0.5875) {
@@ -10504,6 +10504,7 @@ function Safari() {
             for (var p in teams[t].players) {
                 giveStuff(getAvatarOff(teams[t].players[p]), toStuffObj(g));
             }
+            */
             r = (Math.floor(teams[t].rate * 10000) / 100);
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
         }
@@ -10519,7 +10520,7 @@ function Safari() {
             team.rate = (team.won / team.fought);
         }
         safari.events.spiritDuelsTeams.sort( function(a, b) {
-            return a.rate - b.rate;
+            return b.rate - a.rate;
         });
 
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
