@@ -10669,7 +10669,7 @@ function Safari() {
             for (var a in team1) {
                 team1[a].rate = (team1[a].won / team1[a].fought);
                 if (team1[a].alive) {
-                    team1fighters += team1[a].owner + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
+                    team1fighters += team1[a].owner.id.toCorrectCase() + "'s " + poke(team1[a].mon) + " " + pokeInfo.icon(team1[a].mon) + toColor(" (" + team1[a].rate + "%)  ", this.getSpiritDuelColor(team1[a].rate) );
                 }
                 if (team1[a].rate < 0.5) {
                     team1[a].alive = false;
@@ -10681,7 +10681,7 @@ function Safari() {
             this.spiritDuelsMessage( team1fighters );
             for (var a in team2) {
                 if (team2[a].alive) {
-                    team2fighters += team2[a].owner + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
+                    team2fighters += team2[a].owner.id.toCorrectCase() + "'s " + poke(team2[a].mon) + " " + pokeInfo.icon(team2[a].mon) + toColor(" (" + team2[a].rate + "%)  ", this.getSpiritDuelColor(team2[a].rate) );
                 }
                 team2[a].rate = (team2[a].won / team2[a].fought);
                 if (team2[a].rate < 0.5) {
@@ -10728,9 +10728,9 @@ function Safari() {
             return "#37d684";
         }
         else if (rate >= 0.5) {
-            return "#d6d636";
+            return "#dbca32";
         }
-        return "#d63636";
+        return "#db4632";
     }
     this.spiritMonBoost = function( player,mon ) {
         //Adds buffs according to a mon's owner's skills
