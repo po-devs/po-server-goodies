@@ -11104,6 +11104,10 @@ function Safari() {
     };
     this.watchSpiritDuels = function(src,player) {
         var name = player.id.toCorrectCase();
+        if (!currentSpiritDuel) {
+            safaribot.sendMessage( src,"There is no Spirit Duel to watch!",safchan );
+            return;
+        }
         if (safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()) !== -1) {
             this.spiritDuelsMessage(name + " stopped watching this battle!");
             safari.events.spiritDuelsViewers.splice(safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()), 1);
