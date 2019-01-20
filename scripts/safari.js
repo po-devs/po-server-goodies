@@ -10657,13 +10657,13 @@ function Safari() {
                     range2 = [10 + boost2, 100 + boost2];
                     res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
                     if (res[0] >= res[1]) {
-                        fighter1.won++;
+                        team1[a].won++;
                     }
                     if (res[1] >= res[0]) {
-                        fighter2.won++;
+                        team2[b].won++;
                     }
-                    fighter1.fought++;
-                    fighter2.fought++;
+                    team1[a].fought++;
+                    team2[b].fought++;
                 }
             }
             for (var a in team1) {
