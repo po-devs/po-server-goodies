@@ -11079,10 +11079,10 @@ function Safari() {
         }
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].indexOf(name1);
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(name1);
             if (k > -1) {
-                safari.events.spiritDuelsTeams[t].splice(k, 1);
-                safari.events.spiritDuelsTeams[t].push(name2);
+                safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.splice(k, 1);
+                safari.events.spiritDuelsTeams[t].players.push(name2);
             }
         }
         k = safari.events.spiritDuelsSignups.indexOf(name1);
