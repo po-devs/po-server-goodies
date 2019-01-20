@@ -10505,7 +10505,7 @@ function Safari() {
                 giveStuff(getAvatarOff(team[t].players[p]), g);
             }
             r = (Math.floor(teams[t].rate * 10000) / 100);
-            sendAll(teams[t].name + " scored %" + r + "and got #" + (i + 1) + "!", true);
+            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
         }
         sendAll();
     }
