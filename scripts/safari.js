@@ -10606,7 +10606,7 @@ function Safari() {
         for (var p in team2) {
             p2 += team2[p].owner.id.toCorrectCase() + "'s " + poke(team2[p].mon) + " ";
         }
-        sendAll( p1 + " VS " + p2);
+        //sendAll( p1 + " VS " + p2);
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -10656,10 +10656,10 @@ function Safari() {
                     boost2 = this.spiritMonBoost(fighter2.owner, fighter2.mon);
                     range2 = [10 + boost2, 100 + boost2];
                     res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
-                    if (res[0] >= res[1]) {
+                    if (res.power[0] >= res.power[1]) {
                         team1[a].won++;
                     }
-                    if (res[1] >= res[0]) {
+                    if (res.power[1] >= res.power[0]) {
                         team2[b].won++;
                     }
                     team1[a].fought++;
