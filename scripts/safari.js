@@ -10709,6 +10709,7 @@ function Safari() {
                 safari.events.spiritDuelsViewers = [];
                 sendAll( "The Spirit Duel ended in a draw!!");
                 safari.prepareNextSpiritDuel();
+                return true;
             }
             if (victory1 || victory2) {
                 var w;
