@@ -10699,6 +10699,17 @@ function Safari() {
                 }
             }
             this.spiritDuelsMessage( team2fighters );
+            if (!victory1 && !victory2 && step >= 32) {
+                safari.events.spiritDuelsTeams[0].won += 0.5;
+                safari.events.spiritDuelsTeams[1].won += 0.5;
+                safari.events.spiritDuelsTeams[0].fought++;
+                safari.events.spiritDuelsTeams[1].fought++;
+                safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
+                safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
+                safari.events.spiritDuelsViewers = [];
+                sendAll( "The Spirit Duel ended in a draw!!");
+                safari.prepareNextSpiritDuel();
+            }
             if (victory1 || victory2) {
                 var w;
                 if (victory1 && victory2) {
