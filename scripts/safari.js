@@ -10502,7 +10502,7 @@ function Safari() {
             }
             i--;
             for (var p in teams[t].players) {
-                giveStuff(getAvatarOff(teams[t].players[p]), g);
+                giveStuff(getAvatarOff(teams[t].players[p]), toStuffObj(g));
             }
             r = (Math.floor(teams[t].rate * 10000) / 100);
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
