@@ -10639,7 +10639,7 @@ function Safari() {
                     continue;
                 }
                 boost1 = this.spiritMonBoost(fighter1.owner, fighter1.mon);
-                range1 = [10 + boost, 100 + boost];
+                range1 = [10 + boost1, 100 + boost1];
                 for (var b in team2) {
                     fighter2 = team2[b];
                     if (!fighter2.alive) {
@@ -11054,7 +11054,7 @@ function Safari() {
         }
     };
     this.watchSpiritDuels = function(src,player) {
-        var name = player.id;
+        var name = player.id.toCorrectCase();
         if (safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()) !== -1) {
             this.spiritDuelsMessage(name + " stopped watching this battle!");
             safari.events.spiritDuelsViewers.splice(safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()), 1);
