@@ -10491,7 +10491,7 @@ function Safari() {
         }
         for (var t in teams) {
             g = prizes[i+""];
-            if (teams[t].rate > 0.66) {
+            /*if (teams[t].rate > 0.66) {
                 g += ",2@ldew,2@bignugget";
             }
             else if (teams[t].rate > 0.5875) {
@@ -10504,6 +10504,7 @@ function Safari() {
             for (var p in teams[t].players) {
                 giveStuff(getAvatarOff(teams[t].players[p]), toStuffObj(g));
             }
+            */
             r = (Math.floor(teams[t].rate * 10000) / 100);
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
         }
@@ -11079,10 +11080,10 @@ function Safari() {
         }
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].indexOf(name1);
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(name1);
             if (k > -1) {
-                safari.events.spiritDuelsTeams[t].splice(k, 1);
-                safari.events.spiritDuelsTeams[t].push(name2);
+                safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.splice(k, 1);
+                safari.events.spiritDuelsTeams[t].players.push(name2);
             }
         }
         k = safari.events.spiritDuelsSignups.indexOf(name1);
@@ -11104,6 +11105,10 @@ function Safari() {
     };
     this.watchSpiritDuels = function(src,player) {
         var name = player.id.toCorrectCase();
+        if (!currentSpiritDuel) {
+            safaribot.sendMessage( src,"There is no Spirit Duel to watch!",safchan );
+            return;
+        }
         if (safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()) !== -1) {
             this.spiritDuelsMessage(name + " stopped watching this battle!");
             safari.events.spiritDuelsViewers.splice(safari.events.spiritDuelsViewers.indexOf(name.toLowerCase()), 1);
