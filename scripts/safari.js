@@ -10520,7 +10520,7 @@ function Safari() {
             team.rate = (team.won / team.fought);
         }
         safari.events.spiritDuelsTeams.sort( function(a, b) {
-            return b.rate - a.rate;
+            return a.rate - b.rate;
         });
 
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
