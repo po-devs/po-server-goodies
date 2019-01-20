@@ -10865,7 +10865,7 @@ function Safari() {
         //Adds the mon to player's spirit box
         //Also increases their EXP
         var id = parseInt(mon, 10), exp;
-        player.spiritDuels.box.push(mon);
+        player.spiritDuels.box.push(id);
         exp = (getBST(id) * isLegendary(id) ? 6 : 1);
         for (var s in player.spiritDuels.skills) {
             if (player.spiritDuels.skills[s].type === "exp") {
@@ -11022,7 +11022,13 @@ function Safari() {
             safaribot.sendMessage( src,"You added " + data.name + " to the lead of your Spirit Team!",safchan );
             return;
         }
+        this.saveGame(player);
     };
+    this.clearSpiritMons = function( src,commandData ) {
+        var player = getAvatarOff(commandData);
+        player.spiritDuels.box = [];
+        this.saveGame(player);
+    }
     this.bestowSpiritMon = function( src,commandData ) {
         //Adds the spirit mons to the front of their spirit box if they have it
         //num = data.getMonNumber(data) || data if data is a number
@@ -11050,6 +11056,7 @@ function Safari() {
             safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Spirit Team.",safchan );
             return;
         }
+        this.saveGame(player);
     };
     this.spiritDuelsUpdateAlt = function( name1, name2 ) {
         if (!safari.events.spiritDuelsEnabled) {
@@ -26819,9 +26826,15 @@ function Safari() {
                 safari.events.spiritDuelsBattling = true;
                 safari.events.currentSpiritDuel = true;
                 safari.startSpiritDuel();
+                return true;
+            }
+            if (command === "clearspirits") {
+                safari.clearSpiritMons(src,commandData);
+                return true;
             }
             if (command === "bestowspirit") {
                 safari.bestowSpiritMon(src,commandData);
+                return true;
             }
             if (command === "bestowcherish") {
                 var cmd = commandData.split(":");
