@@ -10717,6 +10717,21 @@ function Safari() {
         }
         return false;
     };
+    this.getSpiritDuelColor = function (rate) {
+        if (rate >= 0.75) {
+            return "#9636d6";
+        }
+        else if (rate >= 0.66) {
+            return "#4242f4";
+        }
+        else if (rate >= 0.575) {
+            return "#37d684";
+        }
+        else if (rate >= 0.5) {
+            return "#d6d636";
+        }
+        return "#d63636";
+    }
     this.spiritMonBoost = function( player,mon ) {
         //Adds buffs according to a mon's owner's skills
         var out = 0, data, active, mult;
