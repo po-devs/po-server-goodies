@@ -10479,7 +10479,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = [], i = teams.length, r;
+        var g = "", i = teams.length, r;
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -10492,17 +10492,17 @@ function Safari() {
         for (var t in teams) {
             g = prizes[i+""];
             if (teams[t].rate > 0.66) {
-                g += ",4@ldew";
+                g += ",2@ldew,2@bignugget";
             }
             else if (teams[t].rate > 0.5875) {
-                g += ",2@ldew";
+                g += ",1@ldew,@bignugget";
             }
             else if (teams[t].rate > 0.5) {
-                g += ",1@ldew";
+                g += ",2@nugget";
             }
             i--;
             for (var p in teams[t].players) {
-                giveStuff(getAvatarOff(team[t].players[p]), g);
+                giveStuff(getAvatarOff(teams[t].players[p]), g);
             }
             r = (Math.floor(teams[t].rate * 10000) / 100);
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
@@ -10531,7 +10531,7 @@ function Safari() {
             safari.events.spiritDuelsSignups.push(player.id);
         }
         safari.events.spiritDuelsTeams[0].alive = false;
-        safari.events.spiritDuelsTeams.slice(1);
+        safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
         safari.events.spiritDuelsTeams.sort( function(a, b) {
             return b.players.length - a.players.length;
         });
@@ -10709,6 +10709,7 @@ function Safari() {
                 safari.events.spiritDuelsViewers = [];
                 sendAll( "The Spirit Duel ended in a draw!!");
                 safari.prepareNextSpiritDuel();
+                return true;
             }
             if (victory1 || victory2) {
                 var w;
@@ -11059,7 +11060,7 @@ function Safari() {
                 safaribot.sendMessage( src,player.id + " doesn't have that Spirit Pokémon!",safchan );
                 return;
             }
-            player.spiritDuels.box.slice(i, 1);
+            player.spiritDuels.box = player.spiritDuels.box.slice(i, 1);
             safaribot.sendMessage( src,"You took away a " + data.name + " from " + player.id + "'s Spirit Team.",safchan );
         }
         else {
