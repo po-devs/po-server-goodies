@@ -10997,7 +10997,7 @@ function Safari() {
 
         var page = 1;
         for (var i = 0; i < 8; i++) {
-            page = i + 1;
+            page = i;
             if (!isNaN(page)) {
                 maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
 
@@ -11005,7 +11005,7 @@ function Safari() {
                     page = maxPages;
                     continue;
                 }
-                list = list.slice(12 * (page - 1), 12 * (page - 1) + 12);
+                list = list.slice(12 * (page), 12 * (page) + 12);
             }
 
             var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
