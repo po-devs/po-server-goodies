@@ -10996,23 +10996,26 @@ function Safari() {
             list = player.spiritDuels.box;
 
         var page = 1;
-        if (!isNaN(page)) {
-            maxPages = Math.floor(list.length / (96)) + (list.length % 96 === 0 ? 0 : 1);
+        for (var i = 0; i < 8; i++) {
+            page = i;
+            if (!isNaN(page)) {
+                maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
 
-            if (page > maxPages) {
-                page = maxPages;
-                continue;
+                if (page > maxPages) {
+                    page = maxPages;
+                    continue;
+                }
+                list = list.slice(12 * (page), 12 * (page) + 12);
             }
-            list = list.slice(96 * (page), 96 * (page) + 96);
-        }
 
-        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
-        if (textOnly) {
-            out += this.listPokemonText(list, label);
-        } else {
-            out += this.listPokemon(list, label);
-            if (isAndroid) {
-                out += "<br />";
+            var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
+            if (textOnly) {
+                out += this.listPokemonText(list, label);
+            } else {
+                out += this.listPokemon(list, label);
+                if (isAndroid) {
+                    out += "<br />";
+                }
             }
         }
 
