@@ -10977,12 +10977,12 @@ function Safari() {
                 box: []
             }
         }
-        player.rank = 0;
-        player.rankName = "Grunt";
-        player.team = "None";
-        player.exp = 0;
-        player.skills = [];
-        player.skillChoices = {};
+        player.spiritDuels.rank = 0;
+        player.spiritDuels.rankName = "Grunt";
+        player.spiritDuels.team = "None";
+        player.spiritDuels.exp = 0;
+        player.spiritDuels.skills = [];
+        player.spiritDuels.skillChoices = {};
         //player.balls.spirit += 5;
         safari.sanitize(player);
         safari.saveGame(player);
@@ -11105,7 +11105,7 @@ function Safari() {
     };
     this.watchSpiritDuels = function(src,player) {
         var name = player.id.toCorrectCase();
-        if (!currentSpiritDuel) {
+        if (!safari.events.currentSpiritDuel) {
             safaribot.sendMessage( src,"There is no Spirit Duel to watch!",safchan );
             return;
         }
