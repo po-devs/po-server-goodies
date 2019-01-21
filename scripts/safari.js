@@ -4266,7 +4266,7 @@ function Safari() {
             safaribot.sendMessage(src, "This is a Spirit Pokémon, you can only use " + es(finishName("spirit")) + "!", safchan);
             return;
         }
-        if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball)) {
+        if (currentRules && currentRules.excludeBalls && currentRules.excludeBalls.contains(ball) && ball !== "spirit") {
             safaribot.sendMessage(src, "The use of " + ballName + " is forbidden during this contest!", safchan);
             return;
         }
@@ -10996,22 +10996,26 @@ function Safari() {
             list = player.spiritDuels.box;
 
         var page = 1;
-        if (!isNaN(page)) {
-            maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
+        for (var i = 0; i < 8; i++) {
+            page = i + 1;
+            if (!isNaN(page)) {
+                maxPages = Math.floor(list.length / (12)) + (list.length % 12 === 0 ? 0 : 1);
 
-            if (page > maxPages) {
-                page = maxPages;
+                if (page > maxPages) {
+                    page = maxPages;
+                    continue;
+                }
+                list = list.slice(12 * (page - 1), 12 * (page - 1) + 12);
             }
-            list = list.slice(12 * (page - 1), 12 * (page - 1) + 12);
-        }
 
-        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
-        if (textOnly) {
-            out += this.listPokemonText(list, label);
-        } else {
-            out += this.listPokemon(list, label);
-            if (isAndroid) {
-                out += "<br />";
+            var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
+            if (textOnly) {
+                out += this.listPokemonText(list, label);
+            } else {
+                out += this.listPokemon(list, label);
+                if (isAndroid) {
+                    out += "<br />";
+                }
             }
         }
 
