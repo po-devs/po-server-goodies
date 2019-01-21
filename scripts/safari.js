@@ -11001,7 +11001,6 @@ function Safari() {
 
             if (page > maxPages) {
                 page = maxPages;
-                continue;
             }
             list = list.slice(96 * (page), 96 * (page) + 96);
         }
