@@ -11002,7 +11002,7 @@ function Safari() {
             if (page > maxPages) {
                 page = maxPages;
             }
-            list = list.slice(96 * (page), 96 * (page) + 96);
+            list = list.slice(96 * (page - 1), 96 * (page - 1) + 96);
         }
 
         var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
