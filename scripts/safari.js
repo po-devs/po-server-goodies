@@ -19270,11 +19270,12 @@ function Safari() {
             "dark": "Darkness",
             "barrier": "Barriers"
         };
-        var e, val, max = sys.rand(0, 3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0;
+        var e, val, max = sys.rand(3 +  Math.floor(level * 1.3), 5 + Math.floor(level * (sys.rand(0, 0.3) + 1.4))), maxsize = max, order = Object.keys(this.hazardNames).shuffle(), count = 0, total = max, cont = true, x = 0, i = 0;
 
         var blockedHazard = this.pyr.bannedHazard;
 
         while (cont) {
+            i++;
             maxsize = max - x;
             x++;
             if (x > max * 0.5) {
@@ -19283,12 +19284,19 @@ function Safari() {
             if ((maxsize <= 7) && (chance(0.85 - level))) {
                 cont = false;
             }
+            if (i > 30) {
+                cont = false;
+            }
         }
 
         do {
             this.hazards = {};
             max = total;
             count = 0;
+            i++;
+            if (i > 100) {
+                break;
+            }
             for (e = 0; e < order.length; e++) {
                 if (order[e] === blockedHazard) {
                     continue;
