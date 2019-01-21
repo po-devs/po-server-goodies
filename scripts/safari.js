@@ -10634,7 +10634,7 @@ function Safari() {
             this.spiritDuelsMessage("Preparations complete! Duel about to begin!")
         }
         else if (step >= 5) {
-            /* Needs print functions */
+            this.spiritDuelsMessage( "Turn " + (step - 4) + ": " );
             for (var a in team1) {
                 team1[a].won = 0;
                 team1[a].fought = 0;
