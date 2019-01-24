@@ -16524,8 +16524,9 @@ function Safari() {
         };
 
         var celebs = Object.keys(safari.celebrityTrainerData).shuffle().concat(Object.keys(safari.strongCelebrityTrainerData).shuffle());
-        var npc = JSON.parse(JSON.stringify(celebs[0]));
-        npc.party = npc.party.shuffle().slice(0, 6);
+        var npc = {};
+        npc.name = celebs[0];
+        npc.party = JSON.parse(JSON.stringify(safari.celebrityTrainerData[npc.name])).shuffle().slice(0, 6);
         npc.postBattle = postBattle;
         
         npc.postArgs = {
