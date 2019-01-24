@@ -2759,7 +2759,7 @@ function Safari() {
                 hasBalls = true;
             }
         }
-        var ph = "«" + link("/photo", "Photo") + "» ";
+        var ph = "«" + link("/photo", "Take Photo") + "» ";
         if (isAndroid && isBallAvailable(player, "master")) {
             sys.sendHtmlMessage(src, "<font color='#3DAA68'><timestamp/> <b>±Throw:</b></font> «" + link("/" + ccatch + " " + itemData.master.name, cap(itemData.master.name)) + "»", safchan);
         }
