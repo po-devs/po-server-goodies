@@ -10405,17 +10405,21 @@ function Safari() {
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
     }
-    this.shoveDuelTeam = function( src,name,data ) {
+    this.shoveDuelTeam = function( src,player,data ) {
         var oldBox;
+        if (!player) {
+            safaribot.sendMessage( src,"Not a player!",safchan );
+            return false;
+        }
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            if (safari.events.spiritDuelsTeams[t].players.indexOf(name) === -1) {
+            if (safari.events.spiritDuelsTeams[t].players.indexOf(player.id) === -1) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t] = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(name), 1);
-            safaribot.sendMessage( src,"Removed player " + name + " from " + data + ".",safchan );
+            safari.events.spiritDuelsTeams[t] = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(player.id), 1);
+            safaribot.sendMessage( src,"Removed player " + player.id + " from " + data + ".",safchan );
             return;
         }
         safaribot.sendMessage( src,"No team exists, or that player is not assigned to that team!",safchan );
@@ -10934,7 +10938,7 @@ function Safari() {
             return;
         }
         if (letters.indexOf(commandData) === -1) {
-            this.showSpiritSkill( player );
+            this.showSpiritSkill( src,player );
             return;
         }
         for (var s in player.spiritDuels.skillChoices) {
@@ -11104,7 +11108,7 @@ function Safari() {
         }
         k = safari.events.spiritDuelsSignups.indexOf(name1);
         if (k > -1) {
-            safari.events.spiritDuelsSignups = safari.events.spiritDuelsSignups.splice(k, 1);
+            safari.events.spiritDuelsSignups.splice(k, 1);
             safari.events.spiritDuelsSignups.push(name2);
         }
     };
@@ -27721,7 +27725,7 @@ function Safari() {
             }
             if (command === "shoveduelteam") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.shoveDuelTeam(src, info[0], info[1]);
+                safari.shoveDuelTeam(src, getAvatarOff(info[0]), info[1]);
                 return true;
             }
             if (command === "nextspawn") {
