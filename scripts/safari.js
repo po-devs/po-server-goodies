@@ -173,6 +173,7 @@ function Safari() {
             dummy3: 0
         },
         decorations: {},
+        firstCelebrityRun: true,
         records: {
             gachasUsed: 0,
             masterballsWon: 0,
@@ -741,6 +742,7 @@ function Safari() {
         alchemist: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAABGdBTUEAAK/INwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAAtUExURXCYOOCoiPjQyPj4+ChQEHhIMKjIiLiwoOCImPjgyPCoqJBAUNBgYAAAAP///2PjC4AAAAAPdFJOU///////////////////ANTcmKEAAAEJSURBVHjavJPRcoUgDESDiEI22///3C7aVrTc6dyX7jiDuocQSLCPP2T/DeDQSwCoh27IACC8hlQ9MAO+/QcxAPUC6gSADLhHuEMgZoD8U5gAh794ba1qGIgRWJZoUizLFFCAw++EQjyAM4NI3U8xZmFXAI/MDjAfxAMA9TOjAxrciTtAejjal6APcgQ0XWtESS3pKWK1Cu8RVEoHWYpeddS4RxCB0CpmKZkpfoDPoyaMji3nDU778YdqrmbkJpFm6+9qsq0mJme5tjZOgETl4K4cmCaANqJOqiq2KkJOOorqmDj9fZ8Bfadd+75fe7i3PUtKZEqFry4O+wFinP+8WT058r27+SnAAFJzMLawCe3JAAAAAElFTkSuQmCC",
         decor: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAACpQTFRFAAAARi1GbUtQLy4v98+2iXVrz5Zv7HV1rUxLcUgt7u73o8nIbS8rAAAARr4BKgAAAA50Uk5T/////////////////wBFwNzIAAAA70lEQVR42pyTgXLEIAhEV1Eiav7/d7vYa3s34nXaHaNkeAOSAO5fhL8BWDoCQMpUekGebLprTmtDBECWfxGCCEg/QAoASJL6maLSRAB4iCUGiAB49CUa2ABT8fxJHodaDEgp8gYQ+klIBPhX1g4H0BX7HW6BlC+gyA54lVYesqc6v08vzbQol3nJEeC3NPM7xoBgtKHKDbIDJNAz2hgNoyMh+JsjDzQK6B0WAD13tOtqoKnFdkBznxc1SZQQUMxrcnkMRD3JBAwxPcmhq3PzFC2fgcpX1CNAX4U/x8liVwIvU7GP3n2/Gb3/TfeHAAMAaGMlUpM6VNUAAAAASUVORK5CYII=",
         league: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAC1QTFRF////AAAASTAoZi4PaVBpamqObS8rcUgtjImvkIhztKbDw4tQyMjUzOPR47OPqukgZwAAAAF0Uk5TAEDm2GYAAADqSURBVCjPY2DADhglJQVQ+WfOHEQWAfLPnJmIpGDmmTlz5sxEKGGcM3GipORJhIDkTOnduzfOROiRnL7v3bvXlXABxi2z3wHBTm8B3AL7QAIv4QIM0nWh796FPt+IsHa7IBBUIzlVTlB6o+BDJKdLg8zYiOy5fTNnvkb2HKP4632FyAKyCwUFpS4iKVi79Jpt1C2EEtlbrYutItYilEjdEF1mFdi7EGHrQpCAFNxexucCooutAhnr4J57JyC6dFUgkIIpEWQ0XLpKWEAQyV6ztLRkFJemJYqloQoIMKIKKAkAEXJcCoIRcQAA4RtXiYv0j40AAAAASUVORK5CYII=",
+        celebrity: "data:image/png;base64,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",
         journal: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QkXACELuedkbQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAALVBMVEUAAAAAAAAvLi9GLUZJSU1KKRJxSC2LZjGQcUiRU2qwxuDPlm/u7vf3z7b///+TrKvBAAAAAXRSTlMAQObYZgAAAAFiS0dEDm+9ME8AAADrSURBVCjPY2DADpiUlJRQ+CouLi7IIkpAvouTAqoCZCUQPkKAyQUqIICiwslJSQGhQkVFRRshoOIEAnu1lbbBXaWira19dzdcgCFbae/evXdvJ8EFGNW23b17NzsJbguD9h7tu5tOb0I4nW2P7N2LpxMQAox7gVpuCyD5ThoosBHZ+4W5u6+JKyAJtAumCVYgCYhHNK6SaC1EKCiXEJ0Z2FgOV8JUppg6M0woHS4gnciYahwmIAa3R3ajGFAgUfoi3F0CYqHGoYmMCJcxioUqhSYiuZRRKVUpTAlFQFFQCEUgVACMEUAQiokBAKcRQwoZaIiAAAAAAElFTkSuQmCC",
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC"
     };
@@ -3246,13 +3248,20 @@ function Safari() {
             if (cTheme) {
                 var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
-                    statCap = [700, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
+                    statCap = [750, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
                     for (i = 1; i < 803; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         if (this.validForTheme(i, cTheme) && bst <= statCap) {
                             list.push(i);
+                        }
+                        if (this.validForTheme(i, cTheme) && (pokeInfo.species(i) in megaEvolutions)) {
+                            var possibleEvo = megaEvolutions[pokeInfo.species(i)];
+                            var evolveTo = possibleEvo[sys.rand(0, possibleEvo.length)];
+                            if ((getBST(evolveTo)) <= statCap) {
+                                list.push(evolveTo);
+                            }
                         }
                     }
                 }
@@ -9527,6 +9536,7 @@ function Safari() {
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
             }
+            player.firstCelebrityRun = true;
             
             safari.trialsLogin(player);
             if (safari.events.spiritDuelsEnabled) {
@@ -10288,6 +10298,7 @@ function Safari() {
                 rate: 0
             });
         }
+        safari.events.spiritDuelsLog = [];
         safari.events.spiritDuelsRanks = [
             {rank: "Grunt", exp: 0},
             {rank: "Ensign", exp: 2000},
@@ -10405,21 +10416,17 @@ function Safari() {
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
     }
-    this.shoveDuelTeam = function( src,player,data ) {
+    this.shoveDuelTeam = function( src,name,data ) {
         var oldBox;
-        if (!player) {
-            safaribot.sendMessage( src,"Not a player!",safchan );
-            return false;
-        }
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            if (safari.events.spiritDuelsTeams[t].players.indexOf(player.id) === -1) {
+            if (safari.events.spiritDuelsTeams[t].players.indexOf(name) === -1) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t] = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(player.id), 1);
-            safaribot.sendMessage( src,"Removed player " + player.id + " from " + data + ".",safchan );
+            safari.events.spiritDuelsTeams[t] = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(name), 1);
+            safaribot.sendMessage( src,"Removed player " + name + " from " + data + ".",safchan );
             return;
         }
         safaribot.sendMessage( src,"No team exists, or that player is not assigned to that team!",safchan );
@@ -10434,7 +10441,7 @@ function Safari() {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t].players.push(player.id);
+            safari.events.spiritDuelsTeams[t].players.push(player.id.toLowerCase());
             if (player.spiritDuels) {
                 if (player.spiritDuels.box.length > 0) {
                     oldBox = player.spiritDuels.box;
@@ -10477,7 +10484,7 @@ function Safari() {
             else {
                 oldBox = [19];
             }
-            safari.events.spiritDuelsTeams[i].players.push(player.id);
+            safari.events.spiritDuelsTeams[i].players.push(player.id.toLowerCase());
             player.spiritDuels = {
                 rank: 0,
                 rankName: "Grunt",
@@ -10548,7 +10555,7 @@ function Safari() {
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
             player = getAvatarOff(safari.events.spiritDuelsTeams[0].players[p]);
-            safari.events.spiritDuelsSignups.push(player.id);
+            safari.events.spiritDuelsSignups.push(player.id.toLowerCase());
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
@@ -10725,6 +10732,7 @@ function Safari() {
                 safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
                 safari.events.spiritDuelsViewers = [];
                 sendAll( "The Spirit Duel ended in a draw!!");
+                safari.events.spiritDuelsLog.unshift( safari.events.spiritDuelsTeams[0].name + " " + safari.events.spiritDuelsTeams[1].name + " tied!" );
                 safari.prepareNextSpiritDuel();
                 return true;
             }
@@ -10736,10 +10744,12 @@ function Safari() {
                 else if (victory1) {
                     safari.events.spiritDuelsTeams[0].won++;
                     w = safari.events.spiritDuelsTeams[0].name;
+                    safari.events.spiritDuelsLog.unshift( safari.events.spiritDuelsTeams[0].name + " defeated " + safari.events.spiritDuelsTeams[1].name + "!" );
                 }
                 else if (victory2) {
                     safari.events.spiritDuelsTeams[1].won++;
                     w = safari.events.spiritDuelsTeams[1].name;
+                    safari.events.spiritDuelsLog.unshift( safari.events.spiritDuelsTeams[1].name + " defeated " + safari.events.spiritDuelsTeams[0].name + "!" );
                 }
                 safari.events.spiritDuelsTeams[0].fought++;
                 safari.events.spiritDuelsTeams[1].fought++;
@@ -10895,7 +10905,7 @@ function Safari() {
         //Also increases their EXP
         var id = parseInt(mon, 10), exp;
         player.spiritDuels.box.push(id);
-        exp = (getBST(id) * isLegendary(id) ? 6 : 1);
+        exp = (getBST(id));
         for (var s in player.spiritDuels.skills) {
             if (player.spiritDuels.skills[s].type === "exp") {
                 exp *= player.spiritDuels.skills[s].val;
@@ -10904,6 +10914,7 @@ function Safari() {
         player.spiritDuels.exp += (getBST(id) * isLegendary(id) ? 7 : 1);
         this.levelupSpiritRank(player);
         this.saveGame(player);
+        return;
     };
     this.levelupSpiritRank = function( player ) {
         //Grabs a skill
@@ -10911,9 +10922,11 @@ function Safari() {
         if (nextLevel >= safari.events.spiritDuelsRanks.length) {
             return;
         }
-        if (player.spiritDuels.exp >= safari.events.spiritDuelsRanks[nextLevel].exp) {
+        var nextExp = safari.events.spiritDuelsRanks[nextLevel].exp;
+        if (player.spiritDuels.exp >= nextExp) {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
+            safaribot.sendMessage(sys.id(player), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
             this.showSpiritSkill( player );
@@ -10923,7 +10936,10 @@ function Safari() {
     this.showSpiritSkill = function( player ) {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
-        msg = "Choose one of these skills with /spiritskill [letter]!"
+        msg = "Choose one of these skills with /spiritskill [letter]!";
+        if (!player.spiritDuels.skillChoices) {
+            return;
+        }
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
             msg += "[" + letters[i] + "] " + skill.desc + ". \n";
@@ -10946,6 +10962,7 @@ function Safari() {
                 safaribot.sendMessage(sys.id(player), "You chose the skill '" + player.spiritDuels.skillChoices[commandData].desc + "'!", safchan);
                 player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[commandData])));
                 player.spiritDuels.skillChoices = {};
+                this.saveGame(player);
                 return;
             }
             i++;
@@ -10964,10 +10981,32 @@ function Safari() {
             case "active": this.activeSpiritMon(src,player,commandData); break;
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
-            default: safaribot.sendMessage( src,"That's not a command! Valid commands are box, boxt, active, join, and watch!",safchan );
+            case "history": this.showSpiritDuelsLog(src,player,commandData); break;
+            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, and watch!]",safchan );
         }
         return;
     };
+    this.showSpiritDuelsLog = function( src,player,data ) {
+        var log = safari.events.spiritDuelsLog, out = "";
+        data = parseInt(data, 10);
+        if (!data) {
+            data = 10;
+        }
+        if (data > 100) {
+            data = 100;
+        }
+        if (data > log.length) {
+            data = log.length;
+        }
+        for (var i = 0; i < log.length; i++) {
+            out += log[i] + "\n";
+            if (i > data) {
+                break;
+            }
+        }
+        safaribot.sendMessage(src, out, safchan);
+        return;
+    }
     this.joinSpiritDuels = function( src,player ) {
         //Joins duels to be assigned a team next time
         var id = player.id;
@@ -10991,7 +11030,7 @@ function Safari() {
             safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
-        safari.events.spiritDuelsSignups.push(id);
+        safari.events.spiritDuelsSignups.push(id.toLowerCase());
         if (!player.spiritDuels) {
             player.spiritDuels = {
                 box: []
@@ -10999,7 +11038,7 @@ function Safari() {
         }
         player.spiritDuels.rank = 0;
         player.spiritDuels.rankName = "Grunt";
-        player.spiritDuels.team = "None";
+        player.spiritDuels.team = "Unemployed";
         player.spiritDuels.exp = 0;
         player.spiritDuels.skills = [];
         player.spiritDuels.skillChoices = {};
@@ -11108,7 +11147,7 @@ function Safari() {
         }
         k = safari.events.spiritDuelsSignups.indexOf(name1);
         if (k > -1) {
-            safari.events.spiritDuelsSignups.splice(k, 1);
+            safari.events.spiritDuelsSignups = safari.events.spiritDuelsSignups.splice(k, 1);
             safari.events.spiritDuelsSignups.push(name2);
         }
     };
@@ -11135,6 +11174,70 @@ function Safari() {
         } else {
             safari.events.spiritDuelsViewers.push(name.toLowerCase());
             this.spiritDuelsMessage(name + " is watching this battle!");
+        }
+        return;
+    };
+
+    /* Celebrity Battles */
+    this.loadCelebrities = function(src, commandData) {
+        switch (commandData) {
+            case "kanto":
+                safari.celebrityTrainerData = {
+                    "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 208],
+                    "Trainer Misty": ["121", 350, 73, 195, 565, 581, 395, 65855],
+                    "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 243, "405", 66015],
+                    "Trainer Erika": [492, 407, "465", 671, 787, 470, 286, 65790],
+                    "Trainer Sabrina": ["65601", 376, 655, 65844, 648, 282, 124, 488],
+                    "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 658],
+                    "Trainer Blaine": [146, "467", 65859, 637, 727, 59, 131551],
+                    "Trainer Giovanni": [645, 65651, 65744, "31", 62, 232, 423, 553]
+                };
+                safari.strongCelebrityTrainerData = {
+                    "Trainer Lorlei": ["131", 473, 461, 65574, 65616, 144, 197087, 65996, 478],
+                    "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
+                    "Trainer Agatha": ["65630", 65890, 720, 65641, 724, 681, 593, "169"],
+                    "Trainer Lance": [65666, "149", 65678, 65542, 380, 65639],
+                    "Trainer Blue": [65539, "131078", 65545, 59, 103, 130, 150]
+                };
+                break;
+            case "johto":
+                safari.celebrityTrainerData = {
+                    "Trainer Falkner": [65554, 641, 663, 330, 715, 701, "472", 279],
+                    "Trainer Bugsy": [65750, "65748", 213, 768, 743, 673, 542, 469],
+                    "Trainer Whitney": ["241", 40, 586, 65964, 143, 780, 66067],
+                    "Trainer Morty": [609, 94, 778, "429", 593, 709, 802],
+                    "Trainer Chuck": [245, "62", 226, 534, 638, 99, 675, 342],
+                    "Trainer Jasmine": ["208", 227, 65717, 65587, 65839, 598, 385, 411],
+                    "Trainer Price": [699, 713, 740, 646, "473", 91, 471],
+                    "Trainer Clair": ["230", 373, 150, 635, 597, 718]
+                };
+                safari.strongCelebrityTrainerData = {
+                    "Trainer Will": [65818, 251, 786, 65912, 687, 579, "199", 481],
+                    "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
+                    "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 65663, 658],
+                    "Trainer Karen": [491, 430, 65784, 65895, 799, 625, "197"],
+                    "Trainer Lance": [65666, "149", 65678, 65542, 65916, 65639]
+                };
+                break;
+            case "hoenn":
+                safari.celebrityTrainerData = {
+                    "Trainer Roxanne": ["476", 248, 567, 689, 719, 679, 306],
+                    "Trainer Brawly": ["65844", 297, 500, 794, 701, 640, 620],
+                    "Trainer Wattson": ["65846", 145, 262623, 785, 618, 604],
+                    "Trainer Flannery": [65793, 776, 65765, 721, "324", 157, 668],
+                    "Trainer Norman": ["289", 760, 463, 628, 695, 474],
+                    "Trainer Winona": ["65870", 357, 630, 468, 797, 701, 724],
+                    "Trainers Tate & Liza": [380, 381, 344, 576, 437, "65818", "66011"],
+                    "Trainer Wallace": ["350", 65796, 490, 365, 65666, 730, 66282]
+                };
+                safari.strongCelebrityTrainerData = {
+                    "Trainer Sidney": [65838, "65895", 635, 65765, 727, 571, 560],
+                    "Trainer Phoeboe": [66217, 711, 802, 623, 426, "477"],
+                    "Trainer Glacia": [740, "478", 65898, 378, 365, 781, 609],
+                    "Trainer Drake": [65917, 445, "65909", 706, 784, 799, 691],
+                    "Trainer Steven": ["65912", 798, 485, 379, 227, 801]
+                };
+                break;
         }
         return;
     };
@@ -11857,7 +11960,7 @@ function Safari() {
 
         this.name1 = sys.name(p1);
         this.viewers = [this.name1.toLowerCase()];
-        this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party);
+        this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
 
         var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
@@ -11889,7 +11992,7 @@ function Safari() {
         } else {
             this.name2 = sys.name(p2);
             this.viewers.push(this.name2.toLowerCase());
-            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party);
+            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, player2.cherished);
         }
         
         if (opt) {
@@ -12432,6 +12535,27 @@ function Safari() {
                 fainted = true;
                 out.push("<b>" + tname + " fainted!</b>");
             }
+            if (move.drain) {
+                var placeholder = user.hp;
+                user.hp += Math.floor(dmg * move.drain);
+                if (user.hp > user.maxhp) {
+                    user.hp = user.maxhp;
+                }
+                placeholder = (user.hp - placeholder);
+                out.push(name + " restored " + placeholder + " HP!");
+            }
+            else if (move.recoil) {
+                var placeholder = user.hp;
+                user.hp -= Math.floor(dmg * 0.3333);
+                if (user.hp <= 0) {
+                    user.hp = 0;
+                }
+                placeholder = (placeholder - user.hp);
+                out.push(name + " lost " + placeholder + " HP in recoil!");
+                if (user.hp <= 0) {
+                    out.push("<b>" + name + " fainted!</b>");
+                }
+            }
         }
         if (move.protect) {
             protectUses++;
@@ -12547,9 +12671,10 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.buildTeam = function(owner, team) {
+    Battle2.prototype.buildTeam = function(owner, team, cherished) {
         var out = [], t, p, stats, info, h;
-        var boost =  (this.npcBattle && owner === this.name2 ? this.powerBoost : 0) + 1;
+        var boost = (this.npcBattle && owner === this.name2 ? this.powerBoost : 0) + 1;
+        var ch = 0;
 
         var getStat = function(val) {
             return (2 * val + 5) * boost;
@@ -12557,18 +12682,21 @@ function Safari() {
         for (t = 0; t < team.length; t++) {
             p = team[t];
             stats = sys.pokeBaseStats(p);
-            h = Math.round((stats[0] * 2 + 110) * boost);
+            if (cherished) {
+                ch = countRepeated(cherished, pokeInfo.species(p));
+            }
+            h = Math.round(((stats[0] + ch) * 2 + 110) * boost);
             info = {
                 id: p,
                 owner: owner,
                 hp: h,
                 maxhp: h,
                 stats: {
-                    atk: getStat(stats[1]),
-                    def: getStat(stats[2]),
-                    satk: getStat(stats[3]),
-                    sdef: getStat(stats[4]),
-                    spe: getStat(stats[5]),
+                    atk: getStat(stats[1] + ch),
+                    def: getStat(stats[2] + ch),
+                    satk: getStat(stats[3] + ch),
+                    sdef: getStat(stats[4] + ch),
+                    spe: getStat(stats[5] + ch),
                 },
                 boosts: {
                     atk: 0,
@@ -12582,6 +12710,11 @@ function Safari() {
                 condition: "none",
                 conditionDuration: 0,
                 types: this.getMoveTypes(p),
+                drain: this.getMoveSet(p, [71, 72, 73, 141, 202, 577, 409, 532, 613, 570, 138]),
+                recoil: this.getMoveSet(p, [36, 38, 66, 344, 413, 452, 457, 528, 543, 617, 26, 136]),
+                critical: this.getMoveSet(p, [163, 75, 444, 238, 152, 348, 400, 421, 177, 314, 529, 440, 454, 427]),
+                priority: this.getMoveSet(p, [98, 453, 594, 418, 410, 183, 245, 252, 709, 425, 389]),
+                restore: this.getMoveSet(p, [105, 236, 234, 235, 275, 312, 215, 355, 273, 392, 208, 659, 135, 685, 668]),
                 moves: []
             };
             if (info.types.Normal) {
@@ -12624,6 +12757,12 @@ function Safari() {
         }
         if (data.hasOwnProperty("protect")) {
             out.push("Protect from any attack");
+        }
+        if (data.hasOwnProperty("drain")) {
+            out.push("Recovers " + (out.drain * 100) + "% of damage dealt");
+        }
+        if (data.hasOwnProperty("recoil")) {
+            out.push("Suffers 1/3 of damage dealt in recoil");
         }
         if (data.hasOwnProperty("status")) {
             var conditionVerb = {
@@ -12697,6 +12836,9 @@ function Safari() {
                 move.category = "other";
                 factor = 0.5 + sys.rand(0, 50)/100;
                 damaging = false;
+                if (data.restore >= 2.5) {
+                    factor += 0.1;
+                }
             } else {
                 move.category = chance(0.5) ? "physical" : "special";
                 move.type = randomSample(types);
@@ -12704,7 +12846,7 @@ function Safari() {
                 factor = (60 - move.power) / 100;
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
                     factor = 0;
-                }                
+                }
                 damaging = true;
             }
             
@@ -12714,7 +12856,7 @@ function Safari() {
                 } else {
                     amt = Math.random() * factor;
                 }
-                eff = this.generateMoveEffect(amt * boost, damaging, used);
+                eff = this.generateMoveEffect(amt * boost, damaging, data.drain, data.recoil, data.critical, data.priority, data.restore, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["buff", "nerf"].contains(p)) {
@@ -12722,6 +12864,17 @@ function Safari() {
                                 move[p] = [];
                             }
                             move[p].push(eff[p]);
+                        }
+                        else if (["recoil"].contains(p)) {
+                            if (data.recoil >= 2) {
+                                move.power = Math.ceil(move.power * 1.45);
+                            }
+                            else if (data.recoil >= 1.2) {
+                                move.power = Math.ceil(move.power * 1.35);
+                            }
+                            else {
+                                move.power = Math.ceil(move.power * 1.15);
+                            }
                         } else if (p === "type") {
                             used.push(eff.type);
                         } else {
@@ -12742,13 +12895,15 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.generateMoveEffect = function(factor, damaging, used) {
+    Battle2.prototype.generateMoveEffect = function(factor, damaging, drain, recoil, critical, priority, restore, used) {
         var effChance;
         if (damaging) {
             effChance = {
-                priority: 5,
+                priority: (2.5 + (priority*1.5)),
                 flinch: 3,
-                critical: 3,
+                drain: (factor + drain - 0.5),
+                recoil: (0.5 + recoil - factor),
+                critical: critical,
                 status: 2,
                 buff: 2,
                 nerf: 2,
@@ -12757,7 +12912,7 @@ function Safari() {
             };
         } else {
             effChance = {
-                restore: 1.6,
+                restore: (1 + Math.min((0.4 * restore), 1)),
                 protect: 1.8,
                 status: 3.8,
                 haze: 1,
@@ -12775,11 +12930,11 @@ function Safari() {
         
         switch (eff) {
             case "restore":
-                out.restore = Math.random() * 0.5 * factor + 0.25;
+                out.restore = Math.min(Math.random() * 0.5 * factor + (0.18 * (1 + Math.min(((Math.random() * Math.max(restore, 0.1)) + 0.25), 0.5))), 0.75) ;
                 out.type = eff;
             break;
             case "refresh":
-                out.refresh = chance(factor + 0.1) ? "party" : "self";
+                out.refresh = chance(factor + 0.1 + (restore > 1.5 ? 0.1 : 0)) ? "party" : "self";
                 out.type = eff;
             break;
             case "haze":
@@ -12801,8 +12956,27 @@ function Safari() {
                 out.priority = 5;
                 out.type = eff;
             break;
+            case "drain":
+                if (drain >= 3) {
+                    out.drain = 0.66;
+                }
+                else if (drain >= 2) {
+                    out.drain = 0.575;
+                }
+                else if (drain >= 1.25) {
+                    out.drain = 0.5;
+                }
+                else {
+                    out.drain = 0.4;
+                }
+                out.type = eff;
+            break;
+            case "recoil":
+                out.recoil = true;
+                out.type = eff;
+            break;
             case "priority":
-                val = Math.round(Math.random() * 9 * (factor + 0.12));
+                val = Math.round(Math.random() * (7+priority) * (factor + 0.12));
                 if (val === 0) {
                     return out;
                 }
@@ -12821,14 +12995,14 @@ function Safari() {
                 out.type = eff;
             break;
             case "critical":
-            if (factor < -0.25) {
+            if (factor < -0.275) {
                     return out;
                 }
-                val = factor > 0 ? Math.random() * 0.65 * factor + 0.35 : Math.random() * (1+factor) / 4;
+                val = factor > 0 ? (Math.random() + 0.25) * 4 * critical * (factor + 1.75) : (Math.random() + 0.15) * critical * (6*(1+factor)) / 4;
                 if (val <= 0.01) {
                     return out;
                 }
-                out.critical = Math.min(1, val);
+                out.critical = Math.min(5, val);
                 out.type = eff;
             break;
             case "status":
@@ -13120,6 +13294,18 @@ function Safari() {
             if (move.restore) {
                 c += (1 + move.restore) * 280 * (1 - (user.hp / user.maxhp));
             }
+            var dif = (user.hp / user.maxhp);
+            if (move.drain) {
+                c += 120 * (1 - dif);
+            }
+            if (move.recoil) {
+                if (dif > 0.5) {
+                    c += (210 * (dif));
+                }
+                else {
+                    c -= (150 * (1 - dif));
+                }
+            }
             if (move.protect) {
                 c += 42;
                 if (this.protectCount2 > 0) {
@@ -13163,6 +13349,22 @@ function Safari() {
             out[t]++;
         }
         return out;
+    };
+    Battle2.prototype.getMoveSet = function(id, set) {
+        var num = parseInt(id, 10), m, out = 0.01, val = 0,
+            moves = pokedex.getAllMoves(num);
+        if (!moves) {
+            moves = pokedex.getAllMoves(pokeInfo.species(num));
+        }
+        for (m = moves.length; m--; ) {
+            if (set.indexOf(moves[m]) !== -1) {
+                val++;
+            }
+        }
+        if (val > 0) {
+            out = Math.min((val + 1)/16, 0.5);
+        }
+        return (out * 8);
     };
     Battle2.prototype.getHpPercent = function(name) {
         name = name.toLowerCase();
@@ -14275,6 +14477,8 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest league", "League") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.league ? " <b>[Disabled]</b>" : ""), safchan);
             
+            safaribot.sendHtmlMessage(src, "-" + link("/quest celebrity", "Celebrity") + " [Available]" + (stopQuests.celebrity ? " <b>[Disabled]</b>" : ""), safchan);
+            
             safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "Journal") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
@@ -14340,6 +14544,9 @@ function Safari() {
             case "league":
             case "fight stronger dudes":
                 this.fightLeague(src, args);
+            case "celebrity":
+            case "celebrity death match":
+                this.celebrityMatch(src, args);
             break;
             case "journal":
             case "the onion":
@@ -16177,6 +16384,163 @@ function Safari() {
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Decor|||Paid " + (payment === "buy" ? addComma(moneyCost) + " and " + plural(silverCost, "silver") : plural(1, "coupon")) + "|||Received " + decoName + "\n");
         this.saveGame(player);
     };
+    this.celebrityMatch = function(src, data) {
+        var player = getAvatar(src);
+        var reason = "start a battle";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        if (safari.isBattling(sys.name(src))) {
+            safaribot.sendMessage(src, "Announcer: Please finish your current battle first!", safchan);
+            return;
+        }
+        var opt = data.length > 0 ? data[0].toLowerCase() : "*";
+        var opt2 = data.length > 1 ? data[1].toLowerCase() : "*";
+        if (opt === "help") {
+            sys.sendMessage(src, "", safchan);
+            safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
+            safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the region! Win prizes on your first attempt daily!", safchan);
+            safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
+            sys.sendMessage(src, "", safchan);
+            return;
+        }
+        
+        if (stopQuests.celebrity) {
+            safaribot.sendHtmlMessage(src, "Announcer: Sorry, all the celebrities are out playing golf right now. Trying coming back later!", safchan);
+            return;
+        }
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
+            return;
+        }
+        if (contestCooldown <= 35) {
+            safaribot.sendHtmlMessage(src, "Announcer: You cannot battle right before a contest is about to start!", safchan);
+            return;
+        }
+        if (player.party.length < 3) {
+            safaribot.sendMessage(src, "Announcer: You need at least 3 Pokémon in your party to challenge the Elite Four!", safchan);
+            return;
+        }
+
+        var postBattle = function(name, isWinner, hpLeft, args, viewers, firstRun) {
+            var player = getAvatarOff(name), e;
+            var id = sys.id(name);
+            sys.sendMessage(id, "", safchan);
+            if (isWinner) {
+                var next = args.index + 1;
+                var celebs = args.celebs;
+                var reward = [
+                    ["bluapricorn", 5],
+                    ["bluapricorn", 10],
+                    ["dew", 3],
+                    ["bluapricorn", 20],
+                    ["dew", 7],
+                    ["nugget", 2],
+                    ["bluapricorn", 35],
+                    ["bignugget", 2],
+                    ["dew", 25],
+                    ["bright", 2],
+                    ["dew", 50],
+                    ["ldew", 2],
+                    ["ldew", 10]
+                ][args.index];
+                
+                safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
+                if (firstRun) {
+                    safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
+                    rewardCapCheck(player, reward[0], reward[1], true);
+                }
+                
+                if (next > args.celebs.length) {
+                    player.firstCelebrityRun = false;
+                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
+                    safaribot.sendHtmlAll("", safchan);
+                    safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers! Congratulations!</b>", safchan);
+                    safaribot.sendHtmlAll("", safchan);
+                    sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
+                    safari.saveGame(player);
+                }
+                else {
+                    var npc = JSON.parse(JSON.stringify(celebs[next]));
+                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! I will heal your party for a slight amount before you challenge " + npc.name + "!", safchan);
+
+                    if (!id) {
+                        player.firstCelebrityRun = false;
+                        safari.saveGame(player);
+                        for (e = 0; e < viewers.length; e++) {
+                            safaribot.sendMessage(sys.id(viewers[e]), "Announcer: The challenge was cancelled because " + name + " is nowhere to be found for their next match!", safchan);
+                        }
+                        return;
+                    }
+
+                    var pow, trainer = {};
+                    if (next > 7) {
+                        pow = 0.42 + (next-8)*0.01;
+                    }
+                    else if (next > 5) {
+                        pow = 0.35 + (next-6)*0.002;
+                    }
+                    else {
+                        pow = 0.21 + (next)*0.01;
+                    }
+                    trainer.name = args.celebs[next];
+                    trainer.desc = "Celebrity NPC";
+                    if (next > 7) {
+                        trainer.party = safari.strongCelebrityTrainerData[trainer.name];
+                    }
+                    else {
+                        trainer.party = safari.celebrityTrainerData[trainer.name];
+                    }
+                    trainer.powerBoost = pow;
+                    
+                    var regen = hpLeft.map(function(x) { return Math.min(1, x + args.heal); });
+                    trainer.party = trainer.party.shuffle().slice(0, 6);
+                    trainer.postBattle = postBattle;
+                    trainer.postArgs = {
+                        name: trainer.name,
+                        heal: 0.15,
+                        index: next,
+                        celebs: celebs
+                    };
+                    
+                    var battle = new Battle2(id, trainer, {
+                        cantWatch: false,
+                        t1HP: regen
+                    });
+                    currentBattles.push(battle);
+                    for (e = 0; e < viewers.length; e++) {
+                        if (!battle.viewers.contains(viewers[e])) {
+                            battle.viewers.push(viewers[e]);
+                        }
+                    }
+                }
+            } else {
+                safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
+                
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
+                player.firstCelebrityRun = false;
+                safari.saveGame(player);
+            }
+        };
+
+        var celebs = Object.keys(safari.celebrityTrainerData).shuffle().concat(Object.keys(safari.strongCelebrityTrainerData).shuffle());
+        var npc = JSON.parse(JSON.stringify(celebrities.trainers[0]));
+        npc.party = npc.party.shuffle().slice(0, 6);
+        npc.postBattle = postBattle;
+        
+        npc.postArgs = {
+            name: npc.name,
+            heal: 0.15,
+            index: 0,
+            celebs: celebrities,
+            firstRun: player.firstCelebrityRun
+        };
+
+        safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
+        var battle = new Battle2(src, npc, {
+            cantWatch: false
+        });
+        currentBattles.push(battle);
+    };
     this.fightLeague = function(src, data) {
         var player = getAvatar(src);
         var reason = "start a battle";
@@ -16376,7 +16740,7 @@ function Safari() {
                 if (next === gym.trainers.length) {
                     var reward = [
                         ["gem", 2],
-                        ["pnkapricorn", 11],
+                        ["redapricorn", 11],
                         ["gacha", 10],
                         ["dust", 80],
                         ["golden", 2],
@@ -23086,7 +23450,7 @@ function Safari() {
                 this.saveGame(player);
                 this.saveGame(target);
 
-                safari.spiritDuelsUpdateAlt(name1, name2);
+                safari.spiritDuelsUpdateAlt(n1, n2);
             } catch (err) {
                 if (byAuth) {
                     safaribot.sendMessage(user, "Alt Transfer aborted due to an error during the operation! [" + err + (err.lineNumber ? " at line " + err.lineNumber : "") + "]", safchan);
@@ -23825,6 +24189,7 @@ function Safari() {
     function runUpdate() {
         var POglobal = SESSION.global();
         var index, source;
+        permObj.add("events", JSON.stringify(safari.events));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -27498,6 +27863,11 @@ function Safari() {
             if (command === "massitem") {
                 var info = commandData.split(":");
                 this.massConvertItem(info[0], info[1]);
+                return true;
+            }
+            if (command === "loadcelebrities") {
+                this.loadCelebrities(commandData);
+                return true;
             }
             if (command === "loadtrials" || command === "loadtrial") {
                 var cThemes = trialsData ? trialsData : {};
@@ -27725,7 +28095,7 @@ function Safari() {
             }
             if (command === "shoveduelteam") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
-                safari.shoveDuelTeam(src, getAvatarOff(info[0]), info[1]);
+                safari.shoveDuelTeam(src, info[0], info[1]);
                 return true;
             }
             if (command === "nextspawn") {
@@ -28053,6 +28423,7 @@ function Safari() {
         mAuctionsData = parseFromPerm("mAuctions", []);
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
+        safari.events = parseFromPerm("events", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
@@ -28102,6 +28473,11 @@ function Safari() {
                 spiritDuelsEnabled: false,
                 trialsEnabled: false
             };
+        }
+
+        try {
+            this.loadCelebrities("kanto");
+        } catch (err) {
         }
         
         try {
