@@ -14544,6 +14544,7 @@ function Safari() {
             case "league":
             case "fight stronger dudes":
                 this.fightLeague(src, args);
+            break;
             case "celebrity":
             case "celebrity death match":
                 this.celebrityMatch(src, args);
@@ -16523,7 +16524,7 @@ function Safari() {
         };
 
         var celebs = Object.keys(safari.celebrityTrainerData).shuffle().concat(Object.keys(safari.strongCelebrityTrainerData).shuffle());
-        var npc = JSON.parse(JSON.stringify(celebrities.trainers[0]));
+        var npc = JSON.parse(JSON.stringify(celebs.trainers[0]));
         npc.party = npc.party.shuffle().slice(0, 6);
         npc.postBattle = postBattle;
         
@@ -16531,7 +16532,7 @@ function Safari() {
             name: npc.name,
             heal: 0.15,
             index: 0,
-            celebs: celebrities,
+            celebs: celebs,
             firstRun: player.firstCelebrityRun
         };
 
