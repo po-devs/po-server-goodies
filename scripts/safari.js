@@ -13002,7 +13002,7 @@ function Safari() {
                 if (val <= 0.01) {
                     return out;
                 }
-                out.critical = Math.max(5, val);
+                out.critical = Math.min(5, val);
                 out.type = eff;
             break;
             case "status":
