@@ -14544,6 +14544,7 @@ function Safari() {
             case "league":
             case "fight stronger dudes":
                 this.fightLeague(src, args);
+            break;
             case "celebrity":
             case "celebrity death match":
                 this.celebrityMatch(src, args);
