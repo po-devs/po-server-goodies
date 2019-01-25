@@ -13360,12 +13360,34 @@ function Safari() {
             if (moves.contains(set[m])) {
                 val++;
             }
-        }
+        } //Ugly anti-math
+        switch (val) {
+            case 0:
+                return 0.1;
+            case 1:
+                return 1;
+            case 2:
+                return 1.5;
+            case 3:
+                return 2;
+            case 4:
+                return 2.5;
+            case 5:
+                return 3;
+            case 6:
+                return 3.5;
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            default:
+                return 3.5;
+        }/*
         if (val > 0) {
             out = Math.min((val + 1)/16, 0.5);
         }
         out *= 8;
-        return out;
+        return out;*/
     };
     Battle2.prototype.getHpPercent = function(name) {
         name = name.toLowerCase();
