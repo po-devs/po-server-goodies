@@ -16471,7 +16471,7 @@ function Safari() {
                         return;
                     }
 
-                    var pow, trainer = {};
+                    var pow, trainer = {}, f = args.firstRun;
                     if (next > 7) {
                         pow = 0.42 + (next-8)*0.01;
                     }
@@ -16502,7 +16502,8 @@ function Safari() {
                         name: trainer.name,
                         heal: 0.15,
                         index: next,
-                        celebs: celebs
+                        celebs: celebs,
+                        firstRun: f
                     };
                     
                     var battle = new Battle2(id, trainer, {
