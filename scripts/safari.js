@@ -12710,13 +12710,13 @@ function Safari() {
                 condition: "none",
                 conditionDuration: 0,
                 types: this.getMoveTypes(p),
-                drain: this.getMoveSet(p, [71, 72, 73, 141, 202, 577, 409, 532, 613, 570, 138]),
-                recoil: this.getMoveSet(p, [36, 38, 66, 344, 413, 452, 457, 528, 543, 617, 26, 136]),
-                critical: this.getMoveSet(p, [163, 75, 444, 238, 152, 348, 400, 421, 177, 314, 529, 440, 454, 427]),
-                priority: this.getMoveSet(p, [98, 453, 594, 418, 410, 183, 245, 252, 709, 425, 389]),
-                restore: this.getMoveSet(p, [105, 236, 234, 235, 275, 312, 215, 355, 273, 392, 208, 659, 135, 685, 668]),
                 moves: []
             };
+            info.drain = this.getMoveSet(p, [71, 72, 73, 141, 202, 577, 409, 532, 613, 570, 138]);
+            info.recoil = this.getMoveSet(p, [36, 38, 66, 344, 413, 452, 457, 528, 543, 617, 26, 136]);
+            info.critical = this.getMoveSet(p, [163, 75, 444, 238, 152, 348, 400, 421, 177, 314, 529, 440, 454, 427]);
+            info.priority = this.getMoveSet(p, [98, 453, 594, 418, 410, 183, 245, 252, 709, 425, 389]);
+            info.restore = this.getMoveSet(p, [105, 236, 234, 235, 275, 312, 215, 355, 273, 392, 208, 659, 135, 685, 668]);
             if (info.types.Normal) {
                 info.types.Normal = Math.round(info.types.Normal/4);
             }
@@ -12900,13 +12900,13 @@ function Safari() {
         if (damaging) {
             effChance = {
                 priority: (2.5 + (priority*1.5)),
-                flinch: 3,
-                drain: (0.5 + factor + drain),
-                recoil: (1.5 + recoil - factor),
-                critical: (1 + critical),
+                flinch: 2.65,
+                drain: (0.75 + factor + drain),
+                recoil: (1.25 + recoil - factor),
+                critical: (1.5 + critical),
                 status: 2,
-                buff: 2,
-                nerf: 2,
+                buff: 1.8,
+                nerf: 1.8,
                 haze: 1 * factor,
                 refresh: 1.2 * factor
             };
@@ -13351,23 +13351,43 @@ function Safari() {
         return out;
     };
     Battle2.prototype.getMoveSet = function(id, set) {
-        var num = parseInt(id, 10), s, m, out = 0.01, val = 0,
+        var num = parseInt(id, 10), m, out = 0.01, val = 0,
             moves = pokedex.getAllMoves(num);
         if (!moves) {
             moves = pokedex.getAllMoves(pokeInfo.species(num));
         }
-        for (s = set.length; s--; ) {
-            for (m = moves.length; m--; ) {
-                if (moves[m] === set[s]) {
-                    val++;
-                }
+        for (m = set.length; m--; ) {
+            if (moves.contains(set[m])) {
+                val++;
             }
-        }
+        } //Ugly anti-math
+        switch (val) {
+            case 0:
+                return 0.1;
+            case 1:
+                return 1;
+            case 2:
+                return 1.5;
+            case 3:
+                return 2;
+            case 4:
+                return 2.5;
+            case 5:
+                return 3;
+            case 6:
+                return 3.5;
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            default:
+                return 3.5;
+        }/*
         if (val > 0) {
             out = Math.min((val + 1)/16, 0.5);
         }
         out *= 8;
-        return out;
+        return out;*/
     };
     Battle2.prototype.getHpPercent = function(name) {
         name = name.toLowerCase();
