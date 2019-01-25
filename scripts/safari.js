@@ -16406,7 +16406,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
             safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the region! Win prizes on your first attempt daily!", safchan);
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
-            safaribot.sendMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
+            safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
