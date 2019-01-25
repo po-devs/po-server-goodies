@@ -12759,7 +12759,7 @@ function Safari() {
             out.push("Protect from any attack");
         }
         if (data.hasOwnProperty("drain")) {
-            out.push("Recovers " + (out.drain * 100) + "% of damage dealt");
+            out.push("Recovers " + (data.drain * 100) + "% of damage dealt");
         }
         if (data.hasOwnProperty("recoil")) {
             out.push("Suffers 1/3 of damage dealt in recoil");
@@ -12861,13 +12861,13 @@ function Safari() {
                     for (p in eff) {
                         if (["recoil"].contains(p)) {
                             if (data.recoil >= 2) {
-                                move.power = 1 + (5 * Math.ceil(move.power * 1.45/5));
+                                move.power = (5 * Math.ceil(move.power * 1.45/5));
                             }
                             else if (data.recoil >= 1.2) {
-                                move.power = 1 + (5 * Math.ceil(move.power * 1.35/5));
+                                move.power = (5 * Math.ceil(move.power * 1.35/5));
                             }
                             else {
-                                move.power = 1 + (5 * Math.ceil(move.power * 1.15/5));
+                                move.power = (5 * Math.ceil(move.power * 1.15/5));
                             }
                         } 
                         if (["buff", "nerf"].contains(p)) {
@@ -13359,15 +13359,16 @@ function Safari() {
         if (!moves) {
             return 1.51;
         }
-        for (m = moves.length; m--; ) {
-            if (set.contains(moves[m])) {
+        for (m = set.length; m--; ) {
+            if (moves.contains(set[m])) {
                 val++;
             }
         }
         if (val > 0) {
             out = Math.min((val + 1)/16, 0.5);
         }
-        return (out * 8);
+        out *= 8;
+        return out;
     };
     Battle2.prototype.getHpPercent = function(name) {
         name = name.toLowerCase();
