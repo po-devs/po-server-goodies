@@ -13351,17 +13351,16 @@ function Safari() {
         return out;
     };
     Battle2.prototype.getMoveSet = function(id, set) {
-        var num = parseInt(id, 10), m, out = 0.01, val = 0,
+        var num = parseInt(id, 10), s, m, out = 0.01, val = 0,
             moves = pokedex.getAllMoves(num);
         if (!moves) {
             moves = pokedex.getAllMoves(pokeInfo.species(num));
         }
-        if (!moves) {
-            return 1.51;
-        }
-        for (m = set.length; m--; ) {
-            if (moves.contains(set[m])) {
-                val++;
+        for (s = set.length; s--; ) {
+            for (m = moves.length; m--; ) {
+                if (moves[m] === set[s]) {
+                    val++;
+                }
             }
         }
         if (val > 0) {
