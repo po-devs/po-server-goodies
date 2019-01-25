@@ -13351,7 +13351,7 @@ function Safari() {
         return out;
     };
     Battle2.prototype.getMoveSet = function(id, set) {
-        var num = parseInt(id, 10), m, out = 0.01, val = 0,
+        var num = parseInt(id, 10), m, out = 0.1, val = 0,
             moves = pokedex.getAllMoves(num);
         if (!moves) {
             moves = pokedex.getAllMoves(pokeInfo.species(num));
@@ -13360,34 +13360,11 @@ function Safari() {
             if (moves.contains(set[m])) {
                 val++;
             }
-        } //Ugly anti-math
-        switch (val) {
-            case 0:
-                return 0.1;
-            case 1:
-                return 1;
-            case 2:
-                return 1.5;
-            case 3:
-                return 2;
-            case 4:
-                return 2.5;
-            case 5:
-                return 3;
-            case 6:
-                return 3.5;
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            default:
-                return 3.5;
-        }/*
-        if (val > 0) {
-            out = Math.min((val + 1)/16, 0.5);
         }
-        out *= 8;
-        return out;*/
+        if (val > 0) {
+            out = 8 * Math.min((val + 1)/16, 0.5);
+        }
+        return out;
     };
     Battle2.prototype.getHpPercent = function(name) {
         name = name.toLowerCase();
@@ -16446,7 +16423,7 @@ function Safari() {
             return;
         }
 
-        var postBattle = function(name, isWinner, hpLeft, args, viewers, firstRun) {
+        var postBattle = function(name, isWinner, hpLeft, args, viewers) {
             var player = getAvatarOff(name), e;
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
@@ -16457,10 +16434,10 @@ function Safari() {
                     ["bluapricorn", 5],
                     ["bluapricorn", 10],
                     ["dew", 3],
-                    ["bluapricorn", 20],
+                    ["bluapricorn", 15],
                     ["dew", 7],
                     ["nugget", 2],
-                    ["bluapricorn", 35],
+                    ["bluapricorn", 20],
                     ["bignugget", 2],
                     ["dew", 25],
                     ["bright", 2],
@@ -16470,7 +16447,7 @@ function Safari() {
                 ][args.index];
                 
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
-                if (firstRun) {
+                if (args.firstRun) {
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
                     rewardCapCheck(player, reward[0], reward[1], true);
                 }
