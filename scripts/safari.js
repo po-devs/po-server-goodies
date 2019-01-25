@@ -12544,7 +12544,7 @@ function Safari() {
                 placeholder = (user.hp - placeholder);
                 out.push(name + " restored " + placeholder + " HP!");
             }
-            else if (move.recoil) {
+            if (move.recoil) {
                 var placeholder = user.hp;
                 user.hp -= Math.floor(dmg * 0.3333);
                 if (user.hp <= 0) {
@@ -12859,22 +12859,22 @@ function Safari() {
                 eff = this.generateMoveEffect(amt * boost, damaging, data.drain, data.recoil, data.critical, data.priority, data.restore, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
+                        if (["recoil"].contains(p)) {
+                            if (data.recoil >= 2) {
+                                move.power = 1 + (5 * Math.ceil(move.power * 1.45/5));
+                            }
+                            else if (data.recoil >= 1.2) {
+                                move.power = 1 + (5 * Math.ceil(move.power * 1.35/5));
+                            }
+                            else {
+                                move.power = 1 + (5 * Math.ceil(move.power * 1.15/5));
+                            }
+                        } 
                         if (["buff", "nerf"].contains(p)) {
                             if (!move.hasOwnProperty(p)) {
                                 move[p] = [];
                             }
                             move[p].push(eff[p]);
-                        }
-                        else if (["recoil"].contains(p)) {
-                            if (data.recoil >= 2) {
-                                move.power = Math.ceil(move.power * 1.45);
-                            }
-                            else if (data.recoil >= 1.2) {
-                                move.power = Math.ceil(move.power * 1.35);
-                            }
-                            else {
-                                move.power = Math.ceil(move.power * 1.15);
-                            }
                         } else if (p === "type") {
                             used.push(eff.type);
                         } else {
@@ -12901,9 +12901,9 @@ function Safari() {
             effChance = {
                 priority: (2.5 + (priority*1.5)),
                 flinch: 3,
-                drain: (factor + drain - 0.5),
-                recoil: (0.5 + recoil - factor),
-                critical: critical,
+                drain: (0.5 + factor + drain),
+                recoil: (1.5 + recoil - factor),
+                critical: (1 + critical),
                 status: 2,
                 buff: 2,
                 nerf: 2,
@@ -13356,8 +13356,11 @@ function Safari() {
         if (!moves) {
             moves = pokedex.getAllMoves(pokeInfo.species(num));
         }
+        if (!moves) {
+            return 1.51;
+        }
         for (m = moves.length; m--; ) {
-            if (set.indexOf(moves[m]) !== -1) {
+            if (set.contains(moves[m])) {
                 val++;
             }
         }
@@ -16397,11 +16400,12 @@ function Safari() {
         }
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
         var opt2 = data.length > 1 ? data[1].toLowerCase() : "*";
-        if (opt === "help") {
+        if (opt !== "start") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
             safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the region! Win prizes on your first attempt daily!", safchan);
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
+            safaribot.sendMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -16461,9 +16465,6 @@ function Safari() {
                     safari.saveGame(player);
                 }
                 else {
-                    var npc = JSON.parse(JSON.stringify(celebs[next]));
-                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! I will heal your party for a slight amount before you challenge " + npc.name + "!", safchan);
-
                     if (!id) {
                         player.firstCelebrityRun = false;
                         safari.saveGame(player);
@@ -16485,6 +16486,10 @@ function Safari() {
                     }
                     trainer.name = args.celebs[next];
                     trainer.desc = "Celebrity NPC";
+
+                    var npc = JSON.parse(JSON.stringify(celebs[next]));
+                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! I will heal your party for a slight amount before you challenge " + trainer.name + "!", safchan);
+
                     if (next > 7) {
                         trainer.party = safari.strongCelebrityTrainerData[trainer.name];
                     }
@@ -16517,7 +16522,7 @@ function Safari() {
             } else {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
             }
