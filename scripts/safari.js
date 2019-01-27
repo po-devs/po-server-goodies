@@ -10445,7 +10445,7 @@ function Safari() {
             if (safari.events.spiritDuelsTeams[t].players.indexOf(name) === -1) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t] = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(name), 1);
+            safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(name), 1);
             safaribot.sendMessage( src,"Removed player " + name + " from " + data + ".",safchan );
             return;
         }
@@ -12562,7 +12562,9 @@ function Safari() {
                     user.hp = user.maxhp;
                 }
                 placeholder = (user.hp - placeholder);
-                out.push(name + " restored " + placeholder + " HP!");
+                if (placeholder > 0) {
+                    out.push(name + " restored " + placeholder + " HP!");
+                }
             }
             if (move.recoil) {
                 var placeholder = user.hp;
@@ -12571,7 +12573,9 @@ function Safari() {
                     user.hp = 0;
                 }
                 placeholder = (placeholder - user.hp);
-                out.push(name + " lost " + placeholder + " HP in recoil!");
+                if (placeholder > 0) {
+                    out.push(name + " lost " + placeholder + " HP in recoil!");
+                }
                 if (user.hp <= 0) {
                     out.push("<b>" + name + " fainted!</b>");
                 }
@@ -12881,10 +12885,10 @@ function Safari() {
                     for (p in eff) {
                         if (["recoil"].contains(p)) {
                             if (data.recoil >= 2) {
-                                move.power = (5 * Math.ceil(move.power * 1.45/5));
+                                move.power = (5 * Math.ceil(move.power * 1.35/5));
                             }
                             else if (data.recoil >= 1.2) {
-                                move.power = (5 * Math.ceil(move.power * 1.35/5));
+                                move.power = (5 * Math.ceil(move.power * 1.25/5));
                             }
                             else {
                                 move.power = (5 * Math.ceil(move.power * 1.15/5));
@@ -12922,8 +12926,8 @@ function Safari() {
                 priority: (2.5 + (priority*1.5)),
                 flinch: 2.65,
                 drain: (0.75 + factor + drain),
-                recoil: (1.25 + recoil - factor),
-                critical: (1.5 + critical),
+                recoil: (0.75 + recoil - factor),
+                critical: (0.75 + critical + factor),
                 status: 2,
                 buff: 1.8,
                 nerf: 1.8,
@@ -13018,11 +13022,11 @@ function Safari() {
             if (factor < -0.275) {
                     return out;
                 }
-                val = factor > 0 ? (Math.random() + 0.25) * 4 * critical * (factor + 1.75) : (Math.random() + 0.15) * critical * (6*(1+factor)) / 4;
+                val = factor > 0 ? ((Math.round(16 * (Math.random() + 1) * (Math.random() + 1) * critical * (factor + 0.85) * (factor + 0.85)))/3) : ((Math.random() + 0.15) * critical * (6*(1+factor)) / 4);
                 if (val <= 0.01) {
                     return out;
                 }
-                out.critical = Math.min(5, val);
+                out.critical = Math.min(Math.max(0.06, val/100), 1);
                 out.type = eff;
             break;
             case "status":
@@ -13395,6 +13399,9 @@ function Safari() {
             }
         }
         out = 8 * (Math.min(((val + 1)/16), 0.5));
+        if (val === 0) {
+            return 0.1;
+        }
         return out;
     };
     Battle2.prototype.getHpPercent = function(name) {
