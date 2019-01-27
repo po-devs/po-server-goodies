@@ -174,7 +174,6 @@ function Safari() {
         },
         decorations: {},
         firstCelebrityRun: true,
-        cherishOff: false,
         records: {
             gachasUsed: 0,
             masterballsWon: 0,
@@ -4346,9 +4345,7 @@ function Safari() {
             }
             var ch = "";
             if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)) !== -1) {
-                if (!player.cherishOff) {
-                    ch = "Cherished ";
-                }
+                ch = "Cherished ";
             }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
@@ -5021,23 +5018,6 @@ function Safari() {
 
         sys.sendHtmlMessage(src, out, safchan);
     };
-    this.cherishVisible = function(src, data) {
-        var player = getAvatar(src);
-        if (player) {
-            switch (data.toLowerCase()) {
-                case "on":
-                    player.cherishOff = true;
-                    safaribot.sendMessage(src, "Now hiding Cherished message on successful catch.", safchan);
-                    return;
-                case "off":
-                    player.cherishOff = false;
-                    safaribot.sendMessage(src, "Now allowing Cherished message on successful catch.", safchan);
-                    return;
-            }
-        }
-        this.saveGame(player);
-        return;
-    }
     this.viewPlayer = function(src, data, textOnly) {
         var player = getAvatar(src);
         if (player) {
@@ -12730,13 +12710,13 @@ function Safari() {
                 condition: "none",
                 conditionDuration: 0,
                 types: this.getMoveTypes(p),
-                drain: this.getMoveSet(p, "drain"),
-                recoil: this.getMoveSet(p, "recoil"),
-                critical: this.getMoveSet(p, "critical"),
-                priority: this.getMoveSet(p, "priority"),
-                restore: this.getMoveSet(p, "restore"),
                 moves: []
             };
+            info.drain = this.getMoveSet(p, [71, 72, 73, 141, 202, 577, 409, 532, 613, 570, 138]);
+            info.recoil = this.getMoveSet(p, [36, 38, 66, 344, 413, 452, 457, 528, 543, 617, 26, 136]);
+            info.critical = this.getMoveSet(p, [163, 75, 444, 238, 152, 348, 400, 421, 177, 314, 529, 440, 454, 427]);
+            info.priority = this.getMoveSet(p, [98, 453, 594, 418, 410, 183, 245, 252, 709, 425, 389]);
+            info.restore = this.getMoveSet(p, [105, 236, 234, 235, 275, 312, 215, 355, 273, 392, 208, 659, 135, 685, 668]);
             if (info.types.Normal) {
                 info.types.Normal = Math.round(info.types.Normal/4);
             }
@@ -13370,31 +13350,20 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.getMoveSet = function(id, moves) {
-        var num = parseInt(id, 10), m, out = 0.1, val = 0, set;
-        switch (moves) {
-            case "drain":
-                set = [71, 72, 73, 141, 202, 577, 409, 532, 613, 570, 138];
-                break;
-            case "recoil":
-                set = [36, 38, 66, 344, 413, 452, 457, 528, 543, 617, 26, 136];
-                break;
-            case "critical":
-                set = [163, 75, 444, 238, 152, 348, 400, 421, 177, 314, 529, 440, 454, 427];
-                break;
-            case "priority":
-                set = [98, 453, 594, 418, 410, 183, 245, 252, 709, 425, 389];
-                break;
-            case "restore":
-                set = [105, 236, 234, 235, 275, 312, 215, 355, 273, 392, 208, 659, 135, 685, 668];
-                break;
+    Battle2.prototype.getMoveSet = function(id, set) {
+        var num = parseInt(id, 10), m, out = 0.1, val = 0,
+            moves = pokedex.getAllMoves(num);
+        if (!moves) {
+            moves = pokedex.getAllMoves(pokeInfo.species(num));
         }
         for (m = set.length; m--; ) {
-            if (canLearnMove(pokeInfo.species(num), set[m])) {
+            if (moves.contains(set[m])) {
                 val++;
             }
         }
-        out = 8 * (Math.min(((val + 1)/16), 0.5));
+        if (val > 0) {
+            out = 8 * Math.min((val + 1)/16, 0.5);
+        }
         return out;
     };
     Battle2.prototype.getHpPercent = function(name) {
@@ -16478,7 +16447,7 @@ function Safari() {
                 ][args.index];
                 
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
-                if (player.firstCelebrityRun) {
+                if (args.firstRun) {
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
                     rewardCapCheck(player, reward[0], reward[1], true);
                 }
@@ -16531,7 +16500,7 @@ function Safari() {
                     trainer.postBattle = postBattle;
                     trainer.postArgs = {
                         name: trainer.name,
-                        heal: 0.18,
+                        heal: 0.15,
                         index: next,
                         celebs: celebs,
                         firstRun: f
@@ -16562,13 +16531,13 @@ function Safari() {
         npc.name = celebs[0];
         npc.party = JSON.parse(JSON.stringify(safari.celebrityTrainerData[npc.name])).shuffle().slice(0, 6);
         npc.postBattle = postBattle;
-        npc.powerBoost = 0.2;
         
         npc.postArgs = {
             name: npc.name,
-            heal: 0.18,
+            heal: 0.15,
             index: 0,
-            celebs: celebs
+            celebs: celebs,
+            firstRun: player.firstCelebrityRun
         };
 
         safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
@@ -24771,9 +24740,6 @@ function Safari() {
                     safari.viewPlayer(src, commandData);
                 }
                 return true;
-            }
-            if (command === "cherishmsg") {
-                safari.cherishVisible(src, commandData);
             }
             if (command === "bag" || command === "bagt") {
                 safari.viewItems(src, command === "bagt", commandData);
