@@ -174,6 +174,7 @@ function Safari() {
         },
         decorations: {},
         firstCelebrityRun: true,
+        cherishOff: false,
         records: {
             gachasUsed: 0,
             masterballsWon: 0,
@@ -4345,7 +4346,9 @@ function Safari() {
             }
             var ch = "";
             if (player.cherished.indexOf(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)) !== -1) {
-                ch = "Cherished ";
+                if (!player.cherishOff) {
+                    ch = "Cherished ";
+                }
             }
             if (ball == "spy") {
                 safaribot.sendHtmlAll("Some stealthy person caught the " + revealName + " with " + an(ballName) + " and the help of their well-trained spy Pokémon!" + (amt > 0 ? remaining : ""), safchan);
@@ -5018,6 +5021,23 @@ function Safari() {
 
         sys.sendHtmlMessage(src, out, safchan);
     };
+    this.cherishVisible = function(src, data) {
+        var player = getAvatar(src);
+        if (player) {
+            switch (data.toLowerCase()) {
+                case "on":
+                    player.cherishOff = true;
+                    safaribot.sendMessage(src, "Now hiding Cherished message on successful catch.", safchan);
+                    return;
+                case "off":
+                    player.cherishOff = false;
+                    safaribot.sendMessage(src, "Now allowing Cherished message on successful catch.", safchan);
+                    return;
+            }
+        }
+        this.saveGame(player);
+        return;
+    }
     this.viewPlayer = function(src, data, textOnly) {
         var player = getAvatar(src);
         if (player) {
@@ -24751,6 +24771,9 @@ function Safari() {
                     safari.viewPlayer(src, commandData);
                 }
                 return true;
+            }
+            if (command === "cherishmsg") {
+                safari.cherishVisible(src, commandData);
             }
             if (command === "bag" || command === "bagt") {
                 safari.viewItems(src, command === "bagt", commandData);
