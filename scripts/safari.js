@@ -5025,11 +5025,11 @@ function Safari() {
         var player = getAvatar(src);
         if (player) {
             switch (data.toLowerCase()) {
-                case "on":
+                case "off":
                     player.cherishOff = true;
                     safaribot.sendMessage(src, "Now hiding Cherished message on successful catch.", safchan);
                     return;
-                case "off":
+                case "on":
                     player.cherishOff = false;
                     safaribot.sendMessage(src, "Now allowing Cherished message on successful catch.", safchan);
                     return;
