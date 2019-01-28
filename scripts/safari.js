@@ -1963,6 +1963,9 @@ function Safari() {
         }
         return out;
     }
+    function getCherished(mon, player) {
+        return (Math.min(countDuplicates(getAvatarOff(player).cherished, pokeInfo.species(getInputPokemon(poke(mon)).num)), 10));
+    }
     function removeDuplicates(arr, onlyNumbers) {
         if (onlyNumbers) {
             var result = [];
@@ -3278,7 +3281,7 @@ function Safari() {
                 }
                 else {
                     statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
-                    if ((!(goldenBonus) && (leader))) {
+                    if ((!(goldenBonus) && (contestCount <= 0))) {
                         canLegend = false;
                     }
                     var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
@@ -3991,7 +3994,7 @@ function Safari() {
         var legendaryChance = isLegend ? 0.50 : 1;
         var spiritMonBonus = wildSpirit ? 0.50 : 1;
         var flowerGirlBonus = 1;
-        var cherishBonus = Math.min(countDuplicates(player.cherished, getInputPokemon(poke(player.party[0])).num), 10);
+        var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)), 10);
 
         var userStats = (getBST(player.party[0]));
         var evioBonus = 0;
@@ -7741,6 +7744,8 @@ function Safari() {
             break;
             case "bluapricorn":
             case "pnkapricorn":
+            case "redapricorn":
+            case "ylwapricorn":
             case "grnapricorn":
             case "blkapricorn": {
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards an Apricorn Tree! You decided to pick one and put it in your bag!", safchan);
@@ -12458,6 +12463,7 @@ function Safari() {
             party = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.team1 : this.team2,
             oppparty = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.team2 : this.team1,
             protectUses = user.owner.toLowerCase() === this.name1.toLowerCase() ? this.protectCount1 : this.protectCount2;
+            isPlayerVsNPC = user.owner.toLowerCase() === this.name2.toLowerCase() && this.npcBattle;
         
         if (move.restore) {
             if (user.hp < user.maxhp) {
@@ -12561,9 +12567,17 @@ function Safari() {
             target.hp -= dmg;
             out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
             if (target.hp <= 0) {
-                target.hp = 0;
-                fainted = true;
-                out.push("<b>" + tname + " fainted!</b>");
+                if (isPlayerVsNPC) {
+                    if (chance((0.013 * Math.random()) + (getCherished(user.id, user.owner) > 0 ? 0.02 : 0))) {
+                        target.hp = 1;
+                        out.push("<b>" + tname + " endured the hit!</b>");
+                    }
+                }
+                else {
+                    target.hp = 0;
+                    fainted = true;
+                    out.push("<b>" + tname + " fainted!</b>");
+                }
             }
             if (move.drain) {
                 var placeholder = user.hp;
@@ -12717,7 +12731,7 @@ function Safari() {
             p = team[t];
             stats = sys.pokeBaseStats(p);
             if (cherished) {
-                ch = countRepeated(cherished, pokeInfo.species(p));
+                ch = Math.min(countRepeated(cherished, pokeInfo.species(p)), 10);
             }
             h = Math.round(((stats[0] + ch) * 2 + 110) * boost);
             info = {
@@ -12873,11 +12887,17 @@ function Safari() {
                 if (data.restore >= 2.5) {
                     factor += 0.1;
                 }
+                else if (data.restore >= 1.5) {
+                    factor += 0.05;
+                }
             } else {
                 move.category = chance(0.5) ? "physical" : "special";
                 move.type = randomSample(types);
                 move.power = Math.round(sys.rand(2, 23) * moveBoost) * 5;
                 factor = (60 - move.power) / 100;
+                if (chance(0.03 + (getCherished(id, name) * 0.02)) && (this.npcBattle && name === this.name1)) {
+                    factor += (40 * Math.random() * Math.random());
+                }
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
                     factor = 0;
                 }
@@ -16507,6 +16527,9 @@ function Safari() {
                 ][args.index];
                 
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
+                for (e = 0; e < viewers.length; e++) {
+                    safaribot.sendMessage(sys.id(viewers[e]), "Announcer: " + name + " has defeated " + next + " trainer(s)!", safchan);
+                }
                 if (player.firstCelebrityRun) {
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
                     rewardCapCheck(player, reward[0], reward[1], true);
@@ -24673,6 +24696,10 @@ function Safari() {
             }
             if (command === "sell") {
                 safari.sellPokemon(src, commandData);
+                return true;
+            }
+            if (command === "unsell") {
+                safari.undoSell(src);
                 return true;
             }
             if (command === "buy") {
