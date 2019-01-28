@@ -2237,6 +2237,16 @@ function Safari() {
 
         return { num: num, id: id, shiny: shiny, name: poke(id), input: (shiny ? "*" : "") + name, type: "poke" };
     }
+    function getInputMove(src, data) {
+        var num = parseInt(data, 10), name;
+        if (isNaN(num)) {
+            num = sys.moveNum(data);
+        }
+        name = sys.move(num);
+
+        safaribot.sendMessage( src,"Move #" + num + ": " + name + ".",safchan );
+        return;
+    }
     function getPokemonInfo(info) {
         var shiny = false, id = info;
 
@@ -11205,15 +11215,15 @@ function Safari() {
                 safari.celebrityTrainerData = {
                     "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 208],
                     "Trainer Misty": ["121", 350, 73, 195, 565, 581, 395, 65855],
-                    "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 243, "405", 66015],
+                    "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 474, "405", 66015],
                     "Trainer Erika": [492, 407, "465", 671, 787, 470, 286, 65790],
-                    "Trainer Sabrina": ["65601", 376, 655, 65844, 648, 282, 124, 488],
+                    "Trainer Sabrina": ["65601", 376, 655, 196, 648, 282, 124, 488],
                     "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 658],
                     "Trainer Blaine": [146, "467", 65859, 637, 727, 59, 131551],
-                    "Trainer Giovanni": [645, 65651, 65744, "31", 62, 232, 423, 553]
+                    "Trainer Giovanni": [645, 65651, 65744, "31", 330, 232, 423, 553]
                 };
                 safari.strongCelebrityTrainerData = {
-                    "Trainer Lorlei": ["131", 473, 461, 65574, 65616, 144, 197087, 65996, 478],
+                    "Trainer Lorlei": ["131", 473, 461, 65574, 65616, 144, 197087, 478],
                     "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
                     "Trainer Agatha": ["65630", 65890, 720, 65641, 724, 681, 593, "169"],
                     "Trainer Lance": [65666, "149", 65678, 65542, 380, 65639],
@@ -12884,10 +12894,10 @@ function Safari() {
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["recoil"].contains(p)) {
-                            if (data.recoil >= 2) {
+                            if (data.recoil >= 2.5) {
                                 move.power = (5 * Math.ceil(move.power * 1.35/5));
                             }
-                            else if (data.recoil >= 1.2) {
+                            else if (data.recoil >= 2) {
                                 move.power = (5 * Math.ceil(move.power * 1.25/5));
                             }
                             else {
@@ -12985,10 +12995,13 @@ function Safari() {
                     out.drain = 0.66;
                 }
                 else if (drain >= 2) {
-                    out.drain = 0.575;
+                    out.drain = 0.57;
                 }
                 else if (drain >= 1.25) {
                     out.drain = 0.5;
+                }
+                else if (drain >= 1) {
+                    out.drain = 0.45;
                 }
                 else {
                     out.drain = 0.4;
@@ -13000,7 +13013,7 @@ function Safari() {
                 out.type = eff;
             break;
             case "priority":
-                val = Math.round(Math.random() * (7+priority) * (factor + 0.12));
+                val = Math.round(Math.random() * (5+(2*priority)) * (factor + 0.12));
                 if (val === 0) {
                     return out;
                 }
@@ -13022,7 +13035,7 @@ function Safari() {
             if (factor < -0.275) {
                     return out;
                 }
-                val = factor > 0 ? ((Math.round(16 * (Math.random() + 1) * (Math.random() + 1) * critical * (factor + 0.85) * (factor + 0.85)))/3) : ((Math.random() + 0.15) * critical * (6*(1+factor)) / 4);
+                val = factor > 0 ? ((Math.round(16 * (Math.random() + 1) * (Math.random() + 1) * critical * Math.max(critical * 1.75 * Math.random(), 1) * (factor + 0.85)))/3) : ((Math.random() + 0.25) * critical * (6*(1+factor)) / 4);
                 if (val <= 0.01) {
                     return out;
                 }
@@ -27904,6 +27917,10 @@ function Safari() {
                     missionsData = cThemes;
                     safaribot.sendMessage(src, "Couldn't load Missions from " + url + "! Error: " + err, safchan);
                 }
+                return true;
+            }
+            if (command === "movenum") {
+                this.getInputMove(src, commandData);
                 return true;
             }
             if (command === "massitem") {
