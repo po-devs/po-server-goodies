@@ -16533,10 +16533,10 @@ function Safari() {
 
                     var pow, trainer = {}, f = args.firstRun;
                     if (next > 7) {
-                        pow = 0.42 + (next-8)*0.01;
+                        pow = 0.35 + (next-8)*0.01;
                     }
                     else if (next > 5) {
-                        pow = 0.35 + (next-6)*0.002;
+                        pow = 0.3 + (next-6)*0.001;
                     }
                     else {
                         pow = 0.21 + (next)*0.01;
