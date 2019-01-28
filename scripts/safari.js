@@ -12894,11 +12894,17 @@ function Safari() {
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["recoil"].contains(p)) {
+                            if (data.recoil >= 3) {
+                                move.power = (5 * Math.ceil(move.power * 1.45/5));
+                            }
                             if (data.recoil >= 2.5) {
                                 move.power = (5 * Math.ceil(move.power * 1.35/5));
                             }
                             else if (data.recoil >= 2) {
                                 move.power = (5 * Math.ceil(move.power * 1.25/5));
+                            }
+                            else if (data.recoil >= 1.5) {
+                                move.power = (5 * Math.ceil(move.power * 1.2/5));
                             }
                             else {
                                 move.power = (5 * Math.ceil(move.power * 1.15/5));
@@ -12993,6 +12999,9 @@ function Safari() {
             case "drain":
                 if (drain >= 3) {
                     out.drain = 0.66;
+                }
+                else if (drain >= 2.5) {
+                    out.drain = 0.62;
                 }
                 else if (drain >= 2) {
                     out.drain = 0.57;
