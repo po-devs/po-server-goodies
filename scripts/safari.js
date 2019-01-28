@@ -12568,7 +12568,7 @@ function Safari() {
             out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
             if (target.hp <= 0) {
                 if (isPlayerVsNPC) {
-                    if (chance((0.013 * Math.random()) + (getCherished(user.id, user.owner) > 0 ? 0.02 : 0))) {
+                    if (chance((0.013 * Math.random()) + (getCherished(target.id, this.name1.toLowerCase()) > 0 ? 0.02 : 0))) {
                         target.hp = 1;
                         out.push("<b>" + tname + " endured the hit!</b>");
                     }
@@ -12895,8 +12895,10 @@ function Safari() {
                 move.type = randomSample(types);
                 move.power = Math.round(sys.rand(2, 23) * moveBoost) * 5;
                 factor = (60 - move.power) / 100;
-                if (chance(0.03 + (getCherished(id, name) * 0.02)) && (this.npcBattle && name === this.name1)) {
-                    factor += (40 * Math.random() * Math.random());
+                if ((this.npcBattle && name === this.name1)) {
+                    if (chance(0.03 + (getCherished(id, name) * 0.02))) {
+                        factor += (40 * Math.random() * Math.random());
+                    }
                 }
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
                     factor = 0;
