@@ -27929,7 +27929,7 @@ function Safari() {
                 return true;
             }
             if (command === "movenum") {
-                this.getInputMove(src, commandData);
+                getInputMove(src, commandData);
                 return true;
             }
             if (command === "massitem") {
