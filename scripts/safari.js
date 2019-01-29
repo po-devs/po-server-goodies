@@ -12573,7 +12573,7 @@ function Safari() {
                         out.push("<b>" + tname + " endured the hit!</b>");
                     }
                 }
-                else {
+                if (target.hp <= 0) {
                     target.hp = 0;
                     fainted = true;
                     out.push("<b>" + tname + " fainted!</b>");
