@@ -12896,8 +12896,8 @@ function Safari() {
                 move.power = Math.round(sys.rand(2, 23) * moveBoost) * 5;
                 factor = (60 - move.power) / 100;
                 if ((this.npcBattle && name === this.name1)) {
-                    if (chance(0.03 + (getCherished(id, name) * 0.02))) {
-                        factor += (40 * Math.random() * Math.random());
+                    if (chance(0.015 + (getCherished(id, name) * 0.003))) {
+                        factor += (1.2 * Math.random() * Math.random());
                     }
                 }
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
