@@ -8839,7 +8839,7 @@ function Safari() {
         }
         var player = getAvatar(src);
         var currentTime = now();
-        if (player.cooldowns.unsell <= currentTime) {
+        if (player.cooldowns.unsell > currentTime) {
             safaribot.sendMessage(src, "You've been trying to unsell too often lately! Please wait " + timeLeftString(player.cooldowns.unsell) + " to unsell again.", safchan);
             return;
         }
@@ -10952,23 +10952,36 @@ function Safari() {
         return;
     };
     this.levelupSpiritRank = function( player ) {
-        //Grabs a skill
+        var expNeeded;
+        switch (player.spiritDuels.rankName) {
+            case "Grunt": expNeeded = 2000; break;
+            case "Ensign": expNeeded = 6000; break;
+            case "Officer Trainee": expNeeded = 10000; break;
+            case "Secretary Officer": expNeeded = 15000; break;
+            case "Squadron Leader": expNeeded = 21000; break;
+            case "Field Lieutenant": expNeeded = 30000; break;
+            case "Commander": expNeeded = 35000; break;
+            case "Vice Admiral": expNeeded = 40000; break;
+            case "Admin": expNeeded = 50000; break;
+        }
+        safari.events.spiritDuelsRanks = [
+            "Grunt", "Ensign", "Officer Trainee", "Secretary Officer", "Squadron Leader", "Field Lieutenant", "Commander", "Vice Admiral", "Admin", "Supreme Master"
+        ];
         var nextLevel = player.spiritDuels.rank + 1;
         if (nextLevel >= safari.events.spiritDuelsRanks.length) {
             return;
         }
-        var nextExp = safari.events.spiritDuelsRanks[nextLevel].exp;
-        if (player.spiritDuels.exp >= nextExp) {
+        if (player.spiritDuels.exp >= expNeeded) {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
             safaribot.sendMessage(sys.id(player), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
-            this.showSpiritSkill( player );
+            this.showSpiritSkill( sys.id(player),player );
         }
         return;
     };
-    this.showSpiritSkill = function( player ) {
+    this.showSpiritSkill = function( src,player ) {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         msg = "Choose one of these skills with /spiritskill [letter]!";
@@ -10980,7 +10993,7 @@ function Safari() {
             msg += "[" + letters[i] + "] " + skill.desc + ". \n";
             i++;
         }
-        safaribot.sendMessage(sys.id(player), msg, safchan);
+        safaribot.sendMessage(src, msg, safchan);
     };
     this.chooseSpiritSkill = function( src,commandData ) {
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
@@ -11174,16 +11187,16 @@ function Safari() {
         }
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].players.indexOf(name1);
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(name1.toLowerCase());
             if (k > -1) {
                 safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.splice(k, 1);
-                safari.events.spiritDuelsTeams[t].players.push(name2);
+                safari.events.spiritDuelsTeams[t].players.push(name2.toLowerCase());
             }
         }
-        k = safari.events.spiritDuelsSignups.indexOf(name1);
+        k = safari.events.spiritDuelsSignups.indexOf(name1.toLowerCase());
         if (k > -1) {
             safari.events.spiritDuelsSignups = safari.events.spiritDuelsSignups.splice(k, 1);
-            safari.events.spiritDuelsSignups.push(name2);
+            safari.events.spiritDuelsSignups.push(name2.toLowerCase());
         }
     };
     this.spiritDuelsMessage = function(msg) {
@@ -27135,6 +27148,7 @@ function Safari() {
                     case "burn":
                     case "unown":
                     case "price":
+                    case "unsell":
                         player.cooldowns[type] = 0;
                     break;
                     case "baseview":
