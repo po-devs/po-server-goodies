@@ -10985,15 +10985,15 @@ function Safari() {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         msg = "Choose one of these skills with /spiritskill [letter]!";
+        safaribot.sendMessage(src, msg, safchan);
         if (player.spiritDuels.skillChoices === {}) {
             return;
         }
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            msg += "[" + letters[i] + "] " + skill.desc + ". \n";
+            safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + "", safchan);
             i++;
         }
-        safaribot.sendMessage(src, msg, safchan);
     };
     this.chooseSpiritSkill = function( src,commandData ) {
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
@@ -11007,8 +11007,8 @@ function Safari() {
         }
         for (var s in player.spiritDuels.skillChoices) {
             if (letters[i] === commandData) {
-                safaribot.sendMessage(sys.id(player), "You chose the skill '" + player.spiritDuels.skillChoices[commandData].desc + "'!", safchan);
-                player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[commandData])));
+                safaribot.sendMessage(sys.id(player), "You chose the skill '" + player.spiritDuels.skillChoices[s].desc + "'!", safchan);
+                player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[s])));
                 player.spiritDuels.skillChoices = {};
                 this.saveGame(player);
                 return;
