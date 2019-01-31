@@ -10973,10 +10973,10 @@ function Safari() {
         if (player.spiritDuels.exp >= expNeeded) {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
-            safaribot.sendMessage(sys.id(player), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
+            safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
-            this.showSpiritSkill( sys.id(player),player );
+            this.showSpiritSkill( sys.id(player.id),player );
         }
         this.saveGame(player);
         return;
@@ -11007,7 +11007,7 @@ function Safari() {
         }
         for (var s in player.spiritDuels.skillChoices) {
             if (letters[i] === commandData) {
-                safaribot.sendMessage(sys.id(player), "You chose the skill '" + player.spiritDuels.skillChoices[s].desc + "'!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "You chose the skill '" + player.spiritDuels.skillChoices[s].desc + "'!", safchan);
                 player.spiritDuels.skills.push( JSON.parse(JSON.stringify(player.spiritDuels.skillChoices[s])));
                 player.spiritDuels.skillChoices = {};
                 this.saveGame(player);
