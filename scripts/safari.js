@@ -4104,7 +4104,7 @@ function Safari() {
         if (ball === "spirit") {
             legendaryChance = 1;
             eventChance = 1;
-            ballBonus = 1.25;
+            ballBonus = 1.5;
             if (safari.spiritDuelsEnabled) {
                 for (var s in player.spiritDuels.skills) {
                     if (player.spiritDuels.skills[s].type === "catch") {
@@ -10985,10 +10985,11 @@ function Safari() {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         msg = "Choose one of these skills with /spiritskill [letter]!";
-        safaribot.sendMessage(src, msg, safchan);
         if (player.spiritDuels.skillChoices === {}) {
+            safaribot.sendMessage(src, "You have no skills to learn!", safchan);
             return;
         }
+        safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
             safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + "", safchan);
@@ -11030,29 +11031,40 @@ function Safari() {
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
-            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, and watch!]",safchan );
+            case "skill": case "skills": this.ownSpiritSkills(src,player);
+            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, skill, and watch!]",safchan );
         }
         return;
     };
+    this.ownSpiritSkills = function( src,player ) {
+        if (player.spiritDuels.skills === {}) {
+            safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
+            return;
+        }
+        safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
+        for (var s in player.spiritDuels.skills) {
+            safaribot.sendMessage(src, player.spiritDuels.skills[s].desc, safchan);
+        }
+        return
+    }
     this.showSpiritDuelsLog = function( src,player,data ) {
         var log = safari.events.spiritDuelsLog, out = "";
         data = parseInt(data, 10);
         if (!data) {
             data = 10;
         }
-        if (data > 100) {
-            data = 100;
+        if (data > 20) {
+            data = 20;
         }
         if (data > log.length) {
             data = log.length;
         }
         for (var i = 0; i < log.length; i++) {
-            out += log[i] + "\n";
+            safaribot.sendMessage(src, log[i], safchan);
             if (i > data) {
                 break;
             }
         }
-        safaribot.sendMessage(src, out, safchan);
         return;
     }
     this.joinSpiritDuels = function( src,player ) {
