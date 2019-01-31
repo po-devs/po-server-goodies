@@ -8853,17 +8853,21 @@ function Safari() {
         }
 
         var last = player.lastSold;
-        if (last.price > player.money) {
+        if (player.lastSold.price > player.money) {
             safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because you used the money you earned from selling your last Pokémon!", safchan);
             return;
         }
 
-        player.records.pokeSoldEarnings -= last.price;
-        player.money -= last.price;
-        var mon = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
-        player.pokemon.push(mon);
+        if (!player.lastSold.price) {
+            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon at this time.", safchan);
+            return;
+        }
+        player.records.pokeSoldEarnings -= player.lastSold.price;
+        player.money -= player.lastSold.price;
+        var get = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
+        player.pokemon.push(get);
 
-        safaribot.sendMessage(src, "You quickly turned around and got your " + last.mon.name + " back! (You lost $" + last.price + ")", safchan);
+        safaribot.sendMessage(src, "You quickly turned around and got your " + player.lastSold.mon.name + " back! (You lost $" + last.price + ")", safchan);
         player.lastSold = {};
         player.cooldowns.unsell = currentTime + (6 * 60 * 1000);
 
@@ -10946,12 +10950,7 @@ function Safari() {
                 exp *= player.spiritDuels.skills[s].val;
             }
         }
-        player.spiritDuels.exp += (getBST(id) * isLegendary(id) ? 7 : 1);
-        this.levelupSpiritRank(player);
-        this.saveGame(player);
-        return;
-    };
-    this.levelupSpiritRank = function( player ) {
+        player.spiritDuels.exp += exp;
         var expNeeded;
         switch (player.spiritDuels.rankName) {
             case "Grunt": expNeeded = 2000; break;
@@ -10973,19 +10972,20 @@ function Safari() {
         }
         if (player.spiritDuels.exp >= expNeeded) {
             player.spiritDuels.rank++;
-            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel].rank;
+            player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
             safaribot.sendMessage(sys.id(player), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
             this.showSpiritSkill( sys.id(player),player );
         }
+        this.saveGame(player);
         return;
     };
     this.showSpiritSkill = function( src,player ) {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         msg = "Choose one of these skills with /spiritskill [letter]!";
-        if (!player.spiritDuels.skillChoices) {
+        if (player.spiritDuels.skillChoices === {}) {
             return;
         }
         for (var s in player.spiritDuels.skillChoices) {
@@ -29078,6 +29078,7 @@ function Safari() {
                 resetVars();
                 currentRules = null;
                 contestCatchers = {};
+                wildSpirit = false;
 
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
                 var onChannel = sys.playersOfChannel(safchan),
