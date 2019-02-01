@@ -459,7 +459,7 @@ function Safari() {
                 "reward": "20@luxury",
                 "ingredients": {
                     "blkapricorn": 10,
-                    "redapricorn": 20,
+                    "pnkapricorn": 20,
                     "ylwapricorn": 10
                 }
             },
@@ -3266,7 +3266,7 @@ function Safari() {
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
                     for (i = 1; i < 803; i++) {
-                        bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
+                        bst = getBST(i);
                         if (this.validForTheme(i, cTheme) && bst <= statCap) {
                             list.push(i);
                         }
@@ -11243,13 +11243,13 @@ function Safari() {
         switch (commandData) {
             case "kanto":
                 safari.celebrityTrainerData = {
-                    "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 208],
-                    "Trainer Misty": ["121", 350, 73, 195, 565, 581, 395, 65855],
-                    "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 474, "405", 66015],
-                    "Trainer Erika": [492, 407, "465", 671, 787, 470, 286, 65790],
-                    "Trainer Sabrina": ["65601", 376, 655, 196, 648, 282, 124, 488],
-                    "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 658],
-                    "Trainer Blaine": [146, "467", 65859, 637, 727, 59, 131551],
+                    "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 208, 699],
+                    "Trainer Misty": ["121", 350, 73, 195, 565, 581, 395, 65855, 134],
+                    "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 474, 135, "405", 66015],
+                    "Trainer Erika": [492, 407, 346, "465", 671, 787, 470, 286, 65790],
+                    "Trainer Sabrina": ["65601", 376, 655, 196, 199, 282, 124, 488, 203],
+                    "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 658, 691],
+                    "Trainer Blaine": [146, "467", 65859, 637, 727, 59, 500, 131551],
                     "Trainer Giovanni": [645, 65651, 65744, "31", 330, 232, 423, 553]
                 };
                 safari.strongCelebrityTrainerData = {
@@ -12944,7 +12944,7 @@ function Safari() {
                             if (data.recoil >= 3) {
                                 move.power = (5 * Math.ceil(move.power * 1.45/5));
                             }
-                            if (data.recoil >= 2.5) {
+                            else if (data.recoil >= 2.5) {
                                 move.power = (5 * Math.ceil(move.power * 1.35/5));
                             }
                             else if (data.recoil >= 2) {
