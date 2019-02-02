@@ -3267,21 +3267,21 @@ function Safari() {
                     shiny = false;
                     for (i = 1; i < 803; i++) {
                         bst = getBST(i);
-                        if (this.validForTheme(i, cTheme) && bst <= statCap) {
+                        if (this.validForTheme(i, cTheme) && bst <= statCap && isLegendary(id)) {
                             list.push(i);
-                        }
+                        }/*
                         if (this.validForTheme(i, cTheme) && (pokeInfo.species(i) in megaEvolutions)) {
                             var possibleEvo = megaEvolutions[pokeInfo.species(i)];
                             var evolveTo = possibleEvo[sys.rand(0, possibleEvo.length)];
                             if ((getBST(evolveTo)) <= statCap) {
                                 list.push(evolveTo);
                             }
-                        }
+                        }*/
                     }
                     for (h in theme.include) {
                         id = theme.include[h];
                         bst = getBST(id);
-                        if (bst <= statCap) {
+                        if (bst <= statCap && isLegendary(id) && bst >= 600) {
                             list.push(id);
                         }
                     }
@@ -29152,7 +29152,7 @@ function Safari() {
             } else {
                 if (!currentPokemon && chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
+                    if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.8) && contestCount < 150) {
                         spiritSpawn = false;
                         wildSpirit = true;
                         safari.createWild(null, null, amt, null, null, null, null, false, false, false, true);
