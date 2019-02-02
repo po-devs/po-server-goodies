@@ -3281,7 +3281,7 @@ function Safari() {
                     for (h in theme.include) {
                         id = theme.include[h];
                         bst = getBST(id);
-                        if (bst <= statCap && isLegendary(id)) {
+                        if (bst <= statCap && isLegendary(id) && bst >= 600) {
                             list.push(id);
                         }
                     }
