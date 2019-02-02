@@ -6725,7 +6725,7 @@ function Safari() {
     };
 
     /* Items */
-    this.throwBait = function (src, commandData, golden, hax, iterations) {
+    this.throwBait = function (src, commandData, golden, hax, iterations, contestTest) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -6733,6 +6733,13 @@ function Safari() {
         if (player.tutorial.inTutorial && player.tutorial.step === 2) {
             safari.tutorialBait(src);
             return;
+        }
+        if (contestTest) {
+            var out = "Contest Spawned: ";
+            for (x = 0; x < 300; x++) {
+                out += safari.createWild(null, null, 1, null, null, null, null, false, false, true);
+            }
+            safaribot.sendMessage(src, out, safchan);
         }
         var isPreparing = preparationPhase > 0 && (!preparationFirst || sys.name(src).toLowerCase() !== preparationFirst);
 
@@ -6849,6 +6856,7 @@ function Safari() {
             if (iterations) {
                 var out = "Spawned: ";
                 for (x = 0; x < 300; x++) {
+                    var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
                     out += safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where, true);
                 }
                 safaribot.sendMessage(src, out, safchan);
@@ -11253,7 +11261,7 @@ function Safari() {
                     "Trainer Giovanni": [645, 65651, 65744, "31", 330, 232, 423, 553]
                 };
                 safari.strongCelebrityTrainerData = {
-                    "Trainer Lorlei": ["131", 473, 461, 65574, 65616, 144, 197087, 478],
+                    "Trainer Lorelei": ["131", 473, 461, 65574, 65616, 144, 197087, 478],
                     "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
                     "Trainer Agatha": ["65630", 65890, 720, 65641, 724, 681, 593, "169"],
                     "Trainer Lance": [65666, "149", 65678, 65542, 380, 65639],
@@ -27215,6 +27223,10 @@ function Safari() {
             }
             if (command === "gb300") {
                 safari.throwBait(src, commandData, true, true, true);
+                return true;
+            }
+            if (command === "contest300") {
+                safari.throwBait(src, commandData, false, false, false, true);
                 return true;
             }
             if (command === "tourgift") {
