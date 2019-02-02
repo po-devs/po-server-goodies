@@ -3267,7 +3267,7 @@ function Safari() {
                     shiny = false;
                     for (i = 1; i < 803; i++) {
                         bst = getBST(i);
-                        if (this.validForTheme(i, cTheme) && bst <= statCap) {
+                        if (this.validForTheme(i, cTheme) && bst <= statCap && isLegendary(id)) {
                             list.push(i);
                         }
                         if (this.validForTheme(i, cTheme) && (pokeInfo.species(i) in megaEvolutions)) {
@@ -3281,8 +3281,7 @@ function Safari() {
                     for (h in theme.include) {
                         id = theme.include[h];
                         bst = getBST(id);
-                        extrabstChance = 1;
-                        if (bst <= statCap) {
+                        if (bst <= statCap && isLegendary(id)) {
                             list.push(id);
                         }
                     }
