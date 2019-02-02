@@ -3278,13 +3278,21 @@ function Safari() {
                             }
                         }
                     }
+                    for (h in theme.include) {
+                        id = theme.include[h];
+                        bst = getBST(id);
+                        extrabstChance = 1;
+                        if (bst <= statCap) {
+                            list.push(id);
+                        }
+                    }
                 }
                 else {
                     statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
                     if ((!(goldenBonus) && (contestCount <= 0))) {
                         canLegend = false;
                     }
-                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.15;
+                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.2;
                     for (i = 1; i < 803; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
@@ -3308,6 +3316,10 @@ function Safari() {
                         }
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
+                            if (isLegendary(id) && bst >= 600) {
+                                list.push(id);
+                                list.push(id);
+                            }
                         }
                     }
                 }
@@ -8877,7 +8889,7 @@ function Safari() {
 
         safaribot.sendMessage(src, "You quickly turned around and got your " + player.lastSold.mon.name + " back! (You lost $" + last.price + ")", safchan);
         player.lastSold = {};
-        player.cooldowns.unsell = currentTime + (6 * 60 * 1000);
+        player.cooldowns.unsell = currentTime + (60 * 60 * 1000);
 
         this.saveGame(player);
     };
@@ -11276,7 +11288,7 @@ function Safari() {
                     "Trainer Morty": [609, 94, 778, "429", 593, 709, 802],
                     "Trainer Chuck": [245, "62", 226, 534, 638, 99, 675, 342],
                     "Trainer Jasmine": ["208", 227, 65717, 65587, 65839, 598, 385, 411],
-                    "Trainer Price": [699, 713, 740, 646, "473", 91, 471],
+                    "Trainer Pryce": [699, 713, 740, 646, "473", 91, 471],
                     "Trainer Clair": ["230", 373, 150, 635, 597, 718]
                 };
                 safari.strongCelebrityTrainerData = {
@@ -11300,7 +11312,7 @@ function Safari() {
                 };
                 safari.strongCelebrityTrainerData = {
                     "Trainer Sidney": [65838, "65895", 635, 65765, 727, 571, 560],
-                    "Trainer Phoeboe": [66217, 711, 802, 623, 426, "477"],
+                    "Trainer Phoebo": [66217, 711, 802, 623, 426, "477"],
                     "Trainer Glacia": [740, "478", 65898, 378, 365, 781, 609],
                     "Trainer Drake": [65917, 445, "65909", 706, 784, 799, 691],
                     "Trainer Steven": ["65912", 798, 485, 379, 227, 801]
