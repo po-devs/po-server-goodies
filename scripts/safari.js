@@ -2784,7 +2784,7 @@ function Safari() {
         }
     }
     function isBallAvailable(player, ball) {
-        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || (!currentRules.excludeBalls.contains(ball) || ball === "spirit")) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
+        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
     }
     function getCap(item) {
         return item in itemData ? (itemData[item].cap || itemCap) : itemCap;
@@ -3263,12 +3263,11 @@ function Safari() {
                 var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
                     statCap = [750, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
-                    statMin = [450, 420, 400, 360, 280, 0][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
                     for (i = 1; i < 803; i++) {
                         bst = getBST(i);
-                        if (this.validForTheme(i, cTheme) && bst <= statCap && bst >= statMin) {
+                        if (this.validForTheme(i, cTheme) && bst <= statCap) {
                             list.push(i);
                         }
                         if (this.validForTheme(i, cTheme) && (pokeInfo.species(i) in megaEvolutions)) {
@@ -3282,7 +3281,7 @@ function Safari() {
                     for (h in theme.include) {
                         id = theme.include[h];
                         bst = getBST(id);
-                        if (bst <= statCap && bst >= statMin) {
+                        if (bst <= statCap) {
                             list.push(id);
                         }
                     }
@@ -3317,14 +3316,6 @@ function Safari() {
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
                             if (isLegendary(id) && bst >= 600) {
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
                                 list.push(id);
                                 list.push(id);
                             }
@@ -4529,7 +4520,6 @@ function Safari() {
                 usingStarter = true;
             }
             this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
-            this.missionProgress(player, "catchAny", currentPokemon, 1);
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -6991,7 +6981,6 @@ function Safari() {
                     target.cooldowns.ball = target.cooldowns.ball > currentTime ? target.cooldowns.ball + itemData.rock.targetCD : currentTime + itemData.rock.targetCD;
                     player.records.rocksHit += 1;
                     target.records.rocksHitBy += 1;
-                    safari.missionProgress(player,"rockHit",0,1,{})
                 }
             }
             else if (rng2 < 0.5) {
@@ -7779,7 +7768,6 @@ function Safari() {
             case "grnapricorn":
             case "blkapricorn": {
                 safaribot.sendMessage(src, "Beep-Beep. Your Itemfinder pointed you towards an Apricorn Tree! You decided to pick one and put it in your bag!", safchan);
-                safari.missionProgress(player,"findApricorn",0,1,{})
             }
             break;
             case "bait": {
@@ -9925,9 +9913,6 @@ function Safari() {
             case "catchPoke":
                 out = (action === "catch" && this.pokeMatchesMission(target, mission.type, mission.target) ? value : 0);
                 break;
-            case "catchPokeAny":
-                out = (action === "catchAny" && mission.target.indexOf(parseInt(target, 10)) !== -1 ? value : 0);
-                break;
             case "contestPoke":
                 out = (action === "catch" && this.pokeMatchesMission(target, mission.type, mission.target) && contestCount > 0 ? value : 0);
                 break; 
@@ -9964,12 +9949,6 @@ function Safari() {
             case "rockWindow":
                 out = (action === "rockWindow" ? value : 0);
                 break; 
-            case "rockHit":
-                out = (action === "rockHit" ? value : 0);
-                break; 
-            case "findApricorn":
-                out = (action === "findApricorn" ? value : 0);
-                break; 
             case "getShocked":
                 out = (action === "getShocked" ? value : 0);
                 break; 
@@ -9985,12 +9964,6 @@ function Safari() {
             case "winContestTheme":
                 out = (action === "contest" && data.won && data.theme === mission.target ? value : 0);
                 break; 
-            case "winContestLead":
-                out = (action === "contest" && data.won && mission.target.indexOf( parseInt(data.lead, 10) ) !== -1 ? value : 0);
-                break; 
-            case "winContestPrize":
-                out = (action === "contestPrize" && mission.target.indexOf( target ) !== -1 ? value : 0);
-                break; 
             case "collectorLevel":
                 out = (action === "collector" && mission.target === data.amount ? value : 0);
                 break; 
@@ -10002,12 +9975,6 @@ function Safari() {
                 break; 
             case "towerFloor":
                 out = (action === "tower" && target >= mission.target ? value : 0);
-                break; 
-            case "celebrity":
-                out = (action === "celebrity" && target >= mission.target ? value : 0);
-                break; 
-            case "celebrityGeneration":
-                out = (action === "celebrity" && target >= mission.target && data.gen[0] === mission.type && data.unique ? 1 : 0);
                 break; 
             case "scientistSilver":
                 out = (action === "scientist" ? data.silver : 0);
@@ -10279,9 +10246,6 @@ function Safari() {
             if (!player.trials) {
                 continue;
             }
-            if (!player.trials.points) {
-                continue;
-            }
             if (player.trials.points <= 0) {
                 continue;
             }
@@ -10329,9 +10293,6 @@ function Safari() {
                 continue;
             }
             if (!player.trials) {
-                continue;
-            }
-            if (!player.trials.points) {
                 continue;
             }
             if (player.trials.points <= 0) {
@@ -11301,19 +11262,19 @@ function Safari() {
         switch (commandData) {
             case "kanto":
                 safari.celebrityTrainerData = {
-                    "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 65744, 699],
+                    "Trainer Brock": [65612, 377, 139, 142, 409, 464, "205", 208, 699],
                     "Trainer Misty": ["121", 350, 73, 195, 565, 581, 395, 65855, 134],
                     "Trainer Lt. Surge": [642, 462, 65562, 466, 738, 474, 135, "405", 66015],
                     "Trainer Erika": [492, 407, 346, "465", 671, 787, 470, 286, 65790],
                     "Trainer Sabrina": ["65601", 376, 655, 196, 199, 282, 124, 488, 203],
                     "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 658, 691],
                     "Trainer Blaine": [146, "467", 65859, 637, 727, 59, 500, 131551],
-                    "Trainer Giovanni": [645, 65651, 208, "31", 330, 232, 423, 553]
+                    "Trainer Giovanni": [645, 65651, 65744, "31", 330, 232, 423, 553]
                 };
                 safari.strongCelebrityTrainerData = {
                     "Trainer Lorelei": ["131", 473, 461, 65574, 65616, 144, 197087, 478],
                     "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
-                    "Trainer Agatha": [65630, 65890, 720, 65641, 724, 681, 593, "169"],
+                    "Trainer Agatha": ["65630", 65890, 720, 65641, 724, 681, 593, "169"],
                     "Trainer Lance": [65666, "149", 65678, 65542, 380, 65639],
                     "Trainer Blue": [65539, "131078", 65545, 59, 103, 130, 150]
                 };
@@ -15764,11 +15725,11 @@ function Safari() {
         if (contestCount > 0) {
             safaribot.sendMessage(src, "You can't finish this quest during a contest.", safchan);
             return;
-        }/*
+        }
         if (currentPokemon) {
             safaribot.sendMessage(src, "You can't finish this quest while there's a wild Pokémon around.", safchan);
             return;
-        }*/
+        }
         if (player.money < fee) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Wonder Trade Operator: You don't have $" + addComma(fee) + "!", safchan);
             return;
@@ -16610,28 +16571,6 @@ function Safari() {
                     ["ldew", 2],
                     ["ldew", 10]
                 ][args.index];
-
-                var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], y, l = [], u = true;
-                for (var t in k) {
-                    y = true;
-                    for (var p in player.party) {
-                        if (!generation(player.party[p], true) === k[t]) {
-                            y = false;
-                        }
-                    }
-                    if (y) {
-                        m.push(k[t]);
-                    }
-                }
-                for (var p in player.party) {
-                    if (l.indexOf(player.party[p]) !== -1) {
-                        u = false;
-                        break;
-                    }
-                    l.push(player.party[p]);
-                }
-
-                safari.missionProgress(player, "celebrity", next, 1, {gen: m, unique: u});
                 
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
                 for (e = 0; e < viewers.length; e++) {
@@ -16662,14 +16601,14 @@ function Safari() {
                     }
 
                     var pow, trainer = {}, f = args.firstRun;
-                    if (next > 8) {
-                        pow = 0.32 + (next-9)*0.01;
+                    if (next > 7) {
+                        pow = 0.35 + (next-8)*0.01;
                     }
                     else if (next > 5) {
-                        pow = 0.29 + (next-6)*0.003;
+                        pow = 0.3 + (next-6)*0.001;
                     }
                     else {
-                        pow = 0.20 + (next)*0.01;
+                        pow = 0.21 + (next)*0.01;
                     }
                     trainer.name = args.celebs[next];
                     trainer.desc = "Celebrity NPC";
@@ -29143,12 +29082,11 @@ function Safari() {
                                         player.balls[r] = getCap(r);
                                     }
                                     rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
-                                    safari.missionProgress(player, "contestPrize", r, amt);
                                 }
                             }
                             player.records.contestsWon += 1;
                             var c = currentTheme ? contestThemes[currentTheme].name : "Default";
-                            safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
+                            safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c });
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
