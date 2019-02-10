@@ -2784,7 +2784,7 @@ function Safari() {
         }
     }
     function isBallAvailable(player, ball) {
-        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || !currentRules.excludeBalls.contains(ball)) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
+        return player.balls[ball] > 0 && (!currentRules || !currentRules.excludeBalls || (!currentRules.excludeBalls.contains(ball) || ball === "spirit")) && !(wildEvent && ball === "master") && ((wildSpirit && ball === "spirit") || (!wildSpirit) && (!(!safari.events.spiritDuelsEnabled && ball === "spirit")));
     }
     function getCap(item) {
         return item in itemData ? (itemData[item].cap || itemCap) : itemCap;
