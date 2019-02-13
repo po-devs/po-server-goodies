@@ -3317,16 +3317,9 @@ function Safari() {
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
                             if (isLegendary(id) && bst >= 600) {
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
-                                list.push(id);
+                                for (i = 30; i--; ) {
+                                    list.push(id);
+                                }
                             }
                         }
                     }
@@ -13044,7 +13037,8 @@ function Safari() {
         var effChance;
         if (damaging) {
             effChance = {
-                priority: (2.5 + (priority*1.5)),
+                priority: (1 + (priority*2.25 + factor)),
+                lowpriority: (6 * (0.08 - factor)),
                 flinch: 2.65,
                 drain: (0.75 + factor + drain),
                 recoil: (0.75 + recoil - factor),
@@ -13102,24 +13096,7 @@ function Safari() {
                 out.type = eff;
             break;
             case "drain":
-                if (drain >= 3) {
-                    out.drain = 0.66;
-                }
-                else if (drain >= 2.5) {
-                    out.drain = 0.62;
-                }
-                else if (drain >= 2) {
-                    out.drain = 0.57;
-                }
-                else if (drain >= 1.25) {
-                    out.drain = 0.5;
-                }
-                else if (drain >= 1) {
-                    out.drain = 0.45;
-                }
-                else {
-                    out.drain = 0.4;
-                }
+                out.drain = (Math.floor(100 * (0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09)))/100);
                 out.type = eff;
             break;
             case "recoil":
@@ -13127,11 +13104,22 @@ function Safari() {
                 out.type = eff;
             break;
             case "priority":
-                val = Math.round(Math.random() * (5+(2*priority)) * (factor + 0.12));
+                val = Math.round(Math.random() * (5+(2.25*priority)) * (factor + 0.12));
                 if (val === 0) {
                     return out;
                 }
                 out.priority = Math.min(Math.max(val, -7), 7);
+                out.type = eff;
+            break;
+            case "lowpriority":
+                if (used.contains("priority")) {
+                    break;
+                }
+                val = Math.round(Math.random() * 12 * (factor + 0.08));
+                if (val >= 0) {
+                    return out;
+                }
+                out.priority = Math.max(val, -7);
                 out.type = eff;
             break;
             case "flinch":
