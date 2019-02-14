@@ -3262,8 +3262,8 @@ function Safari() {
             if (cTheme) {
                 var theme = contestThemes[cTheme], list = [];
                 if (spiritMon) {
-                    statCap = [750, 690, 612, 590, 540, 485][safari.events.spiritDuelsTeams.length - 2];
-                    statMin = [450, 420, 400, 360, 280, 0][safari.events.spiritDuelsTeams.length - 2];
+                    statCap = [810, 740, 695, 630, 605, 590][safari.events.spiritDuelsTeams.length - 2];
+                    statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
                     for (i = 1; i < 803; i++) {
@@ -3316,8 +3316,8 @@ function Safari() {
                         }
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
-                            if (isLegendary(id) && bst >= 600) {
-                                for (i = 30; i--; ) {
+                            if (isLegendary(id) && bst >= 600 && !goldenBonus) {
+                                for (i = 60; i--; ) {
                                     list.push(id);
                                 }
                             }
@@ -10262,27 +10262,31 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
     };
     this.viewTrialsLb = function(src,num) {
-        var t = Object.keys(rawPlayers), player, points;
+        var player, points, name, id;
         var playerPoints = [];
         var limit = parseInt(num, 10);
 
-        for (var p in t) {
-            player = getAvatarOff(t[p]);
-            id = player.id;
-            if (!player.trials) {
-                continue;
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                data = JSON.parse(rawPlayers.hash[e]);
+                name = data.casedName;
+                player = getAvatarOff(name);
+                id = player.id;
+                if (!player.trials) {
+                    continue;
+                }
+                if (!player.trials.points) {
+                    continue;
+                }
+                if (player.trials.points <= 0) {
+                    continue;
+                }
+                points = player.trials.points;
+                playerPoints.push({
+                    id: name,
+                    points: points
+                });
             }
-            if (!player.trials.points) {
-                continue;
-            }
-            if (player.trials.points <= 0) {
-                continue;
-            }
-            points = player.trials.points;
-            playerPoints.push({
-                id: id,
-                points: points
-            });
         }
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
