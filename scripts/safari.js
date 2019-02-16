@@ -10282,7 +10282,7 @@ function Safari() {
                 }
                 points = player.trials.points;
                 playerPoints.push({
-                    id: name,
+                    id: id,
                     points: points
                 });
             }
