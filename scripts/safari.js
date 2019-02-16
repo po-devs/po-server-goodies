@@ -10290,12 +10290,11 @@ function Safari() {
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
         });
-        playerPoints.reverse();
         safaribot.sendMessage(src, "Top " + playerPoints.length + " players in trials: ", safchan);
         var j = 1;
         var received = [], p;
-        for (var i = 0; i++; i < playerPoints.length) {
-            p = getAvatarOff(playerPoints[i].id);
+        for (var i = playerPoints.length; i--;) {
+            //p = getAvatarOff(playerPoints[i].id);
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             received.push(playerPoints[i].id);
             j++;
