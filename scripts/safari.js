@@ -10282,7 +10282,7 @@ function Safari() {
                 }
                 points = player.trials.points;
                 playerPoints.push({
-                    id: id,
+                    id: name,
                     points: points
                 });
             }
@@ -10294,7 +10294,14 @@ function Safari() {
         safaribot.sendMessage(src, "Top " + playerPoints.length + " players in trials: ", safchan);
         var j = 1;
         var received = [], p;
-        for (var i = playerPoints.length; i--;) {
+        for (var i in playerPoints.length) {
+            p = getAvatarOff(playerPoints[i].id);
+            if (!p) {
+                continue;
+            }
+            if (received.indexOf(playerPoints[i].id) > -1) {
+                continue;
+            }
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             received.push(playerPoints[i].id);
             j++;
