@@ -10268,8 +10268,9 @@ function Safari() {
 
         for (e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
-                player = JSON.parse(rawPlayers.hash[e]);
-                name = player.casedName;
+                data = JSON.parse(rawPlayers.hash[e]);
+                name = data.casedName;
+                player = getAvatarOff(name);
                 id = player.id;
                 if (!player.trials) {
                     continue;
@@ -10610,6 +10611,19 @@ function Safari() {
         }
         for (var t in teams) {
             g = prizes[i+""];
+            /*if (teams[t].rate > 0.66) {
+                g += ",2@ldew,2@bignugget";
+            }
+            else if (teams[t].rate > 0.5875) {
+                g += ",1@ldew,@bignugget";
+            }
+            else if (teams[t].rate > 0.5) {
+                g += ",2@nugget";
+            }
+            for (var p in teams[t].players) {
+                giveStuff(getAvatarOff(teams[t].players[p]), toStuffObj(g));
+            }
+            */
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
@@ -10665,8 +10679,8 @@ function Safari() {
         var p1 = safari.events.spiritDuelsTeams[0].name + ": ", p2 = safari.events.spiritDuelsTeams[1].name + ": ";
         var army1 = safari.events.spiritDuelsTeams[0].players;
         var army2 = safari.events.spiritDuelsTeams[1].players;
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
-        var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
+        var enlistPerPlayer1 = (army1.length >= 5 ? 3 : (army1.length >= 4 ? 4 : 5));
+        var enlistPerPlayer2 = (army2.length >= 5 ? 3 : (army2.length >= 4 ? 4 : 5));
 
         var p, j;
         for (var a in army1) {
@@ -10710,6 +10724,12 @@ function Safari() {
         var smaller = Math.min(team1.length, team2.length);
         safari.events.sd1 = team1.slice(0, smaller).shuffle();
         safari.events.sd2 = team2.slice(0, smaller).shuffle();
+        for (var p in team1) {
+            p1 += team1[p].owner.id.toCorrectCase() + "'s " + poke(team1[p].mon) + " ";
+        }
+        for (var p in team2) {
+            p2 += team2[p].owner.id.toCorrectCase() + "'s " + poke(team2[p].mon) + " ";
+        }
         safari.events.sdStep = -1;
     };
     this.spiritDuelTurn = function() {
@@ -13084,9 +13104,6 @@ function Safari() {
                 out.type = eff;
             break;
             case "recoil":
-                if (factor < 0) {
-                    return out;
-                }
                 out.recoil = true;
                 out.type = eff;
             break;
