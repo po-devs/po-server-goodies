@@ -10296,12 +10296,6 @@ function Safari() {
         var received = [], p;
         for (var i = 0; i++; i < playerPoints.length) {
             p = getAvatarOff(playerPoints[i].id);
-            if (!p) {
-                continue;
-            }
-            if (received.indexOf(playerPoints[i].id) > -1) {
-                continue;
-            }
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             received.push(playerPoints[i].id);
             j++;
