@@ -10290,7 +10290,7 @@ function Safari() {
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
         });
-        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in trials: ", safchan);
+        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in trials by points: ", safchan);
         var j = 1;
         var received = [], p;
         for (var i = playerPoints.length; i--;) {
