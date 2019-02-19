@@ -25045,7 +25045,7 @@ function Safari() {
                 if (info.length !== 3) {
                     safaribot.sendMessage(src, "The format for this command is /enterdata [subject]:[pokemon]:[categories].", safchan);
                     var e = 0;
-                    for (var c = 0; c <= 802; c++) {
+                    for (var c = 1; c <= 802; c++) {
                         if (!safari.dataDumps[title][c+""].Completed) {
                             safaribot.sendMessage(src, "Enter data for " + sys.pokemon(c) + " with " + "/enterdata " + title + ":" + c + ":[Categories].", safchan);
                             e++;
@@ -28006,7 +28006,7 @@ function Safari() {
             if (command === "loaddatadump") {
                 var title = commandData;
                 safari.dataDumps[title] = {};
-                for (var i = 0; i <= 802; i++) {
+                for (var i = 1; i <= 802; i++) {
                     safari.dataDumps[title][i+""] = {
                         "Categories": [],
                         "Submitter": "",
