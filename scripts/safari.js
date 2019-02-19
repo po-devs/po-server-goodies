@@ -1128,6 +1128,10 @@ function Safari() {
                     "gacha": 10,
                     "redapricorn": 6
                 },
+                "pnkapricorn": {
+                    "gacha": 10,
+                    "pnkapricorn": 8
+                },
                 "silver": {
                     "gacha": 15,
                     "silver": 3
@@ -3296,9 +3300,9 @@ function Safari() {
                     for (i = 1; i < 803; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
-                        if (bst > 600) {
+                        if (bst >= 600) {
                             extrabst = (bst - 600);
-                            bst = 600;
+                            bst = 599;
                             extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
                         }
                         if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
@@ -10154,7 +10158,7 @@ function Safari() {
             if (m.id === id) {
                 var k = player.trials.missions.indexOf(m);
                 player.trials.missions.splice(k, 1);
-                this.assignTrials(src,player); //sends the new trial to the auth, but whatever
+                this.assignTrials(src,player); //sends the new trial to the auth
                 return;
             }
         }
@@ -24353,6 +24357,7 @@ function Safari() {
         var POglobal = SESSION.global();
         var index, source;
         permObj.add("events", JSON.stringify(safari.events));
+        permObj.add("dumps", JSON.stringify(safari.dataDumps));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -25028,6 +25033,49 @@ function Safari() {
             }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
                 safari.setFavoriteBall(src, commandData);
+                return true;
+            }
+            if (command === "enterdata") {
+                var info = commandData.split(":");
+                var title = info[0];
+                if (!safari.dataDumps.hasOwnProperty(title)) {
+                    safaribot.sendMessage(src, "The subject " + title + " doesn't currently exist!", safchan);
+                    return true;
+                }
+                if (info.length !== 3) {
+                    safaribot.sendMessage(src, "The format for this command is /enterdata [subject]:[pokemon]:[categories].", safchan);
+                    var e = 0;
+                    for (var c = 0; c <= 773; c++) {
+                        if (!safari.dataDumps[title][c+""].Completed) {
+                            safaribot.sendMessage(src, "Enter data for " + sys.pokemon(c) + " with " + "/enterdata " + title + ":" + c + ":[Categories].", safchan);
+                            e++;
+                        }
+                        if (e > 4) {
+                            break;
+                        }
+                    }
+                    return true;
+                }
+                var mon = pokeInfo.species(getInputPokemon(info[1]).num);
+                if (!mon) {
+                    safaribot.sendMessage(src, "There is no such Pokémon!", safchan);
+                    return true;
+                }
+                if (safari.dataDumps[title][mon+""].Completed) {
+                    safaribot.sendMessage(src, "That Pokémon's data is already completed for this subject!", safchan);
+                    return true;
+                }
+                var categories = info[2].split(",");
+                if (!categories) {
+                    safaribot.sendMessage(src, "Please enter categories!", safchan);
+                    return true;
+                }
+                safari.dataDumps[title][mon+""].Categories = [];
+                for (var c in categories) {
+                    safari.dataDumps[title][mon+""].Categories.push(categories[c]);
+                }
+                safari.dataDumps[title][mon+""].Submitter = sys.id(src);
+                safari.dataDumps[title][mon+""].Completed = true;
                 return true;
             }
             if (command === "leaderboard" || command == "lb") {
@@ -27955,6 +28003,27 @@ function Safari() {
                 safaribot.sendMessage(src, "Successfully loaded " + setName + " chances!", safchan);
                 return true;
             }
+            if (command === "loaddatadump") {
+                var title = commandData;
+                safari.dataDumps[title] = {};
+                for (var i = 0; i <= 773; i++) {
+                    safari.dataDumps[title][i+""] = {
+                        "Categories": [],
+                        "Submitter": "",
+                        "Completed": false
+                    };
+                }
+            }
+            if (command === "showdatadump" || command === "showdatadumpclean") {
+                var out, data;
+                if (safari.dataDumps.hasOwnProperty(commandData)) {
+                    out = JSON.stringify(safari.dataDumps[commandData]);
+                    safaribot.sendMessage(src, out, safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "No data dump " + commandData + " found.", safchan);
+                return true;
+            }
             if (command === "loadthemes" || command === "loadtheme") {
                 var cThemes = contestThemes;
                 var url = commandData === "*" ? (permObj.get("themesurl") || commandData) : commandData;
@@ -28603,6 +28672,7 @@ function Safari() {
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         safari.events = parseFromPerm("events", {});
+        safari.dataDumps = parseFromPerm("dumps", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
