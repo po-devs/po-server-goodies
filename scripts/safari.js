@@ -25074,7 +25074,7 @@ function Safari() {
                 for (var c in categories) {
                     safari.dataDumps[title][mon+""].Categories.push(categories[c]);
                 }
-                safari.dataDumps[title][mon+""].Submitter = sys.id(src);
+                safari.dataDumps[title][mon+""].Submitter = getAvatar(sys.id(src)).id;
                 safari.dataDumps[title][mon+""].Completed = true;
                 return true;
             }
@@ -28013,6 +28013,20 @@ function Safari() {
                         "Completed": false
                     };
                 }
+                safaribot.sendMessage(src, "Data dump " + title + " added.", safchan);
+                return true;
+            }
+            if (command === "cleardatadump") {
+                var info = commandData.split(":");
+                title = info[0];
+                mon = info[1];
+                safari.dataDumps[title][mon+""] = {
+                    "Categories": [],
+                    "Submitter": "",
+                    "Completed": false
+                };
+                safaribot.sendMessage(src, "Data dump " + title + " cleared for entry " + mon + ".", safchan);
+                return true;
             }
             if (command === "showdatadump" || command === "showdatadumpclean") {
                 var out, data;
