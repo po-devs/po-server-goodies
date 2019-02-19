@@ -25074,7 +25074,7 @@ function Safari() {
                 for (var c in categories) {
                     safari.dataDumps[title][mon+""].Categories.push(categories[c]);
                 }
-                safari.dataDumps[title][mon+""].Submitter = getAvatar(sys.id(src)).id;
+                safari.dataDumps[title][mon+""].Submitter = sys.name(src);
                 safari.dataDumps[title][mon+""].Completed = true;
                 return true;
             }
