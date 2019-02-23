@@ -3321,7 +3321,7 @@ function Safari() {
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
                             if (isLegendary(id) && bst >= 600 && !goldenBonus) {
-                                for (i = 60; i--; ) {
+                                for (i = 12; i--; ) {
                                     list.push(id);
                                 }
                             }
@@ -16587,7 +16587,7 @@ function Safari() {
                 for (var t in k) {
                     y = true;
                     for (var p in player.party) {
-                        if (!generation(player.party[p], true) === k[t]) {
+                        if (!generation(parseInt(player.party[p], 10), true) === k[t]) {
                             y = false;
                         }
                     }
