@@ -3321,7 +3321,7 @@ function Safari() {
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
                             if (isLegendary(id) && bst >= 600 && !goldenBonus) {
-                                for (i = 12; i--; ) {
+                                for (i = 3; i--; ) {
                                     list.push(id);
                                 }
                             }
