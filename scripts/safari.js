@@ -10310,32 +10310,28 @@ function Safari() {
         var playerPoints = [], src;
         var strata = safari.events.trialsData.payout.strata, k, id;
         var top = safari.events.trialsData.payout.top;
-        p;
+        var p;
 
-        for (var p in t) {
-            player = getAvatarOff(t[p]);
-            id = player.id;
-            if (!player) {
-                continue;
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                player = JSON.parse(rawPlayers.hash[e]);
+                name = player.casedName;
+                id = player.id;
+                if (!player.trials) {
+                    continue;
+                }
+                if (!player.trials.points) {
+                    continue;
+                }
+                if (player.trials.points <= 0) {
+                    continue;
+                }
+                points = player.trials.points;
+                playerPoints.push({
+                    id: id,
+                    points: points
+                });
             }
-            if (received.indexOf(id) !== -1) {
-                continue;
-            }
-            if (!player.trials) {
-                continue;
-            }
-            if (!player.trials.points) {
-                continue;
-            }
-            if (player.trials.points <= 0) {
-                continue;
-            }
-            received.push(player.id);
-            points = player.trials.points;
-            playerPoints.push({
-                id: id,
-                points: points
-            });
             for (var s in strata) {
                 k = strata[s];
                 rew = k.prizes;
@@ -10344,25 +10340,29 @@ function Safari() {
                 }
             }
             src = sys.id(player.id);
+            p = getAvatarOff(player.id);
             for (var h in rew) {
-                g = giveStuff(player, toStuffObj(rew[h]));
-                safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
+                g = giveStuff(p, toStuffObj(rew[h]));
+                if (isInChannel(sys.id(player.id))) {
+                    safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in the " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
+                }
+                this.inboxMessage(p, "For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!");
             }
         }
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
         })
-        playerPoints.reverse();
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
         for (var i in playerPoints) {
-            player = getAvatarOff(playerPoints[i].id);
-            src = sys.id(player.id);
+            p = getAvatarOff(playerPoints[i].id);
+            src = sys.id(p.id);
             rew = top[j+""];
             rew = rew.random();
-            g = giveStuff(player, toStuffObj(rew));
+            g = giveStuff(p, toStuffObj(rew));
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
-            safaribot.sendHtmlAll(toColor("(#" + j + "): " + player.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
+            this.inboxMessage(id, "For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue");
+            safaribot.sendHtmlAll(toColor("(#" + j + "): " + p.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
             if (j >= 3) {
                 break;
@@ -11294,20 +11294,20 @@ function Safari() {
                 break;
             case "johto":
                 safari.celebrityTrainerData = {
-                    "Trainer Falkner": [65554, 641, 663, 330, 715, 701, "472", 279],
-                    "Trainer Bugsy": [65750, "65748", 213, 768, 743, 673, 542, 469],
-                    "Trainer Whitney": ["241", 40, 586, 65964, 143, 780, 66067],
-                    "Trainer Morty": [609, 94, 778, "429", 593, 709, 802],
-                    "Trainer Chuck": [245, "62", 226, 534, 638, 99, 675, 342],
+                    "Trainer Falkner": [65554, 630, 178, 663, 330, 66177, 701, "472", 279],
+                    "Trainer Bugsy": [65750, "65748", 213, 768, 743, 637, 330, 542, 469],
+                    "Trainer Whitney": ["241", 40, 586, 65964, 143, 780, 773, 66067],
+                    "Trainer Morty": [609, 94, 778, "429", 593, 709, 802, 426],
+                    "Trainer Chuck": [245, "62", 226, 534, 638, 99, 675, 342, 237],
                     "Trainer Jasmine": ["208", 227, 65717, 65587, 65839, 598, 385, 411],
-                    "Trainer Pryce": [699, 713, 740, 646, "473", 91, 471],
-                    "Trainer Clair": ["230", 373, 150, 635, 597, 718]
+                    "Trainer Pryce": [699, 713, 740, 646, "473", 65996, 91, 471],
+                    "Trainer Clair": ["230", 373, 130, 149, 635, 780, 612, 718]
                 };
                 safari.strongCelebrityTrainerData = {
-                    "Trainer Will": [65818, 251, 786, 65912, 687, 579, "199", 481],
+                    "Trainer Will": [65818, 251, 786, 65912, 687, "196", 199, 800],
                     "Trainer Bruno": [639, 66011, 65984, 784, 647, "68", 500, 208],
-                    "Trainer Koga": [65551, 793, "65625", 545, 591, 758, 65663, 658],
-                    "Trainer Karen": [491, 430, 65784, 65895, 799, 625, "197"],
+                    "Trainer Koga": [65551, 793, "65625", 545, 65539, 452, 65663, 66194],
+                    "Trainer Karen": [491, 430, 65784, 65895, 65765, 799, 66256, 625, "197"],
                     "Trainer Lance": [65666, "149", 65678, 65542, 65916, 65639]
                 };
                 break;
