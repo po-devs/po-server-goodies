@@ -10343,7 +10343,7 @@ function Safari() {
             p = getAvatarOff(player.id);
             for (var h in rew) {
                 g = giveStuff(p, toStuffObj(rew[h]));
-                if (sys.isInChannel(sys.id(player.id))) {
+                if (sys.isInChannel(sys.id(player.id), safchan)) {
                     safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in the " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
                 }
                 this.inboxMessage(p, "For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!");
