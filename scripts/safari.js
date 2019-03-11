@@ -10361,7 +10361,7 @@ function Safari() {
             rew = rew.random();
             g = giveStuff(p, toStuffObj(rew));
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
-            this.inboxMessage(id, "For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue");
+            this.inboxMessage(p, "For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue");
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + p.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
             if (j >= 3) {
@@ -24358,6 +24358,7 @@ function Safari() {
         var index, source;
         permObj.add("events", JSON.stringify(safari.events));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
+        permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -25076,6 +25077,49 @@ function Safari() {
                 }
                 safari.dataDumps[title][mon+""].Submitter = sys.name(src);
                 safari.dataDumps[title][mon+""].Completed = true;
+                return true;
+            }
+            if (command === "enterdata2") {
+                var info = commandData.split(":");
+                var title = info[0];
+                if (!safari.dataDumps2.hasOwnProperty(title)) {
+                    safaribot.sendMessage(src, "The subject " + title + " doesn't currently exist!", safchan);
+                    return true;
+                }
+                if (info.length !== 3) {
+                    safaribot.sendMessage(src, "The format for this command is /enterdata2 [subject]:[move]:[categories].", safchan);
+                    var e = 0;
+                    for (var c = 1; c <= 621; c++) {
+                        if (!safari.dataDumps2[title][c+""].Completed) {
+                            safaribot.sendMessage(src, "Enter data for " + sys.move(c) + " with " + "/enterdata2 " + title + ":" + c + ":[Categories].", safchan);
+                            e++;
+                        }
+                        if (e > 4) {
+                            break;
+                        }
+                    }
+                    return true;
+                }
+                var move = move(info[1]);
+                if (!move) {
+                    safaribot.sendMessage(src, "There is no such move!", safchan);
+                    return true;
+                }
+                if (safari.dataDumps2[title][move+""].Completed) {
+                    safaribot.sendMessage(src, "That move's data is already completed for this subject!", safchan);
+                    return true;
+                }
+                var categories = info[2].split(",");
+                if (!categories) {
+                    safaribot.sendMessage(src, "Please enter categories!", safchan);
+                    return true;
+                }
+                safari.dataDumps2[title][move+""].Categories = [];
+                for (var c in categories) {
+                    safari.dataDumps2[title][move+""].Categories.push(categories[c]);
+                }
+                safari.dataDumps2[title][move+""].Submitter = sys.name(src);
+                safari.dataDumps2[title][move+""].Completed = true;
                 return true;
             }
             if (command === "leaderboard" || command == "lb") {
@@ -28016,6 +28060,19 @@ function Safari() {
                 safaribot.sendMessage(src, "Data dump " + title + " added.", safchan);
                 return true;
             }
+            if (command === "loaddatadump2") {
+                var title = commandData;
+                safari.dataDumps2[title] = {};
+                for (var i = 1; i <= 621; i++) {
+                    safari.dataDumps2[title][i+""] = {
+                        "Categories": [],
+                        "Submitter": "",
+                        "Completed": false
+                    };
+                }
+                safaribot.sendMessage(src, "Data dump " + title + " added.", safchan);
+                return true;
+            }
             if (command === "cleardatadump") {
                 var info = commandData.split(":");
                 title = info[0];
@@ -28028,10 +28085,32 @@ function Safari() {
                 safaribot.sendMessage(src, "Data dump " + title + " cleared for entry " + mon + ".", safchan);
                 return true;
             }
+            if (command === "cleardatadump2") {
+                var info = commandData.split(":");
+                title = info[0];
+                mon = info[1];
+                safari.dataDumps2[title][mon+""] = {
+                    "Categories": [],
+                    "Submitter": "",
+                    "Completed": false
+                };
+                safaribot.sendMessage(src, "Data dump " + title + " cleared for entry " + mon + ".", safchan);
+                return true;
+            }
             if (command === "showdatadump" || command === "showdatadumpclean") {
                 var out, data;
                 if (safari.dataDumps.hasOwnProperty(commandData)) {
                     out = JSON.stringify(safari.dataDumps[commandData]);
+                    safaribot.sendMessage(src, out, safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "No data dump " + commandData + " found.", safchan);
+                return true;
+            }
+            if (command === "showdatadump2" || command === "showdatadump2clean") {
+                var out, data;
+                if (safari.dataDumps2.hasOwnProperty(commandData)) {
+                    out = JSON.stringify(safari.dataDumps2[commandData]);
                     safaribot.sendMessage(src, out, safchan);
                     return true;
                 }
@@ -28687,6 +28766,7 @@ function Safari() {
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         safari.events = parseFromPerm("events", {});
         safari.dataDumps = parseFromPerm("dumps", {});
+        safari.dataDumps2 = parseFromPerm("dumps2", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
