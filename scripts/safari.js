@@ -12865,7 +12865,7 @@ function Safari() {
             out.push("Protect from any attack");
         }
         if (data.hasOwnProperty("drain")) {
-            out.push("Recovers " + (Math.floor(data.drain * 100)) + "% of damage dealt");
+            out.push("Recovers " + (data.drain * 100) + "% of damage dealt");
         }
         if (data.hasOwnProperty("recoil")) {
             out.push("Suffers 1/3 of damage dealt in recoil");
@@ -13078,7 +13078,7 @@ function Safari() {
                 out.type = eff;
             break;
             case "drain":
-                out.drain = (Math.floor(100 * 0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09))/100);
+                out.drain = (Math.floor(0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09)));
                 out.type = eff;
             break;
             case "recoil":
@@ -23015,8 +23015,8 @@ function Safari() {
         }
         return 0;
     };
-    function showVolleyballInfo(src, pkmn) {
-        var mon = pokeInfo.species(getInputPokemon(pkmn).num), out = "";
+    function showVolleyballInfo(src, poke) {
+        var mon = pokeInfo.species(getInputPokemon(poke).num), out = "";
         if (!safari.volleyballStats.hasOwnProperty(mon+"")) {
             safaribot.sendMessage(src, "That Pokémon is not allowed in Volleyball!");
             return;
