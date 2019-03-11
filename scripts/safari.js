@@ -1316,6 +1316,7 @@ function Safari() {
         "741": 3,
         "745": 1
     };
+    var contestMoves = {"1":"Tough","2":"Tough","3":"Cute","4":"Tough","5":"Tough","6":"Clever","7":"Tough","8":"Beautiful","9":"Cool","10":"Tough","11":"Tough","12":"Cool","13":"Cool","14":"Beautiful","15":"Cool","16":"Clever","17":"Cool","18":"Clever","19":"Clever","20":"Tough","21":"Tough","22":"Cool","23":"Tough","24":"Cool","25":"Cool","26":"Cool","27":"Cool","28":"Cute","29":"Tough","30":"Cool","31":"Cool","32":"Cool","33":"Tough","34":"Tough","35":"Tough","36":"Tough","37":"Tough","38":"Tough","39":"Cute","40":"Clever","41":"Cool","42":"Cool","43":"Cool","44":"Tough","45":"Cute","46":"Cool","47":"Cute","48":"Clever","49":"Cool","50":"Clever","51":"Clever","52":"Cute","53":"Beautiful","54":"Beautiful","55":"Cute","56":"Beautiful","57":"Beautiful","58":"Beautiful","59":"Beautiful","60":"Beautiful","61":"Beautiful","62":"Beautiful","63":"Cool","64":"Cool","65":"Cool","66":"Cool","67":"Tough","68":"Tough","69":"Tough","70":"Tough","71":"Clever","72":"Clever","73":"Clever","74":"Beautiful","75":"Cool","76":"Cool","77":"Clever","78":"Clever","79":"Clever","80":"Beautiful","81":"Clever","82":"Cool","83":"Beautiful","84":"Cool","85":"Cool","86":"Cool","87":"Cool","88":"Tough","89":"Tough","90":"Tough","91":"Tough","92":"Clever","93":"Clever","94":"Clever","95":"Clever","96":"Beautiful","97":"Cool","98":"Cool","99":"Tough","100":"Cool","101":"Clever","102":"Cute","103":"Clever","104":"Cool","105":"Clever","106":"Tough","107":"Cute","108":"Clever","109":"Clever","110":"Cute","111":"Cute","112":"Cool","113":"Beautiful","114":"Beautiful","115":"Clever","116":"Cool","117":"Tough","118":"Cute","119":"Clever","120":"Beautiful","121":"Cute","122":"Cute","123":"Tough","124":"Tough","125":"Tough","126":"Beautiful","127":"Tough","128":"Tough","129":"Cool","130":"Tough","131":"Cool","132":"Tough","133":"Cute","134":"Clever","135":"Cute","136":"Cool","137":"Tough","138":"Clever","139":"Clever","140":"Cute","141":"Clever","142":"Beautiful","143":"Cool","144":"Clever","145":"Cute","146":"Cool","147":"Beautiful","148":"Beautiful","149":"Clever","150":"Cute","151":"Tough","152":"Tough","153":"Beautiful","154":"Tough","155":"Tough","156":"Cute","157":"Tough","158":"Cool","159":"Cute","160":"Beautiful","161":"Beautiful","162":"Tough","163":"Cool","164":"Cute","165":"Tough","166":"Clever","167":"Cool","168":"Tough","169":"Clever","170":"Clever","171":"Clever","172":"Beautiful","173":"Cute","174":"Tough","175":"Cute","176":"Beautiful","177":"Cool","178":"Beautiful","179":"Cool","180":"Tough","181":"Beautiful","182":"Cute","183":"Cool","184":"Tough","185":"Clever","186":"Cute","187":"Cute","188":"Tough","189":"Cute","190":"Tough","191":"Clever","192":"Cool","193":"Clever","194":"Clever","195":"Beautiful","196":"Beautiful","197":"Cool","198":"Tough","199":"Clever","200":"Cool","201":"Tough","202":"Clever","203":"Tough","204":"Cute","205":"Cute","206":"Cool","207":"Cute","208":"Cute","209":"Cool","210":"Cool","211":"Cool","212":"Beautiful","213":"Cute","214":"Cute","215":"Beautiful","216":"Cute","217":"Cute","218":"Cute","219":"Beautiful","220":"Clever","221":"Beautiful","222":"Tough","223":"Cool","224":"Cool","225":"Cool","226":"Cute","227":"Cute","228":"Clever","229":"Cool","230":"Cute","231":"Cool","232":"Cool","233":"Cool","234":"Beautiful","235":"Clever","236":"Beautiful","237":"Clever","238":"Cool","239":"Cool","240":"Beautiful","241":"Beautiful","242":"Tough","243":"Beautiful","244":"Clever","245":"Cool","246":"Tough","247":"Clever","248":"Clever","249":"Tough","250":"Beautiful","251":"Clever","252":"Cute","253":"Cute","254":"Tough","255":"Tough","256":"Tough","257":"Beautiful","258":"Beautiful","259":"Tough","260":"Clever","261":"Beautiful","262":"Tough","263":"Cute","264":"Tough","265":"Tough","266":"Cute","267":"Beautiful","268":"Clever","269":"Clever","270":"Clever","271":"Clever","272":"Cute","273":"Cute","274":"Cute","275":"Clever","276":"Tough","277":"Beautiful","278":"Clever","279":"Tough","280":"Cool","281":"Cute","282":"Clever","283":"Tough","284":"Beautiful","285":"Clever","286":"Clever","287":"Cute","288":"Tough","289":"Clever","290":"Clever","291":"Beautiful","292":"Tough","293":"Clever","294":"Beautiful","295":"Clever","296":"Clever","297":"Beautiful","298":"Cute","299":"Beautiful","300":"Cute","301":"Beautiful","302":"Clever","303":"Cute","304":"Cool","305":"Clever","306":"Cool","307":"Beautiful","308":"Beautiful","309":"Cool","310":"Clever","311":"Beautiful","312":"Clever","313":"Cute","314":"Cool","315":"Beautiful","316":"Clever","317":"Clever","318":"Beautiful","319":"Clever","320":"Clever","321":"Cute","322":"Cool","323":"Beautiful","324":"Beautiful","325":"Clever","326":"Cool","327":"Cool","328":"Clever","329":"Beautiful","330":"Tough","331":"Cool","332":"Cool","333":"Beautiful","334":"Tough","335":"Cute","336":"Cool","337":"Cool","338":"Cool","339":"Beautiful","340":"Cute","341":"Tough","342":"Clever","343":"Cute","344":"Cool","345":"Beautiful","346":"Cute","347":"Clever","348":"Cool","349":"Cool","350":"Tough","351":"Cool","352":"Beautiful","353":"Cool","354":"Clever","355":"Cool","356":"Clever","357":"Cute","358":"Tough","359":"Tough","360":"Beautiful","361":"Cute","362":"Tough","363":"Cool","364":"Clever","365":"Cute","366":"Cool","367":"Tough","368":"Beautiful","369":"Cute","370":"Tough","371":"Tough","372":"Beautiful","373":"Cute","374":"Tough","375":"Cool","376":"Cool","377":"Cute","378":"Tough","379":"Cool","380":"Tough","381":"Cute","382":"Cute","383":"Cool","384":"Beautiful","385":"Cute","386":"Cool","387":"Cute","388":"Beautiful","389":"Clever","390":"Clever","391":"Cool","392":"Beautiful","393":"Cute","394":"Cool","395":"Cool","396":"Beautiful","397":"Tough","398":"Tough","399":"Cool","400":"Beautiful","401":"Cute","402":"Tough","403":"Cool","404":"Beautiful","405":"Cute","406":"Clever","407":"Tough","408":"Beautiful","409":"Tough","410":"Cool","411":"Cool","412":"Beautiful","413":"Cute","414":"Clever","415":"Cool","416":"Tough","417":"Cute","418":"Tough","419":"Cool","420":"Beautiful","421":"Cute","422":"Cool","423":"Cool","424":"Beautiful","425":"Clever","426":"Clever","427":"Cool","428":"Clever","429":"Cute","430":"Clever","431":"Tough","432":"Beautiful","433":"Cute","434":"Clever","435":"Cool","436":"Tough","437":"Cute","438":"Tough","439":"Tough","440":"Cool","441":"Tough","442":"Tough","443":"Cool","444":"Tough","445":"Beautiful","446":"Cool","447":"Clever","448":"Clever","449":"Beautiful","450":"Tough","451":"Beautiful","452":"Tough","453":"Beautiful","454":"Clever","455":"Clever","456":"Clever","457":"Tough","458":"Clever","459":"Cool","460":"Beautiful","461":"Beautiful","462":"Tough","463":"Tough","464":"Clever","465":"Cool","466":"Beautiful","467":"Cool","468":"Cute","469":"Tough","470":"Clever","471":"Clever","472":"Clever","473":"Beautiful","474":"Beautiful","475":"Beautiful","476":"Clever","477":"Clever","478":"Clever","479":"Tough","480":"Cool","481":"Beautiful","482":"Tough","483":"Beautiful","484":"Tough","485":"Clever","486":"Cool","487":"Cute","488":"Cool","489":"Tough","490":"Clever","491":"beautiful","492":"Clever","493":"Cute","494":"Cute","495":"Cute","496":"Beautiful","497":"beautiful","498":"Tough","499":"Beautiful","500":"Clever","501":"Cool","502":"Clever","503":"Tough","504":"Tough","505":"Beautiful","506":"Clever","507":"Tough","508":"Clever","509":"Cool","510":"Tough","511":"Clever","512":"Cool","513":"Clever","514":"Cool","515":"Tough","516":"Cool","517":"Beautiful","518":"Beautiful","519":"Beautiful","520":"Beautiful","521":"Cool","522":"Cute","523":"Tough","524":"Beautiful","525":"Tough","526":"Tough","527":"beautiful","528":"Tough","529":"Tough","530":"Tough","531":"Cute","532":"Tough","533":"Cool","534":"Cool","535":"Tough","536":"Cool","537":"Tough","538":"Cute","539":"Cool","540":"Cool","541":"Cute","542":"Tough","543":"Tough","544":"Clever","545":"Cool","546":"Cool","547":"beautiful","548":"beautiful","549":"beautiful","550":"Beautiful","551":"beautiful","552":"beautiful","553":"beautiful","554":"Beautiful","555":"Tough","556":"beautiful","557":"Cool","558":"beautiful","559":"Cool","560":"Cute","561":"Tough","562":"Clever","563":"Beautiful","564":"Cute","565":"Beautiful","566":"Tough","567":"Clever","568":"Beautiful","569":"Beautiful","570":"Beautiful","571":"Cute","572":"Beautiful","573":"Beautiful","574":"Tough","575":"Cute","576":"Cool","577":"Clever","578":"Cool","579":"Cute","580":"Cute","581":"Cute","582":"Cool","583":"Beautiful","584":"Tough","585":"Cute","586":"Cute","587":"Clever","588":"Clever","589":"Clever","590":"Clever","591":"Cool","592":"Beautiful","593":"Beautiful","594":"Beautiful","595":"Cool","596":"Beautiful","597":"Clever","598":"Cool","599":"Beautiful","600":"Cool","601":"Clever","602":"Tough","603":"Tough","604":"Tough","605":"Tough","606":"Clever","607":"Clever","608":"Cute","609":"Cute","610":"Cool","611":"Beautiful","612":"Beautiful","613":"Beautiful","614":"Clever","615":"Cute","616":"Beautiful","617":"Tough","618":"Beautiful","619":"Cool","620":"Beautiful","621":"Tough"};
     var evolutions = {
         "1":{"evo":2,"candies":207},"2":{"evo":3,"candies":656},"4":{"evo":5,"candies":207},"5":{"evo":6,"candies":668},"7":{"evo":8,"candies":207},"8":{"evo":9,"candies":663},"10":{"evo":11,"candies":105},"11":{"evo":12,"candies":332},"13":{"evo":14,"candies":105},"14":{"evo":15,"candies":332},"16":{"evo":17,"candies":178},"17":{"evo":18,"candies":402},"19":{"evo":20,"candies":347},"65555":{"evo":65556,"candies":347},"21":{"evo":22,"candies":371},"23":{"evo":24,"candies":368},"25":{"evo":26,"candies":407},"27":{"evo":28,"candies":378},"65563":{"evo":65564,"candies":378},"29":{"evo":30,"candies":186},"30":{"evo":31,"candies":424},"32":{"evo":33,"candies":186},"33":{"evo":34,"candies":424},"35":{"evo":36,"candies":406},"37":{"evo":38,"candies":424},"65573":{"evo":65574,"candies":424},"39":{"evo":40,"candies":365},"41":{"evo":42,"candies":232},"42":{"evo":169,"candies":449},"43":{"evo":44,"candies":201},"44":{"evo":[45,182],"candies":412},"46":{"evo":47,"candies":340},"48":{"evo":49,"candies":378},"50":{"evo":51,"candies":340},"65586":{"evo":65587,"candies":340},"52":{"evo":53,"candies":370},"65588":{"evo":65589,"candies":370},"54":{"evo":55,"candies":420},"56":{"evo":57,"candies":382},"58":{"evo":59,"candies":466},"60":{"evo":61,"candies":196},"61":{"evo":[62,186],"candies":424},"63":{"evo":64,"candies":204},"64":{"evo":65,"candies":575},"66":{"evo":67,"candies":207},"67":{"evo":68,"candies":424},"69":{"evo":70,"candies":199},"70":{"evo":71,"candies":412},"72":{"evo":73,"candies":433},"74":{"evo":75,"candies":199},"65610":{"evo":65611,"candies":199},"75":{"evo":76,"candies":416},"65611":{"evo":65612,"candies":416},"77":{"evo":78,"candies":420},"79":{"evo":[80,199],"candies":412},"81":{"evo":82,"candies":237},"82":{"evo":462,"candies":449},"84":{"evo":85,"candies":386},"86":{"evo":87,"candies":399},"88":{"evo":89,"candies":420},"65624":{"evo":65625,"candies":420},"90":{"evo":91,"candies":441},"92":{"evo":93,"candies":207},"93":{"evo":94,"candies":575},"95":{"evo":208,"candies":428},"96":{"evo":97,"candies":406},"98":{"evo":99,"candies":399},"100":{"evo":101,"candies":403},"102":{"evo":103,"candies":437},"104":{"evo":105,"candies":357},"108":{"evo":463,"candies":433},"109":{"evo":110,"candies":412},"111":{"evo":112,"candies":247},"112":{"evo":464,"candies":449},"113":{"evo":242,"candies":621},"114":{"evo":465,"candies":449},"116":{"evo":117,"candies":224},"117":{"evo":230,"candies":454},"118":{"evo":119,"candies":378},"120":{"evo":121,"candies":437},"123":{"evo":212,"candies":420},"125":{"evo":466,"candies":454},"126":{"evo":467,"candies":454},"129":{"evo":130,"candies":454},"133":{"evo":[470,471,135,134,136,196,197,700],"candies":656},"137":{"evo":233,"candies":263},"138":{"evo":139,"candies":416},"140":{"evo":141,"candies":416},"147":{"evo":148,"candies":214},"148":{"evo":149,"candies":699},"152":{"evo":153,"candies":207},"153":{"evo":154,"candies":656},"155":{"evo":156,"candies":207},"156":{"evo":157,"candies":668},"158":{"evo":159,"candies":207},"159":{"evo":160,"candies":663},"161":{"evo":162,"candies":349},"163":{"evo":164,"candies":371},"165":{"evo":166,"candies":328},"167":{"evo":168,"candies":328},"170":{"evo":171,"candies":386},"172":{"evo":25,"candies":163},"173":{"evo":35,"candies":165},"174":{"evo":39,"candies":138},"175":{"evo":176,"candies":207},"176":{"evo":468,"candies":627},"177":{"evo":178,"candies":395},"179":{"evo":180,"candies":186},"180":{"evo":181,"candies":428},"183":{"evo":184,"candies":353},"187":{"evo":188,"candies":173},"188":{"evo":189,"candies":386},"190":{"evo":424,"candies":405},"191":{"evo":192,"candies":357},"193":{"evo":469,"candies":433},"194":{"evo":195,"candies":361},"198":{"evo":430,"candies":424},"200":{"evo":429,"candies":416},"204":{"evo":205,"candies":391},"207":{"evo":472,"candies":428},"209":{"evo":210,"candies":378},"215":{"evo":461,"candies":428},"216":{"evo":217,"candies":420},"218":{"evo":219,"candies":344},"220":{"evo":221,"candies":230},"221":{"evo":473,"candies":445},"223":{"evo":224,"candies":403},"228":{"evo":229,"candies":420},"231":{"evo":232,"candies":420},"233":{"evo":474,"candies":449},"236":{"evo":[107,106,237],"candies":382},"238":{"evo":124,"candies":382},"239":{"evo":125,"candies":250},"240":{"evo":126,"candies":252},"246":{"evo":247,"candies":209},"247":{"evo":248,"candies":699},"252":{"evo":253,"candies":207},"253":{"evo":254,"candies":663},"255":{"evo":256,"candies":207},"256":{"evo":257,"candies":663},"258":{"evo":259,"candies":207},"259":{"evo":260,"candies":669},"261":{"evo":262,"candies":353},"263":{"evo":264,"candies":353},"265":{"evo":[266,268],"candies":105},"266":{"evo":267,"candies":332},"268":{"evo":269,"candies":323},"270":{"evo":271,"candies":173},"271":{"evo":272,"candies":552},"273":{"evo":274,"candies":173},"274":{"evo":275,"candies":403},"276":{"evo":277,"candies":361},"278":{"evo":279,"candies":361},"280":{"evo":281,"candies":142},"281":{"evo":[282,475],"candies":435},"283":{"evo":284,"candies":348},"285":{"evo":286,"candies":386},"287":{"evo":288,"candies":224},"288":{"evo":289,"candies":781},"290":{"evo":[291,292],"candies":291},"293":{"evo":294,"candies":184},"294":{"evo":295,"candies":412},"296":{"evo":297,"candies":398},"298":{"evo":183,"candies":128},"299":{"evo":476,"candies":441},"300":{"evo":301,"candies":319},"304":{"evo":305,"candies":219},"305":{"evo":306,"candies":610},"307":{"evo":308,"candies":344},"309":{"evo":310,"candies":399},"315":{"evo":407,"candies":433},"316":{"evo":317,"candies":392},"318":{"evo":319,"candies":386},"320":{"evo":321,"candies":420},"322":{"evo":323,"candies":575},"325":{"evo":326,"candies":395},"328":{"evo":329,"candies":173},"329":{"evo":330,"candies":598},"331":{"evo":332,"candies":399},"333":{"evo":334,"candies":412},"339":{"evo":340,"candies":393},"341":{"evo":342,"candies":393},"343":{"evo":344,"candies":420},"345":{"evo":346,"candies":416},"347":{"evo":348,"candies":416},"349":{"evo":[350],"candies":454},"353":{"evo":354,"candies":382},"355":{"evo":356,"candies":232},"356":{"evo":477,"candies":441},"360":{"evo":202,"candies":340},"361":{"evo":[362,478],"candies":403},"363":{"evo":364,"candies":209},"364":{"evo":365,"candies":445},"366":{"evo":[367,368],"candies":407},"371":{"evo":372,"candies":214},"372":{"evo":373,"candies":699},"374":{"evo":375,"candies":214},"375":{"evo":376,"candies":699},"387":{"evo":388,"candies":207},"388":{"evo":389,"candies":656},"390":{"evo":391,"candies":207},"391":{"evo":392,"candies":668},"393":{"evo":394,"candies":207},"394":{"evo":395,"candies":663},"396":{"evo":397,"candies":173},"397":{"evo":398,"candies":407},"399":{"evo":400,"candies":344},"401":{"evo":402,"candies":323},"403":{"evo":404,"candies":185},"404":{"evo":405,"candies":439},"406":{"evo":315,"candies":204},"408":{"evo":409,"candies":416},"410":{"evo":411,"candies":416},"412":{"evo":[413,414],"candies":356},"415":{"evo":416,"candies":398},"418":{"evo":419,"candies":416},"420":{"evo":421,"candies":378},"422":{"evo":423,"candies":399},"425":{"evo":426,"candies":418},"427":{"evo":428,"candies":403},"431":{"evo":432,"candies":380},"433":{"evo":358,"candies":357},"434":{"evo":435,"candies":402},"436":{"evo":437,"candies":420},"438":{"evo":185,"candies":344},"439":{"evo":122,"candies":386},"440":{"evo":113,"candies":230},"443":{"evo":444,"candies":209},"444":{"evo":445,"candies":699},"446":{"evo":143,"candies":454},"447":{"evo":448,"candies":604},"449":{"evo":450,"candies":441},"451":{"evo":452,"candies":420},"453":{"evo":454,"candies":412},"456":{"evo":457,"candies":386},"458":{"evo":226,"candies":391},"459":{"evo":460,"candies":415},"495":{"evo":496,"candies":211},"496":{"evo":497,"candies":660},"498":{"evo":499,"candies":213},"499":{"evo":500,"candies":660},"501":{"evo":502,"candies":211},"502":{"evo":503,"candies":660},"504":{"evo":505,"candies":353},"506":{"evo":507,"candies":189},"507":{"evo":508,"candies":420},"509":{"evo":510,"candies":375},"511":{"evo":512,"candies":418},"513":{"evo":514,"candies":418},"515":{"evo":516,"candies":418},"517":{"evo":518,"candies":409},"519":{"evo":520,"candies":183},"520":{"evo":521,"candies":410},"522":{"evo":523,"candies":417},"524":{"evo":525,"candies":199},"525":{"evo":526,"candies":433},"527":{"evo":528,"candies":357},"529":{"evo":530,"candies":427},"532":{"evo":533,"candies":207},"533":{"evo":534,"candies":424},"535":{"evo":536,"candies":196},"536":{"evo":537,"candies":428},"540":{"evo":541,"candies":194},"541":{"evo":542,"candies":420},"543":{"evo":544,"candies":184},"544":{"evo":545,"candies":407},"546":{"evo":547,"candies":403},"548":{"evo":549,"candies":403},"551":{"evo":552,"candies":179},"552":{"evo":553,"candies":597},"554":{"evo":555,"candies":403},"557":{"evo":558,"candies":399},"559":{"evo":560,"candies":410},"562":{"evo":563,"candies":406},"564":{"evo":565,"candies":416},"566":{"evo":567,"candies":652},"568":{"evo":569,"candies":398},"570":{"evo":571,"candies":428},"572":{"evo":573,"candies":395},"574":{"evo":575,"candies":199},"575":{"evo":576,"candies":412},"577":{"evo":578,"candies":189},"578":{"evo":579,"candies":412},"580":{"evo":581,"candies":397},"582":{"evo":583,"candies":201},"583":{"evo":584,"candies":449},"585":{"evo":586,"candies":399},"588":{"evo":589,"candies":416},"590":{"evo":591,"candies":390},"592":{"evo":593,"candies":403},"595":{"evo":596,"candies":396},"597":{"evo":598,"candies":411},"599":{"evo":600,"candies":224},"600":{"evo":601,"candies":437},"602":{"evo":603,"candies":207},"603":{"evo":604,"candies":433},"605":{"evo":606,"candies":407},"607":{"evo":608,"candies":189},"608":{"evo":609,"candies":598},"610":{"evo":611,"candies":209},"611":{"evo":612,"candies":621},"613":{"evo":614,"candies":407},"616":{"evo":617,"candies":416},"619":{"evo":620,"candies":428},"622":{"evo":623,"candies":555},"624":{"evo":625,"candies":412},"627":{"evo":628,"candies":428},"629":{"evo":630,"candies":428},"633":{"evo":634,"candies":214},"634":{"evo":635,"candies":699},"636":{"evo":637,"candies":462},"650":{"evo":651,"candies":207},"651":{"evo":652,"candies":663},"653":{"evo":654,"candies":209},"654":{"evo":655,"candies":668},"656":{"evo":657,"candies":207},"657":{"evo":658,"candies":663},"659":{"evo":660,"candies":355},"661":{"evo":662,"candies":195},"662":{"evo":663,"candies":624},"664":{"evo":665,"candies":109},"665":{"evo":666,"candies":345},"667":{"evo":668,"candies":426},"669":{"evo":670,"candies":189},"670":{"evo":671,"candies":464},"672":{"evo":673,"candies":446},"674":{"evo":675,"candies":416},"677":{"evo":678,"candies":391},"679":{"evo":680,"candies":228},"680":{"evo":681,"candies":598},"682":{"evo":683,"candies":388},"684":{"evo":685,"candies":403},"686":{"evo":687,"candies":405},"688":{"evo":689,"candies":420},"690":{"evo":691,"candies":415},"692":{"evo":693,"candies":420},"694":{"evo":695,"candies":404},"696":{"evo":697,"candies":438},"698":{"evo":699,"candies":651},"704":{"evo":705,"candies":231},"705":{"evo":706,"candies":699},"708":{"evo":709,"candies":398},"710":{"evo":711,"candies":415},"712":{"evo":713,"candies":432},"714":{"evo":715,"candies":449},"722":{"evo":723,"candies":214},"723":{"evo":724,"candies":663},"725":{"evo":726,"candies":214},"726":{"evo":727,"candies":663},"728":{"evo":729,"candies":214},"729":{"evo":730,"candies":663},"731":{"evo":732,"candies":181},"732":{"evo":733,"candies":407},"734":{"evo":735,"candies":351},"736":{"evo":737,"candies":204},"737":{"evo":738,"candies":420},"739":{"evo":740,"candies":402},"742":{"evo":743,"candies":390},"744":{"evo":[745,66281],"candies":409},"747":{"evo":748,"candies":416},"749":{"evo":750,"candies":420},"751":{"evo":752,"candies":381},"753":{"evo":754,"candies":403},"755":{"evo":756,"candies":340},"757":{"evo":758,"candies":403},"759":{"evo":760,"candies":420},"761":{"evo":762,"candies":148},"762":{"evo":763,"candies":428},"767":{"evo":768,"candies":445},"769":{"evo":770,"candies":403},"772":{"evo":773,"candies":599},"782":{"evo":783,"candies":214},"783":{"evo":784,"candies":699},"789":{"evo":790,"candies":9999},"790":{"evo":[791,792],"candies":9999}
     };
@@ -13077,7 +13078,7 @@ function Safari() {
                 out.type = eff;
             break;
             case "drain":
-                out.drain = (Math.floor(100 * (0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09)))/100);
+                out.drain = (Math.floor(0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09)));
                 out.type = eff;
             break;
             case "recoil":
@@ -22947,6 +22948,1849 @@ function Safari() {
         var n = name.toLowerCase();
         return signupsLower.contains(n) && !this.winners.contains(n);
     };
+    safari.volleyballStats = {
+        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 2, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "grounded", "banner-grass"]},
+        "4": {"stamina": 38, "serve": 2, "receive": 3, "toss": 0, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["wide", "dig"]},
+        "7": {"stamina": 38, "serve": 3, "receive": 3, "toss": 2, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["quick-set", "dump", "splash"]},
+        "25": {"stamina": 25, "serve": 4, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "energize"]},
+        "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 0, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["ace", "reach", "dig"]},
+        "35": {"stamina": 34, "serve": 3, "receive": 5, "toss": 2, "spike": 2, "block": 0, "precision": 3,"speed": 2, "skills": ["regen", "splash", "grounded"]},
+        "62": {"stamina": 30, "serve": 5, "receive": 5, "toss": 1, "spike": 2, "block": 2, "precision": 1,"speed": 1, "skills": ["back-attack", "splash", "grounded"]},
+        "68": {"stamina": 30, "serve": 2, "receive": 3, "toss": 2, "spike": 5, "block": 4, "precision": 0,"speed": 1, "skills": ["ace", "dump"]},
+        "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 1, "spike": 3, "block": 3, "precision": 4,"speed": 4, "skills": []},
+        "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 2, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "trickster"]},
+        "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 2, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "dump", "wide"]},
+        "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 0, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
+        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 0, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner-water", "back-attack", "dig"]},
+        "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 0, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
+        "248": {"stamina": 32, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 4, "precision": 3,"speed": 1, "skills": ["wide"]},
+        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 2, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "quick-set"]},
+        "257": {"stamina": 30, "serve": 2, "receive": 1, "toss": 1, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "ace"]},
+        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 2, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "banner-water"]},
+        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 2, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["dump", "regen"]},
+        "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 0, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["grounded", "wide"]},
+        "428": {"stamina": 28, "serve": 3, "receive": 1, "toss": 0, "spike": 4, "block": 4, "precision": 5,"speed": 4, "skills": ["dig", "banner-normal", "ace"]},
+        "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 1, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["burn", "ace"]},
+        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 1, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "banner-fight"]},
+        "466": {"stamina": 30, "serve": 4, "receive": 4, "toss": 1, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "banner-electric", "energize"]},
+        "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["telepathy", "ace"]},
+        "531": {"stamina": 35, "serve": 2, "receive": 3, "toss": 2, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner-normal", "regen", "energize"]},
+        "652": {"stamina": 33, "serve": 1, "receive": 5, "toss": 0, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow"]},
+        "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 1, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "ace"]},
+        "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 2, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["trickster", "wide", "dump"]},
+        "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 1, "spike": 2, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "ace"]},
+        "727": {"stamina": 33, "serve": 1, "receive": 4, "toss": 0, "spike": 5, "block": 1, "precision": 0,"speed": 1, "skills": ["burn", "wide"]},
+        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 1, "spike": 1, "block": 0, "precision": 4,"speed": 3, "skills": ["trickster", "performer"]},
+        "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 2, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "quick-set", "dump"]}
+    };
+    safari.volleyballSkillDescriptions = {
+        "ace": "Spike power increases by +2 on a PERFECT or better Set.",
+        "back-attack": "May perform a Spike from the back row if they are in the C row.",
+        "burn": "If there is at least one other Fire-type Pokémon on this Pokémon's team, Receivers of this Pokémon's Spikes and Serves suffer -3 stamina.",
+        "dagger": "Can Spike on a Pass of EXCELLENT or higher quality.",
+        "dig": "While Stamina is above 10, may perform a Dig (Receives a Spiked or Served ball that would otherwise score a point, with FAIR accuracy, and Pokémon loses an additional 5 stamina).",
+        "dump": "Pokémon may perform a Tip on a Pass or Set that is GREAT or higher quality.",
+        "energize": "When this Pokémon sets to an Spiker, that Spiker gains +3 Stamina restored.",
+        "banner-fight": "While this is in the front row, Fighting-type Pokémon in the back-row have their Pass score increased by +2.",
+        "banner-electric": "While this is in the front row, Electric-type Pokémon in the back-row have their Pass score increased by +2.",
+        "banner-grass": "While this is in the front row, Grass-type Pokémon in the back-row have their Pass score increased by +2.",
+        "banner-water": "While this is in the front row, Water-type Pokémon in the back-row have their Pass score increased by +2.",
+        "banner-normal": "While this is in the front row, Normal-type Pokémon in the back-row have their Pass score increased by +2.",
+        "grounded": "Pokémon's Pass score increases by +1 if it has prepared.",
+        "guardian": "Pokémon's can receive overhand more easily.",
+        "overgrow": "While this is in the back row, Grass-type Pokémon in the front row have their block score increased by +2.",
+        "regen": "When this Pokémon Serves, all allies in the back row regenerate +1 Stamina.",
+        "quick-set": "When this Pokémon Sets and its Stamina is 10 or higher, foes must expend +2 stamina to block any Spiker this turn.",
+        "splash": "Whenever this Pokémon Sets, all other Pokémon in both front rows suffer -2 Stamina.",
+        "telepathy": "Pokémon's Spike score is increased by +1 if there is at least 1 other Psychic-type Pokémon on its team.",
+        "wide": "Pokémon's Spike score is increased by +2 if no attempt is made to block it.",
+        "performer": "This Pokémon gains +2 set score from an EXCELLENT or better receive.",
+        "reach": "Pokémon's expends less stamina to Block.",
+        "trickster": "This Pokémon's tips ccost an extra 3 stamina to receive.",
+        "water-bubble": "This Pokémon takes no additional stamina reduction from Burn abilities. This Pokémon can receive from the side as well as a direct receive."
+    };
+    function getVolleyballStat(mon, stat) {
+        if (safari.volleyballStats.hasOwnProperty(mon+"")) {
+            return safari.volleyballStats[mon][stat];
+        }
+        return 0;
+    };
+    function showVolleyballInfo(src, poke) {
+        var mon = getInputPokemon(poke).num, out = "";
+        if (!safari.volleyballStats.hasOwnProperty(mon+"")) {
+            safaribot.sendMessage(src, "That Pokémon is not allowed in Volleyball!");
+            return;
+        }
+        out += ("" + poke(mon) + "  " + "Stamina: " + getVolleyballStat(mon, "stamina") + "Serve: " + getVolleyballStat(mon, "serve") + "Receive: " + getVolleyballStat(mon, "receive") + "Toss: " + getVolleyballStat(mon, "toss") + "Spike: " + getVolleyballStat(mon, "spike") + "Precision: " + getVolleyballStat(mon, "precision") + "Block: " + getVolleyballStat(mon, "block") + "Speed: " + getVolleyballStat(mon, "speed"));
+        safaribot.sendMessage(src, out);
+        var k;
+        for (var s in getVolleyballStat(mon, "skills")) {
+            k = getVolleyballStat(mon, "skills")[s];
+            safaribot.sendMessage(src, "Skill: " + safari.volleyballSkillDescriptions[k]);
+        }
+        return;
+    };
+    /* New Ball Mode */
+    function Volleyball(src, team1, team2) {
+        this.team1 = {}, this.team2 = {}; this.viewers = []; this.teams = [this.team1, this.team2];
+        this.excludeActions = [];
+        this.excludePos = [
+            [], []
+        ];
+        this.teamServed = 0;
+        this.teamHasBall = -1;
+
+        this.teamData = [
+            {points: 0, name: team1, signups: []},
+            {points: 0, name: team2, signups: []}
+        ];
+        this.turnLength = 8;
+        this.step = 0;
+        this.finished = false;
+
+        // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
+        safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
+    };
+    Volleyball.prototype.handleCommand = function(src, data) {
+        var name = sys.name(src);
+        var cdata = data.split(":");
+        var cdata1 = cdata[0];
+        var cdata2 = (cdata.length > 1 ? cdata[1] : "");
+        if (this.phase == "signups") {
+            var player = getAvatar(name);
+            var party = player.party;
+            var mon, i = 0;
+            for (var p in party) { 
+                mon = party[p];
+                if (Object.keys(safari.volleyballStats).indexOf(mon) === -1) {
+                    this.sendMessage(name, poke(mon) + " is not valid in Volleyball matches! Make sure your first three Pokémon are legal in this format!", "red");
+                    return;
+                }
+                i++;
+                if (i > 2) {
+                    break;
+                }
+            }
+            if (i <= 2) {
+                this.sendMessage(name, "You must have at least 3 Pokémon to enter a Volleyball match!", "red");
+                return;
+            }
+            if (cdata1 == "join") {
+                if (this.teamData[0].name === cdata2) {
+                    if (this.teamData[0].signups.length === 6) {
+                        this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
+                        cdata2 = this.teamData[1].name;
+                    }
+                }
+                if (this.teamData[1].name === cdata2) {
+                    if (this.teamData[1].signups.length === 6) {
+                        this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
+                        cdata2 = this.teamData[0].name;
+                    }
+                }
+                if (cdata2 === "") {
+                    if (chance(0.5) && this.teamData[0].signups.length < 6) {
+                        cdata = this.teamData[0].name;
+                    }
+                    else {
+                        cdata = this.teamData[1].name;
+                    }
+                }
+                if (this.teamData[0].name === cdata2) {
+                    this.teamData[0].signups.push(name);
+                    this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
+                }
+                if (this.teamData[1].name === cdata2) {
+                    this.teamData[1].signups.push(name);
+                    this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
+                }
+                if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
+                    this.assemblePhase();
+                }
+            }
+            if (cdata1 == "forcestart" && SESSION.channels(safchan).isChannelAdmin(src)) {
+                this.assemblePhase();
+            }
+        }
+        else {
+            this.inputMove(name, data);
+        }
+        return;
+    };
+    Volleyball.prototype.assemblePhase = function() {
+        var team1 = this.team1Data.signups, team2 = this.team2Data.signups, isNPC;
+        this.sendMessageAll("The teams have been decided! The match will now begin!");
+        while (team1.length < 6) {
+            team1.push({id: generateName()});
+        }
+        while (team2.length < 6) {
+            team2.push({id: generateName()});
+        }
+        for (var t in team1) {
+            isNPC = typeof team1[t] === "object";
+            if (isNPC) {
+                this.team1[team1[t].id] = this.generatePlayer(team1[t], true, 0);
+            }
+            else {
+                newp = getAvatar(team1[t]);
+                if (!newp) {
+                    newp = getAvatarOff(team1[t]);
+                }
+                this.team1[newp.id] = this.generatePlayer(newp, false, 0);
+                this.viewers.push(team1[t].id.toLowerCase());
+            }
+        }
+        for (var t in team2) {
+            isNPC = typeof team2[t] === "object";
+            if (isNPC) {
+                this.team2[team2[t].id] = this.generatePlayer(team2[t], true, 1);
+            }
+            else {
+                newp = getAvatar(team1[t]);
+                if (!newp) {
+                    newp = getAvatarOff(team1[t]);
+                }
+                this.team2[newp.id] = this.generatePlayer(newp, false, 1);
+                this.viewers.push(team2[t].id.toLowerCase());
+            }
+        }
+        this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0].join(", ")) + "!");
+        this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1].join(", ")) + "!");
+        this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve second!");
+        this.phase = "assemble";
+    };
+    Volleyball.prototype.courtView = function(team) {
+        var atkteam = team, defteam = (team === 0 ? 1 : 0);
+        var rows = {}, name;
+        var props = [
+            ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7"],
+            ["xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7"],
+            ["xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"],
+            ["xd1", "xd2", "xd3", "xd4", "xd5", "xd6", "xd7"],
+            ["---", "---", "---", "---", "---", "---", "---"],
+            ["d1", "d2", "d3", "d4", "d5", "d6", "d7"],
+            ["c1", "c2", "c3", "c4", "c5", "c6", "c7"],
+            ["b1", "b2", "b3", "b4", "b5", "b6", "b7"],
+            ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
+        ];
+        var ret = [], r, place, inp;
+        for (var p in this.team[defteam]) {
+            poke = this.team[defteam].party[this.team[defteam].currentPoke];
+            this.rows["x" + this.team[defteam].pos[1] + (8 - this.team[defteam].row)] = poke;
+        }
+        for (var p in this.team[atkteam]) {
+            poke = this.team[atkteam].party[this.team[atkteam].currentPoke];
+            this.rows[this.team[atkteam].pos] = poke;
+        }
+        for (var i = 0; i++; i < props.length) {
+            ret += "<tr>";
+            r = props[i];
+            for (var j = 0; j++; j < r.length) {
+                var place = r[j];
+                if (rows.hasOwnProperty(place)) {
+                    inp = pokeInfo.icon(rows[place]);
+                    ret += (inp + " ");
+                }
+                else {
+                    ret += " " + place + " ";
+                }
+                ret += "></td></tr>"
+            }
+            ret += "<p>"
+        }
+        return;
+    };
+    Volleyball.prototype.sendMessage = function(name, msg) {
+        var id = sys.id(name);
+        if (id && sys.isInChannel(id, safchan)) {
+            if (msg === "") {
+                sys.sendHtmlMessage(id, msg, safchan);
+            } else {
+                safaribot.sendHtmlMessage(id, msg, safchan);
+            }
+        }
+        return;
+    };
+    Volleyball.prototype.sendMessageTeam = function(team, msg, color) {
+        for (var p in this.teams[team]) {
+            var id = sys.id(p);
+            if (id && sys.isInChannel(id, safchan)) {
+                if (msg === "") {
+                    sys.sendHtmlMessage(id, msg, safchan);
+                } else {
+                    if (color) {
+                       safaribot.sendHtmlMessage(id, toColor(msg, color), safchan);
+                    }
+                    else {
+                       safaribot.sendHtmlMessage(id, msg, safchan);
+                    }
+                }
+            }
+        }
+        return;
+    };
+    Volleyball.prototype.sendMessageAll = function(msg, color) {
+        this.sendMessageTeam(0, msg, color);
+        this.sendMessageTeam(1, msg, color);
+    };
+    Volleyball.prototype.generateVollyeballParty = function() {
+        var p = [], k;
+        for (var i = 0; i < 3; i++) {
+            k = Object.keys(safari.volleyballStats).random();
+            while (p.indexOf(k) !== -1) {
+                k = Object.keys(safari.volleyballStats).random();
+            }
+            p.push(k);
+        }
+        return p;
+    }
+    Volleyball.prototype.generatePlayer = function(data, isNPC, team) {
+        var party = [];
+        var out = {
+                team: team,
+                action: "",
+                currentPoke: -1,
+                place: 0,
+                score: 0,
+                position: "",
+                zone: "",
+                row: 0,
+                column: 0,
+                prep: 0,
+                st: 0,
+                canServe: false,
+                canSet: false,
+                canHit: false,
+                canTip: false,
+                blocking: false,
+                passval: 0,
+                setval: 0,
+                freepass: false,
+                quickattack: false,
+                moved: 0,
+                receiver: false,
+                receiveType: "",
+                serveEffort: 0
+        };
+
+        if (isNPC) {
+            party = this.generateVollyeballParty();
+            out.id = generateName();
+        }
+
+        else {
+            for (var i = 0; i < 3; i++) {
+                party.push(data.party[i]);
+                i++;
+            }
+            out.id = data.id;
+        }
+
+        out.party = [];
+        for (var p in party) {
+            /* 
+                skills = skills available for this character (up to 3-4 may exist)
+                place = where in the rotation you are. 0 = server, 0-2 is back row, 3-5 is front row
+                score = score for a serve, recieve, toss, or spike (can be translated to good, great, perfect etc)
+                position = xy position on the court (can be like a1, a2, a3, b1, etc). abc = vertical placement, 123 = horizontal placement. This only applies for back row players
+                zone = front row or back row.
+                prep = how long you have been waiting in position to receive, set, block. The longer you wait in the same position, the more effective your receive will be.
+                st = stamina remaining
+            */
+            out.party.push({
+                id: party[p],
+                owner: out.id,
+                stamina: getVolleyballStat(party[p], "stamina"),
+                serve: getVolleyballStat(party[p], "serve"),
+                receive: getVolleyballStat(party[p], "receive"),
+                toss: getVolleyballStat(party[p], "toss"),
+                spike: getVolleyballStat(party[p], "spike"),
+                precision: getVolleyballStat(party[p], "precision"),
+                block: getVolleyballStat(party[p], "block"),
+                speed: getVolleyballStat(party[p], "speed"),
+                skills: getVolleyballStat(party[p], "skills")
+            });
+        }
+        return out;
+    };
+    Volleyball.prototype.loadNextMon = function(player) {
+        player.currentPoke += 1;
+        var m = player.currentPoke;
+        player.stamina = player.party[m].stamina;
+        player.serve = player.party[m].serve;
+        player.receive = player.party[m].receive;
+        player.toss = player.party[m].toss;
+        player.spike = player.party[m].spike;
+        player.precision = player.party[m].precision;
+        player.block = player.party[m].block;
+        player.speed = player.party[m].speed;
+        player.skills = player.party[m].skills;
+        return;
+    };
+    Volleyball.prototype.actName = function(player) {
+        return (player.id + "'s " + poke(player.currentPoke));
+    };
+    Volleyball.prototype.turn = function() {
+        this.step++; //every 8 seconds
+        if (this.phase == "signups") {
+            if (this.step === 42) {
+                //msg that there is less than a minute left to join
+            }
+            if (this.step === 50) {
+                //after 400 seconds
+                this.assemblePhase();
+                this.step = 0;
+            }
+        }
+        if (this.phase == "assemble") {
+            if (this.step >= 5) {
+                this.step = 0;
+                this.teamHasBall = (chance(0.5) ? 1 : 0);
+                this.phase = "serve";
+                this.prepareServe(this.teamHasBall);
+            }
+        }
+        else if (this.step >= 2) {
+            this.aiChooseMove(0);
+            this.aiChooseMove(1);
+            this.step = 0;
+            this.sendMessageAll("TURN " + this.turn + ": ");
+            this.processMoves();
+        }
+    };
+    Volleyball.prototype.processPrepMove = function() {
+        var torow, tocolumn, dist, cost, cteam;
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                p = cteam[t];
+                if (p.action[0] == "a") {
+                    torow = 1;
+                }
+                if (p.action[0] == "b") {
+                    torow = 2;
+                }
+                if (p.action[0] == "c") {
+                    torow = 3;
+                }
+                if (p.action[0] == "d") {
+                    torow = 4;
+                }
+                tocolumn = parseInt(p.action[1], 10);
+                p.row = torow;
+                p.column = tocolumn;
+                p.position = p.action;
+            }
+        }
+    }
+    Volleyball.prototype.processMoves = function() {
+        /*
+            For Each player
+                If it's a move move, Move players from place A to place B
+                pay stamina costs for each move as necessary 
+            For Each player
+                If it's an attack move, move the ball to the other side and perform an attack
+
+        */
+        var torow, tocolumn, dist, cost, cteam, passed = false, defteam = this.teamHasBall === 1 ? 0 : 1;
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                p = cteam[t];
+                if (p.action == "") {
+                    p.prep += 1;
+                }
+                else if (p.action[0] !== "x") {
+                    if (["set", "attack", "tip", "block"].indexOf(p.action) !== -1) {
+                        continue;
+                    }
+                    if (p.action[0] == "a") {
+                        torow = 1;
+                    }
+                    if (p.action[0] == "b") {
+                        torow = 2;
+                    }
+                    if (p.action[0] == "c") {
+                        torow = 3;
+                    }
+                    if (p.action[0] == "d") {
+                        torow = 4;
+                    }
+                    tocolumn = parseInt(p.action[1], 10);
+                    dist = Math.abs(p.row - torow) + Math.abs(p.column - tocolumn);
+                    p.row = torow;
+                    p.column = tocolumn;
+                    p.position = p.action;
+                    cost = (dist > 1 ? dist : dist * 2);
+                    p.stamina = Math.max(0, p.stamina-cost);
+                    p.moved = dist;
+                    p.prep = 0;
+                }
+            }
+        }
+        if (this.phase == "prep") {
+            for (var team in this.teams) {
+                cteam = this.teams[team];
+                p = cteam[t];
+                if (p.action == "sub") {
+                    if (p.currentPoke >= 2) {
+                        this.sendMessage(p.id, "You can only sub a Pokémon in twice per match! You are out of substitutions!", "red");
+                        continue;
+                    }
+                    this.loadNextMon(p);
+                    this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke]) + "!", "green");
+                }
+            }
+            return;
+        }
+        if (this.phase == "receive") {
+            this.processReceive();
+            return;
+        }
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                p = cteam[t];
+                if (p.team === this.teamHasBall) {
+                    continue;
+                }
+                if (["serve", "receive"].indexOf(this.phase) !== -1) {
+                    continue;
+                }
+                if (p.action == "block" && p.zone == "front" && p.row == 4) {
+                    p.blocking = true;
+                }
+            }
+        }
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                p = cteam[t];
+                if (p.action[0] == "x") {
+                    if (p.action[1] == "a") {
+                        torow = 1;
+                    }
+                    if (p.action[1] == "b") {
+                        torow = 2;
+                    }
+                    if (p.action[1] == "c") {
+                        torow = 3;
+                    }
+                    if (p.action[1] == "d") {
+                        torow = 4;
+                    }
+                    tocolumn = parseInt(p.action[2], 10);
+                    if (this.phase === "serve") {
+                        this.processServe(p, torow, tocolumn);
+                        passed = true;
+                    }
+                    else {
+                        this.processAttack(p, torow, tocolumn);
+                        passed = true;
+                    }
+                    break;
+                }
+                if (p.action == "tip") {
+                    this.processTip(p);
+                    passed = true;
+                    break;
+                }
+                if (p.action == "set") {
+                    this.processSet(p, p.setTarget, p.passval);
+                    passed = true;
+                    break;
+                }
+            }
+        }
+        this.endBlock(0);
+        this.endBlock(1);
+        if (this.phase == "set" || this.phase == "attack") {
+            if (!passed) {
+                this.sendMessageAll("The team with the ball failed to complete a play!", "blue");
+                this.scorePoint(defteam);
+            }
+        }
+    };
+    Volleyball.prototype.aiChooseMove = function(team) {
+        var p, getRow, getColumn, act, act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
+        if (this.ballRow === 1) {
+            getRow = "a";
+        }
+        if (this.ballRow === 2) {
+            getRow = "b";
+        }
+        if (this.ballRow === 3) {
+            getRow = "c";
+        }
+        for (var t in team) {
+            p = team[t];
+            if (sys.isInChannel(sys.id(p.id), safchan)) {
+                continue;
+            }
+            if (this.teamHasBall === team) {
+                if (this.phase == "receive") {
+                    if (this.pos === (getRow + this.ballColumn)) {
+                        act = "";
+                    }
+                    else if (p.column === this.ballColumn && p.row - 1 === this.ballRow && p.toss > p.receive) {
+                        act = "";
+                    }
+                    else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) === 1) {
+                        act = "";
+                    }
+                    else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= (p.speed)) {
+                        act = (getRow + this.ballColumn);
+                    }
+                    else {
+                        act = "";
+                    }
+                }
+                if (this.phase == "set") {
+                    if (p.canSet && p.zone == "front") {
+                        if (p.toss > maxSet) {
+                            maxSet = p.toss;
+                        }
+                    }
+                    if (p.canHit) {
+                        if (p.spike > maxHit) {
+                            maxHit = p.spike;
+                        }
+                        else if (p.spike > secondMaxHit) {
+                            secondMaxHit = p.spike;
+                        }
+                    }
+                }
+                if (this.phase == "attack" || this.phase == "set" && p.canHit) {
+                    if (this.phase == "set" && chance(1 - this.spike * 0.1)) {
+                        continue;
+                    }
+                    if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
+                        act = "";
+                        continue;
+                    }
+                    if (p.precision >= 4) {
+                        maxr = 2.5;
+                        maxc = 3.2;
+                    }
+                    else {
+                        maxr = 1.5;
+                        maxc = 2.4;
+                    }
+                    maxr = Math.floor(3 - (Math.random() * maxr));
+                    maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
+                    maxc = (Math.max(maxc, 1));
+                    maxc = (Math.min(maxc, 7));
+                    if (maxr === 1) {
+                        maxr = "a";
+                    }
+                    if (maxr === 2) {
+                        maxr = "b";
+                    }
+                    if (maxr === 3) {
+                        maxr = "c";
+                    }
+                    act = ("x" + maxr + maxc);
+                }
+            }
+        }
+        chooseHitter = (chance(0.67) ? 1 : 2);
+        for (var t in team) {
+            p = team[t];
+            if (p.canServe && p.action == "") {
+                //Force it to serve because otherwise the game doesn't start
+                if (p.precision >= 4) {
+                    maxr = 2.5;
+                    maxc = 3.2;
+                }
+                else {
+                    maxr = 1.5;
+                    maxc = 2.4;
+                }
+                maxr = Math.floor(3 - (Math.random() * maxr));
+                maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
+                maxc = (Math.max(maxc, 1));
+                maxc = (Math.min(maxc, 7));
+                if (maxr === 1) {
+                    maxr = "a";
+                }
+                if (maxr === 2) {
+                    maxr = "b";
+                }
+                if (maxr === 3) {
+                    maxr = "c";
+                }
+                act = ("x" + maxr + maxc);
+                if (p.skills.indexOf("float") !== -1 && chance(0.45)) {
+                    p.actSkills.float = true;
+                }
+                p.serveEffort = (Math.floor(Math.random() * (2.1 + (p.serve * 0.15))));
+            }
+            if (p.canHit && p.action == "") {
+                if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
+                    act = "";
+                    continue;
+                }
+                if (p.precision >= 4) {
+                    maxr = 2.5;
+                    maxc = 3.2;
+                }
+                else {
+                    maxr = 1.5;
+                    maxc = 2.4;
+                }
+                maxr = Math.floor(3 - (Math.random() * maxr));
+                maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
+                maxc = (Math.max(maxc, 1));
+                maxc = (Math.min(maxc, 7));
+                if (maxr === 1) {
+                    maxr = "a";
+                }
+                if (maxr === 2) {
+                    maxr = "b";
+                }
+                if (maxr === 3) {
+                    maxr = "c";
+                }
+                act = ("x" + maxr + maxc);
+            }
+            if (sys.isInChannel(sys.id(p.id), safchan)) {
+                continue;
+            }
+            if (this.teamHasBall === team) {
+                if (this.phase == "set") {
+                    if (p.canSet && p.set == maxSet) {
+                        act = "set";
+                        for (var s in team) {
+                            q = team[s];
+                            if (q.spike === maxHit && chooseHitter === 1) {
+                                act2 = q.id;
+                            }
+                            else if (q.spike === secondMaxHit && chooseHitter === 2) {
+                                act2 = q.id;
+                            }
+                        }
+                    }
+                    else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
+                        dist = Math.floor(0.5 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
+                        if (dist > player.speed) {
+                            dist = player.speed;
+                        }
+                        if (chance(0.85)) {
+                            toColumn = p.column + dist;
+                            toColumn = Math.max(toColumn, 1);
+                            toColumn = Math.min(toColumn, 7);
+                            if (player.row === 1) {
+                                act = "a";
+                            }
+                            if (player.row === 2) {
+                                act = "b";
+                            }
+                            if (player.row === 3) {
+                                act = "c";
+                            }
+                            act += ("" + toColumn);
+                        }
+                    }
+                }
+            }
+            else {
+                if (this.phase == "attack") {
+                    if (p.zone == "front") {
+                        if (p.block >= (0.7 + (2.7 * Math.random()))) {
+                            act = "block";
+                        }
+                    }
+                    else {
+                        dist = Math.floor(0.75 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
+                        if (dist > player.speed) {
+                            dist = player.speed;
+                        }
+                        if (chance(0.85)) {
+                            toRow = player.row;
+                            if (chance(0.33)) {
+                                toRow++;
+                                dist--;
+                            }
+                            else if (chance(0.5)) {
+                                toRow--;
+                                dist--;
+                            }
+                            toRow = Math.max(toRow, 1);
+                            toRow = Math.min(toRow, 3);
+                            toColumn = p.column + dist;
+                            toColumn = Math.max(toColumn, 1);
+                            toColumn = Math.min(toColumn, 7);
+                            if (toRow === 1) {
+                                act = "a";
+                            }
+                            if (toRow === 2) {
+                                act = "b";
+                            }
+                            if (toRow === 3) {
+                                act = "c";
+                            }
+                            act += ("" + toColumn);
+                        }
+
+                    }
+                }
+                if (this.phase == "prep") {
+                    if ((p.stamina <= 10 && chance(0.66)) || (p.stamina <= 4)) {
+                        act = "sub";
+                    }
+                }
+            }
+            if (p.action == "") {
+                if (act2) {
+                    this.inputMove(p.id, act + ":" + act2);
+                }
+                else {
+                    this.inputMove(p.id, act);
+                }
+            }
+        }
+        return;
+    }
+    Volleyball.prototype.clearVals = function() {
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                p = cteam[t];
+                if (this.phase == "receive") {
+                    p.canHit = false;
+                    p.canTip = false;
+                    p.canSet = false;
+                    p.quickattack = false;
+                    p.canServe = false;
+                    p.receiver = false;
+                    p.passval = 0;
+                    p.setval = 0;
+                    p.moved = 0;
+                    if (p.zone == "front" && player.team !== this.teamHasBall) {
+                        p.canBlock = true;
+                    }
+                }
+                if (this.phase == "set") {
+                    p.quickattack = false;
+                    p.canServe = false;
+                    p.freepass = false;
+                    p.receiver = false;
+                    p.moved = 0;
+                }
+                if (this.phase == "serve") {
+                    p.quickattack = false;
+                    p.canServe = false;
+                    p.freepass = false;
+                    p.receiver = false;
+                    p.canServe = false;
+                    p.receiver = false;
+                    p.passval = 0;
+                    p.setval = 0;
+                    p.moved = 0;
+                }
+                for (var s in p.actSkills) {
+                    p.actSkills[s] = false;
+                }
+                p.action = "";
+            }
+        }
+        this.excludeActions = [];
+        this.excludePos = [
+        [], []
+        ];
+        if (this.phase !== "receive") {
+            this.ballPower = 0;
+            this.ballRow = -1;
+            this.ballColumn = -1;
+        }
+    };
+    Volleyball.prototype.winGame = function(team) {
+        if (team === 0) {
+            this.sendMessageAll("Team " + this.team1Data.name + " won the match! Congratulations to the winners!", "blue");
+            this.sendMessageAll(Object.keys(this.team1).join(",") + " are the champions!" , "blue");
+        }
+        if (team === 1) {
+            this.team2Data.score++;
+            this.sendMessageAll("Team " + this.team2Data.name + " won the match! Congratulations to the winners!", "blue");
+            this.sendMessageAll(Object.keys(this.team2).join(",") + " are the champions!" , "blue");
+        }
+        this.finished = true;
+        return;
+    }
+    Volleyball.prototype.scorePoint = function(team) {
+        var p, team2;
+        this.points[team]++;
+        if (team === 0) {
+            this.team1Data.score++;
+            this.sendMessageAll("Team " + this.team1Data.name + " scored a point!", "blue");
+        }
+        if (team === 1) {
+            this.team2Data.score++;
+            this.sendMessageAll("Team " + this.team2Data.name + " scored a point!", "blue");
+        }
+        if (this.points[team] >= 15) {
+            this.winGame(team);
+            return;
+        }
+        if (this.teamServed !== team) {
+            this.sideOut(team);
+        }
+        this.sendMessage("Score: " + this.team1Data.name + ": " + this.team1Data.score + " x " + this.team2Data.name + ": " + this.team2Data.score);
+        team2 = (team === 0 ? 1 : 0);
+        this.resetPosition(team2);
+        this.prepareServe(team);
+    };
+    Volleyball.prototype.prepareServe = function(team) {
+        var p;
+        for (var t in this.teams[team].players) {
+            p = this.teams[team].players[t];
+            if (p.place === 0) {
+                p.canServe = true;
+                break;
+            }
+        }
+        this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
+        this.phase = "serve";
+        this.teamHasBall = team;
+        return true;
+    };
+    Volleyball.prototype.sideOut = function(team) {
+        var p;
+        for (var t in this.teams[team].players) {
+            p = this.teams[team].players[t];
+            switch (p.place) {
+                case 5: p.place = 0; p.pos = "b2"; break;
+                case 0: p.place = 1; p.pos = "b4"; break;
+                case 1: p.place = 2; p.pos = "b6"; break;
+                case 2: p.place = 3; p.pos = "d6"; break;
+                case 3: p.place = 4; p.pos = "d4"; break;
+                case 4: p.place = 5; p.pos = "d2"; break;
+            }
+            if (p.place <= 2) {
+                p.zone = "back";
+            }
+            else {
+                p.zone = "front";
+            }
+        }
+        this.teamServed = team;
+    };
+    Volleyball.prototype.resetPosition = function(team) {
+        var p;
+        for (var t in this.teams[team].players) {
+            p = this.teams[team].players[t];
+            switch (p.place) {
+                case 5: p.pos = "b2"; break;
+                case 0: p.pos = "b4"; break;
+                case 1: p.pos = "b6"; break;
+                case 2: p.pos = "d6"; break;
+                case 3: p.pos = "d4"; break;
+                case 4: p.pos = "d2"; break;
+            }
+        }
+    };
+    Volleyball.prototype.getDistance = function(p1, p2) {
+        var out, c, r;
+        if (p1[0] == "a") {
+            c = 1;
+        }
+        if (p1[0] == "b") {
+            c = 2;
+        }
+        if (p1[0] == "c") {
+            c = 3;
+        }
+        if (p1[0] == "d") {
+            c = 4;
+        }
+        if (p2[0] == "a") {
+            c -= 1;
+        }
+        if (p2[0] == "b") {
+            c -= 2;
+        }
+        if (p2[0] == "c") {
+            c -= 3;
+        }
+        if (p2[0] == "d") {
+            c -= 4;
+        }
+        c = Math.abs(c);
+        r = (parseInt(p1[1], 10) - parseInt(p2[1]));
+        out = c + r;
+        return out;
+    };
+    Volleyball.prototype.getDistance2 = function(p1row, p1column, p2row, p2column) {
+        return (Math.abs(p2row - p1row) + Math.abs(p1column - p2column));
+    };
+    Volleyball.prototype.getPos = function(row, column, view) {
+        var out = "";
+        if (view === 1) {
+            out = "x";
+        }
+        if (row === 1) {
+            out += "a";
+        }
+        if (row === 2) {
+            out += "b";
+        }
+        if (row === 3) {
+            out += "c";
+        }
+        if (row === 4) {
+            out += "d";
+        }
+        if (view === 1) {
+            out += ("" + (8 - column));
+        }
+        else {
+            out += ("" + column);
+        }
+        return out;
+    };
+    Volleyball.prototype.processServe = function(player, row, column) {
+        /*
+            Player may perform a serve with different levels: easy (1 stamina) normal (3 stamina) or jump (5 stamina)
+        */
+        var pow, row, column, stcost; defteam = player.team === 0 ? 1 : 0;
+        var atkteam = defteam === 0 ? 1 : 0;
+        pow = player.serve;
+        if (player.serveEffort === 0) {
+            pow *= 0.5;
+        }
+        else if (player.serveEffort === 2) {
+            pow *= 1.5;
+        }
+        column += Math.floor(1.25 - (Math.random() * 2.5));
+        if (player.precision <= 4) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 3) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 2) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 1) {
+            column += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 0) {
+            column += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 4) {
+            row += Math.floor(1.2 - (Math.random() * 2.4));
+        }
+        if (player.precision <= 3) {
+            row += Math.floor(1.2 - (Math.random() * 2.4));
+        }
+        if (player.precision <= 2) {
+            row += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 1) {
+            row += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 0) {
+            row += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        this.sendMessageAll(this.actName(player) + "serves the ball!");
+        if (column < 1 || column > 7 || row < 1) {
+            this.sendMessageAll(this.actName(player) + " hit the ball out of bounds!");
+            this.scorePoint(defteam);
+            this.phase = "prep";
+            return;
+        }
+        pow += (3 * Math.random() - Math.random());
+        pow = Math.min(8, serve);
+        if (player.stamina <= 10) {
+            pow -= 1;
+        }
+        if (player.stamina <= 7) {
+            pow -= 1;
+        }
+        if (player.stamina <= 4) {
+            pow -= 1;
+        }
+        pow = Math.ceil(Math.max(pow, 1));
+        this.ballPower = pow;
+        this.ballRow = row;
+        this.ballColumn = (8 - column);
+        stcost = (2 + (player.serveEffort * 2));
+        player.stamina = Math.max(player.stamina - stcost, 0);
+        this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
+        this.phase = "receive";
+        this.teamHasBall = defteam;
+        this.sendMessageTeam(atkteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 1), "blue");
+        this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0), "blue");
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
+    }
+    Volleyball.prototype.endBlock = function(defteam) {
+        var p;
+        for (var t in this.teams[defteam]) {
+            p = this.teams[defteam][t];
+            if (p.blocking) {
+                stcost = 2;
+                p.stamina = Math.max(p.stamina - stcost, 0);
+                this.sendMessage(p.id, "You spent " + stcost + " stamina blocking! You now have " + p.stamina + "!" , "red");
+                p.canBlock = false;
+            }
+        }
+    }
+    Volleyball.prototype.processSet = function(player, target, passscore) {
+        var dist, proficiency, bonus, stcost, score;
+
+        dist = Math.abs(player.column - target.column);
+        /*
+            Pass score is from 2-8
+            quick sets punish low proficiency, but can beat blocks easily
+            long sets forgive low proficiency (5 or lower go to 7 or lower)
+        */
+        bonus = player.prep >= 1 ? 1 : 0;
+        proficiency = Math.min(Math.floor((passscore + player.toss + bonus + (Math.random() * 2 * player.toss))/2), 10);
+        stcost = Math.floor(5.2 - Math.random() - (0.35 * passscore));
+        if (dist === 1) {
+            if (proficiency <= 7) {
+                proficiency = Math.floor(0.75 * proficiency);
+            }
+            target.quickattack = true;
+        }
+        else if (dist >= 4) {
+            if (proficiency < 7) {
+                proficiency += 1;
+            }
+            if (proficiency < 7) {
+                proficiency += 1;
+            }
+            proficiency += 1;
+        }
+        target.canHit = true;
+        proficiency -= 4;
+        if (player.stamina <= 10) {
+            proficiency -= 1;
+        }
+        if (player.stamina <= 4) {
+            proficiency -= 2;
+        }
+        if (proficiency >= 5 && target.zone == "front") {
+            target.canTip = true;
+        }
+        if (target.row < 3 && target.skills.indexOf("back-attack" > -1)) {
+            target.row = 3;
+            target.pos = ("c" + target.column);
+        }
+        target.setval = Math.max(0, Math.min(proficiency, 6));
+        switch (target.setval) {
+            case 6: score = "PERFECT"; break;
+            case 5: score = "EXCELLENT"; break;
+            case 4: score = "GREAT"; break;
+            case 3: score = "GOOD"; break;
+            case 2: score = "FAIR"; break;
+            case 1: score = "TIGHT"; break;
+            case 0: score = "OFF"; break;
+        }
+        this.sendMessageAll(this.actName(player) + " sets the ball to " + this.actName(target) + " [The set is " + score + "]!", "blue");
+        p.stamina = Math.max(p.stamina - stcost, 0);
+        this.sendMessage(p.id, "You spent " + stcost + " stamina setting the ball! You now have " + p.stamina + "!" , "red");
+        this.phase = "attack";
+        this.clearVals();
+        player.canTip = false;
+        player.canHit = false;
+        player.stamina = Math.max(player.stamina - 1, 0);
+        this.sendAllTeam(0, this.courtView(0));
+        this.sendAllTeam(1, this.courtView(1));
+    };
+    Volleyball.prototype.processTip = function(player) {
+        var atkteam = player.team, safe = false, stcost;
+        var defteam = (atkteam === 0 ? 1 : 0);
+        var maxrow = (chance(player.precision * 0.15) ? 2 : 3);
+        this.sendMessageAll(this.actName(player) + " gently tips the ball over the net!", "blue");
+
+        for (var t in this.teams[defteam]) {
+            p = this.teams[defteam][t];
+            if (p.blocking) {
+                continue;
+            }
+            if (p.row < maxrow) {
+                continue;
+            }
+            if (p.row === maxrow) {
+                if (chance(1 - ((player.stamina + (player.speed * 2)) * 0.05))) {
+                    continue;
+                }
+            }
+            this.phase = "set";
+            this.teamHasBall = defteam;
+            for (var s in this.teams[defteam]) {
+                if (this.teams[defteam].row === "front") {
+                    this.teams[defteam].canSet = true;
+                    this.teams[defteam].passval = 6;
+                }
+            }
+            stcost = Math.floor(6 - Math.random() - (0.4 * p.speed));
+            p.canSet = false;
+            safe = true;
+            this.sendMessageAll(this.actName(p) + " dives for the ball and gets it up!", "blue");
+            p.stamina = Math.max(p.stamina - stcost, 0);
+            this.sendMessage(p.id, "You spent " + stcost + " stamina diving for the tip! You now have " + p.stamina + "!" , "red");
+            this.sendMessageTeam(p.team, "It is now the set phase! Anyone in the front row (except " + this.actName(p) + ") many now perform a set!", "green");
+            break;
+        }
+        if (!safe) {
+            this.sendMessageAll(this.actName(player) + "'s tip results in a kill!", "blue");
+            this.scorePoint(atkteam);
+            this.phase = "prep";
+            return;
+        }
+        this.sendAllTeam(0, this.courtView(0));
+        this.sendAllTeam(1, this.courtView(1));
+    };
+    Volleyball.prototype.processAttack = function(player, row, column) {
+        /*
+            The power of the attack is ranked from 0-8
+            Eligible blockers are determined by the direction of the hit from the hitter's position
+            For Each player on receiving team
+                If they are in range of the hit and attempting to block, there is a chance relative to their block power that a successful block is performed.
+                Otherwise, they reduce the power of the hit by their block score/2. If they are not directly across from the hitter, the maximum block reduction they can get is -1.
+            If the attack is BLOCKED, it can either be a KILL block or a Chance Ball for either side.
+            If the attack is successful, its trajectory is determined using precision. The receiving team gets to move one more time to receive, and then they receive.
+
+        */
+        var atkteam = player.team, pow = 0, blk = 0, dist = 0, stcost, might, backattack = (player.zone == "back" ? true : false), dx, vdx, dy, angle = 0, p, k = 0, totalblk = 0, tempcolumn, kill = false;
+        var defteam = (atkteam === 0 ? 1 : 0);
+
+        if (player.row !== 4 && (player.skills.indexOf("back-attack") === -1 || player.row !== 3)) {
+            this.sendMessageAll(this.actName(player) + " was unable to perform a spike, so they hit over a free ball!");
+            stcost = 3;
+            p.stamina = Math.max(p.stamina - stcost, 0);
+            this.sendMessage(p.id, "You spent " + stcost + " stamina hitting the ball! You now have " + p.stamina + "!" , "red");
+            this.ballRow = 2;
+            this.ballColumn = 4;
+            this.ballPower = 0;
+            this.phase = "receive";
+            this.sendMessageTeam(1, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "! [Strength: FREE]", "blue");
+            this.sendMessageTeam(0, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "! [Strength: FREE]", "blue");
+            this.teamHasBall = defteam;
+            return;
+        }
+
+        column += Math.floor(1.25 - (Math.random() * 2.5));
+        if (player.precision <= 4) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 3) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 2) {
+            column += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 1) {
+            column += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 0) {
+            column += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 4) {
+            row += Math.floor(1.2 - (Math.random() * 2.4));
+        }
+        if (player.precision <= 3) {
+            row += Math.floor(1.2 - (Math.random() * 2.4));
+        }
+        if (player.precision <= 2) {
+            row += Math.floor(1.25 - (Math.random() * 2.5));
+        }
+        if (player.precision <= 1) {
+            row += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+        if (player.precision <= 0) {
+            row += Math.floor(1.4 - (Math.random() * 2.8));
+        }
+
+        dx = (column - player.column);
+        vdx = Math.abs(dx);
+        dy = Math.abs(5 - row + (backattack ? 1 : 0));
+
+        if (vdx > dy) {
+            angle = 2;
+        }
+        else if (dy >= (vdx * 3)) {
+            angle = 0;
+        }
+        else {
+            angle = 1;
+        }
+        if (dx < 0) {
+            angle *= -1;
+        }
+        dist = vdx + (2 * dy);
+
+        for (var t in this.teams[defteam]) {
+            p = this.teams[defteam][t];
+            if (p.blocking && p.zone == "front") {
+                tempcolumn = (8 - p.tempcolumn);
+                if (player.tempcolumn === tempcolumn) {
+                    if (angle === 0) {
+                        k = p.block + p.prep;
+                    }
+                    else if (Math.abs(angle) === 1) {
+                        k = Math.min((p.block + p.prep)/2, 2.25);
+                    }
+                }
+                if (player.tempcolumn === tempcolumn - 1) {
+                    if (angle === -2) {
+                        k = p.block + p.prep;
+                    }
+                    else if (angle === -1) {
+                        k = Math.min((p.block + p.prep)/2, 2.25);
+                    }
+                }
+                if (player.tempcolumn === tempcolumn + 1) {
+                    if (angle === 2) {
+                        k = p.block + p.prep;
+                    }
+                    else if (angle === 1) {
+                        k = Math.min((p.block + p.prep)/2, 2.25);
+                    }
+                }
+            }
+            if (p.stamina <= 10) {
+                k = Math.max(k - 0.5, 0);
+            }
+            if (p.stamina <= 7) {
+                k = Math.max(k - 0.5, 0);
+            }
+            if (p.stamina <= 4) {
+                k = Math.max(k - 0.75, 0);
+            }
+            totalblk += k;
+        }
+        /*
+            Power = the score of the set + the player's spike power, maximum 8
+            player.setval = the score from 0-6 of the player's setter score.
+            Block evade chance = You must be spiking at least 7 spaces away to have any chance of evading block. If you do, the lower of the set score and your precision is added.
+        */
+        pow = Math.min(8, Math.ceil((player.spike + (player.setval/2))));
+        if (player.stamina <= 10) {
+            pow -= 1;
+        }
+        if (player.stamina <= 4) {
+            pow -= 1;
+        }
+        this.sendMessageAll(this.actName(player) + " spikes the ball!" + player.row === 3 ? " It's a Back Attack!" : "", "blue");
+        stcost = Math.floor(6 - Math.random() - (0.4 * player.setval));
+        if (player.row === 3) {
+            stcost += 2;
+        }
+        player.stamina = Math.max(player.stamina - stcost, 0);
+        this.sendMessage(player.id, "You spent " + stcost + " stamina spiking the ball! You now have " + player.stamina + "!" , "red");
+        var blkevade = Math.max(dist-6, 0);
+        if (blkevade > 0) {
+            blkevade += 4 * (Math.min(player.precision, player.setval));
+            blkevade = blkevade * 0.04;
+        }
+        if (player.quickattack) {
+            blkevade = Math.max(blkevade, 0.45);
+        }
+        if (player.zone == "back") {
+            blkevade += 0.15;
+        }
+        if (!(chance( blkevade ))) {
+            totalblk += Math.random() * 3;
+            if (totalblk > 6 || totalblk > pow) {
+                kill = true;
+            } 
+            else {
+                pow = Math.floor( pow - totalkblk );
+            }
+            if (pow <= 2) {
+                free = true;
+            }
+        }
+        player.setval = 0;
+        player.canHit = false;
+        player.canTip = false;
+        if (free) {
+            for (var p in this.teams[defteam]) {
+                if (p.zone == "back") {
+                    p.freepass = true;
+                }
+            }
+            this.ballRow = 2;
+            this.ballColumn = 4;
+            this.ballPower = 0;
+            this.teamHasBall = defteam;
+            this.phase = "receive";
+            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by blockers! It's a FREE ball for the blocking team!", "blue");
+            this.sendMessageTeam(defteam, "The ball soars to b4!", "green");
+            return;
+        }
+        if (kill) {
+            this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED!", "blue");
+            this.scorePoint(defteam);
+            this.phase = "prep";
+            return;
+        }
+        if (row > 3) {
+            row = 3;
+        }
+        if (column < 1 || column > 7 || row < 1) {
+            this.sendMessageAll(this.actName(player) + "'s spike went out of bounds!", "blue");
+            this.scorePoint(defteam);
+            this.phase = "prep";
+            return;
+        }
+        if (dist - 3 > player.spike * 2) {
+            //nerf in strength if your spike score can't keep up the distance
+            pow = Math.max(pow - 2, 1);
+        }
+        this.phase = "receive";
+        this.ballPower = pow;
+        this.ballRow = row;
+        this.ballColumn = (8 - column);
+        switch (pow) {
+            case 8: might = "METEORIC";
+            case 7: might = "FEROCIOUS";
+            case 6: might = "FIERCE";
+            case 5: might = "POWERFUL";
+            case 4: might = "STRONG";
+            case 3: might = "GOOD";
+            case 2: might = "EASY";
+            case 1: might = "SOFT";
+            case 0: might = "FREE";
+        }
+        this.sendMessageAll(this.actName(player) + "'s spike is " + might + "!", "blue");
+        this.sendMessageTeam(atkteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
+        this.sendMessageTeam(defteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
+        this.clearVals();
+        this.sendAllTeam(0, this.courtView(0));
+        this.sendAllTeam(1, this.courtView(1));
+    }
+    Volleyball.prototype.processReceive = function() {
+        /*
+            If there is a player on the spot of the ball's trajectory, they receive.
+            If there is a player directly in front of the spot of the ball's trajectory, they receive at disadvantage (an overhand receive).
+            If there is a player directly to the side of the spot of the ball's trajectory, they receive at slight disadvantage.
+            If there is a player directly in front of the spot of the ball's trajectory, they receive at slight disadvantage, and the best score they can get is GOOD.
+            If there is a player directly in front and to the side of the spot of the ball's trajectory, they receive at disadvantage, and the best score they can get is FAIR.
+
+            If two players are in the same range of it, they both try to receive. The higher score prevails. Both players lose stamina as though they had received.
+            The score is determined by their Pass Score, their amount of Prep, and whether they are at disadvantage or not. Some skills may apply.
+        */
+        var p, rec, proficiency, maxPass = 0, atkteam = this.teamHasBall === 0 ? 1 : 0;
+        this.turn++;
+        for (var t in this.teams[this.teamHasBall]) {
+            p = this.teams[this.teamHasBall][t];
+            if (p.row == 4) {
+                continue;
+            }
+            if (p.row === this.ballRow && p.column === this.ballColumn) {
+                //direct receive, able to dig almost anything
+                rec = p.receive + p.prep + 2 + Math.random() - Math.random();
+                proficiency = (rec * rec / (this.ballPower * 1.25));
+                p.receiveType = "direct";
+            }
+            if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
+                //if the player is directly in front of the ball's spike, receive overhand, which uses toss
+                rec = ((p.toss + p.receive)/2 + (p.prep * 2) + 3);
+                proficiency = (rec + p.toss + (p.toss * Math.random()) - (2 * this.ballPower));
+                if (proficiency >= 2) {
+                    proficiency += 3;
+                }
+                p.receiveType = "overhand";
+            }
+            if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
+                //if the player is in front of the receiver, they can perform a dig - this costs more staamina but is pretty good for getting the ball up if their rec is good
+                rec = Math.max(((p.receive * 1.15) + (p.prep * 2.5) - 2), 1);
+                proficiency = (rec * rec / (Math.max(this.ballPower + 1), 1));
+                if (this.ballColumn === p.column) {
+                    proficiency *= 1.25;
+                }
+                p.receiveType = "dig";
+            }
+            if (p.row === this.ballRow && ((p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
+                //if the player is to the side of the ball, they will be able to save it, but the pass will not be good
+                rec = p.receive + p.prep + 2 + Math.random() - Math.random();
+                proficiency = (rec * rec / (this.ballPower * 1.25));
+                if (proficiency > 3) {
+                    proficiency--;
+                }
+                if (proficiency > 4) {
+                    proficiency--;
+                }
+                p.receiveType = "side";
+            }
+            if (p.moved >= 3) {
+                proficiency--;
+            }
+            if (p.moved >= 4) {
+                proficiency--;
+            }
+            if (p.moved >= 5) {
+                proficiency--;
+            }
+            if (p.stamina <= 10) {
+                proficiency--;
+            }
+            if (p.stamina <= 7) {
+                proficiency--;
+            }
+            if (p.stamina <= 4) {
+                proficiency--;
+            }
+            if (proficiency > maxPass) {
+                maxPass = proficiency;
+                for (var s in this.teams[this.teamHasBall]) {
+                    this.teams[this.teamHasBall][s].receiver = false;
+                }
+                p.receiver = true;
+            }
+        }
+        maxPass -= 2;
+        var ableSetter, rep, stcost, boost, diff;
+        for (var t in this.teams[this.teamHasBall]) {
+            p = this.teams[this.teamHasBall][t];
+            if (!p.receiver) {
+                continue;
+            }
+            if (maxPass <= 0) {
+                stcost = 5;
+                if (p.stamina >= 10) {
+                    boost = (0.75 + (2 * Math.random()));
+                    diff = (boost - maxPass);
+                    stcost += Math.floor(diff * 2);
+                    maxPass = boost;
+                }
+                this.sendMessageAll(this.actName(p) + " failed to receive the ball!", "blue");
+                this.scorePoint(atkteam);
+                this.phase = "prep";
+            }
+            else if (maxPass <= 1) {
+                this.sendMessageAll(this.actName(p) + " received the ball, but couldn't control it! The ball is a FREE ball for the other side!", "blue");
+                for (var s in this.teams[atkteam]) {
+                    if (this.teams[atkteam][s].zone == "back") {
+                        this.teams[atkteam][s].freepass = true
+                    }
+                }
+                this.ballPower = 0;
+                this.ballRow = 2;
+                this.ballColumn = 4;
+                this.teamHasBall = atkteam;
+                this.sendMessageTeam(atkteam, "The ball goes to b4 (FREE ball)!", "green");
+                stcost = 5;
+                break;
+            }
+            else if (maxPass <= 3) {
+                rep = (maxPass <= 2 ? 1 : 3);
+                var se = [];
+                for (var i = rep; i--; i > 0) {
+                    ableSetter = Math.floor(2 + (3 * Math.random()));
+                    for (var s in this.teams[this.teamHasBall]) {
+                        if (this.teams[this.teamHasBall][s].place === ableSetter) {
+                            this.teams[this.teamHasBall][s].canSet = true;
+                            se.push(this.teams[this.teamHasBall][s].id);
+                        }
+                    }
+                }
+                this.sendMessageAll(this.actName(p) + " received the ball [OKAY]! " + se.join(",") + " may set the ball!", "blue");
+                stcost = 3;
+                if ( p.receiveType == "dig" ) {
+                    stcost += 1;
+                }
+                this.phase = "set";
+                break;
+            }
+            else {
+                var might;
+                if (maxPass >= 6) {
+                    might = "PERFECT";
+                }
+                else if (maxPass >= 5) {
+                    might = "EXCELLENT";
+                }
+                else if (maxPass >= 4) {
+                    might = "GREAT";
+                }
+                else if (maxPass >= 3) {
+                    might = "GOOD";
+                }
+                this.sendMessageAll(this.actName(p) + " received the ball [" + might + "]! Any teammate in the front row may now set!", "blue");
+                for (var s in this.teams[this.teamHasBall]) {
+                    if (this.teams[this.teamHasBall][s].zone === "front") {
+                        this.teams[this.teamHasBall][s].canSet = true;
+                        this.teams[this.teamHasBall][s].passval = maxPass;
+                        if (maxPass >= 5 && this.teams[this.teamHasBall][s].row === 4 && this.teams[this.teamHasBall][s].skills.indexOf("dump") > -1) {
+                            this.teams[this.teamHasBall][s].canTip = true;
+                        }
+                    }
+                }
+                stcost = 2;
+                if ( p.receiveType == "dig" ) {
+                    stcost += 1;
+                }
+                if ( p.receiveType == "overhand" ) {
+                    stcost -= 1;
+                }
+                this.phase = "set";
+                break;
+            }
+        }
+        p.stamina = Math.max(p.stamina - stcost, 0);
+        this.sendMessage(p.id, "You spent " + stcost + " stamina spiking the ball! You now have " + p.stamina + "!" , "red");
+        p.canSet = false;
+        this.ballPower = 0;
+        this.ballRow = -1;
+        this.ballColumn = -1;
+        this.sendAllTeam(0, this.courtView(0));
+        this.sendAllTeam(1, this.courtView(1));
+    }
+
+    Volleyball.prototype.inputMove = function(name, data) {
+        var setting = false;
+        var team, player, opt = [], q, hold;
+        var cdata = data.split(":");
+
+        if (Object.keys(this.team1).indexOf(name) !== -1) {
+            team = 0;
+            player = this.team1[name];
+            teammates = this.team1;
+        }
+        else {
+            team = 1;
+            player = this.team2[name];
+            teammates = this.team2;
+        }
+        
+        var volleyballActSkills = ["fury", "float"];
+        if (volleyballActSkills.indexOf(player.action !== -1)) {
+            player.actSkills[player.action] = true;
+            return;
+        }
+        if (player.action !== "") {
+            this.sendMessage(name, "You already took action this turn!", "red");
+            return;
+        }
+        if (this.phase === "assemble") {
+            /* In here it allows you to pick your team order/server order */
+            hold = (parseInt(data, 10));
+            if ([0, 1, 2, 3, 4, 5].indexOf(hold) === -1) {
+                this.sendMessage(name, "Select a number between 0-5 to choose your starting position!", "red");
+                return false;
+            }
+            for (var t in teammates) {
+                q = teammates[t];
+                if (q.place === hold) {
+                    this.sendMessage(name, "A teammate is already at position " + hold + "!", "red");
+                    return false;
+                }
+            }
+            player.place = hold;
+            this.sendMessage(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
+        } else {
+        if (this.phase === "serve" && player.canServe) {
+            /* In here you can serve if you are the server, that's it*/
+            opt.push("xa1");
+            opt.push("xa2");
+            opt.push("xa3");
+            opt.push("xa4");
+            opt.push("xa5");
+            opt.push("xa6");
+            opt.push("xa7");
+            opt.push("xb1");
+            opt.push("xb2");
+            opt.push("xb3");
+            opt.push("xb4");
+            opt.push("xb5");
+            opt.push("xb6");
+            opt.push("xb7");
+            opt.push("xc1");
+            opt.push("xc2");
+            opt.push("xc3");
+            opt.push("xc4");
+            opt.push("xc5");
+            opt.push("xc6");
+            opt.push("xc7");
+            if (data == "effort" && cdata.length > 1) {
+                hold = (parseInt(cdata[1], 10));
+                if ([0, 1, 2].indexOf(hold) === -1) {
+                    this.sendMessage(name, "Select a number between 0-2 to choose your serving power!", "red");
+                    return false;
+                }
+                this.sendMessage(name, "Serve effort will be " + hold + "!", "red");
+                player.serveEffort = hold;
+                return true;
+            }
+        }
+        else if (this.phase === "prep" && (!player.canServe)) {
+            switch (player.place) {
+                case 0: opt = ["a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"]; break;
+                case 1: opt = ["a3", "a4", "a5", "b3", "b4", "b5", "c3", "c4", "c5"]; break;
+                case 2: opt = ["a5", "a6", "a7", "b5", "b6", "b7", "c5", "c6", "c7"]; break;
+                case 3: opt = ["c5", "c6", "c7", "d5", "d6", "d7"]; break;
+                case 4: opt = ["c3", "c4", "c5", "d3", "d4", "d5"]; break;
+                case 5: opt = ["c1", "c2", "c3", "d1", "d2", "d3"]; break;
+            }
+        } else {
+                if (this.phase === "set" && (team === this.teamHasBall) && player.row === "front" && player.canSet) {
+                    for (var t in teammates) {
+                        if (t === name) {
+                            continue;
+                        }
+                        var p = teammates[t];
+                        if (!p.zone === "front" && !p.skills.indexOf("back-attack") === -1) {
+                            continue;
+                        }
+                        opt.push(t);
+                    }
+                    if (cdata[0] == "set") {
+                        if (!player.canSet) {
+                            //redundtant but keep this
+                            this.sendMessage(name, "You cannot set right now!", "red");
+                        }
+                        if (cdata.length < 2) {
+                            this.sendMessage(name, "Please select a target for your set!", "red");
+                            return;
+                        }
+                        if (opt.indexOf(cdata[1]) !== -1) {
+                            this.sendMessage(name, cdata[1] + " is not a valid set target!", "red");
+                        }
+                        if (this.excludeActions.indexOf("set") !== -1) {
+                            this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                        }
+                        if (this.excludeActions.indexOf("tip") !== -1) {
+                            this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                        }
+                        if (this.excludeActions.indexOf("attack") !== -1) {
+                            this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                        }
+                        player.action = "set";
+                        this.excludeActions.push("set");
+                    }
+                }
+                if (player.canTip && (this.excludeActions.indexOf("tip") === -1)) {
+                    opt.push("tip");
+                }
+                if (player.canBlock && player.team !== this.teamHasBall && player.row === 4 && (this.phase == "set" || this.phase == "attack")) {
+                    opt.push("block");
+                }
+                if (player.canHit && (this.excludeActions.indexOf("attack") === -1) && (player.row === 4 || (player.row === 3 && player.skills.indexOf("back-attack") !== -1))) {
+                    opt.push("xa1");
+                    opt.push("xa2");
+                    opt.push("xa3");
+                    opt.push("xa4");
+                    opt.push("xa5");
+                    opt.push("xa6");
+                    opt.push("xa7");
+                    opt.push("xb1");
+                    opt.push("xb2");
+                    opt.push("xb3");
+                    opt.push("xb4");
+                    opt.push("xb5");
+                    opt.push("xb6");
+                    opt.push("xb7");
+                    opt.push("xc1");
+                    opt.push("xc2");
+                    opt.push("xc3");
+                    opt.push("xc4");
+                    opt.push("xc5");
+                    opt.push("xc6");
+                    opt.push("xc7");
+                }
+                if (player.zone === "front") {
+                    opt.push("d1");
+                    opt.push("d2");
+                    opt.push("d3");
+                    opt.push("d4");
+                    opt.push("d5");
+                    opt.push("d6");
+                    opt.push("d7");
+                    opt.push("a1");
+                    opt.push("a2");
+                    opt.push("a3");
+                    opt.push("a4");
+                    opt.push("a5");
+                    opt.push("a6");
+                    opt.push("a7");
+                    opt.push("b1");
+                    opt.push("b2");
+                    opt.push("b3");
+                    opt.push("b4");
+                    opt.push("b5");
+                    opt.push("b6");
+                    opt.push("b7");
+                    opt.push("c1");
+                    opt.push("c2");
+                    opt.push("c3");
+                    opt.push("c4");
+                    opt.push("c5");
+                    opt.push("c6");
+                    opt.push("c7");
+                }
+                else if (player.zone === "back") {
+                    opt.push("a1");
+                    opt.push("a2");
+                    opt.push("a3");
+                    opt.push("a4");
+                    opt.push("a5");
+                    opt.push("a6");
+                    opt.push("a7");
+                    opt.push("b1");
+                    opt.push("b2");
+                    opt.push("b3");
+                    opt.push("b4");
+                    opt.push("b5");
+                    opt.push("b6");
+                    opt.push("b7");
+                    opt.push("c1");
+                    opt.push("c2");
+                    opt.push("c3");
+                    opt.push("c4");
+                    opt.push("c5");
+                    opt.push("c6");
+                    opt.push("c7");
+                }
+            }
+        }
+        if (opt.indexOf(data) === -1) {
+            this.sendMessage(name, "No such action as " + data + "!", "red");
+            return;
+        }
+        for (var t in teammates) {
+            if (teammates[t].pos === data) {
+                //You cannot go there, because someone else is already there
+                this.sendMessage(name, "There is already a teammate at " + data + "!", "red");
+                return;
+            }
+        }
+        if (this.excludePos[player.team].indexOf(data) !== -1) {
+            this.sendMessage(name, "There is already a teammate going to " + data + "!", "red");
+            return;
+        }
+        if (player.action == "block") {
+            player.blocking = true;
+            player.action = data;
+            this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
+        }
+        else if ((data[0] === "x") || (data === "tip")) {
+            this.excludeActions.push("tip");
+            this.excludeActions.push("attack");
+            player.action = data;
+            if (data == "tip") {
+                this.sendMessageTeam(player.team, this.actName(player) + " is performing a tip!", "green");
+            }
+            else {
+                this.sendMessageTeam(player.team, this.actName(player) + " is hitting the ball to " + data + "!", "green");
+            }
+        }
+        else {
+            if (getDistance(player.pos, data) > player.speed) {
+                this.sendMessage(name, "You cannot go to " + data + " because it is too far!", "red");
+            }
+            else {
+                this.excludePos[player.team].push(player.action);
+                this.sendMessageTeam(player.team, this.actName(player) + " is planning to move to " + data + "!", "green");
+                player.action = data;
+            }
+        }
+    };
 
     /* System Functions */
     this.startGame = function(src, data) {
@@ -24867,6 +26711,14 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "vol") {
+                if (currentGame) {
+                    currentGame.handleCommand(src, commandData);
+                } else {
+                    safaribot.sendMessage(src, "There's no game going on!", safchan);
+                }
+                return true;
+            }
             if (command === "party") {
                 safari.manageParty(src, commandData);
                 return true;
@@ -25863,6 +27715,11 @@ function Safari() {
                 else {
                     safaribot.sendMessage(src, info[0] + " is not a valid event! Type /startevent help for more information!", safchan);
                 }
+                return true;
+            }
+            if (command === "volleyball" || command == "vb") {
+                var vb = new Volleyball(src, "Team 1", "Team 2");
+                currentGame = vb;
                 return true;
             }
             if (command === "shove") {
@@ -28819,6 +30676,7 @@ function Safari() {
 
         spiritSpawn = false;
         wildSpirit = false;
+        currentGame = null;
 
         if (!safari.hasOwnProperty("events")) {
             safari.events = {
@@ -28971,6 +30829,13 @@ function Safari() {
             if (currentEvent.finished) {
                 currentEvent = null;
                 checkUpdate(); //test
+            }
+        }
+        if (currentGame && contestCooldown % currentGame.turnLength === 0) {
+            currentGame.stepEvent();
+            if (currentEvent.finished) {
+                currentGame = null;
+                //checkUpdate(); //test
             }
         }
         if (currentBattles.length > 0 && contestCooldown % 4 === 0) {
