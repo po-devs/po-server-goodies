@@ -30841,7 +30841,7 @@ function Safari() {
             }
         }
         if (currentGame && contestCooldown % currentGame.turnLength === 0) {
-            currentGame.turn();
+            currentGame.stepEvent();
             if (currentEvent.finished) {
                 currentGame = null;
                 //checkUpdate(); //test
