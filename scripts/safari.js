@@ -23016,7 +23016,7 @@ function Safari() {
         return 0;
     };
     function showVolleyballInfo(src, poke) {
-        var mon = getInputPokemon(poke).num, out = "";
+        var mon = pokeInfo.species(getInputPokemon(poke).num), out = "";
         if (!safari.volleyballStats.hasOwnProperty(mon+"")) {
             safaribot.sendMessage(src, "That Pokémon is not allowed in Volleyball!");
             return;
@@ -23061,7 +23061,7 @@ function Safari() {
             var party = player.party;
             var mon, i = 0;
             for (var p in party) { 
-                mon = party[p];
+                mon = pokeInfo.species(party[p]);
                 if (Object.keys(safari.volleyballStats).indexOf(mon) === -1) {
                     this.sendMessage(name, poke(mon) + " is not valid in Volleyball matches! Make sure your first three Pokémon are legal in this format!", "red");
                     return;
