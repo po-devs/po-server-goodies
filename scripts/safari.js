@@ -23333,7 +23333,7 @@ function Safari() {
     Volleyball.prototype.actName = function(player) {
         return (player.id + "'s " + poke(player.currentPoke));
     };
-    Volleyball.prototype.turn = function() {
+    Volleyball.prototype.stepEvent = function() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
             if (this.step === 42) {
