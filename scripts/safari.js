@@ -23021,12 +23021,12 @@ function Safari() {
             safaribot.sendMessage(src, "That Pokémon is not allowed in Volleyball!");
             return;
         }
-        out += ("" + poke(mon) + "  " + "Stamina: " + getVolleyballStat(mon, "stamina") + "Serve: " + getVolleyballStat(mon, "serve") + "Receive: " + getVolleyballStat(mon, "receive") + "Toss: " + getVolleyballStat(mon, "toss") + "Spike: " + getVolleyballStat(mon, "spike") + "Precision: " + getVolleyballStat(mon, "precision") + "Block: " + getVolleyballStat(mon, "block") + "Speed: " + getVolleyballStat(mon, "speed"));
-        safaribot.sendMessage(src, out);
+        out += ("" + poke(mon) + "  " + "Stamina: " + getVolleyballStat(mon, "stamina") + " || Serve: " + getVolleyballStat(mon, "serve") + " || Receive: " + getVolleyballStat(mon, "receive") + " || Toss: " + getVolleyballStat(mon, "toss") + " || Spike: " + getVolleyballStat(mon, "spike") + " || Precision: " + getVolleyballStat(mon, "precision") + " || Block: " + getVolleyballStat(mon, "block") + " || Speed: " + getVolleyballStat(mon, "speed"));
+        safaribot.sendMessage(src, out, safchan);
         var k;
         for (var s in getVolleyballStat(mon, "skills")) {
             k = getVolleyballStat(mon, "skills")[s];
-            safaribot.sendMessage(src, "Skill: " + safari.volleyballSkillDescriptions[k]);
+            safaribot.sendMessage(src, "Skill: " + safari.volleyballSkillDescriptions[k], safchan);
         }
         return;
     };
@@ -23047,6 +23047,7 @@ function Safari() {
         this.turnLength = 8;
         this.step = 0;
         this.finished = false;
+        this.phase == "signups";
 
         // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
@@ -23111,6 +23112,7 @@ function Safari() {
             if (cdata1 == "forcestart" && SESSION.channels(safchan).isChannelAdmin(src)) {
                 this.assemblePhase();
             }
+            return;
         }
         else {
             this.inputMove(name, data);
