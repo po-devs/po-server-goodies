@@ -27181,6 +27181,10 @@ function Safari() {
                 sys.sendMessage(src, separator, safchan);
                 return true;
             }
+            if (command === "vb") {
+                showVolleyballInfo(src, commandData);
+                return true;
+            }
             if (command === "bst") {
                 var info = getInputPokemon(commandData);
 
