@@ -24544,8 +24544,7 @@ function Safari() {
         this.ballColumn = -1;
         this.sendAllTeam(0, this.courtView(0));
         this.sendAllTeam(1, this.courtView(1));
-    }
-
+    };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
         var team, player, opt = [], q, hold;
@@ -24560,6 +24559,9 @@ function Safari() {
             team = 1;
             player = this.team2[name];
             teammates = this.team2;
+        }
+        if (!player) {
+            return;
         }
         
         var volleyballActSkills = ["fury", "float"];
