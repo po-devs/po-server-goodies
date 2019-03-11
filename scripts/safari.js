@@ -25100,12 +25100,13 @@ function Safari() {
                     }
                     return true;
                 }
-                var move = move(info[1]);
+                var move = sys.move(info[1]);
+                var moveNum = sys.moveNum(move);
                 if (!move) {
                     safaribot.sendMessage(src, "There is no such move!", safchan);
                     return true;
                 }
-                if (safari.dataDumps2[title][move+""].Completed) {
+                if (safari.dataDumps2[title][moveNum+""].Completed) {
                     safaribot.sendMessage(src, "That move's data is already completed for this subject!", safchan);
                     return true;
                 }
@@ -25114,12 +25115,13 @@ function Safari() {
                     safaribot.sendMessage(src, "Please enter categories!", safchan);
                     return true;
                 }
-                safari.dataDumps2[title][move+""].Categories = [];
+                safari.dataDumps2[title][moveNum+""].Categories = [];
                 for (var c in categories) {
-                    safari.dataDumps2[title][move+""].Categories.push(categories[c]);
+                    safari.dataDumps2[title][moveNum+""].Categories.push(categories[c]);
                 }
-                safari.dataDumps2[title][move+""].Submitter = sys.name(src);
-                safari.dataDumps2[title][move+""].Completed = true;
+                safaribot.sendMessage(src, "Added category " + categories + " to " + move + ".", safchan);
+                safari.dataDumps2[title][moveNum+""].Submitter = sys.name(src);
+                safari.dataDumps2[title][moveNum+""].Completed = true;
                 return true;
             }
             if (command === "leaderboard" || command == "lb") {
