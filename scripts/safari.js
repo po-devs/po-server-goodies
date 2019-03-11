@@ -25100,7 +25100,14 @@ function Safari() {
                     }
                     return true;
                 }
-                var move = sys.move(info[1]);
+                var m;
+                if (sys.moveNum(info[1])) {
+                    m = sys.moveNum(info[1]);
+                }
+                else {
+                    m = info[1];
+                }
+                var move = sys.move(m);
                 var moveNum = sys.moveNum(move);
                 if (!move) {
                     safaribot.sendMessage(src, "There is no such move!", safchan);
