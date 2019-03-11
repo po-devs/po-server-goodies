@@ -1188,6 +1188,7 @@ function Safari() {
 
     /* Events Variables */
     var currentEvent;
+    var currentGame;
 
     /* Bait Variables */
     var lastBaiters = [];
@@ -30682,7 +30683,7 @@ function Safari() {
 
         spiritSpawn = false;
         wildSpirit = false;
-        currentGame = null;
+        var currentGame = null;
 
         if (!safari.hasOwnProperty("events")) {
             safari.events = {
