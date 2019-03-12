@@ -23140,7 +23140,7 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team1[newp.id] = this.generatePlayer(newp, false, 0);
-                this.viewers.push(team1[t].id.toLowerCase());
+                //this.viewers.push(team1[t].id.toLowerCase());
             }
         }
         for (var t in team2) {
@@ -23154,12 +23154,13 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team2[newp.id] = this.generatePlayer(newp, false, 1);
-                this.viewers.push(team2[t].id.toLowerCase());
+                //this.viewers.push(team2[t].id.toLowerCase());
             }
         }
         this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0].join(", ")) + "!");
         this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1].join(", ")) + "!");
         this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve second!");
+        this.turn = 0;
         this.phase = "assemble";
     };
     Volleyball.prototype.courtView = function(team) {
@@ -23840,6 +23841,7 @@ function Safari() {
         }
         this.sendMessage("Score: " + this.team1Data.name + ": " + this.team1Data.score + " x " + this.team2Data.name + ": " + this.team2Data.score);
         team2 = (team === 0 ? 1 : 0);
+        this.turn = 0;
         this.resetPosition(team2);
         this.prepareServe(team);
     };
