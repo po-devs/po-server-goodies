@@ -23099,11 +23099,11 @@ function Safari() {
                     }
                 }
                 if (this.teamData[0].name === cdata2) {
-                    this.teamData[0].signups.push(name);
+                    this.teamData[0].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
                 }
                 if (this.teamData[1].name === cdata2) {
-                    this.teamData[1].signups.push(name);
+                    this.teamData[1].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
                 }
                 if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
@@ -23121,7 +23121,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.assemblePhase = function() {
-        var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC;
+        var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC, newp;
         this.sendMessageAll("The teams have been decided! The match will now begin!");
         while (team1.length < 6) {
             team1.push({id: generateName()});
@@ -23157,9 +23157,9 @@ function Safari() {
                 //this.viewers.push(team2[t].id.toLowerCase());
             }
         }
-        this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0].join(", ")) + "!");
-        this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1].join(", ")) + "!");
-        this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve second!");
+        this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0]).join(", ") + "!");
+        this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1]).join(", ") + "!");
+        this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve last!");
         this.turn = 0;
         this.phase = "assemble";
     };
