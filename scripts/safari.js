@@ -23059,7 +23059,7 @@ function Safari() {
         var cdata1 = cdata[0];
         var cdata2 = (cdata.length > 1 ? cdata[1] : "");
         if (this.phase == "signups") {
-            var player = getAvatar(name);
+            var player = getAvatar(src);
             var party = player.party;
             var mon, i = 0;
             for (var p in party) { 
@@ -23135,7 +23135,7 @@ function Safari() {
                 this.team1[team1[t].id] = this.generatePlayer(team1[t], true, 0);
             }
             else {
-                newp = getAvatar(team1[t]);
+                newp = getAvatar(sys.id(team1[t]));
                 if (!newp) {
                     newp = getAvatarOff(team1[t]);
                 }
@@ -23149,7 +23149,7 @@ function Safari() {
                 this.team2[team2[t].id] = this.generatePlayer(team2[t], true, 1);
             }
             else {
-                newp = getAvatar(team1[t]);
+                newp = getAvatar(sys.id(team1[t]));
                 if (!newp) {
                     newp = getAvatarOff(team1[t]);
                 }
