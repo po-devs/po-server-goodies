@@ -23092,10 +23092,10 @@ function Safari() {
                 }
                 if (cdata2 === "") {
                     if (chance(0.5) && this.teamData[0].signups.length < 6) {
-                        cdata = this.teamData[0].name;
+                        cdata2 = this.teamData[0].name;
                     }
                     else {
-                        cdata = this.teamData[1].name;
+                        cdata2 = this.teamData[1].name;
                     }
                 }
                 if (this.teamData[0].name === cdata2) {
@@ -23121,7 +23121,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.assemblePhase = function() {
-        var team1 = this.team1Data.signups, team2 = this.team2Data.signups, isNPC;
+        var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC;
         this.sendMessageAll("The teams have been decided! The match will now begin!");
         while (team1.length < 6) {
             team1.push({id: generateName()});
