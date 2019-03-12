@@ -23333,7 +23333,7 @@ function Safari() {
     Volleyball.prototype.actName = function(player) {
         return (player.id + "'s " + poke(player.currentPoke));
     };
-    Volleyball.prototype.stepEvent = function() {
+    Volleyball.prototype.action = function() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
             if (this.step === 42) {
@@ -30834,14 +30834,14 @@ function Safari() {
         successfulBaitCount--;
 
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
-            currentEvent.nextTurn();
+            currentEvent.action();
             if (currentEvent.finished) {
                 currentEvent = null;
                 checkUpdate(); //test
             }
         }
         if (currentGame && contestCooldown % currentGame.turnLength === 0) {
-            currentGame.stepEvent();
+            currentGame.turn();
             if (currentEvent.finished) {
                 currentGame = null;
                 //checkUpdate(); //test
