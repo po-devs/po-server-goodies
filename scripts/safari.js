@@ -23530,7 +23530,7 @@ function Safari() {
         }
     };
     Volleyball.prototype.aiChooseMove = function(ind) {
-        var p, getRow, getColumn, act = "", act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
+        var p, getRow, getColumn, act, act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
         var team = this.teams[ind];
         if (this.ballRow === 1) {
             getRow = "a";
@@ -23760,12 +23760,12 @@ function Safari() {
                 }
             }
             if (this.phase == "assemble" && p.place === -1) {
-                this.inputMove(p.id, "0");
-                this.inputMove(p.id, "1");
-                this.inputMove(p.id, "2");
-                this.inputMove(p.id, "3");
-                this.inputMove(p.id, "4");
-                this.inputMove(p.id, "5");
+                this.inputMove(p.id, 0);
+                this.inputMove(p.id, 1);
+                this.inputMove(p.id, 2);
+                this.inputMove(p.id, 3);
+                this.inputMove(p.id, 4);
+                this.inputMove(p.id, 5);
             }
             if (p.action == "") {
                 if (act2) {
