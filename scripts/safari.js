@@ -23834,11 +23834,11 @@ function Safari() {
         var p, team2;
         this.points[team]++;
         if (team === 0) {
-            this.team1Data.score++;
+            this.teamData[0].score++;
             this.sendMessageAll("Team " + this.teamData[0].name + " scored a point!", "blue");
         }
         if (team === 1) {
-            this.team2Data.score++;
+            this.teamData[1].score++;
             this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
         }
         if (this.points[team] >= 15) {
