@@ -24560,6 +24560,7 @@ function Safari() {
         var setting = false;
         var team, player, opt = [], q, hold;
         var cdata = data.split(":");
+        name = name.toLowerCase();
 
         if (Object.keys(this.teams[0]).indexOf(name) !== -1) {
             team = 0;
