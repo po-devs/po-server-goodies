@@ -23819,12 +23819,12 @@ function Safari() {
     };
     Volleyball.prototype.winGame = function(team) {
         if (team === 0) {
-            this.sendMessageAll("Team " + this.team1Data.name + " won the match! Congratulations to the winners!", "blue");
+            this.sendMessageAll("Team " + this.teamData[0].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[0]).join(",") + " are the champions!" , "blue");
         }
         if (team === 1) {
             this.team2Data.score++;
-            this.sendMessageAll("Team " + this.team2Data.name + " won the match! Congratulations to the winners!", "blue");
+            this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[1]).join(",") + " are the champions!" , "blue");
         }
         this.finished = true;
@@ -23835,11 +23835,11 @@ function Safari() {
         this.points[team]++;
         if (team === 0) {
             this.team1Data.score++;
-            this.sendMessageAll("Team " + this.team1Data.name + " scored a point!", "blue");
+            this.sendMessageAll("Team " + this.teamData[0].name + " scored a point!", "blue");
         }
         if (team === 1) {
             this.team2Data.score++;
-            this.sendMessageAll("Team " + this.team2Data.name + " scored a point!", "blue");
+            this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
         }
         if (this.points[team] >= 15) {
             this.winGame(team);
@@ -23848,7 +23848,7 @@ function Safari() {
         if (this.teamServed !== team) {
             this.sideOut(team);
         }
-        this.sendMessage("Score: " + this.team1Data.name + ": " + this.team1Data.score + " x " + this.team2Data.name + ": " + this.team2Data.score);
+        this.sendMessage("Score: " + this.teamData[0].name + ": " + this.teamData[0].score + " x " + this.teamData[1].name + ": " + this.teamData[1].score);
         team2 = (team === 0 ? 1 : 0);
         this.turn = 0;
         this.resetPosition(team2);
