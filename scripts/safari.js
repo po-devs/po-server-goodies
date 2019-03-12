@@ -23150,9 +23150,9 @@ function Safari() {
                 this.team2[team2[t].id] = this.generatePlayer(team2[t], true, 1);
             }
             else {
-                newp = getAvatar(sys.id(team1[t]));
+                newp = getAvatar(sys.id(team2[t]));
                 if (!newp) {
-                    newp = getAvatarOff(team1[t]);
+                    newp = getAvatarOff(team2[t]);
                 }
                 this.team2[newp.id] = this.generatePlayer(newp, false, 1);
                 this.loadNextMon(this.team2[newp.id]);
