@@ -23340,7 +23340,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.actName = function(player) {
-        return (player.id + "'s " + poke(player.party[currentPoke]));
+        return (player.id + "'s " + poke(player.party[player.currentPoke]));
     };
     Volleyball.prototype.action = function() {
         this.step++; //every 8 seconds
