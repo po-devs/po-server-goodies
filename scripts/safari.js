@@ -23261,7 +23261,7 @@ function Safari() {
                 team: team,
                 action: "",
                 currentPoke: -1,
-                place: 0,
+                place: -1,
                 score: 0,
                 position: "",
                 zone: "",
@@ -23752,7 +23752,7 @@ function Safari() {
                     act = "sub";
                 }
             }
-            if (this.phase == "assemble") {
+            if (this.phase == "assemble" && p.place === -1) {
                 this.inputMove(p.id, 1);
                 this.inputMove(p.id, 2);
                 this.inputMove(p.id, 3);
@@ -24608,6 +24608,7 @@ function Safari() {
             }
             player.place = hold;
             this.sendMessage(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
+            return true;
         } else {
         if (this.phase === "serve" && player.canServe) {
             /* In here you can serve if you are the server, that's it*/
