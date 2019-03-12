@@ -23213,7 +23213,7 @@ function Safari() {
                 sys.sendHtmlMessage(id, msg, safchan);
             } else {
                 if (color) {
-                    safaribot.sendHtmlMessage(id, toColor(msg, color), safchan);
+                    safaribot.sendHtmlMessage(id, toColor(msg), safchan);
                 }
                 else {
                     safaribot.sendHtmlMessage(id, msg, safchan);
