@@ -23820,12 +23820,12 @@ function Safari() {
     Volleyball.prototype.winGame = function(team) {
         if (team === 0) {
             this.sendMessageAll("Team " + this.team1Data.name + " won the match! Congratulations to the winners!", "blue");
-            this.sendMessageAll(Object.keys(this.team1).join(",") + " are the champions!" , "blue");
+            this.sendMessageAll(Object.keys(this.teams[0]).join(",") + " are the champions!" , "blue");
         }
         if (team === 1) {
             this.team2Data.score++;
             this.sendMessageAll("Team " + this.team2Data.name + " won the match! Congratulations to the winners!", "blue");
-            this.sendMessageAll(Object.keys(this.team2).join(",") + " are the champions!" , "blue");
+            this.sendMessageAll(Object.keys(this.teams[1]).join(",") + " are the champions!" , "blue");
         }
         this.finished = true;
         return;
@@ -24561,17 +24561,18 @@ function Safari() {
         var team, player, opt = [], q, hold;
         var cdata = data.split(":");
 
-        if (Object.keys(this.team1).indexOf(name) !== -1) {
+        if (Object.keys(this.teams[0]).indexOf(name) !== -1) {
             team = 0;
             player = this.teams[0][name];
             teammates = this.teams[0];
         }
         else {
             team = 1;
-            player = this.team[1][name];
+            player = this.teams[1][name];
             teammates = this.teams[1];
         }
         if (!player) {
+            this.sendMessage(name, "Error handling command.");
             return;
         }
         
