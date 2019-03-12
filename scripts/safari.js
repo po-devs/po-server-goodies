@@ -23740,11 +23740,18 @@ function Safari() {
 
                     }
                 }
-                if (this.phase == "prep") {
-                    if ((p.stamina <= 10 && chance(0.66)) || (p.stamina <= 4)) {
-                        act = "sub";
-                    }
+            }
+            if (this.phase == "prep") {
+                if ((p.stamina <= 10 && chance(0.66)) || (p.stamina <= 4)) {
+                    act = "sub";
                 }
+            }
+            if (this.phase == "assemble") {
+                this.inputMove(p.id, 1);
+                this.inputMove(p.id, 2);
+                this.inputMove(p.id, 3);
+                this.inputMove(p.id, 4);
+                this.inputMove(p.id, 5);
             }
             if (p.action == "") {
                 if (act2) {
@@ -24556,13 +24563,13 @@ function Safari() {
 
         if (Object.keys(this.team1).indexOf(name) !== -1) {
             team = 0;
-            player = this.team1[name];
-            teammates = this.team1;
+            player = this.teams[0][name];
+            teammates = this.teams[0];
         }
         else {
             team = 1;
-            player = this.team2[name];
-            teammates = this.team2;
+            player = this.team[1][name];
+            teammates = this.teams[1];
         }
         if (!player) {
             return;
@@ -24581,13 +24588,13 @@ function Safari() {
             /* In here it allows you to pick your team order/server order */
             hold = (parseInt(data, 10));
             if ([0, 1, 2, 3, 4, 5].indexOf(hold) === -1) {
-                this.sendMessage(name, "Select a number between 0-5 to choose your starting position!", "red");
+                this.sendMessage(player.id, "Select a number between 0-5 to choose your starting position!", "red");
                 return false;
             }
             for (var t in teammates) {
                 q = teammates[t];
                 if (q.place === hold) {
-                    this.sendMessage(name, "A teammate is already at position " + hold + "!", "red");
+                    this.sendMessage(player.id, "A teammate is already at position " + hold + "!", "red");
                     return false;
                 }
             }
