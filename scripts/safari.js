@@ -23092,10 +23092,10 @@ function Safari() {
                 }
                 if (cdata2 === "") {
                     if (chance(0.5) && this.teamData[0].signups.length < 6) {
-                        cdata = this.teamData[0].name;
+                        cdata2 = this.teamData[0].name;
                     }
                     else {
-                        cdata = this.teamData[1].name;
+                        cdata2 = this.teamData[1].name;
                     }
                 }
                 if (this.teamData[0].name === cdata2) {
