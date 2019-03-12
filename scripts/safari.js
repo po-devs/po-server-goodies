@@ -30842,7 +30842,7 @@ function Safari() {
         }
         if (currentGame && contestCooldown % currentGame.turnLength === 0) {
             currentGame.action();
-            if (currentGame.finished) {
+            if (currentEvent.finished) {
                 currentGame = null;
                 //checkUpdate(); //test
             }
