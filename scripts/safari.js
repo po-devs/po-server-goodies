@@ -23121,7 +23121,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.assemblePhase = function() {
-        var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC, newp;
+        var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC, newp, p;
         this.sendMessageAll("The teams have been decided! The match will now begin!");
         while (team1.length < 6) {
             team1.push({id: generateName()});
@@ -23132,32 +23132,36 @@ function Safari() {
         for (var t in team1) {
             isNPC = typeof team1[t] === "object";
             if (isNPC) {
-                this.team1[team1[t].id] = this.generatePlayer(team1[t], true, 0);
-                this.loadNextMon(this.team1[team1[t].id]);
+                p = this.generatePlayer(team1[t], true, 0);
+                this.team1[team1[t].id] = p;
+                this.loadNextMon(p);
             }
             else {
                 newp = getAvatar(sys.id(team1[t]));
                 if (!newp) {
                     newp = getAvatarOff(team1[t]);
                 }
-                this.team1[newp.id] = this.generatePlayer(newp, false, 0);
-                this.loadNextMon(this.team1[newp.id]);
+                p = this.generatePlayer(newp, false, 0);
+                this.team1[newp.id] = p
+                this.loadNextMon(p);
                 //this.viewers.push(team1[t].id.toLowerCase());
             }
         }
         for (var t in team2) {
             isNPC = typeof team2[t] === "object";
             if (isNPC) {
-                this.team2[team2[t].id] = this.generatePlayer(team2[t], true, 1);
-                this.loadNextMon(this.team2[team2[t].id]);
+                p = this.generatePlayer(team2[t], true, 1);
+                this.team2[team2[t].id] = p;
+                this.loadNextMon(p);
             }
             else {
                 newp = getAvatar(sys.id(team2[t]));
                 if (!newp) {
                     newp = getAvatarOff(team2[t]);
                 }
-                this.team2[newp.id] = this.generatePlayer(newp, false, 1);
-                this.loadNextMon(this.team2[newp.id]);
+                p = this.generatePlayer(newp, false, 1);
+                this.team2[newp.id] = p;
+                this.loadNextMon(p);
                 //this.viewers.push(team2[t].id.toLowerCase());
             }
         }
