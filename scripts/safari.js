@@ -23206,13 +23206,18 @@ function Safari() {
         }
         return;
     };
-    Volleyball.prototype.sendMessage = function(name, msg) {
+    Volleyball.prototype.sendMessage = function(name, msg, color) {
         var id = sys.id(name);
         if (id && sys.isInChannel(id, safchan)) {
             if (msg === "") {
                 sys.sendHtmlMessage(id, msg, safchan);
             } else {
-                safaribot.sendHtmlMessage(id, msg, safchan);
+                if (color) {
+                    safaribot.sendHtmlMessage(id, toColor(msg), safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(id, msg, safchan);
+                }
             }
         }
         return;
@@ -23264,6 +23269,7 @@ function Safari() {
                 column: 0,
                 prep: 0,
                 st: 0,
+                actSkills: {},
                 canServe: false,
                 canSet: false,
                 canHit: false,
@@ -24578,7 +24584,7 @@ function Safari() {
         }
         
         var volleyballActSkills = ["fury", "float"];
-        if (volleyballActSkills.indexOf(player.action !== -1)) {
+        if (volleyballActSkills.indexOf(player.action) !== -1) {
             player.actSkills[player.action] = true;
             return;
         }
