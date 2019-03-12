@@ -23529,8 +23529,9 @@ function Safari() {
             }
         }
     };
-    Volleyball.prototype.aiChooseMove = function(team) {
+    Volleyball.prototype.aiChooseMove = function(ind) {
         var p, getRow, getColumn, act, act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
+        var team = this.teams[ind];
         if (this.ballRow === 1) {
             getRow = "a";
         }
