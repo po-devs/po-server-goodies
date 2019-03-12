@@ -23092,10 +23092,10 @@ function Safari() {
                 }
                 if (cdata2 === "") {
                     if (chance(0.5) && this.teamData[0].signups.length < 6) {
-                        cdata2 = this.teamData[0].name;
+                        cdata = this.teamData[0].name;
                     }
                     else {
-                        cdata2 = this.teamData[1].name;
+                        cdata = this.teamData[1].name;
                     }
                 }
                 if (this.teamData[0].name === cdata2) {
@@ -23122,7 +23122,6 @@ function Safari() {
     };
     Volleyball.prototype.assemblePhase = function() {
         var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC;
-        this.turn = 0;
         this.sendMessageAll("The teams have been decided! The match will now begin!");
         while (team1.length < 6) {
             team1.push({id: generateName()});
@@ -23141,7 +23140,7 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team1[newp.id] = this.generatePlayer(newp, false, 0);
-                //this.viewers.push(team1[t].id.toLowerCase());
+                this.viewers.push(team1[t].id.toLowerCase());
             }
         }
         for (var t in team2) {
@@ -23155,7 +23154,7 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team2[newp.id] = this.generatePlayer(newp, false, 1);
-                //this.viewers.push(team2[t].id.toLowerCase());
+                this.viewers.push(team2[t].id.toLowerCase());
             }
         }
         this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0].join(", ")) + "!");
