@@ -23140,6 +23140,7 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team1[newp.id] = this.generatePlayer(newp, false, 0);
+                this.loadNextMon(this.team1[newp.id]);
                 //this.viewers.push(team1[t].id.toLowerCase());
             }
         }
@@ -23154,6 +23155,7 @@ function Safari() {
                     newp = getAvatarOff(team1[t]);
                 }
                 this.team2[newp.id] = this.generatePlayer(newp, false, 1);
+                this.loadNextMon(this.team2[newp.id]);
                 //this.viewers.push(team2[t].id.toLowerCase());
             }
         }
@@ -23847,8 +23849,8 @@ function Safari() {
     };
     Volleyball.prototype.prepareServe = function(team) {
         var p;
-        for (var t in this.teams[team].players) {
-            p = this.teams[team].players[t];
+        for (var t in this.teams[team]) {
+            p = this.teams[team][t];
             if (p.place === 0) {
                 p.canServe = true;
                 break;
@@ -23861,8 +23863,8 @@ function Safari() {
     };
     Volleyball.prototype.sideOut = function(team) {
         var p;
-        for (var t in this.teams[team].players) {
-            p = this.teams[team].players[t];
+        for (var t in this.teams[team]) {
+            p = this.teams[team][t];
             switch (p.place) {
                 case 5: p.place = 0; p.pos = "b2"; break;
                 case 0: p.place = 1; p.pos = "b4"; break;
@@ -23882,8 +23884,8 @@ function Safari() {
     };
     Volleyball.prototype.resetPosition = function(team) {
         var p;
-        for (var t in this.teams[team].players) {
-            p = this.teams[team].players[t];
+        for (var t in this.teams[team]) {
+            p = this.teams[team][t];
             switch (p.place) {
                 case 5: p.pos = "b2"; break;
                 case 0: p.pos = "b4"; break;
