@@ -23133,6 +23133,7 @@ function Safari() {
             isNPC = typeof team1[t] === "object";
             if (isNPC) {
                 this.team1[team1[t].id] = this.generatePlayer(team1[t], true, 0);
+                this.loadNextMon(this.team1[team1[t].id]);
             }
             else {
                 newp = getAvatar(sys.id(team1[t]));
@@ -23148,6 +23149,7 @@ function Safari() {
             isNPC = typeof team2[t] === "object";
             if (isNPC) {
                 this.team2[team2[t].id] = this.generatePlayer(team2[t], true, 1);
+                this.loadNextMon(this.team2[team2[t].id]);
             }
             else {
                 newp = getAvatar(sys.id(team2[t]));
@@ -23244,7 +23246,7 @@ function Safari() {
         this.sendMessageTeam(0, msg, color);
         this.sendMessageTeam(1, msg, color);
     };
-    Volleyball.prototype.generateVollyeballParty = function() {
+    Volleyball.prototype.generateVolleyballParty = function() {
         var p = [], k;
         for (var i = 0; i < 3; i++) {
             k = Object.keys(safari.volleyballStats).random();
@@ -23286,7 +23288,7 @@ function Safari() {
         };
 
         if (isNPC) {
-            party = this.generateVollyeballParty();
+            party = this.generateVolleyballParty();
             out.id = generateName();
         }
 
