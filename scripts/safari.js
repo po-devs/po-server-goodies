@@ -30834,14 +30834,14 @@ function Safari() {
         successfulBaitCount--;
 
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
-            currentEvent.action();
+            currentEvent.nextTurn();
             if (currentEvent.finished) {
                 currentEvent = null;
                 checkUpdate(); //test
             }
         }
         if (currentGame && contestCooldown % currentGame.turnLength === 0) {
-            currentGame.turn();
+            currentGame.action();
             if (currentEvent.finished) {
                 currentGame = null;
                 //checkUpdate(); //test
