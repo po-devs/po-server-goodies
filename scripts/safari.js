@@ -23340,7 +23340,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.actName = function(player) {
-        return (player.id + "'s " + poke(player.party[currentPoke]));
+        return (player.id + "'s " + poke(player.currentPoke));
     };
     Volleyball.prototype.action = function() {
         this.step++; //every 8 seconds
@@ -23753,7 +23753,6 @@ function Safari() {
                 }
             }
             if (this.phase == "assemble" && p.place === -1) {
-                this.inputMove(p.id, 0);
                 this.inputMove(p.id, 1);
                 this.inputMove(p.id, 2);
                 this.inputMove(p.id, 3);
@@ -24608,7 +24607,7 @@ function Safari() {
                 }
             }
             player.place = hold;
-            this.sendMessageTeam(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
+            this.sendMessage(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
             return true;
         } else {
         if (this.phase === "serve" && player.canServe) {
