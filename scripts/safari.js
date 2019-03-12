@@ -23064,7 +23064,7 @@ function Safari() {
             var mon, i = 0;
             for (var p in party) { 
                 mon = pokeInfo.species(party[p]);
-                if (Object.keys(safari.volleyballStats).indexOf(mon) === -1) {
+                if (Object.keys(safari.volleyballStats).indexOf(mon+"") === -1) {
                     this.sendMessage(name, poke(mon) + " is not valid in Volleyball matches! Make sure your first three Pokémon are legal in this format!", "red");
                     return;
                 }
