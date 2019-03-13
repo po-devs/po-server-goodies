@@ -23185,7 +23185,7 @@ function Safari() {
             ["b1", "b2", "b3", "b4", "b5", "b6", "b7"],
             ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
         ];
-        var ret = [], r, place, inp;
+        var ret = "", r, place, inp;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             mon = p.party[p.currentPoke];
@@ -23380,6 +23380,9 @@ function Safari() {
             this.step = 0;
             this.sendMessageAll("TURN " + this.turn + ": ");
             this.processMoves();
+            if (this.phase == "prep") {
+                this.prepareServe(team);
+            }
         }
     };
     Volleyball.prototype.processPrepMove = function() {
@@ -23800,7 +23803,6 @@ function Safari() {
                     p.canTip = false;
                     p.canSet = false;
                     p.quickattack = false;
-                    p.canServe = false;
                     p.receiver = false;
                     p.passval = 0;
                     p.setval = 0;
@@ -23811,7 +23813,6 @@ function Safari() {
                 }
                 if (this.phase == "set") {
                     p.quickattack = false;
-                    p.canServe = false;
                     p.freepass = false;
                     p.receiver = false;
                     p.moved = 0;
@@ -23828,6 +23829,7 @@ function Safari() {
                     p.actSkills[s] = false;
                 }
                 p.action = "";
+                p.canServe = false;
             }
         }
         this.excludeActions = [];
@@ -23875,7 +23877,7 @@ function Safari() {
         this.turn = 0;
         this.clearVals();
         this.resetPosition(team2);
-        this.prepareServe(team);
+        this.phase = "prep";
     };
     Volleyball.prototype.prepareServe = function(team) {
         var p;
