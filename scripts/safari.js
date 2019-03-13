@@ -23371,6 +23371,8 @@ function Safari() {
                 this.step = 0;
                 this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.phase = "prep";
+                this.resetPosition(team);
+                this.resetPosition(team2);
             }
         }
         else if (this.step >= 2) {
