@@ -23388,22 +23388,6 @@ function Safari() {
             }
         }
     };
-    Volleyball.prototype.inputVal = function(name, k, v) {
-        var cteam, torow, column;
-        for (var team in this.teams) {
-            cteam = this.teams[team];
-            for (var t in cteam) {
-                p = cteam[t];
-                if (p.id !== name) {
-                    continue;
-                }
-                this.teams[team][t][k] = v;
-                return true;
-            }
-        }
-        this.sendMessageAll("Error inputting value for " + name + ".");
-        return false;
-    }
     Volleyball.prototype.movePlayer = function(name, goTo) {
         var cteam, torow, column;
         for (var team in this.teams) {
@@ -23508,7 +23492,7 @@ function Safari() {
                     continue;
                 }
                 if (p.action == "block" && p.zone == "front" && p.row == 4) {
-                    this.inputVal(player.id, "blocking", true);
+                    p.blocking = true;
                 }
             }
         }
@@ -23849,8 +23833,8 @@ function Safari() {
                 for (var s in p.actSkills) {
                     p.actSkills[s] = false;
                 }
-                this.inputVal(p.id, "action", "");
-                this.inputVal(p.id, "canServe", false);
+                p.action = "";
+                p.canServe = false;
             }
         }
         this.excludeActions = [];
@@ -24711,7 +24695,7 @@ function Safari() {
                     return false;
                 }
                 this.sendMessage(name, "Serve effort will be " + hold + "!", "red");
-                this.inputVal(player.id, "serveEffort", hold);
+                player.serveEffort = hold;
                 return true;
             }
         }
@@ -24757,8 +24741,7 @@ function Safari() {
                         if (this.excludeActions.indexOf("attack") !== -1) {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
                         }
-                        this.inputVal(player.id, "action", "set");
-                        this.inputVal(player.id, "setTarget", cdata[1]);
+                        player.action = "set";
                         this.excludeActions.push("set");
                     }
                 }
@@ -24861,15 +24844,15 @@ function Safari() {
             this.sendMessage(name, "There is already a teammate going to " + data + "!", "red");
             return;
         }
-        if (data == "block") {
+        if (player.action == "block") {
             player.blocking = true;
-            this.inputVal(player.id, "action", "block");
+            player.action = data;
             this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
         }
         else if ((data[0] === "x") || (data === "tip")) {
             this.excludeActions.push("tip");
             this.excludeActions.push("attack");
-            this.inputVal(player.id, "action", data);
+            player.action = data;
             if (data == "tip") {
                 this.sendMessageTeam(player.team, this.actName(player) + " is performing a tip!", "green");
             }
@@ -24884,7 +24867,7 @@ function Safari() {
             else {
                 this.excludePos[player.team].push(player.action);
                 this.sendMessageTeam(player.team, this.actName(player) + " is planning to move to " + data + "!", "green");
-                this.inputVal(player.id, "action", data);
+                player.action = data;
             }
         }
     };
