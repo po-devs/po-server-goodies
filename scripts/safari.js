@@ -23371,8 +23371,8 @@ function Safari() {
                 this.step = 0;
                 this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.phase = "prep";
-                this.resetPosition(team);
-                this.resetPosition(team2);
+                this.resetPosition(0);
+                this.resetPosition(1);
             }
         }
         else if (this.step >= 2) {
@@ -23388,13 +23388,13 @@ function Safari() {
             }
         }
     };
-    Volleyball.prototype.movePlayer = function(player, goTo) {
+    Volleyball.prototype.movePlayer = function(name, goTo) {
         var cteam, torow, column;
         for (var team in this.teams) {
             cteam = this.teams[team];
             for (var t in cteam) {
                 p = cteam[t];
-                if (p.id !== player) {
+                if (p.id !== name) {
                     continue;
                 }
                 if (goTo[0] == "a") {
