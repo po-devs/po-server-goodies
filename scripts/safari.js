@@ -23268,11 +23268,11 @@ function Safari() {
         var out = {
                 team: team,
                 action: "",
-                ai: false,
+                ai: true,
                 currentPoke: -1,
                 place: -1,
                 score: 0,
-                position: "",
+                pos: "",
                 zone: "",
                 row: 0,
                 column: 0,
@@ -23305,7 +23305,7 @@ function Safari() {
                 i++;
             }
             out.id = data.id;
-            out.ai = true;
+            out.ai = false;
         }
 
         out.party = [];
@@ -23401,7 +23401,7 @@ function Safari() {
                 tocolumn = parseInt(p.action[1], 10);
                 p.row = torow;
                 p.column = tocolumn;
-                p.position = p.action;
+                p.pos = p.action;
             }
         }
     }
@@ -23442,7 +23442,7 @@ function Safari() {
                     dist = Math.abs(p.row - torow) + Math.abs(p.column - tocolumn);
                     p.row = torow;
                     p.column = tocolumn;
-                    p.position = p.action;
+                    p.pos = p.action;
                     cost = (dist > 1 ? dist : dist * 2);
                     p.stamina = Math.max(0, p.stamina-cost);
                     p.moved = dist;
