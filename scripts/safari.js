@@ -23846,7 +23846,6 @@ function Safari() {
     }
     Volleyball.prototype.scorePoint = function(team) {
         var p, team2;
-        this.points[team]++;
         if (team === 0) {
             this.teamData[0].score++;
             this.sendMessageAll("Team " + this.teamData[0].name + " scored a point!", "blue");
@@ -23855,7 +23854,7 @@ function Safari() {
             this.teamData[1].score++;
             this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
         }
-        if (this.points[team] >= 15) {
+        if (this.teamData[team].score >= 15) {
             this.winGame(team);
             return;
         }
@@ -23980,7 +23979,7 @@ function Safari() {
         /*
             Player may perform a serve with different levels: easy (1 stamina) normal (3 stamina) or jump (5 stamina)
         */
-        var pow, row, column, stcost; defteam = player.team === 0 ? 1 : 0;
+        var pow, stcost; defteam = player.team === 0 ? 1 : 0;
         var atkteam = defteam === 0 ? 1 : 0;
         pow = player.serve;
         if (player.serveEffort === 0) {
@@ -24020,7 +24019,7 @@ function Safari() {
         if (player.precision <= 0) {
             row += Math.floor(1.4 - (Math.random() * 2.8));
         }
-        this.sendMessageAll(this.actName(player) + "serves the ball!");
+        this.sendMessageAll(this.actName(player) + " serves the ball!");
         if (column < 1 || column > 7 || row < 1) {
             this.sendMessageAll(this.actName(player) + " hit the ball out of bounds!");
             this.scorePoint(defteam);
