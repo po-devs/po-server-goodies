@@ -23210,7 +23210,7 @@ function Safari() {
             }
             ret += "<p>"
         }
-        return;
+        return ret;
     };
     Volleyball.prototype.sendMessage = function(name, msg, color) {
         var id = sys.id(name);
@@ -23814,10 +23814,7 @@ function Safari() {
                 }
                 if (this.phase == "serve") {
                     p.quickattack = false;
-                    p.canServe = false;
                     p.freepass = false;
-                    p.receiver = false;
-                    p.canServe = false;
                     p.receiver = false;
                     p.passval = 0;
                     p.setval = 0;
@@ -23998,7 +23995,7 @@ function Safari() {
         else if (player.serveEffort === 2) {
             pow *= 1.5;
         }
-        column += Math.floor(1.25 - (Math.random() * 2.5));
+        column += Math.floor(1.1 - (Math.random() * 2.2));
         if (player.precision <= 4) {
             column += Math.floor(1.15 - (Math.random() * 2.3));
         }
