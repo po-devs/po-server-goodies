@@ -24611,6 +24611,13 @@ function Safari() {
             this.sendMessage(name, "Error handling command.");
             return;
         }
+        if (data == "eval") {
+            this.sendMessage(name, ("Phase: " + this.phase));
+            this.sendMessage(name, ("Act: " + player.action));
+            this.sendMessage(name, ("Pos: " + player.pos));
+            this.sendMessage(name, ("Can Serve: " + player.canServe));
+            this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
+        }
         
         var volleyballActSkills = ["fury", "float"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
