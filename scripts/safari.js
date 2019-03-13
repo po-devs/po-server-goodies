@@ -23887,6 +23887,7 @@ function Safari() {
     };
     Volleyball.prototype.prepareServe = function(team) {
         var p;
+        this.clearVals();
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             if (p.place === 0) {
@@ -23894,7 +23895,6 @@ function Safari() {
                 break;
             }
         }
-        this.clearVals();
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0));
         this.sendMessageTeam(1, this.courtView(1));
