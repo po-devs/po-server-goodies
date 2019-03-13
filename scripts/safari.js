@@ -24594,7 +24594,7 @@ function Safari() {
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
-        var team, player, opt = [], q, hold, cteam, k;
+        var team, player, opt = [], q, hold;
         var cdata = data.split(":");
         name = name.toLowerCase();
 
@@ -24618,19 +24618,6 @@ function Safari() {
             this.sendMessage(name, ("Pos: " + player.pos));
             this.sendMessage(name, ("Can Serve: " + player.canServe));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
-            if (cdata.length > 1) {
-                for (var t in this.teams) {
-                    cteam = this.teams[t];
-                    for (var s in cteam) { 
-                        k = cteam[s];
-                        if (cdata[1] == k.id.toLowerCase()) {
-                            this.sendMessage(name, (k.id + "Act: " + k.action));
-                            this.sendMessage(name, (k.id + "Pos: " + k.pos));
-                            this.sendMessage(name, (k.id + "Can Serve: " + k.canServe));
-                        }
-                    }
-                } 
-            }
         }
         
         var volleyballActSkills = ["fury", "float"];
