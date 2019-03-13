@@ -23209,9 +23209,9 @@ function Safari() {
                 else {
                     ret += " " + place + " ";
                 }
-                ret += "></tr>"
             }
-            ret += "<p>"
+            ret += "></tr>";
+            ret += "<p>";
         }
         ret += "</table>";
         return ret;
@@ -23873,6 +23873,7 @@ function Safari() {
         this.sendMessage("Score: " + this.teamData[0].name + ": " + this.teamData[0].score + " x " + this.teamData[1].name + ": " + this.teamData[1].score);
         team2 = (team === 0 ? 1 : 0);
         this.turn = 0;
+        this.clearVals();
         this.resetPosition(team2);
         this.prepareServe(team);
     };
