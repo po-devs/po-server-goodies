@@ -23890,7 +23890,7 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             if (p.place === 0) {
-                p.canServe = true;
+                this.teams[team][t].canServe = true;
                 break;
             }
         }
@@ -24861,7 +24861,7 @@ function Safari() {
             }
         }
         else {
-            if (getDistance(player.pos, data) > player.speed) {
+            if (this.getDistance(player.pos, data) > player.speed) {
                 this.sendMessage(name, "You cannot go to " + data + " because it is too far!", "red");
             }
             else {
