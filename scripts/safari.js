@@ -23266,6 +23266,7 @@ function Safari() {
         var out = {
                 team: team,
                 action: "",
+                ai: false,
                 currentPoke: -1,
                 place: -1,
                 score: 0,
@@ -23302,6 +23303,7 @@ function Safari() {
                 i++;
             }
             out.id = data.id;
+            out.ai = true;
         }
 
         out.party = [];
@@ -23449,14 +23451,16 @@ function Safari() {
         if (this.phase == "prep") {
             for (var team in this.teams) {
                 cteam = this.teams[team];
-                p = cteam[t];
-                if (p.action == "sub") {
-                    if (p.currentPoke >= 2) {
-                        this.sendMessage(p.id, "You can only sub a Pokémon in twice per match! You are out of substitutions!", "red");
-                        continue;
+                for (var t in cteam) {
+                    p = cteam[t];
+                    if (p.action == "sub") {
+                        if (p.currentPoke >= 2) {
+                            this.sendMessage(p.id, "You can only sub a Pokémon in twice per match! You are out of substitutions!", "red");
+                            continue;
+                        }
+                        this.loadNextMon(p);
+                        this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke]) + "!", "green");
                     }
-                    this.loadNextMon(p);
-                    this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke]) + "!", "green");
                 }
             }
             return;
@@ -23543,7 +23547,10 @@ function Safari() {
         }
         for (var t in team) {
             p = team[t];
-            if (sys.isInChannel(sys.id(p.id), safchan)) {
+            if (!p.ai) {
+                continue;
+            }
+            else if (sys.isInChannel(sys.id(p.id), safchan)) {
                 continue;
             }
             if (this.teamHasBall === team) {
@@ -23643,6 +23650,7 @@ function Safari() {
                     p.actSkills.float = true;
                 }
                 p.serveEffort = (Math.floor(Math.random() * (2.1 + (p.serve * 0.15))));
+                this.inputMove(p.id, act);
             }
             if (p.canHit && p.action == "") {
                 if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
@@ -24019,15 +24027,15 @@ function Safari() {
         if (player.precision <= 0) {
             row += Math.floor(1.4 - (Math.random() * 2.8));
         }
-        this.sendMessageAll(this.actName(player) + " serves the ball!");
+        this.sendMessageAll(this.actName(player) + " serves the ball!", "blue");
         if (column < 1 || column > 7 || row < 1) {
-            this.sendMessageAll(this.actName(player) + " hit the ball out of bounds!");
+            this.sendMessageAll(this.actName(player) + " hit the ball out of bounds!", "blue");
             this.scorePoint(defteam);
             this.phase = "prep";
             return;
         }
         pow += (3 * Math.random() - Math.random());
-        pow = Math.min(8, serve);
+        pow = Math.min(8, pow);
         if (player.stamina <= 10) {
             pow -= 1;
         }
