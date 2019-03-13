@@ -24678,7 +24678,7 @@ function Safari() {
                     return false;
                 }
             }
-            this.inputVal(player.id, "place", hold); 
+            this.inputVal(p.id, "place", hold); 
             this.sendMessageTeam(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
             return true;
         } else {
