@@ -23172,7 +23172,7 @@ function Safari() {
         this.phase = "assemble";
     };
     Volleyball.prototype.courtView = function(team) {
-        var atkteam = team, defteam = (team === 0 ? 1 : 0);
+        var atkteam = team, defteam = (team === 0 ? 1 : 0), p;
         var rows = {}, name;
         var props = [
             ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7"],
@@ -23186,13 +23186,15 @@ function Safari() {
             ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
         ];
         var ret = [], r, place, inp;
-        for (var p in this.teams[defteam]) {
-            poke = this.teams[defteam].party[this.teams[defteam].currentPoke];
-            this.rows["x" + this.team[defteam].pos[1] + (8 - this.team[defteam].row)] = poke;
+        for (var t in this.teams[defteam]) {
+            p = this.teams[defteam][t];
+            poke = p.party[p.currentPoke];
+            this.rows["x" + p.pos[1] + (8 - p.row)] = poke;
         }
-        for (var p in this.teams[atkteam]) {
-            poke = this.teams[atkteam].party[this.teams[atkteam].currentPoke];
-            this.rows[this.teams[atkteam].pos] = poke;
+        for (var t in this.teams[atkteam]) {
+            p = this.teams[atkteam][t];
+            poke = p.party[p.currentPoke];
+            this.rows[p.pos] = poke;
         }
         for (var i = 0; i++; i < props.length) {
             ret += "<tr>";
