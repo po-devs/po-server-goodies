@@ -23877,6 +23877,7 @@ function Safari() {
         team2 = (team === 0 ? 1 : 0);
         this.turn = 0;
         this.clearVals();
+        this.resetPosition(team);
         this.resetPosition(team2);
         this.phase = "prep";
     };
@@ -23923,12 +23924,12 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
-                case 5: p.pos = "b2"; break;
-                case 0: p.pos = "b4"; break;
-                case 1: p.pos = "b6"; break;
-                case 2: p.pos = "d6"; break;
-                case 3: p.pos = "d4"; break;
-                case 4: p.pos = "d2"; break;
+                case 5: p.pos = "b2"; p.row = 4; p.column = 2; break;
+                case 0: p.pos = "b4"; p.row = 2; p.column = 2; break;
+                case 1: p.pos = "b6"; p.row = 2; p.column = 4; break;
+                case 2: p.pos = "d6"; p.row = 2; p.column = 6; break;
+                case 3: p.pos = "d4"; p.row = 4; p.column = 6; break;
+                case 4: p.pos = "d2"; p.row = 4; p.column = 4; break;
             }
         }
     };
@@ -24593,7 +24594,7 @@ function Safari() {
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
-        var team, player, opt = [], q, hold;
+        var team, player, opt = [], q, hold, cteam, k;
         var cdata = data.split(":");
         name = name.toLowerCase();
 
@@ -24617,6 +24618,19 @@ function Safari() {
             this.sendMessage(name, ("Pos: " + player.pos));
             this.sendMessage(name, ("Can Serve: " + player.canServe));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
+            if (cdata.length > 1) {
+                for (var t in this.teams) {
+                    cteam = this.teams[t];
+                    for (var s in cteam) { 
+                        k = cteam[s];
+                        if (cdata[1] == k.id.toLowerCase()) {
+                            this.sendMessage(name, (k.id + "Act: " + k.action));
+                            this.sendMessage(name, (k.id + "Pos: " + k.pos));
+                            this.sendMessage(name, (k.id + "Can Serve: " + k.canServe));
+                        }
+                    }
+                } 
+            }
         }
         
         var volleyballActSkills = ["fury", "float"];
