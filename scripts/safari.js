@@ -11315,7 +11315,7 @@ function Safari() {
                 break;
             case "hoenn":
                 safari.celebrityTrainerData = {
-                    "Trainer Roxanne": ["476", 248, 567, 689, 719, 679, 306],
+                    "Trainer Roxanne": ["476", 248, 567, 689, 719, 697, 306],
                     "Trainer Brawly": ["65844", 297, 500, 794, 701, 640, 620],
                     "Trainer Wattson": ["65846", 145, 262623, 785, 618, 604],
                     "Trainer Flannery": [65793, 776, 65765, 721, "324", 157, 668],
