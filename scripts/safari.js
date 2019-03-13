@@ -23472,6 +23472,7 @@ function Safari() {
             }
             return;
         }
+        this.clearVals();
         if (this.phase == "receive") {
             this.processReceive();
             return;
@@ -23888,6 +23889,7 @@ function Safari() {
                 break;
             }
         }
+        this.clearVals();
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0));
         this.sendMessageTeam(1, this.courtView(1));
@@ -24416,11 +24418,11 @@ function Safari() {
             If two players are in the same range of it, they both try to receive. The higher score prevails. Both players lose stamina as though they had received.
             The score is determined by their Pass Score, their amount of Prep, and whether they are at disadvantage or not. Some skills may apply.
         */
-        var p, rec, proficiency, maxPass = 0, atkteam = this.teamHasBall === 0 ? 1 : 0;
+        var p, rec, proficiency, maxPass = 0, atkteam = this.teamHasBall === 0 ? 1 : 0, passed = false;
         this.turn++;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
-            if (p.row == 4) {
+            if (p.row === 4) {
                 continue;
             }
             if (p.row === this.ballRow && p.column === this.ballColumn) {
@@ -24477,7 +24479,7 @@ function Safari() {
             if (p.stamina <= 4) {
                 proficiency--;
             }
-            if (proficiency > maxPass) {
+            if (proficiency >= maxPass) {
                 maxPass = proficiency;
                 for (var s in this.teams[this.teamHasBall]) {
                     this.teams[this.teamHasBall][s].receiver = false;
@@ -24492,6 +24494,7 @@ function Safari() {
             if (!p.receiver) {
                 continue;
             }
+            passed = true;
             if (maxPass <= 0) {
                 stcost = 5;
                 if (p.stamina >= 10) {
@@ -24574,8 +24577,13 @@ function Safari() {
                 break;
             }
         }
+        if (!passed) {
+            this.sendMessageAll("It's an ACE!", "blue");
+            this.scorePoint(atkteam);
+            return;
+        }
         p.stamina = Math.max(p.stamina - stcost, 0);
-        this.sendMessage(p.id, "You spent " + stcost + " stamina spiking the ball! You now have " + p.stamina + "!" , "red");
+        this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
         p.canSet = false;
         this.ballPower = 0;
         this.ballRow = -1;
