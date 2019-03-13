@@ -23196,6 +23196,7 @@ function Safari() {
             mon = p.party[p.currentPoke];
             rows[p.pos] = mon;
         }
+        ret += "<table border = 1 cellpadding = 3>";
         for (var i = 0; i++; i < props.length) {
             ret += "<tr>";
             r = props[i];
@@ -23208,10 +23209,11 @@ function Safari() {
                 else {
                     ret += " " + place + " ";
                 }
-                ret += "></td></tr>"
+                ret += "></tr>"
             }
             ret += "<p>"
         }
+        ret += "</table>";
         return ret;
     };
     Volleyball.prototype.sendMessage = function(name, msg, color) {
