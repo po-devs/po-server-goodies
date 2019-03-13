@@ -24636,6 +24636,7 @@ function Safari() {
             this.sendMessage(name, ("Phase: " + this.phase));
             this.sendMessage(name, ("Act: " + player.action));
             this.sendMessage(name, ("Pos: " + player.pos));
+            this.sendMessage(name, ("Place: " + player.place));
             this.sendMessage(name, ("Can Serve: " + player.canServe));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
             if (cdata.length > 1) {
