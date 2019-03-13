@@ -23189,12 +23189,12 @@ function Safari() {
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             mon = p.party[p.currentPoke];
-            rows["x" + p.pos[1] + (8 - p.row)] = mon;
+            this.rows["x" + p.pos[1] + (8 - p.row)] = mon;
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
             mon = p.party[p.currentPoke];
-            rows[p.pos] = mon;
+            this.rows[p.pos] = mon;
         }
         for (var i = 0; i++; i < props.length) {
             ret += "<tr>";
