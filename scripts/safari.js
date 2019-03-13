@@ -23370,8 +23370,7 @@ function Safari() {
             if (this.step >= 5) {
                 this.step = 0;
                 this.teamHasBall = (chance(0.5) ? 1 : 0);
-                this.phase = "serve";
-                this.prepareServe(this.teamHasBall);
+                this.phase = "prep";
             }
         }
         else if (this.step >= 2) {
@@ -23379,9 +23378,11 @@ function Safari() {
             this.aiChooseMove(1);
             this.step = 0;
             this.sendMessageAll("TURN " + this.turn + ": ");
-            this.processMoves();
             if (this.phase == "prep") {
-                this.prepareServe(team);
+                this.prepareServe(this.teamHasBall);
+            }
+            else {
+                this.processMoves();
             }
         }
     };
@@ -24612,7 +24613,7 @@ function Safari() {
             this.sendMessage(name, "Error handling command.");
             return;
         }
-        if (data == "eval") {
+        if (cdata[0] == "eval") {
             this.sendMessage(name, ("Phase: " + this.phase));
             this.sendMessage(name, ("Act: " + player.action));
             this.sendMessage(name, ("Pos: " + player.pos));
