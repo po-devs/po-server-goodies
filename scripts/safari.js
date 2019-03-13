@@ -23371,6 +23371,8 @@ function Safari() {
                 this.step = 0;
                 this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.phase = "prep";
+                this.resetPosition(team);
+                this.resetPosition(team2);
             }
         }
         else if (this.step >= 2) {
@@ -23386,28 +23388,31 @@ function Safari() {
             }
         }
     };
-    Volleyball.prototype.processPrepMove = function() {
-        var torow, tocolumn, dist, cost, cteam;
+    Volleyball.prototype.movePlayer = function(player, goTo) {
+        var cteam, torow, column;
         for (var team in this.teams) {
             cteam = this.teams[team];
             for (var t in cteam) {
                 p = cteam[t];
-                if (p.action[0] == "a") {
+                if (p.id !== player) {
+                    continue;
+                }
+                if (goTo[0] == "a") {
                     torow = 1;
                 }
-                if (p.action[0] == "b") {
+                if (goTo[0] == "b") {
                     torow = 2;
                 }
-                if (p.action[0] == "c") {
+                if (goTo[0] == "c") {
                     torow = 3;
                 }
-                if (p.action[0] == "d") {
+                if (goTo[0] == "d") {
                     torow = 4;
                 }
-                tocolumn = parseInt(p.action[1], 10);
-                p.row = torow;
-                p.column = tocolumn;
-                p.pos = p.action;
+                tocolumn = parseInt(goTo[1], 10);
+                this.teams[team][t].row = torow;
+                this.teams[team][t].column = tocolumn;
+                this.teams[team][t].pos = p.action;
             }
         }
     }
@@ -23446,9 +23451,7 @@ function Safari() {
                     }
                     tocolumn = parseInt(p.action[1], 10);
                     dist = Math.abs(p.row - torow) + Math.abs(p.column - tocolumn);
-                    p.row = torow;
-                    p.column = tocolumn;
-                    p.pos = p.action;
+                    this.movePlayer(p.id, p.action);
                     cost = (dist > 1 ? dist : dist * 2);
                     p.stamina = Math.max(0, p.stamina-cost);
                     p.moved = dist;
@@ -23904,12 +23907,12 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
-                case 5: p.place = 0; p.pos = "b2"; break;
-                case 0: p.place = 1; p.pos = "b4"; break;
-                case 1: p.place = 2; p.pos = "b6"; break;
-                case 2: p.place = 3; p.pos = "d6"; break;
-                case 3: p.place = 4; p.pos = "d4"; break;
-                case 4: p.place = 5; p.pos = "d2"; break;
+                case 5: p.place = 0; this.movePlayer(p.id, "b2"); break;
+                case 0: p.place = 1; this.movePlayer(p.id, "b4"); break;
+                case 1: p.place = 2; this.movePlayer(p.id, "b6"); break;
+                case 2: p.place = 3; this.movePlayer(p.id, "d6"); break;
+                case 3: p.place = 4; this.movePlayer(p.id, "d4"); break;
+                case 4: p.place = 5; this.movePlayer(p.id, "d2"); break;
             }
             if (p.place <= 2) {
                 p.zone = "back";
@@ -23925,12 +23928,12 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
-                case 5: p.pos = "b2"; p.row = 4; p.column = 2; break;
-                case 0: p.pos = "b4"; p.row = 2; p.column = 2; break;
-                case 1: p.pos = "b6"; p.row = 2; p.column = 4; break;
-                case 2: p.pos = "d6"; p.row = 2; p.column = 6; break;
-                case 3: p.pos = "d4"; p.row = 4; p.column = 6; break;
-                case 4: p.pos = "d2"; p.row = 4; p.column = 4; break;
+                case 5: this.movePlayer(p.id, "d2"); break;
+                case 0: this.movePlayer(p.id, "b2"); break;
+                case 1: this.movePlayer(p.id, "b4"); break;
+                case 2: this.movePlayer(p.id, "b6"); break;
+                case 3: this.movePlayer(p.id, "d6"); break;
+                case 4: this.movePlayer(p.id, "d4"); break;
             }
         }
     };
@@ -24121,7 +24124,7 @@ function Safari() {
         }
         if (target.row < 3 && target.skills.indexOf("back-attack" > -1)) {
             target.row = 3;
-            target.pos = ("c" + target.column);
+            this.movePlayer(target.id, "c" + target.column);
         }
         target.setval = Math.max(0, Math.min(proficiency, 6));
         switch (target.setval) {
@@ -24632,6 +24635,7 @@ function Safari() {
                     }
                 } 
             }
+            return;
         }
         
         var volleyballActSkills = ["fury", "float"];
