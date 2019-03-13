@@ -23186,13 +23186,13 @@ function Safari() {
             ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
         ];
         var ret = [], r, place, inp;
-        for (var p in this.team[defteam]) {
-            poke = this.team[defteam].party[this.team[defteam].currentPoke];
+        for (var p in this.teams[defteam]) {
+            poke = this.teams[defteam].party[this.teams[defteam].currentPoke];
             this.rows["x" + this.team[defteam].pos[1] + (8 - this.team[defteam].row)] = poke;
         }
-        for (var p in this.team[atkteam]) {
-            poke = this.team[atkteam].party[this.team[atkteam].currentPoke];
-            this.rows[this.team[atkteam].pos] = poke;
+        for (var p in this.teams[atkteam]) {
+            poke = this.teams[atkteam].party[this.teams[atkteam].currentPoke];
+            this.rows[this.teams[atkteam].pos] = poke;
         }
         for (var i = 0; i++; i < props.length) {
             ret += "<tr>";
@@ -23210,7 +23210,7 @@ function Safari() {
             }
             ret += "<p>"
         }
-        return;
+        return ret;
     };
     Volleyball.prototype.sendMessage = function(name, msg, color) {
         var id = sys.id(name);
@@ -23814,10 +23814,7 @@ function Safari() {
                 }
                 if (this.phase == "serve") {
                     p.quickattack = false;
-                    p.canServe = false;
                     p.freepass = false;
-                    p.receiver = false;
-                    p.canServe = false;
                     p.receiver = false;
                     p.passval = 0;
                     p.setval = 0;
@@ -23885,6 +23882,8 @@ function Safari() {
             }
         }
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
         this.phase = "serve";
         this.teamHasBall = team;
         return true;
@@ -23996,36 +23995,36 @@ function Safari() {
         else if (player.serveEffort === 2) {
             pow *= 1.5;
         }
-        column += Math.floor(1.25 - (Math.random() * 2.5));
+        column += Math.floor(1.1 - (Math.random() * 2.2));
         if (player.precision <= 4) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
+            column += Math.floor(1.15 - (Math.random() * 2.3));
         }
         if (player.precision <= 3) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
+            column += Math.floor(1.15 - (Math.random() * 2.3));
         }
         if (player.precision <= 2) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
+            column += Math.floor(1.15 - (Math.random() * 2.3));
         }
         if (player.precision <= 1) {
-            column += Math.floor(1.4 - (Math.random() * 2.8));
+            column += Math.floor(1.25 - (Math.random() * 2.5));
         }
         if (player.precision <= 0) {
-            column += Math.floor(1.4 - (Math.random() * 2.8));
+            column += Math.floor(1.25 - (Math.random() * 2.5));
         }
         if (player.precision <= 4) {
-            row += Math.floor(1.2 - (Math.random() * 2.4));
+            row += Math.floor(1.1 - (Math.random() * 2.2));
         }
         if (player.precision <= 3) {
-            row += Math.floor(1.2 - (Math.random() * 2.4));
+            row += Math.floor(1.1 - (Math.random() * 2.2));
         }
         if (player.precision <= 2) {
-            row += Math.floor(1.25 - (Math.random() * 2.5));
+            row += Math.floor(1.1 - (Math.random() * 2.2));
         }
         if (player.precision <= 1) {
-            row += Math.floor(1.4 - (Math.random() * 2.8));
+            row += Math.floor(1.2 - (Math.random() * 2.4));
         }
         if (player.precision <= 0) {
-            row += Math.floor(1.4 - (Math.random() * 2.8));
+            row += Math.floor(1.2 - (Math.random() * 2.4));
         }
         this.sendMessageAll(this.actName(player) + " serves the ball!", "blue");
         if (column < 1 || column > 7 || row < 1) {
@@ -24054,8 +24053,8 @@ function Safari() {
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
         this.phase = "receive";
         this.teamHasBall = defteam;
-        this.sendMessageTeam(atkteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 1), "blue");
-        this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0), "blue");
+        this.sendMessageTeam(atkteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
+        this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.sendMessageTeam(0, this.courtView(0));
         this.sendMessageTeam(1, this.courtView(1));
     }
