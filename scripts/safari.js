@@ -24137,8 +24137,8 @@ function Safari() {
         player.canTip = false;
         player.canHit = false;
         player.stamina = Math.max(player.stamina - 1, 0);
-        this.sendAllTeam(0, this.courtView(0));
-        this.sendAllTeam(1, this.courtView(1));
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
     };
     Volleyball.prototype.processTip = function(player) {
         var atkteam = player.team, safe = false, stcost;
@@ -24182,8 +24182,8 @@ function Safari() {
             this.phase = "prep";
             return;
         }
-        this.sendAllTeam(0, this.courtView(0));
-        this.sendAllTeam(1, this.courtView(1));
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
     };
     Volleyball.prototype.processAttack = function(player, row, column) {
         /*
@@ -24402,8 +24402,8 @@ function Safari() {
         this.sendMessageTeam(atkteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.sendMessageTeam(defteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
         this.clearVals();
-        this.sendAllTeam(0, this.courtView(0));
-        this.sendAllTeam(1, this.courtView(1));
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
     }
     Volleyball.prototype.processReceive = function() {
         /*
@@ -24580,8 +24580,8 @@ function Safari() {
         this.ballPower = 0;
         this.ballRow = -1;
         this.ballColumn = -1;
-        this.sendAllTeam(0, this.courtView(0));
-        this.sendAllTeam(1, this.courtView(1));
+        this.sendMessageTeam(0, this.courtView(0));
+        this.sendMessageTeam(1, this.courtView(1));
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
