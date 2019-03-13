@@ -23923,12 +23923,12 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
-                case 5: p.place = 0; this.movePlayer(p.id, "b2"); break;
-                case 0: p.place = 1; this.movePlayer(p.id, "b4"); break;
-                case 1: p.place = 2; this.movePlayer(p.id, "b6"); break;
-                case 2: p.place = 3; this.movePlayer(p.id, "d6"); break;
-                case 3: p.place = 4; this.movePlayer(p.id, "d4"); break;
-                case 4: p.place = 5; this.movePlayer(p.id, "d2"); break;
+                case 5: this.inputVal(p.id, "place", 0); this.movePlayer(p.id, "b2"); break;
+                case 0: this.inputVal(p.id, "place", 1); this.movePlayer(p.id, "b4"); break;
+                case 1: this.inputVal(p.id, "place", 2); this.movePlayer(p.id, "b6"); break;
+                case 2: this.inputVal(p.id, "place", 3); this.movePlayer(p.id, "d6"); break;
+                case 3: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
+                case 4: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
             }
             if (p.place <= 2) {
                 p.zone = "back";
@@ -24636,6 +24636,7 @@ function Safari() {
             this.sendMessage(name, ("Phase: " + this.phase));
             this.sendMessage(name, ("Act: " + player.action));
             this.sendMessage(name, ("Pos: " + player.pos));
+            this.sendMessage(name, ("Place: " + player.place));
             this.sendMessage(name, ("Can Serve: " + player.canServe));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
             if (cdata.length > 1) {
@@ -24677,7 +24678,7 @@ function Safari() {
                     return false;
                 }
             }
-            player.place = hold;
+            this.inputVal(p.id, "place", hold); 
             this.sendMessageTeam(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
             return true;
         } else {
