@@ -23428,7 +23428,7 @@ function Safari() {
                 tocolumn = parseInt(goTo[1], 10);
                 this.teams[team][t].row = torow;
                 this.teams[team][t].column = tocolumn;
-                this.teams[team][t].pos = p.action;
+                this.teams[team][t].pos = goTo;
             }
         }
     }
@@ -24014,7 +24014,7 @@ function Safari() {
     };
     Volleyball.prototype.processServe = function(player, row, column) {
         /*
-            Player may perform a serve with different levels: easy (1 stamina) normal (3 stamina) or jump (5 stamina)
+            Player may perform a serve with different levels: easy (2 stamina) normal (4 stamina) or jump (6 stamina)
         */
         var pow, stcost; defteam = player.team === 0 ? 1 : 0;
         var atkteam = defteam === 0 ? 1 : 0;
@@ -24679,6 +24679,12 @@ function Safari() {
                 }
             }
             this.inputVal(player.id, "place", hold); 
+            if (player.place <= 2) {
+                this.inputVal(player.id, "zone", "back"); 
+            }
+            else {
+                this.inputVal(player.id, "zone", "front"); 
+            }
             this.sendMessageTeam(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
             return true;
         } else {
@@ -24724,6 +24730,11 @@ function Safari() {
                 case 3: opt = ["c5", "c6", "c7", "d5", "d6", "d7"]; break;
                 case 4: opt = ["c3", "c4", "c5", "d3", "d4", "d5"]; break;
                 case 5: opt = ["c1", "c2", "c3", "d1", "d2", "d3"]; break;
+            }
+            if (opt.indexOf(data) !== -1) {
+                this.sendMessageTeam(player.team, player.id + " is moving to " + data + "!", "green");
+                this.movePlayer(player.id, data);
+                return;
             }
         } else {
                 if (this.phase === "set" && (team === this.teamHasBall) && player.row === "front" && player.canSet) {
