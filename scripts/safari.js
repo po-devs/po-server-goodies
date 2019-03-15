@@ -23810,12 +23810,12 @@ function Safari() {
                 this.inputMove(p.id, "4");
                 this.inputMove(p.id, "5");
             }
-            if (p.action == "") {
+            if (p.action == "" && act !== "") {
                 if (act2) {
-                    this.inputValue(p.id, "action", act + ":" + act2);
+                    this.inputVal(p.id, "action", act + ":" + act2);
                 }
                 else {
-                    this.inputValue(p.id, "action", act);
+                    this.inputVal(p.id, "action", act);
                 }
             }
         }
