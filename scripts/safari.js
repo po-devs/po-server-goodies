@@ -23370,9 +23370,9 @@ function Safari() {
         if (this.phase == "assemble") {
             if (this.step >= 5) {
                 this.step = 0;
+                this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.aiChooseMove(0);
                 this.aiChooseMove(1);
-                this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.phase = "prep";
                 this.resetPosition(0);
                 this.resetPosition(1);
@@ -23658,6 +23658,15 @@ function Safari() {
         chooseHitter = (chance(0.67) ? 1 : 2);
         for (var t in team) {
             p = team[t];
+            if (this.phase == "assemble" && p.place === -1) {
+                this.inputMove(p.id, "0");
+                this.inputMove(p.id, "1");
+                this.inputMove(p.id, "2");
+                this.inputMove(p.id, "3");
+                this.inputMove(p.id, "4");
+                this.inputMove(p.id, "5");
+                return;
+            }
             if (p.canServe && p.action == "") {
                 //Force it to serve because otherwise the game doesn't start
                 if (p.precision >= 4) {
@@ -23716,9 +23725,6 @@ function Safari() {
                 }
                 act = ("x" + maxr + maxc);
                 this.inputVal(p.id, "action", act);
-            }
-            if (sys.isInChannel(sys.id(p.id), safchan)) {
-                continue;
             }
             if (this.teamHasBall === team) {
                 if (this.phase == "set") {
@@ -23803,14 +23809,6 @@ function Safari() {
                 if ((p.stamina <= 10 && chance(0.66)) || (p.stamina <= 4)) {
                     act = "sub";
                 }
-            }
-            if (this.phase == "assemble" && p.place === -1) {
-                this.inputVal(p.id, "place", "0");
-                this.inputVal(p.id, "place", "1");
-                this.inputVal(p.id, "place", "2");
-                this.inputVal(p.id, "place", "3");
-                this.inputVal(p.id, "place", "4");
-                this.inputVal(p.id, "place", "5");
             }
             if (p.action == "" && act !== "") {
                 if (act2) {
