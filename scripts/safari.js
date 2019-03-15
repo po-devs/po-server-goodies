@@ -24638,7 +24638,7 @@ function Safari() {
             teammates = this.teams[1];
         }
         if (!player) {
-            this.sendMessageAll("Error handling command.");
+            this.sendMessageAll("Error handling command for " + name + ".");
             return;
         }
         if (cdata[0] == "eval") {
