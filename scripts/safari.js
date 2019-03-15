@@ -23943,7 +23943,6 @@ function Safari() {
                 p.zone = "front";
             }
         }
-        this.teamServed = team;
     };
     Volleyball.prototype.resetPosition = function(team) {
         var p;
@@ -24024,6 +24023,7 @@ function Safari() {
         */
         var pow, stcost; defteam = player.team === 0 ? 1 : 0;
         var atkteam = defteam === 0 ? 1 : 0;
+        this.teamServed = player.team;
         pow = player.serve;
         if (player.serveEffort === 0) {
             pow *= 0.5;
