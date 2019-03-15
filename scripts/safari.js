@@ -23805,12 +23805,12 @@ function Safari() {
                 }
             }
             if (this.phase == "assemble" && p.place === -1) {
-                this.inputVal(p.id, "place", "0");
-                this.inputVal(p.id, "place", "1");
-                this.inputVal(p.id, "place", "2");
-                this.inputVal(p.id, "place", "3");
-                this.inputVal(p.id, "place", "4");
-                this.inputVal(p.id, "place", "5");
+                this.inputMove(p.id, "0");
+                this.inputMove(p.id, "1");
+                this.inputMove(p.id, "2");
+                this.inputMove(p.id, "3");
+                this.inputMove(p.id, "4");
+                this.inputMove(p.id, "5");
             }
             if (p.action == "" && act !== "") {
                 if (act2) {
