@@ -16616,7 +16616,7 @@ function Safari() {
                     rewardCapCheck(player, reward[0], reward[1], true);
                 }
                 
-                if (next > args.celebs.length) {
+                if (next >= 13) {
                     player.firstCelebrityRun = false;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
                     safaribot.sendHtmlAll("", safchan);
@@ -16624,6 +16624,7 @@ function Safari() {
                     safaribot.sendHtmlAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
                     safari.saveGame(player);
+                    return;
                 }
                 else {
                     if (!id) {
