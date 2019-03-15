@@ -23516,6 +23516,7 @@ function Safari() {
             cteam = this.teams[team];
             for (var t in cteam) {
                 p = cteam[t];
+                this.sendMessageAll(p.action);
                 if (p.action[0] == "x") {
                     if (p.action[1] == "a") {
                         torow = 1;
@@ -23530,7 +23531,7 @@ function Safari() {
                         torow = 4;
                     }
                     tocolumn = parseInt(p.action[2], 10);
-                    if (this.phase === "serve") {
+                    if (this.phase == "serve") {
                         this.processServe(p, torow, tocolumn);
                         passed = true;
                     }
@@ -23560,6 +23561,10 @@ function Safari() {
                 this.scorePoint(defteam);
             }
         }
+        else if (!passed) {
+            this.sendMessageAll("Something broke!");
+        }
+        return;
     };
     Volleyball.prototype.aiChooseMove = function(ind) {
         var p, getRow, getColumn, act = "", act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
