@@ -23493,7 +23493,6 @@ function Safari() {
             }
             return;
         }
-        this.clearVals();
         if (this.phase == "receive") {
             this.processReceive();
             return;
@@ -23565,6 +23564,7 @@ function Safari() {
         else if (!passed) {
             this.sendMessageAll("Something broke!");
         }
+        this.clearVals();
         return;
     };
     Volleyball.prototype.aiChooseMove = function(ind) {
@@ -24093,6 +24093,7 @@ function Safari() {
         this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.sendMessageTeam(0, this.courtView(0));
         this.sendMessageTeam(1, this.courtView(1));
+        this.clearVals();
     }
     Volleyball.prototype.endBlock = function(defteam) {
         var p;
@@ -24615,6 +24616,7 @@ function Safari() {
         this.ballPower = 0;
         this.ballRow = -1;
         this.ballColumn = -1;
+        this.clearVals();
         this.sendMessageTeam(0, this.courtView(0));
         this.sendMessageTeam(1, this.courtView(1));
     };
