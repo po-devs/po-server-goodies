@@ -23370,6 +23370,8 @@ function Safari() {
         if (this.phase == "assemble") {
             if (this.step >= 5) {
                 this.step = 0;
+                this.aiChooseMove(0);
+                this.aiChooseMove(1);
                 this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.phase = "prep";
                 this.resetPosition(0);
