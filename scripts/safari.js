@@ -23684,7 +23684,7 @@ function Safari() {
                     p.actSkills.float = true;
                 }
                 p.serveEffort = (Math.floor(Math.random() * (2.1 + (p.serve * 0.15))));
-                this.inputMove(p.id, act);
+                this.inputVal(p.id, "action", act);
             }
             if (p.canHit && p.action == "") {
                 if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
@@ -23713,6 +23713,7 @@ function Safari() {
                     maxr = "c";
                 }
                 act = ("x" + maxr + maxc);
+                this.inputVal(p.id, "action", act);
             }
             if (sys.isInChannel(sys.id(p.id), safchan)) {
                 continue;
@@ -23811,10 +23812,10 @@ function Safari() {
             }
             if (p.action == "") {
                 if (act2) {
-                    this.inputMove(p.id, act + ":" + act2);
+                    this.inputValue(p.id, "action", act + ":" + act2);
                 }
                 else {
-                    this.inputMove(p.id, act);
+                    this.inputValue(p.id, "action", act);
                 }
             }
         }
@@ -24512,7 +24513,7 @@ function Safari() {
                 for (var s in this.teams[this.teamHasBall]) {
                     this.teams[this.teamHasBall][s].receiver = false;
                 }
-                p.receiver = true;
+                this.inputVal(p.id, "receiver", true);
             }
         }
         maxPass -= 2;
