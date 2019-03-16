@@ -23954,12 +23954,12 @@ function Safari() {
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
-                case 5: this.movePlayer(p.id, "d2"); break;
-                case 0: this.movePlayer(p.id, "b2"); break;
-                case 1: this.movePlayer(p.id, "b4"); break;
-                case 2: this.movePlayer(p.id, "b6"); break;
-                case 3: this.movePlayer(p.id, "d6"); break;
-                case 4: this.movePlayer(p.id, "d4"); break;
+                case 5: this.movePlayer(p.id, "d2"); this.inputVal(p.id, "zone", "front"); break;
+                case 0: this.movePlayer(p.id, "b2"); this.inputVal(p.id, "zone", "back"); break;
+                case 1: this.movePlayer(p.id, "b4"); this.inputVal(p.id, "zone", "back"); break;
+                case 2: this.movePlayer(p.id, "b6"); this.inputVal(p.id, "zone", "back"); break;
+                case 3: this.movePlayer(p.id, "d6"); this.inputVal(p.id, "zone", "front"); break;
+                case 4: this.movePlayer(p.id, "d4"); this.inputVal(p.id, "zone", "front"); break;
             }
         }
     };
