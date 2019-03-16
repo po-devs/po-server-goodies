@@ -23744,8 +23744,8 @@ function Safari() {
                     }
                     else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
                         dist = Math.floor(0.5 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
-                        if (dist > player.speed) {
-                            dist = player.speed;
+                        if (dist > p.speed) {
+                            dist = p.speed;
                         }
                         if (chance(0.85)) {
                             toColumn = p.column + dist;
