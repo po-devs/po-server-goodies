@@ -24026,7 +24026,7 @@ function Safari() {
         /*
             Player may perform a serve with different levels: easy (2 stamina) normal (4 stamina) or jump (6 stamina)
         */
-        var pow, stcost; defteam = player.team === 0 ? 1 : 0, xvar, yvar;
+        var pow, stcost, defteam = player.team === 0 ? 1 : 0, xvar, yvar;
         var atkteam = defteam === 0 ? 1 : 0;
         this.teamServed = player.team;
         pow = player.serve;
