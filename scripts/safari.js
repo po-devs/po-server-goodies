@@ -23905,7 +23905,7 @@ function Safari() {
         if (this.teamServed !== team) {
             this.sideOut(team);
         }
-        this.sendMessage("Score: " + this.teamData[0].name + ": " + this.teamData[0].score + " x " + this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageAll("Score: " + this.teamData[0].name + ": " + this.teamData[0].score + " x " + this.teamData[1].name + ": " + this.teamData[1].score);
         this.turn = 0;
         this.clearVals();
         this.resetPosition(team);
@@ -24094,8 +24094,15 @@ function Safari() {
             }
         }
     }
-    Volleyball.prototype.processSet = function(player, target, passscore) {
-        var dist, proficiency, bonus, stcost, score;
+    Volleyball.prototype.processSet = function(player, setTo, passscore) {
+        var dist, proficiency, bonus, stcost, score, target = null;
+
+        for (var p in this.teams[player.team]) {
+            if (this.teams[player.team][p].id.toLowerCase() == setTo.toLowerCase()) {
+                target = p;
+                break;
+            }
+        }
 
         dist = Math.abs(player.column - target.column);
         /*
@@ -24156,7 +24163,6 @@ function Safari() {
         this.clearVals();
         player.canTip = false;
         player.canHit = false;
-        player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
     };
