@@ -23835,7 +23835,7 @@ function Safari() {
                     p.passval = 0;
                     p.setval = 0;
                     p.moved = 0;
-                    if (p.zone == "front" && player.team !== this.teamHasBall) {
+                    if (p.zone == "front" && p.team !== this.teamHasBall) {
                         p.canBlock = true;
                     }
                 }
