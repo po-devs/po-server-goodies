@@ -24026,7 +24026,7 @@ function Safari() {
         /*
             Player may perform a serve with different levels: easy (2 stamina) normal (4 stamina) or jump (6 stamina)
         */
-        var pow, stcost, defteam = player.team === 0 ? 1 : 0, xvar, yvar;
+        var pow, stcost, defteam = player.team === 0 ? 1 : 0, xvar, yvar, torow, tocolumn;
         var atkteam = defteam === 0 ? 1 : 0;
         this.teamServed = player.team;
         pow = player.serve;
@@ -24040,17 +24040,17 @@ function Safari() {
         xvar = (chance(0.5) ? xvar * -1 : xvar);
         yvar = (chance(0.8 - (((player.precision * 1.2) + 2) * 0.1)) ? 1 : 0);
         yvar = (chance(0.5) ? yvar * -1 : yvar);
-        row = row + yvar;
-        column = column + xvar;
+        torow = row + yvar;
+        tocolumn = column + xvar;
         this.sendMessageAll(this.actName(player) + " serves the ball!", "blue");
-        if (row > 3) {
+        if (torow > 3) {
             //add chance for a net in later
             this.sendMessageAll(this.actName(player) + " served the ball into the net!", "blue");
             this.scorePoint(defteam);
             this.phase = "prep";
             return;
         }
-        if (column < 1 || column > 7 || row < 1) {
+        if (tocolumn < 1 || tocolumn > 7 || torow < 1) {
             this.sendMessageAll(this.actName(player) + " served the ball out of bounds!", "blue");
             this.scorePoint(defteam);
             this.phase = "prep";
@@ -24069,8 +24069,8 @@ function Safari() {
         }
         pow = Math.ceil(Math.max(pow, 1));
         this.ballPower = pow;
-        this.ballRow = row;
-        this.ballColumn = (8 - column);
+        this.ballRow = torow;
+        this.ballColumn = (8 - tocolumn);
         stcost = (2 + (player.serveEffort * 2));
         player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
@@ -24740,7 +24740,7 @@ function Safari() {
                 return;
             }
         } else {
-                if (this.phase == "set" && (team === this.teamHasBall) && player.zone == "front" && player.canSet) {
+                if (this.phase == "set" && (player.team === this.teamHasBall) && player.zone == "front" && player.canSet) {
                     if (cdata[0] == "set") {
                         if (!player.canSet) {
                             //redundtant but keep this
