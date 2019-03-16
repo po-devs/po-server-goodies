@@ -24740,7 +24740,7 @@ function Safari() {
                 return;
             }
         } else {
-                if (this.phase == "set" && (team === this.teamHasBall) && player.zone == "front" && player.canSet) {
+                if (this.phase == "set" && (player.team === this.teamHasBall) && player.zone == "front" && player.canSet) {
                     if (cdata[0] == "set") {
                         if (!player.canSet) {
                             //redundtant but keep this
