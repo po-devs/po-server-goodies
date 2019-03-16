@@ -24637,6 +24637,7 @@ function Safari() {
             this.sendMessage(name, ("Pos: " + player.pos));
             this.sendMessage(name, ("Place: " + player.place));
             this.sendMessage(name, ("Can Serve: " + player.canServe));
+            this.sendMessage(name, ("Can Set: " + player.canSet));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
             if (cdata.length > 1) {
                 for (var t in this.teams) {
