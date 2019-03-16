@@ -23665,7 +23665,7 @@ function Safari() {
                 this.inputMove(p.id, "3");
                 this.inputMove(p.id, "4");
                 this.inputMove(p.id, "5");
-                return;
+                continue;
             }
             if (p.canServe && p.action == "") {
                 //Force it to serve because otherwise the game doesn't start
@@ -24624,8 +24624,7 @@ function Safari() {
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
         var team, player, opt = [], q, hold, cteam, k;
-        var cdata = data.split(":");
-        name = name.toLowerCase();
+        var cdata = data.split(":")
 
         if (Object.keys(this.teams[0]).indexOf(name) !== -1) {
             team = 0;
