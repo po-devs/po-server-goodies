@@ -24737,16 +24737,6 @@ function Safari() {
             }
         } else {
                 if (this.phase === "set" && (team === this.teamHasBall) && player.row === "front" && player.canSet) {
-                    for (var t in teammates) {
-                        if (t === name) {
-                            continue;
-                        }
-                        var p = teammates[t];
-                        if (!p.zone === "front" && !p.skills.indexOf("back-attack") === -1) {
-                            continue;
-                        }
-                        opt.push(t);
-                    }
                     if (cdata[0] == "set") {
                         if (!player.canSet) {
                             //redundtant but keep this
@@ -24756,7 +24746,20 @@ function Safari() {
                             this.sendMessage(name, "Please select a target for your set!", "red");
                             return;
                         }
-                        if (opt.indexOf(cdata[1]) !== -1) {
+                        var tar = null;
+                        for (var t in teammates) {
+                            var p = teammates[t];
+                            if (p.id.toLowerCase() === name.toLowerCase()) {
+                                continue;
+                            }
+                            if (!p.zone === "front" && !p.skills.indexOf("back-attack") === -1) {
+                                continue;
+                            }
+                            if (p.id.toLowerCase() === cdata[1].toLowerCase()) {
+                                tar = p;
+                            }
+                        }
+                        if (tar === null) {
                             this.sendMessage(name, cdata[1] + " is not a valid set target!", "red");
                         }
                         if (this.excludeActions.indexOf("set") !== -1) {
@@ -24769,8 +24772,10 @@ function Safari() {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
                         }
                         this.inputVal(player.id, "action", "set");
-                        this.inputVal(player.id, "setTarget", cdata[1]);
+                        this.inputVal(player.id, "setTarget", tar.id);
                         this.excludeActions.push("set");
+                        this.sendMessageTeam(player.team, this.actName(player) + " is going to set to " + this.actName(tar) + "!", "green");
+                        return;
                     }
                 }
                 if (player.canTip && (this.excludeActions.indexOf("tip") === -1)) {
@@ -24857,7 +24862,7 @@ function Safari() {
                 }
             }
         }
-        if (opt.indexOf(data) === -1) {
+        if (opt.indexOf(cdata[0]) === -1) {
             this.sendMessage(name, "No such action as " + data + "!", "red");
             return;
         }
