@@ -24626,15 +24626,19 @@ function Safari() {
         var team, player, opt = [], q, hold, cteam, k;
         var cdata = data.split(":");
 
-        if (Object.keys(this.teams[0]).indexOf(name) !== -1) {
-            team = 0;
-            player = this.teams[0][name];
-            teammates = this.teams[0];
+        for (var t in this.teams[0]) {
+            if (this.teams[0].id.toLowerCase() == name.toLowerCase()) {
+                player = this.teams[0][t];
+                teammates = this.teams[0];
+                break;
+            }
         }
-        else {
-            team = 1;
-            player = this.teams[1][name];
-            teammates = this.teams[1];
+        for (var t in this.teams[1]) {
+            if (this.teams[1].id.toLowerCase() == name.toLowerCase()) {
+                player = this.teams[1][t];
+                teammates = this.teams[1];
+                break;
+            }
         }
         if (!player) {
             this.sendMessageAll("Error handling command for " + name + ".");
