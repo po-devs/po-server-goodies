@@ -23728,7 +23728,7 @@ function Safari() {
                 act = ("x" + maxr + maxc);
                 this.inputVal(p.id, "action", act);
             }
-            if (this.teamHasBall === team) {
+            if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
                     if (p.canSet && p.set == maxSet) {
                         act = "set";
@@ -24102,6 +24102,10 @@ function Safari() {
                 target = p;
                 break;
             }
+        }
+        if (!target) {
+            this.sendMessageAll("Something broke while handing process set.");
+            return;
         }
 
         dist = Math.abs(player.column - target.column);
