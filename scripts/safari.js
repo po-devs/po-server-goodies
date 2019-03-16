@@ -24627,14 +24627,14 @@ function Safari() {
         var cdata = data.split(":");
 
         for (var t in this.teams[0]) {
-            if (this.teams[0].id.toLowerCase() == name.toLowerCase()) {
+            if (this.teams[0][t].id.toLowerCase() == name.toLowerCase()) {
                 player = this.teams[0][t];
                 teammates = this.teams[0];
                 break;
             }
         }
         for (var t in this.teams[1]) {
-            if (this.teams[1].id.toLowerCase() == name.toLowerCase()) {
+            if (this.teams[1][t].id.toLowerCase() == name.toLowerCase()) {
                 player = this.teams[1][t];
                 teammates = this.teams[1];
                 break;
