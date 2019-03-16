@@ -24136,6 +24136,9 @@ function Safari() {
             target.row = 3;
             this.movePlayer(target.id, "c" + target.column);
         }
+        else if (player.row !== 4) {
+            proficiency--;
+        }
         target.setval = Math.max(0, Math.min(proficiency, 6));
         switch (target.setval) {
             case 6: score = "PERFECT"; break;
@@ -24153,7 +24156,7 @@ function Safari() {
         this.clearVals();
         player.canTip = false;
         player.canHit = false;
-        player.stamina = Math.max(player.stamina - 1, 0);
+        player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
     };
@@ -24737,7 +24740,7 @@ function Safari() {
                 return;
             }
         } else {
-                if (this.phase === "set" && (team === this.teamHasBall) && player.row === "front" && player.canSet) {
+                if (this.phase == "set" && (team === this.teamHasBall) && player.zone == "front" && player.canSet) {
                     if (cdata[0] == "set") {
                         if (!player.canSet) {
                             //redundtant but keep this
