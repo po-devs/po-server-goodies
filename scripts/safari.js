@@ -24165,7 +24165,7 @@ function Safari() {
         this.sendMessageAll(this.actName(player) + " sets the ball to " + this.actName(target) + " [The set is " + score + "]!", "blue");
         this.sendMessageAll("Test 2");
         player.stamina = Math.max(player.stamina - stcost, 0);
-        this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + p.stamina + "!" , "red");
+        this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + player.stamina + "!" , "red");
         this.phase = "attack";
         this.clearVals();
         player.canTip = false;
