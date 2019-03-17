@@ -23730,7 +23730,7 @@ function Safari() {
             }
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.set == maxSet) {
+                    if (p.canSet && p.toss === maxSet) {
                         act = "set";
                         for (var s in team) {
                             q = team[s];
