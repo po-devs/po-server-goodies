@@ -23551,7 +23551,7 @@ function Safari() {
                     break;
                 }
                 if (p.action == "set") {
-                    this.processSet(p.id, p.setTarget, p.passval);
+                    this.processSet(p.id, p.team, p.setTarget, p.passval);
                     passed = true;
                     break;
                 }
@@ -24093,10 +24093,10 @@ function Safari() {
             }
         }
     }
-    Volleyball.prototype.processSet = function(name, setTo, passscore) {
+    Volleyball.prototype.processSet = function(name, ind, setTo, passscore) {
         var dist, proficiency, bonus, stcost, score, target = null, player = null;
 
-        for (var p in this.teams[player.team]) {
+        for (var p in this.teams[ind]) {
             if (this.teams[player.team][p].id.toLowerCase() == setTo.toLowerCase()) {
                 target = p;
             }
