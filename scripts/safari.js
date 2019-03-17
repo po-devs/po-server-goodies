@@ -24098,10 +24098,10 @@ function Safari() {
 
         for (var p in this.teams[ind]) {
             if (this.teams[ind][p].id.toLowerCase() == setTo.toLowerCase()) {
-                target = p;
+                target = this.teams[ind][p];
             }
             if (this.teams[ind][p].id.toLowerCase() == name.toLowerCase()) {
-                player = p;
+                player = this.teams[ind][p];
             }
         }
         if (!target || !player) {
