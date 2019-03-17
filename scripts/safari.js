@@ -23043,8 +23043,8 @@ function Safari() {
         this.teamHasBall = -1;
 
         this.teamData = [
-            {points: 0, name: team1, signups: []},
-            {points: 0, name: team2, signups: []}
+            {score: 0, name: team1, signups: []},
+            {score: 0, name: team2, signups: []}
         ];
         this.turnLength = 8;
         this.step = 0;
@@ -23878,7 +23878,6 @@ function Safari() {
             this.sendMessageAll(Object.keys(this.teams[0]).join(",") + " are the champions!" , "blue");
         }
         if (team === 1) {
-            this.team2Data.score++;
             this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[1]).join(",") + " are the champions!" , "blue");
         }
