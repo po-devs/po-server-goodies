@@ -23726,7 +23726,7 @@ function Safari() {
                     maxr = "c";
                 }
                 act = ("x" + maxr + maxc);
-                this.inputVal(p.id, "action", act);
+                this.inputMove(p.id, act);
             }
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
@@ -23741,6 +23741,7 @@ function Safari() {
                                 act2 = q.id;
                             }
                         }
+                        this.inputMove(p.id, act + ":" + act2);
                     }
                     else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
                         dist = Math.floor(0.5 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
