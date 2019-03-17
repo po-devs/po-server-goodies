@@ -23751,13 +23751,13 @@ function Safari() {
                             toColumn = p.column + dist;
                             toColumn = Math.max(toColumn, 1);
                             toColumn = Math.min(toColumn, 7);
-                            if (player.row === 1) {
+                            if (p.row === 1) {
                                 act = "a";
                             }
-                            if (player.row === 2) {
+                            if (p.row === 2) {
                                 act = "b";
                             }
-                            if (player.row === 3) {
+                            if (p.row === 3) {
                                 act = "c";
                             }
                             act += ("" + toColumn);
