@@ -23513,7 +23513,7 @@ function Safari() {
                     continue;
                 }
                 if (p.action == "block" && p.zone == "front" && p.row == 4) {
-                    this.inputVal(player.id, "blocking", true);
+                    this.inputVal(p.id, "blocking", true);
                 }
             }
         }
@@ -23773,12 +23773,10 @@ function Safari() {
                         }
                     }
                     else {
-                        dist = Math.floor(0.75 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
-                        if (dist > p.speed) {
-                            dist = p.speed;
-                        }
+                        dist = Math.floor(0.75 + (Math.random() * p.speed));
+                        dist = Math.min(Math.max(dist, 1), p.speed);
                         if (chance(0.85)) {
-                            toRow = player.row;
+                            toRow = p.row;
                             if (chance(0.33)) {
                                 toRow++;
                                 dist--;
@@ -23789,7 +23787,7 @@ function Safari() {
                             }
                             toRow = Math.max(toRow, 1);
                             toRow = Math.min(toRow, 3);
-                            toColumn = p.column + dist;
+                            toColumn = p.column + (dist * (chance(0.5) ? 1 : -1));
                             toColumn = Math.max(toColumn, 1);
                             toColumn = Math.min(toColumn, 7);
                             if (toRow === 1) {
