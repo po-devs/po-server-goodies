@@ -24161,7 +24161,9 @@ function Safari() {
             case 1: score = "TIGHT"; break;
             case 0: score = "OFF"; break;
         }
+        this.sendMessageAll("Test 1");
         this.sendMessageAll(this.actName(player) + " sets the ball to " + this.actName(target) + " [The set is " + score + "]!", "blue");
+        this.sendMessageAll("Test 2");
         player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + player.stamina + "!" , "red");
         this.phase = "attack";
@@ -24366,7 +24368,6 @@ function Safari() {
         if (player.zone == "back") {
             blkevade += 0.15;
         }
-        var free = false;
         if (!(chance( blkevade ))) {
             totalblk += Math.random() * 3;
             if (totalblk > 6 || totalblk > pow) {
