@@ -23774,8 +23774,8 @@ function Safari() {
                     }
                     else {
                         dist = Math.floor(0.75 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
-                        if (dist > player.speed) {
-                            dist = player.speed;
+                        if (dist > p.speed) {
+                            dist = p.speed;
                         }
                         if (chance(0.85)) {
                             toRow = player.row;
@@ -23814,10 +23814,10 @@ function Safari() {
             }
             if (p.action == "" && act !== "") {
                 if (act2) {
-                    this.inputVal(p.id, "action", act + ":" + act2);
+                    this.inputMove(p.id, act + ":" + act2);
                 }
                 else {
-                    this.inputVal(p.id, "action", act);
+                    this.inputMove(p.id, act);
                 }
             }
         }
@@ -23904,7 +23904,9 @@ function Safari() {
         if (this.teamServed !== team) {
             this.sideOut(team);
         }
-        this.sendMessageAll("Score: " + this.teamData[0].name + ": " + this.teamData[0].score + " x " + this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageAll("SCORE: ");
+        this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
+        this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
         this.turn = 0;
         this.clearVals();
         this.resetPosition(team);
@@ -24302,7 +24304,7 @@ function Safari() {
             p = this.teams[defteam][t];
             if (p.blocking && p.zone == "front") {
                 tempcolumn = (8 - p.tempcolumn);
-                if (player.tempcolumn === tempcolumn) {
+                if (player.column === tempcolumn) {
                     if (angle === 0) {
                         k = p.block + p.prep;
                     }
@@ -24310,7 +24312,7 @@ function Safari() {
                         k = Math.min((p.block + p.prep)/2, 2.25);
                     }
                 }
-                if (player.tempcolumn === tempcolumn - 1) {
+                if (player.column === tempcolumn - 1) {
                     if (angle === -2) {
                         k = p.block + p.prep;
                     }
@@ -24318,7 +24320,7 @@ function Safari() {
                         k = Math.min((p.block + p.prep)/2, 2.25);
                     }
                 }
-                if (player.tempcolumn === tempcolumn + 1) {
+                if (player.column === tempcolumn + 1) {
                     if (angle === 2) {
                         k = p.block + p.prep;
                     }
