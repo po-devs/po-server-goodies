@@ -23551,7 +23551,7 @@ function Safari() {
                     break;
                 }
                 if (p.action == "set") {
-                    this.processSet(p, p.setTarget, p.passval);
+                    this.processSet(p.id, p.setTarget, p.passval);
                     passed = true;
                     break;
                 }
@@ -24093,16 +24093,18 @@ function Safari() {
             }
         }
     }
-    Volleyball.prototype.processSet = function(player, setTo, passscore) {
-        var dist, proficiency, bonus, stcost, score, target = null;
+    Volleyball.prototype.processSet = function(name, setTo, passscore) {
+        var dist, proficiency, bonus, stcost, score, target = null, player = null;
 
         for (var p in this.teams[player.team]) {
             if (this.teams[player.team][p].id.toLowerCase() == setTo.toLowerCase()) {
                 target = p;
-                break;
+            }
+            if (this.teams[player.team][p].id.toLowerCase() == name.toLowerCase()) {
+                player = p;
             }
         }
-        if (!target) {
+        if (!target || !player) {
             this.sendMessageAll("Something broke while handing process set.");
             return;
         }
@@ -24159,9 +24161,11 @@ function Safari() {
             case 1: score = "TIGHT"; break;
             case 0: score = "OFF"; break;
         }
+        this.sendMessageAll("Test 1");
         this.sendMessageAll(this.actName(player) + " sets the ball to " + this.actName(target) + " [The set is " + score + "]!", "blue");
-        p.stamina = Math.max(p.stamina - stcost, 0);
-        this.sendMessage(p.id, "You spent " + stcost + " stamina setting the ball! You now have " + p.stamina + "!" , "red");
+        this.sendMessageAll("Test 2");
+        player.stamina = Math.max(player.stamina - stcost, 0);
+        this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + p.stamina + "!" , "red");
         this.phase = "attack";
         this.clearVals();
         player.canTip = false;
@@ -24232,7 +24236,7 @@ function Safari() {
         if (player.row !== 4 && (player.skills.indexOf("back-attack") === -1 || player.row !== 3)) {
             this.sendMessageAll(this.actName(player) + " was unable to perform a spike, so they hit over a free ball!");
             stcost = 3;
-            p.stamina = Math.max(p.stamina - stcost, 0);
+            player.stamina = Math.max(player.stamina - stcost, 0);
             this.sendMessage(p.id, "You spent " + stcost + " stamina hitting the ball! You now have " + p.stamina + "!" , "red");
             this.ballRow = 2;
             this.ballColumn = 4;
