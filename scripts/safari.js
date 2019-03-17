@@ -24117,7 +24117,7 @@ function Safari() {
         */
         bonus = player.prep >= 1 ? 1 : 0;
         proficiency = Math.min(Math.floor((passscore + player.toss + bonus + (Math.random() * 2 * player.toss))/2), 10);
-        stcost = Math.floor(5.2 - Math.random() - (0.35 * passscore));
+        stcost = Math.floor(7.2 - Math.random() - (0.35 * passscore));
         if (dist === 1) {
             if (proficiency <= 7) {
                 proficiency = Math.floor(0.75 * proficiency);
@@ -24230,6 +24230,7 @@ function Safari() {
         */
         var atkteam = player.team, pow = 0, blk = 0, dist = 0, stcost, might, backattack = (player.zone == "back" ? true : false), dx, vdx, dy, angle = 0, p, k = 0, totalblk = 0, tempcolumn, kill = false;
         var defteam = (atkteam === 0 ? 1 : 0);
+        var xvar, yvar;
 
         if (player.row !== 4 && (player.skills.indexOf("back-attack") === -1 || player.row !== 3)) {
             this.sendMessageAll(this.actName(player) + " was unable to perform a spike, so they hit over a free ball!");
@@ -24246,37 +24247,12 @@ function Safari() {
             return;
         }
 
-        column += Math.floor(1.25 - (Math.random() * 2.5));
-        if (player.precision <= 4) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
-        }
-        if (player.precision <= 3) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
-        }
-        if (player.precision <= 2) {
-            column += Math.floor(1.25 - (Math.random() * 2.5));
-        }
-        if (player.precision <= 1) {
-            column += Math.floor(1.4 - (Math.random() * 2.8));
-        }
-        if (player.precision <= 0) {
-            column += Math.floor(1.4 - (Math.random() * 2.8));
-        }
-        if (player.precision <= 4) {
-            row += Math.floor(1.2 - (Math.random() * 2.4));
-        }
-        if (player.precision <= 3) {
-            row += Math.floor(1.2 - (Math.random() * 2.4));
-        }
-        if (player.precision <= 2) {
-            row += Math.floor(1.25 - (Math.random() * 2.5));
-        }
-        if (player.precision <= 1) {
-            row += Math.floor(1.4 - (Math.random() * 2.8));
-        }
-        if (player.precision <= 0) {
-            row += Math.floor(1.4 - (Math.random() * 2.8));
-        }
+        xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (player.precision * Math.random())), 1)) - ((3 + player.precision) * (1 + Math.random()))), 0);
+        xvar = (chance(0.5) ? xvar * -1 : xvar);
+        yvar = (chance(0.8 - (((player.precision * 1.2) + 2) * 0.1)) ? 1 : 0);
+        yvar = (chance(0.5) ? yvar * -1 : yvar);
+        row = row + yvar;
+        column = column + xvar;
 
         dx = (column - player.column);
         vdx = Math.abs(dx);
@@ -24373,7 +24349,7 @@ function Safari() {
                 kill = true;
             } 
             else {
-                pow = Math.floor( pow - totalkblk );
+                pow = Math.floor( pow - totalblk );
             }
             if (pow <= 2) {
                 free = true;
