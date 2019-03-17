@@ -24097,10 +24097,10 @@ function Safari() {
         var dist, proficiency, bonus, stcost, score, target = null, player = null;
 
         for (var p in this.teams[ind]) {
-            if (this.teams[player.team][p].id.toLowerCase() == setTo.toLowerCase()) {
+            if (this.teams[ind][p].id.toLowerCase() == setTo.toLowerCase()) {
                 target = p;
             }
-            if (this.teams[player.team][p].id.toLowerCase() == name.toLowerCase()) {
+            if (this.teams[ind][p].id.toLowerCase() == name.toLowerCase()) {
                 player = p;
             }
         }
