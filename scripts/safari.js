@@ -23734,11 +23734,12 @@ function Safari() {
                         act = "set";
                         for (var s in team) {
                             q = team[s];
+                            act2 = q.id.toLowerCase();
                             if (q.spike === maxHit && chooseHitter === 1) {
-                                act2 = q.id;
+                                break;
                             }
                             else if (q.spike === secondMaxHit && chooseHitter === 2) {
-                                act2 = q.id;
+                                break;
                             }
                         }
                         this.inputMove(p.id, act + ":" + act2);
