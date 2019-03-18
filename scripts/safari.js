@@ -23050,6 +23050,7 @@ function Safari() {
         this.step = 0;
         this.finished = false;
         this.phase = "signups";
+        this.cyclePhase = "";
 
         // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
@@ -23390,7 +23391,9 @@ function Safari() {
                 this.prepareServe(this.teamHasBall);
             }
             else {
+                this.cyclePhase = this.phase;
                 this.processMoves();
+                this.phase = this.cyclePhase;
             }
         }
     };
@@ -23586,14 +23589,11 @@ function Safari() {
         for (var t in team) {
             act = "";
             p = team[t];
-            if (!p.ai) {
-                continue;
-            }
-            else if (sys.isInChannel(sys.id(p.id), safchan)) {
-                continue;
-            }
             if (this.teamHasBall === team) {
                 if (this.phase == "receive") {
+                    if (sys.isInChannel(sys.id(p.id), safchan)) {
+                        continue;
+                    }
                     if (this.pos === (getRow + this.ballColumn)) {
                         act = "";
                     }
@@ -23665,6 +23665,7 @@ function Safari() {
         for (var t in team) {
             p = team[t];
             act = "";
+            act2 = "";
             if (this.phase == "assemble" && p.place === -1) {
                 this.inputMove(p.id, "0");
                 this.inputMove(p.id, "1");
@@ -23737,7 +23738,7 @@ function Safari() {
             }
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.toss === maxSet) {
+                    if (p.canSet && (p.toss === maxSet)) {
                         act = "set";
                         for (var s in team) {
                             q = team[s];
@@ -23751,7 +23752,7 @@ function Safari() {
                         }
                         this.inputMove(p.id, act + ":" + act2);
                     }
-                    else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
+                    else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1) && p.ai) {
                         dist = Math.floor(0.5 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
                         if (dist > p.speed) {
                             dist = p.speed;
@@ -23768,6 +23769,9 @@ function Safari() {
                             }
                             if (p.row === 3) {
                                 act = "c";
+                            }
+                            if (p.row === 4) {
+                                act = "d";
                             }
                             act += ("" + toColumn);
                         }
@@ -24082,7 +24086,7 @@ function Safari() {
         stcost = (2 + (player.serveEffort * 2));
         player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
-        this.phase = "receive";
+        this.cyclePhase = "receive";
         this.teamHasBall = defteam;
         this.sendMessageTeam(atkteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
         this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
@@ -24174,7 +24178,7 @@ function Safari() {
         this.sendMessageAll(this.actName(player) + " sets the ball to " + this.actName(target) + " [The set is " + score + "]!", "blue");
         player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + player.stamina + "!" , "red");
-        this.phase = "attack";
+        this.cyclePhase = "attack";
         this.clearVals();
         player.canTip = false;
         player.canHit = false;
@@ -24200,7 +24204,7 @@ function Safari() {
                     continue;
                 }
             }
-            this.phase = "set";
+            this.cyclePhase = "set";
             this.teamHasBall = defteam;
             for (var s in this.teams[defteam]) {
                 if (this.teams[defteam].row === "front") {
@@ -24250,7 +24254,7 @@ function Safari() {
             this.ballRow = 2;
             this.ballColumn = 4;
             this.ballPower = 0;
-            this.phase = "receive";
+            this.cyclePhase = "receive";
             this.sendMessageTeam(1, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "! [Strength: FREE]", "blue");
             this.sendMessageTeam(0, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "! [Strength: FREE]", "blue");
             this.teamHasBall = defteam;
@@ -24378,7 +24382,7 @@ function Safari() {
             this.ballColumn = 4;
             this.ballPower = 0;
             this.teamHasBall = defteam;
-            this.phase = "receive";
+            this.cyclePhase = "receive";
             this.sendMessageAll(this.actName(player) + "'s spike was slowed down by blockers! It's a FREE ball for the blocking team!", "blue");
             this.sendMessageTeam(defteam, "The ball soars to b4!", "green");
             return;
@@ -24402,7 +24406,7 @@ function Safari() {
             //nerf in strength if your spike score can't keep up the distance
             pow = Math.max(pow - 2, 1);
         }
-        this.phase = "receive";
+        this.cyclePhase = "receive";
         this.ballPower = pow;
         this.ballRow = row;
         this.ballColumn = (8 - column);
@@ -24556,7 +24560,7 @@ function Safari() {
                 if ( p.receiveType == "dig" ) {
                     stcost += 1;
                 }
-                this.phase = "set";
+                this.cyclePhase = "set";
                 break;
             }
             else {
@@ -24590,7 +24594,7 @@ function Safari() {
                 if ( p.receiveType == "overhand" ) {
                     stcost -= 1;
                 }
-                this.phase = "set";
+                this.cyclePhase = "set";
                 break;
             }
         }
