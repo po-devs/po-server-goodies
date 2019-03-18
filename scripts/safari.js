@@ -24645,6 +24645,7 @@ function Safari() {
                         if (cdata[1] == k.id.toLowerCase()) {
                             this.sendMessage(name, (k.id + " Act: " + k.action));
                             this.sendMessage(name, (k.id + " Pos: " + k.pos));
+                            this.sendMessage(name, (k.id + " Place: " + k.place));
                             this.sendMessage(name, (k.id + " AI: " + k.ai));
                             this.sendMessage(name, (k.id + " Can set: " + k.canSet));
                             this.sendMessage(name, (k.id + " Can hit: " + k.canHit));
