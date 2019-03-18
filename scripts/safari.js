@@ -23584,6 +23584,7 @@ function Safari() {
             getRow = "c";
         }
         for (var t in team) {
+            act = "";
             p = team[t];
             if (!p.ai) {
                 continue;
@@ -23610,7 +23611,7 @@ function Safari() {
                     }
                 }
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front") {
+                    if (p.canSet && p.zone == "front" && p.ai) {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
                         }
@@ -23661,6 +23662,7 @@ function Safari() {
         chooseHitter = (chance(0.67) ? 1 : 2);
         for (var t in team) {
             p = team[t];
+            act = "";
             if (this.phase == "assemble" && p.place === -1) {
                 this.inputMove(p.id, "0");
                 this.inputMove(p.id, "1");
@@ -23702,7 +23704,8 @@ function Safari() {
             }
             if (p.canHit && p.action == "") {
                 if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
-                    act = "";
+                    act = "hitfree";
+                    this.inputMove(p.id, act);
                     continue;
                 }
                 if (p.precision >= 4) {
@@ -23729,7 +23732,7 @@ function Safari() {
                 act = ("x" + maxr + maxc);
                 this.inputMove(p.id, act);
             }
-            if (this.teamHasBall === ind) {
+            if (this.teamHasBall === ind && p.ai) {
                 if (this.phase == "set") {
                     if (p.canSet && p.toss === maxSet) {
                         act = "set";
@@ -24757,6 +24760,7 @@ function Safari() {
                         }
                         if (tar === null) {
                             this.sendMessage(name, cdata[1] + " is not a valid set target!", "red");
+                            return;
                         }
                         if (this.excludeActions.indexOf("set") !== -1) {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
