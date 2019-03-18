@@ -23609,8 +23609,6 @@ function Safari() {
                     else {
                         act = "";
                     }
-                    this.inputMove(p.id, act);
-                    continue;
                 }
                 if (this.phase == "set") {
                     if (p.canSet && p.zone == "front" && p.ai) {
@@ -23703,10 +23701,9 @@ function Safari() {
                 }
                 p.serveEffort = (Math.floor(Math.random() * (2.1 + (p.serve * 0.15))));
                 this.inputMove(p.id, act);
-                continue;
             }
             if (p.canHit && p.action == "") {
-                if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1) && this.phase !== "set" ) {
+                if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
                     act = "hitfree";
                     this.inputMove(p.id, act);
                     continue;
@@ -23735,7 +23732,7 @@ function Safari() {
                 act = ("x" + maxr + maxc);
                 this.inputMove(p.id, act);
             }
-            if (this.teamHasBall === ind) {
+            if (this.teamHasBall === ind && p.ai) {
                 if (this.phase == "set") {
                     if (p.canSet && p.toss === maxSet) {
                         act = "set";
