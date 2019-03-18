@@ -23665,6 +23665,7 @@ function Safari() {
         for (var t in team) {
             p = team[t];
             act = "";
+            act2 = "";
             if (this.phase == "assemble" && p.place === -1) {
                 this.inputMove(p.id, "0");
                 this.inputMove(p.id, "1");
