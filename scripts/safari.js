@@ -23512,7 +23512,7 @@ function Safari() {
                 if (["serve", "receive"].indexOf(this.phase) !== -1) {
                     continue;
                 }
-                if (p.action == "block" && p.zone == "front" && p.row == 4) {
+                if (p.action == "block" && p.zone == "front" && p.row === 4) {
                     this.inputVal(p.id, "blocking", true);
                 }
             }
@@ -23769,7 +23769,7 @@ function Safari() {
                 }
             }
             else {
-                if (this.phase == "attack") {
+                if (this.phase == "attack" && p.ai) {
                     if (p.zone == "front") {
                         if (p.block >= (0.7 + (2.7 * Math.random()))) {
                             act = "block";
@@ -24093,6 +24093,7 @@ function Safari() {
                 p.stamina = Math.max(p.stamina - stcost, 0);
                 this.sendMessage(p.id, "You spent " + stcost + " stamina blocking! You now have " + p.stamina + "!" , "red");
                 p.canBlock = false;
+                p.blocking = false;
             }
         }
     }
