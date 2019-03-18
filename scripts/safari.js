@@ -23615,7 +23615,7 @@ function Safari() {
                             maxSet = p.toss;
                         }
                     }
-                    if (p.canHit) {
+                    if (p.zone == "front" || (p.skills.indexOf("back-attack") !== -1)) {
                         if (p.spike >= maxHit) {
                             maxHit = p.spike;
                         }
@@ -23624,7 +23624,7 @@ function Safari() {
                         }
                     }
                 }
-                if (this.phase == "attack" || this.phase == "set" && p.canHit) {
+                if ((this.phase == "attack" || this.phase == "set") && p.canHit) {
                     if (this.phase == "set" && chance(1 - this.spike * 0.1)) {
                         continue;
                     }
@@ -23654,6 +23654,7 @@ function Safari() {
                         maxr = "c";
                     }
                     act = ("x" + maxr + maxc);
+                    this.inputMove(p.id, act);
                 }
             }
         }
@@ -23697,7 +23698,7 @@ function Safari() {
                     p.actSkills.float = true;
                 }
                 p.serveEffort = (Math.floor(Math.random() * (2.1 + (p.serve * 0.15))));
-                this.inputVal(p.id, "action", act);
+                this.inputMove(p.id, act);
             }
             if (p.canHit && p.action == "") {
                 if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
@@ -24746,7 +24747,7 @@ function Safari() {
                             if (p.id.toLowerCase() === name.toLowerCase()) {
                                 continue;
                             }
-                            if (!p.zone === "front" && !p.skills.indexOf("back-attack") === -1) {
+                            if (!(p.zone === "front") && (p.skills.indexOf("back-attack") === -1)) {
                                 continue;
                             }
                             if (p.id.toLowerCase() === cdata[1].toLowerCase()) {
