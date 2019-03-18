@@ -23041,7 +23041,6 @@ function Safari() {
         ];
         this.teamServed = 0;
         this.teamHasBall = -1;
-        this.cyclePhase = false;
 
         this.teamData = [
             {score: 0, name: team1, signups: []},
@@ -23051,6 +23050,7 @@ function Safari() {
         this.step = 0;
         this.finished = false;
         this.phase = "signups";
+        this.cyclePhase = "";
 
         // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
