@@ -23226,12 +23226,12 @@ function Safari() {
         var ret = "", r, place, inp;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
-            mon = p.party[p.currentPoke];
-            rows["x" + p.pos[1] + (8 - p.row)] = mon;
+            mon = parseInt(p.party[p.currentPoke], 10);
+            rows["x" + p.pos[0] + (8 - p.column)] = mon;
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
-            mon = p.party[p.currentPoke];
+            mon = parseInt(p.party[p.currentPoke], 10);
             rows[p.pos] = mon;
         }
         ret += "<table border = 1 cellpadding = 3>";
@@ -23240,6 +23240,7 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
+                ret += "<td align=center>";
                 if (rows.hasOwnProperty(place)) {
                     inp = pokeInfo.icon(rows[place]);
                     ret += (inp + " ");
@@ -23247,9 +23248,9 @@ function Safari() {
                 else {
                     ret += " " + place + " ";
                 }
+                ret += "</td>";
             }
-            ret += "></tr>";
-            ret += "<p>";
+            ret += "</tr>";
         }
         ret += "</table>";
         return ret;
