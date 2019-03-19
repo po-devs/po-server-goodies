@@ -23575,7 +23575,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.aiChooseMove = function(ind) {
-        var p, getRow, getColumn, act = "", act2 = null, maxSet = 0, maxHit = 0, secondMaxHit = 0, chooseHitter, maxr, maxc;
+        var p, getRow, getColumn, act = "", act2 = null, maxSet = -1, maxHit = 0, secondMaxHit = 0, setter = "", chooseHitter, maxr, maxc;
         var team = this.teams[ind];
         if (this.ballRow === 1) {
             getRow = "a";
@@ -23613,9 +23613,10 @@ function Safari() {
                     continue;
                 }
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front" && p.ai) {
+                    if (p.canSet && p.zone == "front") {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
+                            setter = p.id;
                         }
                     }
                     if (p.zone == "front" || (p.skills.indexOf("back-attack") !== -1)) {
@@ -23738,7 +23739,7 @@ function Safari() {
             }
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && (p.toss === maxSet)) {
+                    if (p.id == setter) {
                         act = "set";
                         for (var s in team) {
                             q = team[s];
@@ -23752,7 +23753,7 @@ function Safari() {
                         }
                         this.inputMove(p.id, act + ":" + act2);
                     }
-                    else if ((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1) && p.ai) {
+                    else if (((p.row === 4) || (p.row === 3 && p.skills.indexOf("back-attack") !== -1)) && p.ai) {
                         dist = Math.floor(0.5 + (Math.random() * p.speed)) * (chance(0.5) ? 1 : -1);
                         if (dist > p.speed) {
                             dist = p.speed;
