@@ -23647,7 +23647,7 @@ function Safari() {
                     maxr = Math.floor(3 - (Math.random() * maxr));
                     maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
                     maxc = (Math.max(maxc, 1));
-                    maxc = (Math.min(maxc, 7));
+                    maxc = Math.round(Math.min(maxc, 7));
                     if (maxr === 1) {
                         maxr = "a";
                     }
@@ -23689,7 +23689,7 @@ function Safari() {
                 maxr = Math.floor(3 - (Math.random() * maxr));
                 maxc = Math.floor(4 - (maxc * Math.random()) + (maxc * Math.random()));
                 maxc = (Math.max(maxc, 1));
-                maxc = (Math.min(maxc, 7));
+                maxc = Math.round(Math.min(maxc, 7));
                 if (maxr === 1) {
                     maxr = "a";
                 }
@@ -23724,7 +23724,7 @@ function Safari() {
                 maxr = Math.floor(3 - (Math.random() * maxr));
                 maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
                 maxc = (Math.max(maxc, 1));
-                maxc = (Math.min(maxc, 7));
+                maxc = Math.round(Math.min(maxc, 7));
                 if (maxr === 1) {
                     maxr = "a";
                 }
