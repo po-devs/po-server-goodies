@@ -23250,7 +23250,7 @@ function Safari() {
                 }
                 ret += "</td>";
             }
-            ret += "></tr>";
+            ret += "</tr>";
         }
         ret += "</table>";
         return ret;
