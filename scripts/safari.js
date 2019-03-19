@@ -23923,6 +23923,7 @@ function Safari() {
         this.resetPosition(team);
         this.resetPosition(team2);
         this.phase = "prep";
+        this.cyclePhase = "prep";
     };
     Volleyball.prototype.prepareServe = function(team) {
         var p;
@@ -24059,12 +24060,14 @@ function Safari() {
             //add chance for a net in later
             this.sendMessageAll(this.actName(player) + " served the ball into the net!", "blue");
             this.scorePoint(defteam);
+            this.phase = "prep";
             this.cyclePhase = "prep";
             return;
         }
         if (tocolumn < 1 || tocolumn > 7 || torow < 1) {
             this.sendMessageAll(this.actName(player) + " served the ball out of bounds!", "blue");
             this.scorePoint(defteam);
+            this.phase = "prep";
             this.cyclePhase = "prep";
             return;
         }
@@ -24224,6 +24227,7 @@ function Safari() {
         if (!safe) {
             this.sendMessageAll(this.actName(player) + "'s tip results in a kill!", "blue");
             this.scorePoint(atkteam);
+            this.phase = "prep";
             this.cyclePhase = "prep";
             return;
         }
@@ -24390,6 +24394,7 @@ function Safari() {
         if (kill) {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED!", "blue");
             this.scorePoint(defteam);
+            this.phase = "prep";
             this.cyclePhase = "prep";
             return;
         }
@@ -24399,6 +24404,7 @@ function Safari() {
         if (column < 1 || column > 7 || row < 1) {
             this.sendMessageAll(this.actName(player) + "'s spike went out of bounds!", "blue");
             this.scorePoint(defteam);
+            this.phase = "prep";
             this.cyclePhase = "prep";
             return;
         }
@@ -24527,6 +24533,7 @@ function Safari() {
                 this.sendMessageAll(this.actName(p) + " failed to receive the ball!", "blue");
                 this.scorePoint(atkteam);
                 this.cyclePhase = "prep";
+                this.phase = "prep";
             }
             else if (maxPass <= 1) {
                 this.sendMessageAll(this.actName(p) + " received the ball, but couldn't control it! The ball is a FREE ball for the other side!", "blue");
