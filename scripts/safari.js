@@ -23173,6 +23173,42 @@ function Safari() {
         this.turn = 0;
         this.phase = "assemble";
     };
+    Volleyball.prototype.setterLinks = function(ind) {
+        var team = this.teams[ind], p, q, links = "", links2 = "", first = false, first2 = false;
+        for (var t in team) {
+            p = team[t];
+            if (p.canSet) {
+                for (var s in team) {
+                    q = team[s];
+                    if (q.row === 4 || (q.row === 3 && q.skills.indexOf("back-attack") !== -1)) {
+                        links += link("/vol set:" + q.id);
+                        if (first) {
+                            first = false;
+                        }
+                        else {
+                            links += " ||| ";
+                        }
+                    }
+                    else {
+                        links2 += link("/vol set:" + q.id);
+                        if (first2) {
+                            first2 = false;
+                        }
+                        else {
+                            links2 += " ||| ";
+                        }
+                    }
+                }
+            }
+            if (links == "") {
+                this.sendMessage(p.id, "To choose a valid set target, use " + links2 + ".");
+            }
+            else {
+                this.sendMessage(p.id, "To choose a valid set target, use " + links + ".");
+            }
+        }
+        return;
+    };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
         var rows = {}, name;
@@ -23199,10 +23235,10 @@ function Safari() {
             rows[p.pos] = mon;
         }
         ret += "<table border = 1 cellpadding = 3>";
-        for (var i = 0; i++; i < props.length) {
+        for (var i = 0; i < props.length; i++) {
             ret += "<tr>";
             r = props[i];
-            for (var j = 0; j++; j < r.length) {
+            for (var j = 0; j < r.length; j++) {
                 var place = r[j];
                 if (rows.hasOwnProperty(place)) {
                     inp = pokeInfo.icon(rows[place]);
@@ -24236,8 +24272,7 @@ function Safari() {
             return;
         }
         this.sendMessageTeam(0, this.courtView(0), null, true);
-        this.sendMessageTeam(1, this.courtView(1), null, true
-            );
+        this.sendMessageTeam(1, this.courtView(1), null, true);
     };
     Volleyball.prototype.processAttack = function(player, row, column) {
         /*
@@ -24421,20 +24456,20 @@ function Safari() {
         this.ballRow = row;
         this.ballColumn = (8 - column);
         switch (pow) {
-            case 8: might = "METEORIC";
-            case 7: might = "FEROCIOUS";
-            case 6: might = "FIERCE";
-            case 5: might = "POWERFUL";
-            case 4: might = "STRONG";
-            case 3: might = "GOOD";
-            case 2: might = "EASY";
-            case 1: might = "SOFT";
-            case 0: might = "FREE";
+            case 8: might = "METEORIC"; break;
+            case 7: might = "FEROCIOUS"; break;
+            case 6: might = "FIERCE"; break;
+            case 5: might = "POWERFUL"; break;
+            case 4: might = "STRONG"; break;
+            case 3: might = "GOOD"; break;
+            case 2: might = "EASY"; break;
+            case 1: might = "SOFT"; break;
+            case 0: might = "FREE"; break;
         }
         this.teamHasBall = defteam;
         this.sendMessageAll(this.actName(player) + "'s spike is " + might + "!", "blue");
-        this.sendMessageTeam(atkteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
-        this.sendMessageTeam(defteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
+        this.sendMessageTeam(atkteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
+        this.sendMessageTeam(defteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
@@ -24624,6 +24659,8 @@ function Safari() {
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.setterLinks(p.team);
+        return;
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
@@ -24788,12 +24825,15 @@ function Safari() {
                         }
                         if (this.excludeActions.indexOf("set") !== -1) {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                            return;
                         }
                         if (this.excludeActions.indexOf("tip") !== -1) {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                            return;
                         }
                         if (this.excludeActions.indexOf("attack") !== -1) {
                             this.sendMessage(name, "A teammate is already making a play on the ball!", "red");
+                            return;
                         }
                         this.inputVal(player.id, "action", "set");
                         this.inputVal(player.id, "setTarget", tar.id);
@@ -24922,7 +24962,7 @@ function Safari() {
                 this.sendMessage(name, "You cannot go to " + data + " because it is too far!", "red");
             }
             else {
-                this.excludePos[player.team].push(player.action);
+                this.excludePos[player.team].push(data);
                 this.sendMessageTeam(player.team, this.actName(player) + " is planning to move to " + data + "!", "green");
                 this.inputVal(player.id, "action", data);
             }
