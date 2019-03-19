@@ -23859,6 +23859,9 @@ function Safari() {
                     p.receiver = false;
                     p.moved = 0;
                 }
+                else {
+                    p.canSet = false;
+                }
                 if (this.cyclePhase == "serve") {
                     p.quickattack = false;
                     p.freepass = false;
@@ -24251,7 +24254,7 @@ function Safari() {
         var defteam = (atkteam === 0 ? 1 : 0);
         var xvar, yvar;
 
-        if (player.row !== 4 && (player.skills.indexOf("back-attack") === -1 || player.row !== 3)) {
+        if (!(player.row === 4 || (player.skills.indexOf("back-attack") !== -1 && player.row === 3))) {
             this.sendMessageAll(this.actName(player) + " was unable to perform a spike, so they hit over a free ball!");
             stcost = 3;
             player.stamina = Math.max(player.stamina - stcost, 0);
@@ -24428,6 +24431,7 @@ function Safari() {
             case 1: might = "SOFT";
             case 0: might = "FREE";
         }
+        this.teamHasBall = defteam;
         this.sendMessageAll(this.actName(player) + "'s spike is " + might + "!", "blue");
         this.sendMessageTeam(atkteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.sendMessageTeam(defteam, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
