@@ -23226,12 +23226,12 @@ function Safari() {
         var ret = "", r, place, inp;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
-            mon = p.party[p.currentPoke];
+            mon = parseInt(p.party[p.currentPoke], 10);
             rows["x" + p.pos[0] + (8 - p.column)] = mon;
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
-            mon = p.party[p.currentPoke];
+            mon = parseInt(p.party[p.currentPoke], 10);
             rows[p.pos] = mon;
         }
         ret += "<table border = 1 cellpadding = 3>";
