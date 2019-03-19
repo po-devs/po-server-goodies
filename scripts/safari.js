@@ -23227,7 +23227,7 @@ function Safari() {
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             mon = p.party[p.currentPoke];
-            rows["x" + p.pos[1] + (8 - p.row)] = mon;
+            rows["x" + p.pos[0] + (8 - p.column)] = mon;
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
