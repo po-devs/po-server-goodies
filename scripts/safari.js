@@ -23589,7 +23589,7 @@ function Safari() {
         for (var t in team) {
             act = "";
             p = team[t];
-            if (this.teamHasBall === team) {
+            if (this.teamHasBall === ind) {
                 if (this.phase == "receive") {
                     if (sys.isInChannel(sys.id(p.id), safchan)) {
                         continue;
@@ -23613,7 +23613,7 @@ function Safari() {
                     continue;
                 }
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front") {
+                    if (p.canSet) {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
                             setter = p.id;
