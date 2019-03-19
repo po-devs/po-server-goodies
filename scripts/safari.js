@@ -23240,6 +23240,7 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
+                ret += "<td align=center>";
                 if (rows.hasOwnProperty(place)) {
                     inp = pokeInfo.icon(rows[place]);
                     ret += (inp + " ");
@@ -23247,9 +23248,9 @@ function Safari() {
                 else {
                     ret += " " + place + " ";
                 }
+                ret += "</td>";
             }
             ret += "></tr>";
-            ret += "<p>";
         }
         ret += "</table>";
         return ret;
