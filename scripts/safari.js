@@ -23839,7 +23839,7 @@ function Safari() {
             cteam = this.teams[team];
             for (var t in cteam) {
                 p = cteam[t];
-                if (this.cyclePhase == "receive") {
+                if (this.phase == "receive") {
                     p.canHit = false;
                     p.canTip = false;
                     p.canSet = false;
@@ -23852,13 +23852,13 @@ function Safari() {
                         p.canBlock = true;
                     }
                 }
-                if (this.cyclePhase == "set") {
+                if (this.phase == "set") {
                     p.quickattack = false;
                     p.freepass = false;
                     p.receiver = false;
                     p.moved = 0;
                 }
-                if (this.cyclePhase == "serve") {
+                if (this.phase == "serve") {
                     p.quickattack = false;
                     p.freepass = false;
                     p.receiver = false;
@@ -23877,7 +23877,7 @@ function Safari() {
         this.excludePos = [
         [], []
         ];
-        if (this.cyclePhase !== "receive") {
+        if (this.phase !== "receive") {
             this.ballPower = 0;
             this.ballRow = -1;
             this.ballColumn = -1;
