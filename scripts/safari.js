@@ -23243,7 +23243,7 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
-                ret += "<td align=center>";
+                ret += "<td align=center width=96>";
                 if (rows.hasOwnProperty(place)) {
                     inp = pokeInfo.icon(parseInt(rows[place], 10));
                     ret += (inp + " ");
@@ -23284,7 +23284,7 @@ function Safari() {
                     if (table) {
                        sys.sendHtmlMessage(id, msg, safchan);
                     }
-                    if (color) {
+                    else if (color) {
                        safaribot.sendHtmlMessage(id, toColor(msg, color), safchan);
                     }
                     else {
@@ -23996,16 +23996,18 @@ function Safari() {
         if (this.teamServed !== team) {
             this.sideOut(team);
         }
+        this.sendMessageAll("");
         this.sendMessageAll("SCORE: ");
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageAll("");
         this.turn = 0;
         for (var p in this.teams[0]) {
-            this.teams[0][p].stamina = Math.max(this.teams[0][p].stamina + 3, this.teams[0][p].maxStamina);
+            this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + 3, this.teams[0][p].maxStamina);
             this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
         }
         for (var p in this.teams[1]) {
-            this.teams[1][p].stamina = Math.max(this.teams[1][p].stamina + 3, this.teams[1][p].maxStamina);
+            this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + 3, this.teams[1][p].maxStamina);
             this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
         }
         this.clearVals();
@@ -24555,7 +24557,7 @@ function Safari() {
             If two players are in the same range of it, they both try to receive. The higher score prevails. Both players lose stamina as though they had received.
             The score is determined by their Pass Score, their amount of Prep, and whether they are at disadvantage or not. Some skills may apply.
         */
-        var p, rec, proficiency, maxPass = 0, atkteam = this.teamHasBall === 0 ? 1 : 0, passed = false;
+        var p, rec, proficiency, maxPass = -99, atkteam = this.teamHasBall === 0 ? 1 : 0, passed = false;
         this.turn++;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
@@ -24565,8 +24567,11 @@ function Safari() {
             p.prep = Math.min(p.prep, 3);
             if (p.row === this.ballRow && p.column === this.ballColumn) {
                 //direct receive, able to dig almost anything
-                rec = p.receive + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
+                rec = p.receive + p.prep + 2 + ((3 * Math.random()) - (2 * Math.random()));
                 proficiency = (this.ballPower - rec);
+                if (proficiency <= 2) {
+                    proficiency += 1;
+                }
                 p.receiveType = "direct";
             }
             if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
@@ -24580,7 +24585,7 @@ function Safari() {
             }
             if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is in front of the receiver, they can perform a dig - this costs more stamina but is pretty good for getting the ball up if their rec is good
-                rec = p.receive + p.prep + 1 + ((2 * Math.random()) - (4 * Math.random()));
+                rec = p.receive + p.prep + 1 + ((3 * Math.random()) - (4 * Math.random()));
                 proficiency = (this.ballPower - rec);
                 if (proficiency >= 5) {
                     proficiency -= 1;
