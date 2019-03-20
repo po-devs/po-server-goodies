@@ -22951,39 +22951,39 @@ function Safari() {
         return signupsLower.contains(n) && !this.winners.contains(n);
     };
     safari.volleyballStats = {
-        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 2, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "grounded", "banner-grass"]},
-        "4": {"stamina": 38, "serve": 2, "receive": 3, "toss": 0, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["wide", "dig"]},
-        "7": {"stamina": 38, "serve": 3, "receive": 3, "toss": 2, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["quick-set", "dump", "splash"]},
-        "25": {"stamina": 25, "serve": 4, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "energize"]},
-        "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 0, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["ace", "reach", "dig"]},
-        "35": {"stamina": 34, "serve": 3, "receive": 5, "toss": 2, "spike": 2, "block": 0, "precision": 3,"speed": 2, "skills": ["regen", "splash", "grounded"]},
-        "62": {"stamina": 30, "serve": 5, "receive": 5, "toss": 1, "spike": 2, "block": 2, "precision": 1,"speed": 1, "skills": ["back-attack", "splash", "grounded"]},
-        "68": {"stamina": 30, "serve": 2, "receive": 3, "toss": 2, "spike": 5, "block": 4, "precision": 0,"speed": 1, "skills": ["ace", "dump"]},
-        "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 1, "spike": 3, "block": 3, "precision": 4,"speed": 4, "skills": []},
-        "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 2, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "trickster"]},
-        "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 2, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "dump", "wide"]},
-        "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 0, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
-        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 0, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner-water", "back-attack", "dig"]},
-        "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 0, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
+        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "grounded", "banner-grass"]},
+        "4": {"stamina": 38, "serve": 2, "receive": 3, "toss": 2, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["wide", "dig"]},
+        "7": {"stamina": 38, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["quick-set", "dump", "splash"]},
+        "25": {"stamina": 25, "serve": 4, "receive": 4, "toss": 2, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "energize"]},
+        "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 2, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["ace", "reach", "dig"]},
+        "35": {"stamina": 34, "serve": 3, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 2, "skills": ["regen", "splash", "grounded"]},
+        "62": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 2, "precision": 1,"speed": 1, "skills": ["back-attack", "splash", "grounded"]},
+        "68": {"stamina": 30, "serve": 2, "receive": 2, "toss": 4, "spike": 5, "block": 4, "precision": 0,"speed": 1, "skills": ["ace", "dump"]},
+        "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 3, "block": 3, "precision": 4,"speed": 4, "skills": []},
+        "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "trickster"]},
+        "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "dump", "wide"]},
+        "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
+        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 1, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner-water", "back-attack", "dig"]},
+        "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 2, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
         "248": {"stamina": 32, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 4, "precision": 3,"speed": 1, "skills": ["wide"]},
-        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 2, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "quick-set"]},
-        "257": {"stamina": 30, "serve": 2, "receive": 1, "toss": 1, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "ace"]},
-        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 2, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "banner-water"]},
-        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 2, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["dump", "regen"]},
-        "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 0, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["grounded", "wide"]},
-        "428": {"stamina": 28, "serve": 3, "receive": 1, "toss": 0, "spike": 4, "block": 4, "precision": 5,"speed": 4, "skills": ["dig", "banner-normal", "ace"]},
-        "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 1, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["burn", "ace"]},
-        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 1, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "banner-fight"]},
-        "466": {"stamina": 30, "serve": 4, "receive": 4, "toss": 1, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "banner-electric", "energize"]},
-        "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["telepathy", "ace"]},
-        "531": {"stamina": 35, "serve": 2, "receive": 3, "toss": 2, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner-normal", "regen", "energize"]},
-        "652": {"stamina": 33, "serve": 1, "receive": 5, "toss": 0, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow"]},
-        "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 1, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "ace"]},
-        "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 2, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["trickster", "wide", "dump"]},
-        "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 1, "spike": 2, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "ace"]},
-        "727": {"stamina": 33, "serve": 1, "receive": 4, "toss": 0, "spike": 5, "block": 1, "precision": 0,"speed": 1, "skills": ["burn", "wide"]},
-        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 1, "spike": 1, "block": 0, "precision": 4,"speed": 3, "skills": ["trickster", "performer"]},
-        "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 2, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "quick-set", "dump"]}
+        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "quick-set"]},
+        "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "ace"]},
+        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "banner-water"]},
+        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["dump", "regen"]},
+        "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["grounded", "wide"]},
+        "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 4, "block": 3, "precision": 5,"speed": 4, "skills": ["dig", "banner-normal", "ace"]},
+        "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 0, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["burn", "ace"]},
+        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "banner-fight"]},
+        "466": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "banner-electric", "energize"]},
+        "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["telepathy", "ace"]},
+        "531": {"stamina": 35, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner-normal", "regen", "energize"]},
+        "652": {"stamina": 33, "serve": 1, "receive": 5, "toss": 2, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow"]},
+        "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "ace"]},
+        "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 3, "spike": 3, "block": 2, "precision": 3,"speed": 5, "skills": ["trickster", "wide", "dump"]},
+        "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "ace"]},
+        "727": {"stamina": 33, "serve": 4, "receive": 5, "toss": 1, "spike": 4, "block": 2, "precision": 1,"speed": 1, "skills": ["burn", "wide"]},
+        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 3, "skills": ["trickster", "performer"]},
+        "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 4, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "quick-set", "dump"]}
     };
     safari.volleyballSkillDescriptions = {
         "ace": "Spike power increases by +2 on a PERFECT or better Set.",
@@ -23043,8 +23043,8 @@ function Safari() {
         this.teamHasBall = -1;
 
         this.teamData = [
-            {score: 0, name: team1, signups: []},
-            {score: 0, name: team2, signups: []}
+            {score: 0, name: team1, signups: [], firstBall: false},
+            {score: 0, name: team2, signups: [], firstBall: true}
         ];
         this.turnLength = 8;
         this.step = 0;
@@ -23180,6 +23180,9 @@ function Safari() {
             if (p.canSet) {
                 for (var s in team) {
                     q = team[s];
+                    if (q.id == p.id) {
+                        continue;
+                    }
                     if (q.row === 4 || (q.row === 3 && q.skills.indexOf("back-attack") !== -1)) {
                         links += link("/vol set:" + q.id);
                         if (first) {
@@ -23226,12 +23229,12 @@ function Safari() {
         var ret = "", r, place, inp;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
-            mon = parseInt(p.party[p.currentPoke], 10);
+            mon = parseInt(p.party[p.currentPoke].id, 10);
             rows["x" + p.pos[0] + (8 - p.column)] = mon;
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
-            mon = parseInt(p.party[p.currentPoke], 10);
+            mon = parseInt(p.party[p.currentPoke].id, 10);
             rows[p.pos] = mon;
         }
         ret += "<table border = 1 cellpadding = 3>";
@@ -23242,7 +23245,7 @@ function Safari() {
                 var place = r[j];
                 ret += "<td align=center>";
                 if (rows.hasOwnProperty(place)) {
-                    inp = pokeInfo.icon(rows[place]);
+                    inp = pokeInfo.icon(parseInt(rows[place], 10));
                     ret += (inp + " ");
                 }
                 else {
@@ -23301,7 +23304,7 @@ function Safari() {
         for (var i = 0; i < 3; i++) {
             k = Object.keys(safari.volleyballStats).random();
             while (p.indexOf(k) !== -1) {
-                k = Object.keys(safari.volleyballStats).random();
+                k = parseInt(Object.keys(safari.volleyballStats).random(), 10);
             }
             p.push(k);
         }
@@ -23383,6 +23386,7 @@ function Safari() {
         player.currentPoke += 1;
         var m = player.currentPoke;
         player.stamina = player.party[m].stamina;
+        player.maxStamina = player.party[m].stamina;
         player.serve = player.party[m].serve;
         player.receive = player.party[m].receive;
         player.toss = player.party[m].toss;
@@ -23411,9 +23415,18 @@ function Safari() {
         if (this.phase == "assemble") {
             if (this.step >= 5) {
                 this.step = 0;
-                this.teamHasBall = (chance(0.5) ? 1 : 0);
                 this.aiChooseMove(0);
                 this.aiChooseMove(1);
+                this.teamHasBall = (chance(0.5) ? 1 : 0);
+                if (this.teamHasBall === 1) {
+                    this.teamData[0].firstBall = true;
+                }
+                else {
+                    this.teamData[1].firstBall = true;
+                }
+                this.sendMessageAll("");
+                this.sendMessageAll("Team " + this.teamData[this.teamHasBall].name + " has the first serve!", "blue");
+                this.sendMessageAll("");
                 this.phase = "prep";
                 this.resetPosition(0);
                 this.resetPosition(1);
@@ -23612,7 +23625,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.aiChooseMove = function(ind) {
-        var p, getRow, getColumn, act = "", act2 = null, maxSet = -1, maxHit = 0, secondMaxHit = 0, setter = "", chooseHitter, maxr, maxc;
+        var p, getRow, getColumn, act = "", act2 = null, maxDist = 5, stay = false, maxSet = -1, maxHit = 0, secondMaxHit = 0, setter = "", chooseHitter, maxr, maxc;
         var team = this.teams[ind];
         if (this.ballRow === 1) {
             getRow = "a";
@@ -23623,32 +23636,53 @@ function Safari() {
         if (this.ballRow === 3) {
             getRow = "c";
         }
+        for (var i = 1; i < maxDist; i++) {
+            /*
+                This is the code for AI deciding who should receive the ball. It's pretty tangled so be careful about editing it.
+            */
+            for (var t in team) {
+                act = "";
+                p = team[t];
+                if (this.teamHasBall === ind) {
+                    if (this.phase == "receive") {
+                        if (sys.isInChannel(sys.id(p.id), safchan) || p.ai) {
+                            continue;
+                        }
+                        if (this.pos === (getRow + this.ballColumn)) {
+                            act = "";
+                            stay = true;
+                        }
+                        else if (p.column === this.ballColumn && p.row - 1 === this.ballRow && p.toss > p.receive) {
+                            act = "";
+                            stay = true;
+                        }
+                        else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) === 1) {
+                            act = "";
+                            stay = true;
+                        }
+                        else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= (p.speed)) {
+                            if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= i) {
+                                if (i < (maxDist - 1) && (chance((1 - (((p.receive*2) + i)*0.07))))) {
+                                    continue;
+                                }
+                                act = (getRow + this.ballColumn);
+                            }
+                        }
+                        else {
+                            act = "";
+                        }
+                        if ((act !== "") || stay) {
+                            this.inputMove(p.id, act);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         for (var t in team) {
             act = "";
             p = team[t];
             if (this.teamHasBall === ind) {
-                if (this.phase == "receive") {
-                    if (sys.isInChannel(sys.id(p.id), safchan)) {
-                        continue;
-                    }
-                    if (this.pos === (getRow + this.ballColumn)) {
-                        act = "";
-                    }
-                    else if (p.column === this.ballColumn && p.row - 1 === this.ballRow && p.toss > p.receive) {
-                        act = "";
-                    }
-                    else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) === 1) {
-                        act = "";
-                    }
-                    else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= (p.speed)) {
-                        act = (getRow + this.ballColumn);
-                    }
-                    else {
-                        act = "";
-                    }
-                    this.inputMove(p.id, act);
-                    continue;
-                }
                 if (this.phase == "set") {
                     if (p.canSet) {
                         if (p.toss >= maxSet) {
@@ -23912,6 +23946,12 @@ function Safari() {
                 }
                 this.inputVal(p.id, "action", "");
                 this.inputVal(p.id, "canServe", false);
+                if (p.stamina > p.maxStamina) {
+                    p = p.maxStamina;
+                }
+                if (p.stamina < 0) {
+                    p = 0;
+                }
             }
         }
         this.excludeActions = [];
@@ -23960,11 +24000,20 @@ function Safari() {
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
         this.turn = 0;
+        for (var p in this.teams[0]) {
+            this.teams[0][p].stamina = Math.max(this.teams[0][p].stamina + 3, this.teams[0][p].maxStamina);
+            this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+        }
+        for (var p in this.teams[1]) {
+            this.teams[1][p].stamina = Math.max(this.teams[1][p].stamina + 3, this.teams[1][p].maxStamina);
+            this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+        }
         this.clearVals();
         this.resetPosition(team);
         this.resetPosition(team2);
         this.phase = "prep";
         this.cyclePhase = "prep";
+        return;
     };
     Volleyball.prototype.prepareServe = function(team) {
         var p;
@@ -23984,7 +24033,11 @@ function Safari() {
         return true;
     };
     Volleyball.prototype.sideOut = function(team) {
-        var p;
+        var p, firstBall = this.teamData[team].firstBall;
+        this.teamData[team].firstBall = false;
+        if (firstBall) {
+            return;
+        }
         for (var t in this.teams[team]) {
             p = this.teams[team][t];
             switch (p.place) {
@@ -24096,7 +24149,6 @@ function Safari() {
         yvar = (chance(0.5) ? yvar * -1 : yvar);
         torow = row + yvar;
         tocolumn = column + xvar;
-        this.sendMessageAll(this.actName(player) + " serves the ball!", "blue");
         if (torow > 3) {
             //add chance for a net in later
             this.sendMessageAll(this.actName(player) + " served the ball into the net!", "blue");
@@ -24129,6 +24181,19 @@ function Safari() {
         this.ballColumn = (8 - tocolumn);
         stcost = (2 + (player.serveEffort * 2));
         player.stamina = Math.max(player.stamina - stcost, 0);
+        var might;
+        switch (pow) {
+            case 8: might = "METEORIC"; break;
+            case 7: might = "FEROCIOUS"; break;
+            case 6: might = "FIERCE"; break;
+            case 5: might = "POWERFUL"; break;
+            case 4: might = "STRONG"; break;
+            case 3: might = "GOOD"; break;
+            case 2: might = "EASY"; break;
+            case 1: might = "SOFT"; break;
+            case 0: might = "FREE"; break;
+        };
+        this.sendMessageAll(this.actName(player) + " serves the ball [Might: " + might + "]!", "blue");
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
         this.cyclePhase = "receive";
         this.teamHasBall = defteam;
@@ -24137,6 +24202,7 @@ function Safari() {
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
         this.clearVals();
+        return;
     }
     Volleyball.prototype.endBlock = function(defteam) {
         var p;
@@ -24228,6 +24294,7 @@ function Safari() {
         player.canHit = false;
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        return;
     };
     Volleyball.prototype.processTip = function(player) {
         var atkteam = player.team, safe = false, stcost;
@@ -24274,6 +24341,7 @@ function Safari() {
         }
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        return;
     };
     Volleyball.prototype.processAttack = function(player, row, column) {
         /*
@@ -24474,6 +24542,7 @@ function Safari() {
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        return;
     }
     Volleyball.prototype.processReceive = function() {
         /*
@@ -24493,34 +24562,38 @@ function Safari() {
             if (p.row === 4) {
                 continue;
             }
+            p.prep = Math.min(p.prep, 3);
             if (p.row === this.ballRow && p.column === this.ballColumn) {
                 //direct receive, able to dig almost anything
-                rec = p.receive + p.prep + 2 + Math.random() - Math.random();
-                proficiency = (rec * rec / (this.ballPower * 1.25));
+                rec = p.receive + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
+                proficiency = (this.ballPower - rec);
                 p.receiveType = "direct";
             }
             if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
                 //if the player is directly in front of the ball's spike, receive overhand, which uses toss
                 rec = ((p.toss + p.receive)/2 + (p.prep * 2) + 3);
-                proficiency = (rec + p.toss + (p.toss * Math.random()) - (2 * this.ballPower));
+                proficiency = (rec + p.toss + (p.toss * Math.random()) - (2.35 * this.ballPower));
                 if (proficiency >= 2) {
                     proficiency += 3;
                 }
                 p.receiveType = "overhand";
             }
             if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
-                //if the player is in front of the receiver, they can perform a dig - this costs more staamina but is pretty good for getting the ball up if their rec is good
-                rec = Math.max(((p.receive * 1.15) + (p.prep * 2.5) - 2), 1);
-                proficiency = (rec * rec / (Math.max(this.ballPower + 1), 1));
+                //if the player is in front of the receiver, they can perform a dig - this costs more stamina but is pretty good for getting the ball up if their rec is good
+                rec = p.receive + p.prep + 1 + ((2 * Math.random()) - (4 * Math.random()));
+                proficiency = (this.ballPower - rec);
+                if (proficiency >= 5) {
+                    proficiency -= 1;
+                }
                 if (this.ballColumn === p.column) {
-                    proficiency *= 1.25;
+                    proficiency *= 1.15;
                 }
                 p.receiveType = "dig";
             }
             if (p.row === this.ballRow && ((p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is to the side of the ball, they will be able to save it, but the pass will not be good
-                rec = p.receive + p.prep + 2 + Math.random() - Math.random();
-                proficiency = (rec * rec / (this.ballPower * 1.25));
+                rec = p.receive + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
+                proficiency = ((this.ballPower + (Math.max(this.ballPower-5, 0)) - rec));
                 if (proficiency > 3) {
                     proficiency--;
                 }
@@ -24564,19 +24637,22 @@ function Safari() {
             }
             passed = true;
             if (maxPass <= 0) {
-                stcost = 5;
+                stcost = 3;
                 if (p.stamina >= 10) {
-                    boost = (0.75 + (2 * Math.random()));
+                    boost = (0.25 + (Math.min(5, ((player.stamina-10) * 0.5)) * Math.random()));
                     diff = (boost - maxPass);
                     stcost += Math.floor(diff * 2);
                     maxPass = boost;
                 }
-                this.sendMessageAll(this.actName(p) + " failed to receive the ball!", "blue");
-                this.scorePoint(atkteam);
-                this.cyclePhase = "prep";
-                this.phase = "prep";
+                else {
+                    this.sendMessageAll(this.actName(p) + " failed to receive the ball!", "blue");
+                    this.scorePoint(atkteam);
+                    this.cyclePhase = "prep";
+                    this.phase = "prep";
+                    break;
+                }
             }
-            else if (maxPass <= 1) {
+            if (maxPass <= 1) {
                 this.sendMessageAll(this.actName(p) + " received the ball, but couldn't control it! The ball is a FREE ball for the other side!", "blue");
                 for (var s in this.teams[atkteam]) {
                     if (this.teams[atkteam][s].zone == "back") {
@@ -24599,14 +24675,16 @@ function Safari() {
                     for (var s in this.teams[this.teamHasBall]) {
                         if (this.teams[this.teamHasBall][s].place === ableSetter) {
                             this.teams[this.teamHasBall][s].canSet = true;
-                            se.push(this.teams[this.teamHasBall][s].id);
+                            if (se.indexOf(this.actName(this.teams[this.teamHasBall][s])) === -1) {
+                                se.push(this.actName(this.teams[this.teamHasBall][s]));
+                            }
                         }
                     }
                 }
-                this.sendMessageAll(this.actName(p) + " received the ball [OKAY]! " + se.join(",") + " may set the ball!", "blue");
+                this.sendMessageAll(this.actName(p) + " received the ball [OKAY]! " + se.join(", ") + " may set the ball!", "blue");
                 stcost = 3;
                 if ( p.receiveType == "dig" ) {
-                    stcost += 1;
+                    stcost += 2;
                 }
                 this.cyclePhase = "set";
                 break;
@@ -24777,12 +24855,18 @@ function Safari() {
                     this.sendMessage(name, "Select a number between 0-2 to choose your serving power!", "red");
                     return false;
                 }
-                this.sendMessage(name, "Serve effort will be " + hold + "!", "red");
+                this.sendMessage(name, "Your serve effort will be level " + hold + "!", "red");
+                this.sendMessageTeam(player.team, player.id + "'s serve effort will be level " + hold + "!", "blue");
                 this.inputVal(player.id, "serveEffort", hold);
                 return true;
             }
         }
         else if (this.phase === "prep" && (!player.canServe)) {
+            if (data == "sub") {
+                this.sendMessageTeam(player.team, player.id + " is going sub in their next Pokémon!", "green");
+                player.action = "sub";
+                return;
+            }
             switch (player.place) {
                 case 0: opt = ["a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"]; break;
                 case 1: opt = ["a3", "a4", "a5", "b3", "b4", "b5", "c3", "c4", "c5"]; break;
