@@ -23284,7 +23284,7 @@ function Safari() {
                     if (table) {
                        sys.sendHtmlMessage(id, msg, safchan);
                     }
-                    if (color) {
+                    else if (color) {
                        safaribot.sendHtmlMessage(id, toColor(msg, color), safchan);
                     }
                     else {
@@ -23996,9 +23996,11 @@ function Safari() {
         if (this.teamServed !== team) {
             this.sideOut(team);
         }
+        this.sendMessageAll("");
         this.sendMessageAll("SCORE: ");
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageAll("");
         this.turn = 0;
         for (var p in this.teams[0]) {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + 3, this.teams[0][p].maxStamina);
