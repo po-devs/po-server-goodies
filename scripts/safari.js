@@ -24644,7 +24644,7 @@ function Safari() {
             if (maxPass <= 0) {
                 stcost = 3;
                 if (p.stamina >= 10) {
-                    boost = (0.25 + (Math.min(5, ((player.stamina-10) * 0.5)) * Math.random()));
+                    boost = (0.25 + (Math.min(5, ((p.stamina-10) * 0.5)) * Math.random()));
                     diff = (boost - maxPass);
                     stcost += Math.floor(diff * 2);
                     maxPass = boost;
