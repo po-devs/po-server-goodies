@@ -12699,6 +12699,7 @@ function Safari() {
 
             if (this.player1Input === null) {
                 this.player1Input = Object.keys(this.p1MoveCodes).random();
+                this.target1 = (chance(0.5) ? 2 : 4);
                 if (this.tagBattle && this.oneOnTwo) {
                     for (var t in this.p1MoveCodes) {
                         var rem = ["a", "b", "c"];
@@ -12719,10 +12720,11 @@ function Safari() {
                         }
                         this.p3MoveCodes[t] = this.p1MoveCodes[t];
                     }
-                    if (this.player3Input === null) {
-                        this.player3Input = Object.keys(this.p3MoveCodes).random();
-                    }
                 }
+            }
+            if (this.player3Input === null && (this.tagBattle && (!this.oneOnTwo))) {
+                this.player3Input = Object.keys(this.p3MoveCodes).random();
+                this.target3 = (chance(0.5) ? 2 : 4);
             }
             
             var move1 = this.p1MoveCodes[this.player1Input];
@@ -12733,6 +12735,8 @@ function Safari() {
                         this.player3Input = Object.keys(this.p3MoveCodes).random();
                     }
                     this.player4Input = this.chooseNPCMove(this.p4MoveCodes, this.team4, this.team1);
+                    this.target2 = (chance(0.5) ? 1 : 3);
+                    this.target4 = (chance(0.5) ? 1 : 3);
                 }
                 if (this.player2Input === false) {
                     if (checkWin()) {
@@ -13282,7 +13286,7 @@ function Safari() {
         var move = codeList[data];
         this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
         if (this.tagBattle) {
-            var tar;
+            var tar = 1;
             if ((move.target == "ALL") || (move.target == "TEAM")) {
                 aim = -1;
             }
