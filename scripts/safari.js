@@ -13049,13 +13049,13 @@ function Safari() {
 
                 if (user.hp > 0) {
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
-                        if ((!user.lastPlayed2) && (!user.hasType("Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side1Field.spikes * user.maxhp/24)), 1);
                         }
                     }
                     if (this.side2Field.spikes > 0 && (isP2 || isP4)) {
-                        if ((!user.lastPlayed2) && (!user.hasType("Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side2Field.spikes * user.maxhp/24)), 1);
                         }
@@ -13151,24 +13151,24 @@ function Safari() {
 
             if ((this.turn % 7 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.topsyturvy) {
-                    for (i = 0; i < this.team1.length; i++) {
+                    for (var i = 0; i < this.team1.length; i++) {
                         for (var j = 0; j < this.team1[i].boosts; j++) {
-                            this.team1[i].boosts[j] = this.team1[i].boosts[j] * -1;
+                            this.team1[i].boosts[j] = (this.team1[i].boosts[j] * -1);
                         }
                     }
                     for (i = 0; i < this.team2.length; i++) {
                         for (j = 0; j < this.team2[i].boosts; j++) {
-                            this.team2[i].boosts[j] = this.team2[i].boosts[j] * -1;
+                            this.team2[i].boosts[j] = (this.team2[i].boosts[j] * -1);
                         }
                     }
                     for (i = 0; i < this.team3.length; i++) {
                         for (j = 0; j < this.team3[i].boosts; j++) {
-                            this.team3[i].boosts[j] = this.team3[i].boosts[j] * -1;
+                            this.team3[i].boosts[j] = (this.team3[i].boosts[j] * -1);
                         }
                     }
                     for (i = 0; i < this.team4.length; i++) {
                         for (j = 0; j < this.team4[i].boosts; j++) {
-                            this.team4[i].boosts[j] = this.team4[i].boosts[j] * -1;
+                            this.team4[i].boosts[j] = (this.team4[i].boosts[j] * -1);
                         }
                     }
                 }
@@ -32462,7 +32462,7 @@ function Safari() {
                         sandstorm: true,
                         hugePower: true,
                         topsyturvy: true,
-                        spikes2: true,
+                        spikes: true,
                         boostType: ["Grass", "Fire"]
                     }
                 }
