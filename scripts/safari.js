@@ -18559,8 +18559,8 @@ function Safari() {
     this.getCelebrities = function(data, difficulty) {
         var index = 0, eliteindex = 8, trainer, chal, partyStrength, diff, hold, maxLoop, hazard, currentTrainer, b;
         var out = {
-            "strong": [],
-            "gym": []
+            "gym": [],
+            "elite": []
         };
         data = data.shuffle();
         for (var i = 0; i < data.length; i++) {
@@ -18718,11 +18718,11 @@ function Safari() {
                 }
             }
             if (trainer.elite) {
-                out.strong.push(currentTrainer);
+                out.elite.push(currentTrainer);
                 eliteindex++;
             }
             else {
-                out.gym[i].push(currentTrainer);
+                out.gym.push(currentTrainer);
                 index++;
             }
         }
