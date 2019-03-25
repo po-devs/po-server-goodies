@@ -13141,22 +13141,22 @@ function Safari() {
                 if (this.select.topsyturvy) {
                     for (i = 0; i < this.team1.length; i++) {
                         for (var j = 0; j < this.team1[i].boosts; j++) {
-                            this.team1[j].boosts[j] *= -1
+                            this.team1[i].boosts[j] = this.team1[i].boosts[j] * -1;
                         }
                     }
                     for (i = 0; i < this.team2.length; i++) {
                         for (j = 0; j < this.team2[i].boosts; j++) {
-                            this.team2[j].boosts[j] *= -1
+                            this.team2[i].boosts[j] = this.team2[i].boosts[j] * -1;
                         }
                     }
                     for (i = 0; i < this.team3.length; i++) {
                         for (j = 0; j < this.team3[i].boosts; j++) {
-                            this.team3[j].boosts[j] *= -1
+                            this.team3[i].boosts[j] = this.team3[i].boosts[j] * -1;
                         }
                     }
                     for (i = 0; i < this.team4.length; i++) {
                         for (j = 0; j < this.team4[i].boosts; j++) {
-                            this.team4[j].boosts[j] *= -1
+                            this.team4[i].boosts[j] = this.team4[i].boosts[j] * -1;
                         }
                     }
                 }
@@ -13515,24 +13515,36 @@ function Safari() {
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
             party = this.team1;
             oppparty = this.team2;
+            if (target.owner.name.toLowerCase() == this.name4.toLowerCase()) {
+                oppparty = this.team4;
+            }
             protectUses = this.protectCount1;
             isP1 = true;
         }
         else if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
             party = this.team2;
             oppparty = this.team1;
+            if (target.owner.name.toLowerCase() == this.name3.toLowerCase()) {
+                oppparty = this.team3;
+            }
             protectUses = this.protectCount2;
             isP2 = true;
         }
         else if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
             party = this.team3;
             oppparty = this.team2;
+            if (target.owner.name.toLowerCase() == this.name4.toLowerCase()) {
+                oppparty = this.team4;
+            }
             protectUses = this.protectCount3;
             isP3 = true;
         }
         else if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
             oppparty = this.team1;
+            if (target.owner.name.toLowerCase() == this.name3.toLowerCase()) {
+                oppparty = this.team3;
+            }
             protectUses = this.protectCount4;
             isP4 = true;
         }
@@ -13550,10 +13562,6 @@ function Safari() {
         }
         // Refresh/Haze/Buff cannot be blocked by protect if it's Other move
         if (move.category === "other") {
-            if (target.hp <= 0 && (move.needsTarget)) {
-                out.push("But there was no target remaining...");
-                return out;
-            }
             if (move.refresh) {
                 switch (move.refresh) {
                     case "self": 
@@ -13577,55 +13585,6 @@ function Safari() {
                         }
                         out.push(user.owner + "'s party's status returned to normal!");
                     break;
-                }
-            }
-            if (move.haze) {
-                obj = [];
-                switch (move.haze) {
-                    case "self":
-                        obj.push(user);
-                        desc = name;
-                    break;
-                    case "target":
-                        obj.push(target);
-                        desc = tname;
-                    break;
-                    case "field":
-                        obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
-                        desc = "All Pokémon on the field's ";
-                    break;
-                    case "both":
-                        obj.push(user, target);
-                        desc = name + " and " + tname;
-                    break;
-                    case "party":
-                        obj = obj.concat(party);
-                        desc = user.owner + "'s party";
-                    break;
-                    case "oppparty":
-                        obj = obj.concat(oppparty);
-                        desc = target.owner + "'s party";
-                    break;
-                    case "all":
-                        obj = obj.concat(party, oppparty);
-                        desc = "All";
-                    break;
-                }
-                for (e = 0; e < obj.length; e++) {
-                    for (o in obj[e].boosts) {
-                        obj[e].boosts[o] = 0;
-                    }
-                }
-                out.push(desc + " stat changes were eliminated!");
-            }
-            if (move.buff) {
-                for (e = 0; e < move.buff.length; e++) {
-                    obj = move.buff[e];
-                    if (chance(obj.buffChance)) {
-                        user.boosts[obj.buffStat] += obj.buff;
-                        user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                        out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
-                    }
                 }
             }
             if (move.helpingHand) {
@@ -14008,7 +13967,6 @@ function Safari() {
                 }
                 out = dealDamage(user, move, target, typeMultiplier, (isP1 ? 2 : 1), out);
             }
-            
         }
         if (move.protect) {
             protectUses++;
@@ -14033,9 +13991,57 @@ function Safari() {
                 this.usedProtect4 = true;
             }
         }
+        if (move.haze) {
+            obj = [];
+            switch (move.haze) {
+                case "self":
+                    obj.push(user);
+                    desc = name;
+                break;
+                case "field":
+                    obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
+                    desc = "All Pokémon on the field's ";
+                break;
+                case "both":
+                    obj.push(user);
+                    desc = name;
+                break;
+                case "party":
+                    obj = obj.concat(party);
+                    desc = user.owner + "'s party";
+                break;
+                case "oppparty":
+                    obj = obj.concat(oppparty);
+                    desc = target.owner + "'s party";
+                break;
+                case "all":
+                    obj = obj.concat(party, oppparty);
+                    desc = "All";
+                break;
+            }
+            for (e = 0; e < obj.length; e++) {
+                for (o in obj[e].boosts) {
+                    obj[e].boosts[o] = 0;
+                }
+            }
+            out.push(desc + " stat changes were eliminated!");
+        }
+        if (move.buff) {
+            for (e = 0; e < move.buff.length; e++) {
+                obj = move.buff[e];
+                if (chance(obj.buffChance)) {
+                    user.boosts[obj.buffStat] += obj.buff;
+                    user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
+                    out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                }
+            }
+        }
         
         var afterDamage = function(user, move, target, oppparty, out) {
             var fainted = (target.hp <= 0 ? true : false);
+            if (fainted) {
+                return out;
+            }
             var tname = target.owner + "'s " + poke(target.id);
             if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
                 if (!self.isImmuneTo(target.id, move.status)) {
@@ -14059,69 +14065,37 @@ function Safari() {
                 }
             }
             
-            //Those can be cancelled by protect if damaging move
-            if (move.category !== "other") {
-                if (move.refresh) {
-                    switch (move.refresh) {
-                        case "self": 
-                            user.condition = "none";
-                            out.push(name + "'s status returned to normal!");
-                        break;
-                        case "party":
-                            for (e = 0; e < party.length; e++) {
-                                party[e].condition = "none";
-                            }
-                            out.push(user.owner + "'s party's status returned to normal!");
-                        break;
-                    }
-                }
-                if (move.haze) {
-                    obj = [];
-                    switch (move.haze) {
-                        case "self":
-                            obj.push(user);
-                            desc = name;
-                        break;
-                        case "target":
-                            obj.push(target);
-                            desc = tname;
-                        break;
-                        case "both":
-                            obj.push(user, target);
-                            desc = name + " and " + tname;
-                        break;
-                        case "party":
-                            obj = obj.concat(party);
-                            desc = user.owner + "'s party";
-                        break;
-                        case "oppparty":
-                            obj = obj.concat(oppparty);
-                            desc = target.owner + "'s party";
-                        break;
-                        case "all":
-                            obj = obj.concat(party, oppparty);
-                            desc = "All";
-                        break;
-                    }
-                    for (e = 0; e < obj.length; e++) {
-                        for (o in obj[e].boosts) {
-                            obj[e].boosts[o] = 0;
+            if (move.refresh) {
+                switch (move.refresh) {
+                    case "self": 
+                        user.condition = "none";
+                        out.push(name + "'s status returned to normal!");
+                    break;
+                    case "party":
+                        for (e = 0; e < party.length; e++) {
+                            party[e].condition = "none";
                         }
-                    }
-                    out.push(desc + " stat changes were eliminated!");
-                }
-                if (move.buff) {
-                    for (e = 0; e < move.buff.length; e++) {
-                        obj = move.buff[e];
-                        if (chance(obj.buffChance)) {
-                            user.boosts[obj.buffStat] += obj.buff;
-                            user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                            out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
-                        }
-                    }
+                        out.push(user.owner + "'s party's status returned to normal!");
+                    break;
                 }
             }
-            if (!fainted && move.nerf) {
+            if (move.haze) {
+                obj = [];
+                switch (move.haze) {
+                    case "target":
+                    case "both":
+                        obj.push(target);
+                        desc = tname;
+                    break;
+                }
+                for (e = 0; e < obj.length; e++) {
+                    for (o in obj[e].boosts) {
+                        obj[e].boosts[o] = 0;
+                    }
+                }
+                out.push(desc + " stat changes were eliminated!");
+            }
+            if (move.nerf) {
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
                     if (chance(obj.nerfChance)) {
@@ -14181,16 +14155,16 @@ function Safari() {
         }
 
         if (hitsP1) {
-            out = afterDamage(user, move, poke1, this.teams1, out);
+            out = afterDamage(user, move, poke1, this.team1, out);
         }
         if (hitsP2) {
-            out = afterDamage(user, move, poke2, this.teams2, out);
+            out = afterDamage(user, move, poke2, this.team2, out);
         }
         if (hitsP3) {
-            out = afterDamage(user, move, poke3, this.teams3, out);
+            out = afterDamage(user, move, poke3, this.team3, out);
         }
         if (hitsP4) {
-            out = afterDamage(user, move, poke4, this.teams4, out);
+            out = afterDamage(user, move, poke4, this.team4, out);
         }
         return out;
     };
@@ -29266,6 +29240,10 @@ function Safari() {
                 safari.challengePlayer(src, commandData, command === "challenge2");
                 return true;
             }
+            /*if (command === "challenge3") {
+                safari.challengePlayerTag(src, commandData);
+                return true;
+            }*/
             if (command === "watch") {
                 if (currentEvent && commandData === "*") {
                     currentEvent.watchEvent(src);
