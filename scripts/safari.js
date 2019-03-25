@@ -12754,7 +12754,8 @@ function Safari() {
                 "boosts": {
                     "spe": 0
                 },
-                "hp": -1
+                "hp": -1,
+                "owner": "---"
             };
             var move1 = emptyMove;
             var poke1 = emptyPoke;
@@ -13096,6 +13097,9 @@ function Safari() {
                     }
                     while (out.length) {
                         this.sendToViewers(toColor(out.shift(), sColor));
+                    }
+                    if (checkWin()) {
+                        return;
                     }
                 }
             }
@@ -13510,7 +13514,10 @@ function Safari() {
             }
             tname = target.owner + "'s " + poke(target.id);
         }
-        var hitsP1 = false, hitsP2 = false, hitsP3 = false, hitsP4 = false;
+        this.hitsP1 = false;
+        this.hitsP2 = false;
+        this.hitsP3 = false;
+        this.hitsP4 = false;
         var party, oppparty, protectUses, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
@@ -13786,7 +13793,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
-                        hitsP2 = true;
+                        this.hitsP2 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
                     if (move.type == "Ground" && poke4.item.balloon) {
@@ -13800,7 +13807,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
-                        hitsP4 = true;
+                        this.hitsP4 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
@@ -13815,7 +13822,7 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out);
-                            hitsP3 = true;
+                            this.hitsP3 = true;
                         }
                     }
                 }
@@ -13832,7 +13839,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
-                        hitsP2 = true;
+                        this.hitsP2 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
                     if (move.type == "Ground" && poke4.item.balloon) {
@@ -13846,7 +13853,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
-                        hitsP4 = true;
+                        this.hitsP4 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver);
@@ -13861,7 +13868,7 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out);
-                            hitsP1 = true;
+                            this.hitsP1 = true;
                         }
                     }
                 }
@@ -13878,7 +13885,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
-                        hitsP1 = true;
+                        this.hitsP1 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
                     if (move.type == "Ground" && poke3.item.balloon) {
@@ -13892,7 +13899,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
-                        hitsP3 = true;
+                        this.hitsP3 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
@@ -13907,7 +13914,7 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out);
-                            hitsP4 = true;
+                            this.hitsP4 = true;
                         }
                     }
                 }
@@ -13924,7 +13931,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
-                        hitsP1 = true;
+                        this.hitsP1 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
                     if (move.type == "Ground" && poke3.item.balloon) {
@@ -13938,7 +13945,7 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
-                        hitsP3 = true;
+                        this.hitsP3 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
@@ -13953,7 +13960,7 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out);
-                            hitsP2 = true;
+                            this.hitsP2 = true;
                         }
                     }
                 }
@@ -14047,6 +14054,7 @@ function Safari() {
         var afterDamage = function(user, move, target, oppparty, out) {
             var fainted = (target.hp <= 0 ? true : false);
             if (fainted) {
+                out.push("The target had already fainted!");
                 return out;
             }
             var tname = target.owner + "'s " + poke(target.id);
@@ -14120,57 +14128,57 @@ function Safari() {
 
         if (move.category === "other") {
             if (target === "ALL") {
-                hitsP1 = true;
-                hitsP2 = true;
-                hitsP3 = true;
-                hitsP4 = true;
+                this.hitsP1 = true;
+                this.hitsP2 = true;
+                this.hitsP3 = true;
+                this.hitsP4 = true;
                 if (isP1) {
-                    hitsP1 = false;
+                    this.hitsP1 = false;
                 }
                 else if (isP2) {
-                    hitsP2 = false;
+                    this.hitsP2 = false;
                 }
                 else if (isP3) {
-                    hitsP3 = false;
+                    this.hitsP3 = false;
                 }
                 else if (isP4) {
-                    hitsP4 = false;
+                    this.hitsP4 = false;
                 }
             }
             else if (target === "TEAM" && (isP1 || isP3)) {
-                hitsP2 = true;
-                hitsP4 = true;
+                this.hitsP2 = true;
+                this.hitsP4 = true;
             }
             else if (target === "TEAM" && (isP4 || isP2)) {
-                hitsP1 = true;
-                hitsP3 = true;
+                this.hitsP1 = true;
+                this.hitsP3 = true;
             }
             else {
                 if (this.name1.toLowerCase === target.owner.toLowerCase()) {
-                    hitsP1 = true;
+                    this.hitsP1 = true;
                 }
                 else if (this.name2.toLowerCase === target.owner.toLowerCase()) {
-                    hitsP2 = true;
+                    this.hitsP2 = true;
                 }
                 else if (this.name3.toLowerCase === target.owner.toLowerCase()) {
-                    hitsP3 = true;
+                    this.hitsP3 = true;
                 }
                 else if (this.name4.toLowerCase === target.owner.toLowerCase()) {
-                    hitsP4 = true;
+                    this.hitsP4 = true;
                 }
             }
         }
 
-        if (hitsP1) {
+        if (this.hitsP1 === true) {
             out = afterDamage(user, move, this.poke1, this.team1, out);
         }
-        if (hitsP2) {
+        if (this.hitsP2 === true) {
             out = afterDamage(user, move, this.poke2, this.team2, out);
         }
-        if (hitsP3) {
+        if (this.hitsP3 === true) {
             out = afterDamage(user, move, this.poke3, this.team3, out);
         }
-        if (hitsP4) {
+        if (this.hitsP4 === true) {
             out = afterDamage(user, move, this.poke4, this.team4, out);
         }
         return out;
