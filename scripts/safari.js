@@ -14441,7 +14441,7 @@ function Safari() {
                 drain: (0.75 + factor + drain),
                 recoil: (0.7 + recoil - factor),
                 critical: (0.75 + critical + factor),
-                burnout: (1.5 + (burnout * 2)),
+                burnout: (2 + (burnout * 2)),
                 status: 2,
                 buff: 1.8,
                 nerf: 1.8,
@@ -14586,6 +14586,7 @@ function Safari() {
                 }
                 var ints = ((chance(0.3 + (burnout/5))) ? 2 : 1);
                 buff.buff = (ints === 2 ? -3 : -2);
+                out.buff = buff;
                 out.burnout = ints;
                 out.type = eff;
             case "priority":
@@ -18494,6 +18495,7 @@ function Safari() {
                         var npc2 = JSON.parse(JSON.stringify(trainer));
                         npc2.party = trainer.party2.shuffle().slice(0, 4);
                         trainer.party = trainer.party.shuffle().slice(0, 4);
+                        npc2.name = trainer.name2;
                         npc2.bias = trainer.bias2;
                         var battle = new Battle2(id, trainer, {
                             cantWatch: false,
@@ -18620,6 +18622,7 @@ function Safari() {
             if (trainer.party2) {
                 diff = 100;
                 maxLoop = 100;
+                currentTrainer.name2 = trainer.name2;
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
                     hold = [];
