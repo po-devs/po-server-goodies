@@ -14584,7 +14584,7 @@ function Safari() {
                 buff.buff = (ints === 2 ? -3 : -2);
                 out.buff = buff;
                 out.burnout = ints;
-                out.type = eff;
+                out.type = "buff" + buff.buffStat;
             break;
             case "priority":
                 val = Math.round(Math.random() * (5+(2.25*priority)) * (factor + 0.12));
@@ -33078,7 +33078,7 @@ function Safari() {
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         safari.events = parseFromPerm("events", {});
-        safari.events = parseFromPerm("celebrityData", {});
+        safari.celebrityData = parseFromPerm("celebrityData", {});
         safari.dataDumps = parseFromPerm("dumps", {});
         safari.dataDumps2 = parseFromPerm("dumps2", {});
         
