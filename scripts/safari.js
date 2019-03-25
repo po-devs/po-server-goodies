@@ -12320,7 +12320,7 @@ function Safari() {
         }
         if (this.select) {
             for (var j in this.select) {
-                switch (this.select[j]) {
+                switch (j) {
                     case "sandstorm": m = "A Sandstorm rages."; break;
                     case "hail": m = "Hail begins to fall."; break;
                     case "sun": m = "The sunlight is intense."; break;
