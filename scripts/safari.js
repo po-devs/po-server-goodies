@@ -14077,13 +14077,19 @@ function Safari() {
             }
         }
         
-        if (!(this.tagBattle)) {
-            if (isP1) {
-                var party = this.team1;
-            }
-            if (isP2) {
-                var party = this.team2;
-            }
+        var name, party;
+        name = user.owner + "'s " + poke(user.id);
+        if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
+            party = this.team1;
+        }
+        if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
+            party = this.team2;
+        }
+        if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
+            party = this.team3;
+        }
+        if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
+            party = this.team4;
         }
         if (move.refresh) {
             switch (move.refresh) {
