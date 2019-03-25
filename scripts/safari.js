@@ -18622,7 +18622,7 @@ function Safari() {
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
                     hold = [];
-                    for (var j in Object.keys(trainer2.party).shuffle()) {
+                    for (var j in Object.keys(trainer.party2).shuffle()) {
                         if ((trainer2.party[j] >= 6) && (difficulty < 4)) {
                             continue;
                         }
