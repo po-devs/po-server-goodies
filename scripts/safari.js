@@ -12747,11 +12747,10 @@ function Safari() {
             var poke1 = emptyPoke;
             var spd1 = 0;
             if (!this.player1Fainted) {
-                move1 = emptyMove;
+                move1 = this.p1MoveCodes[this.player1Input];
                 poke1 = this.team1[move1.ownerId];
                 spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
             }
-            var move1 = this.p1MoveCodes[this.player1Input];
             if (this.npcBattle) {
                 this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
                 if (this.tagBattle) {
