@@ -18576,7 +18576,7 @@ function Safari() {
             trainer = data[i];
             currentTrainer.name = trainer.name;
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.05 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.02 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 4 : 0));
             if (ind >= 5) {
                 chal++;
