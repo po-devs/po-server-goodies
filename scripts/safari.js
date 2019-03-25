@@ -12836,24 +12836,29 @@ function Safari() {
             }
             for (o = 0; o < order.length; o++) {
                 id = order[o];
+                var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
                 if (id === 1) {
                     user = poke1;
                     move = move1;
+                    isP1 = true;
                 }
                 else if (id === 2) {
                     user = poke2;
                     move = move2;
+                    isP2 = true;
                 }
                 else if (id === 3) {
                     user = poke3;
                     move = move3;
+                    isP3 = true;
                 }
                 else if (id === 4) {
                     user = poke4;
                     move = move4;
+                    isP4 = true;
                 }
                 if (this.tagBattle) {
-                    if (isP1) {
+                    if (id === 1) {
                         if (this.target1 === 2) {
                             target = poke2;
                         }
@@ -12863,7 +12868,8 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                    } else if (isP2) {
+                        isP1 = true;
+                    } else if (id === 2) {
                         if (this.target2 === 1) {
                             target = poke1;
                         }
@@ -12873,7 +12879,8 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                    } if (isP3) {
+                        isP2 = true;
+                    } if (id === 3) {
                         if (this.target3 === 2) {
                             target = poke2;
                         }
@@ -12883,7 +12890,8 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                    } else if (isP4) {
+                        isP3 = true;
+                    } else if (id === 4) {
                         if (this.target4 === 1) {
                             target = poke1;
                         }
@@ -12893,6 +12901,7 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
+                        isP4 = true;
                     }
                 }
                 else {
