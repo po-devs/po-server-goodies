@@ -13049,13 +13049,13 @@ function Safari() {
 
                 if (user.hp > 0) {
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
-                        if ((!user.lastPlayed2) && (!user.hasType("Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side1Field.spikes * user.maxhp/24)), 1);
                         }
                     }
                     if (this.side2Field.spikes > 0 && (isP2 || isP4)) {
-                        if ((!user.lastPlayed2) && (!user.hasType("Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side2Field.spikes * user.maxhp/24)), 1);
                         }
@@ -32462,7 +32462,7 @@ function Safari() {
                         sandstorm: true,
                         hugePower: true,
                         topsyturvy: true,
-                        spikes2: true,
+                        spikes: true,
                         boostType: ["Grass", "Fire"]
                     }
                 }
