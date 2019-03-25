@@ -18562,7 +18562,8 @@ function Safari() {
             "strong": [],
             "gym": []
         };
-        for (var i in Object.keys(data).shuffle()) {
+        data = data.shuffle();
+        for (var i = 0; i < data.length; i++) {
             currentTrainer = {};
             trainer = data[i];
             currentTrainer.name = trainer.name;
