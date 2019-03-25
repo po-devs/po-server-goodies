@@ -32498,7 +32498,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadcelebrities") {
-                var cThemes = celebrityData ? celebrityData : {};
+                var cThemes = {};
                 var url = commandData === "*" ? (permObj.get("celebrityurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
