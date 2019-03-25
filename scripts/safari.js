@@ -13512,6 +13512,7 @@ function Safari() {
         }
         var hitsP1 = false, hitsP2 = false, hitsP3 = false, hitsP4 = false;
         var party, oppparty, protectUses, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
+        var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
             party = this.team1;
             oppparty = this.team2;
@@ -13701,7 +13702,7 @@ function Safari() {
                 var bonus = 1;
                 bonus *= ((isP2 || isP4) && (self.select.boostType.contains(move.type)) ? 1.3 : 1);
                 bonus *= ((isP1 || isP3) && (self.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
-                bonus *= (hasType(target.id, "Rock") && (self.select.sandstorm) && (move.category == "special") ? 0.667 : 1);
+                bonus *= (hasType(target.id, "Rock") && (self.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
                 bonus *= (move.type == "Fire" && (self.select.sun) ? 1.5 : 1);
                 bonus *= (move.type == "Water" && (self.select.sun) ? 0.5 : 1);
                 bonus *= (move.type == "Water" && (self.select.rain) ? 1.5 : 1);
@@ -13770,9 +13771,7 @@ function Safari() {
                 return out;
             }
 
-            var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
             var inver = (this.select.inverted ? true : false);
-
             if (wide) {
                 if (isP1) {
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
@@ -14119,8 +14118,8 @@ function Safari() {
             return out;
         }
 
-        if (move.category == "other") {
-            if (target == "ALL") {
+        if (move.category === "other") {
+            if (target === "ALL") {
                 hitsP1 = true;
                 hitsP2 = true;
                 hitsP3 = true;
@@ -14138,11 +14137,11 @@ function Safari() {
                     hitsP4 = false;
                 }
             }
-            else if (target == "TEAM" && (isP1 || isP3)) {
+            else if (target === "TEAM" && (isP1 || isP3)) {
                 hitsP2 = true;
                 hitsP4 = true;
             }
-            else if (target == "TEAM" && (isP4 || isP2)) {
+            else if (target === "TEAM" && (isP4 || isP2)) {
                 hitsP1 = true;
                 hitsP3 = true;
             }
@@ -14163,16 +14162,16 @@ function Safari() {
         }
 
         if (hitsP1) {
-            out = afterDamage(user, move, poke1, this.team1, out);
+            out = afterDamage(user, move, this.poke1, this.team1, out);
         }
         if (hitsP2) {
-            out = afterDamage(user, move, poke2, this.team2, out);
+            out = afterDamage(user, move, this.poke2, this.team2, out);
         }
         if (hitsP3) {
-            out = afterDamage(user, move, poke3, this.team3, out);
+            out = afterDamage(user, move, this.poke3, this.team3, out);
         }
         if (hitsP4) {
-            out = afterDamage(user, move, poke4, this.team4, out);
+            out = afterDamage(user, move, this.poke4, this.team4, out);
         }
         return out;
     };
@@ -15161,7 +15160,7 @@ function Safari() {
                     c = c / (this.protectCount2+1);
                 }
             }
-            if (move.category == "other") {
+            if (move.category === "other") {
                 if (bias.support) {
                     c += 60;
                 }
