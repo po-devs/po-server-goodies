@@ -13080,12 +13080,16 @@ function Safari() {
             
             //TODO: Make it so Player2 doesn't have the advantage in situations where both players lose by poison/burn at the same time
             this.checkCondition(poke1);
-            this.checkCondition(poke3);
+            if (this.tagBattle && (!this.player3Fainted)) {
+                this.checkCondition(poke3);
+            }
             if (checkWin()) {
                 return;
             }
             this.checkCondition(poke2, true);
-            this.checkCondition(poke4, true);
+            if (this.tagBattle && (!this.player4Fainted)) {
+                this.checkCondition(poke4, true);
+            }
             if (checkWin()) {
                 return;
             }
