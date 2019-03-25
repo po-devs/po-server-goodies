@@ -13175,7 +13175,7 @@ function Safari() {
                 }
             }
             if (this.select) {
-                if (this.select.slowStart && this.turn >= 5) {
+                if (this.select.slowStart && this.turn === 5) {
                     this.sendToViewers(this.name2 + "'s Slow Start wore off!");
                 }
             }
