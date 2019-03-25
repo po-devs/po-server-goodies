@@ -18596,6 +18596,7 @@ function Safari() {
             diff = 100;
             var obj;
             while (Math.abs(diff) > 2) {
+                partyStrength = 0;
                 hold = [];
                 obj = Object.keys(trainer.party).shuffle();
                 for (var j in obj) {
@@ -18631,6 +18632,7 @@ function Safari() {
                 currentTrainer.name2 = trainer.name2;
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
+                    partyStrength = 0;
                     hold = [];
                     obj = Object.keys(trainer.party2).shuffle();
                     for (var j in obj) {
@@ -18664,6 +18666,7 @@ function Safari() {
             hazardStrength = 0;
             while (Math.abs(diff) > 1) {
                 hold = [];
+                hazardStrength = 0;
                 obj = Object.keys(trainer.effectBalance).shuffle();
                 for (var j in obj) {
                     if (hold.contains(obj[j])) {
