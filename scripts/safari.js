@@ -13515,8 +13515,10 @@ function Safari() {
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
             party = this.team1;
             oppparty = this.team2;
-            if (target.owner.name.toLowerCase() == this.name4.toLowerCase()) {
-                oppparty = this.team4;
+            if (!wide) {
+                if (target.owner.toLowerCase() == this.name4.toLowerCase()) {
+                    oppparty = this.team4;
+                }
             }
             protectUses = this.protectCount1;
             isP1 = true;
@@ -13524,8 +13526,10 @@ function Safari() {
         else if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
             party = this.team2;
             oppparty = this.team1;
-            if (target.owner.name.toLowerCase() == this.name3.toLowerCase()) {
-                oppparty = this.team3;
+            if (!wide) {
+                if (target.owner.toLowerCase() == this.name3.toLowerCase()) {
+                    oppparty = this.team3;
+                }
             }
             protectUses = this.protectCount2;
             isP2 = true;
@@ -13533,8 +13537,10 @@ function Safari() {
         else if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
             party = this.team3;
             oppparty = this.team2;
-            if (target.owner.name.toLowerCase() == this.name4.toLowerCase()) {
-                oppparty = this.team4;
+            if (!wide) {
+                if (target.owner.toLowerCase() == this.name4.toLowerCase()) {
+                    oppparty = this.team4;
+                }
             }
             protectUses = this.protectCount3;
             isP3 = true;
@@ -13542,8 +13548,10 @@ function Safari() {
         else if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
             oppparty = this.team1;
-            if (target.owner.name.toLowerCase() == this.name3.toLowerCase()) {
-                oppparty = this.team3;
+            if (!wide) {
+                if (target.owner.toLowerCase() == this.name3.toLowerCase()) {
+                    oppparty = this.team3;
+                }
             }
             protectUses = this.protectCount4;
             isP4 = true;
