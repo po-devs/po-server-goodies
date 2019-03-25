@@ -12326,7 +12326,7 @@ function Safari() {
                     case "sun": m = "The sunlight is intense."; break;
                     case "rain": m = "There is a heavy downpour of rain."; break;
                     case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
-                    case "spikes": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
+                    case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
                     case "initialReflect": m = "Reflect begins active on foe's side."; break;
                     case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
                     case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
@@ -12456,7 +12456,7 @@ function Safari() {
                             this.team2[i].stats["atk"] *= 2;
                             this.sendToViewers(poke(this.team2[i].id) + "'s Huge Power activates!");
                             break;
-                        }
+                        }1
                     }
                 }
                 if (this.select.balloon) {
@@ -12775,6 +12775,12 @@ function Safari() {
                     this.player4Input = this.chooseNPCMove(this.p4MoveCodes, this.team4, this.team1);
                     this.target2 = (chance(0.5) ? 1 : 3);
                     this.target4 = (chance(0.5) ? 1 : 3);
+                    if (this.p2MoveCodes[this.player2Input].target === "ALL" || this.p2MoveCodes[this.player2Input].target === "TEAM") {
+                        this.target2 = -1;
+                    }
+                    if (this.p4MoveCodes[this.player4Input].target === "ALL" || this.p4MoveCodes[this.player4Input].target === "TEAM") {
+                        this.target4 = -1;
+                    }
                 }
                 if ((this.player2Input === false && (!(this.tagBattle) || this.player4Input === false))) {
                     if (checkWin()) {
@@ -13151,24 +13157,12 @@ function Safari() {
 
             if ((this.turn % 7 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.topsyturvy) {
-                    for (var i = 0; i < this.team1.length; i++) {
-                        for (var j = 0; j < this.team1[i].boosts; j++) {
-                            this.team1[i].boosts[j] = (this.team1[i].boosts[j] * -1);
-                        }
-                    }
-                    for (i = 0; i < this.team2.length; i++) {
-                        for (j = 0; j < this.team2[i].boosts; j++) {
-                            this.team2[i].boosts[j] = (this.team2[i].boosts[j] * -1);
-                        }
-                    }
-                    for (i = 0; i < this.team3.length; i++) {
-                        for (j = 0; j < this.team3[i].boosts; j++) {
-                            this.team3[i].boosts[j] = (this.team3[i].boosts[j] * -1);
-                        }
-                    }
-                    for (i = 0; i < this.team4.length; i++) {
-                        for (j = 0; j < this.team4[i].boosts; j++) {
-                            this.team4[i].boosts[j] = (this.team4[i].boosts[j] * -1);
+                    var allMons = this.team1.concat(this.team2).concat(this.team3).concat(this.team4), mon, k, o;
+                    for (var i = 0; i < allMons.length; i++) {
+                        mon = allMons[i];
+                        for (o in mon.boosts) {
+                            k = mon.boosts[o] * -1;
+                            mon.boosts[o] = k;
                         }
                     }
                 }
@@ -32459,10 +32453,13 @@ function Safari() {
                     name: "Alex",
                     bias: ["recoil", "drain"],
                     select: {
-                        sandstorm: true,
+                        sun: true,
                         hugePower: true,
+                        simple: true,
+                        frenzy: true,
                         topsyturvy: true,
-                        spikes: true,
+                        boostDrain: true,
+                        shellArmor: true,
                         boostType: ["Grass", "Fire"]
                     }
                 }
