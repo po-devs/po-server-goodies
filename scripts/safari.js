@@ -12615,7 +12615,9 @@ function Safari() {
             prepareTeamForTurn(this.name1, this.team1, this.p1MoveCodes);
             prepareTeamForTurn(this.name2, this.team2, this.p2MoveCodes, this.npcBattle);
             if (this.tagBattle) {
-                prepareTeamForTurn(this.name3, this.team3, this.p3MoveCodes, this.npcBattle);
+                if (!this.oneOnTwo) {
+                    prepareTeamForTurn(this.name3, this.team3, this.p3MoveCodes, this.npcBattle);
+                }
                 prepareTeamForTurn(this.name4, this.team4, this.p4MoveCodes, this.npcBattle);
             }
             
@@ -12694,13 +12696,41 @@ function Safari() {
                     }
                 }
             };
+
+            if (this.player1Input === null) {
+                this.player1Input = Object.keys(this.p1MoveCodes).random();
+                if (this.tagBattle && this.oneOnTwo) {
+                    for (var t in this.p1MoveCodes) {
+                        var rem = ["a", "b", "c"];
+                        if (rem.contains(data) && rem.contains(t)) {
+                            continue;
+                        }
+                        var rem = ["d", "e", "f"];
+                        if (rem.contains(data) && rem.contains(t)) {
+                            continue;
+                        }
+                        var rem = ["g", "h", "i"];
+                        if (rem.contains(data) && rem.contains(t)) {
+                            continue;
+                        }
+                        var rem = ["j", "k", "l"];
+                        if (rem.contains(data) && rem.contains(t)) {
+                            continue;
+                        }
+                        this.p3MoveCodes[t] = this.p1MoveCodes[t];
+                    }
+                    if (this.player3Input === null) {
+                        this.player3Input = Object.keys(this.p3MoveCodes).random();
+                    }
+                }
+            }
             
             var move1 = this.p1MoveCodes[this.player1Input];
             if (this.npcBattle) {
                 this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
                 if (this.tagBattle) {
-                    if (!this.oneOnTwo) {
-                        this.player3Input = this.chooseNPCMove(this.p3MoveCodes, this.team3, this.team2);
+                    if (this.oneOnTwo && this.player3Input === null) {
+                        this.player3Input = Object.keys(this.p3MoveCodes).random();
                     }
                     this.player4Input = this.chooseNPCMove(this.p4MoveCodes, this.team4, this.team1);
                 }
@@ -12731,7 +12761,7 @@ function Safari() {
             var move3 = null, move4 = null, poke3 = null, poke4 = null;
             if (this.tagBattle) {
                 if (this.oneOnTwo) {
-                    move3 = this.p1MoveCodes[this.player3Input];
+                    move3 = this.p3MoveCodes[this.player3Input];
                     poke3 = this.team1[move3.ownerId];
                 }
                 else {
@@ -13212,6 +13242,27 @@ function Safari() {
         
         if (isP1) {
             this.player1Input = data;
+            if (this.tagBattle && this.oneOnTwo) {
+                for (var t in this.p1MoveCodes) {
+                    var rem = ["a", "b", "c"];
+                    if (rem.contains(data) && rem.contains(t)) {
+                        continue;
+                    }
+                    var rem = ["d", "e", "f"];
+                    if (rem.contains(data) && rem.contains(t)) {
+                        continue;
+                    }
+                    var rem = ["g", "h", "i"];
+                    if (rem.contains(data) && rem.contains(t)) {
+                        continue;
+                    }
+                    var rem = ["j", "k", "l"];
+                    if (rem.contains(data) && rem.contains(t)) {
+                        continue;
+                    }
+                    this.p3MoveCodes[t] = this.p1MoveCodes[t];
+                }
+            }
         } else if (isP2) {
             this.player2Input = data;
         } else if (isP3) {
