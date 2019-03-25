@@ -12647,7 +12647,7 @@ function Safari() {
                             break;
                         }
                     }
-                    if (!this.oneOnTwo) {
+                    if (!self.oneOnTwo) {
                         for (i = 0; i < self.team3.length; i++) {
                             if (self.team3[i].hp > 0) {
                                 self.player3Fainted = false;
