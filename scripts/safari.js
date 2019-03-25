@@ -12747,7 +12747,8 @@ function Safari() {
                 },
                 "boosts": {
                     "spe": 0
-                }
+                },
+                "hp": -1
             };
             var move1 = emptyMove;
             var poke1 = emptyPoke;
@@ -12768,7 +12769,7 @@ function Safari() {
                     this.target2 = (chance(0.5) ? 1 : 3);
                     this.target4 = (chance(0.5) ? 1 : 3);
                 }
-                if (this.player2Input === false) {
+                if ((this.player2Input === false && (!(this.tagBattle) || this.player4Input === false))) {
                     if (checkWin()) {
                         return;
                     } else {
@@ -13098,12 +13099,22 @@ function Safari() {
                 if (this.select.topsyturvy) {
                     for (i = 0; i < this.team1.length; i++) {
                         for (var j = 0; j < this.team1[i].boosts; j++) {
-                            this.team1[i].boosts[j] *= -1
+                            this.team1[j].boosts[j] *= -1
                         }
                     }
                     for (i = 0; i < this.team2.length; i++) {
                         for (j = 0; j < this.team2[i].boosts; j++) {
-                            this.team2[i].boosts[j] *= -1
+                            this.team2[j].boosts[j] *= -1
+                        }
+                    }
+                    for (i = 0; i < this.team3.length; i++) {
+                        for (j = 0; j < this.team3[i].boosts; j++) {
+                            this.team3[j].boosts[j] *= -1
+                        }
+                    }
+                    for (i = 0; i < this.team4.length; i++) {
+                        for (j = 0; j < this.team4[i].boosts; j++) {
+                            this.team4[j].boosts[j] *= -1
                         }
                     }
                 }
@@ -13429,22 +13440,30 @@ function Safari() {
         var tname;
         if (wide) {
             tname = "All Pokémon on the field";
+            if (this.poke3.hp <= 0 && this.poke1.hp <= 0 && (user.owner.toLowerCase() === this.name2.toLowerCase() || user.owner.toLowerCase() === this.name4.toLowerCase())) {
+                out.push("But there was no target remaining...");
+                return out;
+            }
+            if (this.poke2.hp <= 0 && this.poke4.hp <= 0 && (user.owner.toLowerCase() === this.name3.toLowerCase() || user.owner.toLowerCase() === this.name1.toLowerCase())) {
+                out.push("But there was no target remaining...");
+                return out;
+            }
         }
         else {  
-            if ((target.hp < 0) && target.owner.toLowerCase() === this.name2.toLowerCase()) {
+            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name2.toLowerCase()) {
                 target = this.poke4;
             }
-            if ((target.hp < 0) && target.owner.toLowerCase() === this.name4.toLowerCase()) {
+            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name4.toLowerCase()) {
                 target = this.poke2;
             }
-            if ((target.hp < 0) && target.owner.toLowerCase() === this.name3.toLowerCase()) {
+            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name3.toLowerCase()) {
                 target = this.poke1;
             }
-            if ((target.hp < 0) && target.owner.toLowerCase() === this.name1.toLowerCase()) {
+            if ((target.hp <= 0) && target.owner.toLowerCase() === this.name1.toLowerCase()) {
                 target = this.poke3;
             }
-            if (target.hp < 0) {
-                out.push(user.name.toLowerCase(), "But there was no target remaining...");
+            if (target.hp <= 0) {
+                out.push("But there was no target remaining...");
                 return out;
             }
             tname = target.owner + "'s " + poke(target.id);
