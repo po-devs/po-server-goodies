@@ -13514,10 +13514,6 @@ function Safari() {
             }
             tname = target.owner + "'s " + poke(target.id);
         }
-        this.hitsP1 = false;
-        this.hitsP2 = false;
-        this.hitsP3 = false;
-        this.hitsP4 = false;
         var party, oppparty, protectUses, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
@@ -13769,6 +13765,9 @@ function Safari() {
                         out.push("<b>" + name + " fainted!</b>");
                     }
                 }
+                if (!fainted) {
+                    out = self.afterDamage(user, move, target, oppparty, out);
+                }
                 if (fainted && self.select) {
                     if (self.select.frenzy) {
                         user.hp = Math.min(user.maxhp, Math.floor(user.hp + (0.25 * user.maxhp)));
@@ -13793,7 +13792,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
-                        this.hitsP2 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
                     if (move.type == "Ground" && poke4.item.balloon) {
@@ -13807,7 +13805,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
-                        this.hitsP4 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
@@ -13822,7 +13819,6 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out);
-                            this.hitsP3 = true;
                         }
                     }
                 }
@@ -13839,7 +13835,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
-                        this.hitsP2 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
                     if (move.type == "Ground" && poke4.item.balloon) {
@@ -13853,7 +13848,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
-                        this.hitsP4 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver);
@@ -13868,7 +13862,6 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out);
-                            this.hitsP1 = true;
                         }
                     }
                 }
@@ -13885,7 +13878,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
-                        this.hitsP1 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
                     if (move.type == "Ground" && poke3.item.balloon) {
@@ -13899,7 +13891,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
-                        this.hitsP3 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
@@ -13914,7 +13905,6 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out);
-                            this.hitsP4 = true;
                         }
                     }
                 }
@@ -13931,7 +13921,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
-                        this.hitsP1 = true;
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
                     if (move.type == "Ground" && poke3.item.balloon) {
@@ -13945,7 +13934,6 @@ function Safari() {
                     }
                     else {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
-                        this.hitsP3 = true;
                     }
                     if (target !== "TEAM") {
                         typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
@@ -13960,7 +13948,6 @@ function Safari() {
                         }
                         else {
                             out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out);
-                            this.hitsP2 = true;
                         }
                     }
                 }
@@ -14050,136 +14037,83 @@ function Safari() {
                 }
             }
         }
-        
-        var afterDamage = function(user, move, target, oppparty, out) {
-            var fainted = (target.hp <= 0 ? true : false);
-            if (fainted) {
-                out.push("The target had already fainted!");
-                return out;
-            }
-            var tname = target.owner + "'s " + poke(target.id);
-            if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
-                if (!self.isImmuneTo(target.id, move.status)) {
-                    if (["sleep", "freeze"].contains(move.status) === false || self.countCondition(oppparty, move.status) === 0) {
-                        target.condition = move.status;
-                        target.conditionDuration = sys.rand(0, 3);
-                        if (move.status == "sleep" && self.select.extendedSleep) {
-                            target.conditionDuration++;
-                        }
-                        var conditionVerb = {
-                            sleep: "fell asleep",
-                            paralyzed: "was paralyzed",
-                            burn: "got burned",
-                            freeze: "was frozen solid",
-                            poison: "got poisoned"
-                        };
-                        out.push(tname + " " + conditionVerb[move.status] + "!");
-                    } else {
-                        out.push(cap(move.status) + " Clause prevented the " + (move.status === "sleep" ? "sleep inducing" : "freezing") + " effect of the move from working!");
-                    }
-                }
-            }
-            
-            if (move.refresh) {
-                switch (move.refresh) {
-                    case "self": 
-                        user.condition = "none";
-                        out.push(name + "'s status returned to normal!");
-                    break;
-                    case "party":
-                        for (e = 0; e < party.length; e++) {
-                            party[e].condition = "none";
-                        }
-                        out.push(user.owner + "'s party's status returned to normal!");
-                    break;
-                }
-            }
-            if (move.haze) {
-                obj = [];
-                switch (move.haze) {
-                    case "target":
-                    case "both":
-                        obj.push(target);
-                        desc = tname;
-                    break;
-                }
-                for (e = 0; e < obj.length; e++) {
-                    for (o in obj[e].boosts) {
-                        obj[e].boosts[o] = 0;
-                    }
-                }
-                out.push(desc + " stat changes were eliminated!");
-            }
-            if (move.nerf) {
-                for (e = 0; e < move.nerf.length; e++) {
-                    obj = move.nerf[e];
-                    if (chance(obj.nerfChance)) {
-                        target.boosts[obj.nerfStat] += obj.nerf;
-                        target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
-                        out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
-                    }
-                }
-            }
-            if (!fainted && move.flinch && chance(move.flinch)) {
-                target.flinch = true;
-            }
-            return out;
-        }
 
         if (move.category === "other") {
-            if (target === "ALL") {
-                this.hitsP1 = true;
-                this.hitsP2 = true;
-                this.hitsP3 = true;
-                this.hitsP4 = true;
-                if (isP1) {
-                    this.hitsP1 = false;
-                }
-                else if (isP2) {
-                    this.hitsP2 = false;
-                }
-                else if (isP3) {
-                    this.hitsP3 = false;
-                }
-                else if (isP4) {
-                    this.hitsP4 = false;
-                }
-            }
-            else if (target === "TEAM" && (isP1 || isP3)) {
-                this.hitsP2 = true;
-                this.hitsP4 = true;
-            }
-            else if (target === "TEAM" && (isP4 || isP2)) {
-                this.hitsP1 = true;
-                this.hitsP3 = true;
-            }
-            else {
-                if (this.name1.toLowerCase === target.owner.toLowerCase()) {
-                    this.hitsP1 = true;
-                }
-                else if (this.name2.toLowerCase === target.owner.toLowerCase()) {
-                    this.hitsP2 = true;
-                }
-                else if (this.name3.toLowerCase === target.owner.toLowerCase()) {
-                    this.hitsP3 = true;
-                }
-                else if (this.name4.toLowerCase === target.owner.toLowerCase()) {
-                    this.hitsP4 = true;
+            out = this.afterDamage(user, move, target, oppparty, out);
+        }
+        return out;
+    };
+    Battle2.prototype.afterDamage = function(user, move, target, oppparty, out) {
+        var fainted = (target.hp <= 0 ? true : false);
+        if (fainted) {
+            out.push("The target had already fainted!");
+            return out;
+        }
+        var tname = target.owner + "'s " + poke(target.id);
+        if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
+            if (!this.isImmuneTo(target.id, move.status)) {
+                if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
+                    target.condition = move.status;
+                    target.conditionDuration = sys.rand(0, 3);
+                    if (move.status == "sleep" && this.select.extendedSleep) {
+                        target.conditionDuration++;
+                    }
+                    var conditionVerb = {
+                        sleep: "fell asleep",
+                        paralyzed: "was paralyzed",
+                        burn: "got burned",
+                        freeze: "was frozen solid",
+                        poison: "got poisoned"
+                    };
+                    out.push(tname + " " + conditionVerb[move.status] + "!");
+                } else {
+                    out.push(cap(move.status) + " Clause prevented the " + (move.status === "sleep" ? "sleep inducing" : "freezing") + " effect of the move from working!");
                 }
             }
         }
-
-        if (this.hitsP1 === true) {
-            out = afterDamage(user, move, this.poke1, this.team1, out);
+        
+        if (move.refresh) {
+            switch (move.refresh) {
+                case "self": 
+                    user.condition = "none";
+                    out.push(name + "'s status returned to normal!");
+                break;
+                case "party":
+                    for (e = 0; e < party.length; e++) {
+                        party[e].condition = "none";
+                    }
+                    out.push(user.owner + "'s party's status returned to normal!");
+                break;
+            }
         }
-        if (this.hitsP2 === true) {
-            out = afterDamage(user, move, this.poke2, this.team2, out);
+        if (move.haze) {
+            obj = [];
+            switch (move.haze) {
+                case "target":
+                case "both":
+                    obj.push(target);
+                    desc = tname;
+                break;
+            }
+            for (e = 0; e < obj.length; e++) {
+                for (o in obj[e].boosts) {
+                    obj[e].boosts[o] = 0;
+                }
+            }
+            out.push(desc + " stat changes were eliminated!");
         }
-        if (this.hitsP3 === true) {
-            out = afterDamage(user, move, this.poke3, this.team3, out);
+        if (move.nerf) {
+            for (e = 0; e < move.nerf.length; e++) {
+                obj = move.nerf[e];
+                if (chance(obj.nerfChance)) {
+                    target.boosts[obj.nerfStat] += obj.nerf;
+                    target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
+                    out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
+                }
+            }
         }
-        if (this.hitsP4 === true) {
-            out = afterDamage(user, move, this.poke4, this.team4, out);
+        if (!fainted && move.flinch && chance(move.flinch)) {
+            target.flinch = true;
         }
         return out;
     };
