@@ -13165,8 +13165,8 @@ function Safari() {
                             mon.boosts[o] = k;
                         }
                     }
+                    this.sendToViewers("All stat bonuses were flipped!");
                 }
-                this.sendToViewers("All stat bonuses were flipped!");
             }
             if (this.select) {
                 if (this.select.slowStart && this.turn >= 5) {
