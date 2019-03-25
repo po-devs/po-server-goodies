@@ -18523,7 +18523,7 @@ function Safari() {
 
         var celebs = safari.getCelebrities(safari.celebrityData[safari.celebrityRegion], difficulty);
         var j = 0;
-        while (celes.gym[0].party2) {
+        while (celebs.gym[0].party2) {
             celebs.gym.shuffle();
             j++;
             if (j > 1000) {
