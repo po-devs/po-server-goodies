@@ -14558,7 +14558,7 @@ function Safari() {
                 out.type = eff;
             break;
             case "drain":
-                out.drain = (Math.floor(100 * 0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09))/100);
+                out.drain = (Math.floor(100 * (0.4 + ((drain + (0.5 * Math.random() - (0.5 * Math.random()))) * 0.09)))/100);
                 if (this.select.boostDrain) {
                     out.drain *= 1.5;
                 }
@@ -14580,6 +14580,7 @@ function Safari() {
                 }
                 buff = {};
                 buff.buffStat = (category == "physical" ? "atk" : "satk");
+                buff.buffChance = 1;
                 if (used.contains("buff" + buff.buffStat)) {
                     return out;
                 }
