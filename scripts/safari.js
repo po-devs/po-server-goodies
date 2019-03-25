@@ -18586,19 +18586,21 @@ function Safari() {
             partyStrength = 0;
             maxLoop = 100;
             diff = 100;
+            var obj;
             while (Math.abs(diff) > 2) {
                 hold = [];
-                for (var j in Object.keys(trainer.party).shuffle()) {
-                    if ((trainer.party[j] >= 6) && (difficulty < 4)) {
+                obj = Object.keys(trainer.party).shuffle();
+                for (var j in obj) {
+                    if ((trainer.party[obj[j]] >= 6) && (difficulty < 4)) {
                         continue;
                     }
                     if (trainer.shiny === parseInt(j, 10)) {
-                        hold.push(j);
+                        hold.push(obj[j]);
                     }
                     else {
-                        hold.push(parseInt(j, 10));
+                        hold.push(parseInt(obj[j], 10));
                     }
-                    partyStrength += (trainer.party[j] + Math.random() - Math.random());
+                    partyStrength += (trainer.party[obj[j]] + Math.random() - Math.random());
                     if (trainer.party2 && hold.length > 3) {
                         break;
                     } 
@@ -18622,12 +18624,13 @@ function Safari() {
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
                     hold = [];
-                    for (var j in Object.keys(trainer.party2).shuffle()) {
+                    obj = Object.keys(trainer.party2).shuffle();
+                    for (var j in obj) {
                         if ((trainer2.party[j] >= 6) && (difficulty < 4)) {
                             continue;
                         }
-                        hold.push(parseInt(j, 10));
-                        partyStrength += (trainer2.party[j] + Math.random() - Math.random());
+                        hold.push(parseInt(obj[j], 10));
+                        partyStrength += (trainer2.party[obj[j]] + Math.random() - Math.random());
                         if (hold.length > 3) {
                             break;
                         }
@@ -18653,18 +18656,19 @@ function Safari() {
             hazardStrength = 0;
             while (Math.abs(diff) > 1) {
                 hold = [];
-                for (var j in Object.keys(trainer.effectBalance).shuffle()) {
-                    if ((hold.contains("spikes") || hold.contains("spikes2")) && (j == "spikes" || j == "spikes2")) {
+                obj = Object.keys(trainer.effectBalance).shuffle();
+                for (var j in obj) {
+                    if ((hold.contains("spikes") || hold.contains("spikes2")) && (obj[j] == "spikes" || obj[j] == "spikes2")) {
                         continue;
                     }
-                    if ((hold.contains("fullrestore") || hold.contains("fullrestore2") || hold.contains("fullrestore3")) && (j == "fullrestore3" || j == "fullrestore2" || j == "fullrestore")) {
+                    if ((hold.contains("fullrestore") || hold.contains("fullrestore2") || hold.contains("fullrestore3")) && (obj[j] == "fullrestore3" || obj[j] == "fullrestore2" || obj[j] == "fullrestore")) {
                         continue;
                     }
-                    if ((hold.contains("hyperpotion") || hold.contains("hyperpotion2") || hold.contains("hyperpotion3")) && (j == "hyperpotion3" || j == "hyperpotion2" || j == "hyperpotion")) {
+                    if ((hold.contains("hyperpotion") || hold.contains("hyperpotion2") || hold.contains("hyperpotion3")) && (obj[j] == "hyperpotion3" || obj[j] == "hyperpotion2" || obj[j] == "hyperpotion")) {
                         continue;
                     }
-                    hold.push(j);
-                    hazardStrength += (trainer.effectBalance[j] + Math.random() - Math.random());
+                    hold.push(obj[j]);
+                    hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random());
                     diff = (chal - hazardStrength);
                     if ((hold.length >= 4) && (chance (0.5))) {
                         break;
