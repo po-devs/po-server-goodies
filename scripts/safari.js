@@ -12092,22 +12092,22 @@ function Safari() {
             hyper: 0,
             full: 0
         };
-        if (select.hyperpotion3) {
+        if (select.hyperpotion3 === true) {
             this.npcItems.hyper = 3;
         }
-        else if (select.hyperpotion2) {
+        else if (select.hyperpotion2 === true) {
             this.npcItems.hyper = 2;
         }
-        else if (select.hyperpotion) {
+        else if (select.hyperpotion === true) {
             this.npcItemshyper = 1;
         }
-        if (select.fullrestore3) {
+        if (select.fullrestore3 === true) {
             this.npcItems.full = 3;
         }
-        else if (select.fullrestore2) {
+        else if (select.fullrestore2 === true) {
             this.npcItems.full = 2;
         }
-        else if (select.fullrestore) {
+        else if (select.fullrestore === true) {
             this.npcItems.full = 1;
         }
         if (select.spikes2) {
@@ -12949,11 +12949,13 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                        if (this.player2Fainted) {
-                            target = poke4;
-                        }
-                        else if (this.player4Fainted) {
-                            target = poke2;
+                        if (this.target1 !== -1) {
+                            if (this.player2Fainted) {
+                                target = poke4;
+                            }
+                            else if (this.player4Fainted) {
+                                target = poke2;
+                            }
                         }
                         if (this.player4Fainted && this.player2Fainted) {
                             continue;
@@ -12969,11 +12971,13 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                        if (this.player1Fainted) {
-                            target = poke3;
-                        }
-                        else if (this.player3Fainted) {
-                            target = poke1;
+                        if (this.target2 !== -1) {
+                            if (this.player1Fainted) {
+                                target = poke3;
+                            }
+                            else if (this.player3Fainted) {
+                                target = poke1;
+                            }
                         }
                         if (this.player1Fainted && this.player3Fainted) {
                             continue;
@@ -12989,11 +12993,13 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                        if (this.player2Fainted) {
-                            target = poke4;
-                        }
-                        else if (this.player4Fainted) {
-                            target = poke2;
+                        if (this.target3 !== -1) {
+                            if (this.player2Fainted) {
+                                target = poke4;
+                            }
+                            else if (this.player4Fainted) {
+                                target = poke2;
+                            }
                         }
                         if (this.player4Fainted && this.player2Fainted) {
                             continue;
@@ -13009,11 +13015,13 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
-                        if (this.player3Fainted) {
-                            target = poke1;
-                        }
-                        else if (this.player1Fainted) {
-                            target = poke3;
+                        if (this.target4 !== -1) {
+                            if (this.player3Fainted) {
+                                target = poke1;
+                            }
+                            else if (this.player1Fainted) {
+                                target = poke3;
+                            }
                         }
                         if (this.player3Fainted && this.player1Fainted) {
                             continue;
@@ -13412,11 +13420,14 @@ function Safari() {
                     tar = 3;
                 }
             }
-            else if ((aim === 1) && (isP2 || isP4)) {
+            else if ((aim === 2) && (isP2 || isP4)) {
                 tar = 3;
                 if (this.player3Fainted) {
                     tar = 1;
                 }
+            }
+            if ((move.target == "ALL") || (move.target == "TEAM")) {
+                tar = -1;
             }
             if (isP1) {
                 this.target1 = tar;
@@ -13790,7 +13801,7 @@ function Safari() {
                     else if (poke2.protect) {
                         out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
                     }
-                    else {
+                    else if (poke2.hp > 0) {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
@@ -13803,7 +13814,7 @@ function Safari() {
                     else if (poke4.protect) {
                         out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
                     }
-                    else {
+                    else if (poke4.hp > 0) {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
@@ -13817,7 +13828,7 @@ function Safari() {
                         else if (poke3.protect) {
                             out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
                         }
-                        else {
+                        else if (poke1.hp > 0) {
                             out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out);
                         }
                     }
@@ -13833,7 +13844,7 @@ function Safari() {
                     else if (poke2.protect) {
                         out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
                     }
-                    else {
+                    else if (poke2.hp > 0) {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
@@ -13846,7 +13857,7 @@ function Safari() {
                     else if (poke4.protect) {
                         out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
                     }
-                    else {
+                    else if (poke4.hp > 0) {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
@@ -13860,7 +13871,7 @@ function Safari() {
                         else if (poke1.protect) {
                             out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
                         }
-                        else {
+                        else if (poke1.hp > 0) {
                             out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out);
                         }
                     }
@@ -13876,7 +13887,7 @@ function Safari() {
                     else if (poke1.protect) {
                         out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
                     }
-                    else {
+                    else if (poke1.hp > 0) {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
@@ -13889,7 +13900,7 @@ function Safari() {
                     else if (poke3.protect) {
                         out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
                     }
-                    else {
+                    else if (poke3.hp > 0) {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
@@ -13903,7 +13914,7 @@ function Safari() {
                         else if (poke4.protect) {
                             out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
                         }
-                        else {
+                        else if (poke4.hp > 0) {
                             out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out);
                         }
                     }
@@ -13919,7 +13930,7 @@ function Safari() {
                     else if (poke1.protect) {
                         out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
                     }
-                    else {
+                    else if (poke1.hp > 0) {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
                     }
                     typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
@@ -13932,7 +13943,7 @@ function Safari() {
                     else if (poke3.protect) {
                         out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
                     }
-                    else {
+                    else if (poke3.hp > 0) {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
@@ -13946,7 +13957,7 @@ function Safari() {
                         else if (poke2.protect) {
                             out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
                         }
-                        else {
+                        else if (poke2.hp > 0) {
                             out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out);
                         }
                     }
@@ -32451,6 +32462,7 @@ function Safari() {
                         sandstorm: true,
                         hugePower: true,
                         topsyturvy: true,
+                        spikes2: true,
                         boostType: ["Grass", "Fire"]
                     }
                 }
