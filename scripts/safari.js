@@ -12788,20 +12788,20 @@ function Safari() {
                 n3 = this.name3.toLowerCase();
                 n4 = this.name4.toLowerCase();
                 var order2 = {
-                    n1: {
+                    "1": {
                         "priority": move1.priority, "speed": spd1
                     },
-                    n2: {
+                    "2": {
                         "priority": move2.priority, "speed": spd2
                     },
-                    n3: {
+                    "3": {
                         "priority": move3.priority, "speed": spd3
                     },
-                    n4: {
+                    "4": {
                         "priority": move4.priority, "speed": spd4
                     }
                 };
-                order = Object.keys(order2);
+                order = ["1", "2", "3", "4"]
                 order.sort(function(a, b) {
                     if (order2[a].priority > order2[b].priority) {
                         return -1;
@@ -12869,7 +12869,7 @@ function Safari() {
                 }
             }
             for (o = 0; o < order.length; o++) {
-                id = order[o];
+                id = parseInt(order[o], 10);
                 var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
                 user = {
                     "owner": "Null",
@@ -13605,27 +13605,27 @@ function Safari() {
             var self = this;
 
             var dealDamage = function(user, move, target, typeMultiplier, targetSide, out) {
-                var crit = (this.select.shellArmor ? false : (chance(0.0625 + (move.critical || 0))));
-                var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
-                var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
+                var crit = (self.select.shellArmor ? false : (chance(0.0625 + (move.critical || 0))));
+                var atk = move.category === "physical" ? self.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : self.getStatValue(user, "satk", 1, (crit ? 1 : 0));
+                var def = move.category === "physical" ? self.getStatValue(target, "def", 1, (crit ? -1 : 0)) : self.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
                 var burn = user.condition === "burn" && move.category === "physical";
                 var dmg = atk * move.power / def;
                 var rng = sys.rand(85, 100) / 100;
                 var stab = hasType(user.id, move.type);
                 var helped = (user.helped ? 1.5 : 1);
-                var screen = ((!crit) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
+                var screen = ((!crit) && ((targetSide === 1 && self.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && self.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && self.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && self.side2Field.lightscreen > 0 && move.category === "special")));
                 
                 var bonus = 1;
-                bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
-                bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
-                bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm) && (move.category == "special") ? 0.667 : 1);
-                bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
-                bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
-                bonus *= (move.type == "Water" && (this.select.rain) ? 1.5 : 1);
-                bonus *= (move.type == "Fire" && (this.select.rain) ? 0.5 : 1);
-                bonus *= ((this.select.critDouble && crit) ? 1.33 : 1);
-                bonus *= ((this.select.slowStart && (isP2 || isP4) && self.turn <= 5) ? 0.5 : 1);
-                bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+                bonus *= ((isP2 || isP4) && (self.select.boostType.contains(move.type)) ? 1.3 : 1);
+                bonus *= ((isP1 || isP3) && (self.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
+                bonus *= (hasType(target.id, "Rock") && (self.select.sandstorm) && (move.category == "special") ? 0.667 : 1);
+                bonus *= (move.type == "Fire" && (self.select.sun) ? 1.5 : 1);
+                bonus *= (move.type == "Water" && (self.select.sun) ? 0.5 : 1);
+                bonus *= (move.type == "Water" && (self.select.rain) ? 1.5 : 1);
+                bonus *= (move.type == "Fire" && (self.select.rain) ? 0.5 : 1);
+                bonus *= ((self.select.critDouble && crit) ? 1.33 : 1);
+                bonus *= ((self.select.slowStart && (isP2 || isP4) && self.turn <= 5) ? 0.5 : 1);
+                bonus *= ((self.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
 
                 var tname = target.owner + "'s " + poke(target.id);
                 dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
@@ -13678,8 +13678,8 @@ function Safari() {
                         out.push("<b>" + name + " fainted!</b>");
                     }
                 }
-                if (fainted && this.select) {
-                    if (this.select.frenzy) {
+                if (fainted && self.select) {
+                    if (self.select.frenzy) {
                         user.hp = Math.min(user.maxhp, Math.floor(user.hp + (0.25 * user.maxhp)));
                         out.push(name + "'s HP regenerated a little!");
                     }
@@ -13922,11 +13922,11 @@ function Safari() {
             var fainted = (target.hp <= 0 ? true : false);
             var tname = target.owner + "'s " + poke(target.id);
             if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
-                if (!this.isImmuneTo(target.id, move.status)) {
-                    if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
+                if (!self.isImmuneTo(target.id, move.status)) {
+                    if (["sleep", "freeze"].contains(move.status) === false || self.countCondition(oppparty, move.status) === 0) {
                         target.condition = move.status;
                         target.conditionDuration = sys.rand(0, 3);
-                        if (move.status == "sleep" && this.select.extendedSleep) {
+                        if (move.status == "sleep" && self.select.extendedSleep) {
                             target.conditionDuration++;
                         }
                         var conditionVerb = {
