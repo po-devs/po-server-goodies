@@ -14190,8 +14190,10 @@ function Safari() {
     };
     Battle2.prototype.generateMoves = function(id, data, name) {
         var out = [], m, move, amt, p, types = data.types, eff, damaging, used, amt, factor;
-        var boost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.8 : 0) + 1;
+        var boost = (this.npcBattle && (name === this.name2 || name === this.name4) ? this.powerBoost * 0.8 : 0) + 1;
         var moveBoost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.6 : 0) + 1;
+        var isP2 = (name === this.name2 ? true : false);
+        var isP4 = (name === this.name4 ? true : false);
         
         for (m = this.moveAmt; m--; ) {
             used = [];
