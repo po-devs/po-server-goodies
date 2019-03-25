@@ -12454,7 +12454,7 @@ function Safari() {
                     for (i = 0; i < this.team2.length; i++) {
                         if (getBST(this.team2[i].id) <= minbst) {
                             this.team2[i].stats["atk"] *= 2;
-                            this.sendToViewers(this.team2[i].id + "'s Huge Power activates!");
+                            this.sendToViewers(poke(this.team2[i].id) + "'s Huge Power activates!");
                             break;
                         }
                     }
