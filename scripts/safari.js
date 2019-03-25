@@ -28564,6 +28564,7 @@ function Safari() {
         var index, source;
         permObj.add("events", JSON.stringify(safari.events));
         permObj.add("celebrityData", JSON.stringify(safari.celebrityData));
+        permObj.add("celebrityRegion", JSON.stringify(safari.celebrityRegion));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
@@ -33081,6 +33082,7 @@ function Safari() {
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         safari.events = parseFromPerm("events", {});
         safari.celebrityData = parseFromPerm("celebrityData", {});
+        safari.celebrityRegion = parseFromPerm("celebrityRegion", "");
         safari.dataDumps = parseFromPerm("dumps", {});
         safari.dataDumps2 = parseFromPerm("dumps2", {});
         
