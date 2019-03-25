@@ -4282,10 +4282,10 @@ function Safari() {
             return;
         }
         ball = getBall(data);
-        var ballName = itemAlias(ball, false, true);
         if (!isBall(ball) || player.balls[ball] === 0) {
             ball = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
         }
+        var ballName = itemAlias(ball, false, true);
 
         if (player.pokemon.length >= getPerkBonus(player, "box")) {
             safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another " + finishName("box") + " or decrease the number of Pokémon in your possession.", safchan);
