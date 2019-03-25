@@ -12739,10 +12739,16 @@ function Safari() {
             }
             
             var emptyMove = {
-                "priority": -99,
-
+                "priority": -99
             };
-            var emptyPoke = {};
+            var emptyPoke = {
+                "stats": {
+                    "spe": 0
+                },
+                "boosts": {
+                    "spe": 0
+                }
+            };
             var move1 = emptyMove;
             var poke1 = emptyPoke;
             var spd1 = 0;
@@ -12783,7 +12789,7 @@ function Safari() {
             if (!this.player2Fainted) {
                 var move2 = this.p2MoveCodes[this.player2Input];
                 var poke2 = this.team2[move2.ownerId];
-                var spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
+                spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
             }
 
             var move3 = emptyMove, move4 = emptyMove, poke3 = emptyPoke, poke4 = emptyPoke, spd3 = 0, spd4 = 0;
@@ -12803,7 +12809,7 @@ function Safari() {
                     move4 = this.p4MoveCodes[this.player4Input];
                     poke4 = this.team4[move4.ownerId];
 
-                    var spd4 = this.getStatValue(poke4, "spe", (poke4.condition === "paralyzed" ? 0.5 : 1));
+                    spd4 = this.getStatValue(poke4, "spe", (poke4.condition === "paralyzed" ? 0.5 : 1));
                 }
             }
             this.poke1 = poke1;
