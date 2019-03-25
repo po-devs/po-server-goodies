@@ -12331,7 +12331,7 @@ function Safari() {
                     case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
                     case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
                     case "initialLightScreen2": m = "Light Screen begins active on challenger's side."; break;
-                    case "boostType": m = (boostType.length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
+                    case "boostType": m = (this.select[j].length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
                     case "shellArmor": m = "Critical hits cannot occur."; break;
                     case "criticalDouble": m = "Critical hits do increased damage."; break;
                     case "boostDrain": m = "Drain moves restore a great amount of HP."; break;
@@ -18296,7 +18296,9 @@ function Safari() {
             case "expert": difficulty = 2; break;
             case "super expert": difficulty = 3; break;
             case "abyssal": difficulty = 4; break;
-            default: safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:normal", "Normal") + " " + link("/quest celebrity:start:hard", "Hard") + " " + link("/quest celebrity:start:expert", "Expert") + " and " + link("/quest celebrity:start:super expert", "Super Expert") + "!", safchan);
+            default: 
+                safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:normal", "Normal") + " " + link("/quest celebrity:start:hard", "Hard") + " " + link("/quest celebrity:start:expert", "Expert") + " and " + link("/quest celebrity:start:super expert", "Super Expert") + "!", safchan);
+                return;
         }
         
         if (stopQuests.celebrity) {
