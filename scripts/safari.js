@@ -12486,12 +12486,12 @@ function Safari() {
                     var highStat;
                     for (i = 0; i < this.team1.length; i++) {
                         highStat = -1;
-                        for (var j = 0; j < this.team1[i].stats; j++) {
+                        for (var j in this.team1[i].stats) {
                             if (this.team1[i].stats[j] >= highStat) {
                                 highStat = this.team1[i].stats[j];
                             }
                         }
-                        for (j = 0; j < this.team1[i].stats; j++) {
+                        for (var j in this.team1[i].stats) {
                             if (this.team1[i].stats[j] >= highStat) {
                                 this.team1[i].boosts[j] = -1;
                             }
@@ -12499,12 +12499,12 @@ function Safari() {
                     }
                     for (i = 0; i < this.team2.length; i++) {
                         highStat = -1;
-                        for (j = 0; j < this.team2[i].stats; j++) {
+                        for (var j in this.team2[i].stats) {
                             if (this.team2[i].stats[j] >= highStat) {
                                 highStat = this.team2[i].stats[j];
                             }
                         }
-                        for (j = 0; j < this.team2[i].stats; j++) {
+                        for (var j in this.team2[i].stats) {
                             if (this.team2[i].stats[j] >= highStat) {
                                 this.team2[i].boosts[j] = -1;
                             }
@@ -12892,7 +12892,7 @@ function Safari() {
                         this.poke2.hp = (Math.min(this.poke2.hp + 200, this.poke2.maxhp));
                         this.npcItems.hyper--;
                     } 
-                    if (this.npcItems.full > 0 && ((this.poke2.maxhp / this.poke2.hp > 1.75) && this.poke2.condition !== "none") || this.poke2.maxhp / this.poke2.hp > 2.5) {
+                    if (this.npcItems.full > 0 && (((this.poke2.maxhp / this.poke2.hp > 1.75) && this.poke2.condition !== "none") || this.poke2.maxhp / this.poke2.hp > 2.5)) {
                         this.sendToViewers(this.name2 + " used a Full Restore!");
                         this.sendToViewers(poke(this.poke2.id) + " restored its HP and condition!");
                         this.poke2.hp = this.poke2.maxhp;
@@ -12907,7 +12907,7 @@ function Safari() {
                         this.poke4.hp = (Math.min(this.poke4.hp + 200, this.poke4.maxhp));
                         this.npcItems2.hyper--;
                     } 
-                    if (this.npcItems2.full > 0 && ((this.poke4.maxhp / this.poke4.hp > 1.75) && this.poke4.condition !== "none") || this.poke4.maxhp / this.poke4.hp > 2.5) {
+                    if (this.npcItems2.full > 0 && (((this.poke4.maxhp / this.poke4.hp > 1.75) && this.poke4.condition !== "none") || this.poke4.maxhp / this.poke4.hp > 2.5)) {
                         this.sendToViewers(this.name4 + " used a Full Restore!");
                         this.sendToViewers(poke(this.poke4.id) + " restored its HP and condition!");
                         this.poke4.hp = this.poke4.maxhp;
@@ -13485,10 +13485,10 @@ function Safari() {
         return Math.round(base * boost * extraMod);
     };
     Battle2.prototype.attack = function(user, target, move) {
-        var e, o, obj, desc, out = [], fainted = false,
-            name = user.owner + "'s " + poke(user.id);
+        var e, o, obj, desc, out = [], fainted = false, name;
         var wide = (target == "ALL" || target == "TEAM");
         var tname;
+        name = user.owner + "'s " + poke(user.id);
         if (wide) {
             tname = "All Pokémon on the field";
             if (this.poke3.hp <= 0 && this.poke1.hp <= 0 && (user.owner.toLowerCase() === this.name2.toLowerCase() || user.owner.toLowerCase() === this.name4.toLowerCase())) {
@@ -14077,6 +14077,14 @@ function Safari() {
             }
         }
         
+        if (!(this.tagBattle)) {
+            if (isP1) {
+                var party = this.team1;
+            }
+            if (isP2) {
+                var party = this.team2;
+            }
+        }
         if (move.refresh) {
             switch (move.refresh) {
                 case "self": 
@@ -14328,7 +14336,7 @@ function Safari() {
                 move.type = randomSample(types);
                 move.power = Math.round(sys.rand(2, 23)) * 5;
                 move.power = Math.min(data.movepowers[move.type], move.power);
-                move.power *= moveBoost;
+                move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
                 if (this.select.categorySplit) {
                     switch (move.type) {
@@ -18658,6 +18666,9 @@ function Safari() {
                 hold = [];
                 obj = Object.keys(trainer.effectBalance).shuffle();
                 for (var j in obj) {
+                    if (hold.contains(obj[j])) {
+                        continue;
+                    }
                     if ((hold.contains("spikes") || hold.contains("spikes2")) && (obj[j] == "spikes" || obj[j] == "spikes2")) {
                         continue;
                     }
