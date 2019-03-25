@@ -12655,6 +12655,17 @@ function Safari() {
                             }
                         }
                     }
+                    else {
+                        var k = 0;
+                        for (i = 0; i < self.team1.length; i++) {
+                            if (self.team1[i].hp > 0) {
+                                k++;
+                            }
+                        }
+                        if (k > 1) {
+                            self.player3Fainted = false;
+                        }
+                    }
                     for (i = 0; i < self.team4.length; i++) {
                         if (self.team4[i].hp > 0) {
                             self.player4Fainted = false;
@@ -12662,11 +12673,11 @@ function Safari() {
                         }
                     }
                     if (self.player1Fainted && self.player3Fainted) {
-                        this.finishBattle(2);
+                        self.finishBattle(2);
                         return true;
                     }
                     if (self.player2Fainted && self.player4Fainted) {
-                        this.finishBattle(1);
+                        self.finishBattle(1);
                         return true;
                     }
                     return false;
@@ -12722,11 +12733,24 @@ function Safari() {
                     }
                 }
             }
-            if (this.player3Input === null && (this.tagBattle && (!this.oneOnTwo))) {
+            if (this.player3Input === null && (this.tagBattle && (!this.oneOnTwo)) && (!this.player3Fainted)) {
                 this.player3Input = Object.keys(this.p3MoveCodes).random();
                 this.target3 = (chance(0.5) ? 2 : 4);
             }
             
+            var emptyMove = {
+                "priority": -99,
+
+            };
+            var emptyPoke = {};
+            var move1 = emptyMove;
+            var poke1 = emptyPoke;
+            var spd1 = 0;
+            if (!this.player1Fainted) {
+                move1 = emptyMove;
+                poke1 = this.team1[move1.ownerId];
+                spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
+            }
             var move1 = this.p1MoveCodes[this.player1Input];
             if (this.npcBattle) {
                 this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
@@ -12754,30 +12778,34 @@ function Safari() {
                     }
                 }
             }
-            var move2 = this.p2MoveCodes[this.player2Input];
+            var move2 = emptyMove;
+            var poke2 = emptyPoke;
+            var spd2 = 0;
+            if (!this.player2Fainted) {
+                var move2 = this.p2MoveCodes[this.player2Input];
+                var poke2 = this.team2[move2.ownerId];
+                var spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
+            }
 
-            var poke1 = this.team1[move1.ownerId];
-            var poke2 = this.team2[move2.ownerId];
-
-            var spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
-            var spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
-
-            var move3 = null, move4 = null, poke3 = null, poke4 = null;
+            var move3 = emptyMove, move4 = emptyMove, poke3 = emptyPoke, poke4 = emptyPoke, spd3 = 0, spd4 = 0;
             if (this.tagBattle) {
-                if (this.oneOnTwo) {
-                    move3 = this.p3MoveCodes[this.player3Input];
-                    poke3 = this.team1[move3.ownerId];
+                if (!this.player3Fainted) {
+                    spd3 = this.getStatValue(poke3, "spe", (poke3.condition === "paralyzed" ? 0.5 : 1));
+                    if (this.oneOnTwo) {
+                        move3 = this.p3MoveCodes[this.player3Input];
+                        poke3 = this.team1[move3.ownerId];
+                    }
+                    else {
+                        move3 = this.p3MoveCodes[this.player3Input];
+                        poke3 = this.team3[move3.ownerId];
+                    }
                 }
-                else {
-                    move3 = this.p3MoveCodes[this.player3Input];
-                    poke3 = this.team3[move3.ownerId];
+                if (!this.player4Fainted) {
+                    move4 = this.p4MoveCodes[this.player4Input];
+                    poke4 = this.team4[move4.ownerId];
+
+                    var spd4 = this.getStatValue(poke4, "spe", (poke4.condition === "paralyzed" ? 0.5 : 1));
                 }
-
-                move4 = this.p4MoveCodes[this.player4Input];
-                poke4 = this.team4[move4.ownerId];
-
-                var spd3 = this.getStatValue(poke3, "spe", (poke3.condition === "paralyzed" ? 0.5 : 1));
-                var spd4 = this.getStatValue(poke4, "spe", (poke4.condition === "paralyzed" ? 0.5 : 1));
             }
             this.poke1 = poke1;
             this.poke2 = poke2;
@@ -12787,10 +12815,6 @@ function Safari() {
             
             var order = [], n1, n2, n3, n4;
             if (this.tagBattle) {
-                n1 = this.name1.toLowerCase();
-                n2 = this.name2.toLowerCase();
-                n3 = this.name3.toLowerCase();
-                n4 = this.name4.toLowerCase();
                 var order2 = {
                     "1": {
                         "priority": move1.priority, "speed": spd1
@@ -12841,7 +12865,7 @@ function Safari() {
             this.sendToViewers("");
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
             if (this.npcBattle) {
-                if (this.npcItems) {
+                if (this.npcItems && (!this.player2Fainted)) {
                     if (this.npcItems.hyper > 0 && (this.poke2.maxhp - this.poke2.hp > 200)) {
                         this.sendToViewers(this.name2 + " used a Hyper Potion!");
                         this.sendToViewers(poke(this.poke2.id) + " restored 200 HP!");
@@ -12856,7 +12880,7 @@ function Safari() {
                         this.npcItems.full--;
                     } 
                 }
-                if (this.npcItems2) {
+                if (this.npcItems2 && (!this.player4Fainted)) {
                     if (this.npcItems2.hyper > 0 && (this.poke4.maxhp - this.poke4.hp > 200)) {
                         this.sendToViewers(this.name4 + " used a Hyper Potion!");
                         this.sendToViewers(poke(this.poke4.id) + " restored 200 HP!");
@@ -12951,7 +12975,20 @@ function Safari() {
                     target = id === 1 ? poke2 : poke1;
                 }
                 name = user.owner + "'s " + poke(user.id);
-                
+
+                if (isP1 && (this.player1Fainted)) {
+                    continue;
+                }
+                if (isP2 && (this.player2Fainted)) {
+                    continue;
+                }
+                if (isP3 && (this.player3Fainted)) {
+                    continue;
+                }
+                if (isP4 && (this.player4Fainted)) {
+                    continue;
+                }
+
                 if (user.hp > 0) {
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
                         if ((!user.lastPlayed2) && (!user.hasType("Flying"))) {
@@ -13328,7 +13365,7 @@ function Safari() {
             }
         }
         if (this.tagBattle && this.oneOnTwo) {
-            if (this.player1Input !== null && this.player3Input !== null && (this.npcBattle || this.player2Input !== null) && (this.npcBattle || this.player4Input !== null) && this.subturn < 5) {
+            if (this.player1Input !== null && (this.player3Input !== null || this.player3Fainted) && (this.npcBattle || this.player2Input !== null) && (this.npcBattle || this.player4Input !== null) && this.subturn < 5) {
                 this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
                 this.subturn = 5;
             }
