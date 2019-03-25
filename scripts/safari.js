@@ -14338,7 +14338,6 @@ function Safari() {
                             move.category = "special"; break;
                     }
                 }
-                move.needsTarget = false; //in some cases in doubles the move needs to fail if there is no opponent to hit
                 factor = (60 - move.power) / 100;
                 if ((this.npcBattle && name === this.name1)) {
                     if (chance(0.015 + (getCherished(id, name) * 0.003))) {
@@ -14544,9 +14543,6 @@ function Safari() {
                         all: 1
                     });
                 }
-                if (out.haze !== "self" && out.haze !== "party" && out.haze !== "field" && out.haze !== "all") {
-                    out.needsTarget = true;
-                }
                 out.type = eff;
             break;
             case "protect":
@@ -14589,6 +14585,7 @@ function Safari() {
                 out.buff = buff;
                 out.burnout = ints;
                 out.type = eff;
+            break;
             case "priority":
                 val = Math.round(Math.random() * (5+(2.25*priority)) * (factor + 0.12));
                 if (val === 0) {
@@ -14680,7 +14677,6 @@ function Safari() {
                 out.status = (bias.burn && chance(0.35) ? "burn": out.status);
                 out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
                 out.status = (bias.poison && chance(0.35) ? "poison": out.status);
-                out.needsTarget = true;
                 out.type = eff;
             break;
             case "buff":
@@ -14754,7 +14750,6 @@ function Safari() {
                 if (nerf.nerfChance <= 0.01) {
                     return out;
                 }
-                out.needsTarget = true;
                 out.nerf = nerf;
                 out.type = "nerf" + nerf.nerfStat;
             break;
