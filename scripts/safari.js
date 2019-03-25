@@ -12265,7 +12265,7 @@ function Safari() {
             if (opponent2) {
                 out = [];
                 for (var e = 0; e < opponent2.length; e++) {
-                    p = opponent[e];
+                    p = opponent2[e];
                     out.push(pokeInfo.icon(p.id) + poke(p.id));
                 }
                 self.sendMessage(name, "Opponent's team: " + out.join(" "));
@@ -12733,7 +12733,7 @@ function Safari() {
                     }
                 }
             }
-            if (this.player3Input === null && (this.tagBattle && (!this.oneOnTwo)) && (!this.player3Fainted)) {
+            if (this.player3Input === null && (this.tagBattle && (this.oneOnTwo)) && (!this.player3Fainted)) {
                 this.player3Input = Object.keys(this.p3MoveCodes).random();
                 this.target3 = (chance(0.5) ? 2 : 4);
             }
@@ -12760,8 +12760,9 @@ function Safari() {
             if (this.npcBattle) {
                 this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
                 if (this.tagBattle) {
-                    if (this.oneOnTwo && this.player3Input === null) {
+                    if ((!this.oneOnTwo) && this.player3Input === null) {
                         this.player3Input = Object.keys(this.p3MoveCodes).random();
+                        this.target3 = (chance(0.5) ? 2 : 4);
                     }
                     this.player4Input = this.chooseNPCMove(this.p4MoveCodes, this.team4, this.team1);
                     this.target2 = (chance(0.5) ? 1 : 3);
