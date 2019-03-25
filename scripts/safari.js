@@ -12331,7 +12331,7 @@ function Safari() {
                     case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
                     case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
                     case "initialLightScreen2": m = "Light Screen begins active on challenger's side."; break;
-                    case "boostType": m = "The foe's " + this.select[j].join(" and ") + " attacks are more powerful."; break;
+                    case "boostType": m = (boostType.length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
                     case "shellArmor": m = "Critical hits cannot occur."; break;
                     case "criticalDouble": m = "Critical hits do increased damage."; break;
                     case "boostDrain": m = "Drain moves restore a great amount of HP."; break;
@@ -12357,7 +12357,9 @@ function Safari() {
                     case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
                     case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
                 }
-                this.sendToViewers(toColor("- " + m, "#DC143C"));
+                if (m !== "") {
+                    this.sendToViewers(toColor("- " + m, "#DC143C"));
+                }
             }
             this.sendToViewers("");
         }
@@ -18714,9 +18716,9 @@ function Safari() {
                     currentTrainer.select[hazard] = true;
                 }
             }
-            currentTrainer.bias = [];
-            for (var j in trainer.chanceBias.shuffle()) {
-                b = trainer.chanceBias[j];
+            currentTrainer.bias = trainer.bias;
+            for (var j = 0; j < 20; j++) {
+                b = trainer.chanceBias.shuffle()[0];
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
                     if (currentTrainer.bias.contains("sleep") || currentTrainer.bias.contains("freeze") || currentTrainer.bias.contains("burn") || currentTrainer.bias.contains("poison") || currentTrainer.bias.contains("paralyze")) {
                         continue;
