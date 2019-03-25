@@ -12789,7 +12789,6 @@ function Safari() {
             var move3 = emptyMove, move4 = emptyMove, poke3 = emptyPoke, poke4 = emptyPoke, spd3 = 0, spd4 = 0;
             if (this.tagBattle) {
                 if (!this.player3Fainted) {
-                    spd3 = this.getStatValue(poke3, "spe", (poke3.condition === "paralyzed" ? 0.5 : 1));
                     if (this.oneOnTwo) {
                         move3 = this.p3MoveCodes[this.player3Input];
                         poke3 = this.team1[move3.ownerId];
@@ -12798,6 +12797,7 @@ function Safari() {
                         move3 = this.p3MoveCodes[this.player3Input];
                         poke3 = this.team3[move3.ownerId];
                     }
+                    spd3 = this.getStatValue(poke3, "spe", (poke3.condition === "paralyzed" ? 0.5 : 1));
                 }
                 if (!this.player4Fainted) {
                     move4 = this.p4MoveCodes[this.player4Input];
