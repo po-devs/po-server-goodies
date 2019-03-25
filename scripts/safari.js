@@ -12600,6 +12600,9 @@ function Safari() {
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
             this.sendToViewers(this.name2 + "'s Team: " + opponentInfo(this.team2), null, (this.npcBattle ? null : [this.name2.toLowerCase()]));
+            if (this.tagBattle) {
+                this.sendToViewers(this.name4 + "'s Team: " + opponentInfo(this.team4), null, (this.npcBattle ? null : [this.name4.toLowerCase()]));
+            }
             if (!this.npcBattle) {
                 this.sendMessage(this.name2, "Your team (use /bat [Letter] to choose a move): ");
                 if (this.tagBattle) {
@@ -12610,6 +12613,9 @@ function Safari() {
                 }
             }
             this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
+            if (this.tagBattle && (!this.oneOnTwo)) {
+                this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
+            }
             this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
             
             prepareTeamForTurn(this.name1, this.team1, this.p1MoveCodes);
@@ -12942,6 +12948,15 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
+                        if (this.player2Fainted) {
+                            target = poke4;
+                        }
+                        else if (this.player4Fainted) {
+                            target = poke2;
+                        }
+                        if (this.player4Fainted && this.player2Fainted) {
+                            continue;
+                        }
                         isP1 = true;
                     } else if (id === 2) {
                         if (this.target2 === 1) {
@@ -12952,6 +12967,15 @@ function Safari() {
                         }
                         else {
                             target = move.target; //ALL or TEAM
+                        }
+                        if (this.player1Fainted) {
+                            target = poke3;
+                        }
+                        else if (this.player3Fainted) {
+                            target = poke1;
+                        }
+                        if (this.player1Fainted && this.player3Fainted) {
+                            continue;
                         }
                         isP2 = true;
                     } if (id === 3) {
@@ -12964,6 +12988,15 @@ function Safari() {
                         else {
                             target = move.target; //ALL or TEAM
                         }
+                        if (this.player2Fainted) {
+                            target = poke4;
+                        }
+                        else if (this.player4Fainted) {
+                            target = poke2;
+                        }
+                        if (this.player4Fainted && this.player2Fainted) {
+                            continue;
+                        }
                         isP3 = true;
                     } else if (id === 4) {
                         if (this.target4 === 1) {
@@ -12974,6 +13007,15 @@ function Safari() {
                         }
                         else {
                             target = move.target; //ALL or TEAM
+                        }
+                        if (this.player3Fainted) {
+                            target = poke1;
+                        }
+                        else if (this.player1Fainted) {
+                            target = poke3;
+                        }
+                        if (this.player3Fainted && this.player1Fainted) {
+                            continue;
                         }
                         isP4 = true;
                     }
@@ -13042,7 +13084,7 @@ function Safari() {
                             this.sendToViewers(toColor(name + " attacks! [Effect: " + this.translateMove(move) + "]", mColor));
                         }
                         else {
-                            this.sendToViewers(toColor(name + " attacks " + target.owner + "'s " + poke(target.id) + "! [Effect: " + this.translateMove(move) + "]", mColor));
+                            this.sendToViewers(toColor(name + " attacks! [Effect: " + this.translateMove(move) + "]", mColor));
                         }
                     }
                     else {
@@ -13462,7 +13504,7 @@ function Safari() {
             if ((target.hp <= 0) && target.owner.toLowerCase() === this.name1.toLowerCase()) {
                 target = this.poke3;
             }
-            if (target.hp <= 0) {
+            if (target.hp <= 0 && (move.category !== "other")) {
                 out.push("But there was no target remaining...");
                 return out;
             }
@@ -13508,6 +13550,10 @@ function Safari() {
         }
         // Refresh/Haze/Buff cannot be blocked by protect if it's Other move
         if (move.category === "other") {
+            if (target.hp <= 0 && (move.needsTarget)) {
+                out.push("But there was no target remaining...");
+                return out;
+            }
             if (move.refresh) {
                 switch (move.refresh) {
                     case "self": 
@@ -14259,6 +14305,14 @@ function Safari() {
         if (data.hasOwnProperty("recoil")) {
             out.push("Suffers 1/3 of damage dealt in recoil");
         }
+        if (data.hasOwnProperty("target")) {
+            if (data.target == "TEAM") {
+                out.push("Targets both foes");
+            }
+            if (data.target == "ALL") {
+                out.push("Targets all Pokémon on the field");
+            }
+        }
         if (data.hasOwnProperty("status")) {
             var conditionVerb = {
                 sleep: "Puts target to sleep",
@@ -14356,6 +14410,7 @@ function Safari() {
                             move.category = "special"; break;
                     }
                 }
+                move.needsTarget = false; //in some cases in doubles the move needs to fail if there is no opponent to hit
                 factor = (60 - move.power) / 100;
                 if ((this.npcBattle && name === this.name1)) {
                     if (chance(0.015 + (getCherished(id, name) * 0.003))) {
@@ -14395,10 +14450,10 @@ function Safari() {
                         }
                         if (["burnout"].contains(p)) {
                             if (eff[p] === 2) {
-                                move.power = (5 * (Math.max(move.pow, Math.ceil(120 + (20 * Math.random()))))/5);
+                                move.power = (5 * (Math.max(move.power, Math.ceil(120 + (20 * Math.random()))))/5);
                             }
                             if (eff[p] === 1) {
-                                move.power = (5 * (Math.max(move.pow, Math.ceil(100 + (20 * Math.random()))))/5);
+                                move.power = (5 * (Math.max(move.power, Math.ceil(100 + (20 * Math.random()))))/5);
                             }
                         }
                         if (["recoil"].contains(p)) {
@@ -14561,6 +14616,9 @@ function Safari() {
                         all: 1
                     });
                 }
+                if (out.haze !== "self" && out.haze !== "party" && out.haze !== "field" && out.haze !== "all") {
+                    out.needsTarget = true;
+                }
                 out.type = eff;
             break;
             case "protect":
@@ -14692,6 +14750,7 @@ function Safari() {
                 out.status = (bias.burn && chance(0.35) ? "burn": out.status);
                 out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
                 out.status = (bias.poison && chance(0.35) ? "poison": out.status);
+                out.needsTarget = true;
                 out.type = eff;
             break;
             case "buff":
@@ -14765,6 +14824,7 @@ function Safari() {
                 if (nerf.nerfChance <= 0.01) {
                     return out;
                 }
+                out.needsTarget = true;
                 out.nerf = nerf;
                 out.type = "nerf" + nerf.nerfStat;
             break;
