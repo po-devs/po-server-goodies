@@ -18650,6 +18650,7 @@ function Safari() {
             }
             diff = 100;
             maxLoop = 200;
+            hazardStrength = 0;
             while (Math.abs(diff) > 1) {
                 hold = [];
                 for (var j in Object.keys(trainer.effectBalance).shuffle()) {
