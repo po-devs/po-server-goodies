@@ -12781,19 +12781,23 @@ function Safari() {
             this.poke4 = poke4;
             
             
-            var order = [];
+            var order = [], n1, n2, n3, n4;
             if (this.tagBattle) {
+                n1 = this.name1.toLowerCase();
+                n2 = this.name2.toLowerCase();
+                n3 = this.name3.toLowerCase();
+                n4 = this.name4.toLowerCase();
                 var order2 = {
-                    1: {
+                    n1: {
                         "priority": move1.priority, "speed": spd1
                     },
-                    2: {
+                    n2: {
                         "priority": move2.priority, "speed": spd2
                     },
-                    3: {
+                    n3: {
                         "priority": move3.priority, "speed": spd3
                     },
-                    4: {
+                    n4: {
                         "priority": move4.priority, "speed": spd4
                     }
                 };
@@ -12867,22 +12871,27 @@ function Safari() {
             for (o = 0; o < order.length; o++) {
                 id = order[o];
                 var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
-                if (id === 1) {
+                user = {
+                    "owner": "Null",
+                    "id": 0,
+                    "hp": 1
+                }
+                if (id === 1 || id === this.name1.toLowerCase()) {
                     user = poke1;
                     move = move1;
                     isP1 = true;
                 }
-                else if (id === 2) {
+                else if (id === 2 || id === this.name2.toLowerCase()) {
                     user = poke2;
                     move = move2;
                     isP2 = true;
                 }
-                else if (id === 3) {
+                else if (id === 3 || id === this.name3.toLowerCase()) {
                     user = poke3;
                     move = move3;
                     isP3 = true;
                 }
-                else if (id === 4) {
+                else if (id === 4 || id === this.name4.toLowerCase()) {
                     user = poke4;
                     move = move4;
                     isP4 = true;
