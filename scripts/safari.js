@@ -12337,7 +12337,7 @@ function Safari() {
                     case "boostDrain": m = "Drain moves restore a great amount of HP."; break;
                     case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
                     case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
-                    case "hpboost": m = "Foe's Pokémon have a great amount of HP."; break;
+                    case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
                     case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
                     case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
                     case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
@@ -12348,6 +12348,7 @@ function Safari() {
                     case "inverted": m = "Inverted Battle."; break;
                     case "simple": m = "All stat changes are doubly influential."; break;
                     case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
+                    case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
                     case "leftovers": m = "The foe's team restores HP gradually."; break;
                     case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
                     case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
@@ -12470,6 +12471,8 @@ function Safari() {
                 if (this.select.hpboost) {
                     for (i = 0; i < this.team2.length; i++) {
                         this.team2[i].stats["hp"] = Math.floor(this.team2[i].stats["hp"] * 1.33);
+                        this.team2[i].maxhp = Math.floor(this.team2[i].maxhp * 1.33);
+                        this.team2[i].hp = Math.floor(this.team2[i].hp * 1.33);
                     }
                 }
                 if (this.select.intimidate) {
@@ -13172,7 +13175,7 @@ function Safari() {
                 }
             }
             if (this.select) {
-                if (this.select.slowStart && this.turn >= 5) {
+                if (this.select.slowStart && this.turn === 5) {
                     this.sendToViewers(this.name2 + "'s Slow Start wore off!");
                 }
             }
