@@ -33081,6 +33081,7 @@ function Safari() {
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         safari.events = parseFromPerm("events", {});
         safari.celebrityData = parseFromPerm("celebrityData", {});
+        safari.celebrityRegion = parseFromPerm("celebrityRegion", "");
         safari.dataDumps = parseFromPerm("dumps", {});
         safari.dataDumps2 = parseFromPerm("dumps2", {});
         
