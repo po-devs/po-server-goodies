@@ -18529,7 +18529,7 @@ function Safari() {
             }
         };
 
-        var celebs = safari.getCelebrities(safari.celebrityData[safari.celebrityRegion], difficulty);
+        var celebs = safari.getCelebrities(JSON.parse(JSON.stringify(safari.celebrityData[safari.celebrityRegion])), difficulty);
         var j = 0;
         while (celebs.gym[0].party2) {
             celebs.gym.shuffle();
@@ -18716,6 +18716,9 @@ function Safari() {
                 }
             }
             currentTrainer.bias = trainer.bias;
+            if (trainer.bias2) {
+                currentTrainer.bias2 = trainer.bias2;
+            }
             var j = 6;
             while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
