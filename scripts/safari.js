@@ -14058,7 +14058,6 @@ function Safari() {
                 priority: this.getMoveSet(p, "priority"),
                 restore: this.getMoveSet(p, "restore"),
                 burnout: this.getMoveSet(p, "burnout"),
-                flinch: this.getMoveSet(p, "flinch"),
                 item: {},
                 moves: []
             };
@@ -15055,7 +15054,7 @@ function Safari() {
         return out;
     };
     Battle2.prototype.getMoveSet = function(id, moves) {
-        var num = parseInt(id, 10), m, out = 0.1, val = 0, set;
+        var num = parseInt(id, 10), m, out = 0.1, val = 0, set = [];
         switch (moves) {
             case "drain":
                 set = [71, 72, 73, 141, 202, 577, 409, 532, 576, 564, 138];
