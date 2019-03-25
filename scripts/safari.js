@@ -12345,6 +12345,7 @@ function Safari() {
                     case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
                     case "topsyturvy": m = "Every seven turns, all stat changes are inverted."; break;
                     case "categorySplit": m = "Move category is determined by type."; break;
+                    case "inverted": m = "Inverted Battle."; break;
                     case "simple": m = "All stat changes are doubly influential."; break;
                     case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
                     case "leftovers": m = "The foe's team restores HP gradually."; break;
@@ -18713,7 +18714,7 @@ function Safari() {
                     currentTrainer.select[hazard] = true;
                 }
             }
-            currentTrainer.bias = (trainer.bias ? trainer.bias : []);
+            currentTrainer.bias = [];
             for (var j in trainer.chanceBias.shuffle()) {
                 b = trainer.chanceBias[j];
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
@@ -18730,6 +18731,9 @@ function Safari() {
                     if (currentTrainer.bias.contains("recoil")) {
                         continue;
                     }
+                }
+                if (currentTrainer.bias.contains(b)) {
+                    continue;
                 }
                 if (chance(0.5)) {
                     currentTrainer.bias.push(b);
