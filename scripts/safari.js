@@ -14097,20 +14097,6 @@ function Safari() {
         if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
         }
-        if (move.refresh) {
-            switch (move.refresh) {
-                case "self": 
-                    user.condition = "none";
-                    out.push(name + "'s status returned to normal!");
-                break;
-                case "party":
-                    for (e = 0; e < party.length; e++) {
-                        party[e].condition = "none";
-                    }
-                    out.push(user.owner + "'s party's status returned to normal!");
-                break;
-            }
-        }
         if (move.haze) {
             obj = [];
             switch (move.haze) {
@@ -18557,11 +18543,11 @@ function Safari() {
         npc.postBattle = postBattle;
         var heal;
         switch (difficulty) {
-            case 0: heal = 0.25;
-            case 1: heal = 0.20;
-            case 2: heal = 0.18;
-            case 3: heal = 0.15;
-            case 4: heal = 0;
+            case 0: heal = 0.25; break;
+            case 1: heal = 0.20; break;
+            case 2: heal = 0.18; break;
+            case 3: heal = 0.15; break;
+            case 4: heal = 0; break;
         }
         
         npc.postArgs = {
@@ -18674,7 +18660,7 @@ function Safari() {
                 chal += 2;
             }
             diff = 100;
-            maxLoop = 200;
+            maxLoop = 500;
             hazardStrength = 0;
             while (Math.abs(diff) > 1) {
                 hold = [];
@@ -18695,15 +18681,16 @@ function Safari() {
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random());
                     diff = (chal - hazardStrength);
-                    if ((hold.length >= 4) && (chance (0.5))) {
+                    if ((hold.length >= 3) && (chance (0.4))) {
                         break;
                     }
-                    if (Math.abs(diff) <= 1 && (chance(0.2 + (hold.length/6)))) {
+                    if (Math.abs(diff) <= 1 && (chance(0.3 + (hold.length/5)))) {
                         break;
                     }
                 }
                 maxLoop--;
                 if (maxLoop <= 0) {
+                    hold = [];
                     break;
                 }
             }
@@ -18722,8 +18709,10 @@ function Safari() {
                 }
             }
             currentTrainer.bias = trainer.bias;
-            for (var j = 0; j < 20; j++) {
+            var j = 12;
+            while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
+                j--;
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
                     if (currentTrainer.bias.contains("sleep") || currentTrainer.bias.contains("freeze") || currentTrainer.bias.contains("burn") || currentTrainer.bias.contains("poison") || currentTrainer.bias.contains("paralyze")) {
                         continue;
@@ -18745,6 +18734,7 @@ function Safari() {
                 if (chance(0.5)) {
                     currentTrainer.bias.push(b);
                 }
+                j--;
                 if (currentTrainer.bias.length >= 3) {
                     break;
                 }
