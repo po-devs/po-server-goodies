@@ -18576,7 +18576,7 @@ function Safari() {
             trainer = data[i];
             currentTrainer.name = trainer.name;
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + (ind/40) + (trainer.elite ? 0.1 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.02 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 4 : 0));
             if (ind >= 5) {
                 chal++;
@@ -18660,7 +18660,7 @@ function Safari() {
                 chal += 2;
             }
             diff = 100;
-            maxLoop = 800;
+            maxLoop = 1200;
             hazardStrength = 0;
             while (Math.abs(diff) > 1) {
                 hold = [];
@@ -18679,18 +18679,22 @@ function Safari() {
                         continue;
                     }
                     hold.push(obj[j]);
-                    hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 40 ? ( 3 * (Math.random() - Math.random())) : 0));
+                    hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
                     diff = (chal - hazardStrength);
-                    if ((hold.length >= 3) && (chance (0.66)) || (hold.length >= 5) || (hold.length >= 2 && maxLoop < 200)) {
-                        if (Math.abs(diff) <= 1 && (chance(0.3 + (hold.length/5)))) {
+                    if ((hold.length >= 3) && (chance (0.66)) || (hold.length >= 5) || (hold.length >= 2 && maxLoop < 250)) {
+                        if (Math.abs(diff) <= 1) {
                             break;
                         }
-                        else if (Math.abs(diff) <= 2 && (maxLoop < 150)) {
+                        else if (Math.abs(diff) <= 2 && (maxLoop < 400)) {
                             diff *= 0.5;
                             break;
                         }
-                        else if (Math.abs(diff) <= 4 && (maxLoop < 75)) {
+                        else if (Math.abs(diff) <= 4 && (maxLoop < 200)) {
                             diff *= 0.25;
+                            break;
+                        }
+                        else if (Math.abs(diff) <= 8 && (maxLoop < 100)) {
+                            diff *= 0.125;
                             break;
                         }
                     }
@@ -18719,7 +18723,7 @@ function Safari() {
             if (trainer.bias2) {
                 currentTrainer.bias2 = trainer.bias2;
             }
-            var j = 6;
+            var j = 12;
             while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
                 j--;
@@ -18741,7 +18745,7 @@ function Safari() {
                 if (currentTrainer.bias.contains(b)) {
                     continue;
                 }
-                if (chance(0.25)) {
+                if (chance(0.5)) {
                     currentTrainer.bias.push(b);
                 }
                 j--;
