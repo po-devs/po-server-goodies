@@ -18710,7 +18710,7 @@ function Safari() {
             }
             currentTrainer.bias = trainer.bias;
             var j = 12;
-            for (while j > 0) {
+            while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
                 j--;
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
