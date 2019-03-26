@@ -11654,8 +11654,8 @@ function Safari() {
         var found = null, ind = 0;
         for (var i = 0; i < challengeRequests2.length; i++) {
             var team;
-            for (var t in challengeRequests2[i].teams) {
-                team = challengeRequests2[i].teams[t];
+            for (var t in challengeRequests2[i]) {
+                team = challengeRequests2[i][t];
                 if (team.hasOwnProperty(name)) {
                     found = challengeRequests2[i];
                     ind = i;
@@ -11690,8 +11690,8 @@ function Safari() {
                 safaribot.sendMessage(src, opp2 + " couldn't be found!", safchan);
                 return;
             }
-            challengeRequests2.push({
-                "teams": [
+            challengeRequests2.push(
+                [
                     {
                         name: true,
                         ally: false
@@ -11701,9 +11701,9 @@ function Safari() {
                         opp2: false
                     }
                 ]
-            });
+            );
             safaribot.sendMessage(src, "You and " + ally + " challenged " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(ally), name + " want team with you to battle " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(ally), name + " wants to team up with you to battle " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp1), name + " and " + ally + " challenged you and " + opp2 + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp2), name + " and " + ally + " challenged you and " + opp1 + " to a Tag Battle!", safchan);
             return;
@@ -12215,7 +12215,7 @@ function Safari() {
             hyper: 0,
             full: 0
         };
-        if (this.select) {
+        if (select) {
             if (select.hyperpotion3) {
                 this.npcItems.hyper = 3;
             }
