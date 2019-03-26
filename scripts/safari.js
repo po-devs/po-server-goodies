@@ -13369,7 +13369,7 @@ function Safari() {
             return;
         }
         if (this.select.leftovers && (npc)) {
-            user.hp += Math.round(user.maxhp / 16);
+            user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP with its leftovers!");
         }
     };
