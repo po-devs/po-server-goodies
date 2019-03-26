@@ -11646,7 +11646,7 @@ function Safari() {
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
-        if (isRotation && stopQuests.league) {
+        if (stopQuests.league) {
             safaribot.sendMessage(src, "Rotation Battle challenges are temporarily disabled!", safchan);
             return;
         }
@@ -11737,6 +11737,8 @@ function Safari() {
             if (ready && players.length === 4) {
                 var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
                 currentBattles.push(battle);
+                challengeRequests2.slice(i);
+                return;
             }
         }
     };
@@ -18611,10 +18613,14 @@ function Safari() {
                     };
                     
                     if (trainer.party2) {
-                        var npc2 = {};
-                        npc2.party = trainer.party2.shuffle().slice(0, 4);
+                        var npc2 = {
+                            party: []
+                        };
+                        for (var a in trainer.party2) {
+                            npc2.party.push(trainer.party2[a]);
+                        }
                         trainer.party = trainer.party.shuffle().slice(0, 4);
-                        npc2.postBattle = postBattle;
+                        //npc2.postBattle = postBattle;
                         npc2.name = trainer.name2;
                         npc2.bias = trainer.bias2;
                         var battle = new Battle2(id, trainer, {
@@ -18748,6 +18754,7 @@ function Safari() {
                 diff = 100;
                 maxLoop = 200;
                 currentTrainer.name2 = trainer.name2;
+                hold = [151, 251, 386, 385];
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
                     partyStrength = 0;
