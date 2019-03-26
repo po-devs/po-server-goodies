@@ -18857,7 +18857,7 @@ function Safari() {
                             break;
                         }
                     }
-                    if (((hold.length >= 3) && (chance (0.66))) || (hold.length >= 5)) {
+                    if (((hold.length >= 3) && (chance(0.33))) || (hold.length >= 5)) {
                         break;
                     }
                 }
