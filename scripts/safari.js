@@ -13186,13 +13186,13 @@ function Safari() {
 
                 if (user.hp > 0) {
                     if (this.side1Field.spikes > 0 && (isP1 || isP3)) {
-                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side1Field.spikes * user.maxhp/24)), 1);
                         }
                     }
                     if (this.side2Field.spikes > 0 && (isP2 || isP4)) {
-                        if ((!user.lastPlayed2) && (!hasType(user, "Flying"))) {
+                        if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " is hurt by the spikes!", sColor));
                             user.hp = Math.max(Math.floor(user.hp - (this.side2Field.spikes * user.maxhp/24)), 1);
                         }
@@ -18706,7 +18706,7 @@ function Safari() {
             currentTrainer.name = trainer.name;
             var ind = (trainer.elite ? eliteindex : index);
             currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.027 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
-            chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 4 : 0));
+            chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
             if (ind >= 5) {
                 chal++;
             }
