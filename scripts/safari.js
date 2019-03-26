@@ -11646,7 +11646,7 @@ function Safari() {
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
-        if (isRotation && stopQuests.league) {
+        if (stopQuests.league) {
             safaribot.sendMessage(src, "Rotation Battle challenges are temporarily disabled!", safchan);
             return;
         }
@@ -11737,6 +11737,8 @@ function Safari() {
             if (ready && players.length === 4) {
                 var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
                 currentBattles.push(battle);
+                challengeRequests2.slice(i);
+                return;
             }
         }
     };
