@@ -14150,26 +14150,32 @@ function Safari() {
                 case "self":
                     obj.push(user);
                     desc = name;
+                    out.push(desc + " stat changes were eliminated!");
                 break;
                 case "field":
                     obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
                     desc = "All Pokémon on the field's ";
+                    out.push(desc + " stat changes were eliminated!");
                 break;
                 case "both":
                     obj.push(user);
                     desc = name;
+                    out.push(desc + " stat changes were eliminated!");
                 break;
                 case "party":
                     obj = obj.concat(party);
                     desc = user.owner + "'s party";
+                    out.push(desc + " stat changes were eliminated!");
                 break;
                 case "oppparty":
                     obj = obj.concat(oppparty);
                     desc = target.owner + "'s party";
+                    out.push(desc + " stat changes were eliminated!");
                 break;
                 case "all":
                     obj = obj.concat(party, oppparty);
                     desc = "All";
+                    out.push(desc + " stat changes were eliminated!");
                 break;
             }
             for (e = 0; e < obj.length; e++) {
@@ -14177,7 +14183,6 @@ function Safari() {
                     obj[e].boosts[o] = 0;
                 }
             }
-            out.push(desc + " stat changes were eliminated!");
         }
         if (move.buff) {
             for (e = 0; e < move.buff.length; e++) {
@@ -14245,6 +14250,7 @@ function Safari() {
                 case "both":
                     obj.push(target);
                     desc = tname;
+                    out.push(desc + " stat changes were eliminated!");
                 break;
             }
             for (e = 0; e < obj.length; e++) {
@@ -14252,7 +14258,6 @@ function Safari() {
                     obj[e].boosts[o] = 0;
                 }
             }
-            out.push(desc + " stat changes were eliminated!");
         }
         if (move.nerf) {
             for (e = 0; e < move.nerf.length; e++) {
@@ -18855,7 +18860,7 @@ function Safari() {
                             break;
                         }
                     }
-                    if (((hold.length >= 3) && (chance(0.33))) || (hold.length >= 5)) {
+                    if (((hold.length >= 3) && (chance(0.33))) || (hold.length >= 6)) {
                         break;
                     }
                 }
