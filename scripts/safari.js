@@ -14825,11 +14825,13 @@ function Safari() {
                 else {
                     out.status = ["sleep", "paralyzed", "burn", "freeze", "poison"].random();
                 }
-                out.status = (bias.sleep && chance(0.35) ? "sleep": out.status);
-                out.status = (bias.paralyzed && chance(0.35) ? "paralyzed": out.status);
-                out.status = (bias.burn && chance(0.35) ? "burn": out.status);
-                out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
-                out.status = (bias.poison && chance(0.35) ? "poison": out.status);
+                if (bias) {
+                    out.status = (bias.sleep && chance(0.35) ? "sleep": out.status);
+                    out.status = (bias.paralyzed && chance(0.35) ? "paralyzed": out.status);
+                    out.status = (bias.burn && chance(0.35) ? "burn": out.status);
+                    out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
+                    out.status = (bias.poison && chance(0.35) ? "poison": out.status);
+                }
                 out.type = eff;
             break;
             case "buff":
