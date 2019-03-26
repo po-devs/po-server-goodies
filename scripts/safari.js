@@ -11730,7 +11730,7 @@ function Safari() {
                         ready = false;
                     }
                     else {
-                        players.push(getAvatar(p));
+                        players.push(getAvatarOff(p));
                     }
                 }
             }
@@ -29353,10 +29353,10 @@ function Safari() {
                 safari.challengePlayer(src, commandData, command === "challenge2");
                 return true;
             }
-            /*if (command === "challenge3") {
+            if (command === "challenge3" || command === "challengetag") {
                 safari.challengePlayerTag(src, commandData);
                 return true;
-            }*/
+            }
             if (command === "watch") {
                 if (currentEvent && commandData === "*") {
                     currentEvent.watchEvent(src);
