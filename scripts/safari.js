@@ -12205,28 +12205,31 @@ function Safari() {
             "reflect": -1,
             "lightscreen": -1
         };
-        this.select = (select ? select : {});
+        this.select = {};
+        if (select) {
+            this.select = select;
+        }
 
         this.npcItems = {
             hyper: 0,
             full: 0
         };
-        if (select.hyperpotion3 === true) {
+        if (select.hyperpotion3) {
             this.npcItems.hyper = 3;
         }
-        else if (select.hyperpotion2 === true) {
+        else if (select.hyperpotion2) {
             this.npcItems.hyper = 2;
         }
-        else if (select.hyperpotion === true) {
+        else if (select.hyperpotion) {
             this.npcItemshyper = 1;
         }
-        if (select.fullrestore3 === true) {
+        if (select.fullrestore3) {
             this.npcItems.full = 3;
         }
-        else if (select.fullrestore2 === true) {
+        else if (select.fullrestore2) {
             this.npcItems.full = 2;
         }
-        else if (select.fullrestore === true) {
+        else if (select.fullrestore) {
             this.npcItems.full = 1;
         }
         if (select.spikes2) {
