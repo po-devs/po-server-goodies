@@ -12442,9 +12442,9 @@ function Safari() {
                         }
                         this.sendToViewers(toColor("+ " + m, "#3CB371"));
                     }
-                    this.sendToViewers("");
                 }
             }
+            this.sendToViewers("");
         }
         if (this.select) {
             for (var j in this.select) {
@@ -18817,7 +18817,7 @@ function Safari() {
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
                     diff = (chal - hazardStrength);
-                    if ((hold.length >= 3) && (chance (0.66)) || (hold.length >= 5) || (hold.length >= 2 && maxLoop < 250)) {
+                    if (((hold.length >= 3) && (chance (0.66))) || (hold.length >= 5) || (hold.length >= 2 && maxLoop < 250)) {
                         if (Math.abs(diff) <= 1) {
                             break;
                         }
@@ -18833,6 +18833,9 @@ function Safari() {
                             diff *= 0.125;
                             break;
                         }
+                    }
+                    if (((hold.length >= 3) && (chance (0.66))) || (hold.length >= 5)) {
+                        break;
                     }
                 }
                 maxLoop--;
