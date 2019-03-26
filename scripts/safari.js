@@ -12044,7 +12044,7 @@ function Safari() {
         };
     }
 
-    function Battle2(p1, p2, opt, p3, p4, select) {
+    function Battle2(p1, p2, opt, p3, p4, select, viewers) {
         this.battle2 = true;
         this.tagBattle = false;
         this.oneOnTwo = false;
@@ -12054,7 +12054,12 @@ function Safari() {
         this.cantWatch = opt.cantWatch || false;
 
         this.name1 = sys.name(p1);
-        this.viewers = [this.name1.toLowerCase()];
+        if (viewers) {
+            this.viewers = viewers;
+        }
+        else {
+            this.viewers = [this.name1.toLowerCase()];
+        }
         this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
 
         var isNPC = this.npcBattle = typeof p2 == "object";
@@ -12273,50 +12278,54 @@ function Safari() {
         };
 
         if (this.biasNPC) {
-            var m = "", name = this.name2;
-            this.sendToViewers("");
-            for (var j in this.biasNPC) {
-                switch (this.biasNPC[j]) {
-                    case "aggressive": m = name + " likes to attack."; break;
-                    case "stats": m = name + " likes stat-raising moves."; break;
-                    case "priority": m = name + " favors priority moves."; break;
-                    case "recoil": m = name + " favors recoil moves."; break;
-                    case "drain": m = name + " favors drain moves."; break;
-                    case "burnout": m = name + " favors high-risk moves."; break;
-                    case "critical": m = name + " favors critical-hit moves."; break;
-                    case "helpingHand": m = name + " likes to support their teammate."; break;
-                    case "reflect": m = name + " likes to set up Reflect."; break;
-                    case "lightscreen": m = name + " likes to set up Light Screen."; break;
-                    case "paralyze": m = name + " favors moves that Paralyze."; break;
-                    case "poison": m = name + " favors moves that Poison."; break;
-                    case "burn": m = name + " favors moves that Burn."; break;
-                    case "freeze": m = name + " favors moves that Freeze."; break;
-                    case "sleep": m = name + " favors moves that induce Sleep."; break;
+            if (this.biasNPC.length > 0) {
+                var m = "", name = this.name2;
+                this.sendToViewers("");
+                for (var j in this.biasNPC) {
+                    switch (this.biasNPC[j]) {
+                        case "aggressive": m = name + " likes to attack."; break;
+                        case "stats": m = name + " likes stat-raising moves."; break;
+                        case "priority": m = name + " favors priority moves."; break;
+                        case "recoil": m = name + " favors recoil moves."; break;
+                        case "drain": m = name + " favors drain moves."; break;
+                        case "burnout": m = name + " favors high-risk moves."; break;
+                        case "critical": m = name + " favors critical-hit moves."; break;
+                        case "helpingHand": m = name + " likes to support their teammate."; break;
+                        case "reflect": m = name + " likes to set up Reflect."; break;
+                        case "lightscreen": m = name + " likes to set up Light Screen."; break;
+                        case "paralyze": m = name + " favors moves that Paralyze."; break;
+                        case "poison": m = name + " favors moves that Poison."; break;
+                        case "burn": m = name + " favors moves that Burn."; break;
+                        case "freeze": m = name + " favors moves that Freeze."; break;
+                        case "sleep": m = name + " favors moves that induce Sleep."; break;
+                    }
+                    this.sendToViewers(toColor("+ " + m, "#3CB371"));
                 }
-                this.sendToViewers(toColor("+ " + m, "#3CB371"));
             }
-            m = "", name = this.name4;
-            for (var j in this.biasNPC2) {
-                switch (this.biasNPC2[j]) {
-                    case "aggressive": m = name + " likes to attack."; break;
-                    case "stats": m = name + " likes stat-raising moves."; break;
-                    case "priority": m = name + " favors priority moves."; break;
-                    case "recoil": m = name + " favors recoil moves."; break;
-                    case "drain": m = name + " favors drain moves."; break;
-                    case "burnout": m = name + " favors high-risk moves."; break;
-                    case "critical": m = name + " favors critical-hit moves."; break;
-                    case "helpingHand": m = name + " likes to support their teammate."; break;
-                    case "reflect": m = name + " likes to set up Reflect."; break;
-                    case "lightscreen": m = name + " likes to set up Light Screen."; break;
-                    case "paralyze": m = name + " favors moves that Paralyze."; break;
-                    case "poison": m = name + " favors moves that Poison."; break;
-                    case "burn": m = name + " favors moves that Burn."; break;
-                    case "freeze": m = name + " favors moves that Freeze."; break;
-                    case "sleep": m = name + " favors moves that induce Sleep."; break;
+            if (this.biasNPC2.length > 0) {
+                m = "", name = this.name4;
+                for (var j in this.biasNPC2) {
+                    switch (this.biasNPC2[j]) {
+                        case "aggressive": m = name + " likes to attack."; break;
+                        case "stats": m = name + " likes stat-raising moves."; break;
+                        case "priority": m = name + " favors priority moves."; break;
+                        case "recoil": m = name + " favors recoil moves."; break;
+                        case "drain": m = name + " favors drain moves."; break;
+                        case "burnout": m = name + " favors high-risk moves."; break;
+                        case "critical": m = name + " favors critical-hit moves."; break;
+                        case "helpingHand": m = name + " likes to support their teammate."; break;
+                        case "reflect": m = name + " likes to set up Reflect."; break;
+                        case "lightscreen": m = name + " likes to set up Light Screen."; break;
+                        case "paralyze": m = name + " favors moves that Paralyze."; break;
+                        case "poison": m = name + " favors moves that Poison."; break;
+                        case "burn": m = name + " favors moves that Burn."; break;
+                        case "freeze": m = name + " favors moves that Freeze."; break;
+                        case "sleep": m = name + " favors moves that induce Sleep."; break;
+                    }
+                    this.sendToViewers(toColor("+ " + m, "#3CB371"));
                 }
-                this.sendToViewers(toColor("+ " + m, "#3CB371"));
+                this.sendToViewers("");
             }
-            this.sendToViewers("");
         }
         if (this.select) {
             for (var j in this.select) {
@@ -14333,6 +14342,9 @@ function Safari() {
             } else {
                 move.type = randomSample(types);
                 move.power = Math.round(sys.rand(2, 23)) * 5;
+                if (move.power < 90) {
+                    move.power = Math.round(move.power + (20 * Math.random()));
+                }
                 move.power = Math.min(data.movepowers[move.type], move.power);
                 move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
@@ -14345,11 +14357,6 @@ function Safari() {
                     }
                 }
                 factor = (60 - move.power) / 100;
-                if ((this.npcBattle && name === this.name1)) {
-                    if (chance(0.015 + (getCherished(id, name) * 0.003))) {
-                        factor += (1.2 * Math.random() * Math.random());
-                    }
-                }
                 if (factor > -0.1 && factor < 0.1 && chance(0.5)) {
                     factor = 0;
                 }
@@ -14383,10 +14390,10 @@ function Safari() {
                         }
                         if (["burnout"].contains(p)) {
                             if (eff[p] === 2) {
-                                move.power = (5 * (Math.max(move.power, Math.ceil(120 + (20 * Math.random()))))/5);
+                                move.power = (5 * Math.round((Math.max(move.power, Math.ceil(120 + (20 * Math.random()))))/5));
                             }
                             if (eff[p] === 1) {
-                                move.power = (5 * (Math.max(move.power, Math.ceil(100 + (20 * Math.random()))))/5);
+                                move.power = (5 * Math.round((Math.max(move.power, Math.ceil(100 + (20 * Math.random()))))/5));
                             }
                         }
                         if (["recoil"].contains(p)) {
@@ -14446,7 +14453,7 @@ function Safari() {
                 drain: (0.75 + factor + drain),
                 recoil: (0.7 + recoil - factor),
                 critical: (0.75 + critical + factor),
-                burnout: (6 + (burnout * 3)),
+                burnout: (4 + (burnout * 4)),
                 status: 2,
                 buff: 1.8,
                 nerf: 1.8,
@@ -18505,21 +18512,22 @@ function Safari() {
                             cantWatch: false,
                             t1HP: regen
                         },
-                        null, npc2, trainer.select);
+                        null, npc2, trainer.select, viewers);
                     }
                     else {
                         var battle = new Battle2(id, trainer, {
                             cantWatch: false,
                             t1HP: regen
                         },
-                        null, null, trainer.select);
+                        null, null, trainer.select, viewers);
                     }
                     currentBattles.push(battle);
+                    /*
                     for (e = 0; e < viewers.length; e++) {
                         if (!battle.viewers.contains(viewers[e])) {
                             battle.viewers.push(viewers[e]);
                         }
-                    }
+                    }*/
                 }
             } else {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
@@ -18727,7 +18735,7 @@ function Safari() {
             if (trainer.bias2) {
                 currentTrainer.bias2 = trainer.bias2;
             }
-            var j = 12;
+            var j = 6;
             while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
                 j--;
