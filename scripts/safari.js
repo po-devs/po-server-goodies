@@ -11667,27 +11667,27 @@ function Safari() {
             //player initiates a new challengeRequest2
             var cdata = data.split(":");
             if (cdata.length < 2) {
-                safaribot.sendMessage(name, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
+                safaribot.sendMessage(src, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
                 return;
             }
             var foes = (cdata[1].split(","));
             if (foes.length < 2) {
-                safaribot.sendMessage(name, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
+                safaribot.sendMessage(src, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
                 return;
             }
             var ally = cdata[0].toLowerCase();
             var opp1 = foes[0].toLowerCase();
             var opp2 = foes[1].toLowerCase();
             if (!sys.id(ally)) {
-                safaribot.sendMessage(name, ally + " couldn't be found!", safchan);
+                safaribot.sendMessage(src, ally + " couldn't be found!", safchan);
                 return;
             }
             if (!sys.id(opp1)) {
-                safaribot.sendMessage(name, opp1 + " couldn't be found!", safchan);
+                safaribot.sendMessage(src, opp1 + " couldn't be found!", safchan);
                 return;
             }
             if (!sys.id(opp2)) {
-                safaribot.sendMessage(name, opp2 + " couldn't be found!", safchan);
+                safaribot.sendMessage(src, opp2 + " couldn't be found!", safchan);
                 return;
             }
             challengeRequests2.push({
@@ -11702,6 +11702,11 @@ function Safari() {
                     }
                 ]
             });
+            safaribot.sendMessage(src, "You and " + ally + " challenged " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(ally), name + " want team with you to battle " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(opp1), name + " and " + ally + " challenged you and " + opp2 + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(opp2), name + " and " + ally + " challenged you and " + opp1 + " to a Tag Battle!", safchan);
+            return;
         }
         else {
             if (data === "abort") {
