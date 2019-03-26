@@ -13960,7 +13960,7 @@ function Safari() {
                         target.boosts[stat] = Math.min(6, Math.max(target.boosts[stat], -6));
                         out.push(tname + "'s " + self.statName(stat) + " +2!");
                     }
-                    if (self.select.inferno && chance(0.25) && target.condition === "none") {
+                    if (self.select.inferno && chance(0.25) && target.condition === "none" && move.type === "Fire" && (!hasType(target.id, "Fire"))) {
                         out.push(tname + " got burned!");
                         target.condition = "burn";
                     }
@@ -13988,7 +13988,7 @@ function Safari() {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                     }
                     else if (poke2.protect) {
-                        out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
+                        out.push(poke2.owner + "'s " + poke(poke2.id) + " protected itself!");
                     }
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
@@ -14001,7 +14001,7 @@ function Safari() {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                     }
                     else if (poke4.protect) {
-                        out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
+                        out.push(poke4.owner + "'s " + poke(poke4.id) + " protected itself!");
                     }
                     else if (poke4.hp > 0) {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
@@ -14015,7 +14015,7 @@ function Safari() {
                             out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                         }
                         else if (poke3.protect) {
-                            out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
+                            out.push(poke3.owner + "'s " + poke(poke3.id) + " protected itself!");
                         }
                         else if (poke1.hp > 0) {
                             out = dealDamage(poke1, move, poke3, typeMultiplier, 1, out);
@@ -14031,7 +14031,7 @@ function Safari() {
                         out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                     }
                     else if (poke2.protect) {
-                        out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
+                        out.push(poke2.owner + "'s " + poke(poke2.id) + " protected itself!");
                     }
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
@@ -14044,7 +14044,7 @@ function Safari() {
                         out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                     }
                     else if (poke4.protect) {
-                        out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
+                        out.push(poke4.owner + "'s " + poke(poke4.id) + " protected itself!");
                     }
                     else if (poke4.hp > 0) {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
@@ -14058,7 +14058,7 @@ function Safari() {
                             out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                         }
                         else if (poke1.protect) {
-                            out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
+                            out.push(poke1.owner + "'s " + poke(poke1.id) + " protected itself!");
                         }
                         else if (poke1.hp > 0) {
                             out = dealDamage(poke3, move, poke1, typeMultiplier, 1, out);
@@ -14074,7 +14074,7 @@ function Safari() {
                         out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                     }
                     else if (poke1.protect) {
-                        out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
+                        out.push(poke1.owner + "'s " + poke(poke1.id) + " protected itself!");
                     }
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
@@ -14087,7 +14087,7 @@ function Safari() {
                         out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                     }
                     else if (poke3.protect) {
-                        out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
+                        out.push(poke3.owner + "'s " + poke(poke3.id) + " protected itself!");
                     }
                     else if (poke3.hp > 0) {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
@@ -14101,7 +14101,7 @@ function Safari() {
                             out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
                         }
                         else if (poke4.protect) {
-                            out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
+                            out.push(poke4.owner + "'s " + poke(poke4.id) + " protected itself!");
                         }
                         else if (poke4.hp > 0) {
                             out = dealDamage(poke2, move, poke4, typeMultiplier, 2, out);
