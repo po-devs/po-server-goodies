@@ -12210,7 +12210,7 @@ function Safari() {
             "reflect": -1,
             "lightscreen": -1
         };
-        this.select = null;
+        this.select = {};
         if (select) {
             this.select = select;
         }
@@ -13937,7 +13937,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
+                        out.push("It has no effect on " + poke2.owner + "'s " + poke2.id + "!");
                     }
                     else if (poke2.protect) {
                         out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
@@ -13950,7 +13950,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
+                        out.push("It has no effect on " + poke4.owner + "'s " + poke4.id + "!");
                     }
                     else if (poke4.protect) {
                         out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
@@ -13964,7 +13964,7 @@ function Safari() {
                             typeMultiplier = 0;
                         }
                         if (typeMultiplier === 0) {
-                            out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
+                            out.push("It has no effect on " + poke3.owner + "'s " + poke3.id + "!");
                         }
                         else if (poke3.protect) {
                             out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
@@ -13980,7 +13980,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
+                        out.push("It has no effect on " + poke2.owner + "'s " + poke2.id + "!");
                     }
                     else if (poke2.protect) {
                         out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
@@ -13993,7 +13993,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
+                        out.push("It has no effect on " + poke4.owner + "'s " + poke4.id + "!");
                     }
                     else if (poke4.protect) {
                         out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
@@ -14007,7 +14007,7 @@ function Safari() {
                             typeMultiplier = 0;
                         }
                         if (typeMultiplier === 0) {
-                            out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
+                            out.push("It has no effect on " + poke1.owner + "'s " + poke1.id + "!");
                         }
                         else if (poke1.protect) {
                             out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
@@ -14023,7 +14023,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
+                        out.push("It has no effect on " + poke1.owner + "'s " + poke1.id + "!");
                     }
                     else if (poke1.protect) {
                         out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
@@ -14036,7 +14036,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
+                        out.push("It has no effect on " + poke3.owner + "'s " + poke3.id + "!");
                     }
                     else if (poke3.protect) {
                         out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
@@ -14050,7 +14050,7 @@ function Safari() {
                             typeMultiplier = 0;
                         }
                         if (typeMultiplier === 0) {
-                            out.push("It has no effect on " + poke4.owner + "'s " + poke(poke4.id) + "!");
+                            out.push("It has no effect on " + poke4.owner + "'s " + poke4.id + "!");
                         }
                         else if (poke4.protect) {
                             out.push(poke4.owner + "'s " + poke4.id + " protected itself!");
@@ -14066,7 +14066,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
+                        out.push("It has no effect on " + poke1.owner + "'s " + poke1.id + "!");
                     }
                     else if (poke1.protect) {
                         out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
@@ -14079,7 +14079,7 @@ function Safari() {
                         typeMultiplier = 0;
                     }
                     if (typeMultiplier === 0) {
-                        out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
+                        out.push("It has no effect on " + poke3.owner + "'s " + poke3.id + "!");
                     }
                     else if (poke3.protect) {
                         out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
@@ -14093,7 +14093,7 @@ function Safari() {
                             typeMultiplier = 0;
                         }
                         if (typeMultiplier === 0) {
-                            out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
+                            out.push("It has no effect on " + poke2.owner + "'s " + poke2.id + "!");
                         }
                         else if (poke2.protect) {
                             out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
@@ -14817,15 +14817,17 @@ function Safari() {
                     return out;
                 }
                 out.statusChance = val;
-                if (this.select && this.select.sun) {
-                    out.status = ["sleep", "paralyzed", "burn", "poison"].random();
+                if (this.select) {
+                    if (this.select.sun) {
+                        out.status = ["sleep", "paralyzed", "burn", "poison"].random();
+                    }
                 }
                 else {
                     out.status = ["sleep", "paralyzed", "burn", "freeze", "poison"].random();
                 }
                 if (bias) {
                     out.status = (bias.sleep && chance(0.35) ? "sleep": out.status);
-                    out.status = (bias.paralyze && chance(0.35) ? "paralyzed": out.status);
+                    out.status = (bias.paralyzed && chance(0.35) ? "paralyzed": out.status);
                     out.status = (bias.burn && chance(0.35) ? "burn": out.status);
                     out.status = (bias.freeze && chance(0.35) ? "freeze": out.status);
                     out.status = (bias.poison && chance(0.35) ? "poison": out.status);
