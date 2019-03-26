@@ -11656,7 +11656,7 @@ function Safari() {
             var team;
             for (var t in challengeRequests2[i].teams) {
                 team = challengeRequests2[i].teams[t];
-                if (Object.keys(team).contains(name)) {
+                if (team.hasOwnProperty(name)) {
                     found = challengeRequests2[i];
                     ind = i;
                     break;
@@ -11715,11 +11715,12 @@ function Safari() {
                         safaribot.sendMessage(sys.id(p), name + " aborted the Tag Team battle!", safchan);
                     }
                 }
-                challengeRequests2.slice(i);
+                challengeRequests2.slice(ind);
                 return;
             }
             if (data !== "accept") {
-                safaribot.sendMessage(name, "Type /challenge3 accept to accept a pending challenge!", safchan);
+                safaribot.sendMessage(name, "Type " + link("/challenge3 accept") + " to accept a pending challenge!", safchan);
+                safaribot.sendMessage(name, "To abort the match, type " + link("/challenge3 abort") + "!", safchan);
                 return;
             }
             var team, ready = true, players = [];
@@ -11742,7 +11743,7 @@ function Safari() {
             if (ready && players.length === 4) {
                 var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
                 currentBattles.push(battle);
-                challengeRequests2.slice(i);
+                challengeRequests2.slice(ind);
                 return;
             }
         }
@@ -12214,41 +12215,43 @@ function Safari() {
             hyper: 0,
             full: 0
         };
-        if (select.hyperpotion3) {
-            this.npcItems.hyper = 3;
-        }
-        else if (select.hyperpotion2) {
-            this.npcItems.hyper = 2;
-        }
-        else if (select.hyperpotion) {
-            this.npcItemshyper = 1;
-        }
-        if (select.fullrestore3) {
-            this.npcItems.full = 3;
-        }
-        else if (select.fullrestore2) {
-            this.npcItems.full = 2;
-        }
-        else if (select.fullrestore) {
-            this.npcItems.full = 1;
-        }
-        if (select.spikes2) {
-            this.side1Field.spikes = 2;
-        }
-        else if (select.spikes) {
-            this.side1Field.spikes = 1;
-        }
-        if (select.initialReflect) {
-            this.side2Field.reflect = 5;
-        }
-        if (select.initialReflect2) {
-            this.side1Field.reflect = 5;
-        }
-        if (select.initialLightScreen) {
-            this.side2Field.lightscreen = 5;
-        }
-        if (select.initialLightScreen2) {
-            this.side1Field.lightscreen = 5;
+        if (this.select) {
+            if (select.hyperpotion3) {
+                this.npcItems.hyper = 3;
+            }
+            else if (select.hyperpotion2) {
+                this.npcItems.hyper = 2;
+            }
+            else if (select.hyperpotion) {
+                this.npcItemshyper = 1;
+            }
+            if (select.fullrestore3) {
+                this.npcItems.full = 3;
+            }
+            else if (select.fullrestore2) {
+                this.npcItems.full = 2;
+            }
+            else if (select.fullrestore) {
+                this.npcItems.full = 1;
+            }
+            if (select.spikes2) {
+                this.side1Field.spikes = 2;
+            }
+            else if (select.spikes) {
+                this.side1Field.spikes = 1;
+            }
+            if (select.initialReflect) {
+                this.side2Field.reflect = 5;
+            }
+            if (select.initialReflect2) {
+                this.side1Field.reflect = 5;
+            }
+            if (select.initialLightScreen) {
+                this.side2Field.lightscreen = 5;
+            }
+            if (select.initialLightScreen2) {
+                this.side1Field.lightscreen = 5;
+            }
         }
 
         if (isNPC) {
@@ -12909,11 +12912,15 @@ function Safari() {
                     this.player4Input = this.chooseNPCMove(this.p4MoveCodes, this.team4, this.team1);
                     this.target2 = (chance(0.5) ? 1 : 3);
                     this.target4 = (chance(0.5) ? 1 : 3);
-                    if (this.p2MoveCodes[this.player2Input].target === "ALL" || this.p2MoveCodes[this.player2Input].target === "TEAM") {
-                        this.target2 = -1;
+                    if (!(this.player2Fainted)) {
+                        if (this.p2MoveCodes[this.player2Input].target === "ALL" || this.p2MoveCodes[this.player2Input].target === "TEAM") {
+                            this.target2 = -1;
+                        }
                     }
-                    if (this.p4MoveCodes[this.player4Input].target === "ALL" || this.p4MoveCodes[this.player4Input].target === "TEAM") {
-                        this.target4 = -1;
+                    if (!(this.player4Fainted)) {
+                        if (this.p4MoveCodes[this.player4Input].target === "ALL" || this.p4MoveCodes[this.player4Input].target === "TEAM") {
+                            this.target4 = -1;
+                        }
                     }
                 }
                 if ((this.player2Input === false && (!(this.tagBattle) || this.player4Input === false))) {
