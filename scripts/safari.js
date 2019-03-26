@@ -1442,6 +1442,7 @@ function Safari() {
     var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false };
     var tradeRequests = {};
     var challengeRequests = {};
+    var challengeRequests2 = {};
     var pyramidRequests = {};
     var currentBattles = [];
     var currentPyramids = [];
@@ -11633,6 +11634,19 @@ function Safari() {
     }
 
     /* Battles */
+    this.challengePlayerTag = function(src, data) {
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var player = getAvatar(src);
+        var reason = "start a battle";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        for (var i in challengeRequests2) {
+            return;
+        }
+    };
     this.challengePlayer = function(src, data, isRotation) {
         if (!validPlayers("self", src)) {
             return;
@@ -12302,29 +12316,31 @@ function Safari() {
                     this.sendToViewers(toColor("+ " + m, "#3CB371"));
                 }
             }
-            if (this.biasNPC2.length > 0) {
-                m = "", name = this.name4;
-                for (var j in this.biasNPC2) {
-                    switch (this.biasNPC2[j]) {
-                        case "aggressive": m = name + " likes to attack."; break;
-                        case "stats": m = name + " likes stat-raising moves."; break;
-                        case "priority": m = name + " favors priority moves."; break;
-                        case "recoil": m = name + " favors recoil moves."; break;
-                        case "drain": m = name + " favors drain moves."; break;
-                        case "burnout": m = name + " favors high-risk moves."; break;
-                        case "critical": m = name + " favors critical-hit moves."; break;
-                        case "helpingHand": m = name + " likes to support their teammate."; break;
-                        case "reflect": m = name + " likes to set up Reflect."; break;
-                        case "lightscreen": m = name + " likes to set up Light Screen."; break;
-                        case "paralyze": m = name + " favors moves that Paralyze."; break;
-                        case "poison": m = name + " favors moves that Poison."; break;
-                        case "burn": m = name + " favors moves that Burn."; break;
-                        case "freeze": m = name + " favors moves that Freeze."; break;
-                        case "sleep": m = name + " favors moves that induce Sleep."; break;
+            if (this.biasNPC2) {
+                if (this.biasNPC2.length > 0) {
+                    m = "", name = this.name4;
+                    for (var j in this.biasNPC2) {
+                        switch (this.biasNPC2[j]) {
+                            case "aggressive": m = name + " likes to attack."; break;
+                            case "stats": m = name + " likes stat-raising moves."; break;
+                            case "priority": m = name + " favors priority moves."; break;
+                            case "recoil": m = name + " favors recoil moves."; break;
+                            case "drain": m = name + " favors drain moves."; break;
+                            case "burnout": m = name + " favors high-risk moves."; break;
+                            case "critical": m = name + " favors critical-hit moves."; break;
+                            case "helpingHand": m = name + " likes to support their teammate."; break;
+                            case "reflect": m = name + " likes to set up Reflect."; break;
+                            case "lightscreen": m = name + " likes to set up Light Screen."; break;
+                            case "paralyze": m = name + " favors moves that Paralyze."; break;
+                            case "poison": m = name + " favors moves that Poison."; break;
+                            case "burn": m = name + " favors moves that Burn."; break;
+                            case "freeze": m = name + " favors moves that Freeze."; break;
+                            case "sleep": m = name + " favors moves that induce Sleep."; break;
+                        }
+                        this.sendToViewers(toColor("+ " + m, "#3CB371"));
                     }
-                    this.sendToViewers(toColor("+ " + m, "#3CB371"));
+                    this.sendToViewers("");
                 }
-                this.sendToViewers("");
             }
         }
         if (this.select) {
