@@ -12256,6 +12256,12 @@ function Safari() {
             if (select.initialLightScreen2) {
                 this.side1Field.lightscreen = 5;
             }
+            this.selectData = {};
+            if (select.analytic) {
+                this.selectData.analyticType1 = "---"; //not ???, since this would make it hit single type Pokémon turn 1
+                this.selectData.analyticType2 = "---";
+                this.selectData.analyticCount = 0;
+            }
         }
 
         if (isNPC) {
@@ -12473,8 +12479,10 @@ function Safari() {
                     case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
                     case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
                     case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
+                    case "brawler": m = "Foe's Pokémon power up when hit with physical moves."; break;
                     case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
                     case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
+                    case "dragonslayer": m = "Foe's Fighting-type moves deal double damage to Dragon-type Pokémon."; break;
                     case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
                     case "intimidate": m = "Challenger's Pokémon begin the game with debuffed attack."; break;
                     case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
@@ -12482,7 +12490,11 @@ function Safari() {
                     case "categorySplit": m = "Move category is determined by type."; break;
                     case "inverted": m = "Inverted Battle."; break;
                     case "simple": m = "All stat changes are doubly influential."; break;
+                    case "reversal": m = "Pokémon near fainting receive extreme power boost."; break;
+                    case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
                     case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
+                    case "guts": m = "All Pokémon have increased attack while inflicted with a status condition."; break;
+                    case "inferno": m = "All fire moves have a 25% chance to burn."; break;
                     case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
                     case "leftovers": m = "The foe's team restores HP gradually."; break;
                     case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
@@ -13864,6 +13876,24 @@ function Safari() {
                     bonus *= ((self.select.critDouble && crit) ? 1.33 : 1);
                     bonus *= ((self.select.slowStart && (isP2 || isP4) && self.turn <= 5) ? 0.5 : 1);
                     bonus *= ((self.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+                    bonus *= ((self.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
+                    bonus *= ((self.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
+                    var analytic = (self.select.analytic && (hasType(user.id, self.selectData.analyticType1) || (hasType(user.id, self.selectData.analyticType2))));
+                    if (isP2 || isP4) {
+                        if (analytic) {
+                            self.selectData.analyticCount++;
+                        }
+                        else {
+                            self.selectData.analyticCount = 0;
+                        }
+                        bonus *= (analytic ? (1 + Math.max(self.selectData.analyticCount/4, 1)) : 1);
+                    }
+                    if (self.select.guts) {
+                        burn = false;
+                        if (user.condition !== "none" && move.category === "physical") {
+                            bonus *= 1.5;
+                        }
+                    }
                 }
 
                 var tname = target.owner + "'s " + poke(target.id);
@@ -13915,6 +13945,24 @@ function Safari() {
                     }
                     if (user.hp <= 0) {
                         out.push("<b>" + name + " fainted!</b>");
+                    }
+                }
+                if (self.select) {
+                    if (self.select.analytic && (isP2 || isP4)) {
+                        self.selectData.analyticType1 = sys.type(sys.pokeType1(target.id));
+                        self.selectData.analyticType2 = sys.type(sys.pokeType2(target.id));
+                    }
+                }
+                if (self.select && (!fainted)) {
+                    if (self.select.brawler && (isP1 || isP3) && move.category === "physical") {
+                        var stat = ["atk", "def", "spe", "satk", "sdef"].random();
+                        target.boosts[stat] += 2;
+                        target.boosts[stat] = Math.min(6, Math.max(target.boosts[stat], -6));
+                        out.push(tname + "'s " + self.statName(stat) + " +2!");
+                    }
+                    if (self.select.inferno && chance(0.25) && target.condition === "none") {
+                        out.push(tname + " got burned!");
+                        target.condition = "burn";
                     }
                 }
                 if (!fainted) {
@@ -15022,7 +15070,12 @@ function Safari() {
                     }
                     if (move.status) {
                         if (opp.condition === "none" && !this.isImmuneTo(opp.id, move.status)) {
-                            c += move.statusChance * 150;
+                            if (this.select && this.select.guts && (["sleep", "freeze"].indexOf(move.status) === -1)) {
+                                c -= move.statusChance * 20;
+                            }
+                            else {
+                                c += move.statusChance * 150;
+                            }
                         }
                     }
                     if (move.nerf) {
@@ -15078,26 +15131,40 @@ function Safari() {
                 }
             }
             if (move.refresh) {
-                if (move.refresh === "self") {
-                    if (["burn", "poison"].contains(user.condition)) {
-                        c += 80;
-                    } else if (user.condition === "paralyzed") {
-                        c += 45;
-                    } else {
-                        c = Math.max(c - 50, 0);
-                    }
-                } else {
+                if (this.select && this.select.guts) {
                     for (o in team) {
                         if (team[o].hp > 0) {
-                            if (team[o] === user) {
-                                if (["burn", "poison"].contains(user.condition)) {
-                                    c += 80;
-                                } else if (user.condition === "paralyzed") {
-                                    c += 45;
-                                }
-                            } else {
+                            if (team[o] !== user) {
                                 if (team[o].condition !== "none") {
                                     c += 80;
+                                }
+                            }
+                        }
+                    }
+                    c = Math.max(c - 70, 0);
+                }
+                else {
+                    if (move.refresh === "self") {
+                        if (["burn", "poison"].contains(user.condition)) {
+                            c += 80;
+                        } else if (user.condition === "paralyzed") {
+                            c += 45;
+                        } else {
+                            c = Math.max(c - 50, 0);
+                        }
+                    } else {
+                        for (o in team) {
+                            if (team[o].hp > 0) {
+                                if (team[o] === user) {
+                                    if (["burn", "poison"].contains(user.condition)) {
+                                        c += 80;
+                                    } else if (user.condition === "paralyzed") {
+                                        c += 45;
+                                    }
+                                } else {
+                                    if (team[o].condition !== "none") {
+                                        c += 80;
+                                    }
                                 }
                             }
                         }
