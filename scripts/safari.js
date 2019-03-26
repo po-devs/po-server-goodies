@@ -1442,7 +1442,7 @@ function Safari() {
     var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false };
     var tradeRequests = {};
     var challengeRequests = {};
-    var challengeRequests2 = {};
+    var challengeRequests2 = [];
     var pyramidRequests = {};
     var currentBattles = [];
     var currentPyramids = [];
@@ -11643,8 +11643,101 @@ function Safari() {
         if (cantBecause(src, reason, ["tutorial"])) {
             return;
         }
-        for (var i in challengeRequests2) {
+        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
+        }
+        if (isRotation && stopQuests.league) {
+            safaribot.sendMessage(src, "Rotation Battle challenges are temporarily disabled!", safchan);
+            return;
+        }
+        var name = sys.name(src).toLowerCase();
+        var found = null, ind = 0;
+        for (var i = 0; i < challengeRequests2.length; i++) {
+            var team;
+            for (var t in challengeRequests2[i].teams) {
+                team = challengeRequests2[i].teams[t];
+                if (Object.keys(team).contains(name)) {
+                    found = challengeRequests2[i];
+                    ind = i;
+                    break;
+                }
+            }
+        }
+        if (!found) {
+            //player initiates a new challengeRequest2
+            var cdata = data.split(":");
+            if (cdata.length < 2) {
+                safaribot.sendMessage(name, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
+                return;
+            }
+            var foes = (cdata[1].split(","));
+            if (foes.length < 2) {
+                safaribot.sendMessage(name, "The format for a Tag Battle challenge is /challenge3 teammate:foe,foe2!", safchan);
+                return;
+            }
+            var ally = cdata[0].toLowerCase();
+            var opp1 = foes[0].toLowerCase();
+            var opp2 = foes[1].toLowerCase();
+            if (!sys.id(ally)) {
+                safaribot.sendMessage(name, ally + " couldn't be found!", safchan);
+                return;
+            }
+            if (!sys.id(opp1)) {
+                safaribot.sendMessage(name, opp1 + " couldn't be found!", safchan);
+                return;
+            }
+            if (!sys.id(opp2)) {
+                safaribot.sendMessage(name, opp2 + " couldn't be found!", safchan);
+                return;
+            }
+            challengeRequests2.push({
+                "teams": [
+                    {
+                        name: true,
+                        ally: false
+                    },
+                    {
+                        opp1: false,
+                        opp2: false
+                    }
+                ]
+            });
+        }
+        else {
+            if (data === "abort") {
+                for (var t in found.teams) {
+                    for (var p in found.teams[t]) {
+                        safaribot.sendMessage(sys.id(p), name + " aborted the Tag Team battle!", safchan);
+                    }
+                }
+                challengeRequests2.slice(i);
+                return;
+            }
+            if (data !== "accept") {
+                safaribot.sendMessage(name, "Type /challenge3 accept to accept a pending challenge!", safchan);
+                return;
+            }
+            var team, ready = true, players = [];
+            for (var t in found.teams) {
+                if (Object.keys(found.teams[t]).contains(name)) {
+                    found.teams[t][name] = true;
+                }
+            }
+            for (var t in found.teams) {
+                for (var p in found.teams[t]) {
+                    safaribot.sendMessage(sys.id(p), name + " accepted the Tag Team battle invitation!", safchan);
+                    if (found.teams[t][p] === false) {
+                        ready = false;
+                    }
+                    else {
+                        players.push(getAvatarOff(p));
+                    }
+                }
+            }
+            if (ready && players.length === 4) {
+                var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
+                currentBattles.push(battle);
+            }
         }
     };
     this.challengePlayer = function(src, data, isRotation) {
@@ -18601,7 +18694,7 @@ function Safari() {
             trainer = data[i];
             currentTrainer.name = trainer.name;
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.02 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.027 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 4 : 0));
             if (ind >= 5) {
                 chal++;
@@ -18661,11 +18754,11 @@ function Safari() {
                     hold = [];
                     obj = Object.keys(trainer.party2).shuffle();
                     for (var j in obj) {
-                        if ((trainer2.party[j] >= 6) && (difficulty < 4)) {
+                        if ((trainer.party2[obj[j]] >= 6) && (difficulty < 4)) {
                             continue;
                         }
                         hold.push(parseInt(obj[j], 10));
-                        partyStrength += (trainer2.party[obj[j]] + Math.random() - Math.random());
+                        partyStrength += (trainer.party2[obj[j]] + Math.random() - Math.random());
                         if (hold.length > 3) {
                             break;
                         }
@@ -29260,10 +29353,10 @@ function Safari() {
                 safari.challengePlayer(src, commandData, command === "challenge2");
                 return true;
             }
-            /*if (command === "challenge3") {
+            if (command === "challenge3" || command === "challengetag") {
                 safari.challengePlayerTag(src, commandData);
                 return true;
-            }*/
+            }
             if (command === "watch") {
                 if (currentEvent && commandData === "*") {
                     currentEvent.watchEvent(src);
