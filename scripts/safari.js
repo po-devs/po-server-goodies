@@ -11706,24 +11706,24 @@ function Safari() {
             safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp1), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp2), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp1.toCorrectCase() + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(ally), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
-            safaribot.sendMessage(sys.id(opp1), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
-            safaribot.sendMessage(sys.id(opp2), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
+            safaribot.sendHtmlMessage(sys.id(ally), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
+            safaribot.sendHtmlMessage(sys.id(opp1), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
+            safaribot.sendHtmlMessage(sys.id(opp2), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
             return;
         }
         else {
-            if (data === "abort") {
+            if (data === "abort" || data === "cancel") {
                 for (var t in found) {
                     for (var p in found[t]) {
                         safaribot.sendMessage(sys.id(p), name.toCorrectCase() + " aborted the Tag Team battle!", safchan);
                     }
                 }
-                challengeRequests2.slice(ind);
+                challengeRequests2.splice(ind, 1);
                 return;
             }
             if (data !== "accept") {
-                safaribot.sendMessage(sys.id(p), "Type " + link("/challenge3 accept") + " to accept a pending challenge!", safchan);
-                safaribot.sendMessage(sys.id(p), "To abort the match, type " + link("/challenge3 abort") + "!", safchan);
+                safaribot.sendHtmlMessage(sys.id(p), "Type " + link("/challenge3 accept") + " to accept a pending challenge!", safchan);
+                safaribot.sendHtmlMessage(sys.id(p), "To abort the match, type " + link("/challenge3 abort") + "!", safchan);
                 return;
             }
             var team, ready = true, players = [];
@@ -11746,7 +11746,7 @@ function Safari() {
             if (ready && players.length === 4) {
                 var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
                 currentBattles.push(battle);
-                challengeRequests2.slice(ind);
+                challengeRequests2.splice(ind, 1);
                 return;
             }
         }
