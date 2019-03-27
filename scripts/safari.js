@@ -12475,7 +12475,7 @@ function Safari() {
                     case "boostType": m = (this.select[j].length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
                     case "shellArmor": m = "Critical hits cannot occur."; break;
                     case "criticalDouble": m = "Critical hits do increased damage."; break;
-                    case "boostDrain": m = "Drain moves restore a great amount of HP."; break;
+                    case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
                     case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
                     case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
                     case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
@@ -12494,7 +12494,9 @@ function Safari() {
                     case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
                     case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
                     case "guts": m = "All Pokémon have increased attack while inflicted with a status condition."; break;
-                    case "inferno": m = "All fire moves have a 25% chance to burn."; break;
+                    case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
+                    case "galeWings": m = "All Flying-type moves have increased priority."; break;
+                    case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
                     case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
                     case "leftovers": m = "The foe's team restores HP gradually."; break;
                     case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
@@ -13878,6 +13880,7 @@ function Safari() {
                     bonus *= ((self.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
                     bonus *= ((self.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
                     bonus *= ((self.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
+                    bonus *= ((self.select.hex && target.condition !== "none") ? 2 : 1);
                     var analytic = (self.select.analytic && (hasType(user.id, self.selectData.analyticType1) || (hasType(user.id, self.selectData.analyticType2))));
                     if (isP2 || isP4) {
                         if (analytic) {
@@ -14624,6 +14627,14 @@ function Safari() {
                 }
             }
             
+            if (this.select && this.select.galeWings) {
+                if (move.priority) {
+                    move.priority++;
+                }
+                else {
+                    move.priority = 1;
+                }
+            }
             out.push(move);
         }
         return out;
@@ -15024,16 +15035,16 @@ function Safari() {
 
                         var diff = (opp.hp / dmg);
                         if (dif < 1) {
-                            val = 20;
+                            val = 30;
                         }
                         else if (dif < 1.5) {
-                            val = 8;
+                            val = 10;
                         }
                         else if (dif < 2) {
-                            val = 6;
+                            val = 8;
                         }
                         else if (dif < 3) {
-                            val = 4;
+                            val = 5;
                         }
                         else if (dif < 4) {
                             val = 2;
@@ -15075,6 +15086,9 @@ function Safari() {
                             }
                             else {
                                 c += move.statusChance * 150;
+                            }
+                            if (this.select && this.select.hex) {
+                                c += move.statusChance * 50;
                             }
                         }
                     }
@@ -15168,6 +15182,9 @@ function Safari() {
                                 }
                             }
                         }
+                    }
+                    if (this.select && this.select.hex) {
+                        c += 100;
                     }
                 }
             }
@@ -18748,7 +18765,7 @@ function Safari() {
             } else {
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
                 
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
             }
@@ -18910,7 +18927,7 @@ function Safari() {
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
                     diff = (chal - hazardStrength);
-                    if (((hold.length >= 3) && (chance (0.66))) || (hold.length >= 5) || (hold.length >= 2 && maxLoop < 250)) {
+                    if (((hold.length >= 3) && (chance (0.4))) || (hold.length >= 6) || (hold.length >= 2 && maxLoop < 250)) {
                         if (Math.abs(diff) <= 1) {
                             break;
                         }
@@ -18927,7 +18944,7 @@ function Safari() {
                             break;
                         }
                     }
-                    if (((hold.length >= 3) && (chance(0.33))) || (hold.length >= 6)) {
+                    if (((hold.length >= 3) && (chance(0.18))) || (hold.length >= 6)) {
                         break;
                     }
                 }
