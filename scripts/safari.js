@@ -11651,23 +11651,21 @@ function Safari() {
             return;
         }
         var name = sys.name(src).toLowerCase();
-        var found = null, ind = 0, search = false;
+        var found = null, ind = 0;
         for (var i = 0; i < challengeRequests2.length; i++) {
             var teams = challengeRequests2[i];
             if (teams[0].hasOwnProperty(name)) {
                 found = challengeRequests2[i];
-                search = true;
                 ind = i;
                 break;
             }
             if (teams[1].hasOwnProperty(name)) {
                 found = challengeRequests2[i];
-                search = true;
                 ind = i;
                 break;
             }
         }
-        if (!search) {
+        if (!found) {
             //player initiates a new challengeRequest2
             var cdata = data.split(":");
             if (cdata.length < 2) {
@@ -11694,18 +11692,16 @@ function Safari() {
                 safaribot.sendMessage(src, opp2 + " couldn't be found!", safchan);
                 return;
             }
-            challengeRequests2.push(
-                [
-                    {
-                        name: true,
-                        ally: false
-                    },
-                    {
-                        opp1: false,
-                        opp2: false
-                    }
-                ]
-            );
+            
+            var input = [], team1 = {}, team2 = {};
+            team1[name] = true;
+            team1[ally] = false;
+            team2[opp1] = false;
+            team2[opp2] = false;
+            input.push(team1);
+            input.push(team2);
+            challengeRequests2.push(input);
+
             safaribot.sendMessage(src, "You and " + ally.toCorrectCase() + " challenged " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp1), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
