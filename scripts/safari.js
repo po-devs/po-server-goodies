@@ -11747,7 +11747,7 @@ function Safari() {
                 }
             }
             if (ready && players.length === 4) {
-                var battle = new Battle2(players[0], players[1], {}, players[2], players[3]);
+                var battle = new Battle2(players[0], players[2], {}, players[1], players[3]);
                 currentBattles.push(battle);
                 challengeRequests2.splice(ind, 1);
                 return;
@@ -12348,7 +12348,7 @@ function Safari() {
         }
 
         var pSize = this.partySize = (this.tagBattle ? 2 : 3);
-        this.partySizeP1 = 3;
+        this.partySizeP1 = pSize;
         if (this.tagBattle && this.oneOnTwo) {
             this.partySizeP1 = 4;
         }
@@ -12875,6 +12875,9 @@ function Safari() {
             if (this.player1Input === null) {
                 this.player1Input = Object.keys(this.p1MoveCodes).random();
                 this.target1 = (chance(0.5) ? 2 : 4);
+            }
+            if (this.player3Input === null && (this.tagBattle && (this.oneOnTwo)) && (!this.player3Fainted)) {
+                this.p3MoveCodes = {};
                 if (this.tagBattle && this.oneOnTwo) {
                     for (var t in this.p1MoveCodes) {
                         var rem = ["a", "b", "c"];
@@ -12896,8 +12899,6 @@ function Safari() {
                         this.p3MoveCodes[t] = this.p1MoveCodes[t];
                     }
                 }
-            }
-            if (this.player3Input === null && (this.tagBattle && (this.oneOnTwo)) && (!this.player3Fainted)) {
                 this.player3Input = Object.keys(this.p3MoveCodes).random();
                 this.target3 = (chance(0.5) ? 2 : 4);
             }
@@ -12912,6 +12913,7 @@ function Safari() {
                 "boosts": {
                     "spe": 0
                 },
+                "item": {},
                 "hp": -1,
                 "owner": "---"
             };
@@ -12951,13 +12953,18 @@ function Safari() {
                         this.sendToViewers("Error during battle. Please contact a Safari Admin.");
                     }
                 }
-            } else if (this.player2Input === null) {
-                this.player2Input = Object.keys(this.p2MoveCodes).random();
-                if (this.tagBattle) {
+            } else {
+                if (this.player2Input === null) {
+                    this.player2Input = Object.keys(this.p2MoveCodes).random();
+                    this.target2 = (chance(0.5) ? 1 : 3);
+                }
+                if (this.player3Input === null && this.tagBattle && (!this.oneOnTwo)) {
+                    this.player3Input = Object.keys(this.p3MoveCodes).random();
+                    this.target3 = (chance(0.5) ? 2 : 4);
+                }
+                if (this.player4Input === null && this.tagBattle) {
                     this.player4Input = Object.keys(this.p4MoveCodes).random();
-                    if (!this.oneOnTwo) {
-                        this.player3Input = Object.keys(this.p3MoveCodes).random();
-                    }
+                    this.target4 = (chance(0.5) ? 1 : 3);
                 }
             }
             var move2 = emptyMove;
@@ -13011,7 +13018,7 @@ function Safari() {
                         "priority": move4.priority, "speed": spd4
                     }
                 };
-                order = ["1", "2", "3", "4"]
+                order = ["1", "2", "3", "4"];
                 order.sort(function(a, b) {
                     if (order2[a].priority > order2[b].priority) {
                         return -1;
