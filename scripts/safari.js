@@ -11692,7 +11692,7 @@ function Safari() {
                 safaribot.sendMessage(src, opp2 + " couldn't be found!", safchan);
                 return;
             }
-            
+
             var input = [], team1 = {}, team2 = {};
             team1[name] = true;
             team1[ally] = false;
@@ -11706,6 +11706,9 @@ function Safari() {
             safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp1), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp2), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp1.toCorrectCase() + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(ally), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
+            safaribot.sendMessage(sys.id(opp1), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
+            safaribot.sendMessage(sys.id(opp2), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
             return;
         }
         else {
@@ -11719,8 +11722,8 @@ function Safari() {
                 return;
             }
             if (data !== "accept") {
-                safaribot.sendMessage(name, "Type " + link("/challenge3 accept") + " to accept a pending challenge!", safchan);
-                safaribot.sendMessage(name, "To abort the match, type " + link("/challenge3 abort") + "!", safchan);
+                safaribot.sendMessage(sys.id(p), "Type " + link("/challenge3 accept") + " to accept a pending challenge!", safchan);
+                safaribot.sendMessage(sys.id(p), "To abort the match, type " + link("/challenge3 abort") + "!", safchan);
                 return;
             }
             var team, ready = true, players = [];
