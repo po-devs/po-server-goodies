@@ -11651,23 +11651,23 @@ function Safari() {
             return;
         }
         var name = sys.name(src).toLowerCase();
-        var found = null, ind = 0;
+        var found = null, ind = 0, search = false;
         for (var i = 0; i < challengeRequests2.length; i++) {
-            var team;
-            team = challengeRequests2[i][0];
-            if (team.hasOwnProperty(name)) {
+            var teams = challengeRequests2[i];
+            if (teams[0].hasOwnProperty(name)) {
                 found = challengeRequests2[i];
+                search = true;
                 ind = i;
                 break;
             }
-            team = challengeRequests2[i][1];
-            if (team.hasOwnProperty(name)) {
+            if (teams[1].hasOwnProperty(name)) {
                 found = challengeRequests2[i];
+                search = true;
                 ind = i;
                 break;
             }
         }
-        if (!found) {
+        if (!search) {
             //player initiates a new challengeRequest2
             var cdata = data.split(":");
             if (cdata.length < 2) {
@@ -30492,6 +30492,14 @@ function Safari() {
             }
             if (command === "challenge3test" || command === "challengetagtest") {
                 safaribot.sendMessage(src, "Tag Battle requests: " + challengeRequests2 + ".", safchan);
+                for (var i = 0; i < challengeRequests2.length; i++) {
+                    for (var j in challengeRequests2[i][0]) {
+                        safaribot.sendMessage(src, "Request includes " + j + ".", safchan);
+                    }
+                    for (var j in challengeRequests2[i][1]) {
+                        safaribot.sendMessage(src, "Request includes " + j + ".", safchan);
+                    }
+                }
                 return true;
             }
             if (command === "trick" || command === "trick2") {
