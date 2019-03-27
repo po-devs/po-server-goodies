@@ -18949,6 +18949,13 @@ function Safari() {
                     if ((hold.contains("hyperpotion") || hold.contains("hyperpotion2") || hold.contains("hyperpotion3")) && (obj[j] == "hyperpotion3" || obj[j] == "hyperpotion2" || obj[j] == "hyperpotion")) {
                         continue;
                     }
+                    if (trainer.effectChance) {
+                        if (trainer.effectChance[obj[j]]) {
+                            if (!(chance(trainer.effectChance[obj[j]]))) {
+                                continue;
+                            }
+                        }
+                    }
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
                     diff = (chal - hazardStrength);
