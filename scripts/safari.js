@@ -14310,6 +14310,31 @@ function Safari() {
                 }
             }
         }
+        if (move.refresh) {
+            switch (move.refresh) {
+                case "self": 
+                    user.condition = "none";
+                    out.push(name + "'s status returned to normal!");
+                break;
+                case "field":
+                    if (isP1 || isP3) {
+                        this.poke1.condition = "none";
+                        this.poke3.condition = "none";
+                    }
+                    else if (isP2 || isP4) {
+                        this.poke2.condition = "none";
+                        this.poke4.condition = "none";
+                    }
+                    out.push("Pokémon on " + name + "'s side of the field had their status returned to normal!");
+                break;
+                case "party":
+                    for (e = 0; e < party.length; e++) {
+                        party[e].condition = "none";
+                    }
+                    out.push(user.owner + "'s party's status returned to normal!");
+                break;
+            }
+        }
         if (move.nerf) {
             for (e = 0; e < move.nerf.length; e++) {
                 obj = move.nerf[e];
@@ -15035,16 +15060,16 @@ function Safari() {
 
                         var diff = (opp.hp / dmg);
                         if (dif < 1) {
-                            val = 30;
+                            val = 25;
                         }
                         else if (dif < 1.5) {
                             val = 10;
                         }
                         else if (dif < 2) {
-                            val = 8;
+                            val = 7;
                         }
                         else if (dif < 3) {
-                            val = 5;
+                            val = 4;
                         }
                         else if (dif < 4) {
                             val = 2;
