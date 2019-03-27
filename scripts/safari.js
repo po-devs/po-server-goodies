@@ -12493,7 +12493,7 @@ function Safari() {
                     case "reversal": m = "Pokémon near fainting receive extreme power boost."; break;
                     case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
                     case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
-                    case "guts": m = "All Pokémon have increased attack while inflicted with a status condition."; break;
+                    case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition."; break;
                     case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
                     case "galeWings": m = "All Flying-type moves have increased priority."; break;
                     case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
@@ -12506,6 +12506,7 @@ function Safari() {
                     case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
                     case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
                     case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
+                    default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
                 }
                 if (m !== "") {
                     this.sendToViewers(toColor("- " + m, "#DC143C"));
@@ -13889,7 +13890,7 @@ function Safari() {
                         else {
                             self.selectData.analyticCount = 0;
                         }
-                        bonus *= (analytic ? (1 + Math.max(self.selectData.analyticCount/4, 1)) : 1);
+                        bonus *= (analytic ? (1 + Math.max(self.selectData.analyticCount/6, 1)) : 1);
                     }
                     if (self.select.guts) {
                         burn = false;
@@ -18948,6 +18949,13 @@ function Safari() {
                     }
                     if ((hold.contains("hyperpotion") || hold.contains("hyperpotion2") || hold.contains("hyperpotion3")) && (obj[j] == "hyperpotion3" || obj[j] == "hyperpotion2" || obj[j] == "hyperpotion")) {
                         continue;
+                    }
+                    if (trainer.effectChance) {
+                        if (trainer.effectChance[obj[j]]) {
+                            if (!(chance(trainer.effectChance[obj[j]]))) {
+                                continue;
+                            }
+                        }
                     }
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
