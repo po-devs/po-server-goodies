@@ -14290,19 +14290,23 @@ function Safari() {
             }
         }
         
-        var name, party;
+        var name, party, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
         name = user.owner + "'s " + poke(user.id);
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
             party = this.team1;
+            isP1 = true;
         }
         if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
             party = this.team2;
+            isP2 = true;
         }
         if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
             party = this.team3;
+            isP3 = true;
         }
         if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
+            isP4 = true;
         }
         if (move.haze) {
             obj = [];
