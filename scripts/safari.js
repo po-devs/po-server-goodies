@@ -11706,17 +11706,17 @@ function Safari() {
                     }
                 ]
             );
-            safaribot.sendMessage(src, "You and " + ally + " challenged " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(ally), name + " wants to team up with you to battle " + opp1 + " and " + opp2 + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(opp1), name + " and " + ally + " challenged you and " + opp2 + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(opp2), name + " and " + ally + " challenged you and " + opp1 + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(src, "You and " + ally.toCorrectCase() + " challenged " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(opp1), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(opp2), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp1.toCorrectCase() + " to a Tag Battle!", safchan);
             return;
         }
         else {
             if (data === "abort") {
                 for (var t in found) {
                     for (var p in found[t]) {
-                        safaribot.sendMessage(sys.id(p), name + " aborted the Tag Team battle!", safchan);
+                        safaribot.sendMessage(sys.id(p), name.toCorrectCase() + " aborted the Tag Team battle!", safchan);
                     }
                 }
                 challengeRequests2.slice(ind);
@@ -11735,7 +11735,7 @@ function Safari() {
             }
             for (var t in found) {
                 for (var p in found[t]) {
-                    safaribot.sendMessage(sys.id(p), name + " accepted the Tag Team battle invitation!", safchan);
+                    safaribot.sendMessage(sys.id(p), name.toCorrectCase() + " accepted the Tag Team battle invitation!", safchan);
                     if (found[t][p] === false) {
                         ready = false;
                     }
@@ -30490,6 +30490,10 @@ function Safari() {
                 SESSION.global().allTrackers = allTrackers;
                 return true;
             }
+            if (command === "challenge3test" || command === "challengetagtest") {
+                safaribot.sendMessage(src, "Tag Battle requests: " + challengeRequests2 + ".", safchan);
+                return true;
+            }
             if (command === "trick" || command === "trick2") {
                 var info = commandData.split(":");
                 var targetId = sys.id(info[0]);
@@ -33368,7 +33372,7 @@ function Safari() {
         gymData = parseFromPerm("gyms", {});
         eliteData = parseFromPerm("elite", []);
         eliteHall = parseFromPerm("hall", []);
-        var challengeRequests2 = [];
+        challengeRequests2 = [];
         
         gachaItems = parseFromPerm("gachaRates", gachaItems);
         finderItems = parseFromPerm("finderRates", finderItems);
