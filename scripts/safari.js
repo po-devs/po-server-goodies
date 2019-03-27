@@ -11735,11 +11735,14 @@ function Safari() {
             for (var t in found) {
                 for (var p in found[t]) {
                     safaribot.sendMessage(sys.id(p), name.toCorrectCase() + " accepted the Tag Team battle invitation!", safchan);
-                    if (found[t][p] === false) {
+                    if (!(sys.id(p))) {
+                        ready = false;
+                    }
+                    else if (found[t][p] === false) {
                         ready = false;
                     }
                     else {
-                        players.push(getAvatarOff(p));
+                        players.push(sys.id(p));
                     }
                 }
             }
