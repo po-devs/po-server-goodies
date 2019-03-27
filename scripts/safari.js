@@ -14627,7 +14627,7 @@ function Safari() {
                 }
             }
             
-            if (this.select && this.select.galeWings) {
+            if (this.select && this.select.galeWings && move.type === "Flying") {
                 if (move.priority) {
                     move.priority++;
                 }
