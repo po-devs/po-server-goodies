@@ -18875,10 +18875,6 @@ function Safari() {
             diff = 100;
             var obj;
             while (Math.abs(diff) > 2) {
-                maxLoop--;
-                if (maxLoop <= 0) {
-                    break;
-                }
                 partyStrength = 0;
                 hold = [];
                 obj = Object.keys(trainer.party).shuffle();
@@ -18901,6 +18897,10 @@ function Safari() {
                     }
                 }
                 diff = (chal + (difficulty === 4 ? 4 : 0) - partyStrength);
+                maxLoop--;
+                if (maxLoop <= 0) {
+                    break;
+                }
             }
             chal += diff;
             currentTrainer.party = hold;
@@ -18912,10 +18912,6 @@ function Safari() {
                 hold = [151, 251, 386, 385];
                 currentTrainer.party2 = [];
                 while (Math.abs(diff) > 2) {
-                    maxLoop--;
-                    if (maxLoop <= 0) {
-                        break;
-                    }
                     partyStrength = 0;
                     hold = [];
                     obj = Object.keys(trainer.party2).shuffle();
@@ -18930,6 +18926,10 @@ function Safari() {
                         }
                     }
                     diff = (chal + (difficulty === 4 ? 4 : 0) - partyStrength);
+                    maxLoop--;
+                    if (maxLoop <= 0) {
+                        break;
+                    }
                 }
                 currentTrainer.party2 = hold;
             }
@@ -18945,11 +18945,6 @@ function Safari() {
             maxLoop = 1200;
             hazardStrength = 0;
             while (Math.abs(diff) > 1) {
-                maxLoop--;
-                if (maxLoop <= 0) {
-                    hold = [];
-                    break;
-                }
                 hold = [];
                 hazardStrength = 0;
                 obj = Object.keys(trainer.effectBalance).shuffle();
@@ -18997,6 +18992,11 @@ function Safari() {
                         break;
                     }
                 }
+                maxLoop--;
+                if (maxLoop <= 0) {
+                    hold = [];
+                    break;
+                }
             }
             currentTrainer.select = {};
             currentTrainer.select.boostType = [];
@@ -19018,11 +19018,11 @@ function Safari() {
             }
             var j = 6;
             while (j > 0) {
-                j--;
                 b = trainer.chanceBias.shuffle()[0];
                 if (!b) {
                     continue;
                 }
+                j--;
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
                     if (currentTrainer.bias.contains("sleep") || currentTrainer.bias.contains("freeze") || currentTrainer.bias.contains("burn") || currentTrainer.bias.contains("poison") || currentTrainer.bias.contains("paralyze")) {
                         continue;
