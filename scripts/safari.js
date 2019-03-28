@@ -13309,14 +13309,18 @@ function Safari() {
             }
             
             //TODO: Make it so Player2 doesn't have the advantage in situations where both players lose by poison/burn at the same time
-            this.checkCondition(poke1);
+            if (!this.player1Fainted) {
+                this.checkCondition(poke1);
+            }
             if (this.tagBattle && (!this.player3Fainted)) {
                 this.checkCondition(poke3);
             }
             if (checkWin()) {
                 return;
             }
-            this.checkCondition(poke2, true);
+            if (!this.player2Fainted) {
+                this.checkCondition(poke2, true);
+            }
             if (this.tagBattle && (!this.player4Fainted)) {
                 this.checkCondition(poke4, true);
             }
@@ -13423,7 +13427,16 @@ function Safari() {
             var cmdData = data.toLowerCase().replace(/[^abcdef]/,"").split("");
             var letters = { a: 0, b: 1, c: 2, d: 3, e:4, f: 5 };
             var picked = [], p, i;
-            var team = isP1 ? this.team1 : this.team2;
+            var team = this.team1;
+            if (isP2) {
+                team = this.team2;
+            }
+            if (isP3) {
+                team = this.team3;
+            }
+            if (isP4) {
+                team = this.team4;
+            }
             var size = ((isP1 && this.tagBattle && this.oneOnTwo) ? 4 : (this.tagBattle ? 2 : 3));
             
             for (var e = 0; e < size && e < cmdData.length; e++) {
