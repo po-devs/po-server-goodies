@@ -12344,6 +12344,13 @@ function Safari() {
                 this.name4 = sys.name(p4);
                 this.team4 = this.originalTeam4 = this.buildTeam(this.name4, player4.party, player4.cherished);
                 this.viewers.push(this.name4.toLowerCase());
+
+                if (!this.oneOnTwo) {
+                    this.team1 = this.team1.slice(0, 4);
+                    this.team2 = this.team2.slice(0, 4);
+                    this.team3 = this.team3.slice(0, 4);
+                    this.team4 = this.team4.slice(0, 4);
+                }
             }
         }
 
@@ -12481,6 +12488,7 @@ function Safari() {
                     case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
                     case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
                     case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
+                    case "fortress": m = "Foe's Pokémon begin with their defences boosted, but attacks reduced."; break;
                     case "brawler": m = "Foe's Pokémon power up when hit with physical moves."; break;
                     case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
                     case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
@@ -12508,6 +12516,8 @@ function Safari() {
                     case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
                     case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
                     case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
+                    case "boostType1": m = ""; break;
+                    case "boostType2": m = ""; break;
                     default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
                 }
                 if (m !== "") {
@@ -12637,7 +12647,7 @@ function Safari() {
                         this.team2[i].boosts["atk"] = -2
                         this.team2[i].boosts["satk"] = -2
                         this.team2[i].boosts["def"] = 3
-                        this.team2[i].boosts["res"] = 3
+                        this.team2[i].boosts["sdef"] = 3
                     }
                 }
                 if (this.select.nerfBestStat) {
@@ -14143,7 +14153,7 @@ function Safari() {
                         out.push("It has no effect on " + poke1.owner + "'s " + poke(poke1.id) + "!");
                     }
                     else if (poke1.protect) {
-                        out.push(poke1.owner + "'s " + poke1.id + " protected itself!");
+                        out.push(poke1.owner + "'s " + poke(poke1.id) + " protected itself!");
                     }
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
@@ -14335,31 +14345,6 @@ function Safari() {
                 for (o in obj[e].boosts) {
                     obj[e].boosts[o] = 0;
                 }
-            }
-        }
-        if (move.refresh) {
-            switch (move.refresh) {
-                case "self": 
-                    user.condition = "none";
-                    out.push(name + "'s status returned to normal!");
-                break;
-                case "field":
-                    if (isP1 || isP3) {
-                        this.poke1.condition = "none";
-                        this.poke3.condition = "none";
-                    }
-                    else if (isP2 || isP4) {
-                        this.poke2.condition = "none";
-                        this.poke4.condition = "none";
-                    }
-                    out.push("Pokémon on " + name + "'s side of the field had their status returned to normal!");
-                break;
-                case "party":
-                    for (e = 0; e < party.length; e++) {
-                        party[e].condition = "none";
-                    }
-                    out.push(user.owner + "'s party's status returned to normal!");
-                break;
             }
         }
         if (move.nerf) {
@@ -18870,7 +18855,7 @@ function Safari() {
             trainer = data[i];
             currentTrainer.name = trainer.name;
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.027 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.027 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
             if (ind >= 5) {
                 chal++;
@@ -19034,6 +19019,9 @@ function Safari() {
             var j = 6;
             while (j > 0) {
                 b = trainer.chanceBias.shuffle()[0];
+                if (!b) {
+                    continue;
+                }
                 j--;
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
                     if (currentTrainer.bias.contains("sleep") || currentTrainer.bias.contains("freeze") || currentTrainer.bias.contains("burn") || currentTrainer.bias.contains("poison") || currentTrainer.bias.contains("paralyze")) {
@@ -19053,13 +19041,13 @@ function Safari() {
                 if (currentTrainer.bias.contains(b)) {
                     continue;
                 }
+                if (currentTrainer.bias.length >= 3) {
+                    break;
+                }
                 if (chance(0.5)) {
                     currentTrainer.bias.push(b);
                 }
                 j--;
-                if (currentTrainer.bias.length >= 3) {
-                    break;
-                }
             }
             if (trainer.elite) {
                 out.elite.push(currentTrainer);
