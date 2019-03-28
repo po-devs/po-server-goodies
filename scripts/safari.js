@@ -182,6 +182,7 @@ function Safari() {
             contestsWon: 0,
             pokesCaught: 0,
             pokesNotCaught: 0,
+            catchInkay: 0,
             pokesCloned: 0,
             pokesEvolved: 0,
             pokeSoldEarnings: 0,
@@ -696,7 +697,7 @@ function Safari() {
         rich: {icon: 395, name: "rich", fullName: "Rich Girl", aliases: ["rich", "rich girl", "rich boy"], acqReq: 200000, record: "pawnComet", acqReq2: 50000, record2: "luxuryEarnings", rate: 1.1, effect: "A master in money. Personal wealth gives the experience necessary to use 10% more Amulet Coins, Relic Crowns and Soothe Bells than normal people!", noAcq: "Obtain ${0} more by pawning Comet Shards and earn ${1} more from Luxury Balls"},
         //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 50, record: fullyPlayedContests, rate: 0.01, thresh1: 5, thresh2: 8, thresh3: 13, effect: "A master in endurance. Even after playing in the Safari Zone all day, extensive training allows a quick and alert response when a wild Pokémon appears.", noAcq: "{0}"},
 
-        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], specialAcq: true, effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "It is not currently known how"}
+        inver: {icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], acqReq: 25, record: "catchInvert", acqReq2: 15, record2: "catchInkay", effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.", noAcq: "Catch {0} more Pokémon with an Inver ball and {1} more Inkay"}
     };
 
     var defaultItemData;
@@ -748,7 +749,7 @@ function Safari() {
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC"
     };
     var gachaItems = {
-        safari: 95, great: 50, ultra: 30, bluapricorn: 25, grnapricorn: 24, pnkapricorn: 25,
+        safari: 95, great: 50, ultra: 30, bluapricorn: 20, grnapricorn: 29, pnkapricorn: 25,
         bait: 90, rock: 120, gem: 9, dust: 60,
         wild: 70,
         gacha: 1,  master: 1,
@@ -765,22 +766,26 @@ function Safari() {
     };
     var finderMissRate = 0.80;
     var safariHints = [
-        "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use /bag wallet, /bag balls, /bag apricorns, /bag perks, /bag pawnables, and /bag rare to see specific rows!",
-        "Like to go to the Pyramid with your friends? Use Pokémon that know specific moves to clear hazards! Type /quest pyramid to get started!",
+        "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use " + link("/bag wallet") + ", " + link("/bag balls") + ", " + link("/bag apricorns") + ", " + link("/bag perks") + ", " + link("/bag pawnables") + ", and " + link("/bag rare") + " to see specific rows!",
+        "Like going on adventures with your friends? Use your teamwork to clear the Pyramid! Type " + link("/quest pyramid") + " to get started!",
         "Bored? Why not challenge the Arena! Type /quest arena:help to see the strong trainers there!",
         "Look where you're walking while itemfindering!",
+        "Use different kinds of Pokéballs to catch different kinds of Pokémon! Type " + link("/itemhelp balls") + " to find out more!",
+        "Remember to catch what you bait!",
+        "Challenge your rivals with " + link("/challenge2") + "! Team up for a Tag Battle with " + link("/challenge3") + "!",
+        "The gym leaders of legendary renown are waiting to battle you in " + link("/quest celebrity") + "!",
         "... Oh, it's just an ad. \"Test your knowledge in #Trivia!\" it says.",
         "... Oh, it's just an ad. \"Test your bluffing skills in #Mafia!\" it says.",
         "... Oh, it's just an ad. \"Test your verbosity in #Hangman!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
-        "Log in 31 days in a row to get a Master Ball!"
+        "Logging in 31 days in a row gives you a Master Ball!"
     ];
     var packItems = {
         amulet: 2, crown: 2,
         scarf: 4, soothe: 4, battery: 4,
         honey: 6, eviolite: 6,
         rare: 3, spray: 2, nugget: 6,
-        pnkapricorn: 5, grnapricorn: 6, bluapricorn: 6,
+        pnkapricorn: 8, grnapricorn: 6, bluapricorn: 3,
         rock: 8, bait: 8, silver: 9,
         gem: 6, gacha: 12,
         mega: 1
@@ -4421,6 +4426,9 @@ function Safari() {
             }
             this.addToMonthlyLeaderboards(player.id, "pokesCaught", 1);
 
+            if (parseInt(currentPokemon, 10) === 686) {
+                player.records.catchInkay += 1;
+            }
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
                 player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
@@ -4439,6 +4447,12 @@ function Safari() {
             }
             if (ball === "mono") {
                 player.records.catchMono += 1;
+            }
+            if (ball === "inver") {
+                player.records.catchInvert += 1;
+            }
+            if (ball === "mirror") {
+                player.records.catchMirror += 1;
             }
 
             var clonedAmount = 0;
@@ -7821,16 +7835,14 @@ function Safari() {
                 safaribot.sendMessage(src, "Be-Beep. You comb a patch of grass that your Itemfinder pointed you towards and found " + an(finishName(reward)) + "!", safchan);
             }
             break;
-            case "hint": {
-                var hint = safariHints.random();
-                safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
-                safaribot.sendMessage(src, "±Hint: " + hint, safchan);
-                giveReward = false;
-                showMsg = false;
-            }
-            break;
             default:
-                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                if (chance(0.05)) {
+                    safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
+                    safaribot.sendHtmlMessage(src, "±Hint: " + safariHints.random(), safchan);
+                }
+                else {
+                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                }
                 giveReward = false;
                 showMsg = false;
             break;
@@ -13676,6 +13688,54 @@ function Safari() {
         
         return Math.round(base * boost * extraMod);
     };
+    Battle2.prototype.damageCalc = function(user, target, move, typeMultiplier, targetSide, isP1, isP2, isP3, isP4) {
+        var crit = ((this.select && this.select.shellArmor) ? false : (chance(0.0625 + (move.critical || 0))));
+        var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
+        var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
+        var burn = user.condition === "burn" && move.category === "physical";
+        var dmg = atk * move.power / def;
+        var rng = sys.rand(85, 100) / 100;
+        var stab = hasType(user.id, move.type);
+        var helped = (user.helped ? 1.5 : 1);
+        var screen = ((!crit) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
+        
+        var bonus = 1;
+        if (this.select) {
+            bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
+            bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
+            bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
+            bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
+            bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
+            bonus *= (move.type == "Water" && (this.select.rain) ? 1.5 : 1);
+            bonus *= (move.type == "Fire" && (this.select.rain) ? 0.5 : 1);
+            bonus *= ((this.select.critDouble && crit) ? 1.33 : 1);
+            bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
+            bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+            bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
+            bonus *= ((this.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
+            bonus *= ((this.select.hex && target.condition !== "none") ? 2 : 1);
+            var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
+            if (isP2 || isP4) {
+                if (analytic) {
+                    this.selectData.analyticCount++;
+                }
+                else {
+                    this.selectData.analyticCount = 0;
+                }
+                bonus *= (analytic ? (1 + Math.max(this.selectData.analyticCount/6, 1)) : 1);
+            }
+            if (this.select.guts) {
+                burn = false;
+                if (user.condition !== "none" && move.category === "physical") {
+                    bonus *= 1.5;
+                }
+            }
+        }
+
+        var tname = target.owner + "'s " + poke(target.id);
+        var dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
+        return dmg;
+    };
     Battle2.prototype.attack = function(user, target, move) {
         var e, o, obj, desc, out = [], fainted = false, name;
         var wide = (target == "ALL" || target == "TEAM");
@@ -13889,51 +13949,8 @@ function Safari() {
             var self = this;
 
             var dealDamage = function(user, move, target, typeMultiplier, targetSide, out) {
-                var crit = ((self.select && self.select.shellArmor) ? false : (chance(0.0625 + (move.critical || 0))));
-                var atk = move.category === "physical" ? self.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : self.getStatValue(user, "satk", 1, (crit ? 1 : 0));
-                var def = move.category === "physical" ? self.getStatValue(target, "def", 1, (crit ? -1 : 0)) : self.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
-                var burn = user.condition === "burn" && move.category === "physical";
-                var dmg = atk * move.power / def;
-                var rng = sys.rand(85, 100) / 100;
-                var stab = hasType(user.id, move.type);
-                var helped = (user.helped ? 1.5 : 1);
-                var screen = ((!crit) && ((targetSide === 1 && self.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && self.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && self.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && self.side2Field.lightscreen > 0 && move.category === "special")));
-                
-                var bonus = 1;
-                if (self.select) {
-                    bonus *= ((isP2 || isP4) && (self.select.boostType.contains(move.type)) ? 1.3 : 1);
-                    bonus *= ((isP1 || isP3) && (self.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
-                    bonus *= (hasType(target.id, "Rock") && (self.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
-                    bonus *= (move.type == "Fire" && (self.select.sun) ? 1.5 : 1);
-                    bonus *= (move.type == "Water" && (self.select.sun) ? 0.5 : 1);
-                    bonus *= (move.type == "Water" && (self.select.rain) ? 1.5 : 1);
-                    bonus *= (move.type == "Fire" && (self.select.rain) ? 0.5 : 1);
-                    bonus *= ((self.select.critDouble && crit) ? 1.33 : 1);
-                    bonus *= ((self.select.slowStart && (isP2 || isP4) && self.turn <= 5) ? 0.5 : 1);
-                    bonus *= ((self.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
-                    bonus *= ((self.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
-                    bonus *= ((self.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
-                    bonus *= ((self.select.hex && target.condition !== "none") ? 2 : 1);
-                    var analytic = (self.select.analytic && (hasType(user.id, self.selectData.analyticType1) || (hasType(user.id, self.selectData.analyticType2))));
-                    if (isP2 || isP4) {
-                        if (analytic) {
-                            self.selectData.analyticCount++;
-                        }
-                        else {
-                            self.selectData.analyticCount = 0;
-                        }
-                        bonus *= (analytic ? (1 + Math.max(self.selectData.analyticCount/6, 1)) : 1);
-                    }
-                    if (self.select.guts) {
-                        burn = false;
-                        if (user.condition !== "none" && move.category === "physical") {
-                            bonus *= 1.5;
-                        }
-                    }
-                }
+                var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
 
-                var tname = target.owner + "'s " + poke(target.id);
-                dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
                 if (dmg > target.hp) {
                     dmg = target.hp;
                 }
@@ -15031,6 +15048,13 @@ function Safari() {
         var moveChance = {}, move, user, e, o, opp, val, val2, c, m, eff, alive = 0, oppAlive = 0;
         var bias = {};
         var bias = (ind === 2 ? this.biasNPC : (ind === 4 ? this.biasNPC2 : {}));
+        var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
+        if (ind === 2) {
+            isP2 = true;
+        }
+        if (ind === 4) {
+            isP4 = true;
+        }
         var getBoostCount = function(user) {
             var c = 0, e;
             for (e in user.boosts) {
@@ -15063,19 +15087,15 @@ function Safari() {
                     if (move.power) {
                         var inver = ((this.select && this.select.inverted) ? true : false);
                         eff = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(opp.id)), sys.type(sys.pokeType2(opp.id)), null, inver);
-                        var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, null) : this.getStatValue(user, "satk", 1, null);
-                        var def = move.category === "physical" ? this.getStatValue(opp, "def", 1, null) : this.getStatValue(opp, "sdef", 1, null);
-                        var burn = user.condition === "burn" && move.category === "physical";
-                        var dmg = atk * move.power / def;
-                        var screen = ((this.side1Field.reflect > 0 && move.category === "physical") || (this.side1Field.lightscreen > 0 && move.category === "special"));
-                        dmg = Math.round(dmg * eff * (hasType(user.id, move.type) ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * 0.84 * (sys.rand(0.85, 1)));
+
+                        dmg = this.damageCalc(user, move, target, eff, 1, isP1, isP2, isP3, isP4);
 
                         var diff = (opp.hp / dmg);
                         if (dif < 1) {
-                            val = 25;
+                            val = 22;
                         }
                         else if (dif < 1.5) {
-                            val = 10;
+                            val = 16;
                         }
                         else if (dif < 2) {
                             val = 7;
@@ -19021,7 +19041,7 @@ function Safari() {
                 j--;
                 b = trainer.chanceBias.shuffle()[0];
                 if (!b) {
-                    continue;
+                    break;
                 }
                 if (b === "sleep" || b === "freeze" || b === "poison" || b === "burn" || b === "paralyze") {
                     if (currentTrainer.bias.contains("sleep") || currentTrainer.bias.contains("freeze") || currentTrainer.bias.contains("burn") || currentTrainer.bias.contains("poison") || currentTrainer.bias.contains("paralyze")) {
