@@ -1068,7 +1068,7 @@ function tourStep() {
                 else if ([3,9,15,21].indexOf(hour) == -1) {
                     return;
                 }
-                if (tourconfig.singleevents) {
+                if (tourconfig.singleevents === true) {
                     tours.currentEvent = 1;
                 } else {
                     tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
@@ -1990,6 +1990,11 @@ function tourCommand(src, command, commandData, channel) {
                 }
                 tourinitiate(key);
                 sendBotAll("The "+tours.tour[x].tourtype+" tour was force started by "+sys.name(src)+".", tourschan, false);
+                return true;
+            }
+            if (command === "toggleevent") {
+                tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
+                sendBotMessage(src, "Changed the day's event tournament.", tourschan, false);
                 return true;
             }
             if (command === "doubletime") {
