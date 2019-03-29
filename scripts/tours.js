@@ -832,17 +832,17 @@ function getEventTour(datestring, both) {
             }
             if (tours.currentEvent) {
                 if (tours.currentEvent === 1) {
-                    return (fetchTier(eventData[0]));
+                    return (fetchTier(eventdata[0]));
                 }
                 if (tours.currentEvent === 2 && amt > 1) {
-                    return (fetchTier(eventData[1]));
+                    return (fetchTier(eventdata[1]));
                 }
             }
             if (both) {
                 if (amt > 1) {
                     return (fetchTier(eventdata[0]).concat(fetchTier(eventdata[1])));
                 }
-                return (fetchTier[0]);
+                return (fetchTier(eventdata[0]));
             }
         }
         else {
@@ -852,15 +852,15 @@ function getEventTour(datestring, both) {
     return false;
 }
 
-function fetchTier(eventdata) {
-    var tierstr = eventdata.tier;
+function fetchTier(data) {
+    var tierstr = data.tier;
     var thetier = find_tier(tierstr);
     if (thetier === null) {
         return false;
     }
     var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
-    if (eventdata.hasOwnProperty('settings')) {
-        var parameterdata = eventdata.settings;
+    if (data.hasOwnProperty('settings')) {
+        var parameterdata = data.settings;
         for (var p in parameterdata) {
             var parameterset = p;
             var parametervalue = parameterdata[p];
@@ -4682,7 +4682,7 @@ function showEvents(src, chan) {
     }
     var details2 = getEventTour(datestring2, true);
     if (typeof details2 === "object") {
-        sys.sendMessage(src,"Tomorrow's Event Tournament(s): "+details2[0]+(details2.length > 2 ? (" & " + details2[2]) : ""),chan);
+        sys.sendMessage(src,"Tomorrow's Event Tournament(s): "+details2[0]+(details2.length > 2 ? " & " + details2[2] : ""),chan);
     }
     if (!details && !details2) {
         sendBotMessage(src, "No events found", chan);
