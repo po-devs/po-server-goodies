@@ -831,7 +831,7 @@ function getEventTour(datestring, both) {
                 return false;
             }
             if (both) {
-                if (amt > 1) {
+                if (amt > 1 && (!tourconfig.singleevents)) {
                     return (fetchTier(eventdata[0]).concat(fetchTier(eventdata[1])));
                 }
                 return (fetchTier(eventdata[0]));
