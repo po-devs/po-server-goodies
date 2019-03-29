@@ -3055,7 +3055,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
-        if (command == "showevents" || command == "showevent") {
+        if (command == "showevents" || command == "showevent" || command == "nextevent") {
             showEvents(src, channel);
             return true;
         }
