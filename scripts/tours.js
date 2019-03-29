@@ -4665,13 +4665,13 @@ function showEvents(src, chan) {
         if (Array.isArray(details) && details.length > 2 && tours.currentEvent) {
             if (tours.currentEvent === 1) {
                 sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
-                if (now.getUTCHours() < 21) {
+                if (now.getUTCHours() < 21 && (!tourconfig.singleevents)) {
                     sys.sendMessage(src,"Next Event Tournament: "+details[2],chan);
                 }
             }
             else if (tours.currentEvent === 2) {
                 sys.sendMessage(src,"Today's Event Tournament: "+details[2]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
-                if (now.getUTCHours() < 21) {
+                if (now.getUTCHours() < 21 && (!tourconfig.singleevents)) {
                     sys.sendMessage(src,"Next Event Tournament: "+details[0],chan);
                 }
             }
@@ -4682,7 +4682,7 @@ function showEvents(src, chan) {
     }
     var details2 = getEventTour(datestring2, true);
     if (typeof details2 === "object") {
-        sys.sendMessage(src,"Tomorrow's Event Tournament(s): "+details2[0]+(details2.length > 2 ? " & " + details2[2] : ""),chan);
+        sys.sendMessage(src,"Tomorrow's Event Tournament(s): "+details2[0]+((details2.length > 2 && (!tourconfig.singleevents)) ? " & " + details2[2] : ""),chan);
     }
     if (!details && !details2) {
         sendBotMessage(src, "No events found", chan);
