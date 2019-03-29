@@ -830,6 +830,12 @@ function getEventTour(datestring, both) {
             if (amt < 1) {
                 return false;
             }
+            if (both) {
+                if (amt > 1) {
+                    return (fetchTier(eventdata[0]).concat(fetchTier(eventdata[1])));
+                }
+                return (fetchTier(eventdata[0]));
+            }
             if (tours.currentEvent) {
                 if (tours.currentEvent === 1) {
                     return (fetchTier(eventdata[0]));
@@ -837,12 +843,6 @@ function getEventTour(datestring, both) {
                 if (tours.currentEvent === 2 && amt > 1) {
                     return (fetchTier(eventdata[1]));
                 }
-            }
-            if (both) {
-                if (amt > 1) {
-                    return (fetchTier(eventdata[0]).concat(fetchTier(eventdata[1])));
-                }
-                return (fetchTier(eventdata[0]));
             }
         }
         else {
