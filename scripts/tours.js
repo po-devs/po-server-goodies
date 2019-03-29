@@ -706,6 +706,9 @@ function initTours() {
         tourbot: getConfigValue("tourconfig.txt", "tourbot"),
         debug: false,
         points: true,
+        doubletime: false,
+        singleevents: false,
+        lockautoteams: false,
         winmessages: getConfigValue("tourconfig.txt", "winmessages") === "off" ? false : true
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
@@ -746,6 +749,7 @@ function initTours() {
         if (!tours.hasOwnProperty('eventticks')) tours.eventticks = -1;
         if (!tours.hasOwnProperty("working")) { tours.working = !script.battlesStopped; }
         if (!tours.hasOwnProperty("paused")) { tours.paused = false; }
+        if (!tours.hasOwnProperty("currentEvent")) { tours.currentEvent = 1; }
     }
     tours.metrics = {'failedstarts': 0};
     try {
@@ -804,7 +808,7 @@ function initTours() {
     loadTourMutes();
 }
 
-function getEventTour(datestring) {
+function getEventTour(datestring, both) {
     var eventfile = sys.getFileContent(dataDir+"eventtours.json");
     var events;
     if (eventfile === undefined) {
@@ -817,89 +821,119 @@ function getEventTour(datestring) {
         return false;
     }
     for (var x in events) {
-        if (x == datestring) {
-            var eventdata = events[x];
-            var tierstr = eventdata.tier;
-            var thetier = find_tier(tierstr);
-            if (thetier === null) {
-                continue;
+        if (x !== datestring) {
+            continue;
+        }
+        var eventdata = events[x];
+        if (Array.isArray(eventdata)) {
+            var amt = eventdata.length;
+            if (amt < 1) {
+                return false;
             }
-            var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
-            if (eventdata.hasOwnProperty('settings')) {
-                var parameterdata = eventdata.settings;
-                for (var p in parameterdata) {
-                    var parameterset = p;
-                    var parametervalue = parameterdata[p];
-                    if (cmp(parameterset, "mode")) {
-                        if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
-                            sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
-                        }
-                        else if (cmp(parametervalue, "singles")) {
-                            parameters.mode = "Singles";
-                        }
-                        else if (cmp(parametervalue, "doubles")) {
-                            parameters.mode = "Doubles";
-                        }
-                        else if (cmp(parametervalue, "triples")) {
-                            parameters.mode = "Triples";
-                        }
-                    }
-                    else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
-                        var newgen = getSubgen(parametervalue, false);
-                        if (newgen !== false) {
-                            parameters.gen = newgen;
-                        }
-                        else {
-                            parameters.gen = defaultgen;
-                            sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used SM instead!", tourserrchan, false);
-                        }
-                    }
-                    else if (cmp(parameterset, "maxplayers")) {
-                        var players = parseInt(parametervalue, 10);
-                        var allowedcounts = [8,16,32,64,128,256,512,1024];
-                        if (allowedcounts.indexOf(players) == -1) {
-                            sendBotAll("Invalid number of maximum players!", tourserrchan, false);
-                            return false;
-                        }
-                        parameters.maxplayers = players;
-                    }
-                    else if (cmp(parameterset, "wifi")) {
-                        if (cmp(parametervalue, "on")) {
-                            parameters.wifi = true;
-                        }
-                        else if (cmp(parametervalue, "off")) {
-                            parameters.wifi = false;
-                        }
-                        else {
-                            sendBotMessage("Parameter Usage: wifi=on or wifi=off", tourserrchan, false);
-                            return true;
-                        }
-                    }
-                    else if (cmp(parameterset, "type")) {
-                        if (cmp(parametervalue, "single")) {
-                            parameters.type = "single";
-                        } else {
-                            parameters.type = "double";
-                        }
-                    }
-                    else {
-                        sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
-                    }
+            if (both) {
+                if (amt > 1 && (!tourconfig.singleevents)) {
+                    return (fetchTier(eventdata[0]).concat(fetchTier(eventdata[1])));
+                }
+                return (fetchTier(eventdata[0]));
+            }
+            if (tours.currentEvent) {
+                if (tours.currentEvent === 1) {
+                    return (fetchTier(eventdata[0]));
+                }
+                if (tours.currentEvent === 2 && amt > 1) {
+                    return (fetchTier(eventdata[1]));
                 }
             }
-            if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
-                parameters.gen = defaultgen;
-            }
-            return [thetier, parameters];
+        }
+        else {
+            return fetchTier(eventdata);
         }
     }
     return false;
+}
+
+function fetchTier(data) {
+    var tierstr = data.tier;
+    var thetier = find_tier(tierstr);
+    if (thetier === null) {
+        return false;
+    }
+    var parameters = {"gen": "default", "mode": modeOfTier(thetier), "type": "double", "maxplayers": false, "event": true, "wifi": sys.getClauses(thetier)%256 >= 128 ? true : false};
+    if (data.hasOwnProperty('settings')) {
+        var parameterdata = data.settings;
+        for (var p in parameterdata) {
+            var parameterset = p;
+            var parametervalue = parameterdata[p];
+            if (cmp(parameterset, "mode")) {
+                if ((modeOfTier(thetier) == "Doubles" || modeOfTier(thetier) == "Triples" || singlesonlytiers.indexOf(thetier) != -1) && !cmp(parametervalue, modeOfTier(thetier))) {
+                    sendBotAll("The "+thetier+" tier can only be played in " + modeOfTier(thetier) + " mode!", tourserrchan, false);
+                }
+                else if (cmp(parametervalue, "singles")) {
+                    parameters.mode = "Singles";
+                }
+                else if (cmp(parametervalue, "doubles")) {
+                    parameters.mode = "Doubles";
+                }
+                else if (cmp(parametervalue, "triples")) {
+                    parameters.mode = "Triples";
+                }
+            }
+            else if (cmp(parameterset, "gen") && allgentiers.indexOf(thetier) != -1) { // only allgentours can change gen
+                var newgen = getSubgen(parametervalue, false);
+                if (newgen !== false) {
+                    parameters.gen = newgen;
+                }
+                else {
+                    parameters.gen = defaultgen;
+                    sendBotAll("Warning! The subgen '"+parametervalue+"' does not exist! Used SM instead!", tourserrchan, false);
+                }
+            }
+            else if (cmp(parameterset, "maxplayers")) {
+                var players = parseInt(parametervalue, 10);
+                var allowedcounts = [8,16,32,64,128,256,512,1024];
+                if (allowedcounts.indexOf(players) == -1) {
+                    sendBotAll("Invalid number of maximum players!", tourserrchan, false);
+                    return false;
+                }
+                parameters.maxplayers = players;
+            }
+            else if (cmp(parameterset, "wifi")) {
+                if (cmp(parametervalue, "on")) {
+                    parameters.wifi = true;
+                }
+                else if (cmp(parametervalue, "off")) {
+                    parameters.wifi = false;
+                }
+                else {
+                    sendBotMessage("Parameter Usage: wifi=on or wifi=off", tourserrchan, false);
+                    return true;
+                }
+            }
+            else if (cmp(parameterset, "type")) {
+                if (cmp(parametervalue, "single")) {
+                    parameters.type = "single";
+                } else {
+                    parameters.type = "double";
+                }
+            }
+            else {
+                sendBotAll("Warning! The parameter '"+parameterset+"' does not exist!", tourserrchan, false);
+            }
+        }
+    }
+    if (allgentiers.indexOf(thetier) != -1 && parameters.gen === "default") {
+        parameters.gen = defaultgen;
+    }
+    return [thetier, parameters];
 }
 
 function refreshTicks(override) {
     var time = parseInt(sys.time(), 10);
     time -= 9900; // offset
     var frequency = 6*60*60; // every 6 hours
+    if (tourconfig.doubletime) {
+        frequency *= 0.5;
+    }
     var newtime = frequency-time%frequency;
     var oldtime = tours.eventticks;
     if (override || newtime < oldtime) {
@@ -1026,8 +1060,19 @@ function tourStep() {
             var starter = data.starter;
             var params = data.parameters;
             if (params.event && tours.keys.length > 0) {
-                if ([3,9,15,21].indexOf(hour) == -1)
+                if (doubletime) {
+                    if ([0,3,6,9,12,15,18,21].indexOf(hour) == -1){
+                        return;
+                    }
+                }
+                else if ([3,9,15,21].indexOf(hour) == -1) {
                     return;
+                }
+                if (tourconfig.singleevents === true) {
+                    tours.currentEvent = 1;
+                } else {
+                    tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
+                }
             }
             tours.queue.splice(0,1);
             tourstart(tourtostart,starter,tours.key,params);
@@ -1947,6 +1992,26 @@ function tourCommand(src, command, commandData, channel) {
                 sendBotAll("The "+tours.tour[x].tourtype+" tour was force started by "+sys.name(src)+".", tourschan, false);
                 return true;
             }
+            if (command === "toggleevent") {
+                tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
+                sendBotMessage(src, "Changed the day's event tournament.", tourschan, false);
+                return true;
+            }
+            if (command === "doubletime") {
+                tourconfig.doubletime = (tourconfig.doubletime ? false : true);
+                sendBotMessage(src, "Event tours will now occur " + (tourconfig.doubletime ? "twice as often" : "at normal rates") + ".", tourschan, false);
+                return true;
+            }
+            if (command === "singleevents") {
+                tourconfig.singleevents = (tourconfig.singleevents ? false : true);
+                sendBotMessage(src, "" + (tourconfig.singleevents ? "Only the first tier of events will occur per day." : "Two event tiers will occur per day if loaded."), tourschan, false);
+                return true;
+            }
+            if (command === "lockautoteams") {
+                tourconfig.lockautoteams = (tourconfig.lockautoteams ? false : true);
+                sendBotMessage(src, "Autoteams can" + (tourconfig.lockautoteams ? "not " : "") + " be fetched without entering a tournament.", tourschan, false);
+                return true;
+            }
         }
         if (isMegaUser(src)) {
             if (command == "tour" || command == "shift" || ((command == "tourstart" && isTourOwner(src)))) {
@@ -2720,7 +2785,16 @@ function tourCommand(src, command, commandData, channel) {
         if (command === "getteam") {
             var inTour = isInTour(sys.name(src));
             if (inTour === false) {
-                sendBotMessage(src, "You aren't currently in a tour!", tourschan, false);
+                if (commandData === "" || tourconfig.lockautoteams) {
+                    sendBotMessage(src, "You aren't currently in a tour!", tourschan, false);
+                    return true;
+                }
+                try {
+                    AutoTeams.giveTeam(src, 0, commandData);
+                    sendBotMessage(src, "Your first team was set to a random " + commandData + " team.", tourschan, false);
+                } catch (error) {
+                    sendBotMessage(src, "No teams available for " + commandData + "!", tourschan, false);
+                }
             } else {
                 var tierName = tours.tour[inTour].tourtype;
                 try {
@@ -2986,7 +3060,7 @@ function tourCommand(src, command, commandData, channel) {
             }
             return true;
         }
-        if (command == "showevents" || command == "showevent") {
+        if (command == "showevents" || command == "showevent" || command == "nextevent") {
             showEvents(src, channel);
             return true;
         }
@@ -4590,14 +4664,30 @@ function showEvents(src, chan) {
     var datestring = now.getUTCDate()+"-"+(now.getUTCMonth()+1)+"-"+now.getUTCFullYear();
     var tomorrow = new Date();
     tomorrow.setTime(Date.parse(now) + 86400*1000);
-    var details = getEventTour(datestring);
+    var details = getEventTour(datestring, true);
     var datestring2 = tomorrow.getUTCDate()+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
-    if (typeof details === "object") {
-        sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
+    if (details) {
+        if (Array.isArray(details) && details.length > 2 && tours.currentEvent) {
+            if (tours.currentEvent === 1) {
+                sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
+                if (now.getUTCHours() < 21 && (!tourconfig.singleevents)) {
+                    sys.sendMessage(src,"Next Event Tournament: "+details[2],chan);
+                }
+            }
+            else if (tours.currentEvent === 2) {
+                sys.sendMessage(src,"Today's Event Tournament: "+details[2]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
+                if (now.getUTCHours() < 21 && (!tourconfig.singleevents)) {
+                    sys.sendMessage(src,"Next Event Tournament: "+details[0],chan);
+                }
+            }
+        }
+        else {
+            sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
+        }
     }
-    var details2 = getEventTour(datestring2);
+    var details2 = getEventTour(datestring2, true);
     if (typeof details2 === "object") {
-        sys.sendMessage(src,"Tomorrow's Event Tournament: "+details2[0],chan);
+        sys.sendMessage(src,"Tomorrow's Event Tournament(s): "+details2[0]+((details2.length > 2 && (!tourconfig.singleevents)) ? " & " + details2[2] : ""),chan);
     }
     if (!details && !details2) {
         sendBotMessage(src, "No events found", chan);
