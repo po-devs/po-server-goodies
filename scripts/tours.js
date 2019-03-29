@@ -4661,8 +4661,8 @@ function showEvents(src, chan) {
     tomorrow.setTime(Date.parse(now) + 86400*1000);
     var details = getEventTour(datestring, true);
     var datestring2 = tomorrow.getUTCDate()+"-"+(tomorrow.getUTCMonth()+1)+"-"+tomorrow.getUTCFullYear();
-    if (typeof details === "object") {
-        if (details.length > 2 && tours.currentEvent) {
+    if (details) {
+        if (Array.isArray(details) && details.length > 2 && tours.currentEvent) {
             if (tours.currentEvent === 1) {
                 sys.sendMessage(src,"Today's Event Tournament: "+details[0]+(tours.eventticks > 0 ? "; starts in "+time_handle(tours.eventticks) : ""),chan);
                 if (now.getUTCHours() < 21) {
