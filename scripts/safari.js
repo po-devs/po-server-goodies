@@ -9856,6 +9856,18 @@ function Safari() {
                     this.inboxMessage(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", true);
                 }
             }
+            if (riceMode) {
+                for (var p in player.party) {
+                    var mon = player.party[p];
+                    var shiny = (typeof player.party[p] === "string");
+                    if (shiny || (isRare(mon))) {
+                        sendAll("", false, true);
+                        sendAll(pokeInfo.icon(player.party[p]) + " -> " + pokeInfo.icon(132), true);
+                        sendAll(sys.name(sys.id(player.id)) + "'s " + poke(player.party[p]) + " became " + poke(132) + "!");
+                        sendAll("", false, true);
+                    }
+                }
+            }
             this.renewMissions(player);
         }
         this.saveGame(player);
@@ -33058,6 +33070,11 @@ function Safari() {
                 getInputMove(src, commandData);
                 return true;
             }
+            if (command === "ricemode") {
+                riceMode = (riceMode ? false : true);
+                safaribot.sendMessage(src, "Toggled RiceMode " + (riceMode ? "on" : "off") + "!", safchan);
+                return true;
+            }
             if (command === "massitem") {
                 var info = commandData.split(":");
                 this.massConvertItem(info[0], info[1]);
@@ -33674,6 +33691,8 @@ function Safari() {
         finderItems = parseFromPerm("finderRates", finderItems);
         packItems = parseFromPerm("packRates", packItems);
         apricornToBallData = loadApricornRecipes();
+
+        var riceMode = false;
         
         dailyBoost = parseFromPerm("dailyBoost", null);
         if (dailyBoost === null) {
