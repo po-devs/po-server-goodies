@@ -169,6 +169,7 @@ function Safari() {
             dew: 0,
             ldew: 0,
             easteregg: 0,
+            celebrityTicket: 0,
             dummy: 0,
             dummy2: 0,
             dummy3: 0
