@@ -14451,7 +14451,7 @@ function Safari() {
                         out.push("It has no effect on " + poke3.owner + "'s " + poke(poke3.id) + "!");
                     }
                     else if (poke3.protect) {
-                        out.push(poke3.owner + "'s " + poke3.id + " protected itself!");
+                        out.push(poke3.owner + "'s " + poke(poke3.id) + " protected itself!");
                     }
                     else if (poke3.hp > 0) {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
@@ -14465,7 +14465,7 @@ function Safari() {
                             out.push("It has no effect on " + poke2.owner + "'s " + poke(poke2.id) + "!");
                         }
                         else if (poke2.protect) {
-                            out.push(poke2.owner + "'s " + poke2.id + " protected itself!");
+                            out.push(poke2.owner + "'s " + poke(poke2.id) + " protected itself!");
                         }
                         else if (poke2.hp > 0) {
                             out = dealDamage(poke4, move, poke2, typeMultiplier, 2, out);
