@@ -13103,19 +13103,19 @@ function Safari() {
                 if (this.tagBattle && this.oneOnTwo) {
                     for (var t in this.p1MoveCodes) {
                         var rem = ["a", "b", "c"];
-                        if (rem.contains(data) && rem.contains(t)) {
+                        if (rem.contains(this.player1Input) && rem.contains(t)) {
                             continue;
                         }
                         var rem = ["d", "e", "f"];
-                        if (rem.contains(data) && rem.contains(t)) {
+                        if (rem.contains(this.player1Input) && rem.contains(t)) {
                             continue;
                         }
                         var rem = ["g", "h", "i"];
-                        if (rem.contains(data) && rem.contains(t)) {
+                        if (rem.contains(this.player1Input) && rem.contains(t)) {
                             continue;
                         }
                         var rem = ["j", "k", "l"];
-                        if (rem.contains(data) && rem.contains(t)) {
+                        if (rem.contains(this.player1Input) && rem.contains(t)) {
                             continue;
                         }
                         this.p3MoveCodes[t] = this.p1MoveCodes[t];
@@ -14211,6 +14211,7 @@ function Safari() {
                 if (dmg > target.hp) {
                     dmg = target.hp;
                 }
+                tname = target.owner + "'s " + poke(target.id);
                 target.hp -= dmg;
                 out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (self.crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
                 if (target.hp <= 0) {
