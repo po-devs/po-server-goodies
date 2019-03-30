@@ -7844,7 +7844,7 @@ function Safari() {
             break;
             default:
                 if (chance(0.05)) {
-                    safaribot.sendMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
+                    safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
                     safaribot.sendHtmlMessage(src, "±Hint: " + safariHints.random(), safchan);
                 }
                 else {
