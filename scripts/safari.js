@@ -14275,9 +14275,7 @@ function Safari() {
                         target.condition = "burn";
                     }
                 }
-                if (!fainted) {
-                    out = self.afterDamage(user, move, target, oppparty, out);
-                }
+                out = self.afterDamage(user, move, target, oppparty, out);
                 if (fainted && self.select) {
                     if (self.select.frenzy) {
                         user.hp = Math.min(user.maxhp, Math.floor(user.hp + (0.25 * user.maxhp)));
@@ -14510,10 +14508,6 @@ function Safari() {
     };
     Battle2.prototype.afterDamage = function(user, move, target, oppparty, out) {
         var fainted = (target.hp <= 0 ? true : false);
-        if (fainted) {
-            out.push("The target had already fainted!");
-            return out;
-        }
         var tname = target.owner + "'s " + poke(target.id);
         if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance))) {
             if (!this.isImmuneTo(target.id, move.status)) {
@@ -14536,7 +14530,6 @@ function Safari() {
                 }
             }
         }
-        
         var name, party, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
         name = user.owner + "'s " + poke(user.id);
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
@@ -14607,7 +14600,7 @@ function Safari() {
                 }
             }
         }
-        if (move.haze) {
+        if (move.haze && !fainted) {
             obj = [];
             switch (move.haze) {
                 case "target":
@@ -14623,7 +14616,7 @@ function Safari() {
                 }
             }
         }
-        if (move.nerf) {
+        if (move.nerf && !fainted) {
             for (e = 0; e < move.nerf.length; e++) {
                 obj = move.nerf[e];
                 if (chance(obj.nerfChance)) {
