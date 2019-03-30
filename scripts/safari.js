@@ -15291,7 +15291,7 @@ function Safari() {
                         var inver = ((this.select && this.select.inverted) ? true : false);
                         eff = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(opp.id)), sys.type(sys.pokeType2(opp.id)), null, inver);
 
-                        dmg = this.damageCalc(user, move, target, eff, 1, isP1, isP2, isP3, isP4);
+                        dmg = this.damageCalc(user, move, opp, eff, 1, isP1, isP2, isP3, isP4);
 
                         var diff = (opp.hp / dmg);
                         if (dif < 1) {
