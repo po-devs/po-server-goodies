@@ -596,7 +596,7 @@ function Safari() {
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Snowball", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
+            rock: {name: "rock", fullName: "Rock", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -13891,7 +13891,7 @@ function Safari() {
         
         return Math.round(base * boost * extraMod);
     };
-    Battle2.prototype.damageCalc = function(user, target, move, typeMultiplier, targetSide, isP1, isP2, isP3, isP4) {
+    Battle2.prototype.damageCalc = function(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4) {
         var crit = ((this.select && this.select.shellArmor) ? false : (chance(0.0625 + (move.critical || 0))));
         var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
         var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
