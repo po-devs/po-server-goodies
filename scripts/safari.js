@@ -14142,54 +14142,54 @@ function Safari() {
                     }
                 }
             }
-        }
-        if (move.haze) {
-            obj = [];
-            switch (move.haze) {
-                case "self":
-                    obj.push(user);
-                    desc = name;
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-                case "field":
-                    obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
-                    desc = "All Pokémon on the field's ";
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-                case "both":
-                    obj.push(user);
-                    desc = name;
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-                case "party":
-                    obj = obj.concat(party);
-                    desc = user.owner + "'s party";
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-                case "oppparty":
-                    obj = obj.concat(oppparty);
-                    desc = target.owner + "'s party";
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-                case "all":
-                    obj = obj.concat(party, oppparty);
-                    desc = "All";
-                    out.push(desc + " stat changes were eliminated!");
-                break;
-            }
-            for (e = 0; e < obj.length; e++) {
-                for (o in obj[e].boosts) {
-                    obj[e].boosts[o] = 0;
+            if (move.haze) {
+                obj = [];
+                switch (move.haze) {
+                    case "self":
+                        obj.push(user);
+                        desc = name;
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "field":
+                        obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
+                        desc = "All Pokémon on the field's ";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "both":
+                        obj.push(user);
+                        desc = name;
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "party":
+                        obj = obj.concat(party);
+                        desc = user.owner + "'s party";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "oppparty":
+                        obj = obj.concat(oppparty);
+                        desc = target.owner + "'s party";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "all":
+                        obj = obj.concat(party, oppparty);
+                        desc = "All";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                }
+                for (e = 0; e < obj.length; e++) {
+                    for (o in obj[e].boosts) {
+                        obj[e].boosts[o] = 0;
+                    }
                 }
             }
-        }
-        if (move.buff) {
-            for (e = 0; e < move.buff.length; e++) {
-                obj = move.buff[e];
-                if (chance(obj.buffChance)) {
-                    user.boosts[obj.buffStat] += obj.buff;
-                    user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                    out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+            if (move.buff) {
+                for (e = 0; e < move.buff.length; e++) {
+                    obj = move.buff[e];
+                    if (chance(obj.buffChance)) {
+                        user.boosts[obj.buffStat] += obj.buff;
+                        user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
+                        out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                    }
                 }
             }
         }
@@ -14554,6 +14554,58 @@ function Safari() {
         if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
             isP4 = true;
+        }
+        if (move.category !== "other") {
+            if (move.haze) {
+                obj = [];
+                switch (move.haze) {
+                    case "self":
+                        obj.push(user);
+                        desc = name;
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "field":
+                        obj.push(this.poke1, this.poke2, this.poke3, this.poke4);
+                        desc = "All Pokémon on the field's ";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "both":
+                        obj.push(user);
+                        desc = name;
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "party":
+                        obj = obj.concat(party);
+                        desc = user.owner + "'s party";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "oppparty":
+                        obj = obj.concat(oppparty);
+                        desc = target.owner + "'s party";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                    case "all":
+                        obj = obj.concat(party, oppparty);
+                        desc = "All";
+                        out.push(desc + " stat changes were eliminated!");
+                    break;
+                }
+                for (e = 0; e < obj.length; e++) {
+                    for (o in obj[e].boosts) {
+                        obj[e].boosts[o] = 0;
+                    }
+                }
+            }
+            if (move.buff) {
+                for (e = 0; e < move.buff.length; e++) {
+                    obj = move.buff[e];
+                    if (chance(obj.buffChance)) {
+                        user.boosts[obj.buffStat] += obj.buff;
+                        user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
+                        out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                    }
+                }
+            }
         }
         if (move.haze) {
             obj = [];
