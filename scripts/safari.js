@@ -13425,6 +13425,11 @@ function Safari() {
                         }
                         isP4 = true;
                     }
+                    if (move.target) {
+                        if (move.target === "ALL" || move.target === "TEAM") {
+                            target = move.target;
+                        }
+                    }
                 }
                 else {
                     target = id === 1 ? poke2 : poke1;
@@ -13976,7 +13981,7 @@ function Safari() {
             }
             tname = target.owner + "'s " + poke(target.id);
         }
-        var party, oppparty, protectUses, isP1 = false, isP2 = false, isP3 = false, isP4 = false;
+        var party, oppparty, protectUses;
         var poke1 = this.poke1, poke2 = this.poke2, poke3 = this.poke3, poke4 = this.poke4;
         if (user.owner.toLowerCase() === this.name1.toLowerCase()) {
             party = this.team1;
@@ -14421,7 +14426,7 @@ function Safari() {
                         return out;
                     }
                 }
-                out = dealDamage(user, move, target, typeMultiplier, (isP1 ? 2 : 1), out);
+                out = dealDamage(user, move, target, typeMultiplier, ((isP1 || isP3) ? 2 : 1), out);
             }
         }
         if (move.protect) {
