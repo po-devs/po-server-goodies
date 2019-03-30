@@ -168,6 +168,8 @@ function Safari() {
             brush: 0,
             dew: 0,
             ldew: 0,
+            easteregg: 0,
+            celebrityTicket: 0,
             dummy: 0,
             dummy2: 0,
             dummy3: 0
@@ -634,6 +636,8 @@ function Safari() {
             soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true, cap: 9999},
             form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
+            easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false},
+            celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: false},
 
             //Alchemy related items
             materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -728,7 +732,8 @@ function Safari() {
     pnkapricorn: "data:image/png;base64,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",
     brush:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAMAAADXqc3KAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAASBQTFRFkGgY////BQUFEQsPCwsLEAsPERQUExMTAxAGExYULCMWEhcTExkUEhASEhgTExgTEhkTExoUFB8VMi0kPS4RIyQmLiUMFSYZFxURHGQqIGEvIVctIVcuIVkvIVovIl0wIl4wImAxJGcxJGkyJGsyJW80JjEnJjEoJnA1J3M2KXA8LigTMJtHMZ9JMaFKMaJKMnVNMqVMM6RMM6dMM6hNPS4RQDYaQkJCSXBSTDkPUnFZXEocXEojZk4bgXyAhIaEin2HiriWj2kTkGgYlGsNlo2Vl7SHo3sjpHYHrHwGrX0IsX8GsYACspwutYMGt4YMuYUGuYkNwp0tyZtdypYRy68vy9XN29jb46sV8L8x8b4z9M06/882/9k+/+c///JCeaP/DAAAABd0Uk5TAADBwcbQ0trc3+Dh4+Tl5efq6/L5/PxuAN84AAAAtklEQVQoz3WRRQLCQBAEF3d3d3ddIEGDu7v8/xdwTpo5Th16uoaI/gxBS3O8B4EplXUgYExWPBQAfazqpSDDEC35KAjXRgp+Cq7ShHMBCs5VhfNBCnooXeUQBQUTrYqbguaKzrkhBkrkvUtXwnfF1dSWYn8k5UvkrO3BZJyW8e1y9vlivTnYBNqbzetuthzqhOB0v+22LCsAmc/reZyywg863499nQWvZVYMwxEEfmsCgYhgAOcLypgZUUeZxsMAAAAASUVORK5CYII=",
     dew:"data:image/png;base64,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",
-    ldew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAF7SURBVEgNY2AYBcM+BBiJ9aGKisp/ZLV37twhSi9BRSCDf3EkMcxbVIBsPkNS3AQGth/zGAhZhNcCkOEzVl0CGzxp8nkUC/JyDcH8jDA9vJbgtABmuJUGxFxrn1UoFsjKq4L5IIvwWcKEoguJAwoWZPD21TNkLsPjh7fBfJDP0NUiK8RqAcj1oDAHaQa5XMNsAkOlnz0DzBIYDbMEpBakB9lgGBurBSDJ0hJIkKRZQILC3Eyd4capArAlMMtgFsHUwgxFpnFaMG+hE8OF0wcZZp2ABEVAzSyGG7u+MWxoSWMAWQYCIDZIDUgtLoDVAliYwlwKokEAZAkyAPFhcjA9yPIgNt5UtHr/PoYT0x+DXXzy1E24y0Hs9k0HwT5gNP7GEOrohDOpsqDbiI2PbDhIHhREG6DBhE09shhOH4AUgVIGyBcg8P8sF5iGESCXgwA+18PU4qXldNr+gyw6//gRCgaJgeTwagZK4vUBsmb0dE6oDELWO8oe5iEAADxVp9OTQ+ImAAAAAElFTkSuQmCC"
+    ldew:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAAF7SURBVEgNY2AYBcM+BBiJ9aGKisp/ZLV37twhSi9BRSCDf3EkMcxbVIBsPkNS3AQGth/zGAhZhNcCkOEzVl0CGzxp8nkUC/JyDcH8jDA9vJbgtABmuJUGxFxrn1UoFsjKq4L5IIvwWcKEoguJAwoWZPD21TNkLsPjh7fBfJDP0NUiK8RqAcj1oDAHaQa5XMNsAkOlnz0DzBIYDbMEpBakB9lgGBurBSDJ0hJIkKRZQILC3Eyd4capArAlMMtgFsHUwgxFpnFaMG+hE8OF0wcZZp2ABEVAzSyGG7u+MWxoSWMAWQYCIDZIDUgtLoDVAliYwlwKokEAZAkyAPFhcjA9yPIgNt5UtHr/PoYT0x+DXXzy1E24y0Hs9k0HwT5gNP7GEOrohDOpsqDbiI2PbDhIHhREG6DBhE09shhOH4AUgVIGyBcg8P8sF5iGESCXgwA+18PU4qXldNr+gyw6//gRCgaJgeTwagZK4vUBsmb0dE6oDELWO8oe5iEAADxVp9OTQ+ImAAAAAElFTkSuQmCC",
+    easteregg:"data:image/png;base64,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"
     };
     var base64costumes = {
     rocket: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAABWCAMAAABiiJHFAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QzAzQUIwNkRDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzAzQUIwNkVDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDMDNBQjA2QkM5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDMDNBQjA2Q0M5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnEdDvwAAABgUExURdZfRmh5e0JOTygtLqOtt/zm411sbTtFR+XUz3qGh4KVldfLyJinqmF5hVQ0LjM9P/He2m5DO7uwrZ5SRJqSj25+ga24usrAv42dn+p7ZlJfYL7G0bCloN7j7EVUVQAAAF8gpikAAAAgdFJOU/////////////////////////////////////////8AXFwb7QAABTJJREFUeNrsmOlyozoQRrVgCQG2AFvAaBz5/d9yuoVYxOIFz/1za76qVJxKcmhard7I4z8R+Yf9h/2/YjlzFuQYk/xvYbW2gvYSQlgn2V/AcimMUsZ4KBjsmHNS8++wXAuVKeAqOgpMdpzzL7DcqU5RYbJshkVZ/YL7DKtF1lH46sDgGCvYC+4TrKNZJihA11QhtX7qYPKEqoxQCF1SqbCIfcbdxUpqhFMeuqYyrZ9z97BSgAPB3hWT+tjVL7hknwoRS9eaUz/GWkql2ISCB0bqPncHK4x121A3g+rdMCM7PgDHvobum7uNZcLZLShbUvfM3cWKJdOumfvmbmO1syJmOrkJ/czah3RiEKbvHeanvoWMCHkVxZ4gP44E4PIVAKR5+HwwbtHeGRK+ZF/O5PiQI7dszgWH+GgzU+4azD+QGMObcmnnsSZmCYEfyrfOvyqjUcIZcuLRfGtzBaWQdhRDOKTHxeU9ghVlbs6uS5IOzyqkA8ms45oq64PhCFaldW1dkSSF+d0Y7pigKiuSQlHX/BSdEvyQb29lfbu5pAFzf34KZjqVoIqC6t8/8LROH6q8qmxVLdq8bZKfU8dN0hWem1DuH6CO9QkivYPyMs3b/CeTJgkqoMkpjmMfNTihzU+nU5nWN3NrUIDz39u2MQexolZ1Wp68yjJN8zxvQXme4ufaHm2W1O1e16dJJSrFJ4Fn6uOt3a02t/IUq0Qs2Hv7omO83UW9wNZ5iian9Lu2WSzMvdcpKjffYeV94YTWY2/fzg62XjoXVLNvsQ89HVsfCml6F99POjA/tJ6Zp21b3/M0V/L7AcoXCZWXJVwGuM1p2r409Q1sXx+1A17pL1jtvh/3oI7JUCpV7gPrzvjXWGxxXcByS7EPe1kcX2L7Mm41n5dwLVGvStl+VyPtMH7MGpwBC8Kx+tM+QQco1lpf2MdORM71EdY3HGaiwuw8ciOq/KBZ4kxbQ+mcio2j3KB+gOU2U8yaBbXvSFfktztGoHad6meniDr0unOxt9tmmPRBfiZbUQN6pv0YXmBxzIc5X7Bt6ATvj3KXG2M19VRsN91rsf2ONMZahUsJA43cMDu8g93gknjYh0k/M/S5B0bJ/dEkwjqjPqAupt9dbL+bCjHAXnvhySxFojXK7BbI7UOD0GVL126ASZxdfSp0m1h/zS4VSMs1dkiWAU2i1cQ8vcjFoV+q65X8QpGL7BPQHDu4eollcXqRen44VSD2InqFhVSKq81hPzZiuYjTy9xaVv2KVbEoXXorGc4tuOJBg0l8XiOVza2dsKS3+hqwfD7A4gpC+InQWTJe2yi54HFMIdZjybWqpL6MWB1P3JyF1YZVRUGGhIh5QE5UjofLIuwF6lf4WA3YwJW9uZ4rTDJgtYWwmsV/OA05ZMBLj4X/rrwT/PP11Pb0lc35nYktmiRg7RCwISKXtYsjrBojDHyAhz51af75+HJwbAJnFo+1wvplAVjAPDVeJ8ALXgn5NYbYVS/qLh+XJc4yitMQ6VsiSAYCOq0+E+jHFnbSlS+TC+fjsWibZR06gQuYZZumMxhTDNuCF1hyWecsrkesAZEHM0VRNE0BGdHbG14u5lbBzsrzr5eNZkn3ntD2DCLWZgUYm2TmfBbwi+GvY+zFG4lN2OQGvtEKw/8zjy2EzhK0FX+CSNCPfezojmqvtcPdk8c2irMiUMFcLaeGeelc/+qX67W6POsYufDYgnEHRcFjz3z648hcjs6t+Fs7MEhmArAUoiNQz7MMv/ZCxd/ZA3r9EWAAv0eboM/sqZQAAAAASUVORK5CYII="
@@ -860,7 +865,9 @@ function Safari() {
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
             dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
-            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details."
+            ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details.",
+            easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use egg, /use egg:10, /use egg:100, and /use egg:1000. Don't open until Easter!",
+            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run."
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -5576,7 +5583,7 @@ function Safari() {
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "ldew", "materia", "fragment"];
         var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
         var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "philosopher", "soda", "cookie"];
-        var line7 = ["mega", "spray", "burn", "form", "mail", "crystal", "scale", "mushroom", "brush"];
+        var line7 = ["mega", "spray", "burn", "form", "mail", "celebrityTicket", "crystal", "scale", "mushroom", "brush", "easteregg"];
 
         if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities"].indexOf(search) === -1) {
             search = "*";
@@ -7949,6 +7956,196 @@ function Safari() {
             this.updateShop(player, "pack");
             safaribot.sendMessage(src, itemsLeft(player, "pack"), safchan);
             player.records.packsOpened += 1;
+            this.saveGame(player);
+            return;
+        }
+        if (item === "easteregg") {
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 1) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 10) {
+                pulled = 10;
+            } else if (parseInt(info.target, 10) === 100) {
+                pulled = 100;
+            } else if (parseInt(info.target, 10) === 1000) {
+                pulled = 1000;
+            } else {
+                safaribot.sendMessage(src, "Type /use easteregg:1, /use easteregg:10, /use easteregg:100, or /use easteregg:1000, to open your Easter Eggs!", safchan);
+                return;
+            }
+            if (pulled > player.balls.eastereggs) {
+                safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
+                return;
+            }
+            safaribot.sendMessage(src, "What are you doing! You can't open Easter Eggs until Easter!", safchan);
+            return;
+            var eastereggprizes = {
+                "1": {
+                    rock: 35, 
+                    money: 20,
+                    pnkapricorn: 10, grnapricorn: 10, bluapricorn: 10,
+                    ylwapricorn: 5,
+                    safari: 10,
+                    great: 3,
+                    gacha: 5, bait: 5, silver: 3,
+                    mail: 10,
+                    pearl: 2,
+                    gem: 1,
+                    eviolite: 1
+                },
+                "10": {
+                    money: 20,
+                    bait: 10,
+                    mail: 10,
+                    pnkapricorn: 10, grnapricorn: 10, bluapricorn: 10,
+                    ylwapricorn: 5,
+                    great: 10,
+                    ultra: 4,
+                    amulet: 2, crown: 2,
+                    scarf: 1, soothe: 2, battery: 2,
+                    honey: 2, eviolite: 2,
+                    rare: 3, silver: 10,
+                    gem: 6, gacha: 12,
+                    pearl: 10, bigpearl: 5,
+                    dew: 3,
+                    water: 2,
+                    scale: 1,
+                    brush: 1,
+                    celebrityTicket: 1,
+                    mega: 1
+                },
+                "100": {
+                    money: 20,
+                    mail: 10,
+                    eviolite: 10,
+                    fossil: 4,
+                    scale: 10,
+                    brush: 10,
+                    rare: 8, spray: 5, nugget: 8,
+                    bignugget: 1,
+                    rare2: 3,
+                    gacha: 15,
+                    celebrityTicket: 5,
+                    golden: 5,
+                    silver: 10,
+                    mega: 10,
+                    water: 5,
+                    dew: 5
+                },
+                "1000": {
+                    shiny: 2,
+                    dew: 5, 
+                    bignugget: 7,
+                    mega: 8,
+                    golden: 10,
+                    silver: 13,
+                    money: 15
+                },
+            }
+            var reward = randomSample(eastereggprizes[""+pulled]);
+            var amount = 1;
+            var giveReward = true;
+            switch (reward) {
+                case "gem": amount = (pulled === 10 ? 3 : 1); break;
+                case "rare": amount = (pulled === 100 ? 2 : 1); break;
+                case "rare2": amount = 5; reward = "rare"; break;
+                case "celebrityTicket": amount = (pulled === 100 ? 3 : 1); break;
+                case "bait": amount = (pulled === 10 ? 8 : 2); break;
+                case "gacha": amount = (pulled === 100 ? 30 : (pulled === 10 ? 5 : 1)); break;
+                case "silver": amount = (pulled === 1000 ? 200 : (pulled === 100 ? 40 : (pulled === 10 ? 5 : 1))); break;
+                case "golden": amount = (pulled === 1000 ? 15 : 5); break;
+                case "mega": amount = (pulled === 1000 ? 5 : (pulled === 100 ? 3 : 1)); break;
+                case "dew": amount = (pulled === 1000 ? 50 : (pulled === 100 ? 20 : 5)); break;
+                case "bignugget": amount = (pulled === 1000 ? 2 : 1); break;
+                case "scale": case "brush": amount = (pulled === 100 ? 3 : 1); break;
+                case "bluapricorn": case "grnapricorn": case "pnkapricorn": case "ylwapricorn": amount = (pulled === 1 ? 1 : 5); break;
+                case "water": amount = (pulled === 100 ? 2 : 1); break;
+                case "mail": amount = (pulled === 100 ? 15 : (pulled === 10 ? 5 : 3)); break;
+            }
+            if (reward == "shiny") {
+                giveReward = false;
+                if (currentPokemon || contestCount > 0 || contestCooldown <= 13) {
+                    reward = "money";
+                } else {
+                    var spawn = true;
+                    var ballUsed;
+                    if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
+                        ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
+                    }
+                    safaribot.sendAll(sys.name(src) + " goes to open their Easter Eggs but they startled a nearby Pokémon!", safchan);
+
+                    var mon = [27, 52, 98, 63, 60, 114, 116, 231, 238, 239, 240, 172, 406, 427, 191, 179, 177, 170, 298, 246, 147, 371, 328, 374, 443, 633].random();
+                    safari.createWild(mon, true, 1);
+
+                    safari.throwBall(src, ballUsed, true);
+                    preparationFirst = sys.name(src).toLowerCase();
+                    if (baitCooldown <= 9) {
+                        baitCooldown = sys.rand(9, 13);
+                    }
+                    if (goldenBaitCooldown <= 6) {
+                        goldenBaitCooldown = sys.rand(6, 11);
+                    }
+                }
+            }
+            if (reward == "money") {
+                giveReward = false;
+                amount = Math.round(((12 * Math.random()) + 3) * (12 + (3 * Math.random())) * (pulled >= 100 ? pulled : (pulled/3)));
+                player.money += amount;
+                this.sanitize(player);
+                safaribot.sendMessage(src, "You " + finishName("easteregg") + " to reveal $" + amount + "!", safchan);
+            }
+            if (giveReward) {
+                safaribot.sendMessage(src, "You " + finishName("easteregg") + " to reveal " + plural(amount, reward) + "!", safchan);
+                if (reward === "mega" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "mega" && amount >= 2) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("mega") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "bignugget" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "bignugget" && amount >= 2) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("bignugget") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "dew") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("dew") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "golden") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("golden") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "silver" && amount >= 200) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("silver") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "water" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "water" && amount >= 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("water") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "rare" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("rare")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "rare" && amount >= 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("rare") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "fossil") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("fossil")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "celebrityTicket" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "celebrityTicket") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + finishName("celebrityTicket") + " in their " + finishName("easteregg") + "!</b>", safchan);
+                }
+                rewardCapCheck(player, reward, amount);
+            }
+            player.balls.easteregg -= pulled;
+            safaribot.sendMessage(src, itemsLeft(player, "easteregg"), safchan);
+            this.saveGame(player);
+            return;
+        }
+        if (item === "celebrityTicket" || item === "celebrityticket") {
+            if (player.balls.celebrityTicket < 1) {
+                safaribot.sendMessage(src, "You don't have any Celebrity Tickets to use!", safchan);
+                return;
+            }
+            if (player.firstCelebrityRun) {
+                safaribot.sendMessage(src, "You already can challenge the Celebrities for a reward!", safchan);
+                return;
+            }
+            player.firstCelebrityRun = true;
+            player.balls.celebrityTicket -= 1;
+            safaribot.sendMessage(src, itemsLeft(player, "celebrityTicket"), safchan);
             this.saveGame(player);
             return;
         }
@@ -13115,22 +13312,22 @@ function Safari() {
                     "id": 0,
                     "hp": 1
                 }
-                if (id === 1 || id === this.name1.toLowerCase()) {
+                if (id === 1) {
                     user = poke1;
                     move = move1;
                     isP1 = true;
                 }
-                else if (id === 2 || id === this.name2.toLowerCase()) {
+                else if (id === 2) {
                     user = poke2;
                     move = move2;
                     isP2 = true;
                 }
-                else if (id === 3 || id === this.name3.toLowerCase()) {
+                else if (id === 3) {
                     user = poke3;
                     move = move3;
                     isP3 = true;
                 }
-                else if (id === 4 || id === this.name4.toLowerCase()) {
+                else if (id === 4) {
                     user = poke4;
                     move = move4;
                     isP4 = true;
@@ -13276,7 +13473,11 @@ function Safari() {
                         }
                     }
                     if (user.condition === "freeze") {
-                        if (chance(0.33)) {
+                        if (move.type === "fire" && chance(0.5)) {
+                            this.sendToViewers(toColor(name + " thawed out!", sColor));
+                            user.condition = "none";
+                        }
+                        else if (chance(0.25)) {
                             this.sendToViewers(toColor(name + " thawed out!", sColor));
                             user.condition = "none";
                         } else {
@@ -13296,7 +13497,7 @@ function Safari() {
                     else {
                         this.sendToViewers(toColor(name + " attacks! [Effect: " + this.translateMove(move) + "]", mColor));
                     }
-                    out = this.attack(user, target, move);
+                    out = this.attack(user, target, move, isP1, isP2, isP3, isP4);
                     if (out.length === 0) {
                         this.sendToViewers(toColor("But nothing happened!", sColor));
                     }
@@ -13736,7 +13937,7 @@ function Safari() {
         var dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
         return dmg;
     };
-    Battle2.prototype.attack = function(user, target, move) {
+    Battle2.prototype.attack = function(user, target, move, isP1, isP2, isP3, isP4) {
         var e, o, obj, desc, out = [], fainted = false, name;
         var wide = (target == "ALL" || target == "TEAM");
         var tname;
@@ -13782,7 +13983,6 @@ function Safari() {
                 }
             }
             protectUses = this.protectCount1;
-            isP1 = true;
         }
         else if (user.owner.toLowerCase() === this.name2.toLowerCase()) {
             party = this.team2;
@@ -13793,7 +13993,6 @@ function Safari() {
                 }
             }
             protectUses = this.protectCount2;
-            isP2 = true;
         }
         else if (user.owner.toLowerCase() === this.name3.toLowerCase()) {
             party = this.team3;
@@ -13804,7 +14003,6 @@ function Safari() {
                 }
             }
             protectUses = this.protectCount3;
-            isP3 = true;
         }
         else if (user.owner.toLowerCase() === this.name4.toLowerCase()) {
             party = this.team4;
@@ -13815,7 +14013,6 @@ function Safari() {
                 }
             }
             protectUses = this.protectCount4;
-            isP4 = true;
         }
         var isPlayerVsNPC = (((user.owner.toLowerCase() === this.name2.toLowerCase()) || user.owner.toLowerCase() === this.name4.toLowerCase()) && this.npcBattle);
         
@@ -14285,16 +14482,6 @@ function Safari() {
                 }
             }
         }
-        if (move.buff) {
-            for (e = 0; e < move.buff.length; e++) {
-                obj = move.buff[e];
-                if (chance(obj.buffChance)) {
-                    user.boosts[obj.buffStat] += obj.buff;
-                    user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                    out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
-                }
-            }
-        }
 
         if (move.category === "other") {
             out = this.afterDamage(user, move, target, oppparty, out);
@@ -14373,6 +14560,20 @@ function Safari() {
                     out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
                 }
             }
+        }
+        if (move.buff) {
+            for (e = 0; e < move.buff.length; e++) {
+                obj = move.buff[e];
+                if (chance(obj.buffChance)) {
+                    user.boosts[obj.buffStat] += obj.buff;
+                    user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
+                    out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                }
+            }
+        }
+        if (!fainted && (move.type === "fire")) {
+            this.sendToViewers(toColor(tname + " thawed out!", "#55E"));
+            target.condition = "none";
         }
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
