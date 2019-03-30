@@ -12412,6 +12412,7 @@ function Safari() {
         this.protectCount2 = 0;
         this.usedProtect1 = false;
         this.usedProtect2 = false;
+        this.crit = false;
 
         this.side1Field = {
             "spikes": 0,
@@ -13937,6 +13938,7 @@ function Safari() {
 
         var tname = target.owner + "'s " + poke(target.id);
         var dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
+        this.crit = crit;
         return dmg;
     };
     Battle2.prototype.attack = function(user, target, move, isP1, isP2, isP3, isP4) {
@@ -14148,13 +14150,14 @@ function Safari() {
             var self = this;
 
             var dealDamage = function(user, move, target, typeMultiplier, targetSide, out) {
+                self.crit = false;
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
 
                 if (dmg > target.hp) {
                     dmg = target.hp;
                 }
                 target.hp -= dmg;
-                out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
+                out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (self.crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
                 if (target.hp <= 0) {
                     if (isPlayerVsNPC) {
                         if (chance((0.0125 * Math.random()) + (getCherished(target.id, self.name1.toLowerCase()) > 0 ? 0.01 : 0))) {
