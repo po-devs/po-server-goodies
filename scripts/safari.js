@@ -13891,7 +13891,7 @@ function Safari() {
         
         return Math.round(base * boost * extraMod);
     };
-    Battle2.prototype.damageCalc = function(user, target, move, typeMultiplier, targetSide, isP1, isP2, isP3, isP4) {
+    Battle2.prototype.damageCalc = function(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4) {
         var crit = ((this.select && this.select.shellArmor) ? false : (chance(0.0625 + (move.critical || 0))));
         var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
         var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
