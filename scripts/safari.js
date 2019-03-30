@@ -19158,16 +19158,13 @@ function Safari() {
             }
             chal += diff;
 
-            if (difficulty === 4) {
-                chal += 4;
-            }
-            else if (difficulty === 3) {
+            if (difficulty >= 3) {
                 chal += 2;
             }
             diff = 100;
             maxLoop = 1200;
             hazardStrength = 0;
-            while (Math.abs(diff) > 1) {
+            while (Math.abs(diff) >= 1) {
                 maxLoop--;
                 if (maxLoop <= 0) {
                     hold = [];
@@ -19211,8 +19208,8 @@ function Safari() {
                             diff *= 0.25;
                             break;
                         }
-                        else if (Math.abs(diff) <= 8 && (maxLoop < 100)) {
-                            diff *= 0.125;
+                        else if (Math.abs(diff) <= 16 && (maxLoop < 100)) {
+                            diff *= (1/16);
                             break;
                         }
                     }
