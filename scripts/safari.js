@@ -9856,7 +9856,7 @@ function Safari() {
                     this.inboxMessage(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", true);
                 }
             }
-            if (riceMode) {
+            if (safari.riceMode === true) {
                 for (var p in player.party) {
                     var mon = player.party[p];
                     var shiny = (typeof player.party[p] === "string");
@@ -33071,8 +33071,8 @@ function Safari() {
                 return true;
             }
             if (command === "ricemode") {
-                riceMode = (riceMode ? false : true);
-                safaribot.sendMessage(src, "Toggled RiceMode " + (riceMode ? "on" : "off") + "!", safchan);
+                safari.riceMode = (safari.riceMode ? false : true);
+                safaribot.sendMessage(src, "Toggled RiceMode " + (safari.riceMode ? "on" : "off") + "!", safchan);
                 return true;
             }
             if (command === "massitem") {
@@ -33692,7 +33692,7 @@ function Safari() {
         packItems = parseFromPerm("packRates", packItems);
         apricornToBallData = loadApricornRecipes();
 
-        var riceMode = false;
+        safari.riceMode = false;
         
         dailyBoost = parseFromPerm("dailyBoost", null);
         if (dailyBoost === null) {
