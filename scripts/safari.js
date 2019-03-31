@@ -14602,6 +14602,31 @@ function Safari() {
                     }
                 }
             }
+            if (move.refresh) {
+                switch (move.refresh) {
+                    case "self": 
+                        user.condition = "none";
+                        out.push(name + "'s status returned to normal!");
+                    break;
+                    case "field":
+                        if (isP1 || isP3) {
+                            this.poke1.condition = "none";
+                            this.poke3.condition = "none";
+                        }
+                        else if (isP2 || isP4) {
+                            this.poke2.condition = "none";
+                            this.poke4.condition = "none";
+                        }
+                        out.push("Pokémon on " + name + "'s side of the field had their status returned to normal!");
+                    break;
+                    case "party":
+                        for (e = 0; e < party.length; e++) {
+                            party[e].condition = "none";
+                        }
+                        out.push(user.owner + "'s party's status returned to normal!");
+                    break;
+                }
+            }
             if (move.buff) {
                 for (e = 0; e < move.buff.length; e++) {
                     obj = move.buff[e];
