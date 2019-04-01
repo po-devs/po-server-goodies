@@ -1048,6 +1048,11 @@ function tourStep() {
             tours.queue.unshift({'tier': tourtier, 'starter': "~Pokemon Online~", 'parameters': details[1]});
             tours.globaltime = systime+300;
             tours.eventticks = -1;
+            if (tourconfig.singleevents === true) {
+                tours.currentEvent = 1;
+            } else {
+                tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
+            }
         }
         else {
             tours.eventticks = -1;
@@ -1067,11 +1072,6 @@ function tourStep() {
                 }
                 else if ([3,9,15,21].indexOf(hour) == -1) {
                     return;
-                }
-                if (tourconfig.singleevents === true) {
-                    tours.currentEvent = 1;
-                } else {
-                    tours.currentEvent = (tours.currentEvent === 1 ? 2 : 1);
                 }
             }
             tours.queue.splice(0,1);
