@@ -14664,7 +14664,7 @@ function Safari() {
                 }
             }
         }
-        if (!fainted && (move.type === "fire")) {
+        if (!fainted && (move.type === "Fire") && target.condition === "freeze") {
             this.sendToViewers(toColor(tname + " thawed out!", "#55E"));
             target.condition = "none";
         }
