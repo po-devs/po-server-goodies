@@ -26000,6 +26000,9 @@ function Safari() {
         }
         return;
     };
+    Volleyball.prototype.courtIcon = function(mon, owner) {
+       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(p) + "'>";
+    };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
         var rows = {}, name;
@@ -26031,18 +26034,16 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
-                ret += "<td align=center width=88";
-                if (place === "---") {
+                ret += "<td align=center width=88>";
+                if (rows.hasOwnProperty(place)) {
+                    inp = pokeInfo.icon(parseInt(rows[place].mon, 10));
+                    ret += this.courtIcon(inp, rows[place].owner);
+                }
+                else if (place === "---") {
                     ret += place;
                 }
                 else {
-                    if (rows.hasOwnProperty(place)) {
-                        inp = parseInt(rows[place].mon, 10);
-                        ret += ("img src='icon:" + inp + "' title='" + rows[place].owner + "'>");
-                    }
-                    else {
-                        ret += " " + link("/vol " + place, place) + " ";
-                    }
+                    ret += " " + link("/vol " + place, place) + " ";
                 }
                 ret += "</td>";
             }
@@ -26777,7 +26778,9 @@ function Safari() {
                     p.actSkills[s] = false;
                 }
                 this.inputVal(p.id, "action", "");
-                this.inputVal(p.id, "canServe", false);
+                if (this.cyclePhase !== "serve") {
+                    this.inputVal(p.id, "canServe", false);
+                }
                 if (p.stamina > p.maxStamina) {
                     p = p.maxStamina;
                 }
@@ -26870,6 +26873,7 @@ function Safari() {
         var p, firstBall = this.teamData[team].firstBall;
         this.teamData[team].firstBall = false;
         if (firstBall) {
+            this.resetPosition(team);
             return;
         }
         for (var t in this.teams[team]) {
