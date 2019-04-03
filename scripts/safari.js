@@ -26031,13 +26031,18 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
-                ret += "<td align=center width=88>";
-                if (rows.hasOwnProperty(place)) {
-                    inp = pokeInfo.icon(parseInt(rows[place].mon, 10));
-                    ret += (" " + inp + " title='" + rows[place].owner + "'");
+                ret += "<td align=center width=88";
+                if (place === "---") {
+                    ret += place;
                 }
                 else {
-                    ret += " " + link("/vol " + place, place) + " ";
+                    if (rows.hasOwnProperty(place)) {
+                        inp = parseInt(rows[place].mon, 10);
+                        ret += ("img src='icon:" + inp + "' title='" + rows[place].owner + "'>");
+                    }
+                    else {
+                        ret += " " + link("/vol " + place, place) + " ";
+                    }
                 }
                 ret += "</td>";
             }
