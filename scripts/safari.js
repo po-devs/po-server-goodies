@@ -19127,6 +19127,7 @@ function Safari() {
                 if (player.firstCelebrityRun) {
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
                     rewardCapCheck(player, reward[0], reward[1], true);
+                    safari.saveGame(player);
                 }
                 
                 if (next >= 13) {
