@@ -937,6 +937,7 @@ function Safari() {
     var catchTierChance = [0.20, 0.18, 0.14, 0.10, 0.065, 0.0275];
 
     /* Leaderboard Variables */
+    var celebrityPKs = {};
     var leaderboards = {};
     var monthlyLeaderboards = {};
     var lastLeaderboards;
@@ -12578,6 +12579,12 @@ function Safari() {
             }
         }
 
+        if (this.select || this.biasNPC || this.biasNPC2) {
+            for (var v in this.viewers) {
+                this.showInfo(this.viewers[v]);
+            }
+        }
+
         var pSize = this.partySize = (this.tagBattle ? 2 : 3);
         this.partySizeP1 = pSize;
         if (this.tagBattle && this.oneOnTwo) {
@@ -12639,11 +12646,36 @@ function Safari() {
                 self.sendMessage(name, "Opponent's team: " + out.join(" "));
             }
         };
-
+        
+        if (this.tagBattle && this.oneOnTwo) {
+            teamPreview(this.name1, this.team1, this.team2, null, this.team4, 4);
+            if (!this.npcBattle) {
+                teamPreview(this.name2, this.team2, this.team1, this.team4, null, 2);
+                teamPreview(this.name4, this.team4, this.team1, this.team2, null, 2);
+            }
+        }
+        else if (this.tagBattle) {
+            teamPreview(this.name1, this.team1, this.team2, this.team3, this.team4, 2);
+            if (!this.npcBattle) {
+                teamPreview(this.name2, this.team2, this.team1, this.team4, this.team3, 2);
+                teamPreview(this.name3, this.team3, this.team2, this.team1, this.team4, 2);
+                teamPreview(this.name4, this.team4, this.team1, this.team2, this.team3, 2);
+            }
+        }
+        else {
+            teamPreview(this.name1, this.team1, this.team2, null, null, 3);
+            if (!this.npcBattle) {
+                teamPreview(this.name2, this.team2, this.team1, null, null, 3);
+            }
+        }
+        
+    }
+    Battle2.prototype.showInfo = function(id) {
+        var src = sys.id(id), m = "", name = "";
         if (this.biasNPC) {
             if (this.biasNPC.length > 0) {
-                var m = "", name = this.name2;
-                this.sendToViewers("");
+                m = "", name = this.name2;
+                this.sendMessage(src, "");
                 for (var j in this.biasNPC) {
                     switch (this.biasNPC[j]) {
                         case "aggressive": m = name + " likes to attack."; break;
@@ -12662,7 +12694,7 @@ function Safari() {
                         case "freeze": m = name + " favors moves that Freeze."; break;
                         case "sleep": m = name + " favors moves that induce Sleep."; break;
                     }
-                    this.sendToViewers(toColor("+ " + m, "#3CB371"));
+                    this.sendMessage(src, toColor("+ " + m, "#3CB371"));
                 }
             }
             if (this.biasNPC2) {
@@ -12686,11 +12718,11 @@ function Safari() {
                             case "freeze": m = name + " favors moves that Freeze."; break;
                             case "sleep": m = name + " favors moves that induce Sleep."; break;
                         }
-                        this.sendToViewers(toColor("+ " + m, "#3CB371"));
+                        this.sendMessage(src, toColor("+ " + m, "#3CB371"));
                     }
                 }
             }
-            this.sendToViewers("");
+            this.sendMessage(src, "");
         }
         if (this.select) {
             for (var j in this.select) {
@@ -12755,35 +12787,12 @@ function Safari() {
                     default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
                 }
                 if (m !== "") {
-                    this.sendToViewers(toColor("- " + m, "#DC143C"));
+                    this.sendMessage(src, toColor("- " + m, "#DC143C"));
                 }
             }
-            this.sendToViewers("");
+            this.sendMessage(src, "");
         }
-        
-        if (this.tagBattle && this.oneOnTwo) {
-            teamPreview(this.name1, this.team1, this.team2, null, this.team4, 4);
-            if (!this.npcBattle) {
-                teamPreview(this.name2, this.team2, this.team1, this.team4, null, 2);
-                teamPreview(this.name4, this.team4, this.team1, this.team2, null, 2);
-            }
-        }
-        else if (this.tagBattle) {
-            teamPreview(this.name1, this.team1, this.team2, this.team3, this.team4, 2);
-            if (!this.npcBattle) {
-                teamPreview(this.name2, this.team2, this.team1, this.team4, this.team3, 2);
-                teamPreview(this.name3, this.team3, this.team2, this.team1, this.team4, 2);
-                teamPreview(this.name4, this.team4, this.team1, this.team2, this.team3, 2);
-            }
-        }
-        else {
-            teamPreview(this.name1, this.team1, this.team2, null, null, 3);
-            if (!this.npcBattle) {
-                teamPreview(this.name2, this.team2, this.team1, null, null, 3);
-            }
-        }
-        
-    }
+    };
     Battle2.prototype.nextTurn = function() {
         if (this.phase === "preview") {
             this.subturn++;
@@ -13708,6 +13717,11 @@ function Safari() {
         var isP2 = this.name2.toLowerCase() === name.toLowerCase();
         var isP3 = this.name3.toLowerCase() === name.toLowerCase();
         var isP4 = this.name4.toLowerCase() === name.toLowerCase();
+
+        if (data.toLowerCase() == "info" && this.viewers.indexOf(name.toLowerCase()) !== -1) {
+            this.showInfo(name);
+            return;
+        }
         
         if (!isP1 && (this.npcBattle || !isP2) && (this.npcBattle || !isP3) && (this.npcBattle || !isP4)) {
             this.sendMessage(name, "You cannot use this command!");
@@ -19219,6 +19233,14 @@ function Safari() {
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
+
+                if (!celebrityPKs.hasOwnProperty(safari.celebrityRegion)) {
+                    celebrityPKs[safari.celebrityRegion] = {};
+                }
+                if (!celebrityPKs[safari.celebrityRegion].hasOwnProperty(args.name)) {
+                    celebrityPKs[safari.celebrityRegion][args.name] = 0;
+                }
+                celebrityPKs[safari.celebrityRegion][args.name] += 1;
             }
         };
 
@@ -29337,6 +29359,7 @@ function Safari() {
         permObj.add("celebrityRegion", JSON.stringify(safari.celebrityRegion));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
+        permObj.add("celebrityPKs", JSON.stringify(safari.celebrityPKs));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -30119,6 +30142,24 @@ function Safari() {
                 safaribot.sendMessage(src, "Added category " + categories + " to " + move + ".", safchan);
                 safari.dataDumps2[title][moveNum+""].Submitter = sys.name(src);
                 safari.dataDumps2[title][moveNum+""].Completed = true;
+                return true;
+            }
+            if (command === "celebritypks" || command == "cpks") {
+                var rec = commandData.toLowerCase(), e, out, i;
+
+                if (!celebrityPKs.hasOwnProperty(rec)) {
+                    safaribot.sendMessage(src, "There is no celebrity data for region " + rec + "!", safchan);
+                    return true;
+                }
+                e = celebrityPKs[rec];
+                list = Object.keys(e);
+                out = list.sort(function(a, b) {
+                    return e[a] - e[b];
+                });
+                safaribot.sendMessage(src, "Top run killers in " + rec + ": ", safchan);
+                for (var i = 0; i < list.length; i++) {
+                    safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]] + "].", safchan);
+                }
                 return true;
             }
             if (command === "leaderboard" || command == "lb") {
@@ -33866,6 +33907,7 @@ function Safari() {
         }
         
         lastLeaderboards = parseFromPerm("lastLeaderboards", null);
+        celebrityPKs = parseFromPerm("celebrityPKs", {});
         rafflePrizeObj = parseFromPerm("rafflePrize", null);
         mAuctionsData = parseFromPerm("mAuctions", []);
         lastContests = parseFromPerm("lastContests", []);
