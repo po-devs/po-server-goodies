@@ -26341,7 +26341,7 @@ function Safari() {
                             continue;
                         }
                         this.loadNextMon(p);
-                        this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke]) + "!", "green");
+                        this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke].id) + "!", "green");
                     }
                 }
             }
@@ -26456,7 +26456,7 @@ function Safari() {
                 p = team[t];
                 if (this.teamHasBall === ind) {
                     if (this.phase == "receive") {
-                        if (sys.isInChannel(sys.id(p.id), safchan) || p.ai) {
+                        if (sys.isInChannel(sys.id(p.id), safchan) || (!p.ai)) {
                             continue;
                         }
                         if (this.pos === (getRow + this.ballColumn)) {
@@ -26497,7 +26497,7 @@ function Safari() {
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet) {
+                    if (p.canSet && p.zone == "front") {
                         if (p.toss >= maxSet && p.ai) {
                             maxSet = p.toss;
                             setter = p.id;
@@ -27032,7 +27032,7 @@ function Safari() {
         this.ballColumn = (8 - tocolumn);
         stcost = (2 + (player.serveEffort * 2));
         player.stamina = Math.max(player.stamina - stcost, 0);
-        var might;
+        var might = "FREE";
         switch (pow) {
             case 8: might = "METEORIC"; break;
             case 7: might = "FIERCE"; break;
@@ -27303,7 +27303,7 @@ function Safari() {
             player.setval = the score from 0-6 of the player's setter score.
             Block evade chance = You must be spiking at least 7 spaces away to have any chance of evading block. If you do, the lower of the set score and your precision is added.
         */
-        pow = Math.min(8, Math.ceil((player.spike + (player.setval/2))));
+        pow = Math.min(8, Math.ceil((player.spike + (player.setval/2) + (Math.min(player.prep/2, 1)))));
         if (player.stamina <= 10) {
             pow -= 1;
         }
@@ -27552,6 +27552,7 @@ function Safari() {
                     stcost += 2;
                 }
                 this.cyclePhase = "set";
+                p.canSet = false;
                 break;
             }
             else {
