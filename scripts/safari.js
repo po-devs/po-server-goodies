@@ -13993,7 +13993,6 @@ function Safari() {
             bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
             bonus *= ((this.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
             bonus *= ((this.select.hex && target.condition !== "none") ? 2 : 1);
-            bonus *= ((this.select.continue && this.getStatValue(user, "spe", 1) >= this.getStatValue(target, "spe", 2)) ? 1.5 : 1);
             var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
                 if (analytic) {
