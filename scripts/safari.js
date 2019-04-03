@@ -26001,7 +26001,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.courtIcon = function(mon, owner) {
-       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(p) + "'>";
+       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + "'>";
     };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
@@ -26232,6 +26232,7 @@ function Safari() {
             this.step = 0;
             this.sendMessageAll("TURN " + this.turn + ": ");
             if (this.phase == "prep") {
+                this.processMoves();
                 this.prepareServe(this.teamHasBall);
             }
             else {
@@ -26550,15 +26551,26 @@ function Safari() {
             act = "";
             act2 = "";
             if (this.phase == "assemble" && p.place === -1) {
-                this.inputMove(p.id, "0");
-                this.inputMove(p.id, "1");
-                this.inputMove(p.id, "2");
-                this.inputMove(p.id, "3");
-                this.inputMove(p.id, "4");
-                this.inputMove(p.id, "5");
+                var pass;
+                pass = this.inputMove(p.id, "0");
+                if (!pass) {
+                    pass = this.inputMove(p.id, "1");
+                }
+                if (!pass) {
+                    pass = this.inputMove(p.id, "2");
+                }
+                if (!pass) {
+                    pass = this.inputMove(p.id, "3");
+                }
+                if (!pass) {
+                    pass = this.inputMove(p.id, "4");
+                }
+                if (!pass) {
+                    pass = this.inputMove(p.id, "5");
+                }
                 continue;
             }
-            if (p.canServe && p.action == "") {
+            if (p.canServe && p.action == "" && this.phase == "serve") {
                 //Force it to serve because otherwise the game doesn't start
                 if (p.precision >= 4) {
                     maxr = 2.5;
@@ -27654,7 +27666,7 @@ function Safari() {
         }
         if (player.action !== "") {
             this.sendMessage(name, "You already took action this turn!", "red");
-            return;
+            return false;
         }
         if (this.phase === "assemble") {
             /* In here it allows you to pick your team order/server order */
@@ -27719,7 +27731,7 @@ function Safari() {
             if (data == "sub") {
                 this.sendMessageTeam(player.team, player.id + " is going sub in their next Pokémon!", "green");
                 player.action = "sub";
-                return;
+                return true;
             }
             switch (player.place) {
                 case 0: opt = ["a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"]; break;
@@ -27732,8 +27744,9 @@ function Safari() {
             if (opt.indexOf(data) !== -1) {
                 this.sendMessageTeam(player.team, player.id + " is moving to " + data + "!", "green");
                 this.movePlayer(player.id, data);
-                return;
+                return true;
             }
+            return false;
         } else {
                 if (this.phase == "set" && (player.team === this.teamHasBall) && player.zone == "front" && player.canSet) {
                     if (cdata[0] == "set") {
@@ -27867,23 +27880,24 @@ function Safari() {
         }
         if (opt.indexOf(cdata[0]) === -1) {
             this.sendMessage(name, "No such action as " + data + "!", "red");
-            return;
+            return false;
         }
         for (var t in teammates) {
             if (teammates[t].pos === data) {
                 //You cannot go there, because someone else is already there
                 this.sendMessage(name, "There is already a teammate at " + data + "!", "red");
-                return;
+                return false;
             }
         }
         if (this.excludePos[player.team].indexOf(data) !== -1) {
             this.sendMessage(name, "There is already a teammate going to " + data + "!", "red");
-            return;
+            return false;
         }
         if (data == "block") {
             player.blocking = true;
             this.inputVal(player.id, "action", "block");
             this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
+            return true;
         }
         else if ((data[0] === "x") || (data === "tip")) {
             this.excludeActions.push("tip");
@@ -27895,15 +27909,18 @@ function Safari() {
             else {
                 this.sendMessageTeam(player.team, this.actName(player) + " is hitting the ball to " + data + "!", "green");
             }
+            return true;
         }
         else {
             if (this.getDistance(player.pos, data) > player.speed) {
                 this.sendMessage(name, "You cannot go to " + data + " because it is too far!", "red");
+                return false;
             }
             else {
                 this.excludePos[player.team].push(data);
                 this.sendMessageTeam(player.team, this.actName(player) + " is planning to move to " + data + "!", "green");
                 this.inputVal(player.id, "action", data);
+                return true;
             }
         }
     };
