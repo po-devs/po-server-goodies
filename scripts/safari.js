@@ -25795,6 +25795,7 @@ function Safari() {
             great: { bg: "#098f9b" },
             alright: { bg: "#098f9b" },
             okay: { bg: "#098f9b" },
+            soft: { bg: "#098f9b" },
             fair: { bg: "#075196" },
             tight: { bg: "#500bc6" },
             off: { bg: "#500bc6" }
@@ -26021,7 +26022,7 @@ function Safari() {
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             mon = parseInt(p.party[p.currentPoke].id, 10);
-            rows["x" + p.pos[0] + (8 - p.column)] = {mon: mon, owner: p.id};
+            rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
@@ -26096,7 +26097,7 @@ function Safari() {
     Volleyball.prototype.generateVolleyballParty = function() {
         var p = [], k;
         for (var i = 0; i < 3; i++) {
-            k = Object.keys(safari.volleyballStats).random();
+            k = parseInt(Object.keys(safari.volleyballStats).random());
             while (p.indexOf(k) !== -1) {
                 k = parseInt(Object.keys(safari.volleyballStats).random(), 10);
             }
@@ -27255,6 +27256,7 @@ function Safari() {
         }
         dist = vdx + (2 * dy);
 
+        totalblk = 0;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             if (p.blocking && p.zone == "front") {
@@ -27268,7 +27270,7 @@ function Safari() {
                         k = Math.min((p.block + p.prep)/2, 2.25);
                     }
                 }
-                if (player.column === tempcolumn - 1) {
+                if (player.column === tempcolumn + 1) {
                     if (angle === -2) {
                         k = p.block + p.prep;
                     }
@@ -27276,7 +27278,7 @@ function Safari() {
                         k = Math.min((p.block + p.prep)/2, 2.25);
                     }
                 }
-                if (player.column === tempcolumn + 1) {
+                if (player.column === tempcolumn - 1) {
                     if (angle === 2) {
                         k = p.block + p.prep;
                     }
@@ -27327,7 +27329,7 @@ function Safari() {
             blkevade += 0.15;
         }
         var free = false;
-        if (!(chance( blkevade ))) {
+        if (!(chance( blkevade )) && totalblk > 0) {
             totalblk += Math.random() * 3;
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
@@ -27343,11 +27345,6 @@ function Safari() {
         player.canHit = false;
         player.canTip = false;
         if (free) {
-            for (var p in this.teams[defteam]) {
-                if (p.zone == "back") {
-                    p.freepass = true;
-                }
-            }
             this.ballRow = 2;
             this.ballColumn = 4;
             this.ballPower = 0;
@@ -27549,7 +27546,7 @@ function Safari() {
                         break;
                     }
                 }
-                this.sendMessageAll(volleyballScoreIcon("okay") + this.actName(p) + " received the ball! " + se.join(" or ") + " may set the ball!", "blue");
+                this.sendMessageAll(volleyballScoreIcon("OKAY") + this.actName(p) + " received the ball! " + se.join(" or ") + " may set the ball!", "blue");
                 stcost = 3;
                 if ( p.receiveType == "dig" ) {
                     stcost += 2;
