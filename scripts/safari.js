@@ -26465,7 +26465,7 @@ function Safari() {
                         }
                         else if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= (p.speed)) {
                             if (this.getDistance2(p.row, p.column, this.ballRow, this.ballColumn) <= i) {
-                                if ((i < (maxDist - 2) && (chance((1 - (((p.receive*2) + i)*0.07)))))) {
+                                if (((i < (maxDist - 2)) && (chance((1 - (((p.receive*2) + i)*0.07)))))) {
                                     continue;
                                 }
                                 act = (getRow + this.ballColumn);
@@ -26474,7 +26474,7 @@ function Safari() {
                         else {
                             act = "";
                         }
-                        if ((act !== "") || stay) {
+                        if ((act !== "") && (!stay)) {
                             this.inputMove(p.id, act);
                             break;
                         }
@@ -26482,13 +26482,15 @@ function Safari() {
                 }
             }
         }
+        maxSet = -1;
+        maxHit = -1;
         for (var t in team) {
             act = "";
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
                     if (p.canSet) {
-                        if (p.toss >= maxSet) {
+                        if (p.toss >= maxSet && p.ai) {
                             maxSet = p.toss;
                             setter = p.id;
                         }
@@ -26503,7 +26505,7 @@ function Safari() {
                     }
                 }
                 if ((this.phase == "attack" || this.phase == "set") && p.canHit) {
-                    if (this.phase == "set" && chance(1 - this.spike * 0.1)) {
+                    if (this.phase == "set" && chance(1 - p.spike * 0.1)) {
                         continue;
                     }
                     if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1)) {
@@ -26582,7 +26584,7 @@ function Safari() {
                 this.inputMove(p.id, act);
                 continue;
             }
-            if (p.canHit && p.action == "") {
+            if (p.canHit && p.action == "" && this.phase !== "set") {
                 if (p.row !== 4 && !(p.row === 3 && p.skills.indexOf("back-attack") !== -1) && this.phase !== "set" ) {
                     act = "hitfree";
                     this.inputMove(p.id, act);
@@ -27394,6 +27396,7 @@ function Safari() {
         this.turn++;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
+            p.receiver = false;
             if (p.row === 4) {
                 continue;
             }
