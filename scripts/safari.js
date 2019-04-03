@@ -26037,7 +26037,7 @@ function Safari() {
                 var place = r[j];
                 ret += "<td align=center width=88>";
                 if (rows.hasOwnProperty(place)) {
-                    inp = pokeInfo.icon(parseInt(rows[place].mon, 10));
+                    inp = parseInt(rows[place].mon, 10);
                     ret += this.courtIcon(inp, rows[place].owner);
                 }
                 else if (place === "---") {
