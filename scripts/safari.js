@@ -12139,6 +12139,9 @@ function Safari() {
                     }
                     battle.viewers.push(name.toLowerCase());
                     battle.sendToViewers(name + " is watching this battle!");
+                    if (battle.battle2 && (battle.select || battle.biasNPC)) {
+                        battle.showinfo(name.toLowerCase());
+                    } 
                 }
                 return;
             }
@@ -12671,11 +12674,11 @@ function Safari() {
         
     }
     Battle2.prototype.showInfo = function(id) {
-        var src = sys.id(id), m = "", name = "";
+        var m = "", name = "";
         if (this.biasNPC) {
             if (this.biasNPC.length > 0) {
                 m = "", name = this.name2;
-                this.sendMessage(src, "");
+                this.sendMessage(id, "");
                 for (var j in this.biasNPC) {
                     switch (this.biasNPC[j]) {
                         case "aggressive": m = name + " likes to attack."; break;
@@ -12694,7 +12697,7 @@ function Safari() {
                         case "freeze": m = name + " favors moves that Freeze."; break;
                         case "sleep": m = name + " favors moves that induce Sleep."; break;
                     }
-                    this.sendMessage(src, toColor("+ " + m, "#3CB371"));
+                    this.sendMessage(id, toColor("+ " + m, "#3CB371"));
                 }
             }
             if (this.biasNPC2) {
@@ -12718,11 +12721,11 @@ function Safari() {
                             case "freeze": m = name + " favors moves that Freeze."; break;
                             case "sleep": m = name + " favors moves that induce Sleep."; break;
                         }
-                        this.sendMessage(src, toColor("+ " + m, "#3CB371"));
+                        this.sendMessage(id, toColor("+ " + m, "#3CB371"));
                     }
                 }
             }
-            this.sendMessage(src, "");
+            this.sendMessage(id, "");
         }
         if (this.select) {
             for (var j in this.select) {
@@ -12787,10 +12790,10 @@ function Safari() {
                     default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
                 }
                 if (m !== "") {
-                    this.sendMessage(src, toColor("- " + m, "#DC143C"));
+                    this.sendMessage(id, toColor("- " + m, "#DC143C"));
                 }
             }
-            this.sendMessage(src, "");
+            this.sendMessage(id, "");
         }
     };
     Battle2.prototype.nextTurn = function() {
