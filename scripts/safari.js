@@ -12140,7 +12140,7 @@ function Safari() {
                     battle.viewers.push(name.toLowerCase());
                     battle.sendToViewers(name + " is watching this battle!");
                     if (battle.battle2 && (battle.select || battle.biasNPC)) {
-                        battle.showinfo(name.toLowerCase());
+                        battle.showInfo(name.toLowerCase());
                     } 
                 }
                 return;
