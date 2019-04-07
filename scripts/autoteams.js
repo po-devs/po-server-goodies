@@ -305,6 +305,9 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             throw "Autoteam failed to load.";
             return;
         }
+        if (i > info.length) {
+            break;
+        }
         parcel = info[i];
         piece = parcel.split(" ");
         value = sys.pokeNum(piece[0]);
