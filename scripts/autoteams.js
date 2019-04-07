@@ -673,7 +673,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
             catch (error) {
                  teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            this.addTeam2(commandData2[0], commandData2[1], player. data);
+            this.addTeam2(commandData2[0], commandData2[1], player, data);
             team = commandData2[0].toLowerCase();
             tier = find_tier(commandData2[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
