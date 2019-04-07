@@ -10225,11 +10225,38 @@ function Safari() {
             case "towerFloor":
                 out = (action === "tower" && target >= mission.target ? value : 0);
                 break; 
+            case "gymLeaderMono":
+                out = (action === "gymLeader" && target >= mission.target && data.mono.contains(mission.type) ? value : 0);
+                break; 
             case "celebrity":
                 out = (action === "celebrity" && target >= mission.target ? value : 0);
                 break; 
+            case "celebrityHard":
+                out = (action === "celebrity" && data.level > 0 && target >= mission.target ? value : 0);
+                break; 
+            case "celebrityAbyssal":
+                out = (action === "celebrity" && data.level > 3 && target >= mission.target ? value : 0);
+                break; 
             case "celebrityGeneration":
                 out = (action === "celebrity" && target >= mission.target && data.gen[0] === mission.type && data.unique ? 1 : 0);
+                break; 
+            case "celebrityGenerationHard":
+                out = (action === "celebrity" && data.level > 0 && target >= mission.target && data.gen[0] === mission.type && data.unique ? 1 : 0);
+                break; 
+            case "celebrityGenerationExpert":
+                out = (action === "celebrity" && data.level > 1 && target >= mission.target && data.gen[0] === mission.type && data.unique ? 1 : 0);
+                break; 
+            case "celebrityGenerationSuperExpert":
+                out = (action === "celebrity" && data.level > 2 && target >= mission.target && data.gen[0] === mission.type && data.unique ? 1 : 0);
+                break; 
+            case "celebrityMono":
+                out = (action === "celebrity" && target >= mission.target && data.mono.contains(mission.type) && data.unique ? 1 : 0);
+                break; 
+            case "celebrityMonoHard":
+                out = (action === "celebrity" && data.level > 1 && target >= mission.target && data.mono.contains(mission.type) && data.unique ? 1 : 0);
+                break; 
+            case "celebrityMonoAbyssal":
+                out = (action === "celebrity" && data.level > 3 && target >= mission.target && data.mono.contains(mission.type) && data.unique ? 1 : 0);
                 break; 
             case "scientistSilver":
                 out = (action === "scientist" ? data.silver : 0);
@@ -10239,6 +10266,12 @@ function Safari() {
                 break; 
             case "pyramidPoints":
                 out = (action === "pyramid" ? data.points : 0);
+                break; 
+            case "pyramidRun":
+                out = (action === "pyramid" && target >= data.points ? 1 : 0);
+                break; 
+            case "photo":
+                out = (action === "photo" ? target : 0);
                 break; 
             case "sellMoney":
                 out = (action === "sell" ? data.price : 0);
@@ -19115,7 +19148,7 @@ function Safari() {
                 /* 
                     Mission/Trials related stuff
                 */
-                var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], y, l = [], u = true;
+                var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], n = [], y, l = [], u = true;
                 for (var t in k) {
                     y = true;
                     for (var p in player.party) {
@@ -19127,6 +19160,18 @@ function Safari() {
                         m.push(k[t]);
                     }
                 }
+                k = Object.keys(effectiveness);
+                for (var t in k) {
+                    y = true;
+                    for (var p in player.party) {
+                        if (!hasType(player.party[p],k[t])) {
+                            y = false;
+                        }
+                    }
+                    if (y) {
+                        n.push(k[t]);
+                    }
+                }
                 for (var p in player.party) {
                     if (l.indexOf(player.party[p]) !== -1) {
                         u = false;
@@ -19135,7 +19180,7 @@ function Safari() {
                     l.push(player.party[p]);
                 }
 
-                safari.missionProgress(player, "celebrity", next, 1, {gen: m, unique: u});
+                safari.missionProgress(player, "celebrity", next, 1, {gen: m, mono: n, unique: u, level: args.difficulty});
                 
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
                 for (e = 0; e < viewers.length; e++) {
@@ -19702,6 +19747,28 @@ function Safari() {
                         ["fragment", 1],
                         ["pack", 1]
                     ][player.quests.league.badges.length];
+
+                    //mission stuff
+                    var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], y, l = [], u = true;
+                    for (var t in k) {
+                        y = true;
+                        for (var p in player.party) {
+                            if (!generation(parseInt(player.party[p], 10), true) === k[t]) {
+                                y = false;
+                            }
+                        }
+                        if (y) {
+                            m.push(k[t]);
+                        }
+                    }
+                    for (var p in player.party) {
+                        if (l.indexOf(player.party[p]) !== -1) {
+                            u = false;
+                            break;
+                        }
+                        l.push(player.party[p]);
+                    }
+                    this.missionProgress(player, "gymLeaderMono", 1, 1, {});
                     
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Congratulations, " + name + "! For clearing the " + gym.name + " Gym, I award you the " + gym.badge + "!", safchan);
                     safaribot.sendHtmlMessage(id, "League Guide: We also reward you with " + plural(reward[1], reward[0]) + "!", safchan);
@@ -20028,6 +20095,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
+        this.missionProgress(player, "photo", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
@@ -25736,65 +25804,69 @@ function Safari() {
         return signupsLower.contains(n) && !this.winners.contains(n);
     };
     safari.volleyballStats = {
-        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "grounded", "banner-grass"]},
-        "4": {"stamina": 38, "serve": 2, "receive": 3, "toss": 2, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["wide", "dig"]},
-        "7": {"stamina": 38, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["quick-set", "dump", "splash"]},
-        "25": {"stamina": 25, "serve": 4, "receive": 4, "toss": 2, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "energize"]},
-        "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 2, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["ace", "reach", "dig"]},
-        "35": {"stamina": 34, "serve": 3, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 2, "skills": ["regen", "splash", "grounded"]},
-        "62": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 2, "precision": 1,"speed": 1, "skills": ["back-attack", "splash", "grounded"]},
-        "68": {"stamina": 30, "serve": 2, "receive": 2, "toss": 4, "spike": 5, "block": 4, "precision": 0,"speed": 1, "skills": ["ace", "dump"]},
-        "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 3, "block": 3, "precision": 4,"speed": 4, "skills": []},
-        "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "trickster"]},
-        "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "dump", "wide"]},
+        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "overgrow", "banner"]},
+        "4": {"stamina": 30, "serve": 2, "receive": 3, "toss": 2, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["dig", "swap", "guardian"]},
+        "7": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["wide", "banner", "splash"]},
+        "25": {"stamina": 25, "serve": 4, "receive": 3, "toss": 2, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "stun"]},
+        "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 3, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["stun", "energize", "dig"]},
+        "36": {"stamina": 34, "serve": 5, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 1, "skills": ["banner", "grounded", "defiant"]},
+        "62": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "grounded"]},
+        "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 0,"speed": 1, "skills": ["ace", "dump", "guts"]},
+        "94": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 0, "precision": 3,"speed": 4, "skills": ["performer", "sneak", "telepathy"]},
+        "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 4, "block": 3, "precision": 4,"speed": 4, "skills": []},
+        "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "performer", "energize"]},
+        "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "overgrow", "wide"]},
         "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
-        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 1, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner-water", "back-attack", "dig"]},
+        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 1, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner", "splash", "dig"]},
         "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 2, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
-        "248": {"stamina": 32, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 4, "precision": 3,"speed": 1, "skills": ["wide"]},
-        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "quick-set"]},
-        "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "ace"]},
-        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "banner-water"]},
-        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["dump", "regen"]},
-        "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["grounded", "wide"]},
-        "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 4, "block": 3, "precision": 5,"speed": 4, "skills": ["dig", "banner-normal", "ace"]},
-        "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 0, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["burn", "ace"]},
-        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "banner-fight"]},
-        "466": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "banner-electric", "energize"]},
-        "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["telepathy", "ace"]},
-        "531": {"stamina": 35, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner-normal", "regen", "energize"]},
-        "652": {"stamina": 33, "serve": 1, "receive": 5, "toss": 2, "spike": 3, "block": 5, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow"]},
-        "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "ace"]},
-        "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 3, "spike": 3, "block": 2, "precision": 3,"speed": 5, "skills": ["trickster", "wide", "dump"]},
-        "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "ace"]},
-        "727": {"stamina": 33, "serve": 4, "receive": 5, "toss": 1, "spike": 4, "block": 2, "precision": 1,"speed": 1, "skills": ["burn", "wide"]},
-        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 3, "skills": ["trickster", "performer"]},
-        "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 4, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "quick-set", "dump"]}
+        "248": {"stamina": 32, "serve": 4, "receive": 5, "toss": 2, "spike": 5, "block": 4, "precision": 4,"speed": 1, "skills": ["ace", "slacker", "defiant"]},
+        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "wide"]},
+        "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
+        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "guardian"]},
+        "272": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 2,"speed": 2, "skills": ["splash", "overgrow", "swap"]},
+        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "telepathy", "float"]},
+        "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
+        "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "guardian"]},
+        "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 5, "block": 3, "precision": 3,"speed": 4, "skills": ["dig", "banner", "ace"]},
+        "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 5, "precision": 2,"speed": 3, "skills": ["guardian", "back-attack", "guts"]},
+        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "clairvoyant", "banner"]},
+        "461": {"stamina": 27, "serve": 3, "receive": 1, "toss": 4, "spike": 3, "block": 1, "precision": 5,"speed": 5, "skills": ["dump", "guardian", "defiant"]},
+        "466": {"stamina": 30, "serve": 3, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "stun", "energize"]},
+        "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["ace", "dagger", "float"]},
+        "531": {"stamina": 38, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner", "energize", "float"]},
+        "652": {"stamina": 33, "serve": 2, "receive": 5, "toss": 2, "spike": 3, "block": 4, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow", "guts"]},
+        "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "dump", "burn"]},
+        "658": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 2, "precision": 5,"speed": 5, "skills": ["wide", "sneak", "dump"]},
+        "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 5, "precision": 3,"speed": 2, "skills": ["reach", "overgrow", "float"]},
+        "727": {"stamina": 33, "serve": 4, "receive": 5, "toss": 1, "spike": 4, "block": 2, "precision": 1,"speed": 1, "skills": ["burn", "grounded", "dagger"]},
+        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 2, "skills": ["splash", "performer", "swap"]},
+        "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 4, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "guts", "dump"]}
     };
     safari.volleyballSkillDescriptions = {
-        "ace": "Spike power increases by +2 on a PERFECT or better Set.",
-        "back-attack": "May perform a Spike from the back row if they are in the C row.",
-        "burn": "If there is at least one other Fire-type Pokémon on this Pokémon's team, Receivers of this Pokémon's Spikes and Serves suffer -3 stamina.",
-        "dagger": "Can Spike on a Pass of EXCELLENT or higher quality.",
-        "dig": "While Stamina is above 10, may perform a Dig (Receives a Spiked or Served ball that would otherwise score a point, with FAIR accuracy, and Pokémon loses an additional 5 stamina).",
-        "dump": "Pokémon may perform a Tip on a Pass or Set that is GREAT or higher quality.",
-        "energize": "When this Pokémon sets to an Spiker, that Spiker gains +3 Stamina restored.",
-        "banner-fight": "While this is in the front row, Fighting-type Pokémon in the back-row have their Pass score increased by +2.",
-        "banner-electric": "While this is in the front row, Electric-type Pokémon in the back-row have their Pass score increased by +2.",
-        "banner-grass": "While this is in the front row, Grass-type Pokémon in the back-row have their Pass score increased by +2.",
-        "banner-water": "While this is in the front row, Water-type Pokémon in the back-row have their Pass score increased by +2.",
-        "banner-normal": "While this is in the front row, Normal-type Pokémon in the back-row have their Pass score increased by +2.",
-        "grounded": "Pokémon's Pass score increases by +1 if it has prepared.",
-        "guardian": "Pokémon's can receive overhand more easily.",
-        "overgrow": "While this is in the back row, Grass-type Pokémon in the front row have their block score increased by +2.",
-        "regen": "When this Pokémon Serves, all allies in the back row regenerate +1 Stamina.",
-        "quick-set": "When this Pokémon Sets and its Stamina is 10 or higher, foes must expend +2 stamina to block any Spiker this turn.",
-        "splash": "Whenever this Pokémon Sets, all other Pokémon in both front rows suffer -2 Stamina.",
-        "telepathy": "Pokémon's Spike score is increased by +1 if there is at least 1 other Psychic-type Pokémon on its team.",
-        "wide": "Pokémon's Spike score is increased by +2 if no attempt is made to block it.",
-        "performer": "This Pokémon gains +2 set score from an EXCELLENT or better receive.",
-        "reach": "Pokémon's expends less stamina to Block.",
-        "trickster": "This Pokémon's tips ccost an extra 3 stamina to receive.",
-        "water-bubble": "This Pokémon takes no additional stamina reduction from Burn abilities. This Pokémon can receive from the side as well as a direct receive."
+        "ace": "Ace: If this Pokémon is the only Pokémon on its team with 'Ace' skill, +2 Spike power.",
+        "back-attack": "Back Attack: May perform a Spike from the back row if they are in the C row.",
+        "burn": "Burn: Receivers of this Pokémon's Spikes and Serves suffer -3 stamina unless they are Water-type.",
+        "dagger": "Dagger: Spike +2 if the rally has continued for 5 turns or longer.",
+        "clairvoyant": "Clairvoyant: Allies in the same zone as this Pokémon gain +2 Precision while spiking, serving, and tipping. While this Pokémon is in the front row, nullifies foe's 'Sneak' skills.",
+        "dig": "Dig: This Pokémon can has a chance to receive spikes aimed in front of it with good success but high stamina cost.",
+        "dump": "Dump: Pokémon may perform a Tip on a Pass or Set that is GREAT or higher quality.",
+        "energize": "Energize: When this Pokémon sets to an Spiker, that Spiker gains +2 Stamina restored.",
+        "banner": "Banner: Pokémon in the same column or row as this Pokémon's Receive +1.",
+        "grounded": "Grounded: Pokémon's Receive strength increases by +2 if it does not move after the spike or serve.",
+        "guardian": "Guardian: Pokémon's Receive strength increases by +2 on Free Pass and Tips.",
+        "overgrow": "Overgrow: While this is in the back row, opposing team's Water type Pokémon's Spike -1. This Pokémon spends less stamina receiving unless the Spiker has 'Burn'.",
+        "slacker": "Slacker: This Pokémon's Spikes, Receives, Serves, and Sets are reduced in effectiveness for the first 5 volleys.",
+        "sneak": "[ACT] Sneak: Costs 3 Stamina. Becomes invisible to opponents until the next time it touches the ball.",
+        "splash": "Splash: When this Pokémon Sets, all non-Water type Pokémon in both front rows suffer -2 Stamina (Fire types suffer -3).",
+        "telepathy": "Telepathy: While this Pokémon is in the back row, Fighting-type teammate's Spike +1.",
+        "defiant": "Defiant: While this is in the back row, Psychic-type teammate's Spike +1.",
+        "float": "[ACT] Float: Costs 2 Stamina. Serve becomes hard to receive overhand, and punishes receivers that have moved.",
+        "swap": "[ACT] Swap: Costs 3 Stamina. Moves the Pokémon up in the rotation, trading places with the Pokémon ahead of it.",
+        "guts": "Guts: While this is in the back row, Dark-type teammate's Spike +1.",
+        "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
+        "performer": "Performer: This Pokémon Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
+        "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
+        "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types."
     };
     function getVolleyballStat(mon, stat) {
         if (safari.volleyballStats.hasOwnProperty(mon+"")) {
@@ -25867,7 +25939,11 @@ function Safari() {
         this.phase = "signups";
         this.cyclePhase = "";
 
-        // sendAll("A battle between " + this.name1 + " and " + this.name2 + (npcDesc ? " (" + npcDesc + ")" : "") + " has started! " + (this.cantWatch ? "" : "[" + link("/watch " + this.name1, "Watch") + "]"), true);
+        //Skill related variables
+        this.ballBurn = false;
+        this.ballStun = false;
+        this.ballFloat = false;
+
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
     };
     Volleyball.prototype.handleCommand = function(src, data) {
@@ -25988,6 +26064,9 @@ function Safari() {
         this.turn = 0;
         this.phase = "assemble";
     };
+    Volleyball.prototype.hasSkill = function(player, skill) {
+        return (player.skills.indexOf(skill) !== -1);
+    };
     Volleyball.prototype.setterLinks = function(ind) {
         var team = this.teams[ind], p, q, links = "", links2 = "", first = false, first2 = false;
         for (var t in team) {
@@ -26023,6 +26102,9 @@ function Safari() {
                 else {
                     this.sendMessage(p.id, "To choose a set target, use " + links + ".");
                 }
+                if (p.canTip) {
+                    this.sendMessage(p.id, "You can also perform a " + link("/vol tip") + "!");
+                }
             }
         }
         return;
@@ -26044,11 +26126,19 @@ function Safari() {
             ["b1", "b2", "b3", "b4", "b5", "b6", "b7"],
             ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
         ];
-        var ret = "", r, place, inp;
+        var ret = "", r, place, inp, identify;
+        for (var t in this.teams[atkteam]) {
+            //Check if Sneak can activate
+            if (this.hasSkill(this.teams[atkteam][t], "clairvoyant") && this.teams[atkteam][t].zone === "front") {
+                identify = true;
+            }
+        }
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
-            mon = parseInt(p.party[p.currentPoke].id, 10);
-            rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
+            if (!p.actSkills.sneak && (!identify)) {
+                mon = parseInt(p.party[p.currentPoke].id, 10);
+                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
+            }
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
@@ -26152,14 +26242,18 @@ function Safari() {
                 canHit: false,
                 canTip: false,
                 blocking: false,
+                blockType: "straight",
                 passval: 0,
                 setval: 0,
+                volleysIn: 0,
                 freepass: false,
                 quickattack: false,
+                stunned: false,
                 moved: 0,
                 receiver: false,
                 receiveType: "",
-                serveEffort: 0
+                serveEffort: 0,
+                canSwap: false
         };
 
         if (isNPC) {
@@ -26216,6 +26310,7 @@ function Safari() {
         player.block = player.party[m].block;
         player.speed = player.party[m].speed;
         player.skills = player.party[m].skills;
+        player.volleysIn = 0;
         return;
     };
     Volleyball.prototype.actName = function(player) {
@@ -26329,6 +26424,7 @@ function Safari() {
                 p = cteam[t];
                 if (p.action == "") {
                     p.prep += 1;
+                    p.prep = (Math.min(p.prep, 3));
                 }
                 else if (p.action[0] !== "x") {
                     if (["set", "attack", "tip", "block"].indexOf(p.action) !== -1) {
@@ -26454,6 +26550,15 @@ function Safari() {
                 for (var t in cteam) {
                     p = cteam[t];
                     this.inputMove("miki sayaka", "eval:" + p.id);
+                }
+            }
+        }
+        for (var team in this.teams) {
+            cteam = this.teams[team];
+            for (var t in cteam) {
+                var p = cteam[t];
+                if (this.hasSkill(p, "sneak") && (!p.actSkills.sneak)) {
+                    this.sendMessage(p.id, "You can use " + link("/vol sneak") + "to become invisible to opponents until you next touch the ball!");
                 }
             }
         }
@@ -26780,6 +26885,9 @@ function Safari() {
         return;
     }
     Volleyball.prototype.clearVals = function() {
+        this.excludePos = [
+        [], []
+        ];
         for (var team in this.teams) {
             cteam = this.teams[team];
             for (var t in cteam) {
@@ -26803,7 +26911,7 @@ function Safari() {
                     p.moved = 0;
                 }
                 else {
-                    p.canSet = false;
+                    this.inputVal(p.id, "canSet", false);
                 }
                 if (this.cyclePhase == "serve") {
                     p.quickattack = false;
@@ -26826,16 +26934,17 @@ function Safari() {
                 if (p.stamina < 0) {
                     p = 0;
                 }
+                this.excludePos[player.team].push(player.pos);
             }
         }
         this.excludeActions = [];
-        this.excludePos = [
-        [], []
-        ];
         if (this.cyclePhase !== "receive") {
             this.ballPower = 0;
             this.ballRow = -1;
             this.ballColumn = -1;
+            this.ballBurn = false;
+            this.ballStun = false;
+            this.ballFloat = false;
         }
     };
     Volleyball.prototype.winGame = function(team) {
@@ -26875,14 +26984,33 @@ function Safari() {
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
         this.sendMessageAll("");
+        var regen = (3 + (Math.max(2 * (this.turn - 2), 0)));
         this.turn = 0;
         for (var p in this.teams[0]) {
-            this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + 3, this.teams[0][p].maxStamina);
+            this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
             this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            this.teams[0][p].volleysIn++;
+            if (this.teams[0][p].volleysIn > 5 && this.hasSkill(this.teams[0][p], "slacker")) {
+                this.sendMessageTeam(0, this.actName(this.teams[0][p]) + " has finally reached full strength!", "green");
+            }
+            this.teams[0][p].stunned = false;
+            this.teams[0][p].canSwap = true;
+            if (this.hasSkill(this.teams[0][p], "swap")) {
+                this.sendMessage(this.teams[0][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
+            }
         }
         for (var p in this.teams[1]) {
-            this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + 3, this.teams[1][p].maxStamina);
+            this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + regen, this.teams[1][p].maxStamina);
             this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            this.teams[1][p].volleysIn++;
+            if (this.teams[1][p].volleysIn > 5 && this.hasSkill(this.teams[1][p], "slacker")) {
+                this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
+            }
+            this.teams[1][p].stunned = false;
+            this.teams[1][p].canSwap = true;
+            if (this.hasSkill(this.teams[1][p], "swap")) {
+                this.sendMessage(this.teams[1][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
+            }
         }
         this.clearVals();
         this.resetPosition(team);
@@ -26904,6 +27032,9 @@ function Safari() {
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        if (this.hasSkill(p, "float")) {
+            this.sendMessage(p.id, "Type " + link("/vol float") + " to perform a Float Serve!");
+        }
         this.phase = "serve";
         this.teamHasBall = team;
         return true;
@@ -27020,12 +27151,22 @@ function Safari() {
         else if (player.serveEffort === 2) {
             pow *= 1.5;
         }
-        xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (player.precision * Math.random())), 1)) - ((3 + player.precision) * (1 + Math.random()))), 0);
+        var prec = player.precision;
+        for (var t in this.teams[player.team]) {
+            var p = this.teams[player.team][t];
+            if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
+                prec += 2;
+            }
+        }
+        xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         xvar = (chance(0.5) ? xvar * -1 : xvar);
-        yvar = (chance(0.8 - (((player.precision * 1.2) + 2) * 0.1)) ? 1 : 0);
-        yvar = (chance(0.5) ? yvar * -1 : yvar);
+        yvar = (chance(0.8 - (((prec * 1.2) + 2) * 0.1)) ? 1 : 0);
+        yvar = (chance(0.5 + (player.actSkills.float ? 0.2 : 0)) ? yvar * -1 : yvar);
         torow = row + yvar;
         tocolumn = column + xvar;
+        if (torow > 3 && player.actSkills.float) {
+            torow = 3;
+        }
         if (torow > 3) {
             //add chance for a net in later
             this.sendMessageAll(this.actName(player) + " served the ball into the net!", "blue");
@@ -27041,6 +27182,12 @@ function Safari() {
             this.cyclePhase = "prep";
             return;
         }
+        if (torow > 1 && player.serve < 4) {
+            pow--;
+        }
+        if (torow > 2 && player.serve < 3) {
+            pow--;
+        }
         pow += (3 * Math.random() - Math.random());
         pow = Math.min(8, pow);
         if (player.stamina <= 10) {
@@ -27052,12 +27199,28 @@ function Safari() {
         if (player.stamina <= 4) {
             pow -= 1;
         }
+        if (player.actSkills.float) {
+            pow -= 1;
+        }
         pow = Math.ceil(Math.max(pow, 1));
+        if (this.hasSkill(player, "slacker") && player.volleysIn < 5) {
+            pow = Math.ceil(pow * 0.5);
+        }
         this.ballPower = pow;
         this.ballRow = torow;
         this.ballColumn = (8 - tocolumn);
         stcost = (2 + (player.serveEffort * 2));
         player.stamina = Math.max(player.stamina - stcost, 0);
+        if (player.actSkills.float) {
+            this.ballFloat = true;
+            player.actSkills.float = false;
+        }
+        if (this.hasSkill(player, "burn")) {
+            this.ballBurn = true;
+        }
+        if (this.hasSkill(player, "stun")) {
+            this.ballStun = true;
+        }
         var might = "FREE";
         switch (pow) {
             case 8: might = "METEORIC"; break;
@@ -27072,6 +27235,7 @@ function Safari() {
         };
         this.sendMessageAll(volleyballScoreIcon(might) +  this.actName(player) + " serves the ball!", "blue");
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
+        player.actSkills.sneak = false;
         this.cyclePhase = "receive";
         this.teamHasBall = defteam;
         this.sendMessageTeam(atkteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 1) + "!", "blue");
@@ -27159,6 +27323,12 @@ function Safari() {
         else if (player.row !== 4) {
             proficiency--;
         }
+        if (this.hasSkill(player, "slacker") && player.volleysIn < 5) {
+            proficiency = Math.ceil(proficiency * 0.5);
+        }
+        if (this.hasSkill(player, "performer") && (target.spikes <= 2)) {
+            proficiency += 2;
+        }
         target.setval = Math.max(0, Math.min(proficiency, 6));
         switch (target.setval) {
             case 6: score = "PERFECT"; break;
@@ -27172,19 +27342,64 @@ function Safari() {
         this.sendMessageAll(volleyballScoreIcon(score) + this.actName(player) + " sets the ball to " + this.actName(target) + "!", "blue");
         player.stamina = Math.max(player.stamina - stcost, 0);
         this.sendMessage(player.id, "You spent " + stcost + " stamina setting the ball! You now have " + player.stamina + "!" , "red");
+        if (this.hasSkill(player, "energize")) {
+            target.stamina += 2;
+            this.sendMessageTeam(player.team, this.actName(target) + " was energized!", "green");
+        }
+        if (this.hasSkill(player, "splash")) {
+            for (var t in this.teams[0]) {
+                var m = this.teams[0][t];
+                if (m.zone === "front" && (!hasType(m.party[m.currentPoke], "Water"))) {
+                    if (hasType(m.party[m.currentPoke], "Fire")) {
+                        m.stamina = (Math.max(m.stamina - 3, 0));
+                    }
+                    else {
+                        m.stamina = (Math.max(m.stamina - 2, 0));
+                    }
+                } 
+            }
+            for (var t in this.teams[1]) {
+                var m = this.teams[1][t];
+                if (m.zone === "front" && (!hasType(m.party[m.currentPoke], "Water"))) {
+                    if (hasType(m.party[m.currentPoke], "Fire")) {
+                        m.stamina = (Math.max(m.stamina - 3, 0));
+                    }
+                    else {
+                        m.stamina = (Math.max(m.stamina - 2, 0));
+                    }
+                } 
+            }
+            this.sendMessageTeam(player.team, this.actName(player) + "'s' Splash hits the net!", "green");
+        }
         this.cyclePhase = "attack";
         this.clearVals();
         player.canTip = false;
         player.canHit = false;
+        player.actSkills.sneak = false;
+        var defteam = (this.teamHasBall === 1 ? 0 : 1);
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        for (var t in this.teams[defteam]) {
+            var p = this.teams[defteam];
+            if (p.zone === "front" && p.row === 4) {
+                this.sendMessage(p.id, "Type " + link("/block") + ", " + link("/blockin") + ", or " + link("/blockout") + " to block!", "red");
+            }
+        }
         return;
     };
     Volleyball.prototype.processTip = function(player) {
         var atkteam = player.team, safe = false, stcost;
         var defteam = (atkteam === 0 ? 1 : 0);
-        var maxrow = (chance(player.precision * 0.15) ? 2 : 3);
+        var prec = player.precision;
+        for (var t in this.teams[player.team]) {
+            var p = this.teams[player.team][t];
+            if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
+                prec += 2;
+            }
+        }
+        var maxrow = (chance(prec * 0.15) ? 2 : 3);
         this.sendMessageAll(this.actName(player) + " gently tips the ball over the net!", "blue");
+        player.actSkills.sneak = false;
 
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
@@ -27202,9 +27417,12 @@ function Safari() {
             this.cyclePhase = "set";
             this.teamHasBall = defteam;
             for (var s in this.teams[defteam]) {
-                if (this.teams[defteam].row === "front") {
+                if (this.teams[defteam].zone === "front") {
                     this.teams[defteam].canSet = true;
-                    this.teams[defteam].passval = 6;
+                    this.teams[defteam].passval = 5;
+                    if (this.hasSkill(p, "guardian")) {
+                        this.teams[defteam].passval += 2;
+                    }
                 }
             }
             stcost = Math.floor(6 - Math.random() - (0.4 * p.speed));
@@ -27216,6 +27434,7 @@ function Safari() {
             this.sendMessageTeam(p.team, "It is now the set phase! Anyone in the front row (except " + this.actName(p) + ") many now perform a set!", "green");
             break;
         }
+        p.actSkills.sneak = false;
         if (!safe) {
             this.sendMessageAll(this.actName(player) + "'s tip results in a kill!", "blue");
             this.scorePoint(atkteam);
@@ -27223,8 +27442,13 @@ function Safari() {
             this.cyclePhase = "prep";
             return;
         }
+        for (var t in this.teams[atkteam]) {
+            this.teams[atkteam][t].canSet = false;
+        }
+        this.turn++;
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.setterLinks(defteam);
         return;
     };
     Volleyball.prototype.processAttack = function(player, row, column) {
@@ -27256,10 +27480,17 @@ function Safari() {
             this.teamHasBall = defteam;
             return;
         }
+        var prec = player.precision;
+        for (var t in this.teams[player.team]) {
+            var p = this.teams[player.team][t];
+            if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
+                prec += 2;
+            }
+        }
 
-        xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (player.precision * Math.random())), 1)) - ((3 + player.precision) * (1 + Math.random()))), 0);
+        xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         xvar = (chance(0.5) ? xvar * -1 : xvar);
-        yvar = (chance(0.8 - (((player.precision * 1.2) + 2) * 0.1)) ? 1 : 0);
+        yvar = (chance(0.8 - (((prec * 1.2) + 2) * 0.1)) ? 1 : 0);
         yvar = (chance(0.5) ? yvar * -1 : yvar);
         row = row + yvar;
         column = column + xvar;
@@ -27283,35 +27514,33 @@ function Safari() {
         dist = vdx + (2 * dy);
 
         totalblk = 0;
+        var blockers = [];
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
+            k = 0;
             if (p.blocking && p.zone == "front") {
-                k = 0;
                 tempcolumn = (8 - p.column);
                 if (player.column === tempcolumn) {
-                    if (angle === 0) {
+                    if ((angle === 0 && p.blockType == "straight") || (Math.abs(angle) === 1 && (p.blockType == "blockin" || p.blockType == "blockout"))) {
                         k = p.block + p.prep;
-                    }
-                    else if (Math.abs(angle) === 1) {
-                        k = Math.min((p.block + p.prep)/2, 2.25);
+                        if (angle === 0 && p.blockType == "straight") {
+                            k += 1;
+                        }
                     }
                 }
                 if (player.column === tempcolumn + 1) {
-                    if (angle === -2) {
+                    if ((angle === -1 && p.blockType == "straight") || (angle === 0 && p.blockType == "blockin") || (angle === -2 && p.blockType == "blockout")) {
                         k = p.block + p.prep;
-                    }
-                    else if (angle === -1) {
-                        k = Math.min((p.block + p.prep)/2, 2.25);
                     }
                 }
                 if (player.column === tempcolumn - 1) {
-                    if (angle === 2) {
+                    if ((angle === 1 && p.blockType == "straight") || (angle === 0 && p.blockType == "blockin") || (angle === 2 && p.blockType == "blockout")) {
                         k = p.block + p.prep;
                     }
-                    else if (angle === 1) {
-                        k = Math.min((p.block + p.prep)/2, 2.25);
-                    }
                 }
+            }
+            if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke], "Fire"))) {
+                k += 2;
             }
             if (p.stamina <= 10) {
                 k = Math.max(k - 0.5, 0);
@@ -27323,19 +27552,66 @@ function Safari() {
                 k = Math.max(k - 0.75, 0);
             }
             totalblk += k;
+            if (k > 0) {
+                p.actSkills.sneak = false;
+                blockers.push(this.actName(p));
+            }
         }
         /*
             Power = the score of the set + the player's spike power, maximum 8
             player.setval = the score from 0-6 of the player's setter score.
             Block evade chance = You must be spiking at least 7 spaces away to have any chance of evading block. If you do, the lower of the set score and your precision is added.
         */
-        pow = Math.min(8, Math.ceil((player.spike + (player.setval/2) + (Math.min(player.prep/2, 1)))));
+        pow = Math.min(8, Math.ceil((player.spike - 1 + (player.setval/2) + (player.prep > 0 ? 0.5 : 0) + (Math.min(player.prep/2, 1)))));
+        if (this.hasSkill(player, "slacker") && player.volleysIn < 5) {
+            pow = Math.ceil(pow * 0.5);
+        }
+        if (this.hasSkill(player, "ace")) {
+            var activate = true;
+            for (var t in this.teams[player.team]) {
+                if (this.hasSkill(this.teams[player.team][t], "ace")) {
+                    activate = false;
+                }
+            }
+            if (activate) {
+                pow = Math.min(8, pow + 2);
+            }
+        }
+        for (var t in this.teams[defteam]) {
+            if (this.teams[defteam][t].zone == "back" && this.hasSkill(this.teams[defteam][t], "overgrow") && (hasType(player.party[player.currentPoke], "Water"))) {
+                pow -= 1;
+                break;
+            }
+        }
+        if (this.hasSkill(player, "dagger") && (this.turn >= 5)) {
+            pow += 2;
+        }
+        if (this.hasSkill(player, "wide") && (player.column === 1 || player.column === 7)) {
+            pow += 2;
+        }
         if (player.stamina <= 10) {
             pow -= 1;
         }
         if (player.stamina <= 4) {
             pow -= 1;
         }
+        for (var t in this.teams[atkteam]) {
+            if (this.teams[atkteam][t].zone == "back") {
+                if (this.hasSkill(this.teams[atkteam][t], "telepathy") && (hasType(player.party[player.currentPoke], "Fighting"))) {
+                    pow += 1;
+                    break;
+                }
+                if (this.hasSkill(this.teams[atkteam][t], "guts") && (hasType(player.party[player.currentPoke], "Dark"))) {
+                    pow += 1;
+                    break;
+                }
+                if (this.hasSkill(this.teams[atkteam][t], "defiant") && (hasType(player.party[player.currentPoke], "Psychic"))) {
+                    pow += 1;
+                    break;
+                }
+            }
+        }
+        pow = Math.min(8, pow);
         this.sendMessageAll(this.actName(player) + " spikes the ball!" + player.row === 3 ? " It's a Back Attack!" : "", "blue");
         stcost = Math.floor(6 - Math.random() - (0.4 * player.setval));
         if (player.row === 3) {
@@ -27345,7 +27621,7 @@ function Safari() {
         this.sendMessage(player.id, "You spent " + stcost + " stamina spiking the ball! You now have " + player.stamina + "!" , "red");
         var blkevade = Math.max(dist-6, 0);
         if (blkevade > 0) {
-            blkevade += 4 * (Math.min(player.precision, player.setval));
+            blkevade += 4 * (Math.min(prec, player.setval));
             blkevade = blkevade * 0.04;
         }
         if (player.quickattack) {
@@ -27360,28 +27636,27 @@ function Safari() {
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
             } 
-            else {
-                pow = Math.floor( pow - totalblk );
-            }
-            if (pow <= 2) {
+            else if (Math.floor( pow - totalblk ) <= 1) {
                 free = true;
+                pow = 0;
             }
         }
         player.setval = 0;
         player.canHit = false;
         player.canTip = false;
+        player.actSkills.sneak = false;
         if (free) {
             this.ballRow = 2;
-            this.ballColumn = 4;
+            this.ballColumn = (Math.round(2 + (4*Math.random())));
             this.ballPower = 0;
             this.teamHasBall = defteam;
             this.cyclePhase = "receive";
-            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by blockers! It's a FREE ball for the blocking team!", "blue");
-            this.sendMessageTeam(defteam, "The ball soars to b4!", "green");
+            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by "  + blockers.join(" and ") + "! It's a FREE ball for the blocking team!", "blue");
+            this.sendMessageTeam(defteam, "The ball soars to b" + this.ballColumn + "!", "green");
             return;
         }
         if (kill) {
-            this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED!", "blue");
+            this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
             this.scorePoint(defteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -27400,6 +27675,12 @@ function Safari() {
         if (dist - 3 > player.spike * 2) {
             //nerf in strength if your spike score can't keep up the distance
             pow = Math.max(pow - 2, 1);
+        }
+        if (this.hasSkill(player, "burn")) {
+            this.ballBurn = true;
+        }
+        if (this.hasSkill(player, "stun")) {
+            this.ballStun = true;
         }
         this.cyclePhase = "receive";
         this.ballPower = pow;
@@ -27440,7 +27721,9 @@ function Safari() {
         this.turn++;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
-            p.receiver = false;
+            this.inputVal(p.id, "receiver", false);
+            p.digUsed = false;
+            proficiency = -100;
             if (p.row === 4) {
                 continue;
             }
@@ -27453,6 +27736,9 @@ function Safari() {
                     proficiency += 1;
                 }
                 p.receiveType = "direct";
+                if (this.ballFloat && (!(p.prep > 0))) {
+                    proficiency -= (3 * Math.random());
+                }
             }
             if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
                 //if the player is directly in front of the ball's spike, receive overhand, which uses toss
@@ -27462,6 +27748,12 @@ function Safari() {
                     proficiency += 3;
                 }
                 p.receiveType = "overhand";
+                if (this.ballFloat) {
+                    proficiency -= (5 * Math.random());
+                }
+                if (this.ballFloat && (!(p.prep > 0))) {
+                    proficiency -= (3 * Math.random());
+                }
             }
             if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is in front of the receiver, they can perform a dig - this costs more stamina but is pretty good for getting the ball up if their rec is good
@@ -27474,6 +27766,13 @@ function Safari() {
                     proficiency *= 1.15;
                 }
                 p.receiveType = "dig";
+                if (proficiency <= 2 && (this.hasSkill(p, "dig")) && (chance(1.2 - (this.ballPower/10)))) {
+                    proficiency = Math.max(proficiency + 4, 4);
+                    p.digUsed = true;
+                }
+                if (this.ballFloat && (!(p.prep > 0))) {
+                    proficiency -= (3 * Math.random());
+                }
             }
             if (p.row === this.ballRow && ((p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is to the side of the ball, they will be able to save it, but the pass will not be good
@@ -27486,6 +27785,22 @@ function Safari() {
                     proficiency--;
                 }
                 p.receiveType = "side";
+                if (this.ballFloat && (!(p.prep > 0))) {
+                    proficiency -= (3 * Math.random());
+                }
+            }
+            for (var s in this.teams[this.teamHasBall]) {
+                var q = this.teams[this.teamHasBall][s];
+                //does stack
+                if ((q.row === p.row || q.column === p.column) && (this.hasSkill(q, "banner"))) {
+                    proficiency += 1;
+                }
+            }
+            if (p.stunned) {
+                proficiency -= 2;
+            }
+            if (p.moved >= 2) {
+                proficiency--;
             }
             if (p.moved >= 3) {
                 proficiency--;
@@ -27505,6 +27820,9 @@ function Safari() {
             if (p.stamina <= 4) {
                 proficiency--;
             }
+            if ((p.prep >= 1) && (this.hasSkill(p, "grounded"))) {
+                proficiency += 2;
+            }
             if (proficiency >= maxPass) {
                 maxPass = proficiency;
                 for (var s in this.teams[this.teamHasBall]) {
@@ -27514,15 +27832,27 @@ function Safari() {
             }
         }
         maxPass -= 2;
-        var ableSetter, rep, stcost, boost, diff;
+        var ableSetter, rep, stcost = 0, boost, diff;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
             if (!p.receiver) {
                 continue;
             }
+            if (p.digUsed) {
+                stcost += 4;
+                this.sendMessageAll(this.actName(p) + " activated its Dig Skill!");
+            }
+            if (this.hasSkill(p, "guardian") && this.ballPower < 1) {
+                stcost -= 1;
+                maxPass += 2;
+            }
+            if (this.hasSkill(p, "slacker") && p.volleysIn < 5) {
+                maxPass *= 0.5;
+            }
+            p.actSkills.sneak = false;
             passed = true;
-            if (maxPass <= 0) {
-                stcost = 3;
+            if (maxPass <= 0 && maxPass >= -2) {
+                stcost += 3;
                 if (p.stamina >= 10) {
                     boost = (0.25 + (Math.min(5, ((p.stamina-10) * 0.5)) * Math.random()));
                     diff = (boost - maxPass);
@@ -27541,9 +27871,9 @@ function Safari() {
                 this.sendMessageAll(volleyballScoreIcon("free") + this.actName(p) + " received the ball, but couldn't control it! The other team has a free ball!", "blue");
                 this.ballPower = 0;
                 this.ballRow = 2;
-                this.ballColumn = 4;
+                this.ballColumn = 2 + Math.round(Math.random() * 4);
                 this.teamHasBall = atkteam;
-                this.sendMessageTeam(atkteam, "The ball goes to b4 (FREE BALL)!", "green");
+                this.sendMessageTeam(atkteam, "The ball goes to b" + this.ballColumn + " (FREE BALL)!", "green");
                 stcost += 2;
                 p.stamina = Math.max(p.stamina - stcost, 0);
                 this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
@@ -27573,7 +27903,7 @@ function Safari() {
                     }
                 }
                 this.sendMessageAll(volleyballScoreIcon("OKAY") + this.actName(p) + " received the ball! " + se.join(" or ") + " may set the ball!", "blue");
-                stcost = 3;
+                stcost += 3;
                 if ( p.receiveType == "dig" ) {
                     stcost += 2;
                 }
@@ -27605,7 +27935,7 @@ function Safari() {
                         }
                     }
                 }
-                stcost = 2;
+                stcost += 2;
                 if ( p.receiveType == "dig" ) {
                     stcost += 1;
                 }
@@ -27621,6 +27951,25 @@ function Safari() {
             this.scorePoint(atkteam);
             return;
         }
+        if (this.ballBurn && (!hasType(p.party[p.currentPoke], "Water"))) {
+            stcost += 3;
+        }
+        if (this.ballStun && (!hasType(p.party[p.currentPoke], "Ground"))) {
+            if (!p.stunned) {
+                p.stunned = true;
+                this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
+            }
+        }
+        else {
+            if (this.hasSkill(p, "overgrow")) {
+                stcost = Math.max(0, stcost - 2);
+            }
+        }
+        p.stamina = Math.max(p.stamina - stcost, 0);
+        this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
+        this.ballBurn = false;
+        this.ballStun = false;
+        this.ballFloat = false;
         p.canSet = false;
         this.ballPower = 0;
         this.ballRow = -1;
@@ -27659,15 +28008,13 @@ function Safari() {
             this.sendMessage(name, ("Act: " + player.action));
             this.sendMessage(name, ("Pos: " + player.pos));
             this.sendMessage(name, ("Place: " + player.place));
-            this.sendMessage(name, ("Can Serve: " + player.canServe));
-            this.sendMessage(name, ("Can Set: " + player.canSet));
             this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
             if (cdata.length > 1) {
                 for (var t in this.teams) {
                     cteam = this.teams[t];
                     for (var s in cteam) { 
                         k = cteam[s];
-                        if (cdata[1] == k.id.toLowerCase()) {
+                        if (cdata[1].toLowerCase() == k.id.toLowerCase()) {
                             this.sendMessage(name, (k.id + " Act: " + k.action));
                             this.sendMessage(name, (k.id + " Pos: " + k.pos));
                             this.sendMessage(name, (k.id + " Place: " + k.place));
@@ -27683,13 +28030,83 @@ function Safari() {
             return;
         }
         
-        var volleyballActSkills = ["fury", "float"];
+        var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
-            player.actSkills[player.action] = true;
+            var active = true;
+            if (player.actSkills[player.action] === true) {
+                active = false;
+            }
+            if ((this.phase === "assemble" || this.phase === "prep") && (player.action !== "swap")) {
+                active = false;
+            }
+            if ((player.action == "sneak") && this.phase == "serve") {
+                active = false;
+            } 
+            if ((player.action == "float") && this.phase !== "serve") {
+                active = false;
+            } 
+            if ((player.action == "swap") && (!player.canSwap)) {
+                active = false;
+            } 
+            if ((player.action == "swap") && (this.phase !== "prep")) {
+                active = false;
+            } 
+            if (active) {
+                var stcost = 0;
+                player.actSkills[player.action] = true;
+                switch (player.action) {
+                    case "swap": stcost = 3; break;
+                    case "float": stcost = 2; break;
+                    case "sneak": stcost = 3; break;
+                }
+                this.sendMessage(name, "You activated " + player.action + "! (You spent " + stcost + " and now have " + player.stamina + "stamina!)", "red");
+                player.stamina = Math.max(player.stamina - stcost, 0);
+            }
+            else {
+                this.sendMessage(name, "You cannot activate " + player.action + " right now!", "red");
+            }
+            if (player.actSkills.swap) {
+                var oldspot = player.place;
+                player.place = (player.place === 5 ? 0 : player.place + 1);
+                for (var t in this.teams[player.team]) {
+                    var p = this.teams[player.team][t];
+                    if (p.place === player.place) {
+                        p.place = oldspot;
+                        break;
+                    }
+                }
+                this.sendMessageTeam(player.team, this.actName(player) + " and " + this.actName(p) + " swapped places!", "green");
+                player.actSkills.swap = false;
+                player.canSwap = false;
+                switch (p.place) {
+                    case 5: this.movePlayer(p.id, "d2"); this.inputVal(p.id, "zone", "front"); break;
+                    case 0: this.movePlayer(p.id, "b2"); this.inputVal(p.id, "zone", "back"); break;
+                    case 1: this.movePlayer(p.id, "b4"); this.inputVal(p.id, "zone", "back"); break;
+                    case 2: this.movePlayer(p.id, "b6"); this.inputVal(p.id, "zone", "back"); break;
+                    case 3: this.movePlayer(p.id, "d6"); this.inputVal(p.id, "zone", "front"); break;
+                    case 4: this.movePlayer(p.id, "d4"); this.inputVal(p.id, "zone", "front"); break;
+                }
+                switch (player.place) {
+                    case 5: this.movePlayer(player.id, "d2"); this.inputVal(player.id, "zone", "front"); break;
+                    case 0: this.movePlayer(player.id, "b2"); this.inputVal(player.id, "zone", "back"); break;
+                    case 1: this.movePlayer(player.id, "b4"); this.inputVal(player.id, "zone", "back"); break;
+                    case 2: this.movePlayer(player.id, "b6"); this.inputVal(player.id, "zone", "back"); break;
+                    case 3: this.movePlayer(player.id, "d6"); this.inputVal(player.id, "zone", "front"); break;
+                    case 4: this.movePlayer(player.id, "d4"); this.inputVal(player.id, "zone", "front"); break;
+                }
+            }
             return;
         }
         if (player.action !== "") {
-            this.sendMessage(name, "You already took action this turn!", "red");
+            if (this.excludePos[player.team].indexOf(player.action) !== -1) {
+                this.excludePos[player.team] = this.excludePos[player.team].slice(this.excludePos[player.team].indexOf(player.action), 1);
+            }
+            else if (player.action[0] === "x") {
+                this.sendMessage(name, "You changed your spike!", "red");
+            }
+            else {
+                this.sendMessage(name, "You already took action this turn!", "red");
+            }
             return false;
         }
         if (this.phase === "assemble") {
@@ -27906,21 +28323,25 @@ function Safari() {
             this.sendMessage(name, "No such action as " + data + "!", "red");
             return false;
         }
-        for (var t in teammates) {
-            if (teammates[t].pos === data) {
-                //You cannot go there, because someone else is already there
-                this.sendMessage(name, "There is already a teammate at " + data + "!", "red");
-                return false;
-            }
-        }
         if (this.excludePos[player.team].indexOf(data) !== -1) {
-            this.sendMessage(name, "There is already a teammate going to " + data + "!", "red");
+            this.sendMessage(name, "A teammate is already at position " + data + "!", "red");
             return false;
         }
-        if (data == "block") {
+        if (data == "block" || data == "blockin" || data == "blockout" || data == "blockstraight") {
             player.blocking = true;
             this.inputVal(player.id, "action", "block");
-            this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
+            if (data == "blockin") {
+                this.inputVal(player.id, "blockType", "in");
+                this.sendMessageTeam(player.team, this.actName(player) + " is going to block IN!", "green");
+            }
+            else if (data == "blockout") {
+                this.inputVal(player.id, "blockType", "out");
+                this.sendMessageTeam(player.team, this.actName(player) + " is going to block OUT!", "green");
+            }
+            else {
+                this.inputVal(player.id, "blockType", "straight");
+                this.sendMessageTeam(player.team, this.actName(player) + " is going to block STRAIGHT!", "green");
+            }
             return true;
         }
         else if ((data[0] === "x") || (data === "tip")) {
@@ -27944,6 +28365,9 @@ function Safari() {
                 this.excludePos[player.team].push(data);
                 this.sendMessageTeam(player.team, this.actName(player) + " is planning to move to " + data + "!", "green");
                 this.inputVal(player.id, "action", data);
+                if (this.excludePos[player.team].indexOf(player.pos) !== -1) {
+                    this.excludePos[player.team].slice(this.excludePos[player.team].indexOf(player.pos), 1);
+                }
                 return true;
             }
         }
@@ -30157,7 +30581,7 @@ function Safari() {
                 e = celebrityPKs[rec];
                 list = Object.keys(e);
                 out = list.sort(function(a, b) {
-                    return e[a] - e[b];
+                    return e[b] - e[a];
                 });
                 safaribot.sendMessage(src, "Top run killers in " + rec + ": ", safchan);
                 for (var i = 0; i < list.length; i++) {
