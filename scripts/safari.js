@@ -29786,7 +29786,7 @@ function Safari() {
         permObj.add("celebrityRegion", JSON.stringify(safari.celebrityRegion));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
-        permObj.add("celebrityPKs", JSON.stringify(safari.celebrityPKs));
+        permObj.add("celebrityPKs", JSON.stringify(celebrityPKs));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
