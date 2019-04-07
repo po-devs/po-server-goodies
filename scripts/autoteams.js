@@ -640,6 +640,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
         return false;
     }
 
+    var commandData2 = commandData.split(",");
     commandData = commandData.split(":");
     var team, tier;
     try {
@@ -660,21 +661,21 @@ AutoTeams.handleCommand = function(player, message, channel) {
             tier = find_tier(commandData[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
         } else if (command === "addautoteam2") {
-            if (commandData.length !== 3) {
-                throw "Usage: /addautoteam [team name]:[tier]:[url]";
+            if (commandData2.length !== 3) {
+                throw "Usage: /addautoteam2 [team name],[tier],[url]";
             }
             var data = "";
             try {
-                sys.webCall(url, function (resp) {
+                sys.webCall(commandData2[2], function (resp) {
                     data = resp;
                 })
             }
             catch (error) {
                  teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            this.addTeam2(commandData[0], commandData[1], player. data);
-            team = commandData[0].toLowerCase();
-            tier = find_tier(commandData[1]);
+            this.addTeam2(commandData2[0], commandData2[1], player. data);
+            team = commandData2[0].toLowerCase();
+            tier = find_tier(commandData2[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
         } else if (command === "removeautoteam") {
             if (commandData.length !== 2) {
