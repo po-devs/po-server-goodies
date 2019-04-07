@@ -271,6 +271,229 @@ AutoTeams.addTeam = function(teamName, tier, player) {
     this.saveTier(tier);
 };
 
+AutoTeams.addTeam2 = function(teamName, tier, player, data) {
+    tier = find_tier(tier);
+    teamName = teamName.toLowerCase();
+    if (!this.tiers.hasOwnProperty(tier)) {
+        throw "Cannot add to a tier which has not been added!";
+    }
+    if (this.teams[tier].hasOwnProperty(teamName)) {
+        throw "A team with that name already exists in " + tier + "!";
+    }
+    var team = [];
+    var info = data.split('\\n');
+    for (var p = 0; p < 6; p++) {
+        var pokemon = {
+            "poke": 0,
+            "ability": null,
+            "item": null,
+            "nature": 0,
+            "level": 100,
+            "gender": 0,
+            "shiny": false,
+            "ivs": [],
+            "evs": [],
+            "moves": [],
+            "hiddenpower": ""
+        };
+        team.push(pokemon);
+    }
+    var index = 0, parcel, piece, value, i = 0, j = 0;
+    while (index < 6) {
+        j++;
+        if (j > 10000) {
+            throw "Autoteam failed to load.";
+            return;
+        }
+        parcel = info[i];
+        piece = parcel.split(" ");
+        value = sys.pokeNum(piece[0]);
+        var d = 0; //displacement for other data in this line, such as gender/item
+        if ((!value) && piece.length > 1) {
+            value = sys.pokeNum(piece[0] + " " + piece[1]);
+            d = 1;
+        }
+        if ((!value) && piece.length > 2) {
+            value = sys.pokeNum(piece[0] + " " + piece[1] + " " + piece[2]);
+            d = 2;
+        }
+        if (value) {
+            team[index].poke = value;
+            var itemdata;
+            if (piece[d + 1] === "(M)") {
+                team[index].gender = 1;
+            }
+            else if (piece[d + 1] === "(F)") {
+                team[index].gender = 2;
+            }
+            else if (piece[d + 1] === "@" && piece.length > d + 2) {
+                itemdata = piece[d + 2];
+                if (piece.length > d + 3) {
+                    itemdata += " " + piece[d + 3];
+                }
+                if (piece.length > d + 4) {
+                    itemdata += " " + piece[d + 4];
+                }
+            }
+            else if (piece.length > d + 3 && piece[d + 2] === "@") {
+                itemdata = piece[d + 3];
+                if (piece.length > d + 4) {
+                    itemdata += " " + piece[d + 4];
+                }
+                if (piece.length > d + 5) {
+                    itemdata += " " + piece[d + 5];
+                }
+            }
+            value = sys.item(itemdata);
+            if (!value) {
+                break;
+            }
+            team[index].item = value;
+            i++;
+            continue;
+        }
+        if (piece[0] == "Ability:" && piece.length > 1) {
+            value = sys.ability(piece[1]);
+            if ((!value) && piece.length > 2) {
+                value = sys.ability(piece[1] + " " + piece[2]);
+            }
+            if ((!value) && piece.length > 3) {
+                value = sys.ability(piece[1] + " " + piece[2] + " " + piece[3]);
+            }
+            if (value) {
+                team[index].ability = value;
+                i++;
+                continue;
+            }
+        }
+        if (piece[0] == "Lvl:" && piece.length > 1) {
+            value = parseInt(piece[1], 10);
+            if (value) {
+                team[index].level = value;
+                i++;
+                continue;
+            }
+        }
+        if (piece[0] == "EVs:" && piece.length > 1) {
+            var evs = {}, out = [];
+            if (piece.length > 2) {
+                evs[piece[2].toLowerCase()] = piece[1];
+            }
+            if (piece.length > 5) {
+                evs[piece[5].toLowerCase()] = piece[4];
+            }
+            if (piece.length > 8) {
+                evs[piece[8].toLowerCase()] = piece[7];
+            }
+            if (piece.length > 11) {
+                evs[piece[11].toLowerCase()] = piece[10];
+            }
+            if (piece.length > 14) {
+                evs[piece[14].toLowerCase()] = piece[13];
+            }
+            if (piece.length > 17) {
+                evs[piece[17].toLowerCase()] = piece[16];
+            }
+            value = (evs.hasOwnProperty("hp") ? parseInt(evs.hp, 10) : 0);
+            out.push(value);
+            value = (evs.hasOwnProperty("atk") ? parseInt(evs.atk, 10) : 0);
+            out.push(value);
+            value = (evs.hasOwnProperty("def") ? parseInt(evs.def, 10) : 0);
+            out.push(value);
+            value = (evs.hasOwnProperty("satk") ? parseInt(evs.satk, 10) : 0);
+            out.push(value);
+            value = (evs.hasOwnProperty("sdef") ? parseInt(evs.sdef, 10) : 0);
+            out.push(value);
+            value = (evs.hasOwnProperty("spd") ? parseInt(evs.spd, 10) : 0);
+            out.push(value);
+            team[index].evs = out;
+            i++;
+            continue;
+        }
+        if (piece[0] == "IVs:" && piece.length > 1) {
+            var ivs = {}, out = [];
+            if (piece.length > 2) {
+                ivs[piece[2].toLowerCase()] = piece[1];
+            }
+            if (piece.length > 5) {
+                ivs[piece[5].toLowerCase()] = piece[4];
+            }
+            if (piece.length > 8) {
+                ivs[piece[8].toLowerCase()] = piece[7];
+            }
+            if (piece.length > 11) {
+                ivs[piece[11].toLowerCase()] = piece[10];
+            }
+            if (piece.length > 14) {
+                ivs[piece[14].toLowerCase()] = piece[13];
+            }
+            if (piece.length > 17) {
+                ivs[piece[17].toLowerCase()] = piece[16];
+            }
+            value = (ivs.hasOwnProperty("hp") ? parseInt(ivs.hp, 10) : 31);
+            out.push(value);
+            value = (ivs.hasOwnProperty("atk") ? parseInt(ivs.atk, 10) : 31);
+            out.push(value);
+            value = (ivs.hasOwnProperty("def") ? parseInt(ivs.def, 10) : 31);
+            out.push(value);
+            value = (ivs.hasOwnProperty("satk") ? parseInt(ivs.satk, 10) : 31);
+            out.push(value);
+            value = (ivs.hasOwnProperty("sdef") ? parseInt(ivs.sdef, 10) : 31);
+            out.push(value);
+            value = (ivs.hasOwnProperty("spd") ? parseInt(ivs.spd, 10) : 31);
+            out.push(value);
+            team[index].ivs = out;
+            i++;
+            continue;
+        }
+        if (piece.length > 1 && piece[1] == "Nature") {
+            value = sys.nature(piece[0]);
+            if (value) {
+                team[index].nature = value;
+                i++;
+                continue;
+            }
+        }
+        if (piece.length > 1 && piece[0] == "-") {
+            var move = piece[1];
+            if (piece.length > 2) {
+                move += " " + piece[2];
+            }
+            if (move == "Hidden Power" && piece.length > 3) {
+                var hptype = piece[4].replace(/[\[\]']+/g, '');
+                if (sys.type(hptype)) {
+                    team[index].hiddenpower = sys.type(hptype);
+                }
+            }
+            else if (piece.length > 3) {
+                move += " " + piece[3];
+            }
+            else if (piece.length > 4) {
+                move += " " + piece[4];
+            }
+            value = sys.move(move);
+            if (team[index].moves.length < 4 && value) {
+                team[index].moves.push(value);
+                i++;
+                continue;
+            }
+        }
+        else if (piece[0] == "") {
+            //Empty string when split returns array with empty string
+            i = 0;
+            index++;
+            continue;
+        }
+        throw "Error while loading autoteam.";
+        return;
+    }
+    this.teams[tier][teamName] = {
+        "submitter": sys.name(player),
+        "team": team
+    };
+    this.saveTier(tier);
+};
+
 AutoTeams.removeTeam = function(teamName, tier) {
     tier = find_tier(tier);
     teamName = teamName.toLowerCase();
@@ -425,6 +648,23 @@ AutoTeams.handleCommand = function(player, message, channel) {
                 throw "Usage: /addautoteam [team name]:[tier]";
             }
             this.addTeam(commandData[0], commandData[1], player);
+            team = commandData[0].toLowerCase();
+            tier = find_tier(commandData[1]);
+            teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
+        } else if (command === "addautoteam2") {
+            if (commandData.length !== 3) {
+                throw "Usage: /addautoteam [team name]:[tier]:[url]";
+            }
+            var data = "";
+            try {
+                sys.webCall(url, function (resp) {
+                    data = resp;
+                })
+            }
+            catch (error) {
+                 teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
+            };
+            this.addTeam2(commandData[0], commandData[1], player. data);
             team = commandData[0].toLowerCase();
             tier = find_tier(commandData[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
