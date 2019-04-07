@@ -281,7 +281,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         throw "A team with that name already exists in " + tier + "!";
     }
     var team = [];
-    var info = data.split('\\n');
+    var info = data.split('\n');
     var gen = sys.generationOfTier(tier);
     for (var p = 0; p < 6; p++) {
         var pokemon = {
@@ -664,17 +664,22 @@ AutoTeams.handleCommand = function(player, message, channel) {
             if (commandData2.length !== 3) {
                 throw "Usage: /addautoteam2 [team name],[tier],[url]";
             }
+            var data = "";
             try {
                 sys.webCall(commandData2[2], function (resp) {
-                    this.addTeam2(commandData2[0], commandData2[1], player, resp);
-                    team = commandData2[0].toLowerCase();
-                    tier = find_tier(commandData2[1]);
-                    teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
-                })
+                    if (resp === "") {
+                        throw "Web file not found: Invalid URL or web functions are not working.";
+                    }
+                    data = resp;
+                });
             }
             catch (error) {
-                 teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
+                teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
+            this.addTeam2(commandData2[0], commandData2[1], player, data);
+            team = commandData2[0].toLowerCase();
+            tier = find_tier(commandData2[1]);
+            teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
         } else if (command === "removeautoteam") {
             if (commandData.length !== 2) {
                 throw "Usage: /removeautoteam [team name]:[tier]";
