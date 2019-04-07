@@ -282,6 +282,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
     }
     var team = [];
     var info = data.split('\\n');
+    var gen = sys.generationOfTier(tier);
     for (var p = 0; p < 6; p++) {
         var pokemon = {
             "poke": 0,
@@ -292,7 +293,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             "gender": 0,
             "shiny": false,
             "ivs": [],
-            "evs": [],
+            "evs": [252, 252, 252, 252, 252, 252],
             "moves": [],
             "hiddenpower": ""
         };
@@ -304,9 +305,6 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         if (j > 10000) {
             throw "Autoteam failed to load.";
             return;
-        }
-        if (i > info.length) {
-            break;
         }
         parcel = info[i];
         piece = parcel.split(" ");
@@ -378,7 +376,10 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             }
         }
         if (piece[0] == "EVs:" && piece.length > 1) {
-            var evs = {}, out = [];
+            var evs = {}, out = [], base = 252;
+            if (gen > 2) {
+                base = 0;
+            }
             if (piece.length > 2) {
                 evs[piece[2].toLowerCase()] = piece[1];
             }
@@ -397,24 +398,27 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             if (piece.length > 17) {
                 evs[piece[17].toLowerCase()] = piece[16];
             }
-            value = (evs.hasOwnProperty("hp") ? parseInt(evs.hp, 10) : 0);
+            value = (evs.hasOwnProperty("hp") ? parseInt(evs.hp, 10) : base);
             out.push(value);
-            value = (evs.hasOwnProperty("atk") ? parseInt(evs.atk, 10) : 0);
+            value = (evs.hasOwnProperty("atk") ? parseInt(evs.atk, 10) : base);
             out.push(value);
-            value = (evs.hasOwnProperty("def") ? parseInt(evs.def, 10) : 0);
+            value = (evs.hasOwnProperty("def") ? parseInt(evs.def, 10) : base);
             out.push(value);
-            value = (evs.hasOwnProperty("satk") ? parseInt(evs.satk, 10) : 0);
+            value = (evs.hasOwnProperty("satk") ? parseInt(evs.satk, 10) : base);
             out.push(value);
-            value = (evs.hasOwnProperty("sdef") ? parseInt(evs.sdef, 10) : 0);
+            value = (evs.hasOwnProperty("sdef") ? parseInt(evs.sdef, 10) : base);
             out.push(value);
-            value = (evs.hasOwnProperty("spd") ? parseInt(evs.spd, 10) : 0);
+            value = (evs.hasOwnProperty("spd") ? parseInt(evs.spd, 10) : base);
             out.push(value);
             team[index].evs = out;
             i++;
             continue;
         }
         if (piece[0] == "IVs:" && piece.length > 1) {
-            var ivs = {}, out = [];
+            var ivs = {}, out = [], base = 15;
+            if (gen > 2) {
+                base = 31;
+            }
             if (piece.length > 2) {
                 ivs[piece[2].toLowerCase()] = piece[1];
             }
@@ -433,17 +437,17 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             if (piece.length > 17) {
                 ivs[piece[17].toLowerCase()] = piece[16];
             }
-            value = (ivs.hasOwnProperty("hp") ? parseInt(ivs.hp, 10) : 31);
+            value = (ivs.hasOwnProperty("hp") ? parseInt(ivs.hp, 10) : base);
             out.push(value);
-            value = (ivs.hasOwnProperty("atk") ? parseInt(ivs.atk, 10) : 31);
+            value = (ivs.hasOwnProperty("atk") ? parseInt(ivs.atk, 10) : base);
             out.push(value);
-            value = (ivs.hasOwnProperty("def") ? parseInt(ivs.def, 10) : 31);
+            value = (ivs.hasOwnProperty("def") ? parseInt(ivs.def, 10) : base);
             out.push(value);
-            value = (ivs.hasOwnProperty("satk") ? parseInt(ivs.satk, 10) : 31);
+            value = (ivs.hasOwnProperty("satk") ? parseInt(ivs.satk, 10) : base);
             out.push(value);
-            value = (ivs.hasOwnProperty("sdef") ? parseInt(ivs.sdef, 10) : 31);
+            value = (ivs.hasOwnProperty("sdef") ? parseInt(ivs.sdef, 10) : base);
             out.push(value);
-            value = (ivs.hasOwnProperty("spd") ? parseInt(ivs.spd, 10) : 31);
+            value = (ivs.hasOwnProperty("spd") ? parseInt(ivs.spd, 10) : base);
             out.push(value);
             team[index].ivs = out;
             i++;
@@ -615,6 +619,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
         "autotiers",
         "autoteams",
         "addautoteam",
+        "addautoteam2",
         "removeautoteam",
         "viewautoteam",
         "setautoteam"
@@ -667,7 +672,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
             catch (error) {
                  teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            this.addTeam2(commandData[0], commandData[1], player, data);
+            this.addTeam2(commandData[0], commandData[1], player. data);
             team = commandData[0].toLowerCase();
             tier = find_tier(commandData[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
