@@ -19749,7 +19749,7 @@ function Safari() {
                     ][player.quests.league.badges.length];
 
                     //mission stuff
-                    var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], n = [], y, l = [], u = true;
+                    var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], n = [] y, l = [], u = true;
                     for (var t in k) {
                         y = true;
                         for (var p in player.party) {
@@ -34665,11 +34665,7 @@ function Safari() {
             if (possibleThemes.contains("none")) {
                 possibleThemes.splice(possibleThemes.indexOf("none"), 1);
             }
-            if (possibleThemes.contains("seasonal") && (chance(0.2))) {
-                nextTheme = ["seasonal"];
-                nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
-            }
-            else if (sys.rand(0, 100) < 38) {
+            if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             } else {
@@ -34942,9 +34938,6 @@ function Safari() {
             } else {
                 if (!currentPokemon && chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0) )) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    if (currentTheme && (chance(0.02)) && currentTheme === "seasonal") {
-                        amt++;
-                    }
                     if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
                         spiritSpawn = false;
                         wildSpirit = true;
