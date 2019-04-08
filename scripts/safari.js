@@ -20095,7 +20095,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
-        this.missionProgress(player, "photo", score, 1 {});
+        this.missionProgress(player, "photo", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
@@ -29786,7 +29786,7 @@ function Safari() {
         permObj.add("celebrityRegion", JSON.stringify(safari.celebrityRegion));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
-        permObj.add("celebrityPKs", JSON.stringify(safari.celebrityPKs));
+        permObj.add("celebrityPKs", JSON.stringify(celebrityPKs));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
