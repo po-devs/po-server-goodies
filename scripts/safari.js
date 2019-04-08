@@ -5237,7 +5237,7 @@ function Safari() {
                 if (cantBecause(src, reason, ["tutorial"])) {
                     return;
                 }
-            }xf
+            }
             if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid"])) {
                 return;
             }
