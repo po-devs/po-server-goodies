@@ -250,8 +250,8 @@ AutoTeams.addTeam = function(teamName, tier, player) {
             "level": sys.teamPokeLevel(player, teamIndex, p),
             "gender": sys.teamPokeGender(player, teamIndex, p),
             "shiny": sys.teamPokeShine(player, teamIndex, p),
-            "ivs": [],
-            "evs": [],
+            "ivs": [31, 31, 31, 31, 31, 31],
+            "evs": [0, 0, 0, 0, 0, 0],
             "moves": [],
             "hiddenpower": sys.teamPokeHiddenPower(player, teamIndex, p)
         };
@@ -293,7 +293,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             "gender": 0,
             "shiny": false,
             "ivs": [],
-            "evs": [252, 252, 252, 252, 252, 252],
+            "evs": [],
             "moves": [],
             "hiddenpower": ""
         };
@@ -302,23 +302,22 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
     var index = 0, parcel, piece, value, i = 0, j = 0;
     while (index < 6) {
         j++;
-        if (j > 10000) {
+        if (j > 20000) {
             throw "Autoteam failed to load.";
-            return;
         }
         parcel = info[i];
         piece = parcel.split(" ");
         value = sys.pokeNum(piece[0]);
         var d = 0; //displacement for other data in this line, such as gender/item
-        if ((!value) && piece.length > 1) {
+        if (((!value) || value < 1) && piece.length > 1) {
             value = sys.pokeNum(piece[0] + " " + piece[1]);
             d = 1;
         }
-        if ((!value) && piece.length > 2) {
+        if (((!value) || value < 1) && piece.length > 2) {
             value = sys.pokeNum(piece[0] + " " + piece[1] + " " + piece[2]);
             d = 2;
         }
-        if (value) {
+        if (value && value > 0 && (!(sys.pokemon(value) == "Missingno"))) {
             team[index].poke = value;
             var itemdata;
             if (piece[d + 1] === "(M)") {
@@ -336,7 +335,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                     itemdata += " " + piece[d + 4];
                 }
             }
-            else if (piece.length > d + 3 && piece[d + 2] === "@") {
+            if (piece.length > d + 3 && piece[d + 2] === "@") {
                 itemdata = piece[d + 3];
                 if (piece.length > d + 4) {
                     itemdata += " " + piece[d + 4];
@@ -349,11 +348,14 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             if (!value) {
                 break;
             }
+            if (value === 0) {
+                break;
+            }
             team[index].item = value;
             i++;
             continue;
         }
-        if (piece[0] == "Ability:" && piece.length > 1) {
+        if (piece[0] == "Ability:" || piece[0] == "Trait:" && piece.length > 1) {
             value = sys.ability(piece[1]);
             if ((!value) && piece.length > 2) {
                 value = sys.ability(piece[1] + " " + piece[2]);
@@ -367,7 +369,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                 continue;
             }
         }
-        if (piece[0] == "Lvl:" && piece.length > 1) {
+        if (piece[0] == "Lvl:" || piece[0] == "Level:" && piece.length > 1) {
             value = parseInt(piece[1], 10);
             if (value) {
                 team[index].level = value;
@@ -479,7 +481,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                 move += " " + piece[4];
             }
             value = sys.move(move);
-            if (team[index].moves.length < 4 && value) {
+            if (team[index].moves.length < 4 && value && value > 0) {
                 team[index].moves.push(value);
                 i++;
                 continue;
@@ -487,7 +489,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         }
         else if (piece[0] == "") {
             //Empty string when split returns array with empty string
-            i = 0;
+            i++;
             index++;
             continue;
         }
