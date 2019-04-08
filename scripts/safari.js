@@ -19784,7 +19784,7 @@ function Safari() {
                         }
                         l.push(player.party[p]);
                     }
-                    this.missionProgress(player, "gymLeader", 1, 1, {mono: n, region: m});
+                    safari.missionProgress(player, "gymLeader", 1, 1, {mono: n, region: m});
                     
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Congratulations, " + name + "! For clearing the " + gym.name + " Gym, I award you the " + gym.badge + "!", safchan);
                     safaribot.sendHtmlMessage(id, "League Guide: We also reward you with " + plural(reward[1], reward[0]) + "!", safchan);
@@ -20111,7 +20111,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
-        this.missionProgress(player, "photo", score, 1, {});
+        safari.missionProgress(player, "photo", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
@@ -34669,8 +34669,9 @@ function Safari() {
             if (possibleThemes.contains("none")) {
                 possibleThemes.splice(possibleThemes.indexOf("none"), 1);
             }
-            if (possibleThemes.contains("seasonal") && (chance(0.2))) {
+            if (possibleThemes.contains("seasonal") && (chance(0.45))) {
                 nextTheme = ["seasonal"];
+                possibleThemes.splice(possibleThemes.indexOf("seasonal"), 1);
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             }
             else if (sys.rand(0, 100) < 38) {
