@@ -7780,6 +7780,7 @@ function Safari() {
             break;
             case "honey": {
                 sendAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of " + finishName("honey") + "!", true);
+                safari.missionProgress(player,"findHoney",0,1,{});
             }
             break;
             case "spy": {
@@ -10191,6 +10192,9 @@ function Safari() {
                 break; 
             case "findApricorn":
                 out = (action === "findApricorn" ? value : 0);
+                break; 
+            case "findHoney":
+                out = (action === "findHoney" ? value : 0);
                 break; 
             case "getShocked":
                 out = (action === "getShocked" ? value : 0);
