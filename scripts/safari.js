@@ -5237,7 +5237,7 @@ function Safari() {
                 if (cantBecause(src, reason, ["tutorial"])) {
                     return;
                 }
-            }
+            }xf
             if (cantBecause(src, "modify your party", ["auction", "battle", "event", "pyramid"])) {
                 return;
             }
@@ -26950,7 +26950,7 @@ function Safari() {
                 if (p.stamina < 0) {
                     p = 0;
                 }
-                this.excludePos[player.team].push(player.pos);
+                this.excludePos[p.team].push(p.pos);
             }
         }
         this.excludeActions = [];
