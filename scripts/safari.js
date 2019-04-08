@@ -19749,7 +19749,7 @@ function Safari() {
                     ][player.quests.league.badges.length];
 
                     //mission stuff
-                    var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], n = [] y, l = [], u = true;
+                    var k = ["Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"], m = [], y, l = [], u = true;
                     for (var t in k) {
                         y = true;
                         for (var p in player.party) {
@@ -19761,18 +19761,6 @@ function Safari() {
                             m.push(k[t]);
                         }
                     }
-                    k = Object.keys(effectiveness);
-                    for (var t in k) {
-                        y = true;
-                        for (var p in player.party) {
-                            if (!generation(parseInt(player.party[p], 10), true) === k[t]) {
-                                y = false;
-                            }
-                        }
-                        if (y) {
-                            n.push(k[t]);
-                        }
-                    }
                     for (var p in player.party) {
                         if (l.indexOf(player.party[p]) !== -1) {
                             u = false;
@@ -19780,7 +19768,7 @@ function Safari() {
                         }
                         l.push(player.party[p]);
                     }
-                    this.missionProgress(player, "gymLeader", 1, 1, {mono: n, region: m});
+                    this.missionProgress(player, "gymLeader", 1, 1, {mono: m});
                     
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Congratulations, " + name + "! For clearing the " + gym.name + " Gym, I award you the " + gym.badge + "!", safchan);
                     safaribot.sendHtmlMessage(id, "League Guide: We also reward you with " + plural(reward[1], reward[0]) + "!", safchan);
