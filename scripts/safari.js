@@ -596,7 +596,7 @@ function Safari() {
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Rock", type: "items", icon: 334, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
+            rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -26480,6 +26480,14 @@ function Safari() {
                         }
                         this.loadNextMon(p);
                         this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke].id) + "!", "green");
+                        switch (p.place) {
+                            case 0: this.inputVal(p.id, "place", 0); this.movePlayer(p.id, "b2"); break;
+                            case 1: this.inputVal(p.id, "place", 1); this.movePlayer(p.id, "b4"); break;
+                            case 2: this.inputVal(p.id, "place", 2); this.movePlayer(p.id, "b6"); break;
+                            case 3: this.inputVal(p.id, "place", 3); this.movePlayer(p.id, "d6"); break;
+                            case 4: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
+                            case 5: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
+                        }
                     }
                 }
             }
@@ -34660,7 +34668,7 @@ function Safari() {
             var possibleThemes = Object.keys(contestThemes).concat();
             var repetitionCooldown = 4;
             for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
-                if (possibleThemes.contains(lastContests[e].themeId)) {
+                if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal")) {
                     possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
                 }
             }
