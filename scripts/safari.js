@@ -27847,7 +27847,7 @@ function Safari() {
                 this.inputVal(p.id, "receiver", true);
             }
         }
-        maxPass -= 2;
+        maxPass += 2;
         var ableSetter, rep, stcost = 0, boost, diff;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
@@ -27867,9 +27867,9 @@ function Safari() {
             }
             p.actSkills.sneak = false;
             passed = true;
-            if (maxPass <= 0 && maxPass >= -2) {
+            if (maxPass <= 0) {
                 stcost += 3;
-                if (p.stamina >= 10) {
+                if (p.stamina >= 10 && maxPass >= -2) {
                     boost = (0.25 + (Math.min(5, ((p.stamina-10) * 0.5)) * Math.random()));
                     diff = (boost - maxPass);
                     stcost += Math.floor(diff * 2);
@@ -28020,28 +28020,26 @@ function Safari() {
             return;
         }
         if (cdata[0] == "eval") {
-            this.sendMessage(name, ("Phase: " + this.phase));
-            this.sendMessage(name, ("Act: " + player.action));
-            this.sendMessage(name, ("Pos: " + player.pos));
-            this.sendMessage(name, ("Place: " + player.place));
-            this.sendMessage(name, ("Team has ball: " + this.teamHasBall));
+            var tar, val;
             if (cdata.length > 1) {
+                tar = cdata[1];
+            }
+            if (cdata.length > 2) {
+                val = cdata[2];
                 for (var t in this.teams) {
                     cteam = this.teams[t];
                     for (var s in cteam) { 
                         k = cteam[s];
-                        if (cdata[1].toLowerCase() == k.id.toLowerCase()) {
-                            this.sendMessage(name, (k.id + " Act: " + k.action));
-                            this.sendMessage(name, (k.id + " Pos: " + k.pos));
-                            this.sendMessage(name, (k.id + " Place: " + k.place));
-                            this.sendMessage(name, (k.id + " AI: " + k.ai));
-                            this.sendMessage(name, (k.id + " Can set: " + k.canSet));
-                            this.sendMessage(name, (k.id + " Can hit: " + k.canHit));
-                            this.sendMessage(name, (k.id + " Can Serve: " + k.canServe));
-                            this.sendMessage(name, (k.id + " Zone: " + k.zone));
+                        if (tar.toLowerCase() == k.id.toLowerCase()) {
+                            if (k.hasOwnProperty(val)) {
+                                this.sendMessageAll(tar + "'s " + val + ": " + k[val] + ".");
+                            }
                         }
-                    }
-                } 
+                    } 
+                }
+            }
+            else if (currentGame.hasOwnProperty(val)) {
+                this.sendMessageAll(tar + ": " + currentGame[val] + ".");
             }
             return;
         }
