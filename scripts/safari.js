@@ -10274,8 +10274,8 @@ function Safari() {
             case "pyramidRun":
                 out = (action === "pyramid" && target >= data.points ? 1 : 0);
                 break; 
-            case "photo":
-                out = (action === "photo" ? target : 0);
+            case "journal":
+                out = (action === "journal" ? target : 0);
                 break; 
             case "sellMoney":
                 out = (action === "sell" ? data.price : 0);
@@ -20111,7 +20111,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
-        safari.missionProgress(player, "photo", score, 1, {});
+        safari.missionProgress(player, "journal", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
         safaribot.sendMessage(src, "You gave your photo of " + this.describePhoto(photo) + " to the Editor-in-chief! You " + rew + "! You also received " + plural(score, "Photo Point") + " and now have " + plural(player.records.journalPoints, "Photo Point") + "!", safchan);
