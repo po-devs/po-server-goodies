@@ -636,7 +636,7 @@ function Safari() {
             soda: {name: "soda", fullName: "Soda Pop", type: "consumable", icon: 90, price: 5000, bonusRate: 0.5, aliases: ["soda", "soda pop", "sodapop"], tradable: true, cap: 9999},
             form: {name: "form", fullName: "Event Form", type: "consumable", icon: 224, price: 5000, aliases: ["form", "event form", "event form"], tradable: true},
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
-            easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false},
+            easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false, cap: 9999},
             celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: false},
 
             //Alchemy related items
@@ -10272,7 +10272,7 @@ function Safari() {
                 out = (action === "pyramid" ? data.points : 0);
                 break; 
             case "pyramidRun":
-                out = (action === "pyramid" && target >= data.points ? 1 : 0);
+                out = (action === "pyramid" &&  data.points >= target ? 1 : 0);
                 break; 
             case "journal":
                 out = (action === "journal" ? target : 0);
