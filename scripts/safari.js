@@ -10272,7 +10272,7 @@ function Safari() {
                 out = (action === "pyramid" ? data.points : 0);
                 break; 
             case "pyramidRun":
-                out = (action === "pyramid" &&  data.points >= target ? 1 : 0);
+                out = (action === "pyramid" && data.points >= mission.target ? 1 : 0);
                 break; 
             case "journal":
                 out = (action === "journal" ? target : 0);
@@ -25828,6 +25828,7 @@ function Safari() {
         "36": {"stamina": 34, "serve": 5, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 1, "skills": ["banner", "grounded", "defiant"]},
         "62": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "grounded"]},
         "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 0,"speed": 1, "skills": ["ace", "dump", "guts"]},
+        "76": {"stamina": 35, "serve": 4, "receive": 4, "toss": 3, "spike": 4, "block": 1, "precision": 2,"speed": 1, "skills": ["grounded", "banner", "back-attack"]},
         "94": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 0, "precision": 3,"speed": 4, "skills": ["performer", "sneak", "telepathy"]},
         "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 4, "block": 3, "precision": 4,"speed": 4, "skills": []},
         "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "performer", "energize"]},
@@ -27747,7 +27748,7 @@ function Safari() {
             p = this.teams[this.teamHasBall][t];
             this.inputVal(p.id, "receiver", false);
             p.digUsed = false;
-            proficiency = -100;
+            proficiency = -1000;
             if (p.row === 4) {
                 continue;
             }
