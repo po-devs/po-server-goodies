@@ -10770,6 +10770,7 @@ function Safari() {
     }
     this.shoveDuelTeam = function( src,name,data ) {
         var oldBox;
+        name = name.toLowerCase();
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
@@ -11363,7 +11364,7 @@ function Safari() {
     }
     this.joinSpiritDuels = function( src,player ) {
         //Joins duels to be assigned a team next time
-        var id = player.id;
+        var id = player.id.toLowerCase();
         if (!safari.events.spiritDuelsEnabled) {
             return false;
         }
@@ -12773,6 +12774,9 @@ function Safari() {
                     case "rain": m = "There is a heavy downpour of rain."; break;
                     case "electricterrain": m = "The field surges with electric terrain."; break;
                     case "grassyterrain": m = "The field surges with grassy terrain."; break;
+                    case "psychicterrain": m = "The field surges with psychic terrain."; break;
+                    case "mistyterrain": m = "The field surges with misty terrain."; break;
+                    case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
                     case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
                     case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
                     case "initialReflect": m = "Reflect begins active on foe's side."; break;
@@ -12791,10 +12795,10 @@ function Safari() {
                     case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
                     case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
                     case "dragonslayer": m = "Foe's Fighting-type moves deal double damage to Dragon-type Pokémon."; break;
+                    case "freezedry": m = "Foe's Ice-type moves are quadruply effective against Water."; break;
                     case "retaliate": m = "Foe's attack power is doubled until the end of the turn if hit with a Special Attack."; break;
                     case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
                     case "intimidate": m = "Challenger's Pokémon begin the game with debuffed attack."; break;
-                    case "continue": m = "50% extra damage dealt if user's Speed > target's Speed x2."; break;
                     case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
                     case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
                     case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
@@ -12813,6 +12817,10 @@ function Safari() {
                     case "galeWings": m = "All Flying-type moves have increased priority."; break;
                     case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
                     case "zapcannon": m = "All Electric-type moves have a 50% chance to paralyze."; break;
+                    case "toxic": m = "All Poison-type moves have a 75% chance to inflict poison."; break;
+                    case "chillPhysical": m = "All Dragon-type moves lower target's speed and attack unless the target is a Dragon type Pokémon."; break;
+                    case "chillSpecial": m = "All Ice-type moves lower target's speed and special attack unless the target is an Ice type Pokémon."; break;
+                    case "psyDrop": m = "All Psychic-type moves lower have a 30% chance to drop the target's Special Attack and Special Defense."; break;
                     case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
                     case "leftovers": m = "The foe's team restores HP gradually."; break;
                     case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
@@ -12974,6 +12982,9 @@ function Safari() {
                 var out = [], val;
                 for (var e in user.boosts) {
                     val = user.boosts[e];
+                    if (this.select && this.select.singlespecialstat && e == "satk") {
+                        e = "spc";
+                    }
                     if (val !== 0) {
                         out.push(toColor(addSign(val) + " " + e.toUpperCase(), (val > 0 ? "darkgreen" : "red")));
                     }
@@ -13657,7 +13668,9 @@ function Safari() {
                     for (var i = 0; i < foeMons.length; i++) {
                         mon = foeMons[i];
                         mon.boosts["satk"] += 1;
-                        mon.boosts["sdef"] += 1;
+                        if (!this.select.singlespecialstat) {
+                            mon.boosts["sdef"] += 1;
+                        }
                         mon.boosts["spe"] += 1;
                         mon.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
                         mon.boosts["sdef"] = Math.min(mon.boosts["sdef"], 6);
@@ -13992,6 +14005,25 @@ function Safari() {
         }
     };
     Battle2.prototype.getStatValue = function(user, stat, extraMod, crit) {
+        if (this.select && this.select.singlespecialstat) {
+            if (stat == "sdef") {
+                stat = "satk";
+            }
+        }
+        if (this.select && this.select.powertrick) {
+            if (stat == "atk") {
+                stat = "def";
+            }
+            else if (stat == "def") {
+                stat = "atk";
+            }
+            else if (stat == "satk") {
+                stat = "sdef";
+            }
+            else if (stat == "sdef") {
+                stat = "satk";
+            }
+        }
         var base = user.stats[stat];
         var val = user.boosts[stat];
         if (this.select && this.select.simple) {
@@ -14040,12 +14072,15 @@ function Safari() {
             bonus *= (move.type == "Water" && (this.select.rain) ? 1.5 : 1);
             bonus *= (move.type == "Fire" && (this.select.rain) ? 0.5 : 1);
             bonus *= (move.type == "Grass" && (this.select.grassyterrain) ? 1.5 : 1);
+            bonus *= (move.type == "Psychic" && (this.select.psychicterrain) ? 1.5 : 1);
             bonus *= (move.type == "Electric" && (this.select.electricterrain) ? 1.5 : 1);
+            bonus *= (move.type == "Dragon" && (this.select.mistyterrain) ? 0.5 : 1);
             bonus *= ((this.select.critDouble && crit) ? 1.33 : 1);
             bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
             bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
             bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
             bonus *= ((this.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
+            bonus *= ((this.select.freezedry && move.type === "Ice" && (hasType(target.id, "Water")) && (isP2 || isP4)) ? 4 : 1);
             bonus *= ((this.select.hex && target.condition !== "none") ? 2 : 1);
             var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
@@ -14408,6 +14443,34 @@ function Safari() {
                         out.push(tname + " was paralyzed!");
                         target.condition = "paralyze";
                     }
+                    if (self.select.toxic && chance(0.75) && target.condition === "none" && move.type === "Poison" && (!hasType(target.id, "Poison"))) {
+                        out.push(tname + " was poisoned!");
+                        target.condition = "poison";
+                    }
+                    if (self.select.chillSpecial && move.type === "Ice" && (!hasType(target.id, "Ice"))) {
+                        target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
+                        out.push(tname + "'s Special Attack -1!");
+                        target.boosts["spe"] = Math.min(6, Math.max(target.boosts["spe"] - 1, -6));
+                        out.push(tname + "'s Speed -1!");
+                    }
+                    if (self.select.chillPhysical && move.type === "Dragon" && (!hasType(target.id, "Dragon"))) {
+                        target.boosts["atk"] = Math.min(6, Math.max(target.boosts["atk"] - 1, -6));
+                        out.push(tname + "'s Attack -1!");
+                        target.boosts["spe"] = Math.min(6, Math.max(target.boosts["spe"] - 1, -6));
+                        out.push(tname + "'s Speed -1!");
+                    }
+                    if (self.select.psyDrop && move.type === "Psychic" && chance(0.3)) {
+                        if (this.select.singlespecialstat) {
+                            target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
+                            out.push(tname + "'s Special -1!");
+                        }
+                        else {
+                            target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
+                            out.push(tname + "'s Special Attack -1!");
+                            target.boosts["sdef"] = Math.min(6, Math.max(target.boosts["sdef"] - 1, -6));
+                            out.push(tname + "'s Special Defense -1!");
+                        }
+                    }
                     if (self.select.naturalcure && user.condition !== "none" && (move.type === "Water" || move.type === "Grass")) {
                         out.push(tname + " cured its status!");
                         target.condition = "none";
@@ -14647,7 +14710,7 @@ function Safari() {
     Battle2.prototype.afterDamage = function(user, move, target, oppparty, out) {
         var fainted = (target.hp <= 0 ? true : false);
         var tname = target.owner + "'s " + poke(target.id);
-        if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance)) && (!(move.status === "sleep" && (!hasType(target.id, "Fying") && this.select && this.select.electricterrain)))) {
+        if (!fainted && target.condition === "none" && move.status && (!move.statusChance || chance(move.statusChance)) && (!(move.status === "sleep" && (!hasType(target.id, "Fying") && this.select && this.select.electricterrain) && (!(this.select && this.select.mistyterrain && (!hasType(target.id, "Flying"))))))) {
             if (!this.isImmuneTo(target.id, move.status)) {
                 if (["sleep", "freeze"].contains(move.status) === false || this.countCondition(oppparty, move.status) === 0) {
                     target.condition = move.status;
@@ -14758,7 +14821,12 @@ function Safari() {
                     if (chance(obj.buffChance)) {
                         user.boosts[obj.buffStat] += obj.buff;
                         user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                        out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                        if (this.select && this.select.singlespecialstat && obj.buffStat == "satk") {
+                            out.push(name + "'s Special " + addSign(obj.buff) + "!");
+                        }
+                        else {
+                            out.push(name + "'s " + this.statName(obj.buffStat) + " " + addSign(obj.buff) + "!");
+                        }
                     }
                 }
             }
@@ -14785,20 +14853,42 @@ function Safari() {
                 if (chance(obj.nerfChance)) {
                     target.boosts[obj.nerfStat] += obj.nerf;
                     target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
-                    out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
+                    if (this.select && this.select.singlespecialstat && obj.nerfStat == "satk") {
+                        out.push(name + "'s Special " + addSign(obj.nerf) + "!");
+                    }
+                    else {
+                        out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
+                    }
                 }
             }
         }
         if (this.select && this.select.vicious && move.category !== "other") {
             var b = ["atk", "def", "spe", "satk", "sdef"].random();
             var n = ["atk", "def", "spe", "satk", "sdef"];
+            if (this.select.singlespecialstat && b == "sdef") {
+                b = "satk";
+                n = n.splice(n.indexOf("sdef"), 1);
+            }
             n = n.splice(n.indexOf(b), 1).random();
+            if (this.select.singlespecialstat && n == "sdef") {
+                n = "satk";
+            }
             user.boosts[b] += 2;
             user.boosts[b] = Math.min(6, Math.max(user.boosts[b], -6));
             user.boosts[n] -= 1;
             user.boosts[n] = Math.min(6, Math.max(user.boosts[n], -6));
-            out.push(name + "'s " + this.statName(b) + " +2!");
-            out.push(name + "'s " + this.statName(n) + " -1!");
+            if (this.select.singlespecialstat && b == "satk") {
+                out.push(name + "'s Special +2!");
+            }
+            else {
+                out.push(name + "'s " + this.statName(b) + " +2!");
+            }
+            if (this.select.singlespecialstat && n == "satk") {
+                out.push(name + "'s Special -1!");
+            }
+            else {
+                out.push(name + "'s " + this.statName(n) + " -1!");
+            }
         }
         if (!fainted && (move.type === "Fire") && target.condition === "freeze") {
             this.sendToViewers(toColor(tname + " thawed out!", "#55E"));
@@ -14971,13 +15061,23 @@ function Safari() {
         if (data.hasOwnProperty("buff")) {
             for (e = 0; e < data.buff.length; e++) {
                 eff = data.buff[e];
-                out.push("Own " + this.statName(eff.buffStat) + " " + addSign(eff.buff) + (eff.buffChance && eff.buffChance < 1 ? " (" + Math.round(eff.buffChance * 100) + "%)" : ""));
+                if (this.select && this.select.singlespecialstat && eff.buffStat == "satk") {
+                    out.push("Own Special " + addSign(eff.buff) + (eff.buffChance && eff.buffChance < 1 ? " (" + Math.round(eff.buffChance * 100) + "%)" : ""));
+                }
+                else {
+                    out.push("Own " + this.statName(eff.buffStat) + " " + addSign(eff.buff) + (eff.buffChance && eff.buffChance < 1 ? " (" + Math.round(eff.buffChance * 100) + "%)" : ""));
+                }
             }
         }
         if (data.hasOwnProperty("nerf")) {
             for (e = 0; e < data.nerf.length; e++) {
                 eff = data.nerf[e];
-                out.push("Opponent's " + this.statName(eff.nerfStat) + " " + addSign(eff.nerf) + (eff.nerfChance && eff.nerfChance < 1 ? " (" + Math.round(eff.nerfChance * 100) + "%)" : ""));
+                if (this.select && this.select.singlespecialstat && eff.nerfStat == "satk") {
+                    out.push("Opponent's Special " + addSign(eff.nerf) + (eff.nerfChance && eff.nerfChance < 1 ? " (" + Math.round(eff.nerfChance * 100) + "%)" : ""));
+                }
+                else {
+                    out.push("Opponent's " + this.statName(eff.nerfStat) + " " + addSign(eff.nerf) + (eff.nerfChance && eff.nerfChance < 1 ? " (" + Math.round(eff.nerfChance * 100) + "%)" : ""));
+                }
             }
         }
         if (data.hasOwnProperty("priority") && data.priority !== 0) {
@@ -15203,6 +15303,17 @@ function Safari() {
                 effChance.status *= 1.5;
             }
         }
+        if (this.select) {
+            if (this.select.grassyterrain) {
+                effChance.drain *= 1.5;
+            }
+            if (this.select.psychicterrain) {
+                effChance.priority = 0;
+            }
+            if (this.select.electricterrain) {
+                effChance.flinch *= 1.5;
+            }
+        }
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
         
@@ -15213,6 +15324,9 @@ function Safari() {
         switch (eff) {
             case "restore":
                 out.restore = Math.min(Math.random() * 0.5 * factor + (0.18 * (1 + Math.min(((Math.random() * Math.max(restore, 0.1)) + 0.25), 0.5))), 0.75) ;
+                if (this.select.mistyterrain && (hasType(user, "Ice") || (hasType(user, "Fairy")))) {
+                    out.restore *= 1.5;
+                }
                 out.type = eff;
             break;
             case "refresh":
@@ -15391,6 +15505,9 @@ function Safari() {
             case "buff":
                 buff = {};
                 buff.buffStat = ["atk", "def", "satk", "sdef", "spe"].random();
+                if (buff.buffStat == "sdef" && this.select && this.select.singlespecialstat) {
+                    buff.buffStat = "satk";
+                }
                 if (used.contains("buff" + buff.buffStat)) {
                     return out;
                 }
@@ -15408,6 +15525,10 @@ function Safari() {
                         "1": 1,
                         "2": 0.5
                     });
+                }
+                val = parseInt(val, 10);
+                if (this.select && this.select.psychicterrain && hasType(user.id, "Psychic") && val > 0) {
+                    val = Math.min(Math.floor(val * (2 * (0.5 + Math.random()))), 3);
                 }
                 buff.buff = parseInt(val, 10);
                 if (damaging) {
@@ -15430,6 +15551,9 @@ function Safari() {
                 nerf.nerfStat = ["atk", "def", "satk", "sdef", "spe"].random();
                 if (used.contains("nerf" + nerf.nerfStat)) {
                     return out;
+                }
+                if (nerf.nerfStat == "sdef" && this.select && this.select.singlespecialstat) {
+                    nerf.nerfStat = "satk";
                 }
                 if (factor > 0) {
                     val = randomSample({
@@ -15483,7 +15607,7 @@ function Safari() {
         return isImmune;
     };
     Battle2.prototype.chooseNPCMove = function(moves, team, opponent, ind) {
-        var moveChance = {}, move, user, e, o, opp, val, val2, c, m, eff, alive = 0, oppAlive = 0;
+        var moveChance = {}, move, user, e, o, opp, val, val2, c, totalc, m, eff, affect = opponent.length; alive = 0, oppAlive = 0;
         var bias = {};
         var bias = (ind === 2 ? this.biasNPC : (ind === 4 ? this.biasNPC2 : {}));
         var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
@@ -15516,12 +15640,14 @@ function Safari() {
         }
         
         for (e in moves) {
-            c = 0;
+            totalc = 0;
             move = moves[e];
             user = team[move.ownerId];
             for (o in opponent) {
+                c = 0;
                 opp = opponent[o];
                 if (opp.hp > 0) {
+                    val = 0;
                     if (move.power) {
                         var inver = ((this.select && this.select.inverted) ? true : false);
                         eff = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(opp.id)), sys.type(sys.pokeType2(opp.id)), null, inver);
@@ -15555,6 +15681,7 @@ function Safari() {
                         }
                         if (eff <= 0) {
                             val = -1;
+                            affect--;
                         }
                         var spdadv = ((this.getStatValue(user, "spe", 1, null) > this.getStatValue(opp, "spe", 1, null)) ? true : false);
                         if (val > 0) {
@@ -15574,7 +15701,7 @@ function Safari() {
                         val *= 10;
                         c += val;
                     }
-                    if (move.status) {
+                    if (move.status && val >= 0) {
                         if (opp.condition === "none" && !this.isImmuneTo(opp.id, move.status)) {
                             if (this.select && this.select.guts && (["sleep", "freeze"].indexOf(move.status) === -1)) {
                                 c -= move.statusChance * 20;
@@ -15589,7 +15716,7 @@ function Safari() {
                             }
                         }
                     }
-                    if (move.nerf) {
+                    if (move.nerf && val >= 0) {
                         for (m = move.nerf.length; m--; ) {
                             eff = move.nerf[m];
                             if (eff.nerf > 0) {
@@ -15614,7 +15741,9 @@ function Safari() {
                         }
                     }
                 }
+                totalc += c;
             }
+            c = totalc;
             
             if (move.buff) {
                 for (m = move.buff.length; m--; ) {
@@ -15641,6 +15770,32 @@ function Safari() {
                     }
                 }
             }
+            if (this.select) {
+                if (this.select.chillPhysical && move.type == "Dragon") {
+                    c += 50;
+                }
+                if (this.select.chillSpecial && move.type == "Ice") {
+                    c += 50;
+                }
+                if (this.select.inferno && move.type == "Fire") {
+                    c += 30;
+                    if (bias.burn) {
+                        c += 30;
+                    }
+                }
+                if (this.select.zapcannon && move.type == "Electric") {
+                    c += 40;
+                    if (bias.paralyze) {
+                        c += 30;
+                    }
+                }
+                if (this.select.toxic && move.type == "Poison") {
+                    c += 60;
+                    if (bias.poison) {
+                        c += 40;
+                    }
+                }
+            }
             if ((move.type === "Water" || move.type === "Grass") && this.select && this.select.naturalcure) {
                 if (["burn", "poison"].contains(user.condition)) {
                     c += 80;
@@ -15659,7 +15814,7 @@ function Safari() {
                             }
                         }
                     }
-                    c = Math.max(c - 70, 0);
+                    c -= 70;
                 }
                 else {
                     if (move.refresh === "self") {
@@ -15767,7 +15922,7 @@ function Safari() {
             }
             if (move.reflect) {
                 if (this.side2Field.reflect > 0) {
-                    c *= 0.75;
+                    c -= 1;
                 }
                 else {
                     c += 100;
@@ -15781,7 +15936,7 @@ function Safari() {
             }
             if (move.lightscreen) {
                 if (this.side2Field.lightscreen > 0) {
-                    c *= 0.75;
+                    c -= 1;
                 }
                 else {
                     c += 100;
@@ -15793,43 +15948,43 @@ function Safari() {
                     }
                 }
             }
-            if (move.status) {
+            if (move.status && val >= 0) {
                 if ((move.status ==  "paralyze") && (bias.paralyze)) {
-                    c *= 1.4;
+                    c += 100;
                 }
                 if ((move.status ==  "sleep") && (bias.sleep)) {
-                    c *= 1.4;
+                    c += 100;
                 }
                 if ((move.status ==  "freeze") && (bias.freeze)) {
-                    c *= 1.4;
+                    c += 100;
                 }
                 if ((move.status ==  "poison") && (bias.poison)) {
-                    c *= 1.4;
+                    c += 100;
                 }
                 if ((move.status ==  "burn") && (bias.burn)) {
-                    c *= 1.4;
+                    c += 100;
                 }
             }
             var dif = (user.hp / user.maxhp);
-            if (move.drain) {
+            if (move.drain && val >= 0) {
                 c += 120 * (1 - dif);
                 if (bias.drain) {
                     c += 80 * (1 - dif);
                 }
             }
-            if (move.critical) {
+            if (move.critical && val >= 0) {
                 c += 20;
                 if (bias.critical) {
                     c += 60;
                 }
             }
-            if (move.recoil) {
+            if (move.recoil && val >= 0) {
                 if (dif > 0.5) {
                     if (bias.recoil) {
-                        c += (210 * (dif));
+                        c += (180 * (dif));
                     }
                     else {
-                        c += (140 * (dif));
+                        c += (100 * (dif));
                     }
                 }
                 else {
@@ -15837,7 +15992,7 @@ function Safari() {
                         c += (60 * (dif));
                     }
                     else {
-                        c = Math.max(c - (120 * (1 - dif)), c);
+                        c = Math.min(c - (120 * (1 - dif)), c);
                     }
                 }
             }
@@ -15855,17 +16010,18 @@ function Safari() {
                     c += 60;
                 }
                 else if (bias.aggressive) {
-                    c *= 0.67;
+                    c *= 0.75;
                 }
             }
             else {
                 if (bias.support) {
-                    c *= 0.75;
+                    c *= 0.85;
                 }
                 else if (bias.aggressive) {
-                    c *= 1.25;
+                    c *= 1.2;
                 }
             }
+            c *= (affect / opponent.length);
             if (c <= 0.1) {
                 c = 0.1;
             }
@@ -19359,7 +19515,7 @@ function Safari() {
             }
             currentTrainer.party = [];
             partyStrength = 0;
-            maxLoop = 200;
+            maxLoop = 400;
             diff = 100;
             var obj;
             while (Math.abs(diff) > 2) {
@@ -19372,6 +19528,9 @@ function Safari() {
                 obj = Object.keys(trainer.party).shuffle();
                 for (var j in obj) {
                     if ((trainer.party[obj[j]] >= 6) && (difficulty < 4)) {
+                        continue;
+                    }
+                    if (hold.contains(parseInt(obj[j])) || hold.contains(obj[j] + "")) {
                         continue;
                     }
                     if (trainer.shiny === parseInt(j, 10)) {
@@ -19393,7 +19552,8 @@ function Safari() {
             chal += diff;
             currentTrainer.party = hold;
             currentTrainer.party2 = null;
-            if (trainer.party2) {
+            var isTag = (trainer.party2 && (trainer.hasOwnProperty("tagBattleChance") ? true : chance(trainer.tagBattleChance)));
+            if (isTag) {
                 diff = 100;
                 maxLoop = 200;
                 currentTrainer.name2 = trainer.name2;
@@ -19429,6 +19589,11 @@ function Safari() {
             diff = 100;
             maxLoop = 1200;
             hazardStrength = 0;
+            var maxRange = 6, minRange = 3;
+            if (trainer.effectRange) {
+                minRange = trainer.effectRange[0];
+                maxRange = trainer.effectRange[1];
+            }
             while (Math.abs(diff) >= 1) {
                 maxLoop--;
                 if (maxLoop <= 0) {
@@ -19443,6 +19608,9 @@ function Safari() {
                         continue;
                     }
                     if ((hold.contains("spikes") || hold.contains("spikes2")) && (obj[j] == "spikes" || obj[j] == "spikes2")) {
+                        continue;
+                    }
+                    if ((hold.contains("singlespecialstat") || hold.contains("powertrick")) && (obj[j] == "singlespecialstat" || obj[j] == "powertrick")) {
                         continue;
                     }
                     if ((hold.contains("fullrestore") || hold.contains("fullrestore2") || hold.contains("fullrestore3")) && (obj[j] == "fullrestore3" || obj[j] == "fullrestore2" || obj[j] == "fullrestore")) {
@@ -19461,7 +19629,7 @@ function Safari() {
                     hold.push(obj[j]);
                     hazardStrength += (trainer.effectBalance[obj[j]] + Math.random() - Math.random() + (maxLoop < 50 ? ( 3 * (Math.random() - Math.random())) : 0));
                     diff = (chal - hazardStrength);
-                    if (((hold.length >= 3) && (chance (0.4))) || (hold.length >= 6) || (hold.length >= 2 && maxLoop < 250)) {
+                    if (((hold.length >= minRange) && (chance (0.4))) || (hold.length >= maxRange) || (hold.length >= 2 && maxLoop < 250)) {
                         if (Math.abs(diff) <= 1) {
                             break;
                         }
@@ -19478,7 +19646,7 @@ function Safari() {
                             break;
                         }
                     }
-                    if (((hold.length >= 3) && (chance(0.18))) || (hold.length >= 6)) {
+                    if (((hold.length >= minRange) && (chance(0.18))) || (hold.length >= maxRange)) {
                         break;
                     }
                 }
@@ -27856,7 +28024,8 @@ function Safari() {
                 this.inputVal(p.id, "receiver", true);
             }
         }
-        maxPass += 2;
+        maxPass -= 2;
+        this.sendMessageAll("Max pass is " + maxPass + ".");
         var ableSetter, rep, stcost = 0, boost, diff;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
