@@ -26120,7 +26120,6 @@ function Safari() {
         if (!query) {
             query = "";
         }
-        out = "";
         switch (query.toLowerCase()) {
             case "receive":
             case "receiving":
@@ -26135,7 +26134,57 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "--- Side receive: Position yourself where to the left or right of where ball is spiked/served to.", safchan);
                 safaribot.sendHtmlMessage(src, "--- Low receive: Position yourself above the ball and within one column of the ball. If you are in the same column as the ball, this is more effective.", safchan);
                 safaribot.sendHtmlMessage(src, "--- Overhand receive: Position yourself under the ball and in the same column as the ball. If your Toss stat is high, this becomes more effective.", safchan);
-            case "receive":
+                break;
+            case "toss":
+            case "set":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for setting in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Setting the ball uses the Toss stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- The longer you wait in one spot, the better your set will be.", safchan);
+                safaribot.sendHtmlMessage(src, "- The better the receive, the better the set.", safchan);
+                safaribot.sendHtmlMessage(src, "- The score of the set can be improved by performing a long set (setting to a player at least 3 columns away).", safchan);
+                safaribot.sendHtmlMessage(src, "- The score of the set will be lowered, but will have an improved chance to avoid blocks if performing a quick set (setting to a player 1 column away).", safchan);
+                safaribot.sendHtmlMessage(src, "- Performing a good set boosts the spike power of the spiker, and, if the spiker has a high precision stat, allows them to evade blocks.", safchan);
+                break;
+            case "spike":
+            case "hit":
+            case "attack":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for spiking in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Spiking the ball uses the Spike stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- The higher your spike stat, the further you can spike the ball without suffering a distance penalty.", safchan);
+                safaribot.sendHtmlMessage(src, "- The higher your precision stat, the more likely you are to spike to the target you chose.", safchan);
+                safaribot.sendHtmlMessage(src, "- If you spike towards a blocker in the front row, you may be blocked!", safchan);
+                break;
+            case "dump":
+            case "tip":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for tipping in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Tipping the ball bypasses blocks and scores a point if there are no non-blocking opponents nearby.", safchan);
+                safaribot.sendHtmlMessage(src, "- Tipping the ball is more effective if you have a high precision stat.", safchan);
+                safaribot.sendHtmlMessage(src, "- Tips can be more easily dug up by opponent Pokémon that have high speed or high stamina remaining.", safchan);
+                break;
+            case "serve":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for serving in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Serving the ball uses the serve stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- Adjust your serve effort with /vol effort:0 through /vol effort:2. More effort costs more stamina but is more powerful.", safchan);
+                safaribot.sendHtmlMessage(src, "- If you have a float skill, you can activate it will serving to throw off the receivers.", safchan);
+                break;
+            case "block":
+            case "blocking":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for blocking in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Blocking the ball uses the block stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- Aim your block using /block straight, /block in, and /block out.", safchan);
+                safaribot.sendHtmlMessage(src, "- If the angle of the spiker's hit meets the angle of your block, you will have a chance to score a point.", safchan);
+                break;
+            case "stamina":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for stamina in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Stamina is expended when taking action.", safchan);
+                safaribot.sendHtmlMessage(src, "- Receiving hard driven balls can cost extreme stamina.", safchan);
+                safaribot.sendHtmlMessage(src, "- Make sure your dedicated receivers can cover the ball to prevent your spikers from being exhausted by receiving.", safchan);
+                safaribot.sendHtmlMessage(src, "- If your stamina drops below 10, your quality of actions will be reduced.", safchan);
+                safaribot.sendHtmlMessage(src, "- If your stamina drops below 4, your quality of actions will be reduced drastically.", safchan);
+                safaribot.sendHtmlMessage(src, "- If your stamina is low, you may elect to use /vol sub to change in your next Pokémon.", safchan);
+                break;
+            default:
+                safaribot.sendHtmlMessage(src, "Valid queries for this are receive, toss, tip, spike, serve, block, and stamina!", safchan);
                 break;
         }
         return;
@@ -27167,7 +27216,7 @@ function Safari() {
                 if (p.stamina < 0) {
                     p = 0;
                 }
-                this.excludePos[t].push(p.pos);
+                this.excludePos[team].push(p.pos);
             }
         }
         this.excludeActions = [];
@@ -31030,6 +31079,10 @@ function Safari() {
                 showVolleyballInfo(src, commandData);
                 return true;
             }
+            if (command === "vbhints" || command === "volleyballhints") {
+                showVolleyballHints(src, commandData);
+                return true;
+            }
             if (command === "bst") {
                 var info = getInputPokemon(commandData);
 
@@ -32721,6 +32774,18 @@ function Safari() {
                 this.assignIdNumber(player, true);
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s ID has been reset and is now " + player.idnum + ".", safchan);
+                return true;
+            }
+            if (command === "modspeak" || command === "ms") {
+                var m = commandData, n = "", l = ""; out = "";
+                if (m.indexOf("link(") !== 1) {
+                    n = m.slice(m.indexOf("link(") + 5, m.length);
+                    m = m.slice(0, m.indexOf("link("), m.length);
+                    l = n.slice(0, n.indexOf(")"));
+                    n = n.slice(n.indexOf(")"), n.length);
+                    out = m + (link(l) + n);
+                }
+                sys.sendHtmlAll(sys.name(src) + ": " + out, safchan);
                 return true;
             }
             if (command === "safaripay") {
