@@ -12776,6 +12776,7 @@ function Safari() {
                     case "grassyterrain": m = "The field surges with grassy terrain."; break;
                     case "psychicterrain": m = "The field surges with psychic terrain."; break;
                     case "mistyterrain": m = "The field surges with misty terrain."; break;
+                    case "powertrick": m = "All Pokémon's Atk and Def as well as their Special Atk and Special Def are swapped."; break;
                     case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
                     case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
                     case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
