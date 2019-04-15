@@ -508,8 +508,9 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             index++;
             continue;
         }
+        
+        teamsbot.sendMessage(player, piece, channel);
         throw "Error while loading autoteam.";
-        return;
     }
     this.teams[tier][teamName] = {
         "submitter": sys.name(player),
@@ -689,7 +690,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
                     }
                     data = resp;
                     
-                    teamsbot.sendMessage(player, data, channel);
+                    //teamsbot.sendMessage(player, data, channel);
                     
                     try {
                         AutoTeams.addTeam2(commandData2[0], commandData2[1], player, data);
