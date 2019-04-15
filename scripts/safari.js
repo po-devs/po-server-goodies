@@ -10769,16 +10769,17 @@ function Safari() {
         return (Math.floor(rate * 10000)/100);
     }
     this.shoveDuelTeam = function( src,name,data ) {
-        var oldBox;
+        var oldBox, id;
         name = name.toLowerCase();
+        idnum = getAvatarOff(name).idnum;
         for (var t in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            if (safari.events.spiritDuelsTeams[t].players.indexOf(name) === -1) {
+            if (safari.events.spiritDuelsTeams[t].players.indexOf(idnum) === -1) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(name), 1);
+            safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(idnum), 1);
             safaribot.sendMessage( src,"Removed player " + name + " from " + data + ".",safchan );
             return;
         }
@@ -10794,7 +10795,7 @@ function Safari() {
             if (safari.events.spiritDuelsTeams[t].name !== data) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t].players.push(player.id.toLowerCase());
+            safari.events.spiritDuelsTeams[t].players.push(player.idnum);
             if (player.spiritDuels) {
                 if (player.spiritDuels.box.length > 0) {
                     oldBox = player.spiritDuels.box;
@@ -10837,7 +10838,7 @@ function Safari() {
             else {
                 oldBox = [19];
             }
-            safari.events.spiritDuelsTeams[i].players.push(player.id.toLowerCase());
+            safari.events.spiritDuelsTeams[i].players.push(player.idnum);
             player.spiritDuels = {
                 rank: 0,
                 rankName: "Grunt",
@@ -10894,8 +10895,9 @@ function Safari() {
         sendAll(safari.events.spiritDuelsTeams[0].name + " has been eliminated!!", true);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
-            player = getAvatarOff(safari.events.spiritDuelsTeams[0].players[p]);
-            safari.events.spiritDuelsSignups.push(player.id.toLowerCase());
+            var t = idNumList.get(safari.events.spiritDuelsTeams[0].players[p]);
+            player = getAvatarOff(t);
+            safari.events.spiritDuelsSignups.push(player.idnum);
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
@@ -10930,7 +10932,7 @@ function Safari() {
 
         var p, j;
         for (var a in army1) {
-            p = getAvatarOff(army1[a]);
+            p = getAvatarOff(idNumList.get(army1[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer1; i++) {
                 team1.push({
@@ -10948,7 +10950,7 @@ function Safari() {
             }
         }
         for (var a in army2) {
-            p = getAvatarOff(army2[a]);
+            p = getAvatarOff(idNumList.get(army2[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer2; i++) {
                 team2.push({
@@ -11373,19 +11375,19 @@ function Safari() {
         }
         var k;
         for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].players.indexOf(id);
+            k = safari.events.spiritDuelsTeams[t].players.indexOf(player.idnum);
             if (k !== -1) {
                 team = safari.events.spiritDuelsTeams[t].name;
                 safaribot.sendMessage( src,"You are already assigned to team " + team + "!",safchan );
                 return false;
             }
         }
-        k = safari.events.spiritDuelsSignups.indexOf(id);
+        k = safari.events.spiritDuelsSignups.indexOf(idNum);
         if (k > -1) {
             safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
-        safari.events.spiritDuelsSignups.push(id.toLowerCase());
+        safari.events.spiritDuelsSignups.push(player.idnum);
         if (!player.spiritDuels) {
             player.spiritDuels = {
                 box: []
@@ -11484,27 +11486,6 @@ function Safari() {
             return;
         }
         this.saveGame(player);
-    };
-    this.spiritDuelsUpdateAlt = function( name1, name2 ) {
-        if (!safari.events.spiritDuelsEnabled) {
-            return false;
-        }
-        if (!safari.events.spiritDuelsTeams) {
-            return false;
-        }
-        var k;
-        for (var t in safari.events.spiritDuelsTeams) {
-            k = safari.events.spiritDuelsTeams[t].players.indexOf(name1.toLowerCase());
-            if (k > -1) {
-                safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.splice(k, 1);
-                safari.events.spiritDuelsTeams[t].players.push(name2.toLowerCase());
-            }
-        }
-        k = safari.events.spiritDuelsSignups.indexOf(name1.toLowerCase());
-        if (k > -1) {
-            safari.events.spiritDuelsSignups = safari.events.spiritDuelsSignups.splice(k, 1);
-            safari.events.spiritDuelsSignups.push(name2.toLowerCase());
-        }
     };
     this.spiritDuelsMessage = function(msg) {
         var e;
@@ -29329,8 +29310,6 @@ function Safari() {
                 target.nameColor = script.getColor(src);
                 this.saveGame(player);
                 this.saveGame(target);
-
-                safari.spiritDuelsUpdateAlt(n1, n2);
             } catch (err) {
                 if (byAuth) {
                     safaribot.sendMessage(user, "Alt Transfer aborted due to an error during the operation! [" + err + (err.lineNumber ? " at line " + err.lineNumber : "") + "]", safchan);
@@ -32777,15 +32756,16 @@ function Safari() {
                 return true;
             }
             if (command === "modspeak" || command === "ms") {
-                var m = commandData, n = "", l = ""; out = "";
+                var m = commandData, n = "", l = ""; out = m;
                 if (m.indexOf("link(") !== 1) {
                     n = m.slice(m.indexOf("link(") + 5, m.length);
                     m = m.slice(0, m.indexOf("link("), m.length);
                     l = n.slice(0, n.indexOf(")"));
-                    n = n.slice(n.indexOf(")"), n.length);
+                    n = n.slice(n.indexOf(")") + 1, n.length);
                     out = m + (link(l) + n);
                 }
-                sys.sendHtmlAll(sys.name(src) + ": " + out, safchan);
+                var color = script.getColor(src);
+                sys.sendHtmlAll("<font color='" + color + "'><timestamp/><b>" + sys.name(src) + ":</b></font>: " + out, safchan);
                 return true;
             }
             if (command === "safaripay") {
