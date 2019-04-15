@@ -296,11 +296,15 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             "level": 100,
             "gender": 0,
             "shiny": false,
-            "ivs": [],
-            "evs": [],
+            "ivs": [31, 31, 31, 31, 31, 31],
+            "evs": [0, 0, 0, 0, 0, 0],
             "moves": [],
             "hiddenpower": ""
         };
+        if (gen < 3) {
+            pokemon.ivs = [15, 15, 15, 15, 15, 15];
+            pokemon.evs = [252, 252, 252, 252, 252, 252];
+        }
         team.push(pokemon);
     }
     teamsbot.sendMessage(player, "The importable is " + info.length + " lines long.", channel);    
