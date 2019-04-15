@@ -359,7 +359,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                     itemdata += " " + piece[d + 5];
                 }
             }
-            value = sys.item(itemdata);
+            value = sys.itemNum(itemdata);
             if (!value) {
                 break;
             }
@@ -371,12 +371,12 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             continue;
         }
         if (piece[0] == "Ability:" || piece[0] == "Trait:" && piece.length > 1) {
-            value = sys.ability(piece[1]);
+            value = sys.abilityNum(piece[1]);
             if ((!value) && piece.length > 2) {
-                value = sys.ability(piece[1] + " " + piece[2]);
+                value = sys.abilityNum(piece[1] + " " + piece[2]);
             }
             if ((!value) && piece.length > 3) {
-                value = sys.ability(piece[1] + " " + piece[2] + " " + piece[3]);
+                value = sys.abilityNum(piece[1] + " " + piece[2] + " " + piece[3]);
             }
             if (value) {
                 team[index].ability = value;
@@ -471,7 +471,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             continue;
         }
         if (piece.length > 1 && piece[1] == "Nature") {
-            value = sys.nature(piece[0]);
+            value = sys.natureNum(piece[0]);
             if (value) {
                 team[index].nature = value;
                 i++;
