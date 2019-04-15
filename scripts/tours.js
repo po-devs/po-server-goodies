@@ -931,9 +931,9 @@ function refreshTicks(override) {
     var time = parseInt(sys.time(), 10);
     time -= 9900; // offset
     var frequency = 6*60*60; // every 6 hours
-    if (tourconfig.doubletime) {
+    /*if (tourconfig.doubletime) {
         frequency *= 0.5;
-    }
+    }*/
     var newtime = frequency-time%frequency;
     var oldtime = tours.eventticks;
     if (override || newtime < oldtime) {
