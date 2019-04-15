@@ -15324,7 +15324,7 @@ function Safari() {
         switch (eff) {
             case "restore":
                 out.restore = Math.min(Math.random() * 0.5 * factor + (0.18 * (1 + Math.min(((Math.random() * Math.max(restore, 0.1)) + 0.25), 0.5))), 0.75) ;
-                if (this.select.mistyterrain && (hasType(user, "Ice") || (hasType(user, "Fairy")))) {
+                if (this.select.mistyterrain && (hasType(user.id, "Ice") || (hasType(user.id, "Fairy")))) {
                     out.restore *= 1.5;
                 }
                 out.type = eff;
@@ -26083,7 +26083,13 @@ function Safari() {
             tight: { bg: "#500bc6" },
             off: { bg: "#500bc6" }
         };
-        var bg = colors[val.toLowerCase()].bg;
+        var bg;
+        if (colors[val.toLowerCase()]) {
+            bg = colors[val.toLowerCase()].bg;
+        }
+        else {
+            bg = "black";
+        }
         
         return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> [" + val.toUpperCase() + "] </font></background>";
     }
@@ -26104,6 +26110,30 @@ function Safari() {
         }
         return;
     };
+    function showVolleyballHints(src, query) {
+        if (!query) {
+            query = "";
+        }
+        out = "";
+        switch (query.toLowerCase()) {
+            case "receive":
+            case "receiving":
+            case "pass":
+            case "rec":
+                safaribot.sendHtmlMessage(src, "<b>*** Tips for receiving in Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Receiving a spike or serve tests the Receive stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- The longer you wait in one spot, the better your reception will be.", safchan);
+                safaribot.sendHtmlMessage(src, "- You can move to receive the ball, but if you move the maximum of your speed stat your reception will be weakened.", safchan);
+                safaribot.sendHtmlMessage(src, "- There are 4 kinds of receptions:", safchan);
+                safaribot.sendHtmlMessage(src, "--- Direct receive: Position yourself where the ball is spiked/served to. The most consistent way to receive.", safchan);
+                safaribot.sendHtmlMessage(src, "--- Side receive: Position yourself where to the left or right of where ball is spiked/served to.", safchan);
+                safaribot.sendHtmlMessage(src, "--- Low receive: Position yourself above the ball and within one column of the ball. If you are in the same column as the ball, this is more effective.", safchan);
+                safaribot.sendHtmlMessage(src, "--- Overhand receive: Position yourself under the ball and in the same column as the ball. If your Toss stat is high, this becomes more effective.", safchan);
+            case "receive":
+                break;
+        }
+        return;
+    }
     /* New Ball Mode */
     function Volleyball(src, team1, team2) {
         this.team1 = {}, this.team2 = {}; this.viewers = []; this.teams = [this.team1, this.team2];
@@ -26848,9 +26878,13 @@ function Safari() {
                         maxr = 2.5;
                         maxc = 3.2;
                     }
-                    else {
+                    else if (p.precision >= 2) {
                         maxr = 1.5;
                         maxc = 2.4;
+                    }
+                    else if (p.precision >= 2) {
+                        maxr = 1.2;
+                        maxc = 2;
                     }
                     maxr = Math.floor(3 - (Math.random() * maxr));
                     maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
@@ -27127,7 +27161,7 @@ function Safari() {
                 if (p.stamina < 0) {
                     p = 0;
                 }
-                this.excludePos[p.team].push(p.pos);
+                this.excludePos[t].push(p.pos);
             }
         }
         this.excludeActions = [];
