@@ -15304,16 +15304,21 @@ function Safari() {
                 effChance.status *= 1.5;
             }
         }
-        if (this.select) {
-            if (this.select.grassyterrain) {
-                effChance.drain *= 1.5;
+        try {
+            if (this.select) {
+                if (this.select.grassyterrain && effChance.drain) {
+                    effChance.drain *= 1.5;
+                }
+                if (this.select.psychicterrain && effChance.priority) {
+                    effChance.priority = 0;
+                }
+                if (this.select.electricterrain && effChance.flinch) {
+                    effChance.flinch *= 1.5;
+                }
             }
-            if (this.select.psychicterrain) {
-                effChance.priority = 0;
-            }
-            if (this.select.electricterrain) {
-                effChance.flinch *= 1.5;
-            }
+        }
+        catch err {
+            //
         }
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
