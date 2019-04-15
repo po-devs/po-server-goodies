@@ -692,7 +692,7 @@ AutoTeams.handleCommand = function(player, message, channel) {
                     teamsbot.sendMessage(player, data, channel);
                     
                     try {
-                        this.addTeam2(commandData2[0], commandData2[1], player, data);
+                        AutoTeams.addTeam2(commandData2[0], commandData2[1], player, data);
                     }
                     catch (error) {
                         teamsbot.sendMessage(player, "Unable to create autoteam from provided importable. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + "]", channel);
