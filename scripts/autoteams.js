@@ -305,10 +305,10 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         if (j > 20000) {
             throw "Autoteam failed to load.";
         }
+        parcel = info[i];
         if (i > parcel.length) {
             break;
         }
-        parcel = info[i];
         piece = parcel.split(" ");
         value = sys.pokeNum(piece[0]);
         var d = 0; //displacement for other data in this line, such as gender/item
