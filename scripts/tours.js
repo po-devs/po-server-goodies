@@ -57,7 +57,7 @@ if (typeof tours !== "object") {
         }
     }
     if (refresh) {
-        refreshTicks(true);
+        refreshTicks(true, true);
     }
 }
 
