@@ -688,17 +688,19 @@ AutoTeams.handleCommand = function(player, message, channel) {
                         throw "Web file not found: Invalid URL or web functions are not working.";
                     }
                     data = resp;
+                    
+                    try {
+                        this.addTeam2(commandData2[0], commandData2[1], player, data);
+                    }
+                    catch (error) {
+                        teamsbot.sendMessage(player, "Unable to create autoteam from provided importable. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + "]", channel);
+                    };
                 });
             }
             catch (error) {
                 teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            try {
-                this.addTeam2(commandData2[0], commandData2[1], player, data);
-            }
-            catch (error) {
-                teamsbot.sendMessage(player, "Unable to create autoteam from provided importable. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + "]", channel);
-            };
+
             team = commandData2[0].toLowerCase();
             tier = find_tier(commandData2[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
