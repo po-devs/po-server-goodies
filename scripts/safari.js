@@ -15154,7 +15154,7 @@ function Safari() {
                 if (isP4) {
                     bias = this.biasNPC2;
                 }
-                eff = this.generateMoveEffect(amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, used);
+                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["target"].contains(p)) {
@@ -15229,7 +15229,7 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.generateMoveEffect = function(factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, used) {
+    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, used) {
         var effChance;
         if (damaging) {
             effChance = {
