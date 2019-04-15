@@ -305,6 +305,9 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         if (j > 20000) {
             throw "Autoteam failed to load.";
         }
+        if (i > parcel.length) {
+            break;
+        }
         parcel = info[i];
         piece = parcel.split(" ");
         value = sys.pokeNum(piece[0]);
@@ -678,7 +681,12 @@ AutoTeams.handleCommand = function(player, message, channel) {
             catch (error) {
                 teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            this.addTeam2(commandData2[0], commandData2[1], player, data);
+            try {
+                this.addTeam2(commandData2[0], commandData2[1], player, data);
+            }
+            catch (error) {
+                teamsbot.sendMessage(player, "Unable to create autoteam from provided importable. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + "]", channel);
+            };
             team = commandData2[0].toLowerCase();
             tier = find_tier(commandData2[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);
