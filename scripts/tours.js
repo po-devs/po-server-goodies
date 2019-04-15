@@ -1,4 +1,4 @@
-﻿
+
 /*
 Code for tours.js
 Original coding by Shadowfist 2012
@@ -493,7 +493,7 @@ function clauseCheck(key, issuedClauses) {
 // Is name x a sub?
 function isSub(name) {
     try {
-        if (name === null) {
+        if (name === null || (!name)) {
             return false;
         }
         else if (name.indexOf("~Sub") === 0) {
@@ -4087,6 +4087,9 @@ function toursortbracket(size, key) {
 // this actually prints the bracket
 function tourprintbracket(key) {
     try {
+        if (!tourconfig) {
+            tourconfig = {};
+        }
         tours.tour[key].round += 1;
         if (tours.tour[key].players.length == 1) { // winner
             var channels = [0, tourschan];
@@ -4182,8 +4185,9 @@ function tourprintbracket(key) {
             delete tours.tour[key];
             tstats.savestats("all");
             purgeKeys();
+            var tourbreak = (tourconfig.tourbreak ? tourconfig.tourbreak : 120);
             if (tours.keys.length === 0 && tours.globaltime > 0) {
-                tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
+                tours.globaltime = parseInt(sys.time(), 10)+tourbreak; // for next tournament
             }
             var signups = false;
             for (var x in tours.tour) {
@@ -4194,7 +4198,7 @@ function tourprintbracket(key) {
             }
             if (isevent) {
                 if (!signups) {
-                    tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
+                    tours.globaltime = parseInt(sys.time(), 10)+tourbreak; // for next tournament
                 }
                 refreshTicks(true);
             }
@@ -4211,7 +4215,8 @@ function tourprintbracket(key) {
                 delete tours.tour[key];
                 purgeKeys();
                 if (tours.keys.length === 0 && tours.globaltime > 0) {
-                    tours.globaltime = parseInt(sys.time(), 10)+tourconfig.tourbreak; // for next tournament
+                    var tourbreak = (tourconfig.tourbreak ? tourconfig.tourbreak : 120);
+                    tours.globaltime = parseInt(sys.time(), 10)+tourbreak; // for next tournament
                 }
                 save_cache();
                 return;
@@ -4231,7 +4236,8 @@ function tourprintbracket(key) {
                 }
             }
             /* Here in case of the hilarious ~Bye~ vs ~Bye~ siutation */
-            tours.tour[key].time = parseInt(sys.time(), 10)+tourconfig.tourdq;
+            var tourdq = (tourconfig.tourdq ? tourconfig.tourdq : 120);
+            tours.tour[key].time = parseInt(sys.time(), 10)+tourdq;
             removebyes(key);
             return;
         }
@@ -4245,11 +4251,13 @@ function tourprintbracket(key) {
             }
             if (tours.tour[key].round == 1 && subsExist) {
                 tours.tour[key].state = "subround";
-                tours.tour[key].time = parseInt(sys.time(), 10)+tourconfig.subtime;
+                var tourdq = (tourconfig.subtime ? tourconfig.subtime : 120);
+                tours.tour[key].time = parseInt(sys.time(), 10)+subtime;
             }
             else {
                 tours.tour[key].state = "round";
-                tours.tour[key].time = parseInt(sys.time(), 10)+(is1v1Tour(key) ? Math.floor(tourconfig.tourdq*2/3) : tourconfig.tourdq);
+                var tourdq = (tourconfig.tourdq ? tourconfig.tourdq : 180);
+                tours.tour[key].time = parseInt(sys.time(), 10)+(is1v1Tour(key) ? Math.floor(tourdq*2/3) : tourdq);
             }
             if (tours.tour[key].round == 1) {
                 var submessage = "<div style='margin-left: 50px'><br/>Type <b><a href=\"po:send//join\">/join</a></b> to join late, good while subs last!</div>";
