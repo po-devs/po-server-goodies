@@ -31281,6 +31281,19 @@ function Safari() {
                 script.banList(src, "safaribans", commandData);
                 return true;
             }
+            if (command === "modspeak" || command === "ms") {
+                var m = commandData, n = "", l = ""; out = m;
+                if (m.indexOf("link(") !== 1) {
+                    n = m.slice(m.indexOf("link(") + 5, m.length);
+                    m = m.slice(0, m.indexOf("link("), m.length);
+                    l = n.slice(0, n.indexOf(")"));
+                    n = n.slice(n.indexOf(")") + 1, n.length);
+                    out = m + (link(l) + n);
+                }
+                var color = script.getColor(src);
+                sys.sendHtmlAll("<font color='" + color + "'><timestamp/><b>" + sys.name(src) + ":</b></font>: " + out, safchan);
+                return true;
+            }
             if (command === "startevent") {
                 if (currentEvent) {
                     safaribot.sendMessage(src, "There's already an event going on!", safchan);
@@ -32753,19 +32766,6 @@ function Safari() {
                 this.assignIdNumber(player, true);
                 this.saveGame(player);
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s ID has been reset and is now " + player.idnum + ".", safchan);
-                return true;
-            }
-            if (command === "modspeak" || command === "ms") {
-                var m = commandData, n = "", l = ""; out = m;
-                if (m.indexOf("link(") !== 1) {
-                    n = m.slice(m.indexOf("link(") + 5, m.length);
-                    m = m.slice(0, m.indexOf("link("), m.length);
-                    l = n.slice(0, n.indexOf(")"));
-                    n = n.slice(n.indexOf(")") + 1, n.length);
-                    out = m + (link(l) + n);
-                }
-                var color = script.getColor(src);
-                sys.sendHtmlAll("<font color='" + color + "'><timestamp/><b>" + sys.name(src) + ":</b></font>: " + out, safchan);
                 return true;
             }
             if (command === "safaripay") {
