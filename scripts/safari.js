@@ -14864,12 +14864,11 @@ function Safari() {
         }
         if (this.select && this.select.vicious && move.category !== "other") {
             var b = ["atk", "def", "spe", "satk", "sdef"].random();
-            var n = ["atk", "def", "spe", "satk", "sdef"];
+            var n = ["atk", "def", "spe", "satk", "sdef"].random();
             if (this.select.singlespecialstat && b == "sdef") {
                 b = "satk";
                 n = n.splice(n.indexOf("sdef"), 1);
             }
-            n = n.splice(n.indexOf(b), 1).random();
             if (this.select.singlespecialstat && n == "sdef") {
                 n = "satk";
             }
