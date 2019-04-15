@@ -281,10 +281,11 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         throw "A team with that name already exists in " + tier + "!";
     }
     var team = [];
-    while (data.indexOf("\r") !== 1) {
-        data = data.replace("\r", "");
-    }
-    var info = data.split("\n");
+
+    var info = data.replace(/\r/g, "").split("\n");
+    
+    teamsbot.sendMessage(player, info, channel);
+    
     var gen = sys.generationOfTier(tier);
     for (var p = 0; p < 6; p++) {
         var pokemon = {
