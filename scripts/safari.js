@@ -26045,7 +26045,7 @@ function Safari() {
         "splash": "Splash: When this Pokémon Sets, all non-Water type Pokémon in both front rows suffer -2 Stamina (Fire types suffer -3).",
         "telepathy": "Telepathy: While this Pokémon is in the back row, Fighting-type teammate's Spike +1.",
         "defiant": "Defiant: While this is in the back row, Psychic-type teammate's Spike +1.",
-        "float": "[ACT] Float: Costs 2 Stamina. Serve becomes hard to receive overhand, and punishes receivers that have moved.",
+        "float": "[ACT] Float: Costs 2 Stamina. Serve loses strength, but becomes more challenging to receive overhand or by receivers that move.",
         "swap": "[ACT] Swap: Costs 3 Stamina. Moves the Pokémon up in the rotation, trading places with the Pokémon ahead of it.",
         "guts": "Guts: While this is in the back row, Dark-type teammate's Spike +1.",
         "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
@@ -27143,11 +27143,11 @@ function Safari() {
     Volleyball.prototype.winGame = function(team) {
         if (team === 0) {
             this.sendMessageAll("Team " + this.teamData[0].name + " won the match! Congratulations to the winners!", "blue");
-            this.sendMessageAll(Object.keys(this.teams[0]).join(",") + " are the champions!" , "blue");
+            this.sendMessageAll(Object.keys(this.teams[0]).join(", ") + " are the victors!" , "blue");
         }
         if (team === 1) {
             this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
-            this.sendMessageAll(Object.keys(this.teams[1]).join(",") + " are the champions!" , "blue");
+            this.sendMessageAll(Object.keys(this.teams[1]).join(", ") + " are the victors!" , "blue");
         }
         this.finished = true;
         return;
@@ -27183,7 +27183,7 @@ function Safari() {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
             this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
             this.teams[0][p].volleysIn++;
-            if (this.teams[0][p].volleysIn > 5 && this.hasSkill(this.teams[0][p], "slacker")) {
+            if (this.teams[0][p].volleysIn === 5 && this.hasSkill(this.teams[0][p], "slacker")) {
                 this.sendMessageTeam(0, this.actName(this.teams[0][p]) + " has finally reached full strength!", "green");
             }
             this.teams[0][p].stunned = false;
@@ -27191,12 +27191,13 @@ function Safari() {
             if (this.hasSkill(this.teams[0][p], "swap")) {
                 this.sendMessage(this.teams[0][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
             }
+            this.teams[0][p].prep = 0;
         }
         for (var p in this.teams[1]) {
             this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + regen, this.teams[1][p].maxStamina);
             this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
             this.teams[1][p].volleysIn++;
-            if (this.teams[1][p].volleysIn > 5 && this.hasSkill(this.teams[1][p], "slacker")) {
+            if (this.teams[1][p].volleysIn === 5 && this.hasSkill(this.teams[1][p], "slacker")) {
                 this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
             }
             this.teams[1][p].stunned = false;
@@ -27204,6 +27205,7 @@ function Safari() {
             if (this.hasSkill(this.teams[1][p], "swap")) {
                 this.sendMessage(this.teams[1][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
             }
+            this.teams[1][p].prep = 0;
         }
         this.clearVals();
         this.resetPosition(team);
@@ -27426,7 +27428,7 @@ function Safari() {
             case 1: might = "WEAK"; break;
             case 0: might = "FREE"; break;
         };
-        this.sendMessageAll(volleyballScoreIcon(might) +  this.actName(player) + " serves the ball!", "blue");
+        this.sendMessageAll(volleyballScoreIcon(might) +  this.actName(player) + " serves the ball!" + (this.ballFloat ? " It's a Float Ball!" : ""), "blue");
         this.sendMessage(player.id, "You spent " + stcost + " stamina serving! You now have " + player.stamina + " left!" , "red");
         player.actSkills.sneak = false;
         this.cyclePhase = "receive";
@@ -27507,6 +27509,9 @@ function Safari() {
             proficiency -= 2;
         }
         if (proficiency >= 5 && target.zone == "front") {
+            target.canTip = true;
+        }
+        if (proficiency >= 4 && target.zone == "front" && this.hasSkill(target, "dump")) {
             target.canTip = true;
         }
         if (target.row < 3 && target.skills.indexOf("back-attack" > -1)) {
@@ -27714,7 +27719,7 @@ function Safari() {
             if (p.blocking && p.zone == "front") {
                 tempcolumn = (8 - p.column);
                 if (player.column === tempcolumn) {
-                    if ((angle === 0 && p.blockType == "straight") || (Math.abs(angle) === 1 && (p.blockType == "blockin" || p.blockType == "blockout"))) {
+                    if ((angle === 0 && p.blockType == "straight") || (angle === 1 && p.blockType == "blockin" && tempcolumn > 4) || (angle === -1 && p.blockType == "blockout" && tempcolumn < 4)) {
                         k = p.block + p.prep;
                         if (angle === 0 && p.blockType == "straight") {
                             k += 1;
@@ -27924,7 +27929,7 @@ function Safari() {
             if (p.row === this.ballRow && p.column === this.ballColumn) {
                 //direct receive, able to dig almost anything
                 rec = p.receive + p.prep + 2 + ((3 * Math.random()) - (2 * Math.random()));
-                proficiency = (this.ballPower - rec);
+                proficiency = (rec - this.ballPower - (Math.max(this.ballPower - 5, 0)));
                 if (proficiency <= 2) {
                     proficiency += 1;
                 }
@@ -27936,7 +27941,7 @@ function Safari() {
             if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
                 //if the player is directly in front of the ball's spike, receive overhand, which uses toss
                 rec = ((p.toss + p.receive)/2 + (p.prep * 2) + 3);
-                proficiency = (rec + p.toss + (p.toss * Math.random()) - (2.35 * this.ballPower));
+                proficiency = (rec + p.toss + (p.toss * Math.random()) - (1.5 * this.ballPower) - ((2.5 * Math.max(this.ballPower - 5, 0))));
                 if (proficiency >= 2) {
                     proficiency += 3;
                 }
@@ -27970,7 +27975,7 @@ function Safari() {
             if (p.row === this.ballRow && ((p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is to the side of the ball, they will be able to save it, but the pass will not be good
                 rec = p.receive + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
-                proficiency = ((this.ballPower + (Math.max(this.ballPower-5, 0)) - rec));
+                proficiency = ((rec - this.ballPower - (1.5 * Math.max(this.ballPower - 5, 0))));
                 if (proficiency > 3) {
                     proficiency--;
                 }
@@ -27991,6 +27996,9 @@ function Safari() {
             }
             if (p.stunned) {
                 proficiency -= 2;
+            }
+            if (p.moved >= p.speed) {
+                proficiency--;
             }
             if (p.moved >= 2) {
                 proficiency--;
@@ -28025,7 +28033,6 @@ function Safari() {
             }
         }
         maxPass -= 2;
-        this.sendMessageAll("Max pass is " + maxPass + ".");
         var ableSetter, rep, stcost = 0, boost, diff;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
