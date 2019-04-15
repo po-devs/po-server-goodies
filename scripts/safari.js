@@ -14869,7 +14869,7 @@ function Safari() {
                 b = "satk";
                 n = n.splice(n.indexOf("sdef"), 1);
             }
-            n = n.splice(n.indexOf(b), 1).random();
+            n = n.random();
             if (this.select.singlespecialstat && n == "sdef") {
                 n = "satk";
             }
