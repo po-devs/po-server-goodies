@@ -26083,7 +26083,13 @@ function Safari() {
             tight: { bg: "#500bc6" },
             off: { bg: "#500bc6" }
         };
-        var bg = colors[val.toLowerCase()].bg;
+        var bg;
+        if (colors[val.toLowerCase()]) {
+            bg = colors[val.toLowerCase()].bg;
+        }
+        else {
+            bg = "black";
+        }
         
         return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> [" + val.toUpperCase() + "] </font></background>";
     }
@@ -27127,7 +27133,7 @@ function Safari() {
                 if (p.stamina < 0) {
                     p = 0;
                 }
-                this.excludePos[p.team].push(p.pos);
+                this.excludePos[t].push(p.pos);
             }
         }
         this.excludeActions = [];
