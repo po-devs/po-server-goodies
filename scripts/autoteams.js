@@ -281,7 +281,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         throw "A team with that name already exists in " + tier + "!";
     }
     var team = [];
-    var info = data.split('\n');
+    var info = data.split(/\n/);
     var gen = sys.generationOfTier(tier);
     for (var p = 0; p < 6; p++) {
         var pokemon = {
@@ -308,9 +308,15 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         if (i > info.length) {
             break;
         }
-        parcel = info[i];
-        piece = parcel.split(" ");
-        value = sys.pokeNum(piece[0]);
+        try {
+            parcel = info[i];
+            piece = parcel.split(" ");
+            value = sys.pokeNum(piece[0]);
+        }
+        catch (error) {
+            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + "]", channel);
+            return;
+        };
         var d = 0; //displacement for other data in this line, such as gender/item
         if (((!value) || value < 1) && piece.length > 1) {
             value = sys.pokeNum(piece[0] + " " + piece[1]);
