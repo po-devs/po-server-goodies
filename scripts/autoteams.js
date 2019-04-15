@@ -281,7 +281,11 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         throw "A team with that name already exists in " + tier + "!";
     }
     var team = [];
-    var info = data.split('\n');
+
+    var info = data.replace(/\r/g, "").split("\n");
+    
+    teamsbot.sendMessage(player, info, channel);
+    
     var gen = sys.generationOfTier(tier);
     for (var p = 0; p < 6; p++) {
         var pokemon = {
@@ -299,16 +303,27 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         };
         team.push(pokemon);
     }
-    var index = 0, parcel, piece, value, i = 0, j = 0;
+    teamsbot.sendMessage(player, "The importable is " + info.length + " lines long.", channel);    
+    var index = 0, parcel, piece, value, i = 0, j = 0, d;
     while (index < 6) {
         j++;
         if (j > 20000) {
             throw "Autoteam failed to load.";
         }
-        parcel = info[i];
-        piece = parcel.split(" ");
-        value = sys.pokeNum(piece[0]);
-        var d = 0; //displacement for other data in this line, such as gender/item
+        if (i >= info.length) {
+            break;
+        }
+        try {
+            parcel = info[i];
+            piece = parcel.split(" ");
+        }
+        catch (error) {
+            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + " at loop: " + j + " where i = " + i + "]", channel);
+            return;
+        };
+        teamsbot.sendMessage(player, "Adding parcel: " + parcel + ".", channel); 
+        value = sys.pokeNum(piece[0]);   
+        d = 0; //displacement for other data in this line, such as gender/item
         if (((!value) || value < 1) && piece.length > 1) {
             value = sys.pokeNum(piece[0] + " " + piece[1]);
             d = 1;
@@ -344,7 +359,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                     itemdata += " " + piece[d + 5];
                 }
             }
-            value = sys.item(itemdata);
+            value = sys.itemNum(itemdata);
             if (!value) {
                 break;
             }
@@ -356,12 +371,12 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             continue;
         }
         if (piece[0] == "Ability:" || piece[0] == "Trait:" && piece.length > 1) {
-            value = sys.ability(piece[1]);
+            value = sys.abilityNum(piece[1]);
             if ((!value) && piece.length > 2) {
-                value = sys.ability(piece[1] + " " + piece[2]);
+                value = sys.abilityNum(piece[1] + " " + piece[2]);
             }
             if ((!value) && piece.length > 3) {
-                value = sys.ability(piece[1] + " " + piece[2] + " " + piece[3]);
+                value = sys.abilityNum(piece[1] + " " + piece[2] + " " + piece[3]);
             }
             if (value) {
                 team[index].ability = value;
@@ -456,7 +471,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             continue;
         }
         if (piece.length > 1 && piece[1] == "Nature") {
-            value = sys.nature(piece[0]);
+            value = sys.natureNum(piece[0]);
             if (value) {
                 team[index].nature = value;
                 i++;
@@ -469,7 +484,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                 move += " " + piece[2];
             }
             if (move == "Hidden Power" && piece.length > 3) {
-                var hptype = piece[4].replace(/[\[\]']+/g, '');
+                var hptype = piece[3].replace(/[\[\]']+/g, '');
                 if (sys.type(hptype)) {
                     team[index].hiddenpower = sys.type(hptype);
                 }
@@ -480,7 +495,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             else if (piece.length > 4) {
                 move += " " + piece[4];
             }
-            value = sys.move(move);
+            value = sys.moveNum(move);
             if (team[index].moves.length < 4 && value && value > 0) {
                 team[index].moves.push(value);
                 i++;
@@ -493,8 +508,9 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             index++;
             continue;
         }
+        
+        teamsbot.sendMessage(player, piece, channel);
         throw "Error while loading autoteam.";
-        return;
     }
     this.teams[tier][teamName] = {
         "submitter": sys.name(player),
@@ -673,12 +689,21 @@ AutoTeams.handleCommand = function(player, message, channel) {
                         throw "Web file not found: Invalid URL or web functions are not working.";
                     }
                     data = resp;
+                    
+                    //teamsbot.sendMessage(player, data, channel);
+                    
+                    try {
+                        AutoTeams.addTeam2(commandData2[0], commandData2[1], player, data);
+                    }
+                    catch (error) {
+                        teamsbot.sendMessage(player, "Unable to create autoteam from provided importable. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + "]", channel);
+                    };
                 });
             }
             catch (error) {
                 teamsbot.sendMessage(player, "Unable to load autoteam from url.", channel);
             };
-            this.addTeam2(commandData2[0], commandData2[1], player, data);
+
             team = commandData2[0].toLowerCase();
             tier = find_tier(commandData2[1]);
             teamsbot.sendMessage(player, "Added " + team + " to " + find_tier(tier) + " autoteams.", channel);

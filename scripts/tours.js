@@ -13,7 +13,7 @@ This code will only work on servers updated to 6th Gen!
 
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module, tourconfig:true*/
-var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
+var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings, tourconfig;
 
 //Challenge Cup tiers
 var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Hackmons Inverted CC"];
@@ -729,7 +729,7 @@ function initTours() {
             }
         }
         if (refresh) {
-            refreshTicks(true);
+            refreshTicks(true, true);
         }
     }
     else {
@@ -927,12 +927,14 @@ function fetchTier(data) {
     return [thetier, parameters];
 }
 
-function refreshTicks(override) {
+function refreshTicks(override, onInit) {
     var time = parseInt(sys.time(), 10);
     time -= 9900; // offset
     var frequency = 6*60*60; // every 6 hours
-    if (tourconfig.doubletime) {
-        frequency *= 0.5;
+    if (!onInit) {
+        if (tourconfig.doubletime) {
+            frequency *= 0.5;
+        }
     }
     var newtime = frequency-time%frequency;
     var oldtime = tours.eventticks;
