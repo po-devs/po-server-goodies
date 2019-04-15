@@ -484,7 +484,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
                 move += " " + piece[2];
             }
             if (move == "Hidden Power" && piece.length > 3) {
-                var hptype = piece[4].replace(/[\[\]']+/g, '');
+                var hptype = piece[3].replace(/[\[\]']+/g, '');
                 if (sys.type(hptype)) {
                     team[index].hiddenpower = sys.type(hptype);
                 }
