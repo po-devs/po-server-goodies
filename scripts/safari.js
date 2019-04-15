@@ -15330,7 +15330,7 @@ function Safari() {
         switch (eff) {
             case "restore":
                 out.restore = Math.min(Math.random() * 0.5 * factor + (0.18 * (1 + Math.min(((Math.random() * Math.max(restore, 0.1)) + 0.25), 0.5))), 0.75) ;
-                if (this.select.mistyterrain && (hasType(user.id, "Ice") || (hasType(user.id, "Fairy")))) {
+                if (this.select && this.select.mistyterrain && (hasType(user.id, "Ice") || (hasType(user.id, "Fairy")))) {
                     out.restore *= 1.5;
                 }
                 out.type = eff;
