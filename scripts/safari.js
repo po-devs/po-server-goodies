@@ -15317,7 +15317,7 @@ function Safari() {
                 }
             }
         }
-        catch err {
+        catch (err) {
             //
         }
         var eff = randomSample(effChance);
