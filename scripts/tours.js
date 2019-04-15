@@ -4087,6 +4087,9 @@ function toursortbracket(size, key) {
 // this actually prints the bracket
 function tourprintbracket(key) {
     try {
+        if (!tourconfig) {
+            tourconfig = {};
+        }
         tours.tour[key].round += 1;
         if (tours.tour[key].players.length == 1) { // winner
             var channels = [0, tourschan];
