@@ -689,6 +689,8 @@ AutoTeams.handleCommand = function(player, message, channel) {
                     }
                     data = resp;
                     
+                    teamsbot.sendMessage(player, data, channel);
+                    
                     try {
                         this.addTeam2(commandData2[0], commandData2[1], player, data);
                     }
