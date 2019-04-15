@@ -299,25 +299,27 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
         };
         team.push(pokemon);
     }
-    var index = 0, parcel, piece, value, i = 0, j = 0;
+    teamsbot.sendMessage(player, "The importable is " + info.length + " lines long.", channel);    
+    var index = 0, parcel, piece, value, i = 0, j = 0, d;
     while (index < 6) {
         j++;
         if (j > 20000) {
             throw "Autoteam failed to load.";
         }
-        if (i > info.length) {
+        if (i >= info.length) {
             break;
         }
         try {
             parcel = info[i];
             piece = parcel.split(" ");
-            value = sys.pokeNum(piece[0]);
         }
         catch (error) {
-            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + " at loop: " + j + "]", channel);
+            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + " at loop: " + j + " where i = " + i + "]", channel);
             return;
         };
-        var d = 0; //displacement for other data in this line, such as gender/item
+        teamsbot.sendMessage(player, "Adding parcel: " + parcel + ".", channel); 
+        value = sys.pokeNum(piece[0]);   
+        d = 0; //displacement for other data in this line, such as gender/item
         if (((!value) || value < 1) && piece.length > 1) {
             value = sys.pokeNum(piece[0] + " " + piece[1]);
             d = 1;
