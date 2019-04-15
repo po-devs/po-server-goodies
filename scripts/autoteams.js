@@ -495,7 +495,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             else if (piece.length > 4) {
                 move += " " + piece[4];
             }
-            value = sys.move(move);
+            value = sys.moveNum(move);
             if (team[index].moves.length < 4 && value && value > 0) {
                 team[index].moves.push(value);
                 i++;
