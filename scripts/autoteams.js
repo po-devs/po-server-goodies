@@ -314,7 +314,7 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             value = sys.pokeNum(piece[0]);
         }
         catch (error) {
-            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + "]", channel);
+            teamsbot.sendMessage(player, "Couldn't seperate the parcel. [" + error + (error.lineNumber ? " at line " + error.lineNumber : "") + ". Parcel: " + parcel + " at loop: " + j + "]", channel);
             return;
         };
         var d = 0; //displacement for other data in this line, such as gender/item
