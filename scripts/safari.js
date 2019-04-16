@@ -26880,15 +26880,15 @@ function Safari() {
                 }
             }
         }
-        maxSet = -1;
-        maxHit = -1;
+        maxSet = -100;
+        maxHit = -100;
         for (var t in team) {
             act = "";
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front") {
-                        if (p.toss >= maxSet && p.ai) {
+                    if (p.canSet && p.zone == "front" && p.ai) {
+                        if (p.toss >= maxSet) {
                             maxSet = p.toss;
                             setter = p.id;
                         }
@@ -26902,7 +26902,7 @@ function Safari() {
                         }
                     }
                 }
-                if ((this.phase == "attack" || this.phase == "set") && p.canHit) {
+                if ((this.phase == "attack" || this.phase == "set") && p.canHit && p.action == "") {
                     if (this.phase == "set" && chance(1 - p.spike * 0.1)) {
                         continue;
                     }
@@ -28298,6 +28298,7 @@ function Safari() {
             }
             return;
         }
+        this.sendMessageAll(name + " input " + data + ".");
         
         var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
@@ -28375,8 +28376,8 @@ function Safari() {
             }
             else {
                 this.sendMessage(name, "You already took action this turn!", "red");
+                return false;
             }
-            return false;
         }
         if (this.phase === "assemble") {
             /* In here it allows you to pick your team order/server order */
@@ -31612,7 +31613,11 @@ function Safari() {
                 return true;
             }
             if (command === "volleyball" || command == "vb") {
-                var vb = new Volleyball(src, "Team 1", "Team 2");
+                var names = commandData.split(":");
+                if (names.length < 2) {
+                    names = ["One", "Two"];
+                }
+                var vb = new Volleyball(src, names[0], names[1]);
                 currentGame = vb;
                 return true;
             }
