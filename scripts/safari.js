@@ -19190,8 +19190,8 @@ function Safari() {
         }
         if (difficulty < 2) {
             for (var i in player.party) {
-                if (getBST(player.party[i]) > 600) {
-                    safaribot.sendMessage(src, "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 600!", safchan);
+                if (getBST(player.party[i]) > 640) {
+                    safaribot.sendMessage(src, "Announcer: For Normal and Hard level difficulties, you cannot use Pokémon with a Base Stat Total above 640!", safchan);
                     return;
                 }
             }
@@ -19570,11 +19570,8 @@ function Safari() {
             }
             chal += diff;
 
-            if (difficulty >= 3) {
-                chal += 2;
-            }
             diff = 100;
-            maxLoop = 1200;
+            maxLoop = 2000;
             hazardStrength = 0;
             var maxRange = 6, minRange = 3;
             if (trainer.effectRange) {
@@ -19620,15 +19617,15 @@ function Safari() {
                         if (Math.abs(diff) <= 1) {
                             break;
                         }
-                        else if (Math.abs(diff) <= 2 && (maxLoop < 400)) {
+                        else if (Math.abs(diff) <= 2 && (maxLoop < 900)) {
                             diff *= 0.5;
                             break;
                         }
-                        else if (Math.abs(diff) <= 4 && (maxLoop < 200)) {
+                        else if (Math.abs(diff) <= 4 && (maxLoop < 400)) {
                             diff *= 0.25;
                             break;
                         }
-                        else if (Math.abs(diff) <= 16 && (maxLoop < 100)) {
+                        else if (Math.abs(diff) <= 16 && (maxLoop < 200)) {
                             diff *= (1/16);
                             break;
                         }
@@ -26893,7 +26890,7 @@ function Safari() {
                             setter = p.id;
                         }
                     }
-                    if (p.zone == "front" || (p.skills.indexOf("back-attack") !== -1)) {
+                    if (p.zone == "front" || (this.hasSkill(p, "back-attack"))) {
                         if (p.spike >= maxHit) {
                             maxHit = p.spike;
                         }
@@ -27034,10 +27031,10 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if (q.spike === maxHit && chooseHitter === 1) {
+                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit) {
                                 break;
                             }
-                            else if (q.spike === secondMaxHit && chooseHitter === 2) {
+                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit) {
                                 break;
                             }
                         }
@@ -27247,7 +27244,7 @@ function Safari() {
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
         this.sendMessageAll("");
-        var regen = (3 + (Math.max(2 * (this.turn - 2), 0)));
+        var regen = (1 + (Math.max(2 * (this.turn - 3), 0)));
         this.turn = 0;
         for (var p in this.teams[0]) {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
@@ -28148,6 +28145,13 @@ function Safari() {
                 stcost += 2;
                 p.stamina = Math.max(p.stamina - stcost, 0);
                 this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
+                if (this.ballStun) {
+                    if ((!p.stunned) && (!hasType(p.party[p.currentPoke], "Ground"))) {
+                        p.stunned = true;
+                        this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
+                    }
+                    this.ballStun = false;
+                }
                 return;
             }
             else if (maxPass <= 3) {
