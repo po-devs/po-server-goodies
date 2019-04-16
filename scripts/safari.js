@@ -26143,6 +26143,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>*** Tips for serving in Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Serving the ball uses the serve stat of your active Pokémon.", safchan);
                 safaribot.sendHtmlMessage(src, "- Adjust your serve effort with /vol effort:0 through /vol effort:2. More effort costs more stamina but is more powerful.", safchan);
+                safaribot.sendHtmlMessage(src, "- Lower serve effort are also easier to land in bounds if your precision stat is low.", safchan);
                 safaribot.sendHtmlMessage(src, "- If you have a float skill, you can activate it will serving to throw off the receivers.", safchan);
                 break;
             case "block":
@@ -26890,7 +26891,7 @@ function Safari() {
                             setter = p.id;
                         }
                     }
-                    if (p.zone == "front" || (this.hasSkill(p, "back-attack"))) {
+                    if ((p.zone == "front" || (this.hasSkill(p, "back-attack"))) && (setter !== p.id)) {
                         if (p.spike >= maxHit) {
                             maxHit = p.spike;
                         }
@@ -27031,10 +27032,10 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit) {
+                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit && (q.id !== p.id)) {
                                 break;
                             }
-                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit) {
+                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit && (q.id !== p.id)) {
                                 break;
                             }
                         }
@@ -27294,6 +27295,7 @@ function Safari() {
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendMessage(p.id, "Choose " + link("/vol effort:0", "easy") + link("/vol effort:1", "normal") + link("/vol effort:0", "strong") + " for your serve strength!");
         if (this.hasSkill(p, "float")) {
             this.sendMessage(p.id, "Type " + link("/vol float") + " to perform a Float Serve!");
         }
@@ -27419,6 +27421,12 @@ function Safari() {
             if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
                 prec += 2;
             }
+        }
+        if (player.serveEffort === 0) {
+            prec++;
+        }
+        if (player.serveEffort === 2) {
+            prec--;
         }
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         xvar = (chance(0.5) ? xvar * -1 : xvar);
@@ -28430,7 +28438,7 @@ function Safari() {
             opt.push("xc5");
             opt.push("xc6");
             opt.push("xc7");
-            if (data == "effort" && cdata.length > 1) {
+            if (cdata[0] == "effort" && cdata.length > 1) {
                 hold = (parseInt(cdata[1], 10));
                 if ([0, 1, 2].indexOf(hold) === -1) {
                     this.sendMessage(name, "Select a number between 0-2 to choose your serving power!", "red");
