@@ -713,6 +713,7 @@ function initTours() {
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
+    tstats.fetchTourConfig(tourconfig);
     if (typeof tours != "object") {
         try {
             load_cache();
@@ -4090,6 +4091,7 @@ function tourprintbracket(key) {
         if (!tourconfig) {
             tourconfig = {};
         }
+        tstats.fetchTourConfig(tourconfig);
         tours.tour[key].round += 1;
         if (tours.tour[key].players.length == 1) { // winner
             var channels = [0, tourschan];
