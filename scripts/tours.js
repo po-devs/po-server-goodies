@@ -713,7 +713,6 @@ function initTours() {
     };
     tourschan = utilities.get_or_create_channel(tourconfig.channel);
     tourserrchan = utilities.get_or_create_channel(tourconfig.errchannel);
-    tstats.fetchTourConfig(tourconfig);
     if (typeof tours != "object") {
         try {
             load_cache();
