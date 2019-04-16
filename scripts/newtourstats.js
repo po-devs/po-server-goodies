@@ -127,6 +127,10 @@ function statInit() {
     sendChanAll('Tournament stats are ready.', tourschan);
 }
 
+function fetchTourConfig(conf) {
+    var tourconfig = conf;   
+}
+
 function saveWinners() {
     sys.writeToFile(dataDir+"winners.txt", "");
     for (var x in tourwinners) {

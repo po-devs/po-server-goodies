@@ -4090,6 +4090,7 @@ function tourprintbracket(key) {
         if (!tourconfig) {
             tourconfig = {};
         }
+        tstats.fetchTourConfig(tourconfig);
         tours.tour[key].round += 1;
         if (tours.tour[key].players.length == 1) { // winner
             var channels = [0, tourschan];
