@@ -127,7 +127,7 @@ function statInit() {
     sendChanAll('Tournament stats are ready.', tourschan);
 }
 
-function fetchTourConfig(conf) {
+function resetTourConfig(conf) {
     var tourconfig = conf;   
 }
 
@@ -1195,5 +1195,8 @@ module.exports = {
     },
     converttours: function() {
         conversion();
+    },
+    fetchTourConfig: function(t) {
+        resetTourConfig(t);
     }
 };
