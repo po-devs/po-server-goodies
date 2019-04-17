@@ -512,8 +512,13 @@ function awardTourPoints(player, size, tier, delim, place) {
     var month = now.getUTCMonth();
     var scale = 0;
     var points = 0;
-    if (size < 4 || !tourconfig || !tourconfig.points) {
-        if (place == 1) {
+    if (size < 4) {
+        if (place == 1 && tourconfig) {
+            if (!tourconfig.points) {
+                addWinner(player,size,tier,dateString,points,month);
+            }
+        }
+        else if (place === 1) {
             addWinner(player,size,tier,dateString,points,month);
         }
         return;
