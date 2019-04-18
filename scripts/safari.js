@@ -14836,7 +14836,7 @@ function Safari() {
                     target.boosts[obj.nerfStat] += obj.nerf;
                     target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
                     if (this.select && this.select.singlespecialstat && obj.nerfStat == "satk") {
-                        out.push(name + "'s Special " + addSign(obj.nerf) + "!");
+                        out.push(tname + "'s Special " + addSign(obj.nerf) + "!");
                     }
                     else {
                         out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
