@@ -13,7 +13,7 @@ This code will only work on servers updated to 6th Gen!
 
 /*jshint laxbreak:true,shadow:true,undef:true,evil:true,trailing:true,proto:true,withstmt:true*/
 /*global script, sys, SESSION, sendChanAll, sendChanHtmlAll, require, Config, module, tourconfig:true*/
-var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings;
+var tourschan, tourserrchan, tours, tourwinmessages, tourstats, tourwarnings, tourconfig;
 
 //Challenge Cup tiers
 var cctiers = ["Challenge Cup", "CC 1v1", "Wifi CC 1v1", "Inverted Challenge Cup", "Hackmons Challenge Cup", "Hackmons CC 1v1", "Hackmons Wifi CC 1v1", "Hackmons Inverted CC"];
