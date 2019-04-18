@@ -14442,7 +14442,7 @@ function Safari() {
                         out.push(tname + "'s Speed -1!");
                     }
                     if (self.select.psyDrop && move.type === "Psychic" && chance(0.3)) {
-                        if (this.select.singlespecialstat) {
+                        if (self.select.singlespecialstat) {
                             target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
                             out.push(tname + "'s Special -1!");
                         }
