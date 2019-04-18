@@ -682,7 +682,7 @@ function initTours() {
     // config object
     sys.makeDir(configDir);
     sys.makeDir(dataDir);
-    tourconfig = {
+    var tourconfig = {
         maxqueue: parseInt(getConfigValue("tourconfig.txt", "maxqueue"), 10),
         maxarray: 1023,
         maxrunning: parseInt(getConfigValue("tourconfig.txt", "maxrunning"), 10),
