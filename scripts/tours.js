@@ -4252,7 +4252,7 @@ function tourprintbracket(key) {
             }
             if (tours.tour[key].round == 1 && subsExist) {
                 tours.tour[key].state = "subround";
-                var tourdq = (tourconfig.subtime ? tourconfig.subtime : 120);
+                var subtime = (tourconfig.subtime ? tourconfig.subtime : 120);
                 tours.tour[key].time = parseInt(sys.time(), 10)+subtime;
             }
             else {
