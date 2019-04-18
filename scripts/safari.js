@@ -12960,11 +12960,11 @@ function Safari() {
             this.p3MoveCodes = {};
             this.p4MoveCodes = {};
             
-            var showBoosts = function(user) {
+            var showBoosts = function(user, select) {
                 var out = [], val;
                 for (var e in user.boosts) {
                     val = user.boosts[e];
-                    if (this.select && this.select.singlespecialstat && e == "satk") {
+                    if (select && select.singlespecialstat && e == "satk") {
                         e = "spc";
                     }
                     if (val !== 0) {
@@ -12999,7 +12999,7 @@ function Safari() {
                     if (p.condition !== "none") {
                         info.push(getConditionCode(p.condition));
                     }
-                    b = showBoosts(p);
+                    b = showBoosts(p, this.select);
                     if (b) {
                         info.push(b);
                     }
@@ -13027,7 +13027,7 @@ function Safari() {
                         p.lastPlayed = false;
                         
                         if (!isNPC) {
-                            self.sendMessage(name, pokeInfo.icon(p.id) + poke(p.id) + " | " + self.getHPColor(p.hp, p.maxhp) + (p.condition !== "none" ? " | " + getConditionCode(p.condition)  : "") + " | " + showBoosts(p));
+                            self.sendMessage(name, pokeInfo.icon(p.id) + poke(p.id) + " | " + self.getHPColor(p.hp, p.maxhp) + (p.condition !== "none" ? " | " + getConditionCode(p.condition)  : "") + " | " + showBoosts(p, this.select));
                         }
                         for (m = 0; m < p.moves.length; m++) {
                             moves.push(link("/bat " + codes[t], "[" + cap(codes[t]) + "]") + " " + self.translateMove(p.moves[m]));
@@ -15043,7 +15043,7 @@ function Safari() {
         if (data.hasOwnProperty("buff")) {
             for (e = 0; e < data.buff.length; e++) {
                 eff = data.buff[e];
-                if (this.select && this.select.singlespecialstat && eff.buffStat == "satk") {
+                if (this.select && this.select.singlespecialstat && eff.buffStat.toLowerCase() == "satk") {
                     out.push("Own Special " + addSign(eff.buff) + (eff.buffChance && eff.buffChance < 1 ? " (" + Math.round(eff.buffChance * 100) + "%)" : ""));
                 }
                 else {
@@ -15054,7 +15054,7 @@ function Safari() {
         if (data.hasOwnProperty("nerf")) {
             for (e = 0; e < data.nerf.length; e++) {
                 eff = data.nerf[e];
-                if (this.select && this.select.singlespecialstat && eff.nerfStat == "satk") {
+                if (this.select && this.select.singlespecialstat && eff.nerfStat.toLowerCase() == "satk") {
                     out.push("Opponent's Special " + addSign(eff.nerf) + (eff.nerfChance && eff.nerfChance < 1 ? " (" + Math.round(eff.nerfChance * 100) + "%)" : ""));
                 }
                 else {
