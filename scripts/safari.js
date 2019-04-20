@@ -33997,6 +33997,10 @@ function Safari() {
                 safaribot.sendMessage(src, "<img src = 'item:" + commandData + ">", safchan);
                 return true;
             }
+            if (command === "costumeicon") {
+                safaribot.sendMessage(src, "<img src='Themes/Classic/Trainer Sprites/" + commandData + ".png'>", safchan);
+                return true;
+            }
             if (command === "ricemode") {
                 safari.riceMode = (safari.riceMode ? false : true);
                 safaribot.sendMessage(src, "Toggled RiceMode " + (safari.riceMode ? "on" : "off") + "!", safchan);
