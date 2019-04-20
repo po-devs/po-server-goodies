@@ -2715,7 +2715,7 @@ function Safari() {
                 if (first) {
                     ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
-                } else {g
+                } else {
                     ret += "<tr>";
                 }
                 for (var i = 0; i < arr.length; i++) {
