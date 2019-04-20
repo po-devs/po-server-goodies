@@ -15,6 +15,7 @@ function Safari() {
     var defaultChannel = "Safari";
     var safaribot = new Bot("Tauros");
     var tutorbot = new Bot("Kangaskhan");
+    var daycarebot = new Bot("Chansey");
     var closedMessage = "<font color='#3daa68'><timestamp/><b>±PA:</b></font> <b>Ding-dong! The Safari Game is over! Please return to the front counter while an update is applied!</b>";
     var openedMessage = "<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>";
     var wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
@@ -10438,8 +10439,11 @@ function Safari() {
     };
     this.trialsLogin = function(player) {
         if (player.trials && safari.events.hasOwnProperty("trialsEnabled") ? safari.events.trialsEnabled : false) {
-            player.trials.points += 1;
             safaribot.sendMessage(sys.id(player.id), "You received +1 bonus Trials point for logging in today!",safchan);
+            if (player.trials.name !== safari.events.trialsData.name) {
+                player.trials.points = 0;
+            }
+            player.trials.points += 1;
         }
         return;
     };
@@ -19299,7 +19303,7 @@ function Safari() {
                 for (var t in k) {
                     y = true;
                     for (var p in player.party) {
-                        if (!generation(parseInt(player.party[p], 10), true) === k[t]) {
+                        if (generation(parseInt(player.party[p], 10), true) !== k[t]) {
                             y = false;
                         }
                     }
