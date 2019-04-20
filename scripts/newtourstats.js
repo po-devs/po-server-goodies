@@ -127,7 +127,7 @@ function statInit() {
     sendChanAll('Tournament stats are ready.', tourschan);
 }
 
-function fetchTourConfig(conf) {
+function resetTourConfig(conf) {
     var tourconfig = conf;   
 }
 
@@ -512,8 +512,18 @@ function awardTourPoints(player, size, tier, delim, place) {
     var month = now.getUTCMonth();
     var scale = 0;
     var points = 0;
-    if (size < 4 || !tourconfig.points) {
-        if (place == 1) {
+    if (size < 4) {
+        if (place == 1 && tourconfig) {
+            try {
+                if (!tourconfig.points) {
+                    addWinner(player,size,tier,dateString,points,month);
+                }
+            }
+            catch (error) {
+                addWinner(player,size,tier,dateString,points,month);
+            }
+        }
+        else if (place === 1) {
             addWinner(player,size,tier,dateString,points,month);
         }
         return;
@@ -1195,5 +1205,8 @@ module.exports = {
     },
     converttours: function() {
         conversion();
+    },
+    fetchTourConfig: function(t) {
+        resetTourConfig(t);
     }
 };
