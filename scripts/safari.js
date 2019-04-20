@@ -2715,7 +2715,7 @@ function Safari() {
                 if (first) {
                     ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
-                } else {
+                } else {g
                     ret += "<tr>";
                 }
                 for (var i = 0; i < arr.length; i++) {
@@ -7982,8 +7982,6 @@ function Safari() {
                 safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
                 return;
             }
-            safaribot.sendMessage(src, "What are you doing! You can't open Easter Eggs until Easter!", safchan);
-            return;
             var eastereggprizes = {
                 "1": {
                     rock: 35, 
@@ -33993,6 +33991,10 @@ function Safari() {
             }
             if (command === "movenum") {
                 getInputMove(src, commandData);
+                return true;
+            }
+            if (command === "itemicon") {
+                safaribot.sendMessage(src, "<img src = 'item:" + commandData + ">", safchan);
                 return true;
             }
             if (command === "ricemode") {
