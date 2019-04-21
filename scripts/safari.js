@@ -8095,10 +8095,10 @@ function Safari() {
                 amount = Math.round(((12 * Math.random()) + 3) * (12 + (3 * Math.random())) * (pulled >= 100 ? pulled : (pulled/3)));
                 player.money += amount;
                 this.sanitize(player);
-                safaribot.sendMessage(src, "You " + finishName("easteregg") + " to reveal $" + amount + "!", safchan);
+                safaribot.sendMessage(src, "You open your " + finishName("easteregg") + " to reveal $" + amount + "!", safchan);
             }
             if (giveReward) {
-                safaribot.sendMessage(src, "You " + finishName("easteregg") + " to reveal " + plural(amount, reward) + "!", safchan);
+                safaribot.sendMessage(src, "You open your " + finishName("easteregg") + " to reveal " + plural(amount, reward) + "!", safchan);
                 if (reward === "mega" && amount === 1) {
                     safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("easteregg") + "!</b>", safchan);
                 } else if (reward === "mega" && amount >= 2) {
