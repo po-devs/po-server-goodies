@@ -10427,7 +10427,7 @@ function Safari() {
         player.trials.currentIDs.push(id);
         return;
     };
-    this.resettrial = function(src,player,id) {
+    this.resetTrial = function(src,player,id) {
         var k, m, d;
         player.trials.currentIDs = player.trials.currentIDs.slice(player.trials.currentIDs.indexOf(id), 1);
         for (var e = player.trials.missions.length; e--; ) {
@@ -34299,6 +34299,11 @@ function Safari() {
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
+                return true;
+            }
+            if (command === "resettrial") {
+                var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
+                safari.resetTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
                 return true;
             }
             if (command === "trialspoints") {
