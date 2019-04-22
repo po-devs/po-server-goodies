@@ -10427,6 +10427,21 @@ function Safari() {
         player.trials.currentIDs.push(id);
         return;
     };
+    this.resettrial = function(src,player,id) {
+        var k, m, d;
+        player.trials.currentIDs = player.trials.currentIDs.slice(player.trials.currentIDs.indexOf(id), 1);
+        for (var e = player.trials.missions.length; e--; ) {
+            m = player.trials.missions[e];
+            d = m.id;
+            if (m.id === id) {
+                var k = player.trials.missions.indexOf(m);
+                player.trials.missions.splice(k, 1);
+                this.assignTrials(src,player); //sends the new trial to the auth
+                return;
+            }
+        }
+        return;
+    };
     this.setTrialsPoints = function(src,target,num) {
         if (!target.trials) {
             return;
