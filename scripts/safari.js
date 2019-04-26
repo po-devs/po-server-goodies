@@ -12397,7 +12397,7 @@ function Safari() {
     Battle.prototype.isInBattle = function(name) {
         return this.name1.toLowerCase() == name.toLowerCase() || (!this.npcBattle && this.name2.toLowerCase() == name.toLowerCase());
     };
-    function calcDamage(p1, p2, p1Handicap, p2Handicap, inverted) {
+    function calcDamage(p1, p2, p1Handicap, p2Handicap, inverted, ch1, ch2) {
         var p1Type1 = sys.type(sys.pokeType1(p1)), p1Type2 = sys.type(sys.pokeType2(p1));
         var p2Type1 = sys.type(sys.pokeType1(p2)), p2Type2 = sys.type(sys.pokeType2(p2));
 
@@ -12411,8 +12411,8 @@ function Safari() {
         var stat = sys.rand(0, 6);
         var sName = statName[stat];
 
-        var p1Stat = sys.baseStats(p1, stat);
-        var p2Stat = sys.baseStats(p2, stat);
+        var p1Stat = sys.baseStats(p1, stat) + (ch1 ? ch1 : 0);
+        var p2Stat = sys.baseStats(p2, stat) + (ch2 ? ch2 : 0);
 
         var p1Power = Math.round((p1Stat + p1Move) * p1Bonus);
         var p2Power = Math.round((p2Stat + p2Move) * p2Bonus);
@@ -21682,7 +21682,7 @@ function Safari() {
                     playerBonus = null;
                 }
 
-                res = calcDamage(choice, opp, playerBonus, this.hordePower);
+                res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(avi, choice));
                 lastAttacker = n + 1;
                 if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
                     res.power[0] = Math.round(res.power[0] * 0.25);
@@ -30148,7 +30148,7 @@ function Safari() {
         var catStrings = ["all", "balls", "items", "perks", "costumes"];
         for (var e in costumeData) {
             if (costumeData.hasOwnProperty(e)) {
-                costumeHelp[e] = costumeData[e].effect;
+                costumeHelp[e] = costumeData[e].effect + (costumeData[e].effect2 ? " - " + costumeData[e].effect2 : "");
             }
         }
 
@@ -34161,8 +34161,8 @@ function Safari() {
                         }
                     });
                 } catch (err) {
-                    trialsData = cThemes;
-                    safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                    data = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Duels from " + url + "! Error: " + err, safchan);
                 }
                 return true;
             }
