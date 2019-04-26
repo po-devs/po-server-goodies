@@ -10912,7 +10912,7 @@ function Safari() {
         sendAll(safari.events.spiritDuelsTeams[0].name + " has been eliminated!!", true);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
-            var t = idNumList.get(safari.events.spiritDuelsTeams[0].players[p]);
+            var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
             player = getAvatarOff(t);
             safari.events.spiritDuelsSignups.push(player.idnum);
         }
@@ -10949,7 +10949,7 @@ function Safari() {
 
         var p, j;
         for (var a in army1) {
-            p = getAvatarOff(idNumList.get(army1[a]));
+            p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer1; i++) {
                 team1.push({
@@ -10967,7 +10967,7 @@ function Safari() {
             }
         }
         for (var a in army2) {
-            p = getAvatarOff(idNumList.get(army2[a]));
+            p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer2; i++) {
                 team2.push({
@@ -11399,7 +11399,7 @@ function Safari() {
                 return false;
             }
         }
-        k = safari.events.spiritDuelsSignups.indexOf(idNum);
+        k = safari.events.spiritDuelsSignups.indexOf(player.idnum);
         if (k > -1) {
             safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
