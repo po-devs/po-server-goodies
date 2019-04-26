@@ -365,10 +365,10 @@ AutoTeams.addTeam2 = function(teamName, tier, player, data) {
             }
             value = sys.itemNum(itemdata);
             if (!value) {
-                break;
+                continue;
             }
             if (value === 0) {
-                break;
+                continue;
             }
             team[index].item = value;
             i++;
