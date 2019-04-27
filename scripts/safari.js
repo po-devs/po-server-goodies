@@ -28435,9 +28435,7 @@ function Safari() {
     this.printDayCare = function(src, area) {
         var p, mon;
         var rows = {}, features = {}, name;
-        if (area == "") {
-            area = "grotto";
-        }
+        area = area || "grotto";
         var props = [
             ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12"],
             ["b1", "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "b10", "b11", "b12"],
@@ -28457,9 +28455,11 @@ function Safari() {
             f = props[t];
             for (var s in f) {
                 h = s[f];
+                safaribot.sendMessage(src, "Adding " + h + ".", safchan);
                 g = this.getFeatureAt(h, area);
                 if (g !== "") {
                     features[h] = g;
+                    safaribot.sendMessage(src, "Found " + g + ".", safchan);
                 }
             }
         }
@@ -28485,6 +28485,7 @@ function Safari() {
                 if (features.hasOwnProperty(place)) {
                     hold = this.getNearbyFeatures(place, area);
                     icon = daycareTiles[features[place]];
+                    safaribot.sendMessage(src, "Found feature " + features[place] + ".", safchan);
                     if (features[place] == "grass") {
                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 0) {
                             icon = daycareTiles["grasswater"];
@@ -28505,10 +28506,10 @@ function Safari() {
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
-                    ret += "<img src='" + icon + "' title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
+                    ret += "<img src='" + icon + "' title='" + features[place] + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                 }
                 else {
-                    ret += "<img src= '' style='background:" + bg + "'>";
+                    ret += "<style='background:" + bg + "'>";
                 }
                 ret += "</td>";
             }
