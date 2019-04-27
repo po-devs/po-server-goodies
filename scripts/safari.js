@@ -7955,7 +7955,7 @@ function Safari() {
         if (safari.hasCostumeSkill(player, "evolveCheap2")) {
             out *= 0.75;
         }
-        out = Math.max(Math.round(out/102), 1);
+        out = Math.max(Math.round(out/151), 1);
         return out;
     };
     this.useCandy = function(src, commandData) {
@@ -12645,7 +12645,7 @@ function Safari() {
                 val = 0;
                 dval = 0;
                 delim = 1;
-                if (chance(md.chance)) {
+                if (chance(md.silverChance)) {
                     out[t].silver = true;
                     val = sys.rand(md.silverPrice[0], md.silverPrice[1]);
                     dval = sys.rand(md.silverDiscount[0], md.silverDiscount[1]);
@@ -12673,13 +12673,16 @@ function Safari() {
                 }
             }
         }
-        npcShop = out;
+        npcShop = {};
+        for (var t in out) {
+            npcShop[t] = out[t];
+        }
+        this.saveShop();
         if (!silent && (mark)) {
             sendAll("", true, true);
             safaribot.sendHtmlAll("The market has been updated with new goodies! Type " + link("/buy") + " to see the prices!", safchan );
             sendAll("", true, true);
         }
-        this.saveShop();
     };
 
     /* Daycare */
@@ -13349,7 +13352,7 @@ function Safari() {
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
 
-        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(getAvatarOff(this.name1, poke1)), getCherished(getAvatarOff(this.name2, poke1))));
+        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(getAvatarOff(this.name1, p1Poke)), getCherished(getAvatarOff(this.name2, p2Poke))));
 
         var name1 = this.name1 + "'s " + poke(p1Poke);
         var name2 = this.name2 + "'s " + poke(p2Poke);
@@ -19974,7 +19977,9 @@ function Safari() {
         }
         var recipes = recipeData;
         if (player.costume && costumeData[player.costume].expItem) {
-            recipes["expup"] = {ingredients: ["300@dust", "@" + costumeData[player.costume].expItem], reward: "@expup", immediate: true, failChance: 0, cooldown: 0}
+            var ing = {"dust": 300};
+            ing[expItem] = 1;
+            recipes["expup"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
         }
         else {
             if (recipes.expup) {
