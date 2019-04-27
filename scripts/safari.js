@@ -5051,6 +5051,7 @@ function Safari() {
             }
             this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             this.missionProgress(player, "catchAny", currentPokemon, 1);
+            this.costumeEXP(player, "catch");
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -10043,11 +10044,9 @@ function Safari() {
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
-            if (playerlim > lim) {
-                if (info.hasOwnProperty("purchases") && info.hasOwnProperty("playerLimit")) {
-                    if (info.purchases.hasOwnProperty(player.idnum+"")) {
-                        playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
-                    }
+            if (info.hasOwnProperty("purchases") && info.hasOwnProperty("playerLimit")) {
+                if (info.purchases.hasOwnProperty(player.idnum+"")) {
+                    playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
                 }
             }
             lim = playerlim;
