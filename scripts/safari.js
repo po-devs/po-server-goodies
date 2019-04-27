@@ -12636,9 +12636,9 @@ function Safari() {
             }
         } else {
             out = {};
-            for (var t in mark) {
-                md = mark[t];
-                if (chance(1 - md.chance)) {
+            for (var t in marketData) {
+                md = marketData[t];
+                if (!chance(md.chance)) {
                     continue;
                 }
                 out[t] = {};
@@ -13352,7 +13352,7 @@ function Safari() {
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
 
-        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(p1Poke, this.name1), getCherished(p2Poke, this.name2)));
+        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(this.name1, p1Poke), getCherished(this.name2, p2Poke)));
 
         var name1 = this.name1 + "'s " + poke(p1Poke);
         var name2 = this.name2 + "'s " + poke(p2Poke);
@@ -19978,7 +19978,7 @@ function Safari() {
         var recipes = recipeData;
         if (player.costume && costumeData[player.costume].expItem) {
             var ing = {"dust": 300};
-            ing[costumeData[player.costume].expItem] = 1;
+            ing[expItem] = 1;
             recipes["expup"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
         }
         else {
@@ -34396,10 +34396,6 @@ function Safari() {
                         safaribot.sendMessage(src, "Request includes " + j + ".", safchan);
                     }
                 }
-                return true;
-            }
-            if (command === "supdatemarket") {
-                safari.updateMarket(true);
                 return true;
             }
             if (command === "updatemarket") {
