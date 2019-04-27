@@ -4381,16 +4381,16 @@ function Safari() {
         if ((hasType(currentPokemon, "Rock") || hasType(currentPokemon, "Ground")) && this.hasCostumeSkill(player, "catchRockGround")) {
             costumeBonus = costumeBoost(player);
         } 
-        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(id, 168)) {
+        if (this.hasCostumeSkill(player, "catchThief") && canLearnMove(currentPokemon, 168)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(id, 47)) {
+        if (this.hasCostumeSkill(player, "catchSing") && canLearnMove(currentPokemon, 47)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(id, 150)) {
+        if (this.hasCostumeSkill(player, "catchSplash") && canLearnMove(currentPokemon, 150)) {
             costumeBonus *= costumeBoost(player);
         }
-        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(id, 431)) {
+        if (this.hasCostumeSkill(player, "catchRockClimb") && canLearnMove(currentPokemon, 431)) {
             costumeBonus *= costumeBoost(player);
         }
         if (wildStats <= 480 && this.hasCostumeSkill(player, "catchLowBST")) {
