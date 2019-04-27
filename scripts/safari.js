@@ -10039,7 +10039,7 @@ function Safari() {
         for (i in shop) {
             info = shop[i];
             disc = ((shop[i].discount ? shop[i].discount : false) || (shop[i].discount2 && this.hasCostumeSkill(player, "haggler")));
-            discmsg = disc ? "<font color=#e5981d><b> [Discount]</b></font>" : "";
+            discmsg = disc ? "<font color=#f4b042><b> [Discount]</b></font>" : "";
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
@@ -15564,7 +15564,7 @@ function Safari() {
                 out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (self.crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
                 if (target.hp <= 0) {
                     if (isPlayerVsNPC) {
-                        if (chance((0.0125 * Math.random()) + (getCherished(target.id, self.name1.toLowerCase()) > 0 ? 0.01 : 0) + safari.hasCostumeSkill(getAvatarOff(self.name1), "kiai") ? 0.0125 : 0)) {
+                        if (chance((0.0125 * Math.random()) + (getCherished(target.id, self.name1.toLowerCase()) > 0 ? 0.01 : 0) + safari.hasCostumeSkill(player, "kiai") ? 0.0125 : 0)) {
                             target.hp = 1;
                             out.push("<b>" + tname + " endured the hit!</b>");
                         }
