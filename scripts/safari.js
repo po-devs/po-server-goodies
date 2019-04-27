@@ -28505,10 +28505,10 @@ function Safari() {
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
-                    ret += "<img src='" + icon + "' title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
+                    ret += "<img src=" + icon + " title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                 }
                 else {
-                    ret += "<img src= '' style='background:" + bg + "'>";
+                    ret += "<style='background:" + bg + "'>";
                 }
                 ret += "</td>";
             }
