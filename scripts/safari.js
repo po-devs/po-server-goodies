@@ -19977,7 +19977,9 @@ function Safari() {
         }
         var recipes = recipeData;
         if (player.costume && costumeData[player.costume].expItem) {
-            recipes["expup"] = {ingredients: ["300@dust", "@" + costumeData[player.costume].expItem], reward: "@expup", immediate: true, failChance: 0, cooldown: 0}
+            var ing = {"dust": 300};
+            ing[expItem] = 1;
+            recipes["expup"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
         }
         else {
             if (recipes.expup) {
