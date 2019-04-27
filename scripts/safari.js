@@ -9503,17 +9503,17 @@ function Safari() {
     };
     /* Costume EXP stuff */
     var costumeExpInfo = {
-        daycareplay: "Daycare",
-        wincontest: "Win Contest",
-        catch: "Catch Pokémon",
-        wintour: "Event Tournament",
-        fighttower: "Fight the Battle Tower",
-        findrare: "Find Rare Items with Itemfinder",
-        bait: "Bait",
-        journal: "Journal",
-        scientist: "Earn Silver from Scientist",
-        soda: "Event Trivia",
-        stealpoke: "Snag Pokes from NPCs"
+        "daycareplay": "Daycare",
+        "wincontest": "Win Contest",
+        "catch": "Catch Pokémon",
+        "wintour": "Event Tournament",
+        "fighttower": "Fight the Battle Tower",
+        "findrare": "Find Rare Items with Itemfinder",
+        "bait": "Bait",
+        "journal": "Journal",
+        "scientist": "Earn Silver from Scientist",
+        "soda": "Event Trivia",
+        "stealpoke": "Snag Pokes from NPCs"
     };
     var costumeSkillInfo = {
         botdboost: "Catch rate increased when using the Boost-of-the-Day",
