@@ -3294,7 +3294,7 @@ function Safari() {
                     safari.sanitizeRaffle();
                 }
                 if (asset === "expup") {
-                    safari.costumeExp(player, "alchemy", 350 + (safari.getCostumeLevel(player) * 50));
+                    safari.costumeEXP(player, "alchemy", 350 + (safari.getCostumeLevel(player) * 50));
                 }
                 safari.updateShop(player, asset);
 
@@ -5919,16 +5919,16 @@ function Safari() {
                 out += costumeSprite(player.costume, isAndroid);
             }
             out += "\n";
-            if (medals) {
+            if (medals && medals !== null && medals.length > 0) {
                 for (var i = 0; i < 3; i++) {
-                    if (i > medals.length) {
+                    if (i >= medals.length) {
                         break;
                     }
                     out += "<img src = 'item:" + medals[i].icon + "' title='" + medals[i].desc + "'>";
                 }
                 out += "\n";
                 for (var i = 3; i < 6; i++) {
-                    if (i > medals.length) {
+                    if (i >= medals.length) {
                         break;
                     }
                     out += "<img src = 'item:" + medals[i].icon + "' title='" + medals[i].desc + "'>";
@@ -18853,7 +18853,7 @@ function Safari() {
 
             player.records.scientistEarnings += rew;
             player.records.scientistGiven += 1;
-            safari.costumeExp(player, "scientist", (rew * 4));
+            safari.costumeEXP(player, "scientist", (rew * 4));
 
             player.quests.scientist.cooldown = quest.expires;
             player.quests.scientist.pokemon = id;
@@ -18869,7 +18869,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You cleverly distract the Scientist and while he is not looking, you grab your " + poke(id) + " back and run off!", safchan);
                 player.records.pokesStolen += 1;
                 theft = " but stole it back";
-                safari.costumeExp(player, "stealpoke");
+                safari.costumeEXP(player, "stealpoke");
             } else {
                 this.removePokemon(src, id);
             }
@@ -18894,7 +18894,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I see you brought the correct photograph, but you are currently unable to carry any more Silver Coin! Come back after spending some of them!", safchan);
                         return;
                     }
-                    safari.costumeExp(player, "scientist", (rew * 4));
+                    safari.costumeEXP(player, "scientist", (rew * 4));
                     safari.missionProgress(player, "scientist", 1, rew, {silver: rew});
                     safaribot.sendHtmlMessage(src, "Here are your " + plural(rew, "silver") + "!", safchan);
                     giveStuff(player, toStuffObj(rew + "@silver"));
@@ -19386,7 +19386,7 @@ function Safari() {
                 }
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u});
-                safari.costumeExp(player, "fighttower", 3 + (count * 2));
+                safari.costumeEXP(player, "fighttower", 3 + (count * 2));
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
@@ -21438,7 +21438,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
-        safari.costumeExp(player, "journal", Math.floor (score/5));
+        safari.costumeEXP(player, "journal", Math.floor (score/5));
         safari.missionProgress(player, "journal", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
