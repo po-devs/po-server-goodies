@@ -34512,7 +34512,7 @@ function Safari() {
                 return true;
             }
             if (command === "daycarefeature") {
-                safari.manualChangeFeature(src, commandData);
+                safari.manualChangeFeature(src, commandData.split(":"));
                 return true;
             }
             if (command === "inspectdaycare") {
