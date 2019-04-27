@@ -9599,7 +9599,7 @@ function Safari() {
     var costumeSkillInfo = {
         botdboost: "Catch rate increased when using the Boost-of-the-Day",
         lowPhotoCD: "Faster at taking Photos",
-        finderBasedOnLead: "Can use the lead Pokémon to influence the Itemfinder.",
+        finderBasedOnLead: "Can use the lead Pokémon to influence the Itemfinder",
         pokefanPack: "Received an egg for completing your training",
         ninjaPack1: "Received prizes for leveling up",
         ninjaPack2: "Received prizes for leveling up",
@@ -9766,7 +9766,7 @@ function Safari() {
                         continue;
                     }
                     player.costumeInfo[cos].skills.push(c);
-                    safaribot.sendHtmlMessage(src, "You unlocked a new " + cos + " skill: " + costumeSkillInfo[c] + "", safchan);
+                    safaribot.sendHtmlMessage(src, "You unlocked a new " + cos + " skill: " + costumeSkillInfo[c] + "!", safchan);
                     if (c == "rocketPack") {
                         g = giveStuff(player, toStuffObj("@fossil,@bignugget,2@scarf,3@amulet,5@pack,10@gem,20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
@@ -28202,7 +28202,7 @@ function Safari() {
             c = this.daycareRegions.grotto[t];
             if (c === "") {
                 if (featureCount.grass < maxFeatures.grass) {
-                    if (this.getNearbyFeatures[t, "grotto"].contains("grass") && (chance(0.12))) {
+                    if (this.getNearbyFeatures(t, "grotto").contains("grass") && (chance(0.12))) {
                         this.daycareRegions.grotto[t] = "grass";
                         featureCount.grass++;
                     }
@@ -28399,6 +28399,16 @@ function Safari() {
             safaribot.sendMessage(src, out[t], safchan);
         }
     };
+    this.inspectDayCareFeatures = function(src) {
+        var p, out = [];
+        for (var s in this.daycareRegions.grotto) {
+            p = this.daycareRegions.grotto[s];
+            out.push(s + ": " + p + ".");
+        }
+        for (var t in out) {
+            safaribot.sendMessage(src, out[t], safchan);
+        }
+    };
     this.manualChangeFeature = function(src, cdata) {
         var pos, area, feature;
         if (cdata.length < 3) {
@@ -28495,7 +28505,7 @@ function Safari() {
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
-                    ret += "<img src='icon:" + daycareTiles[features[place].feature] + "' title='" + features[place].feature + (bg ? " style='background:" + bg + "'" : "") + "'>";
+                    ret += "<img src=" + daycareTiles[features[place].feature] + " title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                 }
                 else {
                     ret += " ";
@@ -34527,6 +34537,10 @@ function Safari() {
             }
             if (command === "inspectdaycare") {
                 safari.inspectDayCare(src);
+                return true;
+            }
+            if (command === "inspectdaycare2") {
+                safari.inspectDayCareFeatures(src);
                 return true;
             }
             if (command === "daycare" || command === "dc") {
