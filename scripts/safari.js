@@ -10002,21 +10002,21 @@ function Safari() {
             input = getInputPokemon(i);
             if (info.silver) {
                 if (input.num) {
-                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")) + discmsg, sort: info.price});
+                    silverPokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : displayprice;
-                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(price, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")) + discmsg, sort: info.price});
+                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(price, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
                 }
             } else {
                 if (input.num) {
-                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: $" + addComma(Math.ceil(displayprice * discount)) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")) + discmsg, sort: info.price});
+                    pokemon.push({string: "<a href=\"po:setmsg/" + fullCommand + input.name + "\">" + input.name + "</a>: $" + addComma(Math.ceil(displayprice * discount)) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
                 }
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : Math.ceil(displayprice * discount);
-                    items.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + info.limit + " available)")) + discmsg, sort: price});
+                    items.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: $" + addComma(price) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: price});
                 }
             }
         }
