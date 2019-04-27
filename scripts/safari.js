@@ -5977,7 +5977,7 @@ function Safari() {
         }
         var medals = player.medals;
         if (costumed || (medals && medals.length > 0)) {
-            out += "<td>";
+            out += "<td align=center>";
             if (costumed) {
                 out += costumeSprite(player.costume, isAndroid);
             }
@@ -10968,7 +10968,7 @@ function Safari() {
 
         for (var i = 0; i < player.medals.length; i++) {
             m = player.medals[i];
-            out.push("#" + (i + 1) + ": <img src =" + m.icon + "> "  + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1) + ":", "Remove", true) + "]");
+            out.push("#" + (i + 1) + ": <img src ='item:" + m.icon + "'> "  + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1) + ":", "Remove", true) + "]");
         }
         for (var o in out) {
             safaribot.sendHtmlMessage(src, out[o], safchan);
@@ -11015,7 +11015,11 @@ function Safari() {
             safaribot.sendMessage(src, "Index out of range!", safchan);
             return;
         } 
-        if (data.length < 2 || data[1]) {
+        if (data.length < 2) {
+            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal!", safchan);
+            return;
+        }
+        if (data[1] !== "confirm") {
             safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal!", safchan);
             return;
         }
