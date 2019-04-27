@@ -184,7 +184,20 @@ function Safari() {
         cherishOff: false,
         medals: [],
         medalRecords: {},
-        costumeInfo: {},
+        costumeInfo: {
+            preschooler: {},
+            breeder: {},
+            pokefan: {},
+            explorer: {},
+            chef: {},
+            battle: {},
+            scientist: {},
+            backpacker: {},
+            rich: {},
+            ninja: {},
+            rocket: {},
+            flower: {}
+        },
         records: {
             gachasUsed: 0,
             masterballsWon: 0,
@@ -9579,7 +9592,8 @@ function Safari() {
         extraTriviaSoda: "Earn extra Soda Pop from Trivia",
         extraApricornsFromContest: "Win extra apricorns as a prize from contests"
     };
-    this.showCostumeSkills = function(src, player, type) {
+    this.showCostumeSkills = function(src) {
+        var player = getAvatar(src);
         var cos = player.costume;
         var lev = player.costumeInfo[cos].level;
         var nextexp = (lev < 20 ? " (" + (player.costumeInfo[cos].level * 100 - exp) + " EXP until next level)" : "");
@@ -9672,7 +9686,7 @@ function Safari() {
     };
     this.costumeLevelUp = function(player, cos, cosData) {
         if ((player.costumeInfo[cos].exp > player.costumeInfo[cos].level * 100 && (player.costumeInfo[cos].level < 20))) {
-            var src = sys.id(player);
+            var src = sys.id(player.id);
             player.costumeInfo[cos].exp -= player.costumeInfo[cos].level * 100;
             player.costumeInfo[cos].level++;
             var lev = player.costumeInfo[cos].level;
@@ -9963,7 +9977,16 @@ function Safari() {
             disc = ((shop[i].discount ? shop[i].discount : false) || (shop[i].discount2 && this.hasCostumeSkill(player, "haggler")));
             discmsg = disc ? "<b><color=#f4b042> [Discount]</color></b>" : "";
             displayprice = disc ? info.discountprice : info.price;
-            lim = (info.playerLimit ? (info.purchases ? (info.purchases[player.idnum+""] ? (info.playerLimit - info.purchases[player.idnum+""]) : info.playerLimit) : info.playerLimit) : info.limit);
+            var lim = info.limit;
+            var playerlim = info.playerLimit ? info.playerLimit : lim;
+            if (playerlim > lim) {
+                if (info.hasOwnProperty("purchases") && info.hasOwnProperty("playerLimit")) {
+                    if (info.purchases.hasOwnProperty(player.idnum+"")) {
+                        playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
+                    }
+                }
+            }
+            lim = playerlim;
             input = getInputPokemon(i);
             if (info.silver) {
                 if (input.num) {
@@ -12640,9 +12663,6 @@ function Safari() {
             out = {};
             for (var t in mark) {
                 md = mark[t];
-                if (src) {
-                    safaribot.sendMessage(src, "Adding " + t + ".", safchan);
-                }
                 if (chance(1 - md.chance)) {
                     continue;
                 }
@@ -12666,8 +12686,9 @@ function Safari() {
                 amt = sys.rand(md.amt[0], md.amt[1]);
                 out[t].price = val;
                 out[t].discountprice = dval;
-                out[t].limit = amt * 10;
+                out[t].limit = amt * 5;
                 out[t].playerLimit = amt;
+                out[t].purchases = {};
                 out[t].discount = false;
                 if (md.discountChance && chance(md.discountChance)) {
                     out[t].discount = true;
@@ -12676,13 +12697,7 @@ function Safari() {
                 if (md.discountChance && chance(md.discountChance)) {
                     out[t].discount2 = true;
                 }
-                if (src) {
-                    safaribot.sendMessage(src, "Added " + t + ".", safchan);
-                }
             }
-        }
-        if (src) {
-            safaribot.sendMessage(src, "Length: " + Object.keys(out).length + ".", safchan);
         }
         npcShop = {};
         for (var t in out) {
@@ -31614,6 +31629,7 @@ function Safari() {
                 }
                 for (var t in costumeData) {
                     player.costumeInfo[t] = {
+                        level: 1,
                         exp: 0,
                         skills: []
                     };
@@ -32781,23 +32797,23 @@ function Safari() {
         var catStrings = ["all", "balls", "items", "perks", "costumes"];
         for (var e in costumeData) {
             if (costumeData.hasOwnProperty(e)) {
-                costumeHelp[e] = costumeData[e].effect + " " + (costumeData[e].effect2 ? " - " + costumeData[e].effect2 : "") + ".";
-                if (costumeData.expTypes) {
+                costumeHelp[e] = costumeData[e].effect + " " + (costumeData[e].effect2 ? " - " + costumeData[e].effect2 : "") + "";
+                if (costumeData[e].expTypes) {
                     costumeHelp[e] += " EXP types: ";
-                    if (costumeData.expTypes[0]) {
-                        costumeHelp[e] += costumeExpInfo[costumeData.expTypes[0]];
+                    if (costumeData[e].expTypes[0]) {
+                        costumeHelp[e] += costumeExpInfo[costumeData[e].expTypes[0]];
                     }
-                    if (costumeData.expTypes[1]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData.expTypes[1]];
+                    if (costumeData[e].expTypes[1]) {
+                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[1]];
                     }
-                    if (costumeData.expTypes[2]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData.expTypes[2]];
+                    if (costumeData[e].expTypes[2]) {
+                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[2]];
                     }
-                    if (costumeData.expTypes[3]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData.expTypes[3]];
+                    if (costumeData[e].expTypes[3]) {
+                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[3]];
                     }
-                    if (costumeData.expTypes[4]) {
-                        costumeHelp[e] += ", " + costumeExpInfo[costumeData.expTypes[4]];
+                    if (costumeData[e].expTypes[4]) {
+                        costumeHelp[e] += ", " + costumeExpInfo[costumeData[e].expTypes[4]];
                     }
                     costumeHelp[e] += ".";
                 }
