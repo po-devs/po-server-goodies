@@ -10056,7 +10056,7 @@ function Safari() {
                 else if (i[0] == "@") {
                     input = i.substr(1);
                     price = input == "box" ? itemData.box.price[Math.min(player.balls.box, itemData.box.price.length - 1)] : displayprice;
-                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(price, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
+                    silverItems.push({string: "<a href=\"po:setmsg/" + fullCommand + input + ":1\">" + finishName(input) + "</a>: " + plural(displayprice, silverName) + (lim === -1 ? "" : (lim === 0 ? " (Out of stock)" : " (Only " + lim + " available)")) + discmsg, sort: info.price});
                 }
             } else {
                 if (input.num) {
