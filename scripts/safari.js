@@ -568,8 +568,8 @@ function Safari() {
                     "dew": 20
                 }
             },
-            "switch": {
-                "reward": "20@switch",
+            "uturn": {
+                "reward": "20@uturn",
                 "ingredients": {
                     "redapricorn": 5,
                     "grnapricorn": 20,
@@ -623,7 +623,7 @@ function Safari() {
             heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
             photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 317, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
             mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 323, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 16, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
-            switch: {name: "switch", fullName: "Switch Ball", type: "ball", icon: 311, price: 500, ballBonus: 1, bonusRate: 2, maxBonus: 2, cooldown: 16000, aliases:["switchball", "switch", "switch ball"], tradable: true},
+            uturn: {name: "switch", fullName: "Switch Ball", type: "ball", icon: 311, price: 500, ballBonus: 1, bonusRate: 2, maxBonus: 2, cooldown: 16000, aliases:["switchball", "switch", "uturn", "switch ball"], tradable: true},
             inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 322, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
             cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 328, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false},
             
@@ -1124,12 +1124,12 @@ function Safari() {
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
             mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Alchemy.",
-            switch: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("switch") + " Obtained from Alchemy.",
+            uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("uturn") + " Obtained from Alchemy.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
             spirit: "A magical Pokéball that can capture the Spirits of Pokémon. " + cdSeconds("spirit") + " Obtained during Spirit Duels events. (Max capaity: 10)",
             cherish: "A homey Pokéball that forever marks the caught Pokémon as being cherished by its owner. " + cdSeconds("cherish") + " Obtained from Alchemy."
         };
-        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "switch", "love", "inver", "cherish", "master"];
+        allBalls = ["safari", "great", "ultra", "myth", "luxury", "quick", "heavy", "spy", "clone", "premier", "mono", "spirit", "lightning", "level", "photo", "mirror", "uturn", "love", "inver", "cherish", "master"];
     };
     updateItemHelp();
     var currentItems = Object.keys(itemData);
@@ -3001,7 +3001,7 @@ function Safari() {
         return ret;
     }
     function toUsableBall(player, ball) {
-        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "level", "photo", "mirror", "switch", "love", "inver", "spirit", "cherish", "master"];
+        var picked, ballOrder = ["safari", "great", "ultra", "quick", "spy", "luxury", "heavy", "premier", "clone", "myth", "lightning", "level", "photo", "mirror", "uturn", "love", "inver", "spirit", "cherish", "master"];
 
         var startFrom = 0;
         if (ball == ballOrder[0]) {
@@ -4472,7 +4472,7 @@ function Safari() {
                 }
             }
         }
-        if (ball === "switch") {
+        if (ball === "uturn") {
             if (canLearnMove(player.party[0], 369) || canLearnMove(player.party[0], 521)) {
                 ballBonus = itemData[ball].bonusRate;
             }
@@ -4852,7 +4852,7 @@ function Safari() {
             if (ball === "mirror") {
                 player.records.catchMirror += 1;
             }
-            if (ball === "switch") {
+            if (ball === "uturn") {
                 player.records.catchSwitch += 1;
             }
             if (ball === "love") {
@@ -4917,7 +4917,7 @@ function Safari() {
                 player.records.luxuryEarnings += luxuryAmount;
                 player.records.catchLuxury += 1;
             }
-            if (ball == "switch" && player.party.length > 1) {
+            if (ball == "uturn" && player.party.length > 1) {
                 safaribot.sendAll(name + "'s " + poke(player.party[0]) + " switched out after catching the " + pokeName + "!" , safchan);
                 var party2 = [];
                 for (var i = 1; i < player.party.length; i++) {
