@@ -5941,7 +5941,7 @@ function Safari() {
         }
         out += "</tr><tr>";
         if (costumed) {
-            out += "<td align=center>" + costumeAlias(player.costume, false, true) + " (Level: " + this.getCostumeLevel(player) + ")" + "</td>";
+            out += "<td align=center>" + costumeAlias(player.costume, false, true) + " \n(Level: " + this.getCostumeLevel(player) + ")" + "</td>";
         }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
@@ -12587,9 +12587,9 @@ function Safari() {
     };
 
     /* Market */
-    this.updateMarket = function(silent) {
+    this.updateMarket = function(silent, unset) {
         var mark = marketData, out, md, val, dval, delim, amt;
-        if (!mark) {
+        if (!mark || unset) {
             out = {
                 safari: {
                     price: 30,
@@ -12638,14 +12638,14 @@ function Safari() {
             out = {};
             for (var t in marketData) {
                 md = marketData[t];
-                if (md.chance && (!chance(md.chance))) {
+                if (!chance(md.chance)) {
                     continue;
                 }
                 out[t] = {};
                 val = 0;
                 dval = 0;
                 delim = 1;
-                if (md.silverChance && chance(md.chance)) {
+                if (chance(md.chance)) {
                     out[t].silver = true;
                     val = sys.rand(md.silverPrice[0], md.silverPrice[1]);
                     dval = sys.rand(md.silverDiscount[0], md.silverDiscount[1]);
@@ -13296,7 +13296,7 @@ function Safari() {
 
         if (isNPC) {
             var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 0;
-            if (this.hasCostumeSkill("battleBoost")) {
+            if (safari.hasCostumeSkill("battleBoost")) {
                 costumeBonus *= (1.05 + Math.max((this.getCostumeLevel(player1) - 5)/100, 0));
             }
             var useBonus = 0;
@@ -34394,7 +34394,11 @@ function Safari() {
                 return true;
             }
             if (command === "updatemarket") {
-                safari.updateMarket();
+                safari.updateMarket(false);
+                return true;
+            }
+            if (command === "updatemarketdefault") {
+                safari.updateMarket(false, true);
                 return true;
             }
             if (command === "forcedaycarestep") {
