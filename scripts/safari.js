@@ -34414,11 +34414,11 @@ function Safari() {
                 return true;
             }
             if (command === "updatemarket") {
-                safari.updateMarket(false);
+                safari.updateMarket(false, false, src);
                 return true;
             }
             if (command === "updatemarketdefault") {
-                safari.updateMarket(false, true);
+                safari.updateMarket(false, true, src);
                 return true;
             }
             if (command === "forcedaycarestep") {
