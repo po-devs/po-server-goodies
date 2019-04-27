@@ -5926,7 +5926,7 @@ function Safari() {
                     }
                     out += "<img src = 'item:" + medals[i].icon + "' title='" + medals[i].desc + "'>";
                 }
-                out += "\n";
+                out += "<br>";
                 for (var i = 3; i < 6; i++) {
                     if (i >= medals.length) {
                         break;
@@ -5941,7 +5941,7 @@ function Safari() {
         }
         out += "</tr><tr>";
         if (costumed) {
-            out += "<td align=center>" + costumeAlias(player.costume, false, true) + " \n(Level: " + this.getCostumeLevel(player) + ")" + "</td>";
+            out += "<td align=center>" + costumeAlias(player.costume, false, true) + "<br>(Level: " + this.getCostumeLevel(player) + ")" + "</td>";
         }
         for (var e in player.party) {
             var member = getPokemonInfo(player.party[e]);
@@ -13352,7 +13352,7 @@ function Safari() {
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
 
-        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(getAvatarOff(this.name1, p1Poke)), getCherished(getAvatarOff(this.name2, p2Poke))));
+        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(this.name1, p1Poke), getCherished(this.name2, p2Poke)));
 
         var name1 = this.name1 + "'s " + poke(p1Poke);
         var name2 = this.name2 + "'s " + poke(p2Poke);
