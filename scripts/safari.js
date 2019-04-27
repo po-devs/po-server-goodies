@@ -10044,11 +10044,9 @@ function Safari() {
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
-            if (playerlim > lim) {
-                if (info.hasOwnProperty("purchases") && info.hasOwnProperty("playerLimit")) {
-                    if (info.purchases.hasOwnProperty(player.idnum+"")) {
-                        playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
-                    }
+            if (info.hasOwnProperty("purchases") && info.hasOwnProperty("playerLimit")) {
+                if (info.purchases.hasOwnProperty(player.idnum+"")) {
+                    playerlim = Math.min((info.playerLimit - info.purchases[player.idnum+""]), lim);
                 }
             }
             lim = playerlim;
