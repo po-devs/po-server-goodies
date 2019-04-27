@@ -32126,7 +32126,7 @@ function Safari() {
     };
     this.saveDaycare = function() {
         permObj.add("daycarePokemon", JSON.stringify(safari.daycarePokemon));
-        permObj.add("daycareRegions", JSON.stringify(daycareRegions));
+        permObj.add("daycareRegions", JSON.stringify(safari.daycareRegions));
     };
     this.showLog = function(src, command, commandData, file, name, parser, querier, html) {
         var log = sys.getFileContent(file);
