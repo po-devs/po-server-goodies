@@ -38082,6 +38082,7 @@ function Safari() {
                             player.records.contestsWon += 1;
                             var c = currentTheme ? contestThemes[currentTheme].name : "Default";
                             safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
+                            safari.costumeEXP(player, "wincontest");
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
