@@ -28388,7 +28388,7 @@ function Safari() {
             safaribot.sendMessage(src, out[t], safchan);
         }
     };
-    this.manualChangeFeature = function(src, level) {
+    this.manualChangeFeature = function(src, cdata) {
         var pos, area, feature;
         if (cdata.length < 3) {
             daycarebot.sendMessage(src, "The syntax for this command is /editdaycare [area]:[pos]:[feature]!", safchan);
