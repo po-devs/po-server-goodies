@@ -5051,6 +5051,7 @@ function Safari() {
             }
             this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             this.missionProgress(player, "catchAny", currentPokemon, 1);
+            this.costumeEXP(player, "catch");
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
