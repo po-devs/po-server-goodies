@@ -12390,7 +12390,7 @@ function Safari() {
                 return false;
             }
         }
-        k = safari.events.spiritDuelsSignups.indexOf(idnum);
+        k = safari.events.spiritDuelsSignups.indexOf(player.idnum);
         if (k > -1) {
             safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
