@@ -3238,6 +3238,10 @@ function Safari() {
             return "nothing";
         }
 
+        if (stuff === "@expup") {
+            safari.costumeEXP(player, "alchemy", 350 + (safari.getCostumeLevel(player) * 50));
+            return out;
+        }
         if (typeof stuff === "string") {
             stuff = {};
             if (asset[0] === "$") {
@@ -3292,9 +3296,6 @@ function Safari() {
                 if (asset === "entry") {
                     rafflePlayers.add(player.id, player.balls.entry);
                     safari.sanitizeRaffle();
-                }
-                if (asset === "expup") {
-                    safari.costumeEXP(player, "alchemy", 350 + (safari.getCostumeLevel(player) * 50));
                 }
                 safari.updateShop(player, asset);
 
@@ -9671,6 +9672,7 @@ function Safari() {
     };
     this.costumeLevelUp = function(player, cos, cosData) {
         if ((player.costumeInfo[cos].exp > player.costumeInfo[cos].level * 100 && (player.costumeInfo[cos].level < 20))) {
+            var src = sys.id(player);
             player.costumeInfo[cos].exp -= player.costumeInfo[cos].level * 100;
             player.costumeInfo[cos].level++;
             var lev = player.costumeInfo[cos].level;
@@ -12587,7 +12589,7 @@ function Safari() {
     };
 
     /* Market */
-    this.updateMarket = function(silent, unset) {
+    this.updateMarket = function(silent, unset, src) {
         var mark = marketData, out, md, val, dval, delim, amt;
         if (!mark || unset) {
             out = {
@@ -12638,6 +12640,9 @@ function Safari() {
             out = {};
             for (var t in mark) {
                 md = mark[t];
+                if (src) {
+                    safaribot.sendMessage(src, "Adding " + t + ".", safchan);
+                }
                 if (chance(1 - md.chance)) {
                     continue;
                 }
@@ -12671,7 +12676,13 @@ function Safari() {
                 if (md.discountChance && chance(md.discountChance)) {
                     out[t].discount2 = true;
                 }
+                if (src) {
+                    safaribot.sendMessage(src, "Added " + t + ".", safchan);
+                }
             }
+        }
+        if (src) {
+            safaribot.sendMessage(src, "Length: " + Object.keys(out).length + ".", safchan);
         }
         npcShop = {};
         for (var t in out) {
@@ -22868,7 +22879,7 @@ function Safari() {
                     playerBonus = [50, 140];
                 }
 
-                res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(avi, choice));
+                res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(choice, avi));
                 lastAttacker = n + 1;
                 if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
                     res.power[0] = Math.round(res.power[0] * 0.25);
@@ -23044,7 +23055,7 @@ function Safari() {
                 playerBonus[1] *= 1.15;
             }
 
-            res = calcDamage(m, opp, playerBonus, false, false, getCherished(avi, m));
+            res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, avi));
             if (this.opponentHP > 0) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
                 if (res.power[0] > 0) {
@@ -23782,7 +23793,7 @@ function Safari() {
                 playerBonus = null;
             }
 
-            res = calcDamage(m, opp, playerBonus, this.trainerPower, this.inverted, getCherished(getAvatarOff(id), m));
+            res = calcDamage(m, opp, playerBonus, this.trainerPower, this.inverted, getCherished(m, id));
 
             result = "{0} {2} ({4}) x ({5}) {3} {1}";
             if (res.power[0] == res.power[1]) {
