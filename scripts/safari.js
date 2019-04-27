@@ -101,10 +101,12 @@ function Safari() {
             quick: 0,
             luxury: 0,
             mono: 0,
+            love: 0,
             mirror: 0,
             inver: 0,
             photo: 0,
             spirit: 0,
+            uturn: 0,
             lightning: 0,
             cherish: 0,
             heavy: 0,
@@ -183,7 +185,11 @@ function Safari() {
         firstCelebrityRun: true,
         cherishOff: false,
         medals: [],
-        medalRecords: {},
+        medalRecords: {
+            "Best Catcher": {},
+            "Contest Champion": {},
+            "Photographer": {}
+        },
         costumeInfo: {
             preschooler: {
                 level: 1,
@@ -629,7 +635,7 @@ function Safari() {
                     "dew": 20
                 }
             },
-            "uturn": {
+            "switch": {
                 "reward": "20@uturn",
                 "ingredients": {
                     "redapricorn": 5,
@@ -6114,8 +6120,8 @@ function Safari() {
     this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "pokeblock", "itemfinder", "pack", "rare", "dust"];
-        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "spy", "clone", "premier", "mono"];
-        var line3 = ["lightning", "heavy", "photo", "mirror", "inver", "spirit", "cherish", "bait", "golden"];
+        var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew", "materia", "fragment"];
         var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
         var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "gem",  "stick", "rock"];
@@ -6511,8 +6517,8 @@ function Safari() {
         else if (crit == "duplicate") {
             var pokeList = current.concat().sort();
             val = parseInt(val, 10);
-            if (isNaN(val) || val < 0) {
-                safaribot.sendMessage(src, "Please specify a valid number!", safchan);
+            if (isNaN(val) || val < 1) {
+                safaribot.sendMessage(src, "Please specify a valid number higher than 0!", safchan);
                 return false;
             }
             if (val === 0) {
@@ -7521,6 +7527,7 @@ function Safari() {
                 player.records.baitWater += 1;
             }
             var botd = dailyBoost.pokemon == pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;
+            this.costumeEXP(player, "bait");
             this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
 
 
@@ -28156,10 +28163,10 @@ function Safari() {
                 }
             }
             else if (c === "water") {
-                if ((chance(0.01) || (full && chance(0.1))) && countDuplicates(this.getNearbyFeatures[t, "grotto"], "water") < 3) {
+                if ((chance(0.01) || (full && chance(0.1))) && countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") < 3) {
                     this.daycareRegions.grotto[t] = "";
                 }
-                else if ((chance(0.02) || (full && chance(0.25))) && countDuplicates(this.getNearbyFeatures[t, "grotto"], "water") < 2) {
+                else if ((chance(0.02) || (full && chance(0.25))) && countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") < 2) {
                     this.daycareRegions.grotto[t] = "";
                 }
                 else {
@@ -28199,11 +28206,11 @@ function Safari() {
                         this.daycareRegions.grotto[t] = "grass";
                         featureCount.grass++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures[t, "grotto"], "grass") >= 2 && (chance(0.4))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "grass") >= 2 && (chance(0.4))) {
                         this.daycareRegions.grotto[t] = "grass";
                         featureCount.grass++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures[t, "grotto"], "grass") >= 3 && (chance(0.6))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "grass") >= 3 && (chance(0.6))) {
                         this.daycareRegions.grotto[t] = "grass";
                         featureCount.grass++;
                     }
@@ -28217,15 +28224,15 @@ function Safari() {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures[t, "grotto"], "water") >= 2 && (chance(0.02))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 2 && (chance(0.02))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures[t, "grotto"], "water") >= 3 && (chance(0.04))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 3 && (chance(0.04))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures[t, "grotto"], "water") >= 4 && (chance(0.08))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 4 && (chance(0.08))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
@@ -28395,7 +28402,7 @@ function Safari() {
     this.manualChangeFeature = function(src, cdata) {
         var pos, area, feature;
         if (cdata.length < 3) {
-            daycarebot.sendMessage(src, "The syntax for this command is /editdaycare [area]:[pos]:[feature]!", safchan);
+            daycarebot.sendMessage(src, "The syntax for this command is /daycarefeature [area]:[pos]:[feature]!", safchan);
             return false;
         }
         area = cdata[0];
@@ -28435,12 +28442,15 @@ function Safari() {
             ["k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9", "k10", "k11", "k12"],
             ["l1", "l2", "l3", "l4", "l5", "l6", "l7", "l8", "l9", "l10", "l11", "l12"]
         ];
-        var ret = "", r, place, inp, f, g, bg, hold, icon;
+        var ret = "", r, place, inp, f, g, h, bg, hold, icon;
         for (var t in props) {
             f = props[t];
-            g = this.getFeatureAt(f, area);
-            if (g !== "") {
-                features[f] = g;
+            for (var s in f) {
+                h = s[f];
+                g = this.getFeatureAt(h, area);
+                if (g !== "") {
+                    features[h] = g;
+                }
             }
         }
         for (var t in this.daycarePokemon) {
@@ -28459,8 +28469,11 @@ function Safari() {
                 var place = r[j];
                 ret += "<td align=center width=84 height=52>";
                 bg = null;
+                if (area == "grotto") {
+                    bg = "#5de53b";
+                }
                 if (features.hasOwnProperty(place)) {
-                    hold = this.getNearbyFeatures(place);
+                    hold = this.getNearbyFeatures(place, area);
                     icon = daycareTiles[features[place].feature];
                     if (features[place] == "grass") {
                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 0) {
@@ -28474,9 +28487,6 @@ function Safari() {
                         else {
                             bg = "#42cef4";
                         }
-                    }
-                    else if (area == "grotto") {
-                        bg = "#5de53b";
                     }
                 }
                 if (rows.hasOwnProperty(place)) {
