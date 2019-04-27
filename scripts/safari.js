@@ -28220,7 +28220,7 @@ function Safari() {
                     }
                 }
                 if (featureCount.water < maxFeatures.water) {
-                    if (this.getNearbyFeatures[t, "grotto"].contains("water") && (chance(0.1) && full)) {
+                    if (this.getNearbyFeatures(t, "grotto").contains("water") && (chance(0.1) && full)) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
@@ -28484,7 +28484,7 @@ function Safari() {
                 }
                 if (features.hasOwnProperty(place)) {
                     hold = this.getNearbyFeatures(place, area);
-                    icon = daycareTiles[features[place].feature];
+                    icon = daycareTiles[features[place]];
                     if (features[place] == "grass") {
                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 0) {
                             icon = daycareTiles["grasswater"];
@@ -28505,10 +28505,10 @@ function Safari() {
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
-                    ret += "<img src=" + daycareTiles[features[place].feature] + " title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
+                    ret += "<img src=" + icon + " title='" + features[place].feature + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                 }
                 else {
-                    ret += " ";
+                    ret += "<style='background:" + bg + "'>";
                 }
                 ret += "</td>";
             }
