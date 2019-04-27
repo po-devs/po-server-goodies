@@ -9655,7 +9655,7 @@ function Safari() {
         var player = getAvatar(src);
         var cos = player.costume;
         var lev = this.getCostumeLevel(player);
-        var nextexp = (lev < 20 ? " (" + (lev * 100 - exp) + " EXP until next level)" : "");
+        var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
         safaribot.sendHtmlMessage(src, "Your " + cos + " costume is Level: " + lev + nextexp + ".", safchan);
         for (var c in player.costumeInfo[cos].skills) {
             if (costumeSkillInfo[player.costumeInfo[cos].skills[c]]) {
@@ -9754,6 +9754,9 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Your " + cos + " costume leveled up! (Level: " + lev + ")", safchan);
             for (var c in cosData.skills) {
                 if ((cosData.skills[c][0] > lev && (chance(1 / (cosData.skills[c][1] - (lev + 0.01))))) || lev >= cosData.skills[c][1] ) {
+                    if (player.costumeInfo[cos].skills.contains(c)) {
+                        continue;
+                    }
                     player.costumeInfo[cos].skills.push(c);
                     safaribot.sendHtmlMessage(src, "You unlocked a new " + cos + " skill: " + costumeSkillInfo[c] + "", safchan);
                     if (c == "rocketPack") {
@@ -10036,7 +10039,7 @@ function Safari() {
         for (i in shop) {
             info = shop[i];
             disc = ((shop[i].discount ? shop[i].discount : false) || (shop[i].discount2 && this.hasCostumeSkill(player, "haggler")));
-            discmsg = disc ? "<color=#f4b042><b> [Discount]</b></color>" : "";
+            discmsg = disc ? "<font color=#f4b042><b> [Discount]</b></font>" : "";
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
@@ -12743,7 +12746,7 @@ function Safari() {
                     delim = md.delim ? md.delim : 10;
                 }
                 val = Math.round(val / delim) * delim;
-                dval = Math.round(val / delim) * delim;
+                dval = Math.round(dval / delim) * delim;
                 amt = sys.rand(md.amt[0], md.amt[1]);
                 out[t].price = val;
                 out[t].discountprice = dval;
