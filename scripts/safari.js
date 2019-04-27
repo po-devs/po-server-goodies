@@ -9607,7 +9607,7 @@ function Safari() {
         var player = getAvatar(src);
         var cos = player.costume;
         var lev = this.getCostumeLevel(player);
-        var nextexp = (lev < 20 ? " (" + (player.costumeInfo[cos].level * 100 - exp) + " EXP until next level)" : "");
+        var nextexp = (lev < 20 ? " (" + (lev * 100 - exp) + " EXP until next level)" : "");
         safaribot.sendHtmlMessage(src, "Your " + cos + " costume is Level: " + lev + nextexp + ".", safchan);
         for (var c in player.costumeInfo[cos].skills) {
             if (costumeSkillInfo[player.costumeInfo[cos].skills[c]]) {
