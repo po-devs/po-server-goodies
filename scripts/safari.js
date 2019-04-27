@@ -5981,7 +5981,7 @@ function Safari() {
             if (costumed) {
                 out += costumeSprite(player.costume, isAndroid);
             }
-            out += "\n";
+            out += "<br>";
             if (medals && medals !== null && medals.length > 0) {
                 for (var i = 0; i < 3; i++) {
                     if (i >= medals.length) {
@@ -10967,7 +10967,7 @@ function Safari() {
         }
 
         for (var i = 0; i < player.medals.length; i++) {
-            m = player.medals[t];
+            m = player.medals[i];
             out.push("#" + (i + 1) + ": <img src =" + m.icon + "> "  + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1) + ":", "Remove", true) + "]");
         }
         for (var o in out) {
@@ -31845,12 +31845,13 @@ function Safari() {
             safaribot.sendMessage(src, "That is not a valid color number!", safchan);
             return false
         }
+        var description = cd[2];
         var m = {
-            desc: cd[2],
+            desc: description,
             icon: icon
         }
         this.awardMedal(player, m);
-        safaribot.sendMessage(src, "You awared " + player.id + " the medal: " + commandData[2] + "!", safchan);
+        safaribot.sendMessage(src, "You awarded " + player.id + " the medal: " + description + "!", safchan);
         return true;
     };
     this.changeDailyBoost = function(data) {
