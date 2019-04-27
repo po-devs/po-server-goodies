@@ -185,18 +185,66 @@ function Safari() {
         medals: [],
         medalRecords: {},
         costumeInfo: {
-            preschooler: {},
-            breeder: {},
-            pokefan: {},
-            explorer: {},
-            chef: {},
-            battle: {},
-            scientist: {},
-            backpacker: {},
-            rich: {},
-            ninja: {},
-            rocket: {},
-            flower: {}
+            preschooler: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            breeder: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            pokefan: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            explorer: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            chef: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            battle: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            scientist: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            backpacker: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            rich: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            ninja: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            rocket: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
+            flower: {
+                level: 1,
+                skills: [],
+                exp: 0
+            }
         },
         records: {
             gachasUsed: 0,
@@ -9607,7 +9655,7 @@ function Safari() {
         var player = getAvatar(src);
         var cos = player.costume;
         var lev = this.getCostumeLevel(player);
-        var nextexp = (lev < 20 ? " (" + (player.costumeInfo[cos].level * 100 - exp) + " EXP until next level)" : "");
+        var nextexp = (lev < 20 ? " (" + (lev * 100 - exp) + " EXP until next level)" : "");
         safaribot.sendHtmlMessage(src, "Your " + cos + " costume is Level: " + lev + nextexp + ".", safchan);
         for (var c in player.costumeInfo[cos].skills) {
             if (costumeSkillInfo[player.costumeInfo[cos].skills[c]]) {
@@ -9694,6 +9742,7 @@ function Safari() {
                 break;
             }
         }
+        this.saveGame(player);
         return true;
     };
     this.costumeLevelUp = function(player, cos, cosData) {
