@@ -27905,7 +27905,7 @@ function Safari() {
                 break;
             }
         }
-        var onSquare = this.getFeatureAt(pokemon.area, pokemon.pos);
+        var onSquare = this.getFeatureAt(pokemon.pos, pokemon.area);
         var act = "";
         if (onSquare == "water") {
             act = "splashing"
