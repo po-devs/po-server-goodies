@@ -27525,7 +27525,7 @@ function Safari() {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
             return false;
         }
-        if (canMega(pokemon.id)) {
+        if (isMega(pokemon.id)) {
             daycarebot.sendMessage(src, "Sorry, but Mega Pokémon aren't allowed in the daycare!", safchan);
             return false;
         }
@@ -28491,7 +28491,8 @@ function Safari() {
             ret += "</tr>";
         }
         ret += "</table>";
-        return ret;
+        sys.sendHtmlMessage(src, ret, safchan);
+        return;
     };
     safari.volleyballStats = {
         "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "overgrow", "banner"]},
@@ -31829,11 +31830,12 @@ function Safari() {
             safaribot.sendMessage(src, "The format for this command is /awardmedal player:icon:description.", safchan);
             return false;
         }
-        var player = getAvatarOff(commandData[0]);
+        var player = getAvatarOff(cd[0]);
         if (!player) {
             safaribot.sendMessage(src, "No player exists!", safchan);
             return false;
         }
+        var icon = cd[1];
         if (!icon) {
             safaribot.sendMessage(src, "That is not a valid color of medal!", safchan);
             return false
@@ -31844,7 +31846,7 @@ function Safari() {
             return false
         }
         var m = {
-            desc: commandData[2],
+            desc: cd[2],
             icon: icon
         }
         this.awardMedal(player, m);
@@ -34653,9 +34655,7 @@ function Safari() {
                 return true;
             }
             if (command === "awardmedal" || command === "awardfeather") {
-                commandData = commandData.split(":");
-                var name = commandData.pop(0);
-                safari.giftMedal(src, name, commandData.join(":"));
+                safari.giftMedal(src, commandData);
                 return true;
             }
             if (command === "salt") {
