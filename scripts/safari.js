@@ -27548,7 +27548,7 @@ function Safari() {
             row = ["j", "k", "l"].random();
             column = (1 + Math.floor(3 * Math.random()));
             place = row + column;
-            if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon, 10), "grotto", place)) {
+            if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon, 10), place, "grotto")) {
                 p = {
                     id: parseInt(pokemon, 10),
                     shiny: false,
