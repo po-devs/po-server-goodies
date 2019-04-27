@@ -3226,6 +3226,8 @@ function Safari() {
                 } else if (amt < 0) {
                     out.push("-$" + addComma(-amt));
                 }
+            } else if (s == "@expup") {
+                out.push("EXP Up");
             } else if (s[0] === "@" || (allItems.contains(itemAlias(s, true)))) {
                 asset = s;
                 if (asset[0] === "@") {
@@ -3236,8 +3238,6 @@ function Safari() {
                 if (amt !== 0) {
                     out.push(plural(amt, asset));
                 }
-            } else if (s == "expup") {
-                out.push("EXP Up");
             } else {
                 asset = getInputPokemon(s);
                 out.push(plural(amt, asset.input, forceNumber));
@@ -8369,6 +8369,7 @@ function Safari() {
         switch (reward) {
             case "rare": {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "recharge2": {
@@ -8392,23 +8393,28 @@ function Safari() {
             break;
             case "crown": {
                 sendAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", true);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "scarf": {
                 sendAll("<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> " + sys.name(src) + "'s Itemfinder led them to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find, " + sys.name(src) + "!", true);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "cookie": {
                 sendAll("<b>!BEEPBEEPBEEPBEEP!</b> Oh no, " + sys.name(src) + " is on fire! Luckily, as a result of the fire, they were able to cook a nice " + finishName("cookie") + " from the surroundings!", true);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "eviolite": {
                 sendAll("<b>!PEEB !PEEB</b> Another trainer approaches " + sys.name(src) + " as they are looking for items and snickers: <i>\"You have it on backwards.\"</i> " + sys.name(src) + " corrects the position, turns around, and finds a sizeable chunk of " + finishName("eviolite") + " on the ground.", true);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "honey": {
                 sendAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of " + finishName("honey") + "!", true);
                 safari.missionProgress(player,"findHoney",0,1,{});
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "spy": {
@@ -8450,19 +8456,23 @@ function Safari() {
             break;
             case "mushroom": {
                 safaribot.sendMessage(src, "Bep-Bep-Bep-Bep-Bep. Your Itemfinder leads you to a badger. And another badger. And another badger. Oh, " + an(finishName(reward)) + "! And a snake!", safchan);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "celebrityTicket": {
                 amount = 1;
                 safaribot.sendMessage(src, "What's this? A voucher for an extra run at the Celebrities!", safchan);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "cometshard": {
                 safaribot.sendHtmlMessage(src, "<b>Beeeeeeeeeeeeeep!!</b> Your Itemfinder lets out a high pitched noise as you pass by a strange shard. After analyzing it for a while, you realize the object is not from this world and decide to pick it up.", safchan);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "nugget": {
                 reward = "nugget";
+                this.costumeEXP(player, "findrare");
             }
             case "bigpearl2": {
                 amount = 2;
@@ -8485,6 +8495,7 @@ function Safari() {
             case "fragment": {
                 if (player.costume === "explorer") {
                     safaribot.sendHtmlAll("<b>Be-Be-Be-Beeep! " + sys.name(src) + " found " + an(finishName(reward)) + "  in a patch of grass!</b>", safchan);
+                    this.costumeEXP(player, "findrare");
                     break;
                 } else {
                     reward = "luxury";
@@ -9648,6 +9659,7 @@ function Safari() {
             case "daycareplay": exp = 5; break;
             case "fighttower": exp = val;
             case "bait": exp = 3; break;
+            case "findrare": exp = 66; break;
             case "wincontest": exp = 150; break;
             case "scientist": exp = val; break;
             case "trivia": exp = val; break;
@@ -9694,9 +9706,9 @@ function Safari() {
             for (var c in cosData.skills) {
                 if ((cosData.skills[c][0] > lev && (chance(1 / (cosData.skills[c][1] - (lev + 0.01))))) || lev >= cosData.skills[c][1] ) {
                     player.costumeInfo[cos].skills.push(c);
-                    safaribot.sendHtmlMessage(src, "You unlocked a new " + cos + " skill: " + costumeSkillInfo[c] + "!", safchan);
+                    safaribot.sendHtmlMessage(src, "You unlocked a new " + cos + " skill: " + costumeSkillInfo[c] + "", safchan);
                     if (c == "rocketPack") {
-                        g = giveStuff(player, toStuffObj("@fossil,@bignugget,2@silkscarf,3@amulet,5@pack,10@gem,20@gacha"));
+                        g = giveStuff(player, toStuffObj("@fossil,@bignugget,2@scarf,3@amulet,5@pack,10@gem,20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "flowerPack") {
@@ -33810,7 +33822,7 @@ function Safari() {
                         conditionals.push(Math.floor(candiesRequired *  1.15) + " if shiny");
                     }
                     if (player && player.costumes.contains("breeder")) {
-                        conditionals.push(Math.floor(candiesRequired * costumeData.breeder.rate) + " if using " + costumeAlias("breeder", true, true));
+                        conditionals.push(Math.floor(Math.max(candiesRequired * costumeData.breeder.rate, 1)) + " if using " + costumeAlias("breeder", true, true));
                     }
 
                     safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
