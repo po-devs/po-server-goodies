@@ -31638,7 +31638,7 @@ function Safari() {
             }
         }
         pyrBonusMons = out;
-        permObj.add("pyrBonusMons", out);
+        permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
     this.checkNewWeek = function() {
         var today = getDay(now()) - 3;
@@ -34513,7 +34513,7 @@ function Safari() {
                 return true;
             }
             if (command === "daycare" || command === "dc") {
-                safari.handleDayCareCommand(src, commandData);
+                safari.handleDayCareCommand(src, commandData.split(":"));
                 return true;
             }
             if (command === "enabledc" || command === "enabledaycare") {
