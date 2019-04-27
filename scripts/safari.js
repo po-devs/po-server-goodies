@@ -10036,7 +10036,7 @@ function Safari() {
         for (i in shop) {
             info = shop[i];
             disc = ((shop[i].discount ? shop[i].discount : false) || (shop[i].discount2 && this.hasCostumeSkill(player, "haggler")));
-            discmsg = disc ? "<b><color=#f4b042> [Discount]</color></b>" : "";
+            discmsg = disc ? "<color=#f4b042><b> [Discount]</b></color>" : "";
             displayprice = disc ? info.discountprice : info.price;
             var lim = info.limit;
             var playerlim = info.playerLimit ? info.playerLimit : lim;
