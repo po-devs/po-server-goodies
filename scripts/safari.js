@@ -9641,6 +9641,7 @@ function Safari() {
         extraLoveBall: "Bonus from catching a Pokémon with a Love Ball with the same Egg Group as a Daycare Pokémon increased",
         betterPyrItems: "Better luck finding items in the Pyramid",
         betterFinder: "Advanced techniques using the itemfinder to avoid misses",
+        betterGacha: "Rigging the game allows for better gacha results",
         pyrStaminaBoost: "Preparation for the task ahead grants +10 stamina when starting Pyramid",
         kiai: "Fierce bonds with your Pokémon grant them an increased chance to survive KO moves in Rotation Battles against NPC",
         superChef: "Your skills as a Chef are dramatically increased",
@@ -9761,7 +9762,7 @@ function Safari() {
             var lev = player.costumeInfo[cos].level;
             safaribot.sendHtmlMessage(src, "Your " + cos + " costume leveled up! (Level: " + lev + ")", safchan);
             for (var c in cosData.skills) {
-                if ((cosData.skills[c][0] > lev && (chance(1 / (cosData.skills[c][1] - (lev + 0.01))))) || lev >= cosData.skills[c][1] ) {
+                if ((lev >= cosData.skills[c][0] && (chance(1 / (cosData.skills[c][1] - (lev + 0.01))))) || lev >= cosData.skills[c][1] ) {
                     if (player.costumeInfo[cos].skills.contains(c)) {
                         continue;
                     }
@@ -28030,7 +28031,7 @@ function Safari() {
     };
     this.getPosFromXY = function(x, y) {
         var row = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"][x];
-        var column = y;
+        var column = (y + "");
         return (row + column);
     };
     this.pokemonAtDayCarePos = function(area, pos) {
@@ -28048,8 +28049,8 @@ function Safari() {
             range = (1 + Math.floor(Math.random() * distance));
             dx = (Math.round(Math.random() * range));
             dy = range - dx;
-            tox = Math.max(Math.min(pokemon.column + dx, 0), 0);
-            toy = Math.max(Math.min(pokemon.row + dx, 0), 0);
+            tox = Math.max(Math.min(pokemon.column + dx, 11), 0);
+            toy = Math.max(Math.min(pokemon.row + dy, 11), 0);
             pos = this.getPosFromXY(tox, toy);
             if (this.validDayCareLocation(pokemon.id, pos, area)) {
                 if (!(area == "grotto" && tox < 4 && toy > 9)) {
