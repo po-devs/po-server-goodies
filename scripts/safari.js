@@ -28506,7 +28506,7 @@ function Safari() {
                 }
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += "<img src='icon:" + inp + "' title='" + owner + "'s " + poke(inp) + (bg ? " style='background:" + bg + "'" : "") + "'>";
+                    ret += "<img src='icon:" + inp + "' title='" + rows[place].owner + "'s " + poke(inp) + (bg ? " style='background:" + bg + "'" : "") + "'>";
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
