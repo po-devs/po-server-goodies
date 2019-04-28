@@ -27536,7 +27536,7 @@ function Safari() {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
             return false;
         }
-        if (isMega(pokemon.id)) {
+        if (isMega(pokemon.num)) {
             daycarebot.sendMessage(src, "Sorry, but Mega Pokémon aren't allowed in the daycare!", safchan);
             return false;
         }
@@ -27548,9 +27548,9 @@ function Safari() {
             row = ["j", "k", "l"].random();
             column = (1 + Math.floor(3 * Math.random()));
             place = row + column;
-            if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon, 10), place, "grotto")) {
+            if (this.pokemonAtDayCarePos("grotto", place) === false && this.validDayCareLocation(parseInt(pokemon.num, 10), place, "grotto")) {
                 p = {
-                    id: parseInt(pokemon, 10),
+                    id: parseInt(pokemon.num, 10),
                     shiny: false,
                     owner: player.id,
                     ownernum: player.idnum,
@@ -27568,7 +27568,7 @@ function Safari() {
                 };
                 p.toHolding = now() + 60 * 60 * 1000 * 24 * 14; //2 weeks
                 p.uid = this.getUniqueDayCareId();
-                if (typeof pokemon == "string") {
+                if (typeof pokemon.id == "string") {
                     p.shiny = true;
                 }
                 this.removePokemon(src, pokemon);
@@ -32616,7 +32616,7 @@ function Safari() {
         if (!player) {
             return;
         }
-        var rew, rareamt = null, packamt = null, megaamt = null;
+        var rew, rareamt = 0, packamt = 0, megaamt = 0;
         switch (placing) {
             case 1:
                 rareamt = 5;
@@ -32645,7 +32645,7 @@ function Safari() {
         if (this.hasCostumeSkill(player, "extraTourMega") && megaamt) {
             megaamt++;
         }
-        rew = (megaamt ? plural(megaamt, "mega") : "") + ", " + (rareamt ? plural(rareamt, "rare") : "") + ", " + (packamt ? plural(packamt, "pack") : "");
+        rew = (megaamt > 0 ? plural(megaamt, "mega") : "") + ", " + (rareamt > 0 ? plural(rareamt, "rare") : "") + ", " + (packamt > 0 ? plural(packamt, "pack") : "");
         
         this.missionProgress(player, "cross", "tours", 1, {});
         if (placing === 1) {
