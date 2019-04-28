@@ -27326,8 +27326,15 @@ function Safari() {
     this.drawDayCareHearts = function(hearts) {
         var heart = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAMAAAAR8Wy4AAABHVBMVEX////+/f7+/v7+/v38+Pf57+z57e389vb8+Pj79vf+//7///779vX68vH79fT9/Pz+///z4N3enZnVgHzbko/v0s7qvb3Xh4TVgn/jrqvw1NPJW1S+OC6+Ni69Ni7GTEXmtLHclZPCPznAOjPTeHLSd3K+Ny+/OjG/OTLAODHCRT7APzi/ODG+OjLAOTK+OTPhpaPz3dzFTke/ODC/Ni/Scm3y2djES0XQbGj68O/LaGK/NzC/NzHdkY7////ksrDBPTnx2NT79fTTfHi+NzDAPDThpqH15OPNaWPANzC/OTG/OjLai4X03t7OamW+ODC/PDTZiob25uXUfnnBPTXCRD7dnZn79PPhp6LGUkvNYlzqwr/+/f3x2dj15uNDzJatAAAAEXRSTlMAAAAAAAAAAAAAAAAAAAAAAMMdze4AAAABYktHRACIBR1IAAAACXBIWXMAAABIAAAASABGyWs+AAAArUlEQVQI12NgAAJGEMHAxMQAAYJCwiKizCxi4hKSrCC+lLSMrJy8gqKSnJyyChsDA7uqmrqGhqaWto6uhp6+AQODoZGxBhDogAgNE1MOBjNzsAAEmFhwMlhaWSMEbGy5GOzsHeB8ayNHBgY7J2cXKF/H1Y0bKGDn7uHpBeZ7+/AwgATsfP38gSI6AYG8DBABu6DgEE3r0DA+BpiAXXhEZFQ0PwNCwC4mNk4AwgcA+jAhQKIkaqEAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDQtMjhUMTY6NTQ6MjUtMDQ6MDCWJXFmAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA0LTI4VDE2OjU0OjI1LTA0OjAw53jJ2gAAAABJRU5ErkJggg==";
         var out = "";
-        for (var i = hearts; i -= 10; i > hearts) {
+        hearts = Math.min(hearts, 255);
+        var i = hearts/10, loop = 100;
+        while (loop > 0) {
+            loop--;
             out += "<img src = '" + heart + "'> ";
+            i--;
+            if (i < 0) {
+                break;
+            }
         }
         return out;
     };
