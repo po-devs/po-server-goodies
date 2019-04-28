@@ -27324,20 +27324,12 @@ function Safari() {
         return;
     };
     this.drawDayCareHearts = function(hearts) {
-        var color;
-        hearts = Math.min(hearts, 255);
-        if (inclusive(hearts, 0, 60)) {
-            color = "#ff5ee1";
-        } else if (inclusive(hearts, 61, 120)) {
-            color = "#f15bff";
-        } else if (inclusive(hearts, 121, 180)) {
-            color = "#d456ff";
-        } else if (inclusive(hearts, 181, 254)) {
-            color = "#b05bff";
-        } else {
-            color = "#ffce54"; //255 is the "max"
+        var heart = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAOCAMAAAAR8Wy4AAABHVBMVEX////+/f7+/v7+/v38+Pf57+z57e389vb8+Pj79vf+//7///779vX68vH79fT9/Pz+///z4N3enZnVgHzbko/v0s7qvb3Xh4TVgn/jrqvw1NPJW1S+OC6+Ni69Ni7GTEXmtLHclZPCPznAOjPTeHLSd3K+Ny+/OjG/OTLAODHCRT7APzi/ODG+OjLAOTK+OTPhpaPz3dzFTke/ODC/Ni/Scm3y2djES0XQbGj68O/LaGK/NzC/NzHdkY7////ksrDBPTnx2NT79fTTfHi+NzDAPDThpqH15OPNaWPANzC/OTG/OjLai4X03t7OamW+ODC/PDTZiob25uXUfnnBPTXCRD7dnZn79PPhp6LGUkvNYlzqwr/+/f3x2dj15uNDzJatAAAAEXRSTlMAAAAAAAAAAAAAAAAAAAAAAMMdze4AAAABYktHRACIBR1IAAAACXBIWXMAAABIAAAASABGyWs+AAAArUlEQVQI12NgAAJGEMHAxMQAAYJCwiKizCxi4hKSrCC+lLSMrJy8gqKSnJyyChsDA7uqmrqGhqaWto6uhp6+AQODoZGxBhDogAgNE1MOBjNzsAAEmFhwMlhaWSMEbGy5GOzsHeB8ayNHBgY7J2cXKF/H1Y0bKGDn7uHpBeZ7+/AwgATsfP38gSI6AYG8DBABu6DgEE3r0DA+BpiAXXhEZFQ0PwNCwC4mNk4AwgcA+jAhQKIkaqEAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMDQtMjhUMTY6NTQ6MjUtMDQ6MDCWJXFmAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTA0LTI4VDE2OjU0OjI1LTA0OjAw53jJ2gAAAABJRU5ErkJggg==";
+        var out = "";
+        for (var i = hearts; i -= 10; i > hearts) {
+            out += "<img src = '" + heart + "'> ";
         }
-        return "<table border = 1 cellpadding = 1><td align=center width=" + (48 + (hearts * 3)) + " height=36><tr><style='background:" + "#FF1493" + "'></tr></td></table>";
+        return out;
     };
     this.dayCareInteract = function(src, player, target, mode) {
         var pokemon = null, target = parseInt(target, 10);
@@ -27419,10 +27411,10 @@ function Safari() {
                 }
             }
             if (canPlay) {
-                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare " + pokemon.uid + ":Play", "Play") + " to play with it!", safchan);
+                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare interact:" + pokemon.uid + ":Play", "Play") + " to play with it!", safchan);
             }
             if (pokemon.hunger > 2 && player.balls.pokeblock > 0) {
-                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare " + pokemon.uid + ":Feed", "Feed") + " to give it a Pokéblock!", safchan);
+                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare interact:" + pokemon.uid + ":Feed", "Feed") + " to give it a Pokéblock!", safchan);
             }
             return true;
         }
@@ -27871,8 +27863,8 @@ function Safari() {
             //move them 2-5 spaces, unless their current action is napping
             //if their current preferred area is not their current area, move them towards their new preferred area
             //check to make sure they can move to the target area (e.g., no rock or tree there, no water if they can't swim)
-            var pk = this.daycarePokemon[t], move = Math.floor(4 - (Math.random() * 1.5));
-            if (pk.activity == "traveling") {
+            var pk = this.daycarePokemon[t], move = Math.floor(6 - (Math.random() * 3.25));
+            if (pk.activity == "traveling" || pk.activity == "arriving") {
                 move += 2;
             }
             if (pk.activity !== "napping") {
@@ -27882,7 +27874,7 @@ function Safari() {
                 pk.findItem = true;
                 pk.meter = Math.min(pk.meter + 1, 20);
                 if (chance(0.5)) {
-                    pokemon.hunger = Math.min(pk.hunger + 1, 20);
+                    pk.hunger = Math.min(pk.hunger + 1, 20);
                 }
                 if (pk.toHolding < now()) {
                     pk.area = "holding";
@@ -28032,13 +28024,13 @@ function Safari() {
         var row = pos[0];
         var column = parseInt(pos[1], 10);
         var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
-        row = letters.indexOf(row);
+        row = letters.indexOf(row) + 1;
         pokemon.row = row;
         pokemon.column = column;
     };
     this.getPosFromXY = function(x, y) {
-        var row = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"][x];
-        var column = (y + "");
+        var row = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"][y-1];
+        var column = (x + "");
         return (row + column);
     };
     this.pokemonAtDayCarePos = function(area, pos) {
@@ -28056,8 +28048,8 @@ function Safari() {
             range = (1 + Math.floor(Math.random() * distance));
             dx = (Math.round(Math.random() * range));
             dy = range - dx;
-            tox = Math.max(Math.min(pokemon.column + dx, 11), 0);
-            toy = Math.max(Math.min(pokemon.row + dy, 11), 0);
+            tox = Math.max(Math.min(pokemon.column + dx, 12), 1);
+            toy = Math.max(Math.min(pokemon.row + dy, 12), 1);
             pos = this.getPosFromXY(tox, toy);
             if (this.validDayCareLocation(pokemon.id, pos, area)) {
                 if (!(area == "grotto" && tox < 4 && toy > 9)) {
@@ -28137,6 +28129,16 @@ function Safari() {
         }
         if (!this.daycareRegions.grotto) {
             this.daycareRegions.grotto = {};
+        }
+        var val = "";
+        for (var i = 0; i < 12; i++) {
+            var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
+            for (var j = letters.length; j < 12; j++) {
+                val = (letters[j] + i);
+                if (!this.daycareRegions.grotto.hasOwnProperty(val)) {
+                    this.daycareRegions.grotto[val] = "";
+                }
+            }
         }
         for (var t in this.daycareRegions.grotto) {
             c = this.daycareRegions.grotto[t];
@@ -28257,6 +28259,12 @@ function Safari() {
                     if (chance(0.05)) {
                         this.daycareRegions.grotto[t] = "flowers";
                         featureCount.flowers++;
+                    }
+                }
+                if (featureCount.sprout < maxFeatures.sprout) {
+                    if (chance(0.075)) {
+                        this.daycareRegions.grotto[t] = "sprout";
+                        featureCount.sprout++;
                     }
                 }
             }
@@ -28403,7 +28411,7 @@ function Safari() {
         var p, out = [];
         for (var s in this.daycarePokemon) {
             p = this.daycarePokemon[s];
-            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ".");
+            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ". CanItem" + p.canItem + ". FindItem" + p.findItem + ".");
         }
         for (var t in out) {
             safaribot.sendMessage(src, out[t], safchan);
