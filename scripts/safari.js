@@ -8681,7 +8681,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Type /use easteregg:1, /use easteregg:10, /use easteregg:100, or /use easteregg:1000, to open your Easter Eggs!", safchan);
                 return;
             }
-            if (pulled > player.balls.eastereggs) {
+            if (pulled > player.balls.easteregg) {
                 safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
                 return;
             }
@@ -28432,6 +28432,9 @@ function Safari() {
         return true;
     };
     this.getFeatureAt = function(pos, area) {
+        if (area !== "grotto") {
+            return "";
+        }
         return (this.daycareRegions[area][pos] || "");
     };
     this.printDayCare = function(src, area) {
@@ -28480,7 +28483,7 @@ function Safari() {
             r = props[i];
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
-                ret += "<td align=center width=64 height=52>";
+                ret += "<td align=center width=42 height=32>";
                 bg = null;
                 if (area == "grotto") {
                     bg = "#5de53b";
@@ -28495,13 +28498,17 @@ function Safari() {
                        }
                     }
                     if (features[place] == "water" || features[place] == "lilypad") {
-                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 3) {
+                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 4) {
                             bg = "#2366ed";
-                            icon = waterbg2;
+                            if (features[place] == "water") {
+                                icon = waterbg2;
+                            }
                         }
                         else {
                             bg = "#42cef4";
-                            icon = waterbg1;
+                            if (features[place] == "water") {
+                                icon = waterbg1;
+                            }
                         }
                     }
                 }
