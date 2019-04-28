@@ -8681,7 +8681,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Type /use easteregg:1, /use easteregg:10, /use easteregg:100, or /use easteregg:1000, to open your Easter Eggs!", safchan);
                 return;
             }
-            if (pulled > player.balls.eastereggs) {
+            if (pulled > player.balls.easteregg) {
                 safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
                 return;
             }
