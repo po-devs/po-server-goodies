@@ -27571,6 +27571,7 @@ function Safari() {
                 if (typeof pokemon.id == "string") {
                     p.shiny = true;
                 }
+                safari.saveDaycare();
                 this.removePokemon(src, pokemon);
                 this.daycarePokemon.push(p);
                 this.saveGame(player);
@@ -32251,6 +32252,9 @@ function Safari() {
         permObj.add("npcShop", JSON.stringify(npcShop));
     };
     this.saveDaycare = function() {
+        if (!(Array.isArray(safari.daycarePokemon))) {
+            safari.daycarePokemon = [];
+        }
         permObj.add("daycarePokemon", JSON.stringify(safari.daycarePokemon));
         permObj.add("daycareRegions", JSON.stringify(safari.daycareRegions));
     };
@@ -37532,7 +37536,7 @@ function Safari() {
         };
         npcShop = parseFromPerm("npcShop", {});
         safari.daycareRegions = parseFromPerm("daycareRegions", {});
-        safari.daycarePokemon = parseFromPerm("daycarePokemon", {});
+        safari.daycarePokemon = parseFromPerm("daycarePokemon", []);
         recipeData = parseFromPerm("alchemistRecipes", {});
         gymData = parseFromPerm("gyms", {});
         eliteData = parseFromPerm("elite", []);
