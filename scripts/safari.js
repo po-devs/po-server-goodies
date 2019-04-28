@@ -28050,7 +28050,7 @@ function Safari() {
             tox = Math.max(Math.min(pokemon.column + dx, 0), 0);
             toy = Math.max(Math.min(pokemon.row + dx, 0), 0);
             pos = this.getPosFromXY(tox, toy);
-            if (this.validDayCareLocation(id, pos, area)) {
+            if (this.validDayCareLocation(pokemon.id, pos, area)) {
                 if (!(area == "grotto" && tox < 4 && toy > 9)) {
                     this.moveDayCarePokemon(pokemon, pos);
                     return true;
@@ -28506,7 +28506,7 @@ function Safari() {
                 }
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += "<img src='icon:" + inp + "' title='" + owner + "'s " + poke(inp) + (bg ? " style='background:" + bg + "'" : "") + "'>";
+                    ret += "<img src='icon:" + inp + "' title='" + rows[place].owner + "'s " + poke(inp) + (bg ? " style='background:" + bg + "'" : "") + "'>";
                     ret += "\n" + link("/daycare interact:" + p.id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
