@@ -28432,6 +28432,9 @@ function Safari() {
         return true;
     };
     this.getFeatureAt = function(pos, area) {
+        if (area !== "grotto") {
+            return "";
+        }
         return (this.daycareRegions[area][pos] || "");
     };
     this.printDayCare = function(src, area) {
@@ -28495,7 +28498,7 @@ function Safari() {
                        }
                     }
                     if (features[place] == "water" || features[place] == "lilypad") {
-                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 3) {
+                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 4) {
                             bg = "#2366ed";
                             icon = waterbg2;
                         }
