@@ -27563,6 +27563,7 @@ function Safari() {
                     activity: "arriving",
                     hearts: 2,
                     playhearts: 0,
+                    hunger: 3,
                     canMax: true,
                     uid: -1
                 };
@@ -28394,7 +28395,7 @@ function Safari() {
         var p, out = [];
         for (var s in this.daycarePokemon) {
             p = this.daycarePokemon[s];
-            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.idnum + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ".");
+            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ".");
         }
         for (var t in out) {
             safaribot.sendMessage(src, out[t], safchan);
