@@ -28432,9 +28432,6 @@ function Safari() {
         return true;
     };
     this.getFeatureAt = function(pos, area) {
-        if (area !== "grotto") {
-            return "";
-        }
         return (this.daycareRegions[area][pos] || "");
     };
     this.printDayCare = function(src, area) {
