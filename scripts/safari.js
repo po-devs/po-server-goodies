@@ -18996,7 +18996,7 @@ function Safari() {
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Scientist|||Gave " + poke(id) + "|||Received " + plural(rew, "silver") + (theft ? ", stole " + poke(id) + " back" : "") + "\n");
             this.saveGame(player);
         } else if (data[0].toLowerCase() === "photo" && data.length > 1) {
-            var index = parseInt(data.length[1], 10); 
+            var index = parseInt(data.length[1], 10) - 1; 
             if (player.photos && index && (!(isNaN(index))) && index > -1 && index < player.photos.length) {
                 if (player.quests.scientist.photo === id) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hey, you already showed me a picture of a " + poke(id) + "! Don't you have someone else to give photos to?", safchan);
