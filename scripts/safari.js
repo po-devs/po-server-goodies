@@ -27381,6 +27381,7 @@ function Safari() {
                 case "roaring": m = "roaring"; break;
                 case "singing": m = "singing"; break;
                 case "napping": m = "napping"; break;
+                case "jumping": m = "jumping about"; break;
                 default: m = "doing nothing in particular"
             }
             daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
@@ -27665,7 +27666,7 @@ function Safari() {
         else if (hearts >= 50) {
             failChance = 0.7;
         }
-        if (failChance) {
+        if (chance(failChance)) {
             return null;
         }
         var box = {}, apcamount = 1, pearlamount = 1, gachaamount = 1, hdewamount = 5, prize, amt;
