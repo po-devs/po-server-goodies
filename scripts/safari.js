@@ -27392,7 +27392,7 @@ function Safari() {
                 case "prancing": m = "prancing about"; break;
                 default: m = "doing nothing in particular"
             }
-            daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id).toCorrectCase() + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
+            daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id).toCorrectCase() + " " + this.drawDayCareHearts(pokemon.hearts + pokemon.playhearts), safchan);
             daycarebot.sendMessage(src, pokemon.owner + "'s " + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id) + " is " + m + "! Isn't it cute?", safchan);
             if (pokemon.hunger > 19) {
                 daycarebot.sendMessage(src, "Oh no! The poor thing is begging for food!", safchan);
@@ -27448,15 +27448,15 @@ function Safari() {
             player.balls.pokeblock--;
             var val = (this.hasCostumeSkill(player, "pokeblockBoost") ? 4 : 3);
             pokemon.hunger = Math.floor(Math.max(pokemon.hunger - val, 0));
-            pokemon.hearts += 0.5;
+            pokemon.hearts += 2;
             if (player.costume == "breeder") {
-                pokemon.hearts += 0.5;
+                pokemon.hearts += 1;
                 if (this.hasCostumeSkill(player, "pokeblockBoost")) {
-                    pokemon.hearts += 1;
+                    pokemon.hearts += 2;
                 }
             }
             daycarebot.sendHtmlMessage(src, "<b>Nom nom nom-nom-nom!</b> Looks like " + poke(pokemon.id) + " enjoyed the Pokéblock!", safchan);
-            sys.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
+            sys.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts + pokemon.playhearts), safchan);
             this.saveGame(player);
             safari.saveDaycare();
             return true;
@@ -27949,7 +27949,7 @@ function Safari() {
                 break;
             }
         }
-        var feat2 = this.getNearbyFeatures2(pokemon.area, pokemon.pos);
+        var feat2 = this.getNearbyFeatures(pokemon.area, pokemon.pos);
         var inter2;
         loop = 5;
         while (loop > 0) {
@@ -27977,28 +27977,28 @@ function Safari() {
             act = "perching";
         }
         else {
-            if (feat2 == "water") {
+            if (inter2 == "water") {
                 act = "splashing";
             }
-            else if (feat == "flowers") {
+            else if (inter == "flowers") {
                 act = "flowers";
             }
-            else if (feat == "rock") {
+            else if (inter == "rock") {
                 act = "rock";
             }
-            else if (feat == "lilypad") {
+            else if (inter == "lilypad") {
                 act = "lilypad";
             }
-            else if (feat == "bush" && (chance(0.75)) && pokemon.hunger > 10) {
+            else if (inter == "bush" && (chance(0.75)) && pokemon.hunger > 10) {
                 act = "eating";
             }
-            else if (feat == "bigtree") {
+            else if (inter == "bigtree") {
                 act = "bigtree";
             }
-            else if (feat == "tree1" || feat == "tree2") {
+            else if (inter == "tree1" || feat == "tree2") {
                 act = "tree";
             }
-            else if (feat == "grass" && (chance(0.35))) {
+            else if (inter == "grass" && (chance(0.35))) {
                 act = "grass";
             }
             else if (chance(0.4)) {
@@ -28380,7 +28380,7 @@ function Safari() {
     this.getNearbyFeatures = function(pos, area) {
         var out = [];
         var row = pos[0];
-        var column = parseInt(pos.slice(1));
+        var column = parseInt(pos.slice(1), 10);
         var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
         var temprow = letters.indexOf(row);
         out.push(this.getFeatureAt(letters[temprow] + column, area));
@@ -28401,7 +28401,7 @@ function Safari() {
     this.getNearbyFeatures2 = function(pos, area) {
         var out = [];
         var row = pos[0];
-        var column = parseInt(pos.slice(1));
+        var column = parseInt(pos.slice(1), 10);
         var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
         var temprow = letters.indexOf(row);
         out.push(this.getFeatureAt(letters[temprow] + column, area));
