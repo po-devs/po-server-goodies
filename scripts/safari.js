@@ -27300,7 +27300,7 @@ function Safari() {
             c3 = cdata[2];
         }
         for (var p in this.daycarePokemon) {
-            if (this.daycarePokemon[p].area == "holding" && this.daycarePokemon[p].ownerid === player.idnum) {
+            if (this.daycarePokemon[p].area == "holding" && this.daycarePokemon[p].ownernum === player.idnum) {
                 daycarebot.sendHtmlMessage(src, "Your Pokémon " + poke(this.daycarePokemon[p].id) + " hasn't been attended to for a while, so we took it to holding!", safchan);
                 daycarebot.sendHtmlMessage(src, "To retrieve your Pokémon, use " + link("/retrieve " + poke(this.daycarePokemon[p].id)) + "!", safchan);
                 if (command !== "retrieve") {
@@ -27352,7 +27352,7 @@ function Safari() {
             return false;
         }
         var currentTime = now();
-        var isOwner = pokemon.ownerid === player.idnum;
+        var isOwner = (pokemon.ownernum === player.idnum ? true : false);
         var canPlay = (pokemon.canPlay && (pokemon.meter > 8 || (isOwner && pokemon.meter > 1)) && (player.cooldowns.daycare < currentTime));
 
         if (isOwner) {
@@ -27400,9 +27400,9 @@ function Safari() {
                 daycarebot.sendMessage(src, "It doesn't seem hungry.", safchan);
             } 
             if (pokemon.meter > 18) {
-                daycarebot.sendMessage(src, "It's itching to play!", safchan);
+                daycarebot.sendMessage(src, "It's eager to play!", safchan);
             } else if (pokemon.meter > 13) {
-                daycarebot.sendMessage(src, "It looks like it wants to play!", safchan);
+                daycarebot.sendMessage(src, "Looks like it wants to play!", safchan);
             } else if (pokemon.meter < 2) {
                 daycarebot.sendMessage(src, "It looks too tired to play!", safchan);
             }
@@ -27418,11 +27418,15 @@ function Safari() {
                     return true;
                 }
             }
+            var m = "";
             if (canPlay) {
-                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare interact:" + pokemon.uid + ":Play", "Play") + " to play with it!", safchan);
+                m += "<<" + link("/daycare interact:" + pokemon.uid + ":play", "Play") + ">>";
             }
             if (pokemon.hunger > 2 && player.balls.pokeblock > 0) {
-                daycarebot.sendHtmlMessage(src, "You can use " + link("/daycare interact:" + pokemon.uid + ":Feed", "Feed") + " to give it a Pokéblock!", safchan);
+                m += " <<" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + ">>";
+            }
+            if (m !== "") {
+                daycarebot.sendHtmlMessage(src, m, safchan);
             }
             return true;
         }
@@ -27460,6 +27464,7 @@ function Safari() {
                 daycarebot.sendHtmlMessage(src, "It look like that Pokémon wants to be on its own for a while! Try again in a few minutes!", safchan);
                 return false;
             }
+            sys.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts + pokemon.playhearts), safchan);
             var rng = Math.random();
             var name = (isOwner ? "your " : pokemon.owner + "'s ") + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
             var nearbyPokes = this.getNearbyPokemon(pokemon.pos, pokemon.area);
@@ -27495,7 +27500,7 @@ function Safari() {
             }
             else if (rng > 0.5) {
                 pokemon.playhearts += 2;
-                daycarebot.sendHtmlMessage(src, "You and " + name + " had a nice time playing. Time to get back to work!", safchan);
+                daycarebot.sendHtmlMessage(src, "You and " + name + " had a nice time playing in the fields!", safchan);
             }
             else if (rng > 0.15 && nearbyPokes.length > 0) {
                 var p = nearbyPokes.random();
@@ -27510,9 +27515,8 @@ function Safari() {
             }
             else {
                 pokemon.playhearts += 0.5;
-                daycarebot.sendHtmlMessage(src, "You tried to play with " + name + " but it seemed rather uninterested.", safchan);
+                daycarebot.sendHtmlMessage(src, "You tried to play with " + name + " a bit. It seemed rather uninterested!", safchan);
             }
-            sys.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts + pokemon.playhearts), safchan);
             this.costumeEXP(player, "daycareplay");
             pokemon.meter -= 2;
             pokemon.canPlay = false;
