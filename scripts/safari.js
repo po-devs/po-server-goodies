@@ -27318,7 +27318,7 @@ function Safari() {
             case "view": this.printDayCare(src, c2); break;
             case "interact": this.dayCareInteract(src, player, c2, c3); break;
             case "help": this.dayCareHelp(src); break;
-            default: daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff", "Dropoff") + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", and " + link("/dc help", "Help") + "!", safchan);
+            default: daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", and " + link("/dc help", "Help") + "!", safchan);
         }
     };
     this.dayCareHelp = function(src) {
@@ -27421,7 +27421,6 @@ function Safari() {
                     var g = giveStuff(player, toStuffObj(getItem));
                     daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"), safchan);
                     this.saveGame(player);
-                    return true;
                 }
             }
             var m = "";
@@ -27623,6 +27622,9 @@ function Safari() {
                 return false;
             }
             daycarebot.sendMessage(src, "Please list which Pokémon would you like to return from the daycare!", safchan);
+            for (var i = opt.length; i > 0; i--) {
+                daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(opt[s]), "«" + poke(opt[s]) + "»", true), safchan);
+            }
             return false;
         }
         if (player.pokemon.length >= getPerkBonus(player, "box")) {
@@ -27950,7 +27952,7 @@ function Safari() {
             }
         }
         var feat2 = this.getNearbyFeatures(pokemon.area, pokemon.pos);
-        var inter2;
+        var inter2 = feat2.random();
         loop = 5;
         while (loop > 0) {
             loop--;
@@ -27995,7 +27997,7 @@ function Safari() {
             else if (inter == "bigtree") {
                 act = "bigtree";
             }
-            else if (inter == "tree1" || feat == "tree2") {
+            else if (inter == "tree1" || inter2 == "tree2") {
                 act = "tree";
             }
             else if (inter == "grass" && (chance(0.35))) {
