@@ -27288,9 +27288,6 @@ function Safari() {
         return signupsLower.contains(n) && !this.winners.contains(n);
     };
     this.handleDayCareCommand = function(src, cdata, auth) {
-        if (!dayCareEnabled) {
-            daycarebot.sendHtmlMessage(src, "The daycare is temporarily closed for renovations!", safchan);
-        }
         var player = getAvatar(src);
         var command = cdata[0], c2 = "", c3 = "";
         if (cdata.length > 1) {
@@ -27420,10 +27417,10 @@ function Safari() {
             }
             var m = "";
             if (canPlay) {
-                m += "<<" + link("/daycare interact:" + pokemon.uid + ":play", "Play") + ">>";
+                m += "«" + link("/daycare interact:" + pokemon.uid + ":play", "Play") + "»";
             }
             if (pokemon.hunger > 2 && player.balls.pokeblock > 0) {
-                m += " <<" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + ">>";
+                m += " «" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + "»";
             }
             if (m !== "") {
                 daycarebot.sendHtmlMessage(src, m, safchan);
@@ -27528,7 +27525,7 @@ function Safari() {
     this.addToDayCare = function(src, player, cdata) {
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
-                daycarebot.sendMessage(src, "You already have a Pokémon in the Daycare!", safchan);
+                daycarebot.sendMessage(src, "You already have a Pokémon (" + poke(this.daycarePokemon[t].id) + ") in the Daycare!", safchan);
                 return false;
             }
         }
@@ -27617,7 +27614,7 @@ function Safari() {
                 return false;
             }
             daycarebot.sendMessage(src, "Which Pokémon would you like to return from the daycare?", safchan);
-            for (var s in opt.length) {
+            for (var s = opt.length; s > 0; s--) {
                 daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(parseInt(opt[s], 10))), safchan);
             }
             return false;
@@ -28027,6 +28024,7 @@ function Safari() {
         if (pokemon.hunger > 19) {
             pokemon.playhearts = pokemon.playhearts - 1;
         }
+        pokemon.playhearts = Math.max(pokemon.playhearts, 0);
         pokemon.activity = act;
         pokemon.canPlay = true;
         return true;
@@ -28060,6 +28058,8 @@ function Safari() {
             range = (1 + Math.floor(Math.random() * distance));
             dx = (Math.round(Math.random() * range));
             dy = range - dx;
+            dx = (chance(0.5) ? dx * -1 : dx);
+            dy = (chance(0.5) ? dy * -1 : dy);
             tox = Math.max(Math.min(pokemon.column + dx, 12), 1);
             toy = Math.max(Math.min(pokemon.row + dy, 12), 1);
             pos = this.getPosFromXY(tox, toy);
@@ -28131,13 +28131,13 @@ function Safari() {
         }
         var maxFeatures = {
             grass: 20,
-            sprout: 12,
-            tree: 7,
+            sprout: 9,
+            tree: 5,
             bigtree: 3,
-            rock: 7,
+            rock: 4,
             water: 20,
-            lilypad: 5,
-            flowers: 10
+            lilypad: 4,
+            flowers: 9
         }
         if (!this.daycareRegions.grotto) {
             this.daycareRegions.grotto = {};
@@ -28187,10 +28187,13 @@ function Safari() {
                 }
             }
             else if (c === "water") {
-                if ((chance(0.01) || (full && chance(0.1))) && (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 3)) {
+                if ((chance(0.01) || (full && chance(0.02))) && (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 4)) {
                     this.daycareRegions.grotto[t] = "";
                 }
-                else if ((chance(0.02) || (full && chance(0.25))) && (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 2)) {
+                else if ((chance(0.02) || (full && chance(0.25))) && (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 3)) {
+                    this.daycareRegions.grotto[t] = "";
+                }
+                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 2)) {
                     this.daycareRegions.grotto[t] = "";
                 }
                 else {
@@ -28423,7 +28426,7 @@ function Safari() {
         var p, out = [];
         for (var s in this.daycarePokemon) {
             p = this.daycarePokemon[s];
-            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ". CanItem" + p.canItem + ". FindItem" + p.findItem + ".");
+            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ". CanItem" + p.canItem + ". FindItem" + p.findItem + ". Activity: " + p.activity + ".");
         }
         for (var t in out) {
             safaribot.sendMessage(src, out[t], safchan);
@@ -33992,6 +33995,10 @@ function Safari() {
             }
             if (command === "mail") {
                 safari.useMail(src, commandData);
+                return true;
+            }
+            if ((command === "daycare" || command === "dc") && (dayCareEnabled)) {
+                safari.handleDayCareCommand(src, commandData.split(":"));
                 return true;
             }
             if (command === "themes") {
