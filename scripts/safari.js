@@ -9663,9 +9663,6 @@ function Safari() {
     this.showCostumeSkills = function(src) {
         var player = getAvatar(src);
         var cos = player.costume;
-        if (!player.costumeInfo[cos].exp) {
-            safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
-        }
         var lev = this.getCostumeLevel(player);
         var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
         safaribot.sendHtmlMessage(src, "Your " + cos + " costume is Level: " + lev + nextexp + ".", safchan);
@@ -9734,9 +9731,6 @@ function Safari() {
                     exp = 100; 
                 }
                 break;
-        }
-        if (cos == "inver" || cos == "preschooler") {
-            return false;
         }
         if (!player.costumeInfo[cos]) {
             player.costumeInfo[cos] = {};
