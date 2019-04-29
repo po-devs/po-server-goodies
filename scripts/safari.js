@@ -9663,6 +9663,9 @@ function Safari() {
     this.showCostumeSkills = function(src) {
         var player = getAvatar(src);
         var cos = player.costume;
+        if (!player.costumeInfo[cos].exp) {
+            safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
+        }
         var lev = this.getCostumeLevel(player);
         var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
         safaribot.sendHtmlMessage(src, "Your " + cos + " costume is Level: " + lev + nextexp + ".", safchan);
@@ -9703,6 +9706,9 @@ function Safari() {
         return true;
     };
     this.costumeEXP = function(player, type, val) {
+        if (cos == "inver" || cos == "preschooler") {
+            return false;
+        }
         var exp = 0, src = sys.id(player.id);
         var cos = player.costume;
         var cosData = costumeData[cos];
@@ -27830,7 +27836,7 @@ function Safari() {
         if (evolutions.hasOwnProperty(id+"")) {
             box["rare"] = 15;
         }
-        if (megaevolutions.hasOwnProperty(id+"")) {
+        if (megaEvolutions.hasOwnProperty(id+"")) {
             box["mega"] = 1;
         }
         prize = randomSample(box);
