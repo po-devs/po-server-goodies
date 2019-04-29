@@ -11932,9 +11932,10 @@ function Safari() {
     this.assignDuelsTeams = function( src,data ) {
         //Takes everyone from signups and puts them in teams
         safari.events.spiritDuelsSignups.shuffle();
-        var i = 0, player, oldBox;
+        var i = 0, player, oldBox, name;
         for (var p in safari.events.spiritDuelsSignups) {
-            player = getAvatarOff(safari.events.spiritDuelsSignups[p]);
+            name = idnumList.get(safari.events.spiritDuelsSignups[p]);
+            player = getAvatarOff(name);
             if (player.spiritDuels) {
                 if (player.spiritDuels.box.length > 0) {
                     oldBox = player.spiritDuels.box;
