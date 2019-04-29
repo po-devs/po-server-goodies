@@ -27417,7 +27417,7 @@ function Safari() {
                     pokemon.findItem = false;
                     daycarebot.sendMessage(src, "Huh? What's this? " + poke(pokemon.id) + " is holding an item!", safchan);
                     var g = giveStuff(player, toStuffObj(getItem));
-                    daycarbot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"));
+                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"));
                     this.saveGame(player);
                     return true;
                 }
