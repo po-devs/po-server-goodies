@@ -9663,7 +9663,7 @@ function Safari() {
     this.showCostumeSkills = function(src) {
         var player = getAvatar(src);
         var cos = player.costume;
-        if (!player.costumeInfo[cos].exp) {
+        if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
         }
         var lev = this.getCostumeLevel(player);
@@ -27417,7 +27417,7 @@ function Safari() {
                     pokemon.findItem = false;
                     daycarebot.sendMessage(src, "Huh? What's this? " + poke(pokemon.id) + " is holding an item!", safchan);
                     var g = giveStuff(player, toStuffObj(getItem));
-                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"));
+                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"), safchan);
                     this.saveGame(player);
                     return true;
                 }
@@ -27572,7 +27572,7 @@ function Safari() {
                     area: "grotto",
                     pos: place,
                     meter: 18,
-                    canPlay: false,
+                    canPlay: true,
                     canItem: false,
                     findItem: true,
                     activity: "arriving",
@@ -27612,7 +27612,7 @@ function Safari() {
         if (!pokemon || cdata.length < 1) {
             var opt = [];
             for (var t in this.daycarePokemon) {
-                if (this.daycarePokemon[t].ownernum = player.idnum) {
+                if (this.daycarePokemon[t].ownernum === player.idnum) {
                     opt.push(this.daycarePokemon[t].id);
                 }
             }
@@ -27643,7 +27643,7 @@ function Safari() {
                 return true;
             }
         }
-        daycarebot.sendMessage(src, "You don't have any " + mon + " in the Daycare!", safchan);
+        daycarebot.sendMessage(src, "You don't have any " + poke(pokemon.id) + " in the Daycare!", safchan);
         return false;
     };
     this.getUniqueDayCareId = function() {
@@ -28430,7 +28430,7 @@ function Safari() {
         var p, out = [];
         for (var s in this.daycarePokemon) {
             p = this.daycarePokemon[s];
-            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ". CanItem" + p.canItem + ". FindItem" + p.findItem + ". Activity: " + p.activity + ".");
+            out.push(p.owner + "'s " + poke(p.id) + " -- idnum: " + p.uid + ". Hearts: " + p.hearts + ". Play-hearts: " + p.playhearts + ". Hunger:" + p.hunger + ". Area: " + p.area + ". Pos: " + p.pos + ". CanItem" + p.canItem + ". FindItem" + p.findItem + ". Activity: " + p.activity + ". Owernum: " + p.ownernum + ".");
         }
         for (var t in out) {
             safaribot.sendMessage(src, out[t], safchan);
