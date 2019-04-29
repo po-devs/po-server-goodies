@@ -28550,7 +28550,7 @@ function Safari() {
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
                     ret += "<img src='icon:" + inp + "' title='" + rows[place].owner.toCorrectCase() + " (" + poke(inp) + ")'" + (bg ? " style='background:" + bg + "'" : "") + ">";
-                    ret += "<br>" + link("/daycare interact:" + p.uid, "Check");
+                    ret += "<br>" + link("/daycare interact:" + rows[place].id, "Check");
                 }
                 else if (features.hasOwnProperty(place)) {
                     ret += "<img src='" + icon + "' title='" + features[place] + "'" + (bg ? " style='background:" + bg + "'" : "") + ">";
