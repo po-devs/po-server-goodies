@@ -9706,9 +9706,6 @@ function Safari() {
         return true;
     };
     this.costumeEXP = function(player, type, val) {
-        if (cos == "inver" || cos == "preschooler") {
-            return false;
-        }
         var exp = 0, src = sys.id(player.id);
         var cos = player.costume;
         var cosData = costumeData[cos];
@@ -9737,6 +9734,9 @@ function Safari() {
                     exp = 100; 
                 }
                 break;
+        }
+        if (cos == "inver" || cos == "preschooler") {
+            return false;
         }
         if (!player.costumeInfo[cos]) {
             player.costumeInfo[cos] = {};
@@ -27836,7 +27836,7 @@ function Safari() {
         if (evolutions.hasOwnProperty(id+"")) {
             box["rare"] = 15;
         }
-        if (megaEvolutions.hasOwnProperty(id+"")) {
+        if (megaevolutions.hasOwnProperty(id+"")) {
             box["mega"] = 1;
         }
         prize = randomSample(box);
