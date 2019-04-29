@@ -27620,10 +27620,7 @@ function Safari() {
                 daycarebot.sendHtmlMessage(src, "You do not have any Pokémon in the Daycare! Type " + link("/daycare dropoff:", false, true) + " to add one!", safchan);
                 return false;
             }
-            daycarebot.sendMessage(src, "Which Pokémon would you like to return from the daycare?", safchan);
-            for (var s = opt.length; s > 0; s--) {
-                daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(opt[s])), safchan);
-            }
+            daycarebot.sendMessage(src, "Please list which Pokémon would you like to return from the daycare!", safchan);
             return false;
         }
         if (player.pokemon.length >= getPerkBonus(player, "box")) {
