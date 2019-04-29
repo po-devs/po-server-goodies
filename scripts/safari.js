@@ -27388,6 +27388,8 @@ function Safari() {
                 case "singing": m = "singing"; break;
                 case "napping": m = "napping"; break;
                 case "jumping": m = "jumping about"; break;
+                case "digging": m = "digging a hole"; break;
+                case "prancing": m = "prancing about"; break;
                 default: m = "doing nothing in particular"
             }
             daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id).toCorrectCase() + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
@@ -27662,12 +27664,15 @@ function Safari() {
         return i;
     };
     this.getDayCareItem = function(id, hearts) {
-        var failChance = 0.8;
+        var failChance = 0.82;
         if (hearts >= 100) {
             failChance = 0.6;
         }
         else if (hearts >= 50) {
             failChance = 0.7;
+        }
+        else if (hearts >= 24) {
+            failChance = 0.75;
         }
         if (chance(failChance)) {
             return null;
@@ -27714,6 +27719,7 @@ function Safari() {
         }
         else if (hearts >= 120) {
             box = {
+                "hdew": 2,
                 "stardust": 10,
                 "redapricorn": 3,
                 "bluapricorn": 3,
@@ -27725,12 +27731,14 @@ function Safari() {
                 "gacha": 6,
                 "gem": 3,
                 "eviolite": 2,
-                "nugget": 1,
+                "nugget": 2
             };
             apcamount = (chance(0.5) ? 9 : 7);
             gachaamount = 5;
+            hdewamount = 5;
         } else if (hearts >= 80) {
             box = {
+                "hdew": 2,
                 "bigpearl": 20,
                 "redapricorn": 8,
                 "bluapricorn": 8,
@@ -27742,11 +27750,14 @@ function Safari() {
                 "gacha": 10,
                 "gem": 9,
                 "stardust": 5,
+                "nugget": 3
             };
             apcamount = (chance(0.5) ? 7 : 5);
             gachaamount = 3;
+            hdewamount = 5;
         } else if (hearts >= 60) {
             box = {
+                "hdew": 2,
                 "bigpearl": 20,
                 "pearl": 10,
                 "redapricorn": 15,
@@ -27759,13 +27770,16 @@ function Safari() {
                 "gacha": 20,
                 "gem": 5,
                 "stardust": 2,
+                "nugget": 3
             };
             apcamount = (chance(0.5) ? 5 : 3);
-            pearlamount = (chance(0.25) ? 4 : 3);;
+            pearlamount = (chance(0.25) ? 4 : 3);
             gachaamount = 3;
+            hdewamount = 5;
         } else if (hearts >= 40) {
             box = {
-                "pearl": 65,
+                "hdew": 2,
+                "pearl": 55,
                 "redapricorn": 25,
                 "bluapricorn": 25,
                 "grnapricorn": 25,
@@ -27774,14 +27788,37 @@ function Safari() {
                 "whtapricorn": 25,
                 "blkapricorn": 25,
                 "gacha": 50,
-                "bigpearl": 7,
+                "gem": 5,
+                "bigpearl": 35,
+                "nugget": 3
             };
             apcamount = (chance(0.5) ? 3 : 2);
             gachaamount = (chance(0.5) ? 2 : 1);
+            pearlamount = (chance(0.5) ? 3 : 2);
+            hdewamount = 5;
+        } else if (hearts >= 20) {
+            box = {
+                "hdew": 2,
+                "bigpearl": 25,
+                "pearl": 120,
+                "redapricorn": 50,
+                "bluapricorn": 50,
+                "grnapricorn": 50,
+                "ylwapricorn": 50,
+                "pnkapricorn": 50,
+                "whtapricorn": 50,
+                "blkapricorn": 50,
+                "gem": 5,
+                "gacha": 70,
+                "nugget": 3
+            }
+            apcamount = (chance(0.5) ? 2 : 1);
             pearlamount = 2;
+            hdewamount = 5;
         } else {
             box = {
-                "pearl": 120,
+                "pearl": 150,
+                "bigpearl": 20,
                 "redapricorn": 70,
                 "bluapricorn": 70,
                 "grnapricorn": 70,
@@ -27789,9 +27826,11 @@ function Safari() {
                 "pnkapricorn": 70,
                 "whtapricorn": 70,
                 "blkapricorn": 70,
-                "gacha": 90
+                "gacha": 90,
+                "nugget": 3
             }
             apcamount = (chance(0.5) ? 2 : 1);
+            hdewamount = 5;
         }
         if (hasType(id, "Grass")) {
             apcamount = Math.floor((apcamount + (5 * Math.random())) / apcamount);
@@ -27841,7 +27880,7 @@ function Safari() {
         if (prize.indexOf("apricorn") !== -1) {
             amt = apcamount;
         }
-        else if (prize == "pearl") {
+        else if (prize == "pearl" || prize == "bigpearl") {
             amt = pearlamount;
         }
         else if (prize == "gacha") {
