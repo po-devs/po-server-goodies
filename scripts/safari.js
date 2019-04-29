@@ -27719,6 +27719,7 @@ function Safari() {
         }
         else if (hearts >= 120) {
             box = {
+                "hdew": 2,
                 "stardust": 10,
                 "redapricorn": 3,
                 "bluapricorn": 3,
@@ -27734,8 +27735,10 @@ function Safari() {
             };
             apcamount = (chance(0.5) ? 9 : 7);
             gachaamount = 5;
+            hdewamount = 5;
         } else if (hearts >= 80) {
             box = {
+                "hdew": 2,
                 "bigpearl": 20,
                 "redapricorn": 8,
                 "bluapricorn": 8,
@@ -27751,8 +27754,10 @@ function Safari() {
             };
             apcamount = (chance(0.5) ? 7 : 5);
             gachaamount = 3;
+            hdewamount = 5;
         } else if (hearts >= 60) {
             box = {
+                "hdew": 2,
                 "bigpearl": 20,
                 "pearl": 10,
                 "redapricorn": 15,
@@ -27770,9 +27775,11 @@ function Safari() {
             apcamount = (chance(0.5) ? 5 : 3);
             pearlamount = (chance(0.25) ? 4 : 3);
             gachaamount = 3;
+            hdewamount = 5;
         } else if (hearts >= 40) {
             box = {
-                "pearl": 65,
+                "hdew": 2,
+                "pearl": 55,
                 "redapricorn": 25,
                 "bluapricorn": 25,
                 "grnapricorn": 25,
@@ -27782,14 +27789,16 @@ function Safari() {
                 "blkapricorn": 25,
                 "gacha": 50,
                 "gem": 5,
-                "bigpearl": 15,
+                "bigpearl": 35,
                 "nugget": 3
             };
             apcamount = (chance(0.5) ? 3 : 2);
             gachaamount = (chance(0.5) ? 2 : 1);
             pearlamount = (chance(0.5) ? 3 : 2);
+            hdewamount = 5;
         } else if (hearts >= 20) {
             box = {
+                "hdew": 2,
                 "bigpearl": 25,
                 "pearl": 120,
                 "redapricorn": 50,
@@ -27805,9 +27814,11 @@ function Safari() {
             }
             apcamount = (chance(0.5) ? 2 : 1);
             pearlamount = 2;
+            hdewamount = 5;
         } else {
             box = {
                 "pearl": 150,
+                "bigpearl": 20,
                 "redapricorn": 70,
                 "bluapricorn": 70,
                 "grnapricorn": 70,
@@ -27819,6 +27830,7 @@ function Safari() {
                 "nugget": 3
             }
             apcamount = (chance(0.5) ? 2 : 1);
+            hdewamount = 5;
         }
         if (hasType(id, "Grass")) {
             apcamount = Math.floor((apcamount + (5 * Math.random())) / apcamount);
