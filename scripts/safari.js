@@ -27622,7 +27622,7 @@ function Safari() {
             }
             daycarebot.sendMessage(src, "Which Pokémon would you like to return from the daycare?", safchan);
             for (var s = opt.length; s > 0; s--) {
-                daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(parseInt(opt[s], 10))), safchan);
+                daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(opt[s].id, 10), safchan);
             }
             return false;
         }
