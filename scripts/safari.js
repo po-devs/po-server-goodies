@@ -27493,34 +27493,34 @@ function Safari() {
                 rng -= (0.06 * Math.random());
             }
             if (rng > 0.95) {
-                pokemon.playhearts += 4;
+                pokemon.playhearts += 9;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played a little bit, but before you knew it, you were creating a deeper bond between person and Pokémon!", safchan);
             }
             else if (rng > 0.85) {
-                pokemon.playhearts += 3;
+                pokemon.playhearts += 7;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for while. " + name + " looks absolutely delighted!", safchan);
             }
             else if (rng > 0.7) {
-                pokemon.playhearts += 2.5;
+                pokemon.playhearts += 5;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a long time. Time flies when you are having fun!", safchan);
-            }
-            else if (rng > 0.5) {
-                pokemon.playhearts += 2;
-                daycarebot.sendHtmlMessage(src, "You and " + name + " had a nice time playing in the fields!", safchan);
             }
             else if (rng > 0.15 && nearbyPokes.length > 0) {
                 var p = nearbyPokes.random();
                 var name2 = ((p.ownernum === player.idnum) ? "your " : pokemon.owner + "'s ") + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
-                pokemon.playhearts += 2.5;
-                p.playhearts += 2.5;
+                pokemon.playhearts += 7;
+                p.playhearts += 7;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a bit. What's this? Oh, " + name2 + " wanted to play too! You played with both Pokémon! They're both so happy!", safchan);
             }
+            else if (rng > 0.3) {
+                pokemon.playhearts += 4;
+                daycarebot.sendHtmlMessage(src, "You and " + name + " had a nice time playing in the fields!", safchan);
+            }
             else if (rng > 0.15) {
-                pokemon.playhearts += 1.5;
+                pokemon.playhearts += 2;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a bit, but " + name + " seemed somewhat bored.", safchan);
             }
             else {
-                pokemon.playhearts += 0.5;
+                pokemon.playhearts += 1;
                 daycarebot.sendHtmlMessage(src, "You tried to play with " + name + " a bit. It seemed rather uninterested!", safchan);
             }
             this.costumeEXP(player, "daycareplay");
@@ -28038,15 +28038,15 @@ function Safari() {
         }
         addh = 2 * (1 + addh) * Math.random();
         var mult = 1;
-        mult = (Math.min(((100 + pokemon.playhearts) / 140), 1) * 0.92);
+        mult = (Math.min(((100 + pokemon.playhearts) / 140), 1) * 0.98);
         pokemon.hearts = Math.max(Math.floor(4 * (pokemon.hearts + addh - (pokemon.hunger >= 20 ? 6 : pokemon.hunger > 15 ? 3 : 0)) * mult) * 0.25, 0);
-        if (pokemon.hearts > 70) {
-            pokemon.hearts = (70 + ((pokemon.hearts-70) * 0.75));
-        }
         if (pokemon.playhearts > 0) {
             pokemon.playhearts = pokemon.playhearts - 0.5;
         }
         if (pokemon.playhearts > 15) {
+            pokemon.playhearts = pokemon.playhearts - 0.5;
+        }
+        if (pokemon.playhearts > 30) {
             pokemon.playhearts = pokemon.playhearts - 0.5;
         }
         if (pokemon.playhearts > 50) {
