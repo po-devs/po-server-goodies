@@ -27390,7 +27390,7 @@ function Safari() {
                 case "jumping": m = "jumping about"; break;
                 default: m = "doing nothing in particular"
             }
-            daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
+            daycarebot.sendHtmlMessage(src, pokeInfo.icon(pokemon.id).toCorrectCase() + " " + this.drawDayCareHearts(pokemon.hearts), safchan);
             daycarebot.sendMessage(src, pokemon.owner + "'s " + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id) + " is " + m + "! Isn't it cute?", safchan);
             if (pokemon.hunger > 19) {
                 daycarebot.sendMessage(src, "Oh no! The poor thing is begging for food!", safchan);
