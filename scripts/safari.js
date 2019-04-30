@@ -27494,7 +27494,7 @@ function Safari() {
             sys.sendHtmlMessage(src, pokeInfo.icon(pokemon.id) + " " + this.drawDayCareHearts(pokemon.hearts + pokemon.playhearts), safchan);
             var rng = Math.random();
             var name = (isOwner ? "your " : pokemon.owner + "'s ") + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
-            var nearbyPokes = this.getNearbyPokemon(pokemon.pos, pokemon.area);
+            var nearbyPokes = this.getNearbyPokemon(pokemon, pokemon.area);
             if (this.hasCostumeSkill(player, "daycarePlay")) {
                 rng += 0.02;
                 if (rng <= 0.15) {
@@ -28435,7 +28435,7 @@ function Safari() {
     this.getDistance = function(row, column, row2, column2) {
         return (Math.abs(row - row2) + Math.abs(column - column2));
     };
-    this.getNearbyPokemon = function(pokemon, pos, area) {
+    this.getNearbyPokemon = function(pokemon, area) {
         var out = [];
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].area === area && this.daycarePokemon[t].uid !== pokemon.uid) {
