@@ -23153,7 +23153,7 @@ function Safari() {
         }
         this.choices = {};
 
-        for (p = attackerNames.length; p > 0; p--) {
+        for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
             avi = getAvatarOff(attackerNames[p]);
 
@@ -23282,7 +23282,7 @@ function Safari() {
             attackerNames = Object.keys(choices);
 
         this.sendAll("");
-        for (p = attackerNames.length; p > 0; p--) {
+        for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
             avi = getAvatarOff(attackerNames[p]);
 
