@@ -27527,7 +27527,7 @@ function Safari() {
             }
             else if (rng > 0.15 && nearbyPokes.length > 0) {
                 var p = nearbyPokes.random();
-                var name2 = ((p.ownernum === player.idnum) ? "your " : pokemon.owner + "'s ") + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
+                var name2 = ((p.ownernum === player.idnum) ? "your " : p.owner + "'s ") + (p.shiny ? "Shiny " : "") + poke(p.id);
                 pokemon.playhearts += 7;
                 p.playhearts += 7;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a bit. What's this? Oh, " + name2 + " wanted to play too! You played with both Pokémon! They're both so happy!", safchan);
