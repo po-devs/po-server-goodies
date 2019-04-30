@@ -28062,6 +28062,9 @@ function Safari() {
                         spec.levitating = 1;
                     }
                     act = randomSample(spec);
+                    if (!act) {
+                        act = ["jumping", "prancing", "dancing"].random();
+                    }
                 }
                 else {
                     act = ["jumping", "prancing", "dancing"].random();
