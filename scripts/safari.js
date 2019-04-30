@@ -2828,6 +2828,9 @@ function Safari() {
     }
     function getEggGroups(poke1) {
         var hold = eggdata[poke1];
+        if (!Array.isArray(hold)) {
+            return ["None"];
+        }
         if (hold.length > 0) {
             return hold;
         }
@@ -9667,11 +9670,17 @@ function Safari() {
         extraTriviaSoda: "Earn extra Soda Pop from Trivia",
         extraApricornsFromContest: "Win extra apricorns as a prize from contests"
     };
-    this.showCostumeSkills = function(src) {
+    this.showCostumeSkills = function(src, commandData) {
         var player = getAvatar(src);
         var cos = player.costume;
-        if (!player.costumeInfo[cos]) {
+        if (player.costumeInfo.hasOwnProperty(commandData.toLowerCase)) {
+            cos = commandData.toLowerCase();
+        }
+        else if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
+        }
+        if (!player.costumeInfo[cos]) {
+            safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
         }
         var lev = this.getCostumeLevel(player);
         var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
@@ -9713,11 +9722,11 @@ function Safari() {
         return true;
     };
     this.costumeEXP = function(player, type, val) {
+        var exp = 0, src = sys.id(player.id);
+        var cos = player.costume;
         if (cos == "inver" || cos == "preschooler") {
             return false;
         }
-        var exp = 0, src = sys.id(player.id);
-        var cos = player.costume;
         var cosData = costumeData[cos];
         if (!(cosData.expTypes.contains(type)) && type !== "alchemy") {
             return false;
@@ -33422,7 +33431,7 @@ function Safari() {
                 return true;
             }
             if (command === "mycostume" || command === "showcostume" || command === "showcostumeskills") {
-                safari.showCostumeSkills(src);
+                safari.showCostumeSkills(src, commandData);
                 return true;
             }
             if (command === "shop") {
