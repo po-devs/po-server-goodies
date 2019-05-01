@@ -8398,14 +8398,14 @@ function Safari() {
                     case "Water": reward = "bigpearl2"; break;
                     case "Ice": reward = "scarf"; break;
                     case "Electric": reward = "recharge2"; break;
-                    case "Dragon": reward = "nugget"; break;
+                    case "Dragon": reward = "cometshard"; break;
                     case "Fairy": reward = "rare"; break;
                     case "Psychic": reward = "gacha2"; break;
                     case "Dark": reward = "gacha2"; break;
                     case "Bug": reward = "honey"; break;
                     case "Poison": reward = "mushroom"; break;
                     case "Flying": reward = "rare"; break;
-                    case "Rock": reward = "cometshard"; break;
+                    case "Rock": reward = "nugget"; break;
                     case "Ground": reward = "eviolite"; break;
                     case "Steel": reward = "crown"; break;
                     case "Fighting": reward = "celebrityTicket"; break;
@@ -8435,6 +8435,11 @@ function Safari() {
         switch (reward) {
             case "rare": {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
+                this.costumeEXP(player, "findrare");
+            }
+            break;
+            case "crystal": {
+                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found a " + an(finishName(reward)) + " with their itemfinder!</b>", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
