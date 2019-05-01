@@ -8142,7 +8142,7 @@ function Safari() {
 
         this.evolvePokemon(src, info, evolvedId, "evolved into", evolveStarter, isTut);
 
-        var amt = (getBST(evolveTo) * (0.075 + (Math.random() * 0.05))) * (shiny ? 1.5 : 1);
+        var amt = (getBST(evolveTo) * (0.075 + (Math.random() * 0.05))) * 2 * (shiny ? 1.5 : 1);
         if (this.hasCostumeSkill(player, "extraDust")) {
             amt *= (1 + (this.getCostumeLevel(player)/30));
         }
@@ -37126,7 +37126,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadbonuslogin" || command === "loadbonuslogins") {
-                var cThemes = bonusLoginData ? bonusLoginData : {};
+                var cThemes = {};
                 var url = commandData === "*" ? (permObj.get("trialsurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
