@@ -31868,6 +31868,9 @@ function Safari() {
         for (var e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
                 player = getAvatarOff(e);
+                if (!player) {
+                    continue;
+                }
                 if (!player.costumeInfo) {
                     player.costumeInfo = {};
                 }
@@ -31889,7 +31892,7 @@ function Safari() {
         var date = "(" + dateMonth + " " + dateYear + ")";
         for (var i in data) {
             lb = data[i];
-            if (lb.alias == "pokesCaught") {
+            if (i == "pokesCaught") {
                 w = "Best Catcher";
             } else if (i == "contestsWon") {
                 w = "Contest Champion";
@@ -37333,6 +37336,10 @@ function Safari() {
             }
             if (command === "resetcostumes") {
                 safari.resetCostumes();
+                return true;
+            }
+            if (command === "monthlymedals") {
+                safari.awardMonthlyMedals(monthlyLeaderboards);
                 return true;
             }
             if (command === "enabletrials") {
