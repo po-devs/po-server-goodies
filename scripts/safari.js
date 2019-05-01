@@ -27467,7 +27467,7 @@ function Safari() {
                 return false;
             }
             player.balls.pokeblock--;
-            var val = (this.hasCostumeSkill(player, "pokeblockBoost") ? 4 : 3);
+            var val = (this.hasCostumeSkill(player, "pokeblockBoost") ? 6 : 5);
             pokemon.hunger = Math.floor(Math.max(pokemon.hunger - val, 0));
             pokemon.hearts += 2;
             if (player.costume == "breeder") {
@@ -28075,7 +28075,7 @@ function Safari() {
         if (act == "eating") {
             pokemon.hunger = Math.max(Math.floor(pokemon.hunger - (1.75 + (3 * Math.random()))), 0);
         }
-        var addh = 2;
+        var addh = 7;
         if (hasType(pokemon.id, "Water") && (act == "splashing" || act == "swimming" || act == "diving")) {
             addh++;
         } else if (hasType(pokemon.id, "Grass") && (act == "grass")) {
