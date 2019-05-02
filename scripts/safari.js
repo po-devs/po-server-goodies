@@ -11517,6 +11517,7 @@ function Safari() {
         var rew = safari.events.bonusLoginRewards[player.bonusLogin.index];
         var g = giveStuff(player, toStuffObj(rew));
         safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you " + g + "! Thanks for playing!", safchan);
+        player.bonusLogin.index++;
         return true;
     }
     /* Trials */
