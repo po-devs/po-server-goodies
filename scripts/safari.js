@@ -8026,16 +8026,14 @@ function Safari() {
         out += 3 * (val > 600 ? (val - 600) : 0);
         out += 2 * (val > 400 ? (val - 400) : 0);
         out += val;
-        if (player) {
-            if (player.costume == "breeder") {
-                out *= 0.88;
-            }
-            if (safari.hasCostumeSkill(player, "evolveCheap")) {
-                out *= (0.99 - (this.getCostumeLevel(player)/100));
-            }
-            if (safari.hasCostumeSkill(player, "evolveCheap2")) {
-                out *= 0.75;
-            }
+        if (player.costume == "breeder") {
+            out *= 0.88;
+        }
+        if (safari.hasCostumeSkill(player, "evolveCheap")) {
+            out *= (0.99 - (this.getCostumeLevel(player)/100));
+        }
+        if (safari.hasCostumeSkill(player, "evolveCheap2")) {
+            out *= 0.75;
         }
         out = Math.max(Math.round(out/151), 1);
         return out;
@@ -8089,7 +8087,7 @@ function Safari() {
         if (!["confirm", "starter", "normal"].contains(starter)) {
             var evo = evoData.evo;
 
-            safaribot.sendHtmlMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". " + (costumed ? "<i>[Note: Without " + costumeAlias("breeder", true, true) + " " + plural(prev, "rare") + " are required.]</i>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + ". " + (costumed ? "<i>[Note: Without " + costumeAlias("breeder", true, true) + " " + plural(prev, "dust") + " are required.]</i>" : ""), safchan);
             safaribot.sendHtmlMessage(src, "If you really wish to evolve " + info.name + ", type " + link("/evolve " + info.input + ":confirm") + ".", safchan);
             return;
         }
@@ -8144,8 +8142,7 @@ function Safari() {
 
         this.evolvePokemon(src, info, evolvedId, "evolved into", evolveStarter, isTut);
 
-        var bstval = getBST(evolveTo);
-        var amt = ((bstval + (Math.max((bstval-300) * 2, 0)) + (Math.max((bstval-480) * 4, 0))) * (0.075 + (Math.random() * 0.05))) * 2 * (shiny ? 1.5 : 1);
+        var amt = (getBST(evolveTo) * (0.075 + (Math.random() * 0.05))) * 2 * (shiny ? 1.5 : 1);
         if (this.hasCostumeSkill(player, "extraDust")) {
             amt *= (1 + (this.getCostumeLevel(player)/30));
         }
@@ -11456,7 +11453,7 @@ function Safari() {
                 }
                 break;
             case "login":
-                safari.events.bonusLoginEnabled = (enable ? true : false);
+                safari.events.spiritDuelsEnabled = (enable ? true : false);
                 safaribot.sendMessage(src,"Event Login Bonus " + (enable ? "enabled" : "disabled") + "!" );
                 break;
         }
@@ -11491,7 +11488,7 @@ function Safari() {
         }
         var rew = safari.events.bonusLoginRewards[player.bonusLogin.index];
         var g = giveStuff(player, toStuffObj(rew));
-        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you " + g + "! Thanks for playing!", safchan);
+        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you received " + g + "! Thanks for playing!", safchan);
         return true;
     }
     /* Trials */
@@ -12149,14 +12146,14 @@ function Safari() {
                     continue;
                 }
                 boost1 = this.spiritMonBoost(fighter1.owner, fighter1.mon);
-                range1 = [10 + boost1, 100 + (boost1 * 2)];
+                range1 = [10 + boost1, 100 + boost1];
                 for (var b in team2) {
                     fighter2 = team2[b];
                     if (!fighter2.alive) {
                         continue;
                     }
                     boost2 = this.spiritMonBoost(fighter2.owner, fighter2.mon);
-                    range2 = [10 + boost2, 100 + (boost2 * 2)];
+                    range2 = [10 + boost2, 100 + boost2];
                     res = calcDamage(fighter1.mon, fighter2.mon, range1, range2);
                     if (res.power[0] >= res.power[1]) {
                         team1[a].won++;
@@ -13484,7 +13481,7 @@ function Safari() {
         var p1Poke = this.team1[this.turn];
         var p2Poke = this.team2[this.turn];
 
-        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null), false, getCherished(p1Poke, this.name1), getCherished(p2Poke, this.name2));
+        var res = calcDamage(p1Poke, p2Poke, (this.npcBattle ? [this.selfPowerMin, this.selfPowerMax] : null), (this.npcBattle ? [this.powerMin, this.powerMax] : null, false, getCherished(p1Poke, this.name1), getCherished(p2Poke, this.name2)));
 
         var name1 = this.name1 + "'s " + poke(p1Poke);
         var name2 = this.name2 + "'s " + poke(p2Poke);
@@ -25314,7 +25311,7 @@ function Safari() {
         }
     };
     FactionWar.prototype.runBattle = function(p1Poke, p2Poke, owner1, owner2) {
-        var res = calcDamage(p1Poke, p2Poke, null, null, this.inverted, getCherished(p1Poke, owner1),  getCherished(p2Poke, owner2));
+        var res = calcDamage(p1Poke, p2Poke, null, null, this.inverted);
         var name1 = owner1 + "'s " + poke(p1Poke);
         var name2 = owner2 + "'s " + poke(p2Poke);
 
@@ -27960,7 +27957,7 @@ function Safari() {
             if (full) {
                 pk.findItem = true;
                 pk.meter = Math.min(pk.meter + 1, 20);
-                if (chance(0.25)) {
+                if (chance(0.5)) {
                     pk.hunger = Math.min(pk.hunger + 1, 20);
                 }
                 if (pk.toHolding < now()) {
@@ -34062,7 +34059,6 @@ function Safari() {
                 if (evolutions.hasOwnProperty(species+"")) {
                     var evoData = evolutions[species];
                     var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.25 : 1));
-                    var breederRequired = safari.candyCostConversion(null, candiesRequired * costumeData.breeder.rate);
                     candiesRequired = safari.candyCostConversion(player, candiesRequired);
                     var evo = evoData.evo;
 
@@ -34071,7 +34067,7 @@ function Safari() {
                         conditionals.push(Math.floor(candiesRequired *  1.15) + " if shiny");
                     }
                     if (player && player.costumes.contains("breeder")) {
-                        conditionals.push(Math.floor(Math.max(breederRequired, 1)) + " if using " + costumeAlias("breeder", true, true));
+                        conditionals.push(Math.floor(Math.max(candiesRequired * costumeData.breeder.rate, 1)) + " if using " + costumeAlias("breeder", true, true));
                     }
 
                     safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
