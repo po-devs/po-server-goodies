@@ -503,6 +503,10 @@ function Safari() {
             skills: [],
             skillChoices: {}
         },
+        bonusLogin: {
+            index: 0,
+            name: ""
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
@@ -796,7 +800,7 @@ function Safari() {
             acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the Rare Candies for evolution and receive more apricorns from winning contests.", 
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
-            expTypes: ["daycareplay", "wincontest", "catch"],
+            expTypes: ["daycareplay", "evolvepoke", "wincontest", "catch"],
             expItem: "soothe",
             skills: {
                 evolveCheap: [2, 5],
@@ -813,7 +817,7 @@ function Safari() {
             acqReq: 200, record: "collectorGiven", rate: 1.2,
             effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
             effect2: "Pokémon with BST > 500 have their BST count as 500 while catching.",
-            expTypes: ["daycareplay", "wincontest", "catch"],
+            expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch"],
             expItem: "eviolite",
             skills: {
                 botdboost: [2, 2],
@@ -860,7 +864,7 @@ function Safari() {
             effect: "A master in fighting. Through rigorous training, people and Pokémon can become stronger without limit. Utilizing powerful offense techniques, attacks deal more damage in NPC Battles.",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Accumulate {0} more Arena Points",
-            expTypes: ["wintour", "fighttower", "catch"],
+            expTypes: ["wintour", "arenasilver", "fighttower", "catch"],
             expItem: "battery",
             skills: {
                 extraTourRare: [2, 2],
@@ -877,7 +881,7 @@ function Safari() {
             effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest",
-            expTypes: ["soda", "scientist", "catch"],
+            expTypes: ["soda", "clonepoke", "scientist", "catch"],
             expItem: "battery",
             skills: {
                 extraScientistSilver: [5, 7],
@@ -909,7 +913,7 @@ function Safari() {
             effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon",
-            expTypes: ["stealpoke", "wincontest", "catch"],
+            expTypes: ["stealpoke", "arenasilver", "wincontest", "catch"],
             expItem: "amulet",
             skills: {
                 extraScientistSilver: [2, 3],
@@ -926,7 +930,7 @@ function Safari() {
             effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.",
             noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms",
             effect2: "Has higher cooldown using the itemfinder.",
-            expTypes: ["daycareplay", "wincontest", "catch"],
+            expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             expItem: "eviolite",
             skills: {
                 catchGrass: [2, 3],
@@ -944,7 +948,7 @@ function Safari() {
             effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!",
             effect2: "Has higher cooldown using the itemfinder.",
             noAcq: "Bait {0} more pure Water-type Pokémon",
-            expTypes: ["bait", "wincontest", "catch"],
+            expTypes: ["bait", "catchwater", "wincontest", "catch"],
             expItem: "soothe",
             skills: {
                 catchWater: [2, 3],
@@ -960,7 +964,7 @@ function Safari() {
             effect: "A master in traveling. Can easily fit 20% more Honeys, Silk Scarves and Cell Batteries into the bag to benefit from its effects!",
             effect2: "Unsuccessful bait cooldown increased since cooking takes longer in the woods.",
             noAcq: "Obtain {0} more starters from Wonder Trade",
-            expTypes: ["journal", "wincontest", "catch"],
+            expTypes: ["journal", "catchhighbst", "wincontest", "catch"],
             expItem: "crown",
             skills: {
                 catchRockClimb: [3, 5],
@@ -977,7 +981,7 @@ function Safari() {
             effect: "A master in money. Personal wealth gives the experience necessary to use 10% more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
             effect2: "Peasant balls (Safari Balls) are more likely to fail.",
             noAcq: "Obtain ${0} more by pawning Comet Shards and earn ${1} more from Luxury Balls",
-            expTypes: ["bait", "wincontest", "catch"],
+            expTypes: ["bait", "wincontest", "findrare", "catch"],
             expItem: "amulet",
             skills: {
                 botdboost: [3, 5],
@@ -4954,6 +4958,7 @@ function Safari() {
                     //TWO CLONES
                     safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + name + " received another " + pokeName + "!", safchan);
                     safaribot.sendHtmlAll("<b>Hold on!</b> The " + pokeName + " was actually cloned TWICE by the " + ballName + "! " + html_escape(name) + " received yet another " + pokeName + "!", safchan);
+                    safari.costumeEXP(player, "clonepoke", 4);
                     clonedAmount = 2;
                 } else if (!costumed && (isLegend || isShiny)) {
                     //NO CLONE
@@ -4962,6 +4967,7 @@ function Safari() {
                     // ONE CLONE
                     safaribot.sendAll("But wait! The " + pokeName + " was cloned by the " + ballName + "! " + name + " received another " + pokeName + "!", safchan);
                     clonedAmount = 1;
+                    safari.costumeEXP(player, "clonepoke", 1);
                 }
                 if (ball === "clone" && crystalEffect.effect === "clone") {
                     clonedAmount *= 2;
@@ -5068,6 +5074,15 @@ function Safari() {
             this.missionProgress(player, "catch", currentPokemon, 1, { starter: usingStarter, ball: ball, active: player.party[0], luxury: luxuryAmount, clone: clonedAmount, color: (player.scaleDeadline >= now() ? player.scaleColor : null) });
             this.missionProgress(player, "catchAny", currentPokemon, 1);
             this.costumeEXP(player, "catch");
+            if (hasType(currentPokemon, "Water")) {
+                this.costumeEXP(player, "catchwater");
+            }
+            if (getBST(currentPokemon) <= 240) {
+                this.costumeEXP(player, "catchlowbst");
+            }
+            if (getBST(currentPokemon) >= 540) {
+                this.costumeEXP(player, "catchhighbst", getBST(currentPokemon));
+            }
             if (amt < 1) {
                 sendAll("", true, true);
                 currentPokemon = null;
@@ -9605,12 +9620,17 @@ function Safari() {
         "daycareplay": "Daycare",
         "wincontest": "Win Contest",
         "catch": "Catch Pokémon",
+        "catchwater": "Catch Water Pokémon",
+        "clonepoke": "Clone Pokémon",
+        "catchhighbst": "Catch Pokémon with BST 540 or higher",
+        "catchlowbst": "Catch Pokémon with BST 240 or lower",
         "wintour": "Event Tournament",
         "fighttower": "Fight the Battle Tower",
         "findrare": "Find Rare Items with Itemfinder",
         "bait": "Bait",
         "journal": "Journal",
         "scientist": "Earn Silver from Scientist",
+        "arenasilver": "Earn Silver from Arena",
         "soda": "Event Trivia",
         "stealpoke": "Snag Pokes from NPCs"
     };
@@ -9743,8 +9763,13 @@ function Safari() {
             case "alchemy": exp = val; break;
             case "stealpoke": exp = 35; break;
             case "catch": exp = 10; break;
+            case "catchwater": exp = 20; break;
+            case "catchlowbst": exp = 20; break;
+            case "catchhighbst": exp = 20 + Math.floor((val - 540)*0.75); break;
+            case "clonepoke": exp = 20 * val; break;
             case "daycareplay": exp = 5; break;
             case "fighttower": exp = val;
+            case "arenasilver": exp = (2 * (3 + val + (val > 3 ? (val - 3) : 0) + (val > 6 ? (2 * (val - 6)) : 0)));
             case "bait": exp = 3; break;
             case "findrare": exp = 66; break;
             case "wincontest": exp = 150; break;
@@ -19115,6 +19140,7 @@ function Safari() {
                     amt = amt + safari.getFortune(player, "arenareward", 0);
                     safaribot.sendMessage(id, "You received " + plural(amt, rew) + "!", safchan);
                     rewardCapCheck(player, rew, amt, true);
+                    safari.costumeEXP(player, "arenasilver", amt);
                 }
                 if (args.moneyReward) {
                     rewname = "$" + addComma(args.moneyReward);
@@ -19521,7 +19547,7 @@ function Safari() {
                 }
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u});
-                safari.costumeEXP(player, "fighttower", 3 + (count * 2));
+                safari.costumeEXP(player, "fighttower", 4 + (count * 3));
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
@@ -21575,7 +21601,7 @@ function Safari() {
         var newPoints = player.records.journalPoints;
         player.photos.splice(offer, 1);
         this.addToMonthlyLeaderboards(player.id, "journalPoints", score);
-        safari.costumeEXP(player, "journal", Math.floor (score/5));
+        safari.costumeEXP(player, "journal", Math.floor(score/5));
         safari.missionProgress(player, "journal", score, 1, {});
         
         safaribot.sendHtmlMessage(src, trainerSprite + "Editor-in-chief: Oh great, this photo is exactly what I needed! It will look great on " + (chance(0.05) ? "the cover page" : "page " + sys.rand(2, 13)) + " for tomorrow's edition!", safchan);
