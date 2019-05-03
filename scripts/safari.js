@@ -27405,7 +27405,7 @@ function Safari() {
             pokemon.toHolding = currentTime + 60 * 60 * 1000 * 24 * 14; //2 weeks
             if (pokemon.canMax && (pokemon.hearts + pokemon.playhearts >= 255)) {
                 pokemon.canMax = false;
-                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Maxed Hearts for " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + "\n");
+                sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Maxed Hearts for " + (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id) + "\n");
                 //add reward
             }
         }
@@ -28118,7 +28118,7 @@ function Safari() {
         }
         addh = 2 * (1 + addh) * Math.random();
         var mult = 1;
-        mult = (Math.min(((100 + pokemon.playhearts) / 135), 1) * 0.99);
+        mult = (Math.min(((100 + pokemon.playhearts) / 145), 1) * 0.975);
         pokemon.hearts = Math.max(Math.floor(4 * (pokemon.hearts + addh - (pokemon.hunger >= 20 ? 6 : pokemon.hunger > 15 ? 3 : 0)) * mult) * 0.25, 0);
         if (pokemon.playhearts > 0) {
             pokemon.playhearts = pokemon.playhearts - 0.25;
