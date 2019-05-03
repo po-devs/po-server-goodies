@@ -37022,7 +37022,7 @@ function Safari() {
                 return true;
             }
             if (command === "itemicon") {
-                safaribot.sendMessage(src, "<img src = 'item:" + commandData + ">", safchan);
+                safaribot.sendHtmlMessage(src, "<img src = 'item:" + commandData + "'>", safchan);
                 return true;
             }
             if (command === "costumeicon") {
