@@ -7094,7 +7094,7 @@ function Safari() {
             case 1: {
                 player.money = 100;
                 player.balls.safari = 6;
-                tutorMsg(src, "Thank for you letting me teach you the basics of Safari! I have given you $100 and a handful of Safari Balls. You can use " + link("/bag") + " to see what you are currently carrying. Now, your " + poke(player.starter) + " looks a little lonely. Why don't you buy a bait from the shop to attract a friend? Use " + link("/buy bait") + " to directly buy that item, or you can use " + link("/buy") + " to check what else the shop has to offer!");
+                tutorMsg(src, "Thank you for letting me teach you the basics of Safari! I have given you $100 and a handful of Safari Balls. You can use " + link("/bag") + " to see what you are currently carrying. Now, your " + poke(player.starter) + " looks a little lonely. Why don't you buy a bait from the shop to attract a friend? Use " + link("/buy bait") + " to directly buy that item, or you can use " + link("/buy") + " to check what else the shop has to offer!");
                 tutorMsg(src, "If at any point you forget what you need to do, simply type " + link("/tutorial") + " to repeat the directions for that step!");
             }
             break;
@@ -7127,17 +7127,18 @@ function Safari() {
                 tutorMsg(src, "The next recreational activity is using the Itemfinder to look for rare items! I've got a spare one you can have, but unfortunately it doesn't have any charge left... Wait a second, you got an Ampere Gem from Gachapon?! Wow, what luck! This works out perfectly! You can use the gem to recharge the Itemfinder with " + link("/use gem") + ". Then you can use " + link("/finder") + " to start looking for rare items!");
             }
             break;
-            //Use Rare (extra dust provided) + Evolve Pokemon
+            //Check bst/info
             case 7: {
-                tutorMsg(src, "Nice! You found a Rare Candy. You seem to be very lucky during this tutorial. It almost seems rigged... Anyway, you should unwrap that Rare Candy and feed it to your Pikachu to evolve it. You can unwrap it by using " + link("/use rare") + ".");
+                tutorMsg(src, "Nice! You found a Rare Candy. You seem to be very lucky during this tutorial. It almost seems rigged... Anyway, you should try to evolve your Pikachu! To see how many Rare Candies it takes to evolve a Pikachu, as well as other information, type " + link("/bst pikachu") + ".");
             }
             break;
+            //Use Rare + Evolve Pokemon
             case 8: {
-                var cr = evolutions[pokeInfo.species(sys.pokeNum("Pikachu"))].candies;
-                tutorMsg(src, "Hmm... You didn't seem to get enough to evolve your Pikachu. According to " + link("/bst Pikachu") + ", you need " + cr + " Candy Dust. I'll help you out this time and give you the additional 200 you need, then you will be able to evolve your Pikachu with " + link("/evolve Pikachu"));
-                if (player.balls.dust < cr) {
-                    player.balls.dust = cr;
-                    safaribot.sendMessage(src, "You received a pouch of 200 Candy Dust from Kangaskhan.", safchan);
+                var cr = safari.candyCostConversion(null, evolutions[pokeInfo.species(sys.pokeNum("Pikachu"))].candies);
+                tutorMsg(src, "Hmm... You don't seem to have enough to evolve your Pikachu. According to " + link("/bst Pikachu") + ", you need " + cr + " Rare Candies. I'll help you out this time and give you the 3 you need, then you will be able to evolve your Pikachu with " + link("/evolve Pikachu"));
+                if (player.balls.rare < cr) {
+                    player.balls.rare = cr;
+                    safaribot.sendMessage(src, "You received a pouch of 2 Rare Candies from Kangaskhan.", safchan);
                 }
             }
             break;
@@ -7316,24 +7317,6 @@ function Safari() {
             player.balls.gem = 0;
             player.balls.permfinder = itemData.gem.charges;
             tutorMsg(src, "Great. Now the Itemfinder is working again. As a reminder, the manual states to use " + link("/finder") + " to use it!");
-        } else if (item === "rare") {
-            if (player.balls.dust > 0) {
-                player.balls.rare = 0;
-                tutorMsg(src, "You've already opened your Rare Candy. Now you can evolve your Pikachu with " + link("/evolve Pikachu"));
-                return;
-            }
-            if (player.balls.rare !== 1) {
-                player.balls.rare = 1;
-                tutorMsg(src, "You seem to have misplaced your Rare Candy! Here's another one. Try using it with " + link("/use rare"));
-                return;
-            }
-            var evoData = evolutions[pokeInfo.species(sys.pokeNum("Pikachu"))];
-            var candiesRequired = evoData.candies || 300;
-            safaribot.sendMessage(src, "You unwrap the Rare Candy and immediately notice it's cracked. Before you could touch it, the candy instantly turns into dust!", safchan);
-            safaribot.sendMessage(src, "You received " + (candiesRequired - 200) + " Candy Dust!", safchan);
-            player.balls.dust = candiesRequired - 200;
-            player.balls.rare = 0;
-            advanceTutorial(src, 8);
         }
     };
     this.tutorialFinder = function(src) {
@@ -7348,7 +7331,15 @@ function Safari() {
             player.balls.rare = 1;
             advanceTutorial(src, 7);
         }
+    };
+    this.tutorialBST = function(src, commandData) {
+        var player = getAvatar(src);
+        if (commandData.toLowerCase() == "pikachu") {
 
+            tutorMsg(src, "I guess you weren't as lucky with Itemfinder as you were with Gachapon. Don't worry, it's not often you find items. Why don't you try using your Itemfinder again? (" + link("/finder") + ")");
+        } else {
+            tutorMsg(src, "Use " + link("/bst Pikachu") + " to find out how many Rare Candies it needs to evolve!", safchan);
+        }
     };
     this.tutorialQuest = function(src, start) {
         var player = getAvatar(src);
@@ -34105,6 +34096,10 @@ function Safari() {
                     }
                 }
                 sys.sendMessage(src, "", safchan);
+                if (player.tutorial.inTutorial && player.tutorial.step === 7 && (commandData.toLowerCase() == "pikachu")) {
+                    advanceTutorial(src, 8);
+                    return;
+                }
                 return true;
             }
             if (command === "lastcontest" || command === "lastcontests" || command === "lc") {
