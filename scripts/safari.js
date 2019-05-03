@@ -797,7 +797,7 @@ function Safari() {
         },
         breeder: {
             icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], 
-            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the Rare Candies for evolution and receive more apricorns from winning contests.", 
+            acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the Rare Candies for evolution.", 
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
             expTypes: ["daycareplay", "evolvepoke", "wincontest", "catch"],
@@ -1161,6 +1161,7 @@ function Safari() {
             scale: "A mysterious scale that shines in rainbow colors. Use with \"/use scale\" to make your active Pokémon's color count as a different one for " + itemData.scale.duration + " minutes.",
             mushroom: "A large and rare mushroom. Eating one with \"/use mushroom\" makes you think you are in a different theme, affecting your photos and baits for " + itemData.mushroom.duration + " minutes.",
             brush: "A soft brush ideal for editing photos. Type \"/use brush\" for more details.",
+            pokeblock: "A yummy nom. Feed it to your Pokémon in daycare!",
             dew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
             hdew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
             ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details.",
@@ -11776,7 +11777,7 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return a.points - b.points;
+            return b.points - a.points;
         })
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
@@ -27679,7 +27680,7 @@ function Safari() {
                 return false;
             }
             daycarebot.sendMessage(src, "Please list which Pokémon would you like to return from the daycare!", safchan);
-            for (var i = opt.length; i > 0; i--) {
+            for (var i = opt.length - 1; i >= 0; i--) {
                 daycarebot.sendHtmlMessage(src, link("/daycare retrieve:" + poke(opt[i]), "«" + poke(opt[i]) + "»", true), safchan);
             }
             return false;
@@ -28001,26 +28002,10 @@ function Safari() {
         }
     };
     this.getNewDayCareActivity = function(pokemon) {
-        var feat = this.getNearbyFeatures2(pokemon.area, pokemon.pos);
+        var feat = this.getNearbyFeatures2(pokemon.pos, pokemon.area);
         var inter = feat.random();
-        var loop = 5;
-        while (loop > 0) {
-            loop--;
-            inter = feat.random();
-            if (inter !== "") {
-                break;
-            }
-        }
-        var feat2 = this.getNearbyFeatures(pokemon.area, pokemon.pos);
+        var feat2 = this.getNearbyFeatures(pokemon.pos, pokemon.area);
         var inter2 = feat2.random();
-        loop = 5;
-        while (loop > 0) {
-            loop--;
-            inter2 = feat2.random();
-            if (inter2 !== "") {
-                break;
-            }
-        }
         var onSquare = this.getFeatureAt(pokemon.pos, pokemon.area);
         var act = "";
         if (onSquare == "water") {
@@ -28039,28 +28024,28 @@ function Safari() {
             act = "perching";
         }
         else {
-            if (inter2 == "water") {
+            if (inter2 == "water" && chance(0.375)) {
                 act = "splashing";
             }
-            else if (inter == "flowers") {
+            else if (inter == "flowers" && chance(0.6)) {
                 act = "flowers";
             }
-            else if (inter == "rock") {
+            else if (inter == "rock" && chance(0.5)) {
                 act = "rock";
             }
-            else if (inter == "lilypad") {
+            else if (inter == "lilypad" && chance(0.75)) {
                 act = "lilypad";
             }
-            else if (inter == "bush" && (chance(0.75)) && pokemon.hunger > 10) {
+            else if (inter == "bush" && (chance(0.55)) && pokemon.hunger > 10) {
                 act = "eating";
             }
-            else if (inter == "bigtree") {
+            else if (inter == "bigtree" && chance(0.75)) {
                 act = "bigtree";
             }
-            else if (inter == "tree1" || inter2 == "tree2") {
+            else if ((inter == "tree1" || inter2 == "tree2") && (chance(0.33))) {
                 act = "tree";
             }
-            else if (inter == "grass" && (chance(0.35))) {
+            else if (inter == "grass" && (chance(0.33))) {
                 act = "grass";
             }
             else if (chance(0.4)) {
@@ -28142,13 +28127,13 @@ function Safari() {
         }
         addh = 2 * (1 + addh) * Math.random();
         var mult = 1;
-        mult = (Math.min(((100 + pokemon.playhearts) / 140), 1) * 0.98);
+        mult = (Math.min(((100 + pokemon.playhearts) / 135), 1) * 0.99);
         pokemon.hearts = Math.max(Math.floor(4 * (pokemon.hearts + addh - (pokemon.hunger >= 20 ? 6 : pokemon.hunger > 15 ? 3 : 0)) * mult) * 0.25, 0);
         if (pokemon.playhearts > 0) {
-            pokemon.playhearts = pokemon.playhearts - 0.5;
+            pokemon.playhearts = pokemon.playhearts - 0.25;
         }
         if (pokemon.playhearts > 15) {
-            pokemon.playhearts = pokemon.playhearts - 0.5;
+            pokemon.playhearts = pokemon.playhearts - 0.25;
         }
         if (pokemon.playhearts > 30) {
             pokemon.playhearts = pokemon.playhearts - 0.5;
