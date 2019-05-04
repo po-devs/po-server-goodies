@@ -9747,7 +9747,13 @@ function Safari() {
         if (cos == "inver" || cos == "preschooler") {
             return false;
         }
+        if (cos == "" || !cos) {
+            return false;
+        }
         var cosData = costumeData[cos];
+        if (!costumeData) {
+            return false;
+        }
         if (!(cosData.expTypes.contains(type)) && type !== "alchemy") {
             return false;
         }
@@ -27599,6 +27605,10 @@ function Safari() {
         }
         if (!player.pokemon.contains(parseInt(pokemon.id, 10))) {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
+            return false;
+        }
+        if (player.party.length === 1) {
+            daycarebot.sendMessage(src, "You can't drop off your only Pokémon!", safchan);
             return false;
         }
         if (isMega(pokemon.num)) {
