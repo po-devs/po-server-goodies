@@ -28009,7 +28009,7 @@ function Safari() {
         var inter2 = feat2.random();
         var onSquare = this.getFeatureAt(pokemon.pos, pokemon.area);
         var act = "";
-        if (onSquare == "water") {
+        if (onSquare == "water" && (hasType(pokemon.id, "Water") || (!hasType(pokemon.id, "Flying")))) {
             act = "splashing"
             if (countDuplicates(feat, "water") > 1 && (chance(0.5))) {
                 act = "swimming";
@@ -28025,13 +28025,13 @@ function Safari() {
             act = "perching";
         }
         else {
-            if (inter2 == "water" && chance(0.375)) {
+            if (inter2 == "water" && chance(0.7)) {
                 act = "splashing";
             }
-            else if (inter == "flowers" && chance(0.6)) {
+            else if (inter == "flowers" && chance(0.9)) {
                 act = "flowers";
             }
-            else if (inter == "rock" && chance(0.5)) {
+            else if (inter == "rock" && chance(0.8)) {
                 act = "rock";
             }
             else if (inter == "lilypad" && chance(0.75)) {
@@ -28049,7 +28049,7 @@ function Safari() {
             else if (inter == "grass" && (chance(0.33))) {
                 act = "grass";
             }
-            else if (chance(0.4)) {
+            else if (chance(0.3)) {
                 act = "napping";
             }
             else {
