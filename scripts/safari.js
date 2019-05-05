@@ -5148,7 +5148,7 @@ function Safari() {
             this.pokemonFlee();
         } else {
             this.changeWildAction("catch");
-            if (!freeThrow && crystalEffect.effect === "double") {
+            if (!freeThrow && crystalEffect.effect === "double" && ball !== "spirit" && ball !== "cherish") {
                 this.throwBall(src, ball, true, true, command, false, true);
             }
         }
