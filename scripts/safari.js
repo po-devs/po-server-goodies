@@ -800,7 +800,7 @@ function Safari() {
             acqReq: 15, record: "pokesEvolved", rate: 0.9, effect: "A master in evolution. Taps into years of experience in order to reduce the Rare Candies for evolution.", 
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Love.",
             noAcq: "Evolve {0} more Pokémon",
-            expTypes: ["daycareplay", "evolvepoke", "wincontest", "catch"],
+            expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             expItem: "soothe",
             skills: {
                 evolveCheap: [2, 5],
@@ -11514,7 +11514,7 @@ function Safari() {
         }
         var rew = safari.events.bonusLoginRewards[player.bonusLogin.index];
         var g = giveStuff(player, toStuffObj(rew));
-        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you " + g + "! Thanks for playing!", safchan);
+        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you " + g + "! Thanks for playing!</background>", safchan);
         player.bonusLogin.index++;
         return true;
     }
