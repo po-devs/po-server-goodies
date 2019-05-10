@@ -216,6 +216,11 @@ function Safari() {
                 skills: [],
                 exp: 0
             },
+            fisherman: {
+                level: 1,
+                skills: [],
+                exp: 0
+            },
             battle: {
                 level: 1,
                 skills: [],
