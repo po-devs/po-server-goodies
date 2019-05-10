@@ -684,7 +684,7 @@ function Safari() {
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
             premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
             spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 312, price: 500, ballBonus: 1.5, bonusRate: 0.25, cooldown: 16000, aliases:["spyball", "spy", "spy ball"], tradable: true},
-            clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 12000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
+            clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 327, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 11000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
             mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["monoball", "mono", "mono ball"], tradable: true},
             love: {name: "love", fullName: "Love Ball", type: "ball", icon: 314, price: 500, ballBonus: 1, bonusRate: 2.5, maxBonus: 2.5, cooldown: 10000, aliases:["loveball", "love", "love ball"], tradable: true},
             
@@ -4703,9 +4703,9 @@ function Safari() {
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
             if (this.hasCostumeSkill(player, "cloneBallBoost")) {
-                maxCloneRate += 1.75 + (this.getCostumeLevel(player)/16);
+                maxCloneRate += 2 + (this.getCostumeLevel(player)/10);
             }if (this.hasCostumeSkill(player, "cloneBallBoost2")) {
-                maxCloneRate += 3.25;
+                maxCloneRate += 4;
             }
             finalChance = Math.min(finalChance, maxCloneRate);
         }
@@ -4949,7 +4949,7 @@ function Safari() {
                 }
                 var costumed = player.costume === "scientist";
                 var triple = chance(costumeData.scientist.bonusChance) && !isLegend && !isShiny;
-                if (this.hasCostumeSkill(player, "tripleChance") && chance(0.07) && chance((this.getCostumeLevel(player)-10)/10)) {
+                if (this.hasCostumeSkill(player, "tripleChance") && chance(0.08) && chance((this.getCostumeLevel(player)-10)/10)) {
                     triple = true;
                     if ((isLegend || isShiny) && (chance(0.75))) {
                         triple = false;
@@ -9647,7 +9647,6 @@ function Safari() {
         levelBallBoost: "Increased ability to successfully use Level Ball",
         heavyBallBoost: "Increased ability to successfully use Heavy Ball",
         switchBallBoost: "Increased ability to successfully use Switch Ball",
-        loveBallBoost: "Increased ability to successfully use Love Ball",
         cloneBallBoost: "Increased ability to successfully use Clone Ball",
         cloneBallBoost2: "Precise calculation allows for even more likely chance to clone with a Clone Ball",
         extraDust: "Acquire more Candy Dust when evolving Pokémon",
@@ -27548,34 +27547,34 @@ function Safari() {
                 rng -= (0.06 * Math.random());
             }
             if (rng > 0.95) {
-                pokemon.playhearts += 8;
+                pokemon.playhearts += 9;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played a little bit, but before you knew it, you were creating a deeper bond between person and Pokémon!", safchan);
             }
             else if (rng > 0.85) {
-                pokemon.playhearts += 6;
+                pokemon.playhearts += 7;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for while. " + name + " looks absolutely delighted!", safchan);
             }
             else if (rng > 0.7) {
-                pokemon.playhearts += 4;
+                pokemon.playhearts += 5;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a long time. Time flies when you are having fun!", safchan);
             }
             else if (rng > 0.15 && nearbyPokes.length > 0) {
                 var p = nearbyPokes.random();
                 var name2 = ((p.ownernum === player.idnum) ? "your " : p.owner + "'s ") + (p.shiny ? "Shiny " : "") + poke(p.id);
-                pokemon.playhearts += 6;
-                p.playhearts += 6;
+                pokemon.playhearts += 7;
+                p.playhearts += 7;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a bit. What's this? Oh, " + name2 + " wanted to play too! You played with both Pokémon! They're both so happy!", safchan);
             }
             else if (rng > 0.3) {
-                pokemon.playhearts += 3;
+                pokemon.playhearts += 4;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " had a nice time playing in the fields!", safchan);
             }
             else if (rng > 0.15) {
-                pokemon.playhearts += 1;
+                pokemon.playhearts += 2;
                 daycarebot.sendHtmlMessage(src, "You and " + name + " played for a bit, but " + name + " seemed somewhat bored.", safchan);
             }
             else {
-                pokemon.playhearts += 0.5;
+                pokemon.playhearts += 1;
                 daycarebot.sendHtmlMessage(src, "You tried to play with " + name + " a bit. It seemed rather uninterested!", safchan);
             }
             this.costumeEXP(player, "daycareplay");
@@ -28097,7 +28096,7 @@ function Safari() {
         if (act == "eating") {
             pokemon.hunger = Math.max(Math.floor(pokemon.hunger - (1.75 + (3 * Math.random()))), 0);
         }
-        var addh = 1;
+        var addh = 7;
         if (hasType(pokemon.id, "Water") && (act == "splashing" || act == "swimming" || act == "diving")) {
             addh++;
         } else if (hasType(pokemon.id, "Grass") && (act == "grass")) {
@@ -28129,25 +28128,25 @@ function Safari() {
         }
         addh = 2 * (1 + addh) * Math.random();
         var mult = 1;
-        mult = (Math.min(((100 + pokemon.playhearts) / 130), 1) * 0.9875);
+        mult = (Math.min(((100 + pokemon.playhearts) / 145), 1) * 0.975);
         pokemon.hearts = Math.max(Math.floor(4 * (pokemon.hearts + addh - (pokemon.hunger >= 20 ? 6 : pokemon.hunger > 15 ? 3 : 0)) * mult) * 0.25, 0);
         if (pokemon.playhearts > 0) {
-            pokemon.playhearts = pokemon.playhearts - 0.07;
-        }
-        if (pokemon.playhearts > 15) {
-            pokemon.playhearts = pokemon.playhearts - 0.1;
-        }
-        if (pokemon.playhearts > 35) {
             pokemon.playhearts = pokemon.playhearts - 0.25;
         }
+        if (pokemon.playhearts > 15) {
+            pokemon.playhearts = pokemon.playhearts - 0.25;
+        }
+        if (pokemon.playhearts > 30) {
+            pokemon.playhearts = pokemon.playhearts - 0.5;
+        }
         if (pokemon.playhearts > 50) {
-            pokemon.playhearts = pokemon.playhearts - 0.33;
+            pokemon.playhearts = pokemon.playhearts - 0.5;
         }
         if (pokemon.playhearts > 60) {
-            pokemon.playhearts = pokemon.playhearts - 0.42;
+            pokemon.playhearts = pokemon.playhearts - 1;
         }
         if (pokemon.playhearts > 70) {
-            pokemon.playhearts = pokemon.playhearts - 0.5;
+            pokemon.playhearts = pokemon.playhearts - 1;
         }
         if (pokemon.hunger > 15) {
             pokemon.playhearts = pokemon.playhearts - 1;
@@ -38295,9 +38294,6 @@ function Safari() {
                             rewardName = [];
                             for (r in reward) {
                                 amt = reward[r];
-                                if (r.indexOf("apricorn") !== -1 && safari.hasCostumeSkill("extraApricornsFromContest")) {
-                                    amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
-                                }
                                 if (amt > 0) {
                                     player.balls[r] += amt;
                                     if (player.balls[r] > getCap(r)) {
