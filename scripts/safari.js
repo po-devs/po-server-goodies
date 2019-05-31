@@ -4374,8 +4374,8 @@ function Safari() {
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)), 10);
         var costumeBonus = 1;
-        var costumeBoost = function(player) {
-            return (1.02 + Math.max(((safari.getCostumeLevel(player) - 5)/100), 0));
+        var costumeBoost = function(player, half) {
+            return (1.01 + Math.max((((half ? 0.5 : 1) * safari.getCostumeLevel(player) - 5)/100), 0));
         }
         if (hasType(currentPokemon, "Normal") && this.hasCostumeSkill(player, "catchNormal")) {
             costumeBonus = costumeBoost(player);
@@ -4591,10 +4591,10 @@ function Safari() {
         }
         if (ball === "clone") {
             if (this.hasCostumeSkill(player, "cloneBallBoost")) {
-                costumeBonus *= costumeBoost(player);
+                costumeBonus *= costumeBoost(player, true);
             }
             if (this.hasCostumeSkill(player, "cloneBallBoost2")) {
-                costumeBonus *= costumeBoost(player);
+                costumeBonus *= costumeBoost(player, true);
             }
         }
         if (ball === "spy") {
@@ -4707,10 +4707,15 @@ function Safari() {
         var finalChance = Math.max((tierChance + statsBonus) * typeBonus * shinyChance * legendaryChance * spiritMonBonus * dailyBonus * rulesMod * costumeMod * ballBonus * ballbuff * flowerGirlBonus * costumeBonus * typebuff * wildtypebuff + anyballbuff, 0.01) * eventChance;
         if (ball == "clone") {
             var maxCloneRate = itemData.clone.bonusRate + (player.costume === "scientist" ? costumeData.scientist.rate : 0) + this.getFortune(player, "scientist", 0);
+            var finalChanceRollover = 0;
+            if (finalChance > 1) {
+                finalChanceRollover = (finalChance - 1)
+            }
+            maxCloneRate += (finalChanceRollover * 0.07)
             if (this.hasCostumeSkill(player, "cloneBallBoost")) {
-                maxCloneRate += 1.75 + (this.getCostumeLevel(player)/16);
-            }if (this.hasCostumeSkill(player, "cloneBallBoost2")) {
-                maxCloneRate += 3.25;
+                maxCloneRate += 0.1 + ((this.getCostumeLevel(player)/150) * finalChanceRollover);
+            } if (this.hasCostumeSkill(player, "cloneBallBoost2")) {
+                maxCloneRate += 0.15 + (finalChanceRollover * 0.25);
             }
             finalChance = Math.min(finalChance, maxCloneRate);
         }
@@ -8432,7 +8437,7 @@ function Safari() {
         if (reward === "nothing" && chance((player.costume === "explorer" ? costumeData.explorer.rate : 0) + this.getFortune(player, "explorer", 0))) {
             reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         }
-        if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.08)) && (chance((this.getCostumeLevel(player)-10)/10))) {
+        if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.04)) && (chance((this.getCostumeLevel(player)-10)/10))) {
             reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         }
         if (player.costume === "explorer") {
@@ -23218,7 +23223,7 @@ function Safari() {
                         if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                             var reward = randomSampleObj(this.treasures);
                             this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
-                            getTreasure(p, reward);
+                            getTreasure(attackerNames[p], reward);
                         }
                         break;
                     }
@@ -23362,7 +23367,7 @@ function Safari() {
                 totalDealt += dmg;
                 if (dmg > bestDmg) {
                     bestDmg = dmg;
-                    bestAttacker = p;
+                    bestAttacker = attackerNames[p];
                 }
             }
 
@@ -32821,15 +32826,15 @@ function Safari() {
             default:
                 return; //Only top 3 get. Nothing more than 3 should be passed anyway
         }
-        player.balls.rare += rareamt;
-        player.balls.pack += packamt;
-        player.balls.mega += megaamt;
         if (this.hasCostumeSkill(player, "extraTourRare") && rareamt) {
             rareamt++;
         }
         if (this.hasCostumeSkill(player, "extraTourMega") && megaamt) {
             megaamt++;
         }
+        player.balls.rare += rareamt;
+        player.balls.pack += packamt;
+        player.balls.mega += megaamt;
         rew = (megaamt > 0 ? plural(megaamt, "mega") : "") + ", " + (rareamt > 0 ? plural(rareamt, "rare") : "") + ", " + (packamt > 0 ? plural(packamt, "pack") : "");
         
         this.missionProgress(player, "cross", "tours", 1, {});
@@ -38245,11 +38250,15 @@ function Safari() {
                 var reward = currentRules && currentRules.rewards ? currentRules.rewards : { gacha: 10 };
                 sys.sendAll(separator, safchan);
                 safaribot.sendAll("The Safari contest is now over! Please come back during the next contest!", safchan);
+                var saveContestVal = 8; //test this at 8 for now, if it needs to be higher or lower it can be adjusted in the future
                 if (Object.keys(contestCatchers).length === 1) {
-                    safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
-                    winners = [];
-                    contestInfo.winners = null;
-                } else if (winners.length > 0) {
+                    if (contestCatchers[winners[0]].length < saveContestVal) {
+                        safaribot.sendAll("No prizes have been given because there was only one contestant!", safchan);
+                        winners = [];
+                        contestInfo.winners = null;
+                    }
+                }
+                if (winners.length > 0) {
                     var list = [];
                     for (var e in reward) {
                         list.push(reward[e] + " " + itemAlias(e, false, true) + (reward[e] === 1 ? "" : "s"));
