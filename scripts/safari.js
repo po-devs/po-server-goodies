@@ -27365,7 +27365,7 @@ function Safari() {
         for (var p in this.daycarePokemon) {
             if (this.daycarePokemon[p].area == "holding" && this.daycarePokemon[p].ownernum === player.idnum) {
                 daycarebot.sendHtmlMessage(src, "Your Pokémon " + poke(this.daycarePokemon[p].id) + " hasn't been attended to for a while, so we took it to holding!", safchan);
-                daycarebot.sendHtmlMessage(src, "To retrieve your Pokémon, use " + link("/retrieve " + poke(this.daycarePokemon[p].id)) + "!", safchan);
+                daycarebot.sendHtmlMessage(src, "To retrieve your Pokémon, use " + link("/daycare retrieve " + poke(this.daycarePokemon[p].id)) + "!", safchan);
                 if (command !== "retrieve") {
                     return false;
                 }
