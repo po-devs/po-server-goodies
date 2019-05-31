@@ -28000,7 +28000,7 @@ function Safari() {
             if (full) {
                 pk.findItem = true;
                 pk.meter = Math.min(pk.meter + 1, 20);
-                if (chance(0.25)) {
+                if (chance(0.15)) {
                     pk.hunger = Math.min(pk.hunger + 1, 20);
                 }
                 if (pk.toHolding < now()) {
