@@ -31920,7 +31920,7 @@ function Safari() {
     this.awardMonthlyMedals = function(data) {
         var p, lb, e, player, m, n, w = "", r = "", ic = -1;
         var dateMonth = new Date().getUTCMonth();
-        var dateYear = new Date().getUTCYear();
+        var dateYear = 2019;
         var date = "(" + dateMonth + " " + dateYear + ")";
         for (var i in data) {
             lb = data[i];
