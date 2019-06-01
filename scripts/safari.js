@@ -36548,12 +36548,12 @@ function Safari() {
                 safaribot.sendMessage(src, "Leaderboards updated!", safchan);
                 return true;
             }
-            /* if (command === "newmonth") {
+            if (command === "newmonth") {
                 safaribot.sendMessage(src, "Checking if current month changed!", safchan);
                 safari.checkNewWeek();
                 safari.checkNewMonth();
                 return true;
-            } */
+            }
             if (command === "addraffle") {
                 var info = commandData.split(":");
                 var input = getInput(info[0]);
