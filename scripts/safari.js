@@ -38373,7 +38373,7 @@ function Safari() {
                     safari.changeDailyBoost(next);
                     safari.checkNewWeek();
                     safari.dayCareStep(2);
-                    // safari.checkNewMonth();
+                    safari.checkNewMonth();
                     safari.backupSaves();
                     var mercy = parseInt(permObj.get("loginDaysDown"), 10);
                     if (mercy > 0) {
