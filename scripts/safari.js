@@ -31920,7 +31920,7 @@ function Safari() {
     this.awardMonthlyMedals = function(data) {
         var p, lb, e, player, m, n, w = "", r = "", ic = -1;
         var dateMonth = new Date().getUTCMonth();
-        var dateYear = new Date().getUTCYear();
+        var dateYear = 2019;
         var date = "(" + dateMonth + " " + dateYear + ")";
         for (var i in data) {
             lb = data[i];
@@ -36548,12 +36548,12 @@ function Safari() {
                 safaribot.sendMessage(src, "Leaderboards updated!", safchan);
                 return true;
             }
-            /* if (command === "newmonth") {
+            if (command === "newmonth") {
                 safaribot.sendMessage(src, "Checking if current month changed!", safchan);
                 safari.checkNewWeek();
                 safari.checkNewMonth();
                 return true;
-            } */
+            }
             if (command === "addraffle") {
                 var info = commandData.split(":");
                 var input = getInput(info[0]);
