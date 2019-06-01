@@ -32012,7 +32012,10 @@ function Safari() {
         }
         for (var e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
-                player = getAvatarOff(e);
+                var player = getAvatarOff(e);
+                if (!player) {
+                    continue;
+                }
                 if (player.medalRecords) {
                     for (var t in player.medalRecords) {
                         if (!player.medalRecords[t].stayfirst) {
