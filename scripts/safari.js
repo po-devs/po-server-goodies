@@ -31884,7 +31884,7 @@ function Safari() {
         if (date != permObj.get("currentMonth")) {
             this.awardMonthlyMedals(monthlyLeaderboards);
             this.resetCostumes();
-            var old = {};
+            /*var old = {};
             for (var e in monthlyLeaderboards) {
                 old[e + "Last"] = JSON.parse(JSON.stringify(leaderboards[e + "Weekly"]));
                 monthlyLeaderboards[e].clear();
@@ -31893,7 +31893,7 @@ function Safari() {
             permObj.add("lastLeaderboards", JSON.stringify(lastLeaderboards));
             permObj.add("currentMonth", date);
             permObj.save();
-            this.updateLeaderboards();
+            this.updateLeaderboards();*/
         }
     };
     this.resetCostumes = function () {
