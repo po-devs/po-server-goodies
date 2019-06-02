@@ -34120,9 +34120,11 @@ function Safari() {
                     }
                 }
                 sys.sendMessage(src, "", safchan);
-                if (player.tutorial.inTutorial && player.tutorial.step === 7 && (commandData.toLowerCase() == "pikachu")) {
-                    advanceTutorial(src, 8);
-                    return;
+                if (player) {
+                    if (player.tutorial.inTutorial && player.tutorial.step === 7 && (commandData.toLowerCase() == "pikachu")) {
+                        advanceTutorial(src, 8);
+                        return;
+                    }
                 }
                 return true;
             }
