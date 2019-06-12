@@ -2842,7 +2842,7 @@ function Safari() {
         }   
     }
     function getEggGroups(poke1) {
-        var hold = eggdata[poke1];
+        var hold = eggdata[pokeInfo.species(poke1)];
         if (!Array.isArray(hold)) {
             return ["None"];
         }
@@ -2852,9 +2852,9 @@ function Safari() {
         return ["None"];
     }
     function hasCommonEggGroup(poke1, poke2) {
-        var hold = eggdata[poke1];
+        var hold = eggdata[pokeInfo.species(poke1)];
         for (var t in hold) {
-            if (eggdata[poke2].contains(hold[t])) {
+            if (eggdata[pokeInfo.species(poke2)] && eggdata[pokeInfo.species(poke2)].contains(hold[t])) {
                 return true;
             }
         }
@@ -4374,7 +4374,7 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(id, name) {
-        return (id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name);
+        return (((id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id))));
     };
     this.getRulesMod = function(pokeId, rules, pColor) {
         var type1 = sys.type(sys.pokeType1(pokeId)),
