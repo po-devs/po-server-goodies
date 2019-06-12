@@ -181,6 +181,11 @@ function Safari() {
             dummy2: 0,
             dummy3: 0
         },
+        eventFlags: {
+            "144": 0,
+            "145": 0,
+            "146": 0
+        },
         decorations: {},
         firstCelebrityRun: true,
         cherishOff: false,
@@ -3683,6 +3688,24 @@ function Safari() {
                                 }
                             }
                         }
+                        if (theme && theme.eventFinal && theme.eventFlags && theme.eventFinal == id) {
+                            if (chance(0.01) && (chance(0.5))) {
+                                var players = sys.playersOfChannel(safchan);
+                                for (var pid in players) {
+                                    var player = getAvatar(players[pid]);
+                                    if (player) {
+                                        if (safari.allFlagsMet(player, theme.eventFlags)) {
+                                            list = [id];
+                                            sendAll(poke(id) + " appeared because it sensed someone worthy!");
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (list == [id]) {
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 if (list.length === 0) {
@@ -3831,6 +3854,14 @@ function Safari() {
             }
             lastWild = now();
         }
+    };
+    this.allFlagsMet = function(player, flags) {
+        for (var i = 0; i < flags.length; i++) {
+            if (player.eventFlags[flags[i]+""] < now()) {
+                return false;
+            }
+        }
+        return true;
     };
     this.startContest = function(commandData) {
         if (currentPokemon && isRare(currentPokemon)) {
@@ -4039,6 +4070,15 @@ function Safari() {
                 }
             }
         }
+        if ("buffmoves" in rules) {
+            var obj = getRule("buffmoves");
+            out.buffMoves = [];
+            for (e in obj) {
+                if (chance(obj[e])) {
+                    out.buffMoves.push(e);
+                }
+            }
+        }
 
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
             out.noLegendaries = true;
@@ -4099,22 +4139,27 @@ function Safari() {
                 removables.push("bst");
             }
         }
-        if ("inver" in rules && chance(getRule("inver").chance)) {
-            out.inver = true;
-            if (getRule("inver").chance < 1) {
-                removables.push("inver");
-            }
-        }
         if ("invertedBST" in rules && chance(getRule("invertedBST").chance)) {
             out.invertedBST = true;
             if (getRule("invertedBST").chance < 1) {
                 removables.push("invertedBST");
             }
         }
-        if ("defensive" in rules && chance(getRule("defensive").chance)) {
-            out.defensive = true;
-            if (getRule("defensive").chance < 1) {
-                removables.push("defensive");
+        if ("similarityMode" in rules && chance(getRule("similarityMode").chance)) {
+            out.similarityMode = true;
+        }
+        else {
+            if ("inver" in rules && chance(getRule("inver").chance)) {
+                out.inver = true;
+                if (getRule("inver").chance < 1) {
+                    removables.push("inver");
+                }
+            }
+            if ("defensive" in rules && chance(getRule("defensive").chance)) {
+                out.defensive = true;
+                if (getRule("defensive").chance < 1) {
+                    removables.push("defensive");
+                }
             }
         }
 
@@ -4206,6 +4251,11 @@ function Safari() {
                 buffed.push(cap(i));
             }
         }
+        if (rules.buffMoves) {
+            for (var i = 0; i < rules.buffMoves.length; i++) {
+                buffed.push("Pokémon that learn " + sys.move(parseInt(rules.buffMoves[i], 10)));
+            }
+        }
         
         var optionalColor = function(msg, isColored, color) {
             if (isColored) {
@@ -4225,7 +4275,13 @@ function Safari() {
         var inver = rules.inver;
         var invertedBST = rules.invertedBST;
         var defensive = rules.defensive;
-        if (inver && defensive) {
+        var similar = rules.similarityMode;
+        if (simiar) {
+            out.push("Similarity Mode", colored, "purple");
+            if (invertedBST) {
+                out.push(optionalColor("Inverted BST", colored, "purple"));
+            }
+        } else if (inver && defensive) {
             out.push(optionalColor("Weakness Mode", colored, "purple"));
             if (invertedBST) {
                 out.push(optionalColor("Inverted BST", colored, "purple"));
@@ -4286,6 +4342,13 @@ function Safari() {
     this.validForTheme = function(pokeId, name) {
         var theme = contestThemes[name];
         var pokeNum = parseInt(pokeId, 10);
+
+        var period = new Date().getUTCHours();
+        period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
+
+        if (theme[period] && theme[period].contains(pokeId)) {
+            return true;
+        }
 
         if (theme.exclude.indexOf(pokeNum) !== -1) {
             return false;
@@ -4357,6 +4420,13 @@ function Safari() {
         }
         if (rules.buffDual && type2 !== "???") {
             val += RULES_BUFF;
+        }
+        if (rules.buffMoves) {
+            for (var i = 0; i < rules.buffMoves.length; i++) {
+                if (canLearn(id, parseInt(rules.buffMoves, 10))) {
+                    val += RULES_BUFF;
+                }
+            }
         }
         return val;
     };
@@ -4602,46 +4672,6 @@ function Safari() {
                 costumeBonus *= costumeBoost(player);
             }
         }
-        if (ball === "mirror") {
-            if (this.hasCostumeSkill(player, "mirrorBallBoost")) {
-                costumeBonus *= costumeBoost(player);
-            }
-            typeBonus = 1;
-            legendaryChance = 1;
-            eventChance = Math.max(0.75, legendaryChance);
-            ballBonus = 0.25;
-            if (hasType(sys.pokeType1(player.party[0]), wild)) {
-                ballBonus = Math.max(1.5, ballBonus + 0.5);
-            }
-            else if (hasType(sys.pokeType2(player.party[0]), wild)) {
-                ballBonus = Math.max(1.5, ballBonus + 0.5);
-            }
-            var ab = [];
-            ab.push(sys.pokeAbility(player.party[0], 0));
-            ab.push(sys.pokeAbility(player.party[0], 1));
-            ab.push(sys.pokeAbility(player.party[0], 2));
-            for (var a in ab) {
-                if (canHaveAbility(wild, ab[a])) {
-                    ballBonus = Math.max(2, ballBonus + 1);
-                }
-            }
-            if (getPokeColor(player.party[0]) === getPokeColor(wild)) {
-                ballBonus += 1.5;
-            }
-            if (hasCommonEggGroup(player.party[0], wild)) {
-                ballBonus += 1.5;
-            }
-            var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"], st;
-            for (var s in stats) {
-                st = stats[s];
-                if (Math.abs(sys.pokeBaseStats(player.party[0])[st] - sys.pokeBaseStats(wild))[st] <= 10) {
-                    ballBonus *= 1.3;
-                }
-            }
-            if (ballBonus > itemData[ball].maxBonus) {
-                ballBonus = itemData[ball].maxBonus;
-            }
-        }
         if (ball === "photo") {
             ballBonus = 1;
             eventChance = Math.max(0.75, legendaryChance);
@@ -4650,6 +4680,22 @@ function Safari() {
                 if (safari.photoMatchesRequest(player.photos[i], {species: wild})) {
                     ballBonus = itemData[ball].bonusRate;
                     break;
+                }
+            }
+        }
+        if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
+            typeBonus = 1;
+            ballBonus = this.checkSimilarity(player.party[0], wild);
+
+            if (ball == "mirror") {
+                legendaryChance = 1;
+                eventChance = Math.max(0.75, legendaryChance);
+
+                if (this.hasCostumeSkill(player, "mirrorBallBoost")) {
+                    costumeBonus *= costumeBoost(player);
+                } 
+                if (currentRules && currentRules.similarityMode) {
+                    ballBonus *= 2;
                 }
             }
         }
@@ -4721,6 +4767,11 @@ function Safari() {
         }
         if (player.truesalt >= now() && chance(player.srate)) {
             finalChance = 0;
+        }
+        if (currentTheme && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal = currentPokemon) {
+            if (!(this.allFlagsMet(player, contestThemes[currentTheme].eventFlags))) {
+                finalChance = 0;
+            }
         }
 
         return finalChance;
@@ -4896,12 +4947,14 @@ function Safari() {
                 var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? sys.type(sys.pokeType1(player.party[0])) : sys.type(sys.pokeType2(player.party[0]))) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
-            }
-            else {
+            } else {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-            if (ball !== "spirit") {
+            if (currentTheme && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFlags.contains(currentPokemon)) {
+                player.eventFlags[currentPokemon+""] = now() + (48 * 60 * 60 * 1000); //flag set for 48 hours
+                sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
+            } else if (ball !== "spirit") {
                 if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
                     player.pokemon.push(evolved);
@@ -5029,6 +5082,9 @@ function Safari() {
                             this.daycarePokemon[t].hearts += 3;
                             if (this.daycarePokemon[t].hearts < 50) {
                                 this.daycarePokemon[t].hearts += 2
+                                if (this.hasCostumeSkill(player, "extraLoveBall")) {
+                                    this.daycarePokemon[t].hearts++;
+                                }
                             }
                             if (this.daycarePokemon[t].hearts < 80) {
                                 this.daycarePokemon[t].hearts += 3
@@ -5108,6 +5164,8 @@ function Safari() {
             } else {
                 currentThrows -= (lastPokemonCount > 4 ? 2 : 4) * (lastPokemonCount - amt);
                 if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
+                    flee = true;
+                } else if (currentThrows <= 0 && !resolvingThrows && (currentTheme && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal == currentPokemon)) {
                     flee = true;
                 }
             }
@@ -5228,6 +5286,43 @@ function Safari() {
         spiritSpawn = false;
         if (contestCount <= 0) {
             this.runPendingActive();
+        }
+    };
+    this.checkSimilarity = function(poke1, poke2) {
+        var out = 0.25;
+        if (hasType(sys.pokeType1(poke1), poke2)) {
+            out = Math.max(1.5, ballBonus + 0.5);
+        }
+        else if (hasType(sys.pokeType2(poke1), poke2)) {
+            out = Math.max(1.5, ballBonus + 0.5);
+        }
+        var ab = [];
+        ab.push(sys.pokeAbility(poke1, 0));
+        ab.push(sys.pokeAbility(poke1, 1));
+        ab.push(sys.pokeAbility(poke1, 2));
+        for (var a in ab) {
+            if (ab[a] && canHaveAbility(poke2, ab[a])) {
+                out = Math.max(2, out + 1);
+            }
+        }
+        if (getPokeColor(poke1) === getPokeColor(poke2)) {
+            ballBonus += 1.5;
+        }
+        if (hasCommonEggGroup(poke1, poke2)) {
+            ballBonus *= 1.667;
+        }
+        var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"], st;
+        for (var s in stats) {
+            st = stats[s];
+            if (Math.abs(sys.pokeBaseStats(poke1)[st] - sys.pokeBaseStats(poke2))[st] <= 10) {
+                ballBonus *= 1.2;
+            }
+            if (Math.abs(sys.pokeBaseStats(poke1)[st] - sys.pokeBaseStats(poke2))[st] <= 1) {
+                ballBonus *= 1.2;
+            }
+        }
+        if (out > 16) {
+            out = 16;
         }
     };
     this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted) {
@@ -31998,13 +32093,13 @@ function Safari() {
                 m.desc = r + w + " " + date;
                 switch (w) {
                     case "Best Catcher": switch (p.pos) {
-                        case 1: ic = 300; break; case 1: ic = 285; break; case 1: ic = 291; break; 
+                        case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break; 
                     }
                     case "Contest Champion": switch (p.pos) {
-                        case 1: ic = 299; break; case 1: ic = 281; break; case 1: ic = 287; break; 
+                        case 1: ic = 299; break; case 2: ic = 281; break; case 3: ic = 287; break; 
                     }
                     case "Photographer": switch (p.pos) {
-                        case 1: ic = 301; break; case 1: ic = 280; break; case 1: ic = 303; break; 
+                        case 1: ic = 301; break; case 2: ic = 280; break; case 3: ic = 303; break; 
                     }
                 }
                 this.awardMedal(player, m);
