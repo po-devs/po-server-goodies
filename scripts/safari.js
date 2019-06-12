@@ -4276,7 +4276,7 @@ function Safari() {
         var invertedBST = rules.invertedBST;
         var defensive = rules.defensive;
         var similar = rules.similarityMode;
-        if (simiar) {
+        if (similar) {
             out.push("Similarity Mode", colored, "purple");
             if (invertedBST) {
                 out.push(optionalColor("Inverted BST", colored, "purple"));
