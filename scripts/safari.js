@@ -5309,24 +5309,25 @@ function Safari() {
             }
         }
         if (getPokeColor(poke1) === getPokeColor(poke2)) {
-            ballBonus += 1.5;
+            out += 1.5;
         }
         if (hasCommonEggGroup(poke1, poke2)) {
-            ballBonus *= 1.667;
+            out *= 1.667;
         }
         var stats = ["HP", "Attack", "Defense", "Special Attack", "Special Defense", "Speed"], st;
         for (var s in stats) {
             st = stats[s];
             if (Math.abs(sys.pokeBaseStats(poke1)[st] - sys.pokeBaseStats(poke2))[st] <= 10) {
-                ballBonus *= 1.2;
+                out *= 1.2;
             }
             if (Math.abs(sys.pokeBaseStats(poke1)[st] - sys.pokeBaseStats(poke2))[st] <= 1) {
-                ballBonus *= 1.2;
+                out *= 1.2;
             }
         }
         if (out > 16) {
             out = 16;
         }
+        return out;
     };
     this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted) {
         var result = 1;
