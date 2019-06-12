@@ -1204,7 +1204,7 @@ function Safari() {
             lightning: "A Pokéball with a lightning bolt design that comes out in a flash. " + cdSeconds("lightning") + " Obtained from Alchemy.",
             heavy: "An industrial Pokéball that works better against heavier Pokémon and takes type less into consideration. " + cdSeconds("heavy") + " Obtained from Alchemy.",
             photo: "A Pokéball riddled with memory chips capable of identifying Pokémon stored in the camera and catching them with higher liklihood. " + cdSeconds("photo") + " Obtained from Alchemy.",
-            mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. " + cdSeconds("mirror") + " Obtained from Alchemy.",
+            mirror: "A Pokéball with a reflective surface that enables the lead Pokémon to catch based on its similarities to the wild. Doubly effective in Similarity Mode. " + cdSeconds("mirror") + " Obtained from Alchemy.",
             love: "A Pokéball with a pink heart design that works better if the lead is in the same egg group as the target. It also increases the well-being of Pokémon in the daycare. " + cdSeconds("love") + " Obtained from Alchemy.",
             uturn: "A Pokéball with a dynamic design that enables the lead Pokémon to switch out after a successful catch. " + cdSeconds("uturn") + " Obtained from Alchemy.",
             inver: "A mysterious Pokéball that reverses the type advantage " + cdSeconds("inver") + " Obtained from Alchemy.",
@@ -4768,9 +4768,12 @@ function Safari() {
         if (player.truesalt >= now() && chance(player.srate)) {
             finalChance = 0;
         }
-        if (currentTheme && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal = currentPokemon) {
-            if (!(this.allFlagsMet(player, contestThemes[currentTheme].eventFlags))) {
-                finalChance = 0;
+        if (currentTheme && contestThemes && contestThemes[currentTheme]) {
+            var theme = contestThemes[currentTheme] ? contestThemes[currentTheme] : {};
+            if (theme.eventFinal && theme.eventFinal == currentPokemon) {
+                if (!(this.allFlagsMet(player, theme.eventFlags))) {
+                    finalChance = 0;
+                }
             }
         }
 
@@ -5289,7 +5292,7 @@ function Safari() {
         }
     };
     this.checkSimilarity = function(poke1, poke2) {
-        var out = 0.25;
+        var out = 0.5;
         if (hasType(sys.pokeType1(poke1), poke2)) {
             out = Math.max(1.5, ballBonus + 0.5);
         }
