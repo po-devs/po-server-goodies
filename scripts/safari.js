@@ -650,7 +650,7 @@ function Safari() {
                 }
             },
             "switch": {
-                "reward": "20@uturn",
+                "reward": "20@switch",
                 "ingredients": {
                     "redapricorn": 5,
                     "grnapricorn": 20,
