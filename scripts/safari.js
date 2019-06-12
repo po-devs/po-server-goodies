@@ -4374,7 +4374,7 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(id, name) {
-        return (id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name);
+        return (((id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id))));
     };
     this.getRulesMod = function(pokeId, rules, pColor) {
         var type1 = sys.type(sys.pokeType1(pokeId)),
