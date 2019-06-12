@@ -5298,13 +5298,13 @@ function Safari() {
         }
     };
     this.checkSimilarity = function(poke1, poke2, colorOverride) {
-        var out = 0.75;
+        var out = 1;
         var userColor = colorOverride ? colorOverride : getPokeColor(poke1);
         if (hasType(sys.pokeType1(poke1), poke2)) {
-            out = Math.max(1.5, out + 0.5);
+            out = Math.max(2, out + 0.5);
         }
         else if (hasType(sys.pokeType2(poke1), poke2)) {
-            out = Math.max(1.5, out + 0.5);
+            out = Math.max(2, out + 0.5);
         }
         var ab = [];
         ab.push(sys.pokeAbility(poke1, 0));
@@ -5312,7 +5312,7 @@ function Safari() {
         ab.push(sys.pokeAbility(poke1, 2));
         for (var a in ab) {
             if (ab[a] && canHaveAbility(poke2, ab[a])) {
-                out = Math.max(2, out + 1);
+                out = Math.max(3, out + 1);
             }
         }
         if (userColor === getPokeColor(poke2)) {
@@ -8543,7 +8543,7 @@ function Safari() {
         if (reward === "nothing" && chance((player.costume === "explorer" ? costumeData.explorer.rate : 0) + this.getFortune(player, "explorer", 0))) {
             reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         }
-        if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.04)) && (chance((this.getCostumeLevel(player)-10)/10))) {
+        if (reward === "nothing" && this.hasCostumeSkill(player, "betterFinder") && (chance(0.06)) && (chance((this.getCostumeLevel(player)-10)/10))) {
             reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         }
         if (player.costume === "explorer") {
