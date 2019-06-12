@@ -650,7 +650,7 @@ function Safari() {
                 }
             },
             "switch": {
-                "reward": "20@switch",
+                "reward": "20@uturn",
                 "ingredients": {
                     "redapricorn": 5,
                     "grnapricorn": 20,
@@ -704,7 +704,7 @@ function Safari() {
             heavy: {name: "heavy", fullName: "Heavy Ball", type: "ball", icon: 315, price: 500, ballBonus: 1.2, bonusRate: 10, cooldown: 10000, aliases:["heavyball", "heavy", "heavy ball"], tradable: true},
             photo: {name: "photo", fullName: "Photo Ball", type: "ball", icon: 317, price: 500, ballBonus: 1, bonusRate: 5, cooldown: 10000, aliases:["photoball", "photo", "photo ball"], tradable: true},
             mirror: {name: "mirror", fullName: "Mirror Ball", type: "ball", icon: 323, price: 500, ballBonus: 1, bonusRate: 1, maxBonus: 16, cooldown: 12000, aliases:["mirrorball", "mirror", "mirror ball"], tradable: true},
-            uturn: {name: "switch", fullName: "Switch Ball", type: "ball", icon: 311, price: 500, ballBonus: 1, bonusRate: 2, maxBonus: 2, cooldown: 16000, aliases:["switchball", "switch", "uturn", "switch ball"], tradable: true},
+            uturn: {name: "uturn", fullName: "Switch Ball", type: "ball", icon: 311, price: 500, ballBonus: 1, bonusRate: 2, maxBonus: 2, cooldown: 16000, aliases:["switchball", "switch", "uturn", "switch ball"], tradable: true},
             inver: {name: "inver", fullName: "Inver Ball", type: "ball", icon: 322, price: 500, ballBonus: 1.5, bonusRate: 1, cooldown: 12000, aliases:["inverball", "inver", "invert", "inver ball"], tradable: true},
             cherish: {name: "cherish", fullName: "Cherish Ball", type: "ball", icon: 328, price: 500, ballBonus: 3, bonusRate: 1, cooldown: 18000, aliases:["cherishball", "cherish", "cherish ball"], tradable: false},
             
@@ -4277,7 +4277,7 @@ function Safari() {
         var defensive = rules.defensive;
         var similar = rules.similarityMode;
         if (similar) {
-            out.push("Similarity Mode", colored, "purple");
+            out.push(optionalColor("Similarity Mode", colored, "purple"));
             if (invertedBST) {
                 out.push(optionalColor("Inverted BST", colored, "purple"));
             }
