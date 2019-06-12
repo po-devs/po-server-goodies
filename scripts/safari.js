@@ -833,6 +833,7 @@ function Safari() {
                 botdboost: [2, 2],
                 catchLowBST: [3, 5],
                 lowPhotoCD: [6, 10],
+                useLowBST: [11, 13],
                 mirrorBallBoost: [12, 15],
                 finderBasedOnLead: [18, 19],
                 pokefanPack: [20, 20]
@@ -4443,6 +4444,7 @@ function Safari() {
         var wildStats = getBST(wild);
         var flowerGirlBonus = 1;
         var cherishBonus = Math.min(countDuplicates(pokeInfo.species(getInputPokemon(poke(player.party[0])).num)), 10);
+        var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
         var costumeBonus = 1;
         var costumeBoost = function(player, half) {
             return (1.01 + Math.max((((half ? 0.5 : 1) * safari.getCostumeLevel(player) - 5)/100), 0));
@@ -4500,8 +4502,13 @@ function Safari() {
         }
 
         var userStats = (getBST(player.party[0]));
-        if (player.costume == "pokefan") {
-            userStats = Math.min(userStats, 500);
+        if (!(currentRules && currentRules.invertedBST)) {
+            if (player.costume == "pokefan") {
+                userStats = Math.min(userStats, 500);
+            }
+            if (userStats <= 600 && this.hasCostumeSkill(player, "useLowBST")) {
+                userStats = Math.min(userStats + Math.floor(this.getCostumeLevel(player) * 3.5), 600);
+            } 
         }
         var evioBonus = 0;
         if (userStats <= itemData.eviolite.threshold) {
@@ -4685,7 +4692,7 @@ function Safari() {
         }
         if (ball === "mirror" || (currentRules && currentRules.similarityMode)) {
             typeBonus = 1;
-            ballBonus = this.checkSimilarity(player.party[0], wild);
+            ballBonus = this.checkSimilarity(player.party[0], wild, scaleColor);
 
             if (ball == "mirror") {
                 legendaryChance = 1;
@@ -4712,7 +4719,6 @@ function Safari() {
         var species = pokeInfo.species(leader);
         var noDailyBonusForms = [328350, 66015, 197087, 131551, 262623, 328159, 66091, 66282, 131730, 66310, 131846, 197382, 262918, 328454, 393990, 459526];
         var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader, 10)) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
-        var scaleColor = player.scaleDeadline >= now() ? player.scaleColor : null;
         var rulesMod = currentRules ? this.getRulesMod(player.party[0], currentRules, scaleColor) : 1;
         var costumeMod = 1;
         if (player.party[0] === player.starter || player.starter2.contains(player.party[0])) {
@@ -5291,13 +5297,14 @@ function Safari() {
             this.runPendingActive();
         }
     };
-    this.checkSimilarity = function(poke1, poke2) {
-        var out = 0.5;
+    this.checkSimilarity = function(poke1, poke2, colorOverride) {
+        var out = 0.75;
+        var userColor = colorOverride ? colorOverride : getPokeColor(poke1);
         if (hasType(sys.pokeType1(poke1), poke2)) {
-            out = Math.max(1.5, ballBonus + 0.5);
+            out = Math.max(1.5, out + 0.5);
         }
         else if (hasType(sys.pokeType2(poke1), poke2)) {
-            out = Math.max(1.5, ballBonus + 0.5);
+            out = Math.max(1.5, out + 0.5);
         }
         var ab = [];
         ab.push(sys.pokeAbility(poke1, 0));
@@ -5308,7 +5315,7 @@ function Safari() {
                 out = Math.max(2, out + 1);
             }
         }
-        if (getPokeColor(poke1) === getPokeColor(poke2)) {
+        if (userColor === getPokeColor(poke2)) {
             out += 1.5;
         }
         if (hasCommonEggGroup(poke1, poke2)) {
@@ -8509,7 +8516,7 @@ function Safari() {
         var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
             var type = sys.type(sys.pokeType1(parseInt(player.party[0], 10)));
-            if (chance(0.05) && (chance((this.getCostumeLevel(player) - 2)/20))) {
+            if (chance(0.015) && (chance((this.getCostumeLevel(player) - 2)/20))) {
                 switch (type) {
                     case "Normal": reward = "crystal"; break;
                     case "Grass": reward = "mushroom"; break;
@@ -9761,7 +9768,8 @@ function Safari() {
         cloneBallBoost2: "Precise calculation allows for even more likely chance to clone with a Clone Ball",
         extraDust: "Acquire more Candy Dust when evolving Pokémon",
         pokeblockBoost: "Pokéblocks are more effective",
-        daycarePlay: "Playing in daycare is better",
+        daycarePlay: "Play in daycare is better",
+        useLowBST: "BST disadvantage with low BST mons while catching is reduced",
         catchLowBST: "Increased chance to catch Pokémon with a BST of 480 or lower",
         catchNormal: "Increased chance to catch Normal-type Pokémon",
         catchRockGround: "Increased chance to catch Rock- or Ground-type Pokémon",
