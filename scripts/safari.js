@@ -4423,7 +4423,7 @@ function Safari() {
         }
         if (rules.buffMoves) {
             for (var i = 0; i < rules.buffMoves.length; i++) {
-                if (canLearn(id, parseInt(rules.buffMoves, 10))) {
+                if (canLearnMove(id, parseInt(rules.buffMoves, 10))) {
                     val += RULES_BUFF;
                 }
             }
