@@ -4954,7 +4954,7 @@ function Safari() {
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
-            if (currentTheme && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFlags.contains(currentPokemon)) {
+            if (currentTheme && contestThemes && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFlags.contains(currentPokemon)) {
                 player.eventFlags[currentPokemon+""] = now() + (48 * 60 * 60 * 1000); //flag set for 48 hours
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
             } else if (ball !== "spirit") {
@@ -5168,7 +5168,7 @@ function Safari() {
                 currentThrows -= (lastPokemonCount > 4 ? 2 : 4) * (lastPokemonCount - amt);
                 if (currentThrows <= 0 && !wildEvent && !resolvingThrows) {
                     flee = true;
-                } else if (currentThrows <= 0 && !resolvingThrows && (currentTheme && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal == currentPokemon)) {
+                } else if (currentThrows <= 0 && !resolvingThrows && (currentTheme && contestThemes && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal == currentPokemon)) {
                     flee = true;
                 }
             }
