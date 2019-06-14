@@ -5078,7 +5078,7 @@ function Safari() {
                 safaribot.sendAll(name + "'s " + poke(player.party[0]) + " switched out after catching the " + pokeName + "!" , safchan);
                 var party2 = [];
                 for (var i = 1; i < player.party.length; i++) {
-                    party2.push(player.party[p]);
+                    party2.push(player.party[i]);
                 }
                 party2.push(player.party[0]);
                 player.party = party2;
