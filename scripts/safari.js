@@ -9865,7 +9865,7 @@ function Safari() {
         if (cos == "inver" || cos == "preschooler") {
             return false;
         }
-        if (cos == "" || !cos) {
+        if (cos == "" || cos == "none" || !cos) {
             return false;
         }
         var cosData = costumeData[cos];
@@ -23321,7 +23321,7 @@ function Safari() {
 
             res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, avi));
             if (this.opponentHP > 0) {
-                this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(p.toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
+                this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(attackerNames[p].toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
                 if (res.power[0] > 0) {
                     this.opponentHP -= res.power[0];
                     if (this.opponentHP <= 0) {
@@ -23329,7 +23329,7 @@ function Safari() {
                         defeated = true;
                         if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                             var reward = randomSampleObj(this.treasures);
-                            this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(p.toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
+                            this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(attackerNames[p].toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
                             getTreasure(attackerNames[p], reward);
                         }
                         break;
@@ -23452,7 +23452,7 @@ function Safari() {
                 this.dealt[p] = 0;
             }
             turnDealt[p] = dmg;
-            this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the statue!".format(p.toCorrectCase(), poke(m), toColor(dmg, "blue")));
+            this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the statue!".format(attackerNames[p].toCorrectCase(), poke(m), toColor(dmg, "blue")));
             if (dmg > 0) {
                 this.hp -= dmg;
                 turnDamage += dmg;
