@@ -4218,6 +4218,11 @@ function Safari() {
                 nerfed = nerfed.concat(rules.excludeTypes);
             }
         }
+        if (rules.buffMoves) {
+            for (var i = 0; i < rules.buffMoves.length; i++) {
+                buffed.push("Pokémon that learn " + sys.move(parseInt(rules.buffMoves[i], 10)));
+            }
+        }
         if (rules.nerfSingle) {
             nerfed.push("Single-type");
         } else if (rules.buffSingle) {
@@ -4250,11 +4255,6 @@ function Safari() {
                 nerfed.push(cap(i));
             } else if (rules["buffColor" + cap(i)]) {
                 buffed.push(cap(i));
-            }
-        }
-        if (rules.buffMoves) {
-            for (var i = 0; i < rules.buffMoves.length; i++) {
-                buffed.push("Pokémon that learn " + sys.move(parseInt(rules.buffMoves[i], 10)));
             }
         }
         
@@ -5302,9 +5302,12 @@ function Safari() {
         var userColor = colorOverride ? colorOverride : getPokeColor(poke1);
         if (hasType(sys.pokeType1(poke1), poke2)) {
             out = Math.max(2, out + 0.5);
+            if (hasType(sys.pokeType2(poke1), poke2) && sys.pokeType2(poke1) === "???") {
+                out = Math.max(2, out + 2);
+            }
         }
-        else if (hasType(sys.pokeType2(poke1), poke2)) {
-            out = Math.max(2, out + 0.5);
+        if (hasType(sys.pokeType2(poke1), poke2) && sys.pokeType2(poke1) !== "???") {
+            out = Math.max(2, out + 1);
         }
         var ab = [];
         ab.push(sys.pokeAbility(poke1, 0));
@@ -20651,7 +20654,7 @@ function Safari() {
                 var reward;
                 switch (args.difficulty) {
                     case 0: reward = [
-                        ["gacha", 2],
+                        ["dew", 1],
                         ["gacha", 4],
                         ["pearl", 3],
                         ["gem", 1],
@@ -20667,10 +20670,10 @@ function Safari() {
                         ["prizepack", 10]
                     ][args.index]; break;
                     case 1: reward = [
-                        ["gacha", 3],
+                        ["dew", 3],
                         ["gacha", 5],
                         ["stardust", 4],
-                        ["gacha", 20],
+                        ["dew", 5],
                         ["nugget", 1],
                         ["prizepack", 2],
                         ["dew", 12],
@@ -27721,11 +27724,11 @@ function Safari() {
             daycarebot.sendMessage(src, "Sorry, I don't know what Pokémon that is!", safchan);
             return false;
         }
-        if (!player.pokemon.contains(parseInt(pokemon.id, 10))) {
+        if (!player.pokemon.contains(pokemon.id)) {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
             return false;
         }
-        if (player.party.length === 1) {
+        if (player.party.length === 1 && player.party.contains(mon)) {
             daycarebot.sendMessage(src, "You can't drop off your only Pokémon!", safchan);
             return false;
         }
