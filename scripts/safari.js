@@ -27770,7 +27770,7 @@ function Safari() {
                 }
                 this.moveDayCarePokemon(p, p.pos);
                 safari.saveDaycare();
-                this.removePokemon(src, pokemon.num);
+                this.removePokemon(src, pokemon.id);
                 this.daycarePokemon.push(p);
                 this.saveGame(player);
                 daycarebot.sendMessage(src, "Your " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + " has been added to the Daycare! Enjoy your stay, "  + poke(pokemon.id) + "!", safchan);
