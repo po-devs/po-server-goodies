@@ -20651,7 +20651,7 @@ function Safari() {
                 var reward;
                 switch (args.difficulty) {
                     case 0: reward = [
-                        ["gacha", 2],
+                        ["dew", 1],
                         ["gacha", 4],
                         ["pearl", 3],
                         ["gem", 1],
@@ -20667,10 +20667,10 @@ function Safari() {
                         ["prizepack", 10]
                     ][args.index]; break;
                     case 1: reward = [
-                        ["gacha", 3],
+                        ["dew", 3],
                         ["gacha", 5],
                         ["stardust", 4],
-                        ["gacha", 20],
+                        ["dew", 5],
                         ["nugget", 1],
                         ["prizepack", 2],
                         ["dew", 12],
@@ -27721,11 +27721,11 @@ function Safari() {
             daycarebot.sendMessage(src, "Sorry, I don't know what Pokémon that is!", safchan);
             return false;
         }
-        if (!player.pokemon.contains(parseInt(pokemon.id, 10))) {
+        if (!player.pokemon.contains(pokemon.id)) {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
             return false;
         }
-        if (player.party.length === 1) {
+        if (player.party.length === 1 && player.party.contains(mon)) {
             daycarebot.sendMessage(src, "You can't drop off your only Pokémon!", safchan);
             return false;
         }
