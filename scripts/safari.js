@@ -71,6 +71,9 @@ function Safari() {
     var marketData = {};
     var dayCareEnabled = true;
 
+    var eliteCounterPicks = [];
+    var eliteStrongCounterPicks = [];
+
     var starters = [1, 4, 7];
     var playerTemplate = {
         id: "",
@@ -10654,6 +10657,7 @@ function Safari() {
                 shop[input.input].purchases[player.idnum+""] = 0;
             }
             shop[input.input].purchases[player.idnum+""] += amount;
+            sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + ":::" + isSilver + "|||" + sys.name(src) + "\n");
         }
         if (seller) {
             if (isSilver) {
@@ -21510,6 +21514,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> For your success, we award you with " + plural(1, "philosopher") + "!", safchan);
                     rewardCapCheck(player, "philosopher", 1, true);
                     sys.sendAll("", safchan);
+                    safari.counterPickLeague(player.party);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Elite Four|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(1, "philosopher") + " by defeating " + args.name + "\n");
                 } else {
                     var npc = JSON.parse(JSON.stringify(args.elite[next]));
@@ -31819,6 +31824,77 @@ function Safari() {
         }
 
     };
+    this.counterPickLeague = function(party) {
+        //stuff
+        var m;
+        for (var i = 0; i < party.length; i++) {
+            m = parseInt(party[i], 10);
+            switch (m) {
+                case 131790: 
+                    eliteCounterPicks.push(245);
+                    eliteCounterPicks.push(468);
+                    eliteCounterPicks.push(797);
+                    eliteCounterPicks.push(65870);
+                    eliteStrongCounterPicks.push(249);
+                    eliteStrongCounterPicks.push(65686);
+                    break;
+                case 791: 
+                    eliteCounterPicks.push(385);
+                    eliteCounterPicks.push(490);
+                    eliteCounterPicks.push(485);
+                    eliteStrongCounterPicks.push(65666);
+                    eliteStrongCounterPicks.push(717);
+                    eliteStrongCounterPicks.push(383);
+                    break;
+                case 245: 
+                    eliteCounterPicks.push(251);
+                    eliteCounterPicks.push(145);
+                    eliteStrongCounterPicks.push(382);
+                    eliteStrongCounterPicks.push(484);
+                    eliteStrongCounterPicks.push(644);
+                    break;
+                case 65920: 
+                    eliteCounterPicks.push(245);
+                    eliteCounterPicks.push(65574);
+                    eliteCounterPicks.push(376);
+                    eliteCounterPicks.push(801);
+                    eliteStrongCounterPicks.push(65912);
+                    eliteStrongCounterPicks.push(131222);
+                    eliteStrongCounterPicks.push(716);
+                    eliteStrongCounterPicks.push(483);
+                    break;
+                case 486: 
+                    eliteCounterPicks.push(649);
+                    eliteStrongCounterPicks.push(65912);
+                    break;
+                case 644: 
+                    eliteCounterPicks.push(208);
+                    eliteCounterPicks.push(445);
+                    eliteStrongCounterPicks.push(65981);
+                    eliteStrongCounterPicks.push(383);
+                    break;
+                case 484: 
+                    eliteCounterPicks.push(282);
+                    eliteCounterPicks.push(251);
+                    break;
+                case 131718: 
+                    eliteCounterPicks.push(801);
+                    eliteStrongCounterPicks.push(483);
+                    break;
+                case 66194: 
+                    eliteCounterPicks.push(730);
+                    eliteCounterPicks.push(785);
+                    eliteStrongCounterPicks.push(383);
+                    eliteStrongCounterPicks.push(716);
+                    break;
+                case 65912:
+                    eliteCounterPicks.push(145);
+                    eliteStrongCounterPicks.push(250);
+                    break;
+            }
+        }
+        return;
+    };
     this.renewLeague = function() {
         var gyms = {}, elite = [], name, badge, trainers, party, i, l, t, n, trainer, namesUsed = [], badgesUsed = [], trainersUsed = [], baseName = [];
         var trainerClasses = ["Actor", "Actress", "Aroma Lady", "Artist", "Athlete", "Backpacker", "Baker", "Baron", "Baroness", "Battle Girl", "Beauty", "Big Star", "Biker", "Bird Keeper", "Blackbelt", "Boarder", "Bodybuilder", "Boss", "Bug Catcher", "Bug Maniac", "Burglar", "Butler", "Cameraman", "Camper", "Casual Dude", "Casual Guy", "Celebrity", "Channeler", "Chaser", "Chef", "Child Star", "Clerk", "Clown", "Collector", "Comedian", "Commander", "Cool Beauty", "Cool Trainer", "Countess", "Cowgirl", "Crush Girl", "Cue Ball", "Cute Maniac", "Cyclist", "Dancer", "Delinquent", "Depot Agent", "Doctor", "Dragon Tamer", "Driver", "Duchess", "Duke", "Elder", "Electrifying Guy", "Engineer", "Expert", "Fairy Tale Girl", "Fare Prince", "Firebreather", "Fisherman", "Free Diver", "Fun Old Lady", "Fun Old Man", "Furisode Girl", "Future Girl", "Gambler", "Garçon", "Gardener", "Gentleman", "Glasses Man", "Grand Duchess", "Guitarist", "Hardheaded Girl", "Hex Maniac", "High-Tech Maniac", "Hiker", "Hiking Girl", "Hoopster", "Hunter", "Icy Guy", "Idol", "Infielder", "Interviewer", "Janitor", "Jogger", "Juggler", "Kimono Girl", "Kindler", "Lady", "Lass", "Linebacker", "Lone Wolf", "Lorekeeper", "Maid", "Marchioness", "Marquis", "Medium", "Monsieur", "Motorcyclist", "Movie Star", "Muddy Boy", "Musician", "Navigator", "Newscaster", "Ninja Boy", "Nurse", "Nursery Aide", "Officer", "Ordinary Guy", "Ordinary Lady", "Painter", "Parasol Lady", "Passionate Man", "Passionate Rider", "Picnic Girl", "Picnicker", "Pikachu Fan", "Pilot", "Poké Kid", "Pokéfan", "PokéManiac", "Pokémon Breeder", "Pokémon Ranger", "Preschooler", "Proprietor", "Psychic", "Punk Girl", "Punk Guy", "Rancher", "Reporter", "Rich Boy", "Rider", "Rising Star", "Rocker", "Rogue", "Roller Boy", "Roller Skater", "Rotation Girl", "Ruin Maniac", "Sage", "Sailor", "Schoolboy", "Schoolgirl", "Sci-Fi Maniac", "Scientist", "Scuba Diver", "Shady Guy", "Shocking Girl", "Sightseer", "Sim Trainer", "Skier", "Smasher", "Snagem Head", "Socialite", "Sootopolitan", "Spy", "Star Actor", "Steel Spirit", "Street Thug", "Striker", "Stubborn Boy", "Successor", "Suit Actor", "Super Nerd", "Suspicious Child", "Suspicious Lady", "Suspicious Woman", "Swimmer♀", "Swimmer", "Tamer", "Teacher", "The Riches", "Thug", "Tomboy", "Tourist", "Traveling Guy", "Traveling Lady", "Triathlete", "Tuber", "Unique Star", "Veteran", "Veteran Star", "Viscount", "Viscountess", "Waiter", "Waitress", "Wanderer", "Winstrate", "Worker", "Youngster"];
@@ -31892,6 +31968,9 @@ function Safari() {
             }
             while (big < 2 || small < 2) {
                 i = strong.random();
+                if (eliteCounterPicks && eliteStrongCounterPicks.length > 0 && chance(0.5) && chance(eliteStrongCounterPicks.length * 0.08)) {
+                    i = eliteStrongCounterPicks.random();
+                } 
                 b = pokeInfo.species(i);
                 if (!base.contains(b)) {
                     if (isLegendary(i)) {
@@ -31919,6 +31998,9 @@ function Safari() {
             
             while (party.length < 12) {
                 i = sys.rand(1, 803);
+                if (eliteCounterPicks && eliteCounterPicks.length > 0 && chance(0.5) && chance(eliteCounterPicks.length * 0.05)) {
+                    i = eliteCounterPicks.random();
+                } 
                 
                 if (getBST(i) < 490 || i in evolutions || isLegendary(i) || base.contains(i)) {
                     continue;
@@ -31938,6 +32020,12 @@ function Safari() {
                 party: party.shuffle(),
                 powerBoost: 0.19 + 0.03*(elite.length)
             });
+        }
+        if (eliteStrongCounterPicks.length > 0) {
+            eliteStrongCounterPicks = eliteStrongCounterPicks.shuffle().slice(Math.floor(eliteStrongCounterPicks.length/2));
+        }
+        if (eliteCounterPicks.length > 0) {
+            eliteCounterPicks = eliteCounterPicks.shuffle().slice(Math.floor(eliteCounterPicks.length/2));
         }
         
         gymData = gyms;
