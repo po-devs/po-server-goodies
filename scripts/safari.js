@@ -15640,7 +15640,7 @@ function Safari() {
             bonus *= ((this.select.weightattack) && (move.type == "Grass" || move.type == "Fighting") && (pokedex.getWeight(target) > 100) ? 1.2 : 1);
             bonus *= ((this.select.weightattack) && (move.type == "Grass" || move.type == "Fighting") && (pokedex.getWeight(target) > 50) ? 1.2 : 1);
             bonus *= ((this.select.weightattack) && (move.type == "Grass" || move.type == "Fighting") && (pokedex.getWeight(target) < 25) ? 0.8 : 1);
-            bonus *= ((this.select.drainpunch && move.drain && move.drain > 0 && (canLearnMove(pokeinfo.species(user.id), 409))) ? 2 : 1);
+            bonus *= ((this.select.drainpunch && move.drain && move.drain > 0 && (canLearnMove(pokeInfo.species(user.id), 409))) ? 2 : 1);
             var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
                 if (analytic) {
