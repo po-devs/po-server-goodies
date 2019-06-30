@@ -17703,11 +17703,11 @@ function Safari() {
             out[t]++;
         }
         if (this.select && this.select.nostab) {
-            if (out.hasOwnProperty(sys.type(sys.pokeType1(num)))) {
-                out[sys.type(sys.pokeType1(num))] = 0;
+            if (out.hasOwnProperty(sys.type(sys.pokeType1(pokeInfo.species(num))))) {
+                out[sys.type(sys.pokeType1(pokeInfo.species(num)))] = 0;
             }
-            if (out.hasOwnProperty(sys.type(sys.pokeType2(num)))) {
-                out[sys.type(sys.pokeType2(num))] = 0;
+            if (out.hasOwnProperty(sys.type(sys.pokeType2(pokeInfo.species(num))))) {
+                out[sys.type(sys.pokeType2(pokeInfo.species(num)))] = 0;
             }
         }
         return out;
