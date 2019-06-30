@@ -15141,6 +15141,7 @@ function Safari() {
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
+                    poke1.hp -= dmg;
                     this.sendToViewers(poke(poke1.id) + " lost " + dmg + " HP!");
                     if (poke1.hp <= 0) {
                         this.sendToViewers(poke(poke1.id) + " fainted!");
@@ -15154,6 +15155,7 @@ function Safari() {
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
+                    poke2.hp -= dmg;
                     this.sendToViewers(poke(poke2.id) + " lost " + dmg + " HP!");
                     if (poke2.hp <= 0) {
                         this.sendToViewers(poke(poke2.id) + " fainted!");
@@ -15172,6 +15174,7 @@ function Safari() {
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
+                    poke1.hp -= dmg;
                     this.sendToViewers(poke(poke1.id) + " lost " + dmg + " HP!");
                     if (poke1.hp <= 0) {
                         this.sendToViewers(poke(poke1.id) + " fainted!");
@@ -15185,6 +15188,7 @@ function Safari() {
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
+                    poke2.hp -= dmg;
                     this.sendToViewers(poke(poke2.id) + " lost " + dmg + " HP!");
                     if (poke2.hp <= 0) {
                         this.sendToViewers(poke(poke2.id) + " fainted!");
