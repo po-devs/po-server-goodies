@@ -15935,6 +15935,61 @@ function Safari() {
                 self.crit = false;
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
+                if (self.selectData.shieldHP > 0 && targetSide === 2) {
+                    dmg = Math.ceil(dmg * 0.5);
+                    sdmg = Math.ceil(dmg * 0.5);
+                    if (self.select.genesisshield) {
+                        dmg = Math.ceil(dmg * 0.75);
+                    }
+                    if (self.select.iceshield) {
+                        if (["Water", "Ice"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Ice Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Fire") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Ice Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Ice Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select.electroshield) {
+                        if (["Electric", "Ghost"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Electro Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Ground") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Electro Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Electro Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select.genesisshield) {
+                        if (["Dragon"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Genesis Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Psychic") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Genesis Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Genesis Shield shattered!");
+                            }
+                        }
+                    }
+                }
 
                 if (dmg > target.hp) {
                     dmg = target.hp;
@@ -15990,61 +16045,6 @@ function Safari() {
                     if (self.select.analytic && (isP2 || isP4)) {
                         self.selectData.analyticType1 = sys.type(sys.pokeType1(target.id));
                         self.selectData.analyticType2 = sys.type(sys.pokeType2(target.id));
-                    }
-                }
-                if (self.selectData.shieldHP > 0 && targetSide === 2) {
-                    dmg = Math.ceil(dmg * 0.5);
-                    sdmg = Math.ceil(dmg * 0.5);
-                    if (self.select.genesisshield) {
-                        dmg = Math.ceil(dmg * 0.75);
-                    }
-                    if (self.select.iceshield) {
-                        if (["Water", "Ice"].contains(move.type)) {
-                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Ice Shield absorbed energy!");
-                        } else {
-                            if (move.type == "Fire") {
-                                sdmg *= 1.5;
-                            }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
-                            if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Ice Shield sustained damage!");
-                            } else {
-                                out.push("The foe's Ice Shield shattered!");
-                            }
-                        }
-                    }
-                    if (self.select.electroshield) {
-                        if (["Electric", "Ghost"].contains(move.type)) {
-                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Electro Shield absorbed energy!");
-                        } else {
-                            if (move.type == "Ground") {
-                                sdmg *= 1.5;
-                            }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
-                            if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Electro Shield sustained damage!");
-                            } else {
-                                out.push("The foe's Electro Shield shattered!");
-                            }
-                        }
-                    }
-                    if (self.select.genesisshield) {
-                        if (["Dragon"].contains(move.type)) {
-                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Genesis Shield absorbed energy!");
-                        } else {
-                            if (move.type == "Psychic") {
-                                sdmg *= 1.5;
-                            }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
-                            if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Genesis Shield sustained damage!");
-                            } else {
-                                out.push("The foe's Genesis Shield shattered!");
-                            }
-                        }
                     }
                 }
                 if (self.select) {
@@ -17703,11 +17703,11 @@ function Safari() {
             out[t]++;
         }
         if (this.select && this.select.nostab) {
-            if (out.hasOwnProperty(sys.type(sys.pokeType1(id)))) {
-                out[sys.type(sys.pokeType1(id))] = 0;
+            if (out.hasOwnProperty(sys.type(sys.pokeType1(num)))) {
+                out[sys.type(sys.pokeType1(num))] = 0;
             }
-            if (out.hasOwnProperty(sys.type(sys.pokeType2(id)))) {
-                out[sys.type(sys.pokeType2(id))] = 0;
+            if (out.hasOwnProperty(sys.type(sys.pokeType2(num)))) {
+                out[sys.type(sys.pokeType2(num))] = 0;
             }
         }
         return out;
