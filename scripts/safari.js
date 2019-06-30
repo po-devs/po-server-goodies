@@ -13881,6 +13881,7 @@ function Safari() {
             hyper: 0,
             full: 0
         };
+        this.selectData = null;
         if (select) {
             if (select.hyperpotion3) {
                 this.npcItems.hyper = 3;
