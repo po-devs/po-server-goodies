@@ -15309,7 +15309,7 @@ function Safari() {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP from the Grassy Terrain!");
         }
-        if ((this.select && this.select.leechseed) && (canLearnMove(pokeinfo.species(user.id), 73))) {
+        if ((this.select && this.select.leechseed) && (canLearnMove(pokeInfo.species(user.id), 73))) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 8)), user.maxhp);
             this.sendToViewers(name + " grew from its seeds!");
         }
