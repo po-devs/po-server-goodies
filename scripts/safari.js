@@ -15019,6 +15019,7 @@ function Safari() {
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
+                                this.sendToViewers(toColor(name + " is hurt by the Stealth Rock!", sColor));
                             }
                         }
                     }
@@ -15195,6 +15196,9 @@ function Safari() {
                         this.sendToViewers(poke(poke2.id) + " fainted!");
                     }
                 }
+            }
+            if (checkWin()) {
+                return;
             }
             if ((this.turn % 7 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.topsyturvy) {
