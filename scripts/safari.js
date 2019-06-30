@@ -15135,7 +15135,7 @@ function Safari() {
                 this.selectData.moonblastTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier;
-                if (poke1 && (poke1.hp > 0)) {
+                if (poke1 && (poke1.hp > 0) && (!this.usedProtect1)) {
                     dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen ? 0.5 : 1) * 0.84);
@@ -15149,7 +15149,7 @@ function Safari() {
                     }
                 }
 
-                if (poke2 && (poke2.hp > 0)) {
+                if (poke2 && (poke2.hp > 0) && (!this.usedProtect2)) {
                     dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen ? 0.5 : 1) * 0.84);
