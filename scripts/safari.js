@@ -15935,7 +15935,7 @@ function Safari() {
                 self.crit = false;
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
-                if (self.selectData.shieldHP > 0 && targetSide === 2) {
+                if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
                     dmg = Math.ceil(dmg * 0.5);
                     sdmg = Math.ceil(dmg * 0.5);
                     if (self.select.genesisshield) {
@@ -21047,7 +21047,8 @@ function Safari() {
                 }
                 if (player.firstCelebrityRun) {
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
-                    rewardCapCheck(player, reward[0], reward[1], true);
+                    player.balls[reward[0]] += reward[1];
+                    rewardCapCheck(player, reward[0], 0, true);
                     safari.saveGame(player);
                 }
                 
