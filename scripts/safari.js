@@ -4964,7 +4964,7 @@ function Safari() {
             }    
             safaribot.sendMessage(src, "Gotcha! " + pokeName + " was caught with " + an(ballName) + "! " + itemsLeft(player, ball), safchan);
             if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].eventFlags && contestThemes[currentTheme].eventFlags.contains(parseInt(currentPokemon, 10))) {
-                player.eventFlags[currentPokemon+""] = now() + (48 * 60 * 60 * 1000); //flag set for 48 hours
+                player.eventFlags[currentPokemon+""] = now() + (72 * 60 * 60 * 1000); //flag set for 72 hours
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
             } else if (ball !== "spirit") {
@@ -11655,7 +11655,7 @@ function Safari() {
         }
         var rew = safari.events.bonusLoginRewards[player.bonusLogin.index];
         var g = giveStuff(player, toStuffObj(rew));
-        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " event, you " + g + "! Thanks for playing!</background>", safchan);
+        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " Event, you " + g + "! Thanks for playing!</background>", safchan);
         player.bonusLogin.index++;
         return true;
     }
@@ -15135,7 +15135,7 @@ function Safari() {
                 this.selectData.moonblastTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier;
-                if (poke1 && (poke1.hp > 0)) {
+                if (poke1 && (poke1.hp > 0) && (!this.usedProtect1)) {
                     dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen ? 0.5 : 1) * 0.84);
@@ -15149,7 +15149,7 @@ function Safari() {
                     }
                 }
 
-                if (poke2 && (poke2.hp > 0)) {
+                if (poke2 && (poke2.hp > 0) && (!this.usedProtect2)) {
                     dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen ? 0.5 : 1) * 0.84);
@@ -20928,33 +20928,33 @@ function Safari() {
                 var reward;
                 switch (args.difficulty) {
                     case 0: reward = [
-                        ["dew", 1],
-                        ["gacha", 4],
+                        ["dew", 2],
+                        ["gacha", 2],
                         ["pearl", 3],
                         ["gem", 1],
                         ["stardust", 2],
-                        ["gacha", 15],
+                        ["gacha", 10],
                         ["prizepack", 1],
-                        ["dew", 5],
+                        ["dew", 8],
                         ["nugget", 1],
                         ["gacha", 30],
                         ["nugget", 2],
-                        ["dew", 10],
+                        ["dew", 20],
                         ["prizepack", 5],
                         ["prizepack", 10]
                     ][args.index]; break;
                     case 1: reward = [
-                        ["dew", 3],
+                        ["dew", 5],
                         ["gacha", 5],
                         ["stardust", 4],
-                        ["dew", 5],
+                        ["dew", 8],
                         ["nugget", 1],
                         ["prizepack", 2],
                         ["dew", 12],
                         ["nugget", 3],
                         ["prizepack", 5],
                         ["megastone", 1],
-                        ["dew", 25],
+                        ["dew", 40],
                         ["prizepack", 12],
                         ["prizepack", 25]
                     ][args.index]; break;
@@ -37641,12 +37641,12 @@ function Safari() {
             }
             if (command === "loadbonuslogin" || command === "loadbonuslogins") {
                 var cThemes = {};
-                var url = commandData === "*" ? (permObj.get("trialsurl") || commandData) : commandData;
+                var url = commandData === "*" ? (permObj.get("bonusloginurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
                     return true;
                 }
-                safaribot.sendMessage(src, "Loading trials from " + url + "!", safchan);
+                safaribot.sendMessage(src, "Loading bonus logins from " + url + "!", safchan);
                 try {
                     sys.webCall(url, function (resp) {
                         try {
