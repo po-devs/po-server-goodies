@@ -28011,7 +28011,7 @@ function Safari() {
             daycarebot.sendMessage(src, "You don't have that Pokémon!", safchan);
             return false;
         }
-        if (player.party.length === 1 && player.party.contains(mon)) {
+        if (player.party.length === 1 && player.party.contains(pokemon.id)) {
             daycarebot.sendMessage(src, "You can't drop off your only Pokémon!", safchan);
             return false;
         }
