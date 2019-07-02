@@ -11471,6 +11471,9 @@ function Safari() {
             case "towerFloorCanEvolve":
                 out = (action === "tower" && target >= mission.target && data.canEvolve === true ? value : 0);
                 break; 
+            case "towerFloorBST":
+                out = (action === "tower" && target >= mission.target && data.lowBST ? value : 0);
+                break; 
             case "towerFloor":
                 out = (action === "tower" && target >= mission.target ? value : 0);
                 break; 
@@ -11641,7 +11644,7 @@ function Safari() {
             }
         }
         if (player.bonusLogin.name !== safari.events.bonusLoginName) {
-            index = 0;
+            player.bonusLogin.index = 0;
             player.bonusLogin.name = safari.events.bonusLoginName
         }
         if (player.bonusLogin.index > safari.events.bonusLoginRewards.length) {
@@ -19924,6 +19927,14 @@ function Safari() {
                     }
                 }
 
+                var passed = true;
+                for (var i = 0; i < player.party.length; i++) {
+                    if (getBST(player.party[i]) > 480) {
+                        passed = false;
+                        break;
+                    }
+                }
+
                 var k = Object.keys(effectiveness), m = [], y, l = [], u = true;
                 for (var t in k) {
                     y = true;
@@ -19944,7 +19955,7 @@ function Safari() {
                     l.push(player.party[p]);
                 }
 
-                safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u});
+                safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
 
                 if (penalty) {
@@ -30166,6 +30177,12 @@ function Safari() {
                             else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit && (q.id !== p.id)) {
                                 break;
                             }
+                            else if (q.spike === maxHit && q.canHit && (q.id !== p.id)) {
+                                break;
+                            }
+                            else if (q.spike === secondMaxHit && q.canHit && (q.id !== p.id)) {
+                                break;
+                            }
                         }
                         this.inputMove(p.id, act + ":" + act2);
                     }
@@ -30423,7 +30440,7 @@ function Safari() {
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
-        this.sendMessage(p.id, "Choose " + link("/vol effort:0", "easy") + link("/vol effort:1", "normal") + link("/vol effort:0", "strong") + " for your serve strength!");
+        this.sendMessage(p.id, "Choose " + link("/vol effort:0", "Easy") + " " + link("/vol effort:1", "Normal") + " " + link("/vol effort:2", "Strong") + " for your serve strength!");
         if (this.hasSkill(p, "float")) {
             this.sendMessage(p.id, "Type " + link("/vol float") + " to perform a Float Serve!");
         }
