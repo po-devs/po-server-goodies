@@ -15197,6 +15197,11 @@ function Safari() {
                     this.sendToViewers(poke(poke2.id) + " lost " + dmg + " HP!");
                     if (poke2.hp <= 0) {
                         this.sendToViewers(poke(poke2.id) + " fainted!");
+                    } else if (this.select.brawler) {
+                        var stat = ["atk", "def", "spe", "satk", "sdef"].random();
+                        poke2.boosts[stat] += 2;
+                        poke2.boosts[stat] = Math.min(6, Math.max(poke2.boosts[stat], -6));
+                        out.push(poke(poke2.id) + "'s " + self.statName(stat) + " +2!");
                     }
                 }
             }
