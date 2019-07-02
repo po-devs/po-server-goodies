@@ -30171,16 +30171,13 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit && (q.id !== p.id)) {
+                            if ((p.zone !== "front" && (!(this.hasSkill(p, "back-attack")))) || (q.id == p.id)) {
+                                continue;
+                            }
+                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit) {
                                 break;
                             }
-                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit && (q.id !== p.id)) {
-                                break;
-                            }
-                            else if (q.spike === maxHit && q.canHit && (q.id !== p.id)) {
-                                break;
-                            }
-                            else if (q.spike === secondMaxHit && q.canHit && (q.id !== p.id)) {
+                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit) {
                                 break;
                             }
                         }
