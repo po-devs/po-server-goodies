@@ -29550,7 +29550,7 @@ function Safari() {
                     ret += this.courtIcon(inp, rows[place].owner);
                 }
                 else if (place === "---") {
-                    ret += place;
+                    ret += link("/vol block:" + (j + 1), place) + " ";
                 }
                 else {
                     ret += " " + link("/vol " + place, place) + " ";
@@ -29635,7 +29635,7 @@ function Safari() {
                 canHit: false,
                 canTip: false,
                 blocking: false,
-                blockType: "straight",
+                blockType: 0,
                 passval: 0,
                 setval: 0,
                 volleysIn: 0,
@@ -29931,19 +29931,6 @@ function Safari() {
         }
         this.endBlock(0);
         this.endBlock(1);
-        if (this.phase == "set" || this.phase == "attack") {
-            if (!passed) {
-                this.sendMessageAll("The team with the ball failed to complete a play!", "blue");
-                for (var team in this.teams) {
-                    cteam = this.teams[team];
-                    for (var t in cteam) {
-                        p = cteam[t];
-                        this.inputMove("miki sayaka", "eval:" + p.id);
-                    }
-                }
-                this.scorePoint(defteam);
-            }
-        }
         else if (!passed) {
             this.sendMessageAll("Something broke!");
             for (var team in this.teams) {
@@ -29959,7 +29946,7 @@ function Safari() {
             for (var t in cteam) {
                 var p = cteam[t];
                 if (this.hasSkill(p, "sneak") && (!p.actSkills.sneak)) {
-                    this.sendMessage(p.id, "You can use " + link("/vol sneak") + "to become invisible to opponents until you next touch the ball!");
+                    this.sendMessage(p.id, "You can use " + link("/vol sneak") + " to become invisible to opponents until you next touch the ball!");
                 }
             }
         }
@@ -30941,20 +30928,20 @@ function Safari() {
             if (p.blocking && p.zone == "front") {
                 tempcolumn = (8 - p.column);
                 if (player.column === tempcolumn) {
-                    if ((angle === 0 && p.blockType == "straight") || (angle === 1 && p.blockType == "blockin" && tempcolumn > 4) || (angle === -1 && p.blockType == "blockout" && tempcolumn < 4)) {
+                    if ((angle === 0 && p.blockType == tempcolumn) || (angle === 1 && p.blockType == tempcolumn + 1) || (angle === -1 && p.blockType == tempcolumn - 1)) {
                         k = p.block + p.prep;
-                        if (angle === 0 && p.blockType == "straight") {
+                        if (angle === 0 && p.blockType == tempcolumn) {
                             k += 1;
                         }
                     }
                 }
                 if (player.column === tempcolumn + 1) {
-                    if ((angle === -1 && p.blockType == "straight") || (angle === 0 && p.blockType == "blockin") || (angle === -2 && p.blockType == "blockout")) {
+                    if ((angle === -1 && p.blockType == tempcolumn + 1) || (angle === 0 && p.blockType == tempcolumn) || (angle === -2 && p.blockType == tempcolumn + 2)) {
                         k = p.block + p.prep;
                     }
                 }
                 if (player.column === tempcolumn - 1) {
-                    if ((angle === 1 && p.blockType == "straight") || (angle === 0 && p.blockType == "blockin") || (angle === 2 && p.blockType == "blockout")) {
+                    if ((angle === 1 && p.blockType == tempcolumn - 1) || (angle === 0 && p.blockType == tempcolumn) || (angle === 2 && p.blockType == tempcolumn - 2)) {
                         k = p.block + p.prep;
                     }
                 }
@@ -31457,7 +31444,7 @@ function Safari() {
             }
             return;
         }
-        this.sendMessageAll(name + " input " + data + ".");
+        //this.sendMessageAll(name + " input " + data + ".");
         
         var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
@@ -31756,20 +31743,25 @@ function Safari() {
             this.sendMessage(name, "A teammate is already at position " + data + "!", "red");
             return false;
         }
-        if (data == "block" || data == "blockin" || data == "blockout" || data == "blockstraight") {
+        if (data.slice(0, 5) == "block") {
+            if (player.zone == "back" || player.row !== 0) {
+                this.sendMessage(name, "You must be in the front row to block!", "red");
+                return false;
+            }
             player.blocking = true;
             this.inputVal(player.id, "action", "block");
-            if (data == "blockin") {
-                this.inputVal(player.id, "blockType", "in");
-                this.sendMessageTeam(player.team, this.actName(player) + " is going to block IN!", "green");
-            }
-            else if (data == "blockout") {
-                this.inputVal(player.id, "blockType", "out");
-                this.sendMessageTeam(player.team, this.actName(player) + " is going to block OUT!", "green");
-            }
-            else {
-                this.inputVal(player.id, "blockType", "straight");
-                this.sendMessageTeam(player.team, this.actName(player) + " is going to block STRAIGHT!", "green");
+            var blockData = data.split(":");
+            var toX = 0;
+            if (blockData.length > 1) {
+                toX = parseInt(blockData[1], 10);
+                if (toX > 0 && toX < 7) {
+                    if (Math.abs(toX - player.column) <= 1) {
+                        this.inputVal(player.id, "blockType", toX);
+                        this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
+                    } else {
+                        this.sendMessage(name, "You can't block that far!", "red");
+                    }
+                }
             }
             return true;
         }
