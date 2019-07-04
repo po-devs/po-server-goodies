@@ -29677,7 +29677,7 @@ function Safari() {
             if (typeof p == "string") {
                 id = sys.id(p);
                 if (id && sys.isInChannel(id, safchan)) {
-                    sys.sendHtmlMessage(id, msg, safchan);
+                    safaribot.sendHtmlMessage(id, msg, safchan);
                 }
             }
         }
@@ -29686,7 +29686,7 @@ function Safari() {
             if (typeof p == "string") {
                 id = sys.id(p);
                 if (id && sys.isInChannel(id, safchan)) {
-                    sys.sendHtmlMessage(id, msg, safchan);
+                    safaribot.sendHtmlMessage(id, msg, safchan);
                 }
             }
         }
@@ -29839,7 +29839,7 @@ function Safari() {
                 this.step = 0;
             }
         }
-        if (this.phase == "assemble") {
+        else if (this.phase == "assemble") {
             if (this.step >= 5) {
                 this.step = 0;
                 this.aiChooseMove(0);
