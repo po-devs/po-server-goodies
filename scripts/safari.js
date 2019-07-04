@@ -29780,23 +29780,25 @@ function Safari() {
         }
         return out;
     };
-    Volleyball.prototype.loadNextMon = function(player) {
-        player.currentPoke += 1;
-        if (player.currentPoke > 2) {
-            player.currentPoke = 2;
+    Volleyball.prototype.loadNextMon = function(p) {
+        var player = p.id;
+        this.inputVal(player, "currentPoke", p.currentPoke + 1);
+        if (p.currentPoke > 2) {
+            this.inputVal(player, "currentPoke", 2);
         }
         var m = player.currentPoke;
-        player.stamina = player.party[m].stamina;
-        player.maxStamina = player.party[m].stamina;
-        player.serve = player.party[m].serve;
-        player.receive = player.party[m].receive;
-        player.toss = player.party[m].toss;
-        player.spike = player.party[m].spike;
-        player.precision = player.party[m].precision;
-        player.block = player.party[m].block;
-        player.speed = player.party[m].speed;
-        player.skills = player.party[m].skills;
-        player.volleysIn = 0;
+        this.inputVal(player, "stamina", p.party[m].stamina);
+        this.inputVal(player, "maxStamina", p.party[m].stamina);
+        this.inputVal(player, "serve", p.party[m].serve);
+        this.inputVal(player, "receive", p.party[m].receive);
+        this.inputVal(player, "toss", p.party[m].toss);
+        this.inputVal(player, "spike", p.party[m].spike);
+        this.inputVal(player, "precision", p.party[m].precision);
+        this.inputVal(player, "block", p.party[m].block);
+        this.inputVal(player, "speed", p.party[m].speed);
+        this.inputVal(player, "skills", p.party[m].skills);
+        this.inputVal(player, "volleysIn", 0);
+        this.inputVal(player, "action", "");
         return;
     };
     Volleyball.prototype.actName = function(player) {
@@ -29992,7 +29994,7 @@ function Safari() {
                             case 4: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
                             case 5: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
                         }
-                        p.action = "";
+                        this.inputVal(p.id, "action", "");
                     }
                 }
             }
