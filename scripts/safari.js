@@ -20954,14 +20954,14 @@ function Safari() {
                         ["gem", 1],
                         ["stardust", 2],
                         ["gacha", 10],
-                        ["pack", 1],
+                        ["prizepack", 1],
                         ["dew", 8],
                         ["nugget", 1],
                         ["gacha", 30],
                         ["nugget", 2],
                         ["dew", 20],
-                        ["pack", 5],
-                        ["pack", 10]
+                        ["prizepack", 5],
+                        ["prizepack", 10]
                     ][args.index]; break;
                     case 1: reward = [
                         ["dew", 5],
@@ -20969,23 +20969,23 @@ function Safari() {
                         ["stardust", 4],
                         ["dew", 8],
                         ["nugget", 1],
-                        ["pack", 2],
+                        ["prizepack", 2],
                         ["dew", 12],
                         ["nugget", 3],
-                        ["pack", 5],
+                        ["prizepack", 5],
                         ["megastone", 1],
                         ["dew", 40],
-                        ["pack", 12],
-                        ["pack", 25]
+                        ["prizepack", 12],
+                        ["prizepack", 25]
                     ][args.index]; break;
                     case 2: reward = [
                         ["gacha", 5],
                         ["gacha", 8],
                         ["dew", 2],
-                        ["pack", 1],
+                        ["prizepack", 1],
                         ["dew", 5],
                         ["nugget", 1],
-                        ["pack", 2],
+                        ["prizepack", 2],
                         ["bignugget", 1],
                         ["dew", 15],
                         ["megastone", 2],
@@ -20997,10 +20997,10 @@ function Safari() {
                         ["gacha", 6],
                         ["gacha", 10],
                         ["dew", 3],
-                        ["pack", 2],
+                        ["prizepack", 2],
                         ["dew", 7],
                         ["nugget", 2],
-                        ["pack", 4],
+                        ["prizepack", 4],
                         ["bignugget", 2],
                         ["dew", 25],
                         ["megastone", 3],
@@ -21010,16 +21010,16 @@ function Safari() {
                     ][args.index]; break;
                     case 4: reward = [
                         ["nugget", 1],
-                        ["pack", 5],
+                        ["prizepack", 5],
                         ["dew", 10],
                         ["bignugget", 1],
                         ["nugget", 3],
                         ["dew", 20],
-                        ["pack", 20],
+                        ["prizepack", 20],
                         ["bignugget", 5],
                         ["dew", 80],
                         ["bright", 5],
-                        ["pack", 100],
+                        ["prizepack", 100],
                         ["ldew", 20],
                         ["ldew", 50]
                     ][args.index]; break;
@@ -28339,7 +28339,7 @@ function Safari() {
             box["fossil"] = 2;
         }
         if (hasType(id, "Psychic")) {
-            box["pack"] = 2;
+            box["prize"] = 2;
         }
         if (hasType(id, "Electric")) {
             box["battery"] = 3;
@@ -32379,7 +32379,6 @@ function Safari() {
         if (date != permObj.get("currentMonth")) {
             this.awardMonthlyMedals(monthlyLeaderboards);
             this.resetCostumes();
-            permObj.add("currentMonth", date);
             /*var old = {};
             for (var e in monthlyLeaderboards) {
                 old[e + "Last"] = JSON.parse(JSON.stringify(leaderboards[e + "Weekly"]));
@@ -32387,6 +32386,7 @@ function Safari() {
             }
             lastLeaderboards = old;
             permObj.add("lastLeaderboards", JSON.stringify(lastLeaderboards));
+            permObj.add("currentMonth", date);
             permObj.save();
             this.updateLeaderboards();*/
         }
