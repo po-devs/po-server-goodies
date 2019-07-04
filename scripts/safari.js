@@ -13839,7 +13839,6 @@ function Safari() {
         else {
             this.viewers = [this.name1.toLowerCase()];
         }
-        this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
 
         var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
@@ -13978,6 +13977,7 @@ function Safari() {
             }
         }
 
+        this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
         if (isNPC) {
             this.name2 = player2.name;
             this.powerBoost = player2.powerBoost || 0;
