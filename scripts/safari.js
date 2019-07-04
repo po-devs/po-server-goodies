@@ -9155,9 +9155,9 @@ function Safari() {
             if (!evType || unavailableEv.contains(evType)) {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "To start an event, use " + link("/use form:EventType:RewardSet", null, true) + ". You can learn about each event by typing " + link("/eventhelp") + ".", safchan);
-                safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory, Quiz or Bingo.", safchan);
+                safaribot.sendMessage(src, "Event Type can be Faction War, Inverted War, Race, Bet Race, Battle Factory, LC Battle Factory, Quiz, Bingo, or Volleyball.", safchan);
                 safaribot.sendMessage(src, "Reward Set is the number for the reward you wish to set for the event. Each event type has a set of pre-defined rewards. You can check the available sets by setting the Reward Set to 0. Rewards are given by the game, you don't need to have them.", safchan);
-                safaribot.sendHtmlMessage(src, "When starting a Faction War or Inverted War, you can type " + link("/use form:EventType:RewardSet:Team1:Team2", null, true) + " to choose the factions' names.", safchan);
+                safaribot.sendHtmlMessage(src, "When starting an event that has teams (Faction Wars or Volleyball), you can type " + link("/use form:EventType:RewardSet:Team1:Team2", null, true) + " to choose the factions' names.", safchan);
                 safaribot.sendHtmlMessage(src, "When starting a Bingo, you can type " + link("/use form:EventType:RewardSet:Goal", null, true) + " to set a number from 1 to 3 for the goal.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
@@ -9165,7 +9165,7 @@ function Safari() {
             var sets = {
                 factionwar: [ //If 2 entries, each team gets a different reward. If only 1 entry, then same reward for both teams
                     ["5@gacha"],
-                    ["3@silver"],
+                    ["5@silver"],
                     ["1@gem"],
                     ["10@rock"],
                     ["3@pearl"],
@@ -9175,6 +9175,17 @@ function Safari() {
                     ["3@grnapricorn", "3@ylwapricorn"],
                     ["5@luxury", "5@spy"],
                     ["5@gacha", "1@gem"]
+                ],
+                volleyball: [ //If 2 entries, each team gets a different reward. If only 1 entry, then same reward for both teams
+                    ["10@silver"],
+                    ["2@gem"],
+                    ["3@pearl"],
+                    ["@rare"],
+                    ["8@blkapricorn", "8@whtapricorn"],
+                    ["8@pnkapricorn", "8@bluapricorn"],
+                    ["8@grnapricorn", "38ylwapricorn"],
+                    ["5@redapricorn", "5@ylwapricorn"],
+                    ["6@bigpearl"]
                 ],
                 race: [ //'reward' is required, rewardUnderdog and rewardFavorite are optional
                     { reward: "5@gacha", rewardUnderdog: "8@gacha", rewardFavorite: "3@gacha" },
@@ -9274,6 +9285,13 @@ function Safari() {
                             safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew[0]) + " for Team 1, " + translateStuff(rew[1]) + " for Team 2", safchan);
                         }
                     }
+                    if (p === "volleyball") {
+                        if (rew.length === 1) {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew[0]), safchan);
+                        } else {
+                            safaribot.sendMessage(src, "Set " + (r+1) + ": " + translateStuff(rew[0]) + " for Team 1, " + translateStuff(rew[1]) + " for Team 2", safchan);
+                        }
+                    }
                     else if (p === "race") {
                         if (rew.rewardUnderdog || rew.rewardFavorite) {
                             safaribot.sendMessage(src, "Set " + (r+1) + ": " + (rew.rewardUnderdog ? translateStuff(rew.rewardUnderdog) + " for Underdog, " : "") + (rew.rewardFavorite ? translateStuff(rew.rewardFavorite) + " for Favorite, " : "") + translateStuff(rew.reward) + " for others", safchan);
@@ -9320,7 +9338,7 @@ function Safari() {
                 safaribot.sendMessage(src, "You can't start an event with less than 3 minutes before the next contest starts!", safchan);
                 return;
             }
-            if (["factionwar", "invertedwar"].contains(evType) && info.extra1 !== null && info.extra2 !== null && info.extra1.toLowerCase() === info.extra2.toLowerCase()) {
+            if (["factionwar", "invertedwar", "volleyball"].contains(evType) && info.extra1 !== null && info.extra2 !== null && info.extra1.toLowerCase() === info.extra2.toLowerCase()) {
                 safaribot.sendMessage(src, "Please choose different names for each faction!", safchan);
                 return;
             }
@@ -9346,6 +9364,16 @@ function Safari() {
                     }
                     
                     ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1]);
+                break;
+                case "volleyball":
+                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, 803));
+                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, 803));
+                    
+                    while (extra1.toLowerCase() === extra2.toLowerCase()) {
+                        extra2 = sys.pokemon(sys.rand(1, 803));
+                    }
+                    
+                    ev = new Volleyball(src, extra1, extra2, reward[0], reward[1]);
                 break;
                 case "race":
                     ev = new PokeRace(src, "normal", reward);
@@ -25322,6 +25350,10 @@ function Safari() {
                 return "hquiz";
             case "bingo":
                 return "bingo";
+            case "vb":
+            case "bikini battle":
+            case "volleyball":
+                return "volleyball";
             default:
                 return null;
         }
@@ -29313,7 +29345,7 @@ function Safari() {
         return;
     }
     /* New Ball Mode */
-    function Volleyball(src, team1, team2) {
+    function Volleyball(src, team1, team2, reward1, reward2) {
         this.team1 = {}, this.team2 = {}; this.viewers = []; this.teams = [this.team1, this.team2];
         this.excludeActions = [];
         this.excludePos = [
@@ -29321,6 +29353,8 @@ function Safari() {
         ];
         this.teamServed = 0;
         this.teamHasBall = -1;
+        this.reward1 = reward1;
+        this.reward2 = reward2 ? reward2 : reward1;
 
         this.teamData = [
             {score: 0, name: team1, signups: [], firstBall: false},
@@ -30364,13 +30398,26 @@ function Safari() {
         }
     };
     Volleyball.prototype.winGame = function(team) {
+        var player;
         if (team === 0) {
             this.sendMessageAll("Team " + this.teamData[0].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[0]).join(", ") + " are the victors!" , "blue");
+            this.sendMessageAll("The winners receive " + translateAsset(this.reward1) + "!" , "blue");
         }
         if (team === 1) {
             this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[1]).join(", ") + " are the victors!" , "blue");
+            this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
+        }
+        for (var i in this.teams[team]) {
+            player = getAvatarOff(i);
+            if (player) {
+                if (team === 0) {
+                    giveStuff(player, toStuffObj(this.reward1));
+                } else if (team === 1) {
+                    giveStuff(player, toStuffObj(this.reward2));
+                }
+            }
         }
         this.finished = true;
         return;
