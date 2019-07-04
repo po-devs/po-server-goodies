@@ -29336,13 +29336,13 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>*** Tips for stamina in Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Stamina is expended when taking action.", safchan);
                 safaribot.sendHtmlMessage(src, "- Receiving hard driven balls can cost extreme stamina.", safchan);
-                safaribot.sendHtmlMessage(src, "- Make sure your dedicated receivers can cover the ball to prevent your spikers from being exhausted by receiving.", safchan);
+                safaribot.sendHtmlMessage(src, "- Make sure your dedicated receivers can receive the ball frequently to save the stamina of your offense-oriented players.", safchan);
                 safaribot.sendHtmlMessage(src, "- If your stamina drops below 10, your quality of actions will be reduced.", safchan);
                 safaribot.sendHtmlMessage(src, "- If your stamina drops below 4, your quality of actions will be reduced drastically.", safchan);
                 safaribot.sendHtmlMessage(src, "- If your stamina is low, you may elect to use /vol sub to change in your next Pokémon.", safchan);
                 break;
             default:
-                safaribot.sendHtmlMessage(src, "Valid queries for this are receive, toss, tip, spike, serve, block, and stamina!", safchan);
+                safaribot.sendHtmlMessage(src, "Valid queries for this are " + link("/vbhints receive", "receive") + ", " + link("/vbhints toss", "toss") + ", " + link("/vbhints tip", "tip") + ", " + link("/vbhints spike", "spike") + ", " + link("/vbhints serve", "serve") + ", " + link("/vbhints block", "block") + ", " + link("/vbhints stamina", "stamina") + "!", safchan);
                 break;
         }
         return;
@@ -31517,7 +31517,6 @@ function Safari() {
             }
         }
         if (!player) {
-            this.sendMessageAll("Error handling command for " + name + ".");
             return;
         }
         if (cdata[0] == "eval") {
@@ -31544,10 +31543,11 @@ function Safari() {
             }
             return;
         }
-        //this.sendMessageAll(name + " input " + data + ".");
+        this.sendMessageAll(name + " input " + data + ".");
         
         var volleyballActSkills = ["swap", "float", "sneak"];
-        if (volleyballActSkills.indexOf(player.action) !== -1) {
+        if (volleyballActSkills.indexOf(data) !== -1) {
+            this.inputVal(player.id, "action", data);
             var active = true;
             if (player.actSkills[player.action] === true) {
                 active = false;
@@ -31577,9 +31577,11 @@ function Safari() {
                 }
                 this.sendMessage(name, "You activated " + player.action + "! (You spent " + stcost + " and now have " + player.stamina + "stamina!)", "red");
                 player.stamina = Math.max(player.stamina - stcost, 0);
+                return;
             }
             else {
                 this.sendMessage(name, "You cannot activate " + player.action + " right now!", "red");
+                return;
             }
             if (player.actSkills.swap) {
                 var oldspot = player.place;
