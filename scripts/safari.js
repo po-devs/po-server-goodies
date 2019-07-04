@@ -9374,6 +9374,7 @@ function Safari() {
                     }
                     
                     ev = new Volleyball(src, extra1, extra2, reward[0], reward[1], false);
+                    currentGame = vb;
                 break;
                 case "race":
                     ev = new PokeRace(src, "normal", reward);
@@ -9399,7 +9400,9 @@ function Safari() {
             this.updateShop(player, "form");
             safaribot.sendMessage(src, itemsLeft(player, "form"), safchan);
             safari.saveGame(player);
-            currentEvent = ev;
+            if (evType !== "volleyball") {
+                currentEvent = ev;
+            }
             safari.flashPlayers();
             return;
         }
