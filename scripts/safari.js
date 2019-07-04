@@ -29708,7 +29708,7 @@ function Safari() {
 
         if (isNPC) {
             party = this.generateVolleyballParty();
-            out.id = generateName();
+            out.id = data.id;
         }
 
         else {
@@ -30092,7 +30092,7 @@ function Safari() {
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front" && p.ai && p.canSet) {
+                    if (p.canSet && p.zone == "front" && p.ai) {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
                             setter = p.id;
@@ -30247,13 +30247,16 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if ((p.zone !== "front" && (!(this.hasSkill(p, "back-attack")))) || (q.id == p.id)) {
+                            if ((q.zone !== "front" && (!(this.hasSkill(q, "back-attack")))) || (q.id == p.id)) {
                                 continue;
                             }
                             if (q.spike === maxHit && chooseHitter === 1 && q.canHit) {
                                 break;
                             }
                             else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit) {
+                                break;
+                            }
+                            else if (q.spike >= secondMaxHit + 3 && q.canHit) {
                                 break;
                             }
                         }
@@ -31843,7 +31846,7 @@ function Safari() {
             return false;
         }
         if (data.slice(0, 5) == "block") {
-            if (player.zone == "back" || player.row !== 0) {
+            if (player.zone == "back" || player.row !== 4) {
                 this.sendMessage(name, "You must be in the front row to block!", "red");
                 return false;
             }
