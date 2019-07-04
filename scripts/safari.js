@@ -29520,6 +29520,8 @@ function Safari() {
                 //this.viewers.push(team2[t].id.toLowerCase());
             }
         }
+        this.teamData[0].signups = [];
+        this.teamData[1].signups = [];
         this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0]).join(", ") + "!");
         this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1]).join(", ") + "!");
         this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve last!");
