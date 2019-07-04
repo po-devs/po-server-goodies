@@ -29708,7 +29708,7 @@ function Safari() {
 
         if (isNPC) {
             party = this.generateVolleyballParty();
-            out.id = generateName();
+            out.id = data.id;
         }
 
         else {
