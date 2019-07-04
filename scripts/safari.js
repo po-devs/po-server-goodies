@@ -29786,7 +29786,7 @@ function Safari() {
         if (p.currentPoke > 2) {
             this.inputVal(player, "currentPoke", 2);
         }
-        var m = player.currentPoke;
+        var m = p.currentPoke;
         this.inputVal(player, "stamina", p.party[m].stamina);
         this.inputVal(player, "maxStamina", p.party[m].stamina);
         this.inputVal(player, "serve", p.party[m].serve);
