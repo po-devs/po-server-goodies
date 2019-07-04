@@ -30024,8 +30024,8 @@ function Safari() {
         }
         maxSet = -100;
         maxHit = -100;
+        secondMaxHit = -100;
         for (var t in team) {
-            act = "";
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
@@ -30035,6 +30035,14 @@ function Safari() {
                             setter = p.id;
                         }
                     }
+                }
+            }
+        }
+        for (var t in team) {
+            act = "";
+            p = team[t];
+            if (this.teamHasBall === ind) {
+                if (this.phase == "set") {
                     if ((p.zone == "front" || (this.hasSkill(p, "back-attack"))) && (setter !== p.id)) {
                         if (p.spike >= maxHit) {
                             maxHit = p.spike;
@@ -30064,7 +30072,7 @@ function Safari() {
                         maxr = 1.2;
                         maxc = 2;
                     }
-                    maxr = Math.floor(3 - (Math.random() * maxr));
+                    maxr = Math.floor(2.99 - (Math.random() * maxr));
                     maxc = (4 - (maxc * Math.random()) + (maxc * Math.random()));
                     maxc = (Math.max(maxc, 1));
                     maxc = Math.round(Math.min(maxc, 7));
@@ -31457,7 +31465,7 @@ function Safari() {
             }
             return;
         }
-        this.sendMessageAll(name + " input " + data + ".");
+        //this.sendMessageAll(name + " input " + data + ".");
         
         var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
