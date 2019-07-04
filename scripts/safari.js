@@ -16063,7 +16063,7 @@ function Safari() {
                 if (self.select) {
                     if (self.select.chargebeam && (isP2 || isP4) && move.category == "special") {
                         user.boosts["satk"] += 1;
-                        user.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"], -6));
+                        user.boosts["satk"] = Math.min(6, Math.max(user.boosts["satk"], -6));
                         out.push(name + "'s " + self.statName("satk") + " +1!");
                     }
                 }
