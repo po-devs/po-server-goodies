@@ -5328,7 +5328,7 @@ function Safari() {
         ab.push(sys.pokeAbility(poke1, 2));
         for (var a in ab) {
             if (ab[a] && canHaveAbility(poke2, ab[a])) {
-                out = Math.max(3, out + 1);
+                out = Math.max(4, out + 1);
             }
         }
         if (userColor === getPokeColor(poke2)) {
@@ -30258,6 +30258,15 @@ function Safari() {
                             }
                             else if (q.spike >= secondMaxHit + 3 && q.canHit) {
                                 break;
+                            }
+                        }
+                        if (p.id == q.id) {
+                            for (var s in team) {
+                                q = team[s];
+                                act2 = q.id.toLowerCase();
+                                if ((p.id !== q.id) && q.canHit && (q.zone == "front" || ((this.hasSkill(q, "back-attack"))))) {
+                                    break;
+                                }
                             }
                         }
                         this.inputMove(p.id, act + ":" + act2);
