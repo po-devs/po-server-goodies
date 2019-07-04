@@ -29389,6 +29389,9 @@ function Safari() {
         var cdata2 = (cdata.length > 1 ? cdata[1] : "");
         if (this.phase == "signups") {
             var player = getAvatar(src);
+            if (!player) {
+                return;
+            }
             var party = player.party;
             var mon, i = 0;
             for (var p in party) { 
@@ -29427,13 +29430,17 @@ function Safari() {
                         cdata2 = this.teamData[1].name;
                     }
                 }
-                if (this.teamData[0].name === cdata2) {
+                if (this.teamData[0].name.toLowerCase() === cdata2.toLowerCase()) {
+                    cdata2 = this.teamData[0].name;
                     this.teamData[0].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!", "blue");
                 }
-                if (this.teamData[1].name === cdata2) {
+                if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
+                    cdata2 = this.teamData[1].name;
                     this.teamData[1].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!", "blue");
                 }
                 if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
                     this.assemblePhase();
