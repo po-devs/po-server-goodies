@@ -74,6 +74,8 @@ function Safari() {
     var eliteCounterPicks = [];
     var eliteStrongCounterPicks = [];
 
+    var vbdebug = false;
+
     var starters = [1, 4, 7];
     var playerTemplate = {
         id: "",
@@ -2016,6 +2018,12 @@ function Safari() {
         }
         if (arr.contains("event") && currentEvent) {
             if (currentEvent.isInEvent(sys.name(src))) {
+                safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
+                return true;
+            }
+        }
+        if (arr.contains("event") && currentGame) {
+            if (currentGame.playerInGame(sys.name(src))) {
                 safaribot.sendMessage(src, "You can't " + action + " during an event!", safchan);
                 return true;
             }
@@ -21107,9 +21115,9 @@ function Safari() {
                 if (next >= 13) {
                     player.firstCelebrityRun = false;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
-                    safaribot.sendHtmlAll("", safchan);
+                    safaribot.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
-                    safaribot.sendHtmlAll("", safchan);
+                    safaribot.sendAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
                     var description = "Cleared " + safari.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + "(" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258][args.difficulty];
@@ -29377,9 +29385,9 @@ function Safari() {
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);   
 
         if (!silent) {
-            safaribot.sendHtmlAll("", safchan);
+            safaribot.sendAll("", safchan);
             safaribot.sendHtmlAll("A Volleyball Event has started with teams " + team1 + " and " + team2 + " ready to rumble! Type " + link("/vol join:" + team1) + " or " + link("/vol join:" + team2) + " to join!", safchan);
-            safaribot.sendHtmlAll("", safchan);
+            safaribot.sendAll("", safchan);
         }     
     };
     Volleyball.prototype.handleCommand = function(src, data) {
@@ -29410,6 +29418,10 @@ function Safari() {
                 return;
             }
             if (cdata1 == "join") {
+                if (this.playerInGame(name)) {
+                    this.sendMessage(name, "You've already joined this game!", "red");
+                    return false;
+                }
                 if (this.teamData[0].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[0].signups.length === 6) {
                         this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
@@ -29659,6 +29671,25 @@ function Safari() {
     Volleyball.prototype.sendMessageAll = function(msg, color) {
         this.sendMessageTeam(0, msg, color);
         this.sendMessageTeam(1, msg, color);
+        var p, id;
+        for (var a in this.teamData[0].signups) {
+            p = this.teamData[0].signups[a];
+            if (typeof p == "string") {
+                id = sys.id(p);
+                if (id && sys.isInChannel(id, safchan)) {
+                    sys.sendHtmlMessage(id, msg, safchan);
+                }
+            }
+        }
+        for (var a in this.teamData[1].signups) {
+            p = this.teamData[1].signups[a];
+            if (typeof p == "string") {
+                id = sys.id(p);
+                if (id && sys.isInChannel(id, safchan)) {
+                    sys.sendHtmlMessage(id, msg, safchan);
+                }
+            }
+        }
     };
     Volleyball.prototype.generateVolleyballParty = function() {
         var p = [], k;
@@ -29766,13 +29797,41 @@ function Safari() {
     Volleyball.prototype.actName = function(player) {
         return (player.id + "'s " + poke(player.party[player.currentPoke].id));
     };
+    Volleyball.prototype.playerInGame = function(name) {
+        var p;
+        for (var a in this.teams[0]) {
+            p = this.teams[0][a];
+            if (p.id.toLowerCase() == name.toLowerCase()) {
+                return true;
+            }
+        }
+        for (var a in this.teams[1]) {
+            p = this.teams[1][a];
+            if (p.id.toLowerCase() == name.toLowerCase()) {
+                return true;
+            }
+        }
+        for (var a in this.teamData[0].signups) {
+            p = this.teamData[0].signups[a];
+            if (typeof p == "string" && p.toLowerCase() == name.toLowerCase()) {
+                return true;
+            }
+        }
+        for (var a in this.teamData[1].signups) {
+            p = this.teamData[1].signups[a];
+            if (typeof p == "string" && p.toLowerCase() == name.toLowerCase()) {
+                return true;
+            }
+        }
+        return false;
+    };
     Volleyball.prototype.action = function() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
             if (this.step === 12) {
-                safaribot.sendHtmlAll("", safchan);
+                safaribot.sendAll("", safchan);
                 safaribot.sendHtmlAll("You have about a minute left to join the Volleyball match with " + link("/vol join") + "!", safchan);
-                safaribot.sendHtmlAll("", safchan);
+                safaribot.sendAll("", safchan);
             }
             if (this.step === 20) {
                 //after 400 seconds
@@ -31552,7 +31611,9 @@ function Safari() {
             }
             return;
         }
-        this.sendMessageAll(name + " input " + data + ".");
+        if (vbdebug) {
+            this.sendMessageAll(name + " input " + data + ".");
+        }
         
         var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(data) !== -1) {
@@ -36979,6 +37040,10 @@ function Safari() {
                     safaribot.sendMessage( src,"You added " + data.name + " to " + player.id + "'s Cherished List.",safchan );
                     return;
                 };
+            }
+            if (command === "vbdebug") {
+                vbdebug = vbdebug ? false : true;
+                return true;
             }
             if (command === "clearccherished") {
                 var player = getAvatarOff(commandData);
