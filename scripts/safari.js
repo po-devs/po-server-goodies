@@ -29782,6 +29782,9 @@ function Safari() {
     };
     Volleyball.prototype.loadNextMon = function(player) {
         player.currentPoke += 1;
+        if (player.currentPoke > 2) {
+            player.currentPoke = 2;
+        }
         var m = player.currentPoke;
         player.stamina = player.party[m].stamina;
         player.maxStamina = player.party[m].stamina;
@@ -29989,6 +29992,7 @@ function Safari() {
                             case 4: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
                             case 5: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
                         }
+                        p.action = "";
                     }
                 }
             }
@@ -30311,13 +30315,13 @@ function Safari() {
                             if ((q.zone !== "front" && (!(this.hasSkill(q, "back-attack")))) || (q.id == p.id)) {
                                 continue;
                             }
-                            if (q.spike === maxHit && chooseHitter === 1 && q.canHit) {
+                            if (q.spike === maxHit && chooseHitter === 1) {
                                 break;
                             }
-                            else if (q.spike === secondMaxHit && chooseHitter === 2 && q.canHit) {
+                            else if (q.spike === secondMaxHit && chooseHitter === 2) {
                                 break;
                             }
-                            else if (q.spike >= secondMaxHit + 3 && q.canHit) {
+                            else if (q.spike >= secondMaxHit + 3) {
                                 break;
                             }
                         }
@@ -30325,7 +30329,7 @@ function Safari() {
                             for (var s in team) {
                                 q = team[s];
                                 act2 = q.id.toLowerCase();
-                                if ((p.id !== q.id) && q.canHit && (q.zone == "front" || ((this.hasSkill(q, "back-attack"))))) {
+                                if ((p.id !== q.id) && (q.zone == "front" || ((this.hasSkill(q, "back-attack"))))) {
                                     break;
                                 }
                             }
