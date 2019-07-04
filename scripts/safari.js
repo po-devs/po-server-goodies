@@ -29931,7 +29931,7 @@ function Safari() {
         }
         this.endBlock(0);
         this.endBlock(1);
-        else if (!passed) {
+        if (!passed) {
             this.sendMessageAll("Something broke!");
             for (var team in this.teams) {
                 cteam = this.teams[team];
