@@ -9374,7 +9374,7 @@ function Safari() {
                     }
                     
                     ev = new Volleyball(src, extra1, extra2, reward[0], reward[1], false);
-                    currentGame = vb;
+                    currentGame = ev;
                 break;
                 case "race":
                     ev = new PokeRace(src, "normal", reward);
