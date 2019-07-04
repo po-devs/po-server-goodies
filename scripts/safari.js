@@ -29931,7 +29931,20 @@ function Safari() {
         }
         this.endBlock(0);
         this.endBlock(1);
-        if (!passed) {
+        if (this.phase == "set" || this.phase == "attack") {
+            if (!passed) {
+                this.sendMessageAll("The team with the ball failed to complete a play!", "blue");
+                for (var team in this.teams) {
+                    cteam = this.teams[team];
+                    for (var t in cteam) {
+                        p = cteam[t];
+                        this.inputMove("miki sayaka", "eval:" + p.id);
+                    }
+                }
+                this.scorePoint(defteam);
+            }
+        }
+        else if (!passed) {
             this.sendMessageAll("Something broke!");
             for (var team in this.teams) {
                 cteam = this.teams[team];
@@ -30016,7 +30029,7 @@ function Safari() {
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front" && p.ai) {
+                    if (p.canSet && p.zone == "front" && p.ai && p.canSet) {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
                             setter = p.id;
@@ -30104,7 +30117,7 @@ function Safari() {
                     maxr = 1.5;
                     maxc = 2.4;
                 }
-                maxr = Math.floor(3 - (Math.random() * maxr));
+                maxr = Math.floor(2.99 - (Math.random() * maxr));
                 maxc = Math.floor(4 - (maxc * Math.random()) + (maxc * Math.random()));
                 maxc = (Math.max(maxc, 1));
                 maxc = Math.round(Math.min(maxc, 7));
@@ -30789,7 +30802,7 @@ function Safari() {
         for (var t in this.teams[defteam]) {
             var p = this.teams[defteam];
             if (p.zone === "front" && p.row === 4) {
-                this.sendMessage(p.id, "Type " + link("/block") + ", " + link("/blockin") + ", or " + link("/blockout") + " to block!", "red");
+                this.sendMessage(p.id, "You can block by clicking on the net!", "red");
             }
         }
         return;
@@ -31444,7 +31457,7 @@ function Safari() {
             }
             return;
         }
-        //this.sendMessageAll(name + " input " + data + ".");
+        this.sendMessageAll(name + " input " + data + ".");
         
         var volleyballActSkills = ["swap", "float", "sneak"];
         if (volleyballActSkills.indexOf(player.action) !== -1) {
@@ -31736,8 +31749,10 @@ function Safari() {
             }
         }
         if (opt.indexOf(cdata[0]) === -1) {
-            this.sendMessage(name, "No such action as " + data + "!", "red");
-            return false;
+            if (data.slice(0, 5) !== "block") {
+                this.sendMessage(name, "No such action as " + data + "!", "red");
+                return false;
+            }
         }
         if (this.excludePos[player.team].indexOf(data) !== -1) {
             this.sendMessage(name, "A teammate is already at position " + data + "!", "red");
