@@ -9373,7 +9373,7 @@ function Safari() {
                         extra2 = sys.pokemon(sys.rand(1, 803));
                     }
                     
-                    ev = new Volleyball(src, extra1, extra2, reward[0], reward[1]);
+                    ev = new Volleyball(src, extra1, extra2, reward[0], reward[1], false);
                 break;
                 case "race":
                     ev = new PokeRace(src, "normal", reward);
@@ -29345,7 +29345,7 @@ function Safari() {
         return;
     }
     /* New Ball Mode */
-    function Volleyball(src, team1, team2, reward1, reward2) {
+    function Volleyball(src, team1, team2, reward1, reward2, silent) {
         this.team1 = {}, this.team2 = {}; this.viewers = []; this.teams = [this.team1, this.team2];
         this.excludeActions = [];
         this.excludePos = [
@@ -29371,7 +29371,13 @@ function Safari() {
         this.ballStun = false;
         this.ballFloat = false;
 
-        safaribot.sendMessage(src, "You started a Volleyball match!", safchan);        
+        safaribot.sendMessage(src, "You started a Volleyball match!", safchan);   
+
+        if (!silent) {
+            safaribot.sendHtmlAll("", safchan);
+            safaribot.sendHtmlAll("A Volleyball Event has started with teams " + team1 + " and " + team2 + " ready to rumble! Type " + link("/vol join:" + team1) + " or " + link("/vol join:" + team2) + " to join!", safchan);
+            safaribot.sendHtmlAll("", safchan);
+        }     
     };
     Volleyball.prototype.handleCommand = function(src, data) {
         var name = sys.name(src);
@@ -29398,13 +29404,13 @@ function Safari() {
                 return;
             }
             if (cdata1 == "join") {
-                if (this.teamData[0].name === cdata2) {
+                if (this.teamData[0].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[0].signups.length === 6) {
                         this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
                         cdata2 = this.teamData[1].name;
                     }
                 }
-                if (this.teamData[1].name === cdata2) {
+                if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[1].signups.length === 6) {
                         this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
                         cdata2 = this.teamData[0].name;
@@ -29443,11 +29449,18 @@ function Safari() {
     Volleyball.prototype.assemblePhase = function() {
         var team1 = this.teamData[0].signups, team2 = this.teamData[1].signups, isNPC, newp, p;
         this.sendMessageAll("The teams have been decided! The match will now begin!");
+        var npcs = ["Steven", "Cynthia", "Lance", "Misty", "Nessa", "Brock", "Lillie", "Phoebe", "Juan", "Clair", "Bruno", "Maylene", "Koga", "Janine", "Jasmine", "Whitney", "Iris", "Flannery", "Candice", "Will", "Skyla", "Cilan", "Dent", "Blue", "Kiawe"]
+        var name = "";
+        var index = 0;
         while (team1.length < 6) {
-            team1.push({id: generateName()});
+            index = Math.floor(npcs.length * Math.random());
+            team1.push({id: npcs[index]});
+            npcs.splice(index, 1);
         }
         while (team2.length < 6) {
-            team2.push({id: generateName()});
+            index = Math.floor(npcs.length * Math.random());
+            team2.push({id: npcs[index]});
+            npcs.splice(index, 1);
         }
         for (var t in team1) {
             isNPC = typeof team1[t] === "object";
@@ -29746,10 +29759,12 @@ function Safari() {
     Volleyball.prototype.action = function() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
-            if (this.step === 42) {
-                //msg that there is less than a minute left to join
+            if (this.step === 12) {
+                safaribot.sendHtmlAll("", safchan);
+                safaribot.sendHtmlAll("You have about a minute left to join the Volleyball match with " + link("/vol join") + "!", safchan);
+                safaribot.sendHtmlAll("", safchan);
             }
-            if (this.step === 50) {
+            if (this.step === 20) {
                 //after 400 seconds
                 this.assemblePhase();
                 this.step = 0;
@@ -29779,7 +29794,11 @@ function Safari() {
             this.aiChooseMove(0);
             this.aiChooseMove(1);
             this.step = 0;
-            this.sendMessageAll("TURN " + this.turn + ": ");
+            if (this.turn > 0) {
+                this.sendMessageAll("TURN " + this.turn + ": ");
+            } else {
+                this.sendMessageAll("SERVICE: ");
+            }
             if (this.phase == "prep") {
                 this.processMoves();
                 this.prepareServe(this.teamHasBall);
@@ -35186,7 +35205,7 @@ function Safari() {
                 if (names.length < 2) {
                     names = ["One", "Two"];
                 }
-                var vb = new Volleyball(src, names[0], names[1]);
+                var vb = new Volleyball(src, names[0], names[1], "@rock", "@rock", true);
                 currentGame = vb;
                 return true;
             }
