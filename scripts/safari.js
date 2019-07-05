@@ -31149,6 +31149,9 @@ function Safari() {
             if (p.stamina <= 4) {
                 k = Math.max(k - 0.75, 0);
             }
+            if (k > 0) {
+                k += ((10 - player.setval) * 0.1);
+            }
             totalblk += k;
             if (k > 0) {
                 p.actSkills.sneak = false;
@@ -31230,7 +31233,7 @@ function Safari() {
         }
         var free = false;
         if (!(chance( blkevade )) && totalblk > 0) {
-            totalblk += Math.random() * 3;
+            totalblk += (Math.min(Math.random() * 3), 6 - player.setVal);
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
             } 
