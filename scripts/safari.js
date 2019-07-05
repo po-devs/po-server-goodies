@@ -30877,7 +30877,7 @@ function Safari() {
         */
         bonus = player.prep >= 1 ? 1 : 0;
         proficiency = Math.min(Math.floor((passscore + player.toss + bonus + (Math.random() * 2 * player.toss))/2), 10);
-        stcost = Math.floor(7.2 - Math.random() - (0.35 * passscore));
+        stcost = Math.max(Math.floor(7.2 - Math.random() - (0.75 * passscore)), 0);
         if (dist === 1) {
             if (proficiency <= 7) {
                 proficiency = Math.floor(0.75 * proficiency);
