@@ -29380,7 +29380,7 @@ function Safari() {
             {score: 0, name: team1, signups: [], firstBall: false},
             {score: 0, name: team2, signups: [], firstBall: true}
         ];
-        this.turnLength = 8;
+        this.turnLength = 6;
         this.step = 0;
         this.finished = false;
         this.phase = "signups";
