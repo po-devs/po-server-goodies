@@ -29286,7 +29286,7 @@ function Safari() {
         for (var p in safari.volleyballStats) {
             out += link("/vb " + poke(parseInt(p, 10)), poke(parseInt(p, 10)));
         }
-        safaribot.sendMessage(src, out, safchan);
+        safaribot.sendHtmlMessage(src, out, safchan);
         return;
     };
     function showVolleyballHints(src, query) {
