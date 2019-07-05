@@ -29225,7 +29225,7 @@ function Safari() {
         "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types."
     };
     function getVolleyballStat(pkmn, stat) {
-        var mon = pokeInfo.species(getInputPokemon(pkmn).num);
+        var mon = pokeInfo.species(getInputPokemon(poke(pkmn)).num);
         if (safari.volleyballStats.hasOwnProperty(mon+"")) {
             return safari.volleyballStats[mon][stat];
         }
