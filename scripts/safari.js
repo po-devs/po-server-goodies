@@ -29224,7 +29224,8 @@ function Safari() {
         "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
         "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types."
     };
-    function getVolleyballStat(mon, stat) {
+    function getVolleyballStat(pkmn, stat) {
+        var mon = pokeInfo.species(getInputPokemon(pkmn).num);
         if (safari.volleyballStats.hasOwnProperty(mon+"")) {
             return safari.volleyballStats[mon][stat];
         }
@@ -29284,7 +29285,7 @@ function Safari() {
     function showVolleyballLegal(src) {
         var out = "Pokémon allowed in Volleyball: ";
         for (var p in safari.volleyballStats) {
-            out += link("/vb " + poke(parseInt(p, 10)), poke(parseInt(p, 10)));
+            out += link("/vb " + poke(parseInt(p, 10)), poke(parseInt(p, 10))) + " ";
         }
         safaribot.sendHtmlMessage(src, out, safchan);
         return;
@@ -29607,7 +29608,7 @@ function Safari() {
         }
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
-            if (!p.actSkills.sneak && (!identify)) {
+            if (!p.actSkills.sneak || (identify)) {
                 mon = parseInt(p.party[p.currentPoke].id, 10);
                 rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
             }
@@ -31079,6 +31080,13 @@ function Safari() {
         }
 
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
+        if (chance((8-prec)/8)) {
+            if (chance(0.33)) {
+                xvar += 1;
+            } else if (chance(0.5)) {
+                xvar -= 1;
+            }
+        }
         xvar = (chance(0.5) ? xvar * -1 : xvar);
         yvar = (chance(0.8 - (((prec * 1.2) + 2) * 0.1)) ? 1 : 0);
         yvar = (chance(0.5) ? yvar * -1 : yvar);
@@ -31941,15 +31949,17 @@ function Safari() {
             this.inputVal(player.id, "action", "block");
             var blockData = data.split(":");
             var toX = 0;
-            if (blockData.length > 1) {
+            if (blockData.length < 2) {
+                toX = player.column;
+            } else {
                 toX = parseInt(blockData[1], 10);
-                if (toX > 0 && toX < 7) {
-                    if (Math.abs(toX - player.column) <= 1) {
-                        this.inputVal(player.id, "blockType", toX);
-                        this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
-                    } else {
-                        this.sendMessage(name, "You can't block that far!", "red");
-                    }
+            }
+            if (toX > 0 && toX < 7) {
+                if (Math.abs(toX - player.column) <= 1) {
+                    this.inputVal(player.id, "blockType", toX);
+                    this.sendMessageTeam(player.team, this.actName(player) + " is going to block!", "green");
+                } else {
+                    this.sendMessage(name, "You can't block that far!", "red");
                 }
             }
             return true;
