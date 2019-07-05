@@ -21115,9 +21115,9 @@ function Safari() {
                 if (next >= 13) {
                     player.firstCelebrityRun = false;
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> I have the great honor of saying that you have triumphed over all of the Celebrity Trainers today!", safchan);
-                    safaribot.sendAll("", safchan);
+                    sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
-                    safaribot.sendAll("", safchan);
+                    sys.sendAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
                     var description = "Cleared " + safari.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + "(" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258][args.difficulty];
@@ -29281,6 +29281,14 @@ function Safari() {
         }
         return;
     };
+    function showVolleyballLegal(src) {
+        var out = "Pokémon allowed in Volleyball: ";
+        for (var p in safari.volleyballStats) {
+            out += link("/vb " + poke(parseInt(p, 10)), poke(parseInt(p, 10)));
+        }
+        safaribot.sendMessage(src, out, safchan);
+        return;
+    };
     function showVolleyballHints(src, query) {
         if (!query) {
             query = "";
@@ -29385,9 +29393,9 @@ function Safari() {
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);   
 
         if (!silent) {
-            safaribot.sendAll("", safchan);
+            sys.sendAll("", safchan);
             safaribot.sendHtmlAll("A Volleyball Event has started with teams " + team1 + " and " + team2 + " ready to rumble! Type " + link("/vol join:" + team1) + " or " + link("/vol join:" + team2) + " to join!", safchan);
-            safaribot.sendAll("", safchan);
+            sys.sendAll("", safchan);
         }     
     };
     Volleyball.prototype.handleCommand = function(src, data) {
@@ -30509,12 +30517,12 @@ function Safari() {
         if (team === 0) {
             this.sendMessageAll("Team " + this.teamData[0].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[0]).join(", ") + " are the victors!" , "blue");
-            this.sendMessageAll("The winners receive " + translateAsset(this.reward1) + "!" , "blue");
+            //this.sendMessageAll("The winners receive " + translateAsset(this.reward1) + "!" , "blue");
         }
         if (team === 1) {
             this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[1]).join(", ") + " are the victors!" , "blue");
-            this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
+            //this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
         }
         for (var i in this.teams[team]) {
             player = getAvatarOff(i);
@@ -34725,6 +34733,10 @@ function Safari() {
             }
             if (command === "vb") {
                 showVolleyballInfo(src, commandData);
+                return true;
+            }
+            if (command === "vblegal" || command === "volleyballlegal") {
+                showVolleyballLegal(src);
                 return true;
             }
             if (command === "vbhints" || command === "volleyballhints") {
