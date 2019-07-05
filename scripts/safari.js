@@ -31934,7 +31934,7 @@ function Safari() {
             }
         }
         if (opt.indexOf(cdata[0]) === -1) {
-            if (data.slice(0, 5) !== "block") {
+            if ((data.slice(0, 5) !== "block") || (!opt.contains("block"))) {
                 this.sendMessage(name, "No such action as " + data + "!", "red");
                 return false;
             }
