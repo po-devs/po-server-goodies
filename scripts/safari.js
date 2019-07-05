@@ -29786,7 +29786,7 @@ function Safari() {
         if (p.currentPoke > 2) {
             this.inputVal(player, "currentPoke", 2);
         }
-        var m = (p.currentPoke > 2 ? 2 : p.currentPoke);
+        var m = p.currentPoke;
         this.inputVal(player, "stamina", p.party[m].stamina);
         this.inputVal(player, "maxStamina", p.party[m].stamina);
         this.inputVal(player, "serve", p.party[m].serve);
@@ -29982,19 +29982,19 @@ function Safari() {
                     if (p.action == "sub") {
                         if (p.currentPoke >= 2) {
                             this.sendMessage(p.id, "You can only sub a Pokémon in twice per match! You are out of substitutions!", "red");
-                        } else {
-                            this.loadNextMon(p);
-                            this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke].id) + "!", "green");
-                            switch (p.place) {
-                                case 0: this.inputVal(p.id, "place", 0); this.movePlayer(p.id, "b2"); break;
-                                case 1: this.inputVal(p.id, "place", 1); this.movePlayer(p.id, "b4"); break;
-                                case 2: this.inputVal(p.id, "place", 2); this.movePlayer(p.id, "b6"); break;
-                                case 3: this.inputVal(p.id, "place", 3); this.movePlayer(p.id, "d6"); break;
-                                case 4: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
-                                case 5: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
-                            }
-                            this.inputVal(p.id, "action", "");
+                            continue;
                         }
+                        this.loadNextMon(p);
+                        this.sendMessageTeam(p.team, p.id + " subs in " + poke(p.party[p.currentPoke].id) + "!", "green");
+                        switch (p.place) {
+                            case 0: this.inputVal(p.id, "place", 0); this.movePlayer(p.id, "b2"); break;
+                            case 1: this.inputVal(p.id, "place", 1); this.movePlayer(p.id, "b4"); break;
+                            case 2: this.inputVal(p.id, "place", 2); this.movePlayer(p.id, "b6"); break;
+                            case 3: this.inputVal(p.id, "place", 3); this.movePlayer(p.id, "d6"); break;
+                            case 4: this.inputVal(p.id, "place", 4); this.movePlayer(p.id, "d4"); break;
+                            case 5: this.inputVal(p.id, "place", 5); this.movePlayer(p.id, "d2"); break;
+                        }
+                        this.inputVal(p.id, "action", "");
                     }
                 }
             }
@@ -30427,7 +30427,7 @@ function Safari() {
                 }
             }
             if (this.phase == "prep") {
-                if (((p.stamina <= 10 && chance(0.33)) || (p.stamina <= 4)) && p.ai && p.currentPoke < 2) {
+                if ((p.stamina <= 10 && chance(0.66)) || (p.stamina <= 4)) {
                     act = "sub";
                 }
             }
@@ -30542,7 +30542,7 @@ function Safari() {
             this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
             this.teamHasBall = 1;
         }
-        if (this.teamData[team].score >= 6) {
+        if (this.teamData[team].score >= 15) {
             this.winGame(team);
             return;
         }
@@ -31765,7 +31765,7 @@ function Safari() {
             }
         }
         else if (this.phase === "prep" && (!player.canServe)) {
-            if (data == "sub" && player.currentPoke < 2) {
+            if (data == "sub") {
                 this.sendMessageTeam(player.team, player.id + " is going sub in their next Pokémon!", "green");
                 player.action = "sub";
                 return true;
