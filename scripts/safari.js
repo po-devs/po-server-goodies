@@ -29747,7 +29747,6 @@ function Safari() {
         else {
             for (var i = 0; i < 3; i++) {
                 party.push(data.party[i]);
-                i++;
             }
             out.id = data.id.toCorrectCase();
             out.ai = false;
