@@ -30550,7 +30550,7 @@ function Safari() {
             this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
             this.teamHasBall = 1;
         }
-        if (this.teamData[team].score >= 6) {
+        if (this.teamData[team].score >= 6 && Math.abs(this.teamData[1].score - this.teamData[0].score) > 1) {
             this.winGame(team);
             return;
         }
