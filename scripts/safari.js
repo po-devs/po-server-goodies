@@ -29196,7 +29196,7 @@ function Safari() {
         "248": {"stamina": 32, "serve": 4, "receive": 5, "toss": 2, "spike": 5, "block": 4, "precision": 4,"speed": 1, "skills": ["ace", "slacker", "defiant"]},
         "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "wide"]},
         "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
-        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "guardian"]},
+        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "dagger"]},
         "272": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 2,"speed": 2, "skills": ["splash", "overgrow", "swap"]},
         "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "telepathy", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
@@ -29234,13 +29234,17 @@ function Safari() {
         "splash": "Splash: When this Pokémon Sets, all non-Water type Pokémon in both front rows suffer -2 Stamina (Fire types suffer -3).",
         "telepathy": "Telepathy: While this Pokémon is in the back row, Fighting-type teammate's Spike +1.",
         "defiant": "Defiant: While this is in the back row, Psychic-type teammate's Spike +1.",
-        "float": "[ACT] Float: Costs 2 Stamina. Serve loses strength, but becomes more challenging to receive overhand or by receivers that move.",
+        "float": "[ACT] Float: Costs 2 Stamina. Serve loses precision, gains power, and becomes more challenging to receive overhand or by receivers that move.",
         "swap": "[ACT] Swap: Costs 3 Stamina. Moves the Pokémon up in the rotation, trading places with the Pokémon ahead of it.",
         "guts": "Guts: While this is in the back row, Dark-type teammate's Spike +1.",
         "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
-        "performer": "Performer: This Pokémon Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
+        "interference": "Interference: When in the front row, -1 Proficiency to the other team's setter (stacks). Has no effect on Psychic or Dark types.",
+        "performer": "Performer: This Pokémon's Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
+        "psyspike": "[ACT] Psyspike: Costs 5 Stamina. This Pokémon's Spike +1 and Precision +2, bypassing Blockers when activated before spiking.",
         "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
-        "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types or Pokémon with 'Grounded'."
+        "rollout": "Rollout: When successfully receiving a ball with FORCEFUL or higher velocity, proficiency is increased.",
+        "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types or Pokémon with 'Grounded'.",
+        "freeze": "Stun: Receiver's of this Pokémon's Serves and Spikes are frozen to the ground and cannot move for the rest of the rally. Does not affect Fire or Ice types."
     };
     function getVolleyballStat(pkmn, stat) {
         var mon = pokeInfo.species(getInputPokemon(poke(pkmn)).num);
@@ -29448,6 +29452,7 @@ function Safari() {
         //Skill related variables
         this.ballBurn = false;
         this.ballStun = false;
+        this.ballFreeze = false;
         this.ballFloat = false;
 
         this.official = false;
@@ -29839,11 +29844,12 @@ function Safari() {
                 freepass: false,
                 quickattack: false,
                 stunned: false,
+                frozen: false,
                 moved: 0,
                 receiver: false,
                 receiveType: "",
                 serveEffort: 0,
-                canSwap: false
+                canSwap: false,
         };
 
         if (isNPC) {
@@ -30611,6 +30617,7 @@ function Safari() {
             this.ballColumn = -1;
             this.ballBurn = false;
             this.ballStun = false;
+            this.ballFreeze = false;
             this.ballFloat = false;
         }
     };
@@ -30716,6 +30723,7 @@ function Safari() {
                 this.sendMessageTeam(0, this.actName(this.teams[0][p]) + " has finally reached full strength!", "green");
             }
             this.teams[0][p].stunned = false;
+            this.teams[0][p].frozen = false;
             this.teams[0][p].canSwap = true;
             if (this.hasSkill(this.teams[0][p], "swap")) {
                 this.sendMessage(this.teams[0][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
@@ -30730,6 +30738,7 @@ function Safari() {
                 this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
             }
             this.teams[1][p].stunned = false;
+            this.teams[0][p].frozen = false;
             this.teams[1][p].canSwap = true;
             if (this.hasSkill(this.teams[1][p], "swap")) {
                 this.sendMessage(this.teams[1][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
@@ -30889,6 +30898,9 @@ function Safari() {
         if (player.serveEffort === 2) {
             prec--;
         }
+        if (player.actSkills.float) {
+            prec -= 2;
+        }
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         xvar = (chance(0.5) ? xvar * -1 : xvar);
         yvar = (chance(0.8 - (((prec * 1.2) + 2) * 0.1)) ? 1 : 0);
@@ -30937,7 +30949,7 @@ function Safari() {
             pow -= 1;
         }
         if (player.actSkills.float) {
-            pow -= 1;
+            pow += 1;
         }
         pow = Math.ceil(Math.max(pow, 1));
         if (this.hasSkill(player, "slacker") && player.volleysIn < 5) {
@@ -30957,6 +30969,9 @@ function Safari() {
         }
         if (this.hasSkill(player, "stun")) {
             this.ballStun = true;
+        }
+        if (this.hasSkill(player, "freeze")) {
+            this.ballFreeze = true;
         }
         var might = "FREE";
         switch (pow) {
@@ -31066,8 +31081,19 @@ function Safari() {
         if (this.hasSkill(player, "slacker") && player.volleysIn < 5) {
             proficiency = Math.ceil(proficiency * 0.5);
         }
-        if (this.hasSkill(player, "performer") && (target.spikes <= 2)) {
+        if (this.hasSkill(player, "performer") && (target.spike <= 2)) {
             proficiency += 2;
+        }
+        var atkteam = player.team;
+        var defteam = (player.team === 1 ? 0 : 1);
+        if (!(hasType(player.party[player.currentPoke]), "Psychic") && (!(hasType(player.party[player.currentPoke]), "Dark"))) {
+            for (var t in this.teams[defteam]) {
+                if (this.teams[defteam][t].zone == "front") {
+                    if (this.hasSkill(this.teams[defteam][t], "interference")) {
+                        proficiency -= 1;
+                    }
+                }
+            }
         }
         target.setval = Math.max(0, Math.min(proficiency, 6));
         switch (target.setval) {
@@ -31085,6 +31111,9 @@ function Safari() {
         if (this.hasSkill(player, "energize")) {
             target.stamina += 2;
             this.sendMessageTeam(player.team, this.actName(target) + " was energized!", "green");
+        }
+        if (this.hasSkill(target, "psyspike")) {
+            this.sendMessage(target.id, "You can activate " + link("/vol psyspike") + " to increase your power and precision and bypass blockers! (Costs 5 stamina)", "red");
         }
         if (this.hasSkill(player, "splash")) {
             for (var t in this.teams[0]) {
@@ -31244,6 +31273,9 @@ function Safari() {
                 prec += 2;
             }
         }
+        if (player.actSkills.psyspike) {
+            prec += 2;
+        }
 
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         if (chance((8-prec)/8)) {
@@ -31380,6 +31412,9 @@ function Safari() {
                 }
             }
         }
+        if (player.actSkills.psyspike) {
+            pow++;
+        }
         pow = Math.min(8, pow);
         this.sendMessageAll(this.actName(player) + " spikes the ball!" + player.row === 3 ? " It's a Back Attack!" : "", "blue");
         stcost = Math.floor(6 - Math.random() - (0.4 * player.setval));
@@ -31404,6 +31439,11 @@ function Safari() {
         }
         if (player.setval <= 4) {
             blkevade = blkevade * 0.5;
+        }
+        if (player.actSkills.psyspike) {
+            blkevade = 1;
+            player.actSkills.psyspike = false;
+            this.sendMessageAll(this.actName(player) + "'s Psyspike bypasses the blockers!", "blue");
         }
         var free = false;
         if (!(chance( blkevade )) && totalblk > 0) {
@@ -31476,6 +31516,9 @@ function Safari() {
         }
         if (this.hasSkill(player, "stun")) {
             this.ballStun = true;
+        }
+        if (this.hasSkill(player, "freeze")) {
+            this.ballFreeze = true;
         }
         this.cyclePhase = "receive";
         this.ballPower = pow;
@@ -31676,6 +31719,9 @@ function Safari() {
                     break;
                 }
             }
+            if ((this.hasSkill(p, "rollout")) && this.ballPower >= 6) {
+                maxPass += 1.5 + Math.random() + Math.random();
+            }
             if (this.ballPower >= 6 && maxPass > 3) {
                 var player = getAvatarOff(p.id);
                 if (player) {
@@ -31701,6 +31747,13 @@ function Safari() {
                         this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
                     }
                     this.ballStun = false;
+                }
+                if (this.ballFreeze) {
+                    if ((!p.frozen) && (!hasType(p.party[p.currentPoke], "Fire") && (!hasType(p.party[p.currentPoke], "Ice")))) {
+                        p.frozen = true;
+                        this.sendMessageAll(this.actName(p) + " was frozen!", "blue");
+                    }
+                    this.ballFreeze = false;
                 }
                 return;
             }
@@ -31786,6 +31839,12 @@ function Safari() {
                 this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
             }
         }
+        if (this.ballFreeze) {
+            if ((!p.frozen) && (!hasType(p.party[p.currentPoke], "Fire") && (!hasType(p.party[p.currentPoke], "Ice")))) {
+                p.frozen = true;
+                this.sendMessageAll(this.actName(p) + " was frozen!", "blue");
+            }
+        }
         else {
             if (this.hasSkill(p, "overgrow")) {
                 stcost = Math.max(0, stcost - 2);
@@ -31795,6 +31854,7 @@ function Safari() {
         this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
         this.ballBurn = false;
         this.ballStun = false;
+        this.ballFreeze = false;
         this.ballFloat = false;
         p.canSet = false;
         this.ballPower = 0;
@@ -31856,7 +31916,7 @@ function Safari() {
             this.sendMessageAll(name + " input " + data + ".");
         }
         
-        var volleyballActSkills = ["swap", "float", "sneak"];
+        var volleyballActSkills = ["swap", "float", "sneak", "psyspike"];
         if (volleyballActSkills.indexOf(data) !== -1) {
             this.inputVal(player.id, "action", data);
             var active = true;
@@ -31872,6 +31932,9 @@ function Safari() {
             if ((player.action == "float") && this.phase !== "serve") {
                 active = false;
             } 
+            if ((player.action == "psyspike") && (this.phase !== "attack" || (!player.canHit))) {
+                active = false;
+            } 
             if ((player.action == "swap") && (!player.canSwap)) {
                 active = false;
             } 
@@ -31885,9 +31948,10 @@ function Safari() {
                     case "swap": stcost = 3; break;
                     case "float": stcost = 2; break;
                     case "sneak": stcost = 3; break;
+                    case "psyspike": stcost = 5; break;
                 }
-                this.sendMessage(name, "You activated " + player.action + "! (You spent " + stcost + " and now have " + player.stamina + "stamina!)", "red");
                 player.stamina = Math.max(player.stamina - stcost, 0);
+                this.sendMessage(name, "You activated " + player.action + "! (You spent " + stcost + " and now have " + player.stamina + "stamina!)", "red");
                 return;
             }
             else {
@@ -32197,6 +32261,10 @@ function Safari() {
         else {
             if (this.getDistance(player.pos, data) > player.speed) {
                 this.sendMessage(name, "You cannot go to " + data + " because it is too far!", "red");
+                return false;
+            }
+            else if (player.frozen) {
+                this.sendMessage(name, "You cannot move! You are frozen!", "red");
                 return false;
             }
             else {
