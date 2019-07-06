@@ -725,7 +725,7 @@ function Safari() {
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
+            rock: {name: "rock", fullName: "Water Balloon", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -7770,7 +7770,7 @@ function Safari() {
             success = 0;
         }
 
-        var verb = "stunned"; //change to stunned, seasonal change
+        var verb = "soaked"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
                 if (this.getFortune(target, "rockshield", 0)) {
@@ -8635,6 +8635,7 @@ function Safari() {
             case "cookie": {
                 sendAll("<b>!BEEPBEEPBEEPBEEP!</b> Oh no, " + sys.name(src) + " is on fire! Luckily, as a result of the fire, they were able to cook a nice " + finishName("cookie") + " from the surroundings!", true);
                 this.costumeEXP(player, "findrare");
+                safari.missionProgress(player,"findCookie",0,1,{});
             }
             break;
             case "eviolite": {
@@ -11488,6 +11489,9 @@ function Safari() {
                 break; 
             case "findHoney":
                 out = (action === "findHoney" ? value : 0);
+                break; 
+            case "findCookie":
+                out = (action === "findCookie" ? value : 0);
                 break; 
             case "getShocked":
                 out = (action === "getShocked" ? value : 0);
@@ -29184,15 +29188,23 @@ function Safari() {
         "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 3, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["stun", "energize", "dig"]},
         "36": {"stamina": 34, "serve": 5, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 1, "skills": ["banner", "grounded", "defiant"]},
         "62": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "grounded"]},
+        "65": {"stamina": 26, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["psyspike", "interference", "banner"]},
         "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 0,"speed": 1, "skills": ["ace", "dump", "guts"]},
         "76": {"stamina": 35, "serve": 4, "receive": 4, "toss": 3, "spike": 4, "block": 1, "precision": 2,"speed": 1, "skills": ["grounded", "banner", "back-attack"]},
         "94": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 0, "precision": 3,"speed": 4, "skills": ["performer", "sneak", "telepathy"]},
+        "97": {"stamina": 34, "serve": 5, "receive": 4, "toss": 4, "spike": 2, "block": 1, "precision": 3,"speed": 1, "skills": ["telepathy", "interference", "swap"]},
+        "124": {"stamina": 29, "serve": 3, "receive": 3, "toss": 4, "spike": 3, "block": 3, "precision": 4,"speed": 3, "skills": ["psyspike", "freeze", "float"]},
         "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 4, "block": 3, "precision": 4,"speed": 4, "skills": []},
         "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "performer", "energize"]},
         "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "overgrow", "wide"]},
         "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
         "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 1, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner", "splash", "dig"]},
+        "172": {"stamina": 20, "serve": 5, "receive": 3, "toss": 3, "spike": 5, "block": 0, "precision": 4,"speed": 5, "skills": ["back-attack", "ace", "dagger"]},
         "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 2, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
+        "190": {"stamina": 30, "serve": 4, "receive": 3, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 5, "skills": ["performer", "dig", "dump"]},
+        "194": {"stamina": 32, "serve": 5, "receive": 5, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 2, "skills": ["float", "grounded", "banner"]},
+        "231": {"stamina": 33, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 1, "precision": 3,"speed": 4, "skills": ["rollout", "grounded", "performer"]},
+        "237": {"stamina": 34, "serve": 4, "receive": 5, "toss": 3, "spike": 2, "block": 3, "precision": 3,"speed": 3, "skills": ["dagger", "rollout", "back-attack"]},
         "248": {"stamina": 32, "serve": 4, "receive": 5, "toss": 2, "spike": 5, "block": 4, "precision": 4,"speed": 1, "skills": ["ace", "slacker", "defiant"]},
         "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "wide"]},
         "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
@@ -29200,14 +29212,21 @@ function Safari() {
         "272": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 2,"speed": 2, "skills": ["splash", "overgrow", "swap"]},
         "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "telepathy", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
+        "289": {"stamina": 40, "serve": 5, "receive": 5, "toss": 4, "spike": 4, "block": 4, "precision": 4,"speed": 2, "skills": ["slacker", "banner", "back-attack"]},
         "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "guardian"]},
+        "376": {"stamina": 35, "serve": 3, "receive": 5, "toss": 1, "spike": 4, "block": 4, "precision": 1,"speed": 2, "skills": ["back-attack", "interference", "psyspike"]},
+        "424": {"stamina": 32, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 3, "skills": ["back-attack", "wide", "dump"]},
         "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 5, "block": 3, "precision": 3,"speed": 4, "skills": ["dig", "banner", "ace"]},
+        "439": {"stamina": 31, "serve": 3, "receive": 4, "toss": 4, "spike": 2, "block": 1, "precision": 5,"speed": 3, "skills": ["psyspike", "clairvoyant", "dagger"]},
         "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 5, "precision": 2,"speed": 3, "skills": ["guardian", "back-attack", "guts"]},
         "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "clairvoyant", "banner"]},
+        "460": {"stamina": 32, "serve": 3, "receive": 4, "toss": 2, "spike": 4, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "freeze", "back-attack"]},
         "461": {"stamina": 27, "serve": 3, "receive": 1, "toss": 4, "spike": 3, "block": 1, "precision": 5,"speed": 5, "skills": ["dump", "guardian", "defiant"]},
         "466": {"stamina": 30, "serve": 3, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "stun", "energize"]},
         "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["ace", "dagger", "float"]},
         "531": {"stamina": 38, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner", "energize", "float"]},
+        "556": {"stamina": 32, "serve": 4, "receive": 3, "toss": 5, "spike": 2, "block": 3, "precision": 3,"speed": 3, "skills": ["overgrow", "guardian", "performer"]},
+        "579": {"stamina": 34, "serve": 2, "receive": 4, "toss": 4, "spike": 2, "block": 5, "precision": 4,"speed": 1, "skills": ["psyspike", "interference", "energize"]},
         "652": {"stamina": 33, "serve": 2, "receive": 5, "toss": 2, "spike": 3, "block": 4, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow", "guts"]},
         "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "dump", "burn"]},
         "658": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 2, "precision": 5,"speed": 5, "skills": ["wide", "sneak", "dump"]},
