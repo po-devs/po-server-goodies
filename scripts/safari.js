@@ -29489,13 +29489,15 @@ function Safari() {
             }
             if (cdata1 == "unjoin") {
                 if (this.teamData[1].signups.contains(player.id)) {
-                    this.teamData[1].signups.splice(this.teamData[1].signups.indexOf(player.id));
+                    this.teamData[1].signups.splice(this.teamData[1].signups.indexOf(player.id), 1);
                     this.sendMessage(name, "You unjoined the game!", "red");
+                    this.sendMessageAll(name + " unjoined!", "blue");
                     return;
                 }
                 else if (this.teamData[0].signups.contains(player.id)) {
-                    this.teamData[0].signups.splice(this.teamData[0].signups.indexOf(player.id));
+                    this.teamData[0].signups.splice(this.teamData[0].signups.indexOf(player.id), 1);
                     this.sendMessage(name, "You unjoined the game!", "red");
+                    this.sendMessageAll(name + " unjoined!", "blue");
                     return;
                 }
             }
