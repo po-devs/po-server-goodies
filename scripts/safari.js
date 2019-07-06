@@ -14275,6 +14275,7 @@ function Safari() {
                     case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
                     case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
                     case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
+                    case "hazardsetter": m = "The foe sets up a layer of spikes every 5 turns."; break;
                     case "stealthrock": m = "The battle begins with Stealth Rock on challenger's side of the field."; break;
                     case "toxicspikes": m = "The battle begins with one layer of toxic spikes on challenger's side of the field."; break;
                     case "initialReflect": m = "Reflect begins active on foe's side."; break;
@@ -15255,6 +15256,14 @@ function Safari() {
             }
             if (checkWin()) {
                 return;
+            }
+            if ((this.turn % 5 === 0) && (this.select) && (this.turn !== 0)) {
+                if (this.select.hazardsetter) {
+                    if (this.side1Field.spikes && this.side1Field.spikes < 3) {
+                        this.side1Field.spikes++;
+                        this.sendToViewers(this.name2 + " set up a layer of spikes!");
+                    }
+                }
             }
             if ((this.turn % 7 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.topsyturvy) {
