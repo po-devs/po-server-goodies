@@ -29304,6 +29304,47 @@ function Safari() {
             query = "";
         }
         switch (query.toLowerCase()) {
+            case "howto":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Volleyball is a mini-game that requires typing no commands after joining!", safchan);
+                safaribot.sendHtmlMessage(src, "- To understand how to play the game, " + link("/vbhints howto2", "click here to learn more") + ".", safchan);
+                break;
+            case "howto2":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Serving: If it is your turn to serve, simple click the location on the other side of the net you would like to serve to!", safchan);
+                safaribot.sendHtmlMessage(src, "- Serving: For example, you could click 'xc4' to serve the ball.", safchan);
+                safaribot.sendHtmlMessage(src, "- Serving: When serving, you also have the ability to serve with Easy, Normal, or Hard strength. The harder your server, the harder it will be for the other side to receive, but the more stamina it will cost.", safchan);
+                safaribot.sendHtmlMessage(src, "- " + link("/vbhints hotwo3", "Cick here to learn more") + ".", safchan);
+                break;
+            case "howto3":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Receiving: After a serve or a spike, the other team must receive the ball by having one of their players go to the ball.", safchan);
+                safaribot.sendHtmlMessage(src, "- Receiving: If your current Pokémon has healthy stamina and is within range, click the location the ball was spiked to. If you do, your Pokémon will try to receive it.", safchan);
+                safaribot.sendHtmlMessage(src, "- " + link("/vbhints hotwo4", "Cick here to learn more") + ".", safchan);
+                break;
+            case "howto4":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Setting: After a successful reception, a Pokémon in the front row may set. Typically, you want the Pokémon with the highest Toss stat on your team to set the ball.", safchan);
+                safaribot.sendHtmlMessage(src, "- Setting: Links such as /vol set:Misty will appear. You may click these links to set the ball.", safchan);
+                safaribot.sendHtmlMessage(src, "- " + link("/vbhints hotwo5", "Cick here to learn more") + ".", safchan);
+                break;
+            case "howto5":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Spiking: The player who has the ball set to them by the setter can then spike the ball. The higher your Spike stat, the better the spike will be.", safchan);
+                safaribot.sendHtmlMessage(src, "- Spiking: Spiking works like serves. To choose your target, simply click the link on the other team's side of the net, such as 'xc4'.", safchan);
+                safaribot.sendHtmlMessage(src, "- " + link("/vbhints hotwo6", "Cick here to learn more") + ".", safchan);
+                break;
+            case "howto6":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- Blocking: If you are on the defending team, you can try to block the opposing team's spike by clicking on the net in front of the spiker.", safchan);
+                safaribot.sendHtmlMessage(src, "- Blocking: If your block stat is high and the other player spikes the ball in your direction, you may bee able to block their spike and score a point!", safchan);
+                safaribot.sendHtmlMessage(src, "- " + link("/vbhints hotwo7", "Cick here to learn more") + ".", safchan);
+                break;
+            case "howto7":
+                safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
+                safaribot.sendHtmlMessage(src, "- That's all you need to know in order to play this game!", safchan);
+                safaribot.sendHtmlMessage(src, "- For more information, use " + link("/vblegal", "/vblegal") + " to see a list of Pokémon that are allowed alongside their stats.", safchan);
+                break;
             case "receive":
             case "receiving":
             case "pass":
@@ -29355,7 +29396,7 @@ function Safari() {
             case "blocking":
                 safaribot.sendHtmlMessage(src, "<b>*** Tips for blocking in Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Blocking the ball uses the block stat of your active Pokémon.", safchan);
-                safaribot.sendHtmlMessage(src, "- Aim your block using /block straight, /block in, and /block out.", safchan);
+                safaribot.sendHtmlMessage(src, "- Aim your block by clicking on the net near your Pokémon.", safchan);
                 safaribot.sendHtmlMessage(src, "- If the angle of the spiker's hit meets the angle of your block, you will have a chance to score a point.", safchan);
                 break;
             case "stamina":
@@ -29368,7 +29409,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- If your stamina is low, you may elect to use /vol sub to change in your next Pokémon.", safchan);
                 break;
             default:
-                safaribot.sendHtmlMessage(src, "Valid queries for this are " + link("/vbhints receive", "receive") + ", " + link("/vbhints toss", "toss") + ", " + link("/vbhints tip", "tip") + ", " + link("/vbhints spike", "spike") + ", " + link("/vbhints serve", "serve") + ", " + link("/vbhints block", "block") + ", " + link("/vbhints stamina", "stamina") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "Valid queries for this are " + link("/vbhints howto", "How To") + ", " + link("/vbhints receive", "receive") + ", " + link("/vbhints toss", "toss") + ", " + link("/vbhints tip", "tip") + ", " + link("/vbhints spike", "spike") + ", " + link("/vbhints serve", "serve") + ", " + link("/vbhints block", "block") + ", " + link("/vbhints stamina", "stamina") + "!", safchan);
                 break;
         }
         return;
@@ -29448,13 +29489,15 @@ function Safari() {
             }
             if (cdata1 == "unjoin") {
                 if (this.teamData[1].signups.contains(player.id)) {
-                    this.teamData[1].signups.splice(this.teamData[1].signups.indexOf(player.id));
+                    this.teamData[1].signups.splice(this.teamData[1].signups.indexOf(player.id), 1);
                     this.sendMessage(name, "You unjoined the game!", "red");
+                    this.sendMessageAll(name + " unjoined!", "blue");
                     return;
                 }
                 else if (this.teamData[0].signups.contains(player.id)) {
-                    this.teamData[0].signups.splice(this.teamData[0].signups.indexOf(player.id));
+                    this.teamData[0].signups.splice(this.teamData[0].signups.indexOf(player.id), 1);
                     this.sendMessage(name, "You unjoined the game!", "red");
+                    this.sendMessageAll(name + " unjoined!", "blue");
                     return;
                 }
             }
