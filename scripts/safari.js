@@ -29403,10 +29403,10 @@ function Safari() {
         this.official = false;
 
         if (officialVolleyballTeam1 && officialVolleyballTeam2) {
-            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 === team2)) {
+            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 ==== team2)) {
                 this.official = true;
             }
-            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 === team2)) {
+            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 ==== team2)) {
                 this.official = true;
             }
         }
@@ -29445,18 +29445,6 @@ function Safari() {
             if (i <= 2) {
                 this.sendMessage(name, "You must have at least 3 Pokémon to enter a Volleyball match!", "red");
                 return;
-            }
-            if (cdata1 == "unjoin") {
-                if (this.teamData[1].signups.contains(player.id)) {
-                    this.teamData[1].signups.splice(this.teamData[1].signups.indexOf(player.id));
-                    this.sendMessage(name, "You unjoined the game!", "red");
-                    return;
-                }
-                else if (this.teamData[0].signups.contains(player.id)) {
-                    this.teamData[0].signups.splice(this.teamData[0].signups.indexOf(player.id));
-                    this.sendMessage(name, "You unjoined the game!", "red");
-                    return;
-                }
             }
             if (cdata1 == "join") {
                 if (this.playerInGame(name)) {
