@@ -29226,7 +29226,7 @@ function Safari() {
         "dump": "Dump: Pokémon may perform a Tip on a Pass or Set that is GREAT or higher quality.",
         "energize": "Energize: When this Pokémon sets to an Spiker, that Spiker gains +2 Stamina restored.",
         "banner": "Banner: Pokémon in the same column or row as this Pokémon's Receive +1.",
-        "grounded": "Grounded: Pokémon's Receive strength increases by +2 if it does not move after the spike or serve.",
+        "grounded": "Grounded: Pokémon's Receive strength increases by +2 if it does not move after the spike or serve. +1 Receive if spiked by a Pokémon with 'Stun' ability and negates Stun.",
         "guardian": "Guardian: Pokémon's Receive strength increases by +2 on Free Pass and Tips.",
         "overgrow": "Overgrow: While this is in the back row, opposing team's Water type Pokémon's Spike -1. This Pokémon spends less stamina receiving unless the Spiker has 'Burn'.",
         "slacker": "Slacker: This Pokémon's Spikes, Receives, Serves, and Sets are reduced in effectiveness for the first 5 volleys.",
@@ -29240,7 +29240,7 @@ function Safari() {
         "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
         "performer": "Performer: This Pokémon Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
         "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
-        "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types."
+        "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types or Pokémon with 'Grounded'."
     };
     function getVolleyballStat(pkmn, stat) {
         var mon = pokeInfo.species(getInputPokemon(poke(pkmn)).num);
@@ -29674,7 +29674,7 @@ function Safari() {
                     this.sendMessage(p.id, "To choose a set target, use " + links + ".");
                 }
                 if (p.canTip) {
-                    this.sendMessage(p.id, "You can also perform a " + link("/vol tip") + "!");
+                    this.sendMessage(p.id, "You can also perform a setter dump with " + link("/vol tip") + "!");
                 }
             }
         }
@@ -31151,8 +31151,14 @@ function Safari() {
             if (p.row < maxrow) {
                 continue;
             }
+            if (Math.abs((8 - p.column) - player.column) > 1) {
+                continue;
+            }
+            if (chance(1 - ((p.stamina - (player.precision * 2) + (p.speed * 2)) * 0.05))) {
+                continue;
+            }
             if (p.row === maxrow) {
-                if (chance(1 - ((player.stamina + (player.speed * 2)) * 0.05))) {
+                if (chance(1 - ((p.stamina - (player.precision * 2) + (p.speed * 2)) * 0.05))) {
                     continue;
                 }
             }
@@ -31179,6 +31185,13 @@ function Safari() {
         p.actSkills.sneak = false;
         if (!safe) {
             this.sendMessageAll(this.actName(player) + "'s tip results in a kill!", "blue");
+            if (this.official) {
+                var mp = getAvatarOff(player);
+                if (mp) {
+                    mp.volleyballRecords.sets += 1;
+                    safari.saveGame(mp);
+                }
+            }
             this.scorePoint(atkteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -31219,6 +31232,8 @@ function Safari() {
             this.cyclePhase = "receive";
             this.sendMessageTeam(1, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 1) + "! [Strength: FREE]", "blue");
             this.sendMessageTeam(0, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "! [Strength: FREE]", "blue");
+            this.sendMessageTeam(0, this.courtView(0), null, true);
+            this.sendMessageTeam(1, this.courtView(1), null, true);
             this.teamHasBall = defteam;
             return;
         }
@@ -31384,9 +31399,15 @@ function Safari() {
         if (player.zone == "back") {
             blkevade += 0.15;
         }
+        if (player.setval <= 2) {
+            blkevade = 0;
+        }
+        if (player.setval <= 4) {
+            blkevade = blkevade * 0.5;
+        }
         var free = false;
         if (!(chance( blkevade )) && totalblk > 0) {
-            totalblk += (Math.min(Math.random() * 3), 6 - player.setVal);
+            totalblk += (Math.min(Math.random() * 3), 6 - player.setval);
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
             } 
@@ -31405,13 +31426,27 @@ function Safari() {
             this.ballPower = 0;
             this.teamHasBall = defteam;
             this.cyclePhase = "receive";
-            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by "  + blockers.join(" and ") + "! It's a FREE ball for the blocking team!", "blue");
+            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by "  + blockers.join(" and ") + "! It's a FREE ball (b" + this.ballColumn + ") for the blocking team!", "blue");
             this.sendMessageTeam(defteam, "The ball soars to b" + this.ballColumn + "!", "green");
+            this.sendMessageTeam(0, this.courtView(0), null, true);
+            this.sendMessageTeam(1, this.courtView(1), null, true);
             return;
         }
         if (kill) {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
             this.recordBlockers = blockers;
+            if (this.official) {
+                var mp = getAvatarOff(this.recordSetter);
+                if (mp) {
+                    mp.volleyballRecords.sets--;
+                    safari.saveGame(mp);
+                }
+                mp = getAvatarOff(this.recordSpiker);
+                if (mp) {
+                    mp.volleyballRecords.spikes--;
+                    safari.saveGame(mp);
+                }
+            }
             this.recordSetter = null;
             this.recordSpiker = null;
             this.scorePoint(defteam);
@@ -31586,6 +31621,9 @@ function Safari() {
             if ((p.prep >= 1) && (this.hasSkill(p, "grounded"))) {
                 proficiency += 2;
             }
+            if ((this.ballStun) && (this.hasSkill(p, "grounded"))) {
+                proficiency += 1;
+            }
             if (proficiency >= maxPass) {
                 maxPass = proficiency;
                 for (var s in this.teams[this.teamHasBall]) {
@@ -31623,6 +31661,13 @@ function Safari() {
                     maxPass = boost;
                 }
                 else {
+                    if (this.ballPower >= 6) {
+                        var player = getAvatarOff(p.id);
+                        if (player) {
+                            player.volleyballRecords.digs--;
+                            safari.saveGame(player);
+                        }
+                    }
                     this.sendMessageAll(volleyballScoreIcon("fail") + this.actName(p) + " failed to receive the ball!", "blue");
                     this.recordBlockers = null;
                     this.scorePoint(atkteam);
@@ -31631,10 +31676,10 @@ function Safari() {
                     break;
                 }
             }
-            if (this.ballPower >= 6) {
+            if (this.ballPower >= 6 && maxPass > 3) {
                 var player = getAvatarOff(p.id);
                 if (player) {
-                    player.volleyballRecords.digs++;
+                    player.volleyballRecords.digs += 2;
                     safari.saveGame(player);
                 }
             }
@@ -31648,8 +31693,10 @@ function Safari() {
                 stcost += 2;
                 p.stamina = Math.max(p.stamina - stcost, 0);
                 this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
+                this.sendMessageTeam(0, this.courtView(0), null, true);
+                this.sendMessageTeam(1, this.courtView(1), null, true);
                 if (this.ballStun) {
-                    if ((!p.stunned) && (!hasType(p.party[p.currentPoke], "Ground"))) {
+                    if ((!p.stunned) && (!hasType(p.party[p.currentPoke], "Ground")) && (!this.hasSkill(p, "grounded"))) {
                         p.stunned = true;
                         this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
                     }
