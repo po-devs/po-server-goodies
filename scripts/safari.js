@@ -75,6 +75,8 @@ function Safari() {
     var eliteStrongCounterPicks = [];
 
     var vbdebug = false;
+    var officialVolleyballTeam1 = null;
+    var officialVolleyballTeam2 = null;
 
     var starters = [1, 4, 7];
     var playerTemplate = {
@@ -199,6 +201,14 @@ function Safari() {
             "Best Catcher": {},
             "Contest Champion": {},
             "Photographer": {}
+        },
+        volleyballRecords: {
+            spikes: 0,
+            blocks: 0,
+            sets: 0,
+            digs: 0,
+            points: 0,
+            pointsGiven: 0
         },
         costumeInfo: {
             preschooler: {
@@ -29390,6 +29400,17 @@ function Safari() {
         this.ballStun = false;
         this.ballFloat = false;
 
+        this.official = false;
+
+        if (officialVolleyballTeam1 && officialVolleyballTeam2) {
+            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 ==== team2)) {
+                this.official = true;
+            }
+            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 ==== team2)) {
+                this.official = true;
+            }
+        }
+
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);   
 
         if (!silent) {
@@ -29432,12 +29453,20 @@ function Safari() {
                 }
                 if (this.teamData[0].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[0].signups.length === 6) {
+                        if (this.official) {
+                            this.sendMessage(name, "That team is already full!", "red");
+                            return false;
+                        }
                         this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
                         cdata2 = this.teamData[1].name;
                     }
                 }
                 if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[1].signups.length === 6) {
+                        if (this.official) {
+                            this.sendMessage(name, "That team is already full!", "red");
+                            return false;
+                        }
                         this.sendMessage(name, "Team " + cdata2 + " already has 6 members! You were sent to the other team!", "red");
                         cdata2 = this.teamData[0].name;
                     }
@@ -29482,6 +29511,12 @@ function Safari() {
         var npcs = ["Steven", "Cynthia", "Lance", "Misty", "Nessa", "Brock", "Lillie", "Phoebe", "Juan", "Clair", "Bruno", "Maylene", "Koga", "Janine", "Jasmine", "Whitney", "Iris", "Flannery", "Candice", "Will", "Skyla", "Cilan", "Dent", "Blue", "Kiawe"]
         var name = "";
         var index = 0;
+        if (team1.length < 3) {
+            this.official = false;
+        }
+        if (team2.length < 3) {
+            this.official = false;
+        }
         while (team1.length < 6) {
             index = Math.floor(npcs.length * Math.random());
             team1.push({id: npcs[index]});
@@ -30078,6 +30113,9 @@ function Safari() {
                         this.inputMove("miki sayaka", "eval:" + p.id);
                     }
                 }
+                this.recordBlockers = null;
+                this.recordSetter = null;
+                this.recordSpiker = null;
                 this.scorePoint(defteam);
             }
         }
@@ -30534,6 +30572,24 @@ function Safari() {
                 }
             }
         }
+        if (this.official) {
+            for (var i in this.teams[0]) {
+                player = getAvatarOff(i);
+                if (player) {
+                    player.volleyballRecords.points += this.teamData[0].score;
+                    player.volleyballRecords.pointsGiven += this.teamData[1].score;
+                    safari.saveGame(player);
+                }
+            }
+            for (var i in this.teams[1]) {
+                player = getAvatarOff(i);
+                if (player) {
+                    player.volleyballRecords.points += this.teamData[1].score;
+                    player.volleyballRecords.pointsGiven += this.teamData[0].score;
+                    safari.saveGame(player);
+                }
+            }
+        }
         this.finished = true;
         return;
     }
@@ -30548,6 +30604,30 @@ function Safari() {
             this.teamData[1].score++;
             this.sendMessageAll("Team " + this.teamData[1].name + " scored a point!", "blue");
             this.teamHasBall = 1;
+        }
+        var player;
+        if (this.recordSpiker) {
+            player = getAvatarOff(this.recordSpiker);
+            if (player) {
+                player.volleyballRecords.spikes += 1;
+                safari.saveGame(player);
+            }
+        }
+        if (this.recordSetter) {
+            player = getAvatarOff(this.recordSetter);
+            if (player) {
+                player.volleyballRecords.sets += 1;
+                safari.saveGame(player);
+            }
+        }
+        if (this.recordBlockers) {
+            for (var i = 0; i < this.recordBlockers.length; i++) {
+                player = getAvatarOff(this.recordBlockers[i]);
+                if (player) {
+                    player.volleyballRecords.blocks += 1;
+                    safari.saveGame(player);
+                }
+            }
         }
         if (this.teamData[team].score >= 6 && Math.abs(this.teamData[1].score - this.teamData[0].score) > 1) {
             this.winGame(team);
@@ -30757,6 +30837,9 @@ function Safari() {
         if (torow > 3) {
             //add chance for a net in later
             this.sendMessageAll(this.actName(player) + " served the ball into the net!", "blue");
+            this.recordBlockers = null;
+            this.recordSetter = null;
+            this.recordSpiker = null;
             this.scorePoint(defteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -30764,6 +30847,9 @@ function Safari() {
         }
         if (tocolumn < 1 || tocolumn > 7 || torow < 1) {
             this.sendMessageAll(this.actName(player) + " served the ball out of bounds!", "blue");
+            this.recordBlockers = null;
+            this.recordSetter = null;
+            this.recordSpiker = null;
             this.scorePoint(defteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -30966,6 +31052,8 @@ function Safari() {
         player.canTip = false;
         player.canHit = false;
         player.actSkills.sneak = false;
+        this.recordSetter = player.id;
+        this.recordSpiker = target.id;
         var defteam = (this.teamHasBall === 1 ? 0 : 1);
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
@@ -31257,6 +31345,9 @@ function Safari() {
         }
         if (kill) {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
+            this.recordBlockers = blockers;
+            this.recordSetter = null;
+            this.recordSpiker = null;
             this.scorePoint(defteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -31267,6 +31358,9 @@ function Safari() {
         }
         if (column < 1 || column > 7 || row < 1) {
             this.sendMessageAll(this.actName(player) + "'s spike went out of bounds!", "blue");
+            this.recordBlockers = null;
+            this.recordSetter = null;
+            this.recordSpiker = null;
             this.scorePoint(defteam);
             this.phase = "prep";
             this.cyclePhase = "prep";
@@ -31464,10 +31558,18 @@ function Safari() {
                 }
                 else {
                     this.sendMessageAll(volleyballScoreIcon("fail") + this.actName(p) + " failed to receive the ball!", "blue");
+                    this.recordBlockers = null;
                     this.scorePoint(atkteam);
                     this.cyclePhase = "prep";
                     this.phase = "prep";
                     break;
+                }
+            }
+            if (this.ballPower >= 6) {
+                var player = getAvatarOff(p.id);
+                if (player) {
+                    player.volleyballRecords.digs++;
+                    safari.saveGame(player);
                 }
             }
             if (maxPass <= 1) {
@@ -31558,6 +31660,7 @@ function Safari() {
         }
         if (!passed) {
             this.sendMessageAll(volleyballScoreIcon("ace") + "The ball hits the ground!", "blue");
+            this.recordBlockers = null;
             this.scorePoint(atkteam);
             return;
         }
@@ -31877,7 +31980,7 @@ function Safari() {
                     opt.push("xc6");
                     opt.push("xc7");
                 }
-                if (player.zone === "front") {
+                else if (player.zone === "front") {
                     opt.push("d1");
                     opt.push("d2");
                     opt.push("d3");
