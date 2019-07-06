@@ -31255,13 +31255,15 @@ function Safari() {
 
         totalblk = 0;
         var blockers = [];
+        var blockAim;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
             k = 0;
             if (p.blocking && p.zone == "front") {
                 tempcolumn = (8 - p.column);
+                blockAim = p.column;
                 if (player.column === tempcolumn) {
-                    if ((angle === 0 && p.blockType == tempcolumn) || (angle === 1 && p.blockType == tempcolumn + 1) || (angle === -1 && p.blockType == tempcolumn - 1)) {
+                    if ((angle === 0 && p.blockType == blockAim) || (angle === 1 && p.blockType == blockAim - 1) || (angle === -1 && p.blockType == blockAim + 1)) {
                         k = p.block + p.prep;
                         if (angle === 0 && p.blockType == tempcolumn) {
                             k += 1;
@@ -31269,12 +31271,12 @@ function Safari() {
                     }
                 }
                 if (player.column === tempcolumn + 1) {
-                    if ((angle === -1 && p.blockType == tempcolumn + 1) || (angle === 0 && p.blockType == tempcolumn) || (angle === -2 && p.blockType == tempcolumn + 2)) {
+                    if ((angle === -1 && p.blockType == blockAim + 1) || (angle === 0 && p.blockType == blockAim) || (angle === -2 && p.blockType == blockAim - 2)) {
                         k = p.block + p.prep;
                     }
                 }
                 if (player.column === tempcolumn - 1) {
-                    if ((angle === 1 && p.blockType == tempcolumn - 1) || (angle === 0 && p.blockType == tempcolumn) || (angle === 2 && p.blockType == tempcolumn - 2)) {
+                    if ((angle === 1 && p.blockType == blockAim - 1) || (angle === 0 && p.blockType == blockAim) || (angle === 2 && p.blockType == blockAim + 2)) {
                         k = p.block + p.prep;
                     }
                 }
