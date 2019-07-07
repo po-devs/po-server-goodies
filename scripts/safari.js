@@ -31748,9 +31748,9 @@ function Safari() {
             if ((this.hasSkill(p, "rollout")) && this.ballPower >= 6) {
                 maxPass += 1.5 + Math.random() + Math.random();
             }
-            if (this.ballPower >= 6 && maxPass > 3) {
+            if (this.ballPower >= 6 && maxPass > 3 && this.official) {
                 var player = getAvatarOff(p.id);
-                if (player) {
+                if (player && player.volleyballRecords) {
                     player.volleyballRecords.digs += 2;
                     safari.saveGame(player);
                 }
