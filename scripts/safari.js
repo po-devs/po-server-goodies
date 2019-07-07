@@ -23672,12 +23672,14 @@ function Safari() {
         for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
             name = attackerNames[p];
-            if (name && typeof name == "string") {
-                avi = getAvatarOff(name);
-            } else {
-                name = null;
-                avi = null;
-            }
+            try {
+                if (name && typeof name == "string") {
+                    avi = getAvatarOff(name);
+                } else {
+                    name = null;
+                    avi = null;
+                }
+            } catch (err) {}
 
             if ((sys.type(sys.pokeType2(m)) === "???") && avi && (avi.costume === "flower") && (!(isLegendary(m)))) {
                 playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
@@ -23701,9 +23703,12 @@ function Safari() {
                         if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                             var reward = randomSampleObj(this.treasures);
                             this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(attackerNames[p].toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
-                            if (name && typeof name == "string") {
-                                getTreasure(name, reward);
-                            }
+                            
+                            try {
+                                if (name && typeof name == "string") {
+                                    getTreasure(name, reward);
+                                }
+                            } catch (err) {}
                         }
                         break;
                     }
@@ -32528,7 +32533,7 @@ function Safari() {
                     try {
                         player.value = monthlyLeaderboards[i].get(e) || 0;
                     }
-                    catch (err) {};
+                    catch (err) {}
                     if (player.value === 0 || player.value == "0") {
                         continue;
                     }
