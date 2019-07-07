@@ -23882,7 +23882,7 @@ function Safari() {
                     continue;
                 }
                 dmg = Math.round(averageDamage * (1 - ((turnDealt[id]/turnDamage) - 0.5)));
-                stamina[id] = -dmg;
+                stamina[id] = -1 * dmg;
                 staminaStr.push(id.toCorrectCase() + " -" + dmg);
             }
 
