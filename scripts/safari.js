@@ -31730,9 +31730,9 @@ function Safari() {
                     maxPass = boost;
                 }
                 else {
-                    if (this.ballPower >= 6) {
+                    if (this.ballPower >= 6 && this.official) {
                         var player = getAvatarOff(p.id);
-                        if (player) {
+                        if (player && player.volleyballRecords) {
                             player.volleyballRecords.digs--;
                             safari.saveGame(player);
                         }
