@@ -23672,14 +23672,12 @@ function Safari() {
         for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
             name = attackerNames[p];
-            try {
-                if (name && typeof name == "string") {
-                    avi = getAvatarOff(name);
-                } else {
-                    name = null;
-                    avi = null;
-                }
-            } catch (err) {}
+            if (name && typeof name == "string") {
+                avi = getAvatarOff(name);
+            } else {
+                name = null;
+                avi = null;
+            }
 
             if ((sys.type(sys.pokeType2(m)) === "???") && avi && (avi.costume === "flower") && (!(isLegendary(m)))) {
                 playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
@@ -23692,7 +23690,7 @@ function Safari() {
                 playerBonus[1] *= 1.15;
             }
 
-            res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, avi));
+            res = calcDamage(m, opp, playerBonus, false, false, getCherished(m, name));
             if (this.opponentHP > 0) {
                 this.sendAll("<b>{0}</b>'s <b>{1}</b> dealt {2} damage to the {3}!".format(attackerNames[p].toCorrectCase(), poke(m), toColor(res.power[0], "blue"), (this.isRevealed ? poke(opp) : "hidden Pokémon")));
                 if (res.power[0] > 0) {
@@ -23703,12 +23701,9 @@ function Safari() {
                         if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                             var reward = randomSampleObj(this.treasures);
                             this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(attackerNames[p].toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
-                            
-                            try {
-                                if (name && typeof name == "string") {
-                                    getTreasure(name, reward);
-                                }
-                            } catch (err) {}
+                            if (name && typeof name == "string") {
+                                getTreasure(name, reward);
+                            }
                         }
                         break;
                     }
@@ -32533,7 +32528,7 @@ function Safari() {
                     try {
                         player.value = monthlyLeaderboards[i].get(e) || 0;
                     }
-                    catch (err) {}
+                    catch (err) {};
                     if (player.value === 0 || player.value == "0") {
                         continue;
                     }
