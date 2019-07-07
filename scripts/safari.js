@@ -30764,7 +30764,7 @@ function Safari() {
                 this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
             }
             this.teams[1][p].stunned = false;
-            this.teams[0][p].frozen = false;
+            this.teams[1][p].frozen = false;
             this.teams[1][p].canSwap = true;
             if (this.hasSkill(this.teams[1][p], "swap")) {
                 this.sendMessage(this.teams[1][p].id, "Type " + link("/vol swap") + " to move up in the rotation!");
