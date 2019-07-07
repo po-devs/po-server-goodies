@@ -23672,10 +23672,11 @@ function Safari() {
         for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
             name = attackerNames[p];
-            if (typeof name == "string") {
-                avi = getAvatarOff(attackerNames[p]);
+            if (name && typeof name == "string") {
+                avi = getAvatarOff(name);
             } else {
-                name = "";
+                name = null;
+                avi = null;
             }
 
             if ((sys.type(sys.pokeType2(m)) === "???") && avi && (avi.costume === "flower") && (!(isLegendary(m)))) {
@@ -23700,7 +23701,9 @@ function Safari() {
                         if (this.attacks === 0 && chance(0.3 + 0.5 * this.level)) {
                             var reward = randomSampleObj(this.treasures);
                             this.sendAll("<b>{0}</b> picked something dropped by the {1}! {0} received {2}!".format(addFlashTag(attackerNames[p].toCorrectCase()), (this.isRevealed ? poke(opp) : "hidden Pokémon"), toColor(treasureName(reward), "blue")), true);
-                            getTreasure(attackerNames[p], reward);
+                            if (name && typeof name == "string") {
+                                getTreasure(name, reward);
+                            }
                         }
                         break;
                     }
