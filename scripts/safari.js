@@ -23651,6 +23651,8 @@ function Safari() {
             defeated = false,
             choices = this.getChoices(),
             attackerNames = Object.keys(choices),
+            name = "",
+            avi = null,
             playerBonus = null;
 
         this.sendAll("");
@@ -23669,9 +23671,14 @@ function Safari() {
 
         for (p = 0; p < attackerNames.length; p++) {
             m = choices[attackerNames[p]];
-            avi = getAvatarOff(attackerNames[p]);
+            name = attackerNames[p];
+            if (typeof name == "string") {
+                avi = getAvatarOff(attackerNames[p]);
+            } else {
+                name = "";
+            }
 
-            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(m)))) {
+            if ((sys.type(sys.pokeType2(m)) === "???") && avi && (avi.costume === "flower") && (!(isLegendary(m)))) {
                 playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
             }
             else {
