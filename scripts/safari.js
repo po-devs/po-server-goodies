@@ -29206,7 +29206,7 @@ function Safari() {
         "36": {"stamina": 34, "serve": 5, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 1, "skills": ["banner", "grounded", "defiant"]},
         "62": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "grounded"]},
         "65": {"stamina": 26, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["psyspike", "interference", "banner"]},
-        "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 0,"speed": 1, "skills": ["ace", "dump", "guts"]},
+        "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 1,"speed": 1, "skills": ["ace", "dump", "guts"]},
         "76": {"stamina": 35, "serve": 4, "receive": 4, "toss": 3, "spike": 4, "block": 1, "precision": 2,"speed": 1, "skills": ["grounded", "banner", "back-attack"]},
         "94": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 0, "precision": 3,"speed": 4, "skills": ["performer", "sneak", "telepathy"]},
         "97": {"stamina": 34, "serve": 5, "receive": 4, "toss": 4, "spike": 2, "block": 1, "precision": 3,"speed": 1, "skills": ["telepathy", "interference", "swap"]},
@@ -29225,7 +29225,7 @@ function Safari() {
         "248": {"stamina": 32, "serve": 4, "receive": 5, "toss": 2, "spike": 5, "block": 4, "precision": 4,"speed": 1, "skills": ["ace", "slacker", "defiant"]},
         "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "wide"]},
         "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
-        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 0,"speed": 2, "skills": ["back-attack", "grounded", "dagger"]},
+        "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 1,"speed": 2, "skills": ["back-attack", "grounded", "dagger"]},
         "272": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 2,"speed": 2, "skills": ["splash", "overgrow", "swap"]},
         "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "telepathy", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
@@ -32167,7 +32167,7 @@ function Safari() {
                 if (player.canTip && (this.excludeActions.indexOf("tip") === -1)) {
                     opt.push("tip");
                 }
-                if (player.canBlock && player.team !== this.teamHasBall && player.row === 4 && (this.phase == "set" || this.phase == "attack")) {
+                if (player.team !== this.teamHasBall && player.row === 4 && (this.phase == "attack")) {
                     opt.push("block");
                 }
                 if (player.canHit && (this.excludeActions.indexOf("attack") === -1) && (player.row === 4 || (player.row === 3 && player.skills.indexOf("back-attack") !== -1))) {
@@ -32249,16 +32249,14 @@ function Safari() {
             }
         }
         if (opt.indexOf(cdata[0]) === -1) {
-            if ((data.slice(0, 5) !== "block") || (!opt.contains("block"))) {
-                this.sendMessage(name, "No such action as " + data + "!", "red");
-                return false;
-            }
+            this.sendMessage(name, "No such action as " + data + "!", "red");
+            return false;
         }
         if (this.excludePos[player.team].indexOf(data) !== -1) {
             this.sendMessage(name, "A teammate is already at position " + data + "!", "red");
             return false;
         }
-        if (data.slice(0, 5) == "block") {
+        if (cdata[0] == "block") {
             if (player.zone == "back" || player.row !== 4) {
                 this.sendMessage(name, "You must be in the front row to block!", "red");
                 return false;
