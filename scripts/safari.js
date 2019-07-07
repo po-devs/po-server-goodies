@@ -23869,7 +23869,10 @@ function Safari() {
             }
 
             var staminaStr = [], members = this.pyr.names, id;
-            var averageDamage = Math.floor(7 + 1.4 * this.level);
+            var averageDamage = Math.floor(7 + (1.4 * this.level));
+            if (isNaN(averageDamage)) {
+                averageDamage = 10;
+            }
             if (this.maxhp * 0.2 >= this.hp) {
                 averageDamage = averageDamage*0.67;
             }
@@ -23881,8 +23884,12 @@ function Safari() {
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                dmg = Math.round(averageDamage * parseInt(10 * (1 - ((turnDealt[id]/turnDamage) - 0.5)), 10) * 0.1);
-                stamina[id] = -1 * dmg;
+                var val = (parseInt(10 * (turnDealt[id]/turnDamage), 10) * 0.1);
+                dmg = parseInt(Math.round(parseInt(averageDamage, 10) * parseInt(10 * (1 - ((val) - 0.5)), 10) * 0.1), 10);
+                if (isNaN(dmg)) {
+                    dmg = 15;
+                }
+                stamina[id] = (-1 * dmg);
                 staminaStr.push(id.toCorrectCase() + " -" + dmg);
             }
 
