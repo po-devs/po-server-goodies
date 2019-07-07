@@ -23881,7 +23881,7 @@ function Safari() {
                 if (this.pyr.stamina[id] <= 0) {
                     continue;
                 }
-                dmg = Math.round(averageDamage * parseInt(10 * (1 - ((turnDealt[id]/turnDamage) - 0.5)), 10) * 0.1);
+                dmg = Math.round(averageDamage * (1 - ((turnDealt[id]/turnDamage) - 0.5)));
                 stamina[id] = -1 * dmg;
                 staminaStr.push(id.toCorrectCase() + " -" + dmg);
             }
