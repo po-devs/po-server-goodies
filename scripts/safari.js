@@ -15263,7 +15263,7 @@ function Safari() {
             }
             if ((this.turn % 5 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.hazardsetter) {
-                    if (this.side1Field.spikes && this.side1Field.spikes < 3) {
+                    if (this.side1Field && this.side1Field.spikes < 3) {
                         this.side1Field.spikes++;
                         this.sendToViewers(this.name2 + " set up a layer of spikes!");
                     }
