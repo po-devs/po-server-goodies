@@ -23506,7 +23506,7 @@ function Safari() {
                     playerBonus = [50, 140];
                 }
 
-                res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(choice, avi));
+                res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(choice, id));
                 lastAttacker = n + 1;
                 if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
                     res.power[0] = Math.round(res.power[0] * 0.25);
