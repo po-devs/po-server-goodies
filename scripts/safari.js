@@ -23251,7 +23251,7 @@ function Safari() {
         if (player && reward.item !== "stamina") {
             var amt = reward.amount;
             if (safari.hasCostumeSkill(player, "betterPyrItems")) {
-                var ch = ((0.16 + (this.getCostumeLevel(player) - 5)/30));
+                var ch = ((0.16 + (safari.getCostumeLevel(player) - 5)/30));
                 if (chance(ch)) {
                     amt = Math.round(amt * (1.25 + (0.5 * Math.random())));
                 }
