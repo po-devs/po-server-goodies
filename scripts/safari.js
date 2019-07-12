@@ -29427,10 +29427,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- You cannot serve to the 'd' row, however. You can click anywhere in the back 3 rows (a-c). For example, click xb3 or xe2.", safchan);
                 break;
             case "tutorial_serving2_fail":
-                safaribot.sendMessageAll(src, "", safchan);
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Did you do a Strong serve?", safchan);
             case "tutorial_serving2":
-                safaribot.sendMessageAll(src, "", safchan);
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Good job! You served the ball over the net!", safchan);
                 safaribot.sendHtmlMessage(src, "- The next thing you need to know about serving is that you can vary how much effort you put into it.", safchan);
