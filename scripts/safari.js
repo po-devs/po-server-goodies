@@ -29417,68 +29417,83 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- To get started, press " + link("/tutorial_serving", "Serving") + ".", safchan);
                 break;
             case "tutorial_serving_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "Make sure you serve the ball to somewhere on the other side of the net (besides the 'd' row)!", safchan);
             case "tutorial_serving":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}}, ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7", "xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7", "xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"], "tutorial_serving2", "tutorial_serving_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- Time to practice your serve! To serve the ball, all you have to do is click on one of the links starting with 'x' on the other side of the net.", safchan);
                 safaribot.sendHtmlMessage(src, "- You cannot serve to the 'd' row, however. You can click anywhere in the back 3 rows (a-c). For example, click xb3 or xe2.", safchan);
                 break;
             case "tutorial_serving2_fail":
+                safaribot.sendMessageAll(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Did you do a Strong serve?", safchan);
             case "tutorial_serving2":
+                safaribot.sendMessageAll(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Good job! You served the ball over the net!", safchan);
                 safaribot.sendHtmlMessage(src, "- The next thing you need to know about serving is that you can vary how much effort you put into it.", safchan);
                 safaribot.sendHtmlMessage(src, "- You can choose to serve the ball EASY, NORMAL, or STRONG. EASY hits are more likely to land where you aim, while STRONG hits are more volatile, but have greater power.", safchan);
                 safaribot.sendHtmlMessage(src, "- For now, let's practice a STRONG Serve. Click the link below!", safchan);
-                safaribot.sendHtmlMessage(src, "Choose " + link("/vbhints tutorial_serving2_fail", "Easy") + " " + link("/vbhints tutorial_serving2_fail", "Normal") + " " + link("/vbhints tutorial_serving3", "Strong") + " for your serve strength!");
+                safaribot.sendHtmlMessage(src, "Choose " + link("/vbhints tutorial_serving2_fail", "Easy") + " " + link("/vbhints tutorial_serving2_fail", "Normal") + " " + link("/vbhints tutorial_serving3", "Strong") + " for your serve strength!", safchan);
                 break;
             case "tutorial_serving3_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- When doing a STRONG serve, it's better to aim for the middle of the court ('xb4' for example).", safchan);
             case "tutorial_serving3":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}}, ["xb2", "xb3", "xb4", "xb5", "xb6"], "tutorial_serving_done", "tutorial_serving3_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- Your serve will be STRONG, so that means it will be stronger, but you will have less control over it.", safchan);
                 safaribot.sendHtmlMessage(src, "- Hint: Aim for the middle of the court to avoid hitting the ball out of bounds!", safchan);
                 break;
             case "tutorial_serving_done":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Good job! Now you've learned how to hit the ball over the net whils Serving.", safchan);
                 safaribot.sendHtmlMessage(src, "- You've also learned how to use the EASY, NORMAL, and STRONG serves to your advantage!", safchan);
                 safaribot.sendHtmlMessage(src, "- Next, let's work on Receiving. " + link("/vbhints tutorial_receiving", "Click here when you're ready.") + ".", safchan);
                 break;
             case "tutorial_receiving":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Receiving is straightforward: when the other team hits the ball, it will go to a location on your side of the net.", safchan);
                 safaribot.sendHtmlMessage(src, "- If you're near where the ball is going, try and move to receive it!", safchan);
                 safaribot.sendHtmlMessage(src, "- When you're ready for a practice hit, " + link("/vbhints tutorial_receiving2", "Click here.") + ".", safchan);
                 break;
             case "tutorial_receiving2_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Try again! Click on the link of the location where the ball was served to!", safchan);
             case "tutorial_receiving2":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}, "xb6": {mon: 4, id: "Foe"}}, ["c3"], "tutorial_receiving3", "tutorial_receiving2_fail"), safchan);
                 safaribot.sendHtmlMessage(src, toColor("Foe's Charmander serves the ball! The ball was served to c3!", "blue"), safchan);
                 safaribot.sendHtmlMessage(src, "- Click on the location the ball was hit to in order to receive it!", safchan);
                 break;
             case "tutorial_receiving3":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Good job! You received the ball!", safchan);
                 safaribot.sendHtmlMessage(src, "- Important: You do not always need to be the one to receive the ball. Communicate with your teammates to make sure the best receiver who is closest to the ball can receive it!", safchan);
                 safaribot.sendHtmlMessage(src, "- Next is Setting. " + link("/vbhints tutorial_setting", "Click here when you're ready.") + ".", safchan);
                 break;
             case "tutorial_setting_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Don't click on the court! Use the setter links below the court to choose who you want to set to!", safchan);
             case "tutorial_setting":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 159, id: "Teammate"}, "d6": {mon: 156, id: "Teammate"}}, [], "", "tutorial_setting_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting2", "/vol set:croconaw") + " " + link("/vbhints tutorial_setting2", "/vol set:quilava") + "!", safchan);
                 safaribot.sendHtmlMessage(src, "- Setting comes after receiving! If you want to set the ball, you may set to a teammate, and they will be able to spike the ball.", safchan);
                 break;
             case "tutorial_setting2_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Set to Pikachu, not Mew. If you need help figuring out which one has better Spike power, you can check their stats with /vb pikachu and /vb mew.", safchan);
             case "tutorial_setting2":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 25, id: "Teammate"}, "d6": {mon: 151, id: "Teammate"}}, [], "", "tutorial_setting2_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting3", "/vol set:pikachu") + " " + link("/vbhints tutorial_setting2_fail", "/vol set:mew") + "!", safchan);
@@ -29486,8 +29501,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- In this example, Pikachu's Spike power is much higher than Mew's so you should set to Pikachu and not Mew.", safchan);
                 break;
             case "tutorial_setting3_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Hint: Set to the teammate who does not have a blocker nearby!", safchan);
             case "tutorial_setting3":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 461, id: "Teammate"}, "d6": {mon: 448, id: "Teammate"}, "xd6": {mon: 257, id: "Foe"}}, [], "", "tutorial_setting3_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting4", "/vol set:weavile") + " " + link("/vbhints tutorial_setting3_fail", "/vol set:lucario") + "!", safchan);
@@ -29495,22 +29512,27 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- Weavile and Lucario's spike power are similar, so set to the one that will have an easier time spiking the ball.", safchan);
                 break;
             case "tutorial_setting4":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Now you understand how to set! It's also important to know when NOT to set. Let your teammates who have a higher Toss score than you set the ball!", safchan);
                 safaribot.sendHtmlMessage(src, "- If you're not sure about the Toss scores, you can check during the game by hovering over them, or by using /vb [pokemon].", safchan);
                 safaribot.sendHtmlMessage(src, "- Net we'll work on Spikes. " + link("/vbhints tutorial_spiking", "Click here when you're ready.") + ".", safchan);
                 break;
             case "tutorial_spiking_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- For example, you can click 'xb3' to spike the ball to the b3 location. Anywhere besides the front row is fair game.", safchan);
             case "tutorial_spiking":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}}, ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7", "xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7", "xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"], "tutorial_spiking2", "tutorial_spiking_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- If you remember how to serve, spiking is basically the same thing. Click the location on the other side of the net you would like to spike to!", safchan);
                 break;
             case "tutorial_spiking2_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Try again! Aim for a place that their stronger receiver cannot easily reach!", safchan);
             case "tutorial_spiking2":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}, "xb2": {mon: 428, id: "Foe"}, "xb6": {mon: 260, id: "Foe"}}, ["xa1", "xa2", "xa3", "xa4", "xb1", "xb2", "xb3", "xc1", "xc2", "xc3", "xc4"], "tutorial_spiking3", "tutorial_spiking2_fail"), safchan);
@@ -29518,18 +29540,22 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- When Spiking, try to aim your spike away from the strong receivers on the other team. In this example, avoid spiking around the area with a strong receiver.", safchan);
                 break;
             case "tutorial_spiking3_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Avoiding blockers can be tricky. Pick another spot that does not put the blocker between you and the spot you target.", safchan);
             case "tutorial_spiking3":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd5": {mon: 257, id: "Foe"}}, ["xc7", "xb7", "xc3", "xb3", "xa2", "xa1", "xb2", "xb1", "xc2", "xc1"]), safchan);
+                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd5": {mon: 257, id: "Foe"}}, ["xc7", "xb7", "xc3", "xb3", "xa2", "xa1", "xb2", "xb1", "xc2", "xc1"], "tutorial_spiking4", "tutorial_spiking3_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- Nice! You now understand how to cleverly aim your spike!", safchan);
                 safaribot.sendHtmlMessage(src, "- In this example, you are faced with a potential blocker. As long as you aim away from the blocker, they cannot block you.", safchan);
                 break;
             case "tutorial_spiking4_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "- Keep trying! Look for the spot where there are no receivers nearby and no blockers in your way!", safchan);
                 break;
             case "tutorial_spiking4":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Nicely done! Let's put it all together for a more complicated example:", safchan);
                 safaribot.sendHtmlMessage(src, "- Gardevoir sets the ball to " + name + "'s Bulbasaur!", safchan);
@@ -29538,25 +29564,30 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- Find the spot that avoids the blockers and does not go directly to the strong receiver!", safchan);
                 break;
             case "tutorial_spiking5":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- You're amazing! Now you know how to target the weakest points of the opponent's defense!", safchan);
                 safaribot.sendHtmlMessage(src, "- Next, we will learn how to block. " + link("/vbhints tutorial_blocking", "Click here to learn more") + ".", safchan);
                 break;
             case "tutorial_blocking_fail":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "Click on the --- in front of the spiker (Sceptile) in order to score a block!", safchan);
             case "tutorial_blocking":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Blocking </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- The foe's Greninja sets to the foe's Sceptile!", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d2": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd2": {mon: 254, id: "Foe"}, "xd4": {mon: 658, id: "Foe"}}, ["---"], "tutorial_blocking2", "tutorial_blocking_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- If you are in the front row, you can block. To do so, click on the net in front of the spiker!", safchan);
                 break;
             case "tutorial_blocking2":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Blocking </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Good job! You blocked the ball!", safchan);
                 safaribot.sendHtmlMessage(src, "- When blocking, you can opt to change the angle of your block. If you want to block straight, click on the net directly in front of the spiker. If you go to the side, your block will be angled to block spikes in that direction.", safchan);
                 safaribot.sendHtmlMessage(src, "- All that's left is to explain how stats work! " + link("/vbhints stats", "Click here to see what the stats do") + "!", safchan);
                 break;
             case "stats":
+                safaribot.sendMessage(src, "", safchan);
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Stats </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Receive: The higher your receive, the better your ability to receive serves and spikes will be.", safchan);
                 safaribot.sendHtmlMessage(src, "- Toss: The higher your toss, the more effective of a setter you will be.", safchan);
@@ -29567,6 +29598,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- Speed: The higher your speed, the faster you will be able to move around the court.", safchan);
                 safaribot.sendHtmlMessage(src, "- Stamina: This is expended when moving around the court, and restores somewhat at the end of each rally. Keep your stamina high or your stats will drop!", safchan);
                 safaribot.sendHtmlMessage(src, "- Skills: Various skills that allow Pokémon to do unique actions on the court.", safchan);
+                safaribot.sendMessage(src, "", safchan);
                 break;
             case "howto":
                 safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
