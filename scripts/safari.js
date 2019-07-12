@@ -29388,7 +29388,7 @@ function Safari() {
                 ret += "<td align=center width=88>";
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += this.courtIcon(inp, rows[place].owner);
+                    ret += tutorialCourtIcon(inp, rows[place].owner);
                 }
                 else {
                     if (goodInputs.indexOf(place) !== -1) {
