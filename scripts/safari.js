@@ -29280,7 +29280,7 @@ function Safari() {
         "guts": "Guts: While this Pokémon is in the back row, Dark-type teammate's Spike +1.",
         "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
         "interference": "Interference: When in the front row, -1 Proficiency to the other team's Set (stacks). Has no effect on Psychic or Dark type setters.",
-        "lightbane": "Lightbane: Spike power increased by +1 Spike for each Psychic type on the opposing team.",
+        "lightbane": "Lightbane: Spike and Serve power increased by +1 for each Psychic type on the opposing team.",
         "performer": "Performer: This Pokémon's Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
         "psyspike": "[ACT] Psyspike: Costs 5 Stamina. This Pokémon's Spike +1 and Precision +2, bypassing Blockers when activated before spiking.",
         "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
