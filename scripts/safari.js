@@ -29472,7 +29472,7 @@ function Safari() {
             case "tutorial_setting":
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 159, id: "Teammate"}, "d6": {mon: 156, id: "Teammate"}}, [], "", "tutorial_setting_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting2", "/vol set:bayleaf") + " " + link("/vbhints tutorial_setting2", "/vol set:quilava") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting2", "/vol set:croconaw") + " " + link("/vbhints tutorial_setting2", "/vol set:quilava") + "!", safchan);
                 safaribot.sendHtmlMessage(src, "- Setting comes after receiving! If you want to set the ball, you may set to a teammate, and they will be able to spike the ball.", safchan);
                 break;
             case "tutorial_setting2_fail":
@@ -29489,7 +29489,7 @@ function Safari() {
             case "tutorial_setting3":
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
                 safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 461, id: "Teammate"}, "d6": {mon: 448, id: "Teammate"}, "xd6": {mon: 257, id: "Foe"}}, [], "", "tutorial_setting3_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting3", "/vol set:weavile") + " " + link("/vbhints tutorial_setting2_fail", "/vol set:lucario") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting4", "/vol set:weavile") + " " + link("/vbhints tutorial_setting3_fail", "/vol set:lucario") + "!", safchan);
                 safaribot.sendHtmlMessage(src, "- In this example, notice that Lucario is facing a blocker on the opposing team, while Weavile has no blockers nearby.", safchan);
                 safaribot.sendHtmlMessage(src, "- Weavile and Lucario's spike power are similar, so set to the one that will have an easier time spiking the ball.", safchan);
                 break;
