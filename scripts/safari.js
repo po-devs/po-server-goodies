@@ -29198,36 +29198,36 @@ function Safari() {
         return;
     };
     safari.volleyballStats = {
-        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "overgrow", "simplicity"]},
-        "4": {"stamina": 30, "serve": 2, "receive": 3, "toss": 2, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["dig", "simplicity", "guardian"]},
-        "7": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["wide", "simplicity", "splash"]},
-        "25": {"stamina": 25, "serve": 4, "receive": 3, "toss": 2, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "quick", "stun"]},
+        "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "overgrow", "banner"]},
+        "4": {"stamina": 30, "serve": 2, "receive": 3, "toss": 2, "spike": 4, "block": 2, "precision": 3,"speed": 3, "skills": ["dig", "swap", "guardian"]},
+        "7": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 0, "precision": 4,"speed": 4, "skills": ["wide", "banner", "splash"]},
+        "25": {"stamina": 25, "serve": 4, "receive": 3, "toss": 2, "spike": 4, "block": 1, "precision": 4,"speed": 5, "skills": ["ace", "wide", "stun"]},
         "26": {"stamina": 30, "serve": 5, "receive": 4, "toss": 3, "spike": 2, "block": 4, "precision": 3,"speed": 3, "skills": ["stun", "energize", "dig"]},
         "36": {"stamina": 34, "serve": 5, "receive": 5, "toss": 5, "spike": 2, "block": 0, "precision": 3,"speed": 1, "skills": ["banner", "grounded", "defiant"]},
-        "62": {"stamina": 31, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "haze"]},
-        "65": {"stamina": 26, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["psyspike", "interference", "autotargeting"]},
+        "62": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 2, "block": 2, "precision": 3,"speed": 2, "skills": ["back-attack", "splash", "grounded"]},
+        "65": {"stamina": 26, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["psyspike", "interference", "banner"]},
         "68": {"stamina": 32, "serve": 1, "receive": 1, "toss": 4, "spike": 4, "block": 5, "precision": 1,"speed": 1, "skills": ["ace", "dump", "guts"]},
         "76": {"stamina": 35, "serve": 4, "receive": 4, "toss": 3, "spike": 4, "block": 1, "precision": 2,"speed": 1, "skills": ["grounded", "banner", "back-attack"]},
         "94": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 0, "precision": 3,"speed": 4, "skills": ["performer", "sneak", "telepathy"]},
         "97": {"stamina": 34, "serve": 5, "receive": 4, "toss": 4, "spike": 2, "block": 1, "precision": 3,"speed": 1, "skills": ["telepathy", "interference", "swap"]},
-        "124": {"stamina": 27, "serve": 3, "receive": 3, "toss": 4, "spike": 3, "block": 3, "precision": 4,"speed": 3, "skills": ["psyspike", "freeze", "haze"]},
+        "124": {"stamina": 29, "serve": 3, "receive": 3, "toss": 4, "spike": 3, "block": 3, "precision": 4,"speed": 3, "skills": ["psyspike", "freeze", "float"]},
         "150": {"stamina": 31, "serve": 5, "receive": 1, "toss": 4, "spike": 4, "block": 3, "precision": 4,"speed": 4, "skills": []},
         "151": {"stamina": 30, "serve": 4, "receive": 5, "toss": 5, "spike": 0, "block": 0, "precision": 3,"speed": 4, "skills": ["dump", "performer", "energize"]},
         "153": {"stamina": 32, "serve": 2, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 3, "skills": ["reach", "overgrow", "wide"]},
         "156": {"stamina": 30, "serve": 3, "receive": 4, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 3, "skills": ["dump", "grounded", "ace"]},
-        "159": {"stamina": 30, "serve": 5, "receive": 2, "toss": 1, "spike": 4, "block": 0, "precision": 1,"speed": 1, "skills": ["observer", "rollout", "swap"]},
-        "172": {"stamina": 20, "serve": 5, "receive": 4, "toss": 3, "spike": 5, "block": 0, "precision": 4,"speed": 5, "skills": ["back-attack", "quick", "dagger"]},
+        "159": {"stamina": 28, "serve": 4, "receive": 2, "toss": 1, "spike": 5, "block": 0, "precision": 1,"speed": 2, "skills": ["banner", "splash", "dig"]},
+        "172": {"stamina": 20, "serve": 5, "receive": 3, "toss": 3, "spike": 5, "block": 0, "precision": 4,"speed": 5, "skills": ["back-attack", "ace", "dagger"]},
         "181": {"stamina": 30, "serve": 1, "receive": 3, "toss": 2, "spike": 3, "block": 2, "precision": 5,"speed": 2, "skills": ["energize", "performer", "dig"]},
-        "190": {"stamina": 30, "serve": 4, "receive": 3, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 5, "skills": ["simplicity", "alignment", "dump"]},
-        "194": {"stamina": 32, "serve": 4, "receive": 5, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 2, "skills": ["swap", "grounded", "haze"]},
+        "190": {"stamina": 30, "serve": 4, "receive": 3, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 5, "skills": ["performer", "dig", "dump"]},
+        "194": {"stamina": 32, "serve": 5, "receive": 5, "toss": 1, "spike": 3, "block": 0, "precision": 4,"speed": 2, "skills": ["float", "grounded", "banner"]},
         "231": {"stamina": 33, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 1, "precision": 3,"speed": 4, "skills": ["rollout", "grounded", "performer"]},
         "237": {"stamina": 34, "serve": 4, "receive": 5, "toss": 3, "spike": 2, "block": 3, "precision": 3,"speed": 3, "skills": ["dagger", "rollout", "back-attack"]},
         "248": {"stamina": 32, "serve": 4, "receive": 5, "toss": 2, "spike": 5, "block": 4, "precision": 4,"speed": 1, "skills": ["ace", "slacker", "defiant"]},
-        "254": {"stamina": 30, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["quick", "dig", "wide"]},
-        "257": {"stamina": 30, "serve": 3, "receive": 2, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
+        "254": {"stamina": 28, "serve": 4, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 4,"speed": 5, "skills": ["ace", "dig", "wide"]},
+        "257": {"stamina": 30, "serve": 3, "receive": 1, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 4, "skills": ["burn", "back-attack", "dagger"]},
         "260": {"stamina": 34, "serve": 2, "receive": 5, "toss": 0, "spike": 3, "block": 4, "precision": 1,"speed": 2, "skills": ["back-attack", "grounded", "dagger"]},
         "272": {"stamina": 30, "serve": 4, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 2,"speed": 2, "skills": ["splash", "overgrow", "swap"]},
-        "282": {"stamina": 29, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "autotargeting", "float"]},
+        "282": {"stamina": 30, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "telepathy", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
         "289": {"stamina": 40, "serve": 5, "receive": 5, "toss": 4, "spike": 4, "block": 4, "precision": 4,"speed": 2, "skills": ["slacker", "banner", "back-attack"]},
         "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "guardian"]},
@@ -29236,9 +29236,9 @@ function Safari() {
         "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 5, "block": 3, "precision": 3,"speed": 4, "skills": ["dig", "banner", "ace"]},
         "439": {"stamina": 31, "serve": 3, "receive": 4, "toss": 4, "spike": 2, "block": 1, "precision": 5,"speed": 3, "skills": ["psyspike", "clairvoyant", "dagger"]},
         "445": {"stamina": 31, "serve": 1, "receive": 4, "toss": 0, "spike": 4, "block": 5, "precision": 2,"speed": 3, "skills": ["guardian", "back-attack", "guts"]},
-        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["simplicity", "clairvoyant", "telepathy"]},
+        "448": {"stamina": 32, "serve": 3, "receive": 3, "toss": 3, "spike": 3, "block": 3, "precision": 3,"speed": 3, "skills": ["telepathy", "clairvoyant", "banner"]},
         "460": {"stamina": 32, "serve": 3, "receive": 4, "toss": 2, "spike": 4, "block": 4, "precision": 3,"speed": 2, "skills": ["reach", "freeze", "back-attack"]},
-        "461": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 1, "precision": 5,"speed": 5, "skills": ["dump", "observer", "defiant"]},
+        "461": {"stamina": 27, "serve": 3, "receive": 1, "toss": 4, "spike": 3, "block": 1, "precision": 5,"speed": 5, "skills": ["dump", "guardian", "defiant"]},
         "466": {"stamina": 30, "serve": 3, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "stun", "energize"]},
         "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["ace", "dagger", "float"]},
         "531": {"stamina": 38, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner", "energize", "float"]},
@@ -29246,48 +29246,41 @@ function Safari() {
         "579": {"stamina": 34, "serve": 2, "receive": 4, "toss": 4, "spike": 2, "block": 5, "precision": 4,"speed": 1, "skills": ["psyspike", "interference", "energize"]},
         "652": {"stamina": 33, "serve": 2, "receive": 5, "toss": 2, "spike": 3, "block": 4, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow", "guts"]},
         "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "dump", "burn"]},
-        "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 5, "skills": ["wide", "sneak", "lightbane"]},
+        "658": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 2, "precision": 5,"speed": 5, "skills": ["wide", "sneak", "dump"]},
         "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 5, "precision": 3,"speed": 2, "skills": ["reach", "overgrow", "float"]},
         "727": {"stamina": 33, "serve": 4, "receive": 5, "toss": 1, "spike": 4, "block": 2, "precision": 1,"speed": 1, "skills": ["burn", "grounded", "dagger"]},
-        "730": {"stamina": 31, "serve": 5, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 2, "skills": ["splash", "performer", "haze"]},
+        "730": {"stamina": 31, "serve": 4, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 2, "skills": ["splash", "performer", "swap"]},
         "766": {"stamina": 30, "serve": 2, "receive": 4, "toss": 4, "spike": 3, "block": 1, "precision": 3,"speed": 3, "skills": ["wide", "guts", "dump"]}
     };
     safari.volleyballSkillDescriptions = {
         "ace": "Ace: If this Pokémon is the only Pokémon on its team with 'Ace' skill, +2 Spike power.",
-        "alignment": "Alignment: Toss +1 for each Normal or Fairy type teammate in the same row or column when setting.",
-        "autotargeting": "Auto Targeting: When setting to a teammate, that teammate's Precision is increased to 4 (does not lower it if their Precision exceeds 4).",
         "back-attack": "Back Attack: May perform a Spike from the back row if they are in the C row.",
-        "burn": "Burn: Receivers of this Pokémon's Spikes and Serves suffer -5 stamina unless they are Water-type.",
+        "burn": "Burn: Receivers of this Pokémon's Spikes and Serves suffer -3 stamina unless they are Water-type.",
         "dagger": "Dagger: Spike +2 if the rally has continued for 5 turns or longer.",
         "clairvoyant": "Clairvoyant: Allies in the same zone as this Pokémon gain +2 Precision while spiking, serving, and tipping. While this Pokémon is in the front row, nullifies foe's 'Sneak' skills.",
         "dig": "Dig: This Pokémon can has a chance to receive spikes aimed in front of it with good success but high stamina cost.",
         "dump": "Dump: Pokémon may perform a Tip on a Pass or Set that is GREAT or higher quality.",
-        "energize": "Energize: When this Pokémon sets to a Spiker, that Spiker restores +2 Stamina.",
+        "energize": "Energize: When this Pokémon sets to an Spiker, that Spiker gains +2 Stamina restored.",
         "banner": "Banner: Pokémon in the same column or row as this Pokémon's Receive +1.",
         "grounded": "Grounded: Pokémon's Receive strength increases by +2 if it does not move after the spike or serve. +1 Receive if spiked by a Pokémon with 'Stun' ability and negates Stun.",
         "guardian": "Guardian: Pokémon's Receive strength increases by +2 on Free Pass and Tips.",
-        "haze": "Haze: While this Pokémon is in the front row, the opposing team's serve power is reduced by -2. Has no effect on Water or Ghost types.",
         "overgrow": "Overgrow: While this is in the back row, opposing team's Water type Pokémon's Spike -1. This Pokémon spends less stamina receiving unless the Spiker has 'Burn'.",
         "slacker": "Slacker: This Pokémon's Spikes, Receives, Serves, and Sets are reduced in effectiveness for the first 5 volleys.",
         "sneak": "[ACT] Sneak: Costs 3 Stamina. Becomes invisible to opponents until the next time it touches the ball.",
-        "splash": "Splash: When this Pokémon Sets, all non-Water type Pokémon in both front rows suffer -3 Stamina (Fire types suffer -5).",
+        "splash": "Splash: When this Pokémon Sets, all non-Water type Pokémon in both front rows suffer -2 Stamina (Fire types suffer -3).",
         "telepathy": "Telepathy: While this Pokémon is in the back row, Fighting-type teammate's Spike +1.",
-        "defiant": "Defiant: While this Pokémon is in the back row, Psychic-type teammate's Spike +1.",
-        "observer": "Observer: When another teammate successfully receives the ball, this Pokémon has a chance to activate the following skill: This Pokémon's receive is increased to 7 until the next time it receives the ball.",
+        "defiant": "Defiant: While this is in the back row, Psychic-type teammate's Spike +1.",
         "float": "[ACT] Float: Costs 2 Stamina. Serve loses precision, gains power, and becomes more challenging to receive overhand or by receivers that move.",
         "swap": "[ACT] Swap: Costs 3 Stamina. Moves the Pokémon up in the rotation, trading places with the Pokémon ahead of it.",
-        "guts": "Guts: While this Pokémon is in the back row, Dark-type teammate's Spike +1.",
+        "guts": "Guts: While this is in the back row, Dark-type teammate's Spike +1.",
         "wide": "Wide: Pokémon's Spike score increased by +2 while spiking from the edges of the court.",
-        "interference": "Interference: When in the front row, -1 Proficiency to the other team's Set (stacks). Has no effect on Psychic or Dark type setters.",
-        "lightbane": "Lightbane: Spike power increased by +1 Spike for each Psychic type on the opposing team.",
+        "interference": "Interference: When in the front row, -1 Proficiency to the other team's setter (stacks). Has no effect on Psychic or Dark types.",
         "performer": "Performer: This Pokémon's Set +2 when setting to a Pokémon whose base Spike is 2 or less.",
         "psyspike": "[ACT] Psyspike: Costs 5 Stamina. This Pokémon's Spike +1 and Precision +2, bypassing Blockers when activated before spiking.",
         "reach": "Reach: This Pokémon's Block +2 while blocking non-Fire types.",
         "rollout": "Rollout: When successfully receiving a ball with FORCEFUL or higher velocity, proficiency is increased.",
-        "simplicity": "Simplicity: Receive, Toss, Spike, Precision, and Block +1 while Stamina is 25 or higher.",
-        "quick": "[ACT] Quick: Costs 2 Stamina. If activated, this Pokémon spikes immediately when set to (the usual attack phase is skipped).",
         "stun": "Stun: Receiver's of this Pokémon's Serves and Spikes have reduced Receive for the rest of the rally. Does not affect Ground types or Pokémon with 'Grounded'.",
-        "freeze": "Freeze: Receiver's of this Pokémon's Serves and Spikes are frozen to the ground and cannot move for the rest of the rally. Does not affect Fire or Ice types."
+        "freeze": "Stun: Receiver's of this Pokémon's Serves and Spikes are frozen to the ground and cannot move for the rest of the rally. Does not affect Fire or Ice types."
     };
     function getVolleyballStat(pkmn, stat) {
         var mon = pokeInfo.species(getInputPokemon(poke(pkmn)).num);
@@ -29302,7 +29295,6 @@ function Safari() {
             fail: { bg: "#DC143C" },
             ace: { bg: "#DC143C" },
             meteoric: { bg: "#DC143C" },
-            earthshattering: { bg: "#DC143C" },
             fierce: { bg: "#DC143C" },
             forceful: { bg: "#DC143C" },
             powerful: { bg: "#ff22b5" },
@@ -29356,217 +29348,11 @@ function Safari() {
         safaribot.sendHtmlMessage(src, out, safchan);
         return;
     };
-    function tutorialCourtIcon(mon, owner) {
-       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + "'>";
-    }
-    function tutorialCourtView(teams, goodInputs, nextLink, retryLink) {
-        var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
-        var rows = {}, name;
-        var props = [
-            ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7"],
-            ["xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7"],
-            ["xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"],
-            ["xd1", "xd2", "xd3", "xd4", "xd5", "xd6", "xd7"],
-            ["---", "---", "---", "---", "---", "---", "---"],
-            ["d1", "d2", "d3", "d4", "d5", "d6", "d7"],
-            ["c1", "c2", "c3", "c4", "c5", "c6", "c7"],
-            ["b1", "b2", "b3", "b4", "b5", "b6", "b7"],
-            ["a1", "a2", "a3", "a4", "a5", "a6", "a7"]
-        ];
-        var ret = "", r, place, inp, identify;
-        for (var t in teams) {
-            p = teams[t];
-            mon = p.mon;
-            rows[t] = {"mon": mon, "owner": p.id};
-        }
-        ret += "<table border = 1 cellpadding = 3>";
-        for (var i = 0; i < props.length; i++) {
-            ret += "<tr>";
-            r = props[i];
-            for (var j = 0; j < r.length; j++) {
-                var place = r[j];
-                ret += "<td align=center width=88>";
-                if (rows.hasOwnProperty(place)) {
-                    inp = parseInt(rows[place].mon, 10);
-                    ret += this.courtIcon(inp, rows[place].owner);
-                }
-                else {
-                    if (goodInputs.indexOf(place) !== -1) {
-                        ret += " " + link("/vbhints " + nextLink, place) + " ";
-                    } else {
-                        ret += " " + link("/vbhints " + retryLink, place) + " ";
-                    }
-                }
-                ret += "</td>";
-            }
-            ret += "</tr>";
-        }
-        ret += "</table>";
-        return ret;
-    };
     function showVolleyballHints(src, query) {
         if (!query) {
             query = "";
         }
-        var name = sys.name(src);
         switch (query.toLowerCase()) {
-            case "tutorial":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Tutorial </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- This is a comprehensive interactive tutorial that will help you learn how to play the Volleyball minigame.", safchan);
-                safaribot.sendHtmlMessage(src, "- To get started, press " + link("/tutorial_serving", "Serving") + ".", safchan);
-                break;
-            case "tutorial_serving_fail":
-                safaribot.sendHtmlMessage(src, "Make sure you serve the ball to somewhere on the other side of the net (besides the 'd' row)!", safchan);
-            case "tutorial_serving":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}}, ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7", "xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7", "xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"], "tutorial_serving2", "tutorial_serving_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- Time to practice your serve! To serve the ball, all you have to do is click on one of the links starting with 'x' on the other side of the net.", safchan);
-                safaribot.sendHtmlMessage(src, "- You cannot serve to the 'd' row, however. You can click anywhere in the back 3 rows (a-c). For example, click xb3 or xe2.", safchan);
-                break;
-            case "tutorial_serving2_fail":
-                safaribot.sendHtmlMessage(src, "- Did you do a Strong serve?", safchan);
-            case "tutorial_serving2":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Good job! You served the ball over the net!", safchan);
-                safaribot.sendHtmlMessage(src, "- The next thing you need to know about serving is that you can vary how much effort you put into it.", safchan);
-                safaribot.sendHtmlMessage(src, "- You can choose to serve the ball EASY, NORMAL, or STRONG. EASY hits are more likely to land where you aim, while STRONG hits are more volatile, but have greater power.", safchan);
-                safaribot.sendHtmlMessage(src, "- For now, let's practice a STRONG Serve. Click the link below!", safchan);
-                safaribot.sendHtmlMessage(src, "Choose " + link("/vbhints tutorial_serving2_fail", "Easy") + " " + link("/vbhints tutorial_serving2_fail", "Normal") + " " + link("/vbhints tutorial_serving3", "Strong") + " for your serve strength!");
-                break;
-            case "tutorial_serving3_fail":
-                safaribot.sendHtmlMessage(src, "- When doing a STRONG serve, it's better to aim for the middle of the court ('xb4' for example).", safchan);
-            case "tutorial_serving3":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}}, ["xb2", "xb3", "xb4", "xb5", "xb6"], "tutorial_serving_done", "tutorial_serving3_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- Your serve will be STRONG, so that means it will be stronger, but you will have less control over it.", safchan);
-                safaribot.sendHtmlMessage(src, "- Hint: Aim for the middle of the court to avoid hitting the ball out of bounds!", safchan);
-                break;
-            case "tutorial_serving_done":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Serving </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Good job! Now you've learned how to hit the ball over the net whils Serving.", safchan);
-                safaribot.sendHtmlMessage(src, "- You've also learned how to use the EASY, NORMAL, and STRONG serves to your advantage!", safchan);
-                safaribot.sendHtmlMessage(src, "- Next, let's work on Receiving. " + link("/vbhints tutorial_receiving", "Click here when you're ready.") + ".", safchan);
-                break;
-            case "tutorial_receiving":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Receiving is straightforward: when the other team hits the ball, it will go to a location on your side of the net.", safchan);
-                safaribot.sendHtmlMessage(src, "- If you're near where the ball is going, try and move to receive it!", safchan);
-                safaribot.sendHtmlMessage(src, "- When you're ready for a practice hit, " + link("/vbhints tutorial_receiving2", "Click here.") + ".", safchan);
-                break;
-            case "tutorial_receiving2_fail":
-                safaribot.sendHtmlMessage(src, "- Try again! Click on the link of the location where the ball was served to!", safchan);
-            case "tutorial_receiving2":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"b2": {mon: 1, id: name}, "xb6": {mon: 4, id: "Foe"}}, ["c3"], "tutorial_receiving3", "tutorial_receiving2_fail"), safchan);
-                safaribot.sendHtmlMessage(src, toColor("Foe's Charmander serves the ball! The ball was served to c3!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, "- Click on the location the ball was hit to in order to receive it!", safchan);
-                break;
-            case "tutorial_receiving3":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Receiving </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Good job! You received the ball!", safchan);
-                safaribot.sendHtmlMessage(src, "- Important: You do not always need to be the one to receive the ball. Communicate with your teammates to make sure the best receiver who is closest to the ball can receive it!", safchan);
-                safaribot.sendHtmlMessage(src, "- Next is Setting. " + link("/vbhints tutorial_setting", "Click here when you're ready.") + ".", safchan);
-                break;
-            case "tutorial_setting_fail":
-                safaribot.sendHtmlMessage(src, "- Don't click on the court! Use the setter links below the court to choose who you want to set to!", safchan);
-            case "tutorial_setting":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 159, id: "Teammate"}, "d6": {mon: 156, id: "Teammate"}}, [], "", "tutorial_setting_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting2", "/vol set:bayleaf") + " " + link("/vbhints tutorial_setting2", "/vol set:quilava") + "!", safchan);
-                safaribot.sendHtmlMessage(src, "- Setting comes after receiving! If you want to set the ball, you may set to a teammate, and they will be able to spike the ball.", safchan);
-                break;
-            case "tutorial_setting2_fail":
-                safaribot.sendHtmlMessage(src, "- Set to Pikachu, not Mew. If you need help figuring out which one has better Spike power, you can check their stats with /vb pikachu and /vb mew.", safchan);
-            case "tutorial_setting2":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 25, id: "Teammate"}, "d6": {mon: 151, id: "Teammate"}}, [], "", "tutorial_setting2_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting3", "/vol set:pikachu") + " " + link("/vbhints tutorial_setting2_fail", "/vol set:mew") + "!", safchan);
-                safaribot.sendHtmlMessage(src, "- In some cases, you have to choose which teammate is better to set to based on the circumstances.", safchan);
-                safaribot.sendHtmlMessage(src, "- In this example, Pikachu's Spike power is much higher than Mew's so you should set to Pikachu and not Mew.", safchan);
-                break;
-            case "tutorial_setting3_fail":
-                safaribot.sendHtmlMessage(src, "- Hint: Set to the teammate who does not have a blocker nearby!", safchan);
-            case "tutorial_setting3":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d4": {mon: 1, id: name}, "d2": {mon: 461, id: "Teammate"}, "d6": {mon: 448, id: "Teammate"}, "xd6": {mon: 257, id: "Foe"}}, [], "", "tutorial_setting3_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "Choose a teammate to set to with " + link("/vbhints tutorial_setting3", "/vol set:weavile") + " " + link("/vbhints tutorial_setting2_fail", "/vol set:lucario") + "!", safchan);
-                safaribot.sendHtmlMessage(src, "- In this example, notice that Lucario is facing a blocker on the opposing team, while Weavile has no blockers nearby.", safchan);
-                safaribot.sendHtmlMessage(src, "- Weavile and Lucario's spike power are similar, so set to the one that will have an easier time spiking the ball.", safchan);
-                break;
-            case "tutorial_setting4":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Setting </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Now you understand how to set! It's also important to know when NOT to set. Let your teammates who have a higher Toss score than you set the ball!", safchan);
-                safaribot.sendHtmlMessage(src, "- If you're not sure about the Toss scores, you can check during the game by hovering over them, or by using /vb [pokemon].", safchan);
-                safaribot.sendHtmlMessage(src, "- Net we'll work on Spikes. " + link("/vbhints tutorial_spiking", "Click here when you're ready.") + ".", safchan);
-                break;
-            case "tutorial_spiking_fail":
-                safaribot.sendHtmlMessage(src, "- For example, you can click 'xb3' to spike the ball to the b3 location. Anywhere besides the front row is fair game.", safchan);
-            case "tutorial_spiking":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
-                safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}}, ["xa1", "xa2", "xa3", "xa4", "xa5", "xa6", "xa7", "xb1", "xb2", "xb3", "xb4", "xb5", "xb6", "xb7", "xc1", "xc2", "xc3", "xc4", "xc5", "xc6", "xc7"], "tutorial_spiking2", "tutorial_spiking_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- If you remember how to serve, spiking is basically the same thing. Click the location on the other side of the net you would like to spike to!", safchan);
-                break;
-            case "tutorial_spiking2_fail":
-                safaribot.sendHtmlMessage(src, "- Try again! Aim for a place that their stronger receiver cannot easily reach!", safchan);
-            case "tutorial_spiking2":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
-                safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}, "xb2": {mon: 428, id: "Foe"}, "xb6": {mon: 260, id: "Foe"}}, ["xa1", "xa2", "xa3", "xa4", "xb1", "xb2", "xb3", "xc1", "xc2", "xc3", "xc4"], "tutorial_spiking3", "tutorial_spiking2_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- Gardevoir sets the ball to " + name + "'s Bulbasaur!", safchan);
-                safaribot.sendHtmlMessage(src, "- When Spiking, try to aim your spike away from the strong receivers on the other team. In this example, avoid spiking around the area with a strong receiver.", safchan);
-                break;
-            case "tutorial_spiking3_fail":
-                safaribot.sendHtmlMessage(src, "- Avoiding blockers can be tricky. Pick another spot that does not put the blocker between you and the spot you target.", safchan);
-            case "tutorial_spiking3":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
-                safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "xd5": {mon: X, id: "Foe"}}, ["xc7", "xb7", "xc3", "xb3", "xa2", "xa1", "xb2", "xb1", "xc2", "xc1"]), safchan);
-                safaribot.sendHtmlMessage(src, "- Nice! You now understand how to cleverly aim your spike!", safchan);
-                safaribot.sendHtmlMessage(src, "- In this example, you are faced with a potential blocker. As long as you aim away from the blocker, they cannot block you.", safchan);
-                break;
-            case "tutorial_spiking4_fail":
-                safaribot.sendHtmlMessage(src, "- Keep trying! Look for the spot where there are no receivers nearby and no blockers in your way!", safchan);
-                break;
-            case "tutorial_spiking4":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Nicely done! Let's put it all together for a more complicated example:", safchan);
-                safaribot.sendHtmlMessage(src, "- Gardevoir sets the ball to " + name + "'s Bulbasaur!", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "xd5": {mon: 460, id: "Foe"}, "xd6": {mon: 257, id: "Foe"}, "xa1": {mon: 727, id: "Foe"}, "xc1": {mon: 260, id: "Foe"}}, ["xb3"], "tutorial_spiking5", "tutorial_spiking4_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- This time, there are two potential blockers and two possible receivers.", safchan);
-                safaribot.sendHtmlMessage(src, "- Find the spot that avoids the blockers and does not go directly to the strong receiver!", safchan);
-                break;
-            case "tutorial_spiking5":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- You're amazing! Now you know how to target the weakest points of the opponent's defense!", safchan);
-                safaribot.sendHtmlMessage(src, "- Next, we will learn how to block. " + link("/vbhints tutorial_blocking", "Click here to learn more") + ".", safchan);
-                break;
-            case "tutorial_blocking_fail":
-                safaribot.sendHtmlMessage(src, "Click on the --- in front of the spiker (Sceptile) in order to score a block!", safchan);
-            case "tutorial_blocking":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Blocking </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- The foe's Greninja sets to the foe's Sceptile!", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d2": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd2": {mon: 254, id: "Foe"}, "xd4": {mon: 658, id: "Foe"}}, ["---"], "tutorial_blocking2", "tutorial_blocking_fail"), safchan);
-                safaribot.sendHtmlMessage(src, "- If you are in the front row, you can block. To do so, click on the net in front of the spiker!", safchan);
-                break;
-            case "tutorial_blocking2":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Blocking </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Good job! You blocked the ball!", safchan);
-                safaribot.sendHtmlMessage(src, "- When blocking, you can opt to change the angle of your block. If you want to block straight, click on the net directly in front of the spiker. If you go to the side, your block will be angled to block spikes in that direction.", safchan);
-                safaribot.sendHtmlMessage(src, "- All that's left is to explain how stats work! " + link("/vbhints stats", "Click here to see what the stats do") + "!", safchan);
-                break;
-            case "stats":
-                safaribot.sendHtmlMessage(src, "<b>*** Volleyball Stats </b>", safchan);
-                safaribot.sendHtmlMessage(src, "- Receive: The higher your receive, the better your ability to receive serves and spikes will be.", safchan);
-                safaribot.sendHtmlMessage(src, "- Toss: The higher your toss, the more effective of a setter you will be.", safchan);
-                safaribot.sendHtmlMessage(src, "- Spike: The higher your spike, the stronger your spikes will be.", safchan);
-                safaribot.sendHtmlMessage(src, "- Serve: The higher your serve, the stronger your serves.", safchan);
-                safaribot.sendHtmlMessage(src, "- Precision: The higher your precision, the more accurately you will be able to land spikes or serves where you want to.", safchan);
-                safaribot.sendHtmlMessage(src, "- Block: The higher your block, the more effective your block will be.", safchan);
-                safaribot.sendHtmlMessage(src, "- Speed: The higher your speed, the faster you will be able to move around the court.", safchan);
-                safaribot.sendHtmlMessage(src, "- Stamina: This is expended when moving around the court, and restores somewhat at the end of each rally. Keep your stamina high or your stats will drop!", safchan);
-                safaribot.sendHtmlMessage(src, "- Skills: Various skills that allow Pokémon to do unique actions on the court.", safchan);
-                break;
             case "howto":
                 safaribot.sendHtmlMessage(src, "<b>*** How to play Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Volleyball is a mini-game that requires typing no commands after joining!", safchan);
@@ -29627,11 +29413,10 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>*** Tips for setting in Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Setting the ball uses the Toss stat of your active Pokémon.", safchan);
                 safaribot.sendHtmlMessage(src, "- The longer you wait in one spot, the better your set will be.", safchan);
-                safaribot.sendHtmlMessage(src, "- Your set will be improved if the ball was received well.", safchan);
+                safaribot.sendHtmlMessage(src, "- The better the receive, the better the set.", safchan);
                 safaribot.sendHtmlMessage(src, "- The score of the set can be improved by performing a long set (setting to a player at least 3 columns away).", safchan);
-                safaribot.sendHtmlMessage(src, "- Your set score is increased by +1 if you are in the center of the front row (d4).", safchan);
-                safaribot.sendHtmlMessage(src, "- Even if you start in the back row, you can move to the front row in order to set (but you still cannot spike).", safchan);
-                safaribot.sendHtmlMessage(src, "- Performing a good set boosts the spike power and accuracy of the spiker, and, if the spiker has a high precision stat, allows them to evade blocks.", safchan);
+                safaribot.sendHtmlMessage(src, "- The score of the set will be lowered, but will have an improved chance to avoid blocks if performing a quick set (setting to a player 1 column away).", safchan);
+                safaribot.sendHtmlMessage(src, "- Performing a good set boosts the spike power of the spiker, and, if the spiker has a high precision stat, allows them to evade blocks.", safchan);
                 break;
             case "spike":
             case "hit":
@@ -29654,7 +29439,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- Serving the ball uses the serve stat of your active Pokémon.", safchan);
                 safaribot.sendHtmlMessage(src, "- Adjust your serve effort with /vol effort:0 through /vol effort:2. More effort costs more stamina but is more powerful.", safchan);
                 safaribot.sendHtmlMessage(src, "- Lower serve effort are also easier to land in bounds if your precision stat is low.", safchan);
-                safaribot.sendHtmlMessage(src, "- If you have a 'Float' skill, you can activate it while serving to throw off the receivers.", safchan);
+                safaribot.sendHtmlMessage(src, "- If you have a float skill, you can activate it will serving to throw off the receivers.", safchan);
                 break;
             case "block":
             case "blocking":
@@ -29673,8 +29458,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "- If your stamina is low, you may elect to use /vol sub to change in your next Pokémon.", safchan);
                 break;
             default:
-                safaribot.sendHtmlMessage(src, "If you want to learn how to play the volleyball minigame, " + link("/vbhints tutorial_serving", "click this link to begin the tutorial!"), safchan);
-                safaribot.sendHtmlMessage(src, "For more in-depth specific tips, use these queries: " + link("/vbhints howto", "How To") + ", " + link("/vbhints receive", "receive") + ", " + link("/vbhints toss", "toss") + ", " + link("/vbhints tip", "tip") + ", " + link("/vbhints spike", "spike") + ", " + link("/vbhints serve", "serve") + ", " + link("/vbhints block", "block") + ", " + link("/vbhints stamina", "stamina") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "Valid queries for this are " + link("/vbhints howto", "How To") + ", " + link("/vbhints receive", "receive") + ", " + link("/vbhints toss", "toss") + ", " + link("/vbhints tip", "tip") + ", " + link("/vbhints spike", "spike") + ", " + link("/vbhints serve", "serve") + ", " + link("/vbhints block", "block") + ", " + link("/vbhints stamina", "stamina") + "!", safchan);
                 break;
         }
         return;
@@ -29905,8 +29689,8 @@ function Safari() {
                     if (q.id == p.id) {
                         continue;
                     }
-                    if ((q.row === 4 && q.zone == "front") || (q.row === 3 && q.skills.indexOf("back-attack") !== -1)) {
-                        links += (link("/vol set:" + q.id) + " (" + poke(q.party[q.currentPoke]) + ") ");
+                    if (q.row === 4 || (q.row === 3 && q.skills.indexOf("back-attack") !== -1)) {
+                        links += link("/vol set:" + q.id);
                         if (first) {
                             first = false;
                         }
@@ -29937,144 +29721,8 @@ function Safari() {
         }
         return;
     };
-    Volleyball.prototype.statPrintout = function(p) {
-        var stm = p.stamina;
-        var srv = srv2 = p.serve;
-        var rec = rec2 = p.receive;
-        var set = set2 = p.toss;
-        var spk = spk2 = p.spike;
-        var blk = blk2 = p.block;
-        var prc = prc2 = p.precision;
-        var speed = p.speed;
-        var tm = this.teams[p.team];
-        var otherteam = p.team == 0 ? 1 : 0;
-        var tm2 = this.teams[otherteam];
-        var q;
-
-        for (var t in tm2) {
-            q = tm2[t];
-            if (this.hasSkill(q, "haze") && (q.zone == "front")) {
-                if (!(hasType(p.party[p.currentPoke]), "Water") && (!(hasType(p.party[p.currentPoke]), "Ghost"))) {
-                    srv2 -= 2;
-                }
-            }
-        }
-        if (p.observed) {
-            rec2 = 7;
-        }
-        if (p.stunned) {
-            rec2 -= 2;
-        }
-        if (this.hasSkill(p, "grounded") && p.prep >= 1) {
-            rec2 += 2;
-        }
-        if (this.hasSkill(p, "guardian") && this.ballPower <= 0 && this.phase == "receive") {
-            rec2 += 2;
-        }
-        for (var t in tm) {
-            q = tm[t];
-            if (this.hasSkill(q, "banner") && (q.row == p.row || q.column == p.column)) {
-                rec2 += 1;
-            }
-        }
-        for (var t in tm2) {
-            q = tm2[t];
-            if (this.hasSkill(q, "interference") && (q.zone == "front")) {
-                if (!(hasType(p.party[p.currentPoke]), "Psychic") && (!(hasType(p.party[p.currentPoke]), "Dark"))) {
-                    set2 -= 1;
-                }
-            }
-        }
-        if (p.row == 4 && p.column == 4) {
-            set2++;
-        }
-        if (this.hasSkill(p, "alignment")) {
-            for (var t in tm) {
-                q = tm[t];
-                if ((q.row == p.row || p.column == q.column) && ((hasType(q.party[q.currentPoke], "Normal") || (hasType(q.party[q.currentPoke], "Fairy"))))) {
-                    set2++;
-                }
-            }
-        }
-        for (var t in tm) {
-            q = tm[t];
-            if (this.hasSkill(q, "guts") && (q.zone == "back") & q.id !== p.id) {
-                if (this.hasSkill(q, "telepathy") && (hasType(p.party[p.currentPoke], "Fighting"))) {
-                    spk2 += 1;
-                }
-                if (this.hasSkill(q, "guts") && (hasType(p.party[p.currentPoke], "Dark"))) {
-                    spk2 += 1;
-                }
-                if (this.hasSkill(q, "defiant") && (hasType(p.party[p.currentPoke], "Psychic"))) {
-                    spk2 += 1;
-                }
-            }
-        }
-        if (this.hasSkill(p, "ace")) {
-            var activate = true;
-            for (var t in tm) {
-                q = tm[t];
-                if (this.hasSkill(q, "ace")) {
-                    activate = false;
-                }
-            }
-            if (activate) {
-                spk2 += 2;
-            }
-        }
-        if (this.hasSkill(p, "wide") && (p.column == 1 || p.column == 7)) {
-            spk2 += 2;
-        }
-        if (this.hasSkill(p, "dagger") && (this.turn >= 5)) {
-            spk2 += 2;
-        }
-        for (var t in tm2) {
-            q = tm2[t];
-            if (q.zone == "back" && this.hasSkill(q, "overgrow") && (hasType(p.party[p.currentPoke], "Water"))) {
-                spk2 -= 1;
-                break;
-            }
-        }
-        if (this.hasSkill(p, "lightbane")) {
-            for (var t in tm2) {
-                q = tm2[t];
-                if (hasType(q.party[q.currentPoke], "Psychic")) {
-                    spk2 += 1;
-                    srv += 1;
-                    break;
-                }
-            }
-        }
-        if (p.autotarget) {
-            prc2 = (Math.max(prec2), 4);
-        }
-        for (var t in tm) {
-            q = tm[t];
-            if (this.hasSkill(q, "clairvoyant") && (q.zone == p.zone) && (!(p.id == q.id))) {
-                prc2 += 2;
-            }
-        }
-        if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
-            rec2++;
-            set2++;
-            blk2++;
-            prc2++;
-            spk2++;
-            srv++;
-        }
-        var out = "";
-        out += ("REC: " + rec2 + (rec2 > rec ? (toColor(" (+" + rec2 - rec + ")", "green")) : (rec2 < rec ? (toColor(" (-" + rec - rec2 + ")", "red")) : "")) + " "); 
-        out += ("SET: " + set + (set2 > set ? (toColor(" (+" + set2 - set + ")", "green")) : (set2 < set ? (toColor(" (-" + set - set2 + ")", "red")) : "")) + " "); 
-        out += ("SPK: " + spk + (spk2 > spk ? (toColor(" (+" + spk2 - spk + ")", "green")) : (spk2 < spk ? (toColor(" (-" + spk - spk2 + ")", "red")) : "")) + " "); 
-        out += ("PRC: " + prc + (prc2 > prc ? (toColor(" (+" + prc2 - prc + ")", "green")) : (prc2 < prc ? (toColor(" (-" + prc - prc2 + ")", "red")) : "")) + " "); 
-        out += ("BLK: " + blk + (blk2 > blk ? (toColor(" (+" + blk2 - blk + ")", "green")) : (blk2 < blk ? (toColor(" (-" + blk - blk2 + ")", "red")) : "")) + " "); 
-        out += ("SRV: " + srv + (srv2 > srv ? (toColor(" (+" + srv2 - srv + ")", "green")) : (srv2 < srv ? (toColor(" (-" + srv - srv2 + ")", "red")) : "")) + " "); 
-        out += ("SPEED: " + speed + " "); 
-        out += ("STAMINA: " + stm + " "); 
-        return out;
-    };
-    Volleyball.prototype.courtIcon = function(mon, owner, p) {
-       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + " \n" + this.statPrintout(p) + "'>";
+    Volleyball.prototype.courtIcon = function(mon, owner) {
+       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + "'>";
     };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
@@ -30101,13 +29749,13 @@ function Safari() {
             p = this.teams[defteam][t];
             if (!p.actSkills.sneak || (identify)) {
                 mon = parseInt(p.party[p.currentPoke].id, 10);
-                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id, "p": p};
+                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
             }
         }
         for (var t in this.teams[atkteam]) {
             p = this.teams[atkteam][t];
             mon = parseInt(p.party[p.currentPoke].id, 10);
-            rows[p.pos] = {"mon": mon, "owner": p.id, "p": p};
+            rows[p.pos] = {mon: mon, owner: p.id};
         }
         ret += "<table border = 1 cellpadding = 3>";
         for (var i = 0; i < props.length; i++) {
@@ -30230,8 +29878,7 @@ function Safari() {
                 setval: 0,
                 volleysIn: 0,
                 freepass: false,
-                observed: false,
-                autotarget: false,
+                quickattack: false,
                 stunned: false,
                 frozen: false,
                 moved: 0,
@@ -30818,7 +30465,7 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if (((!(q.zone == "front" && q.row == 4)) && (!(this.hasSkill(q, "back-attack")))) || (q.id == p.id)) {
+                            if ((q.zone !== "front" && (!(this.hasSkill(q, "back-attack")))) || (q.id == p.id)) {
                                 continue;
                             }
                             if (q.spike === maxHit && chooseHitter === 1) {
@@ -30957,8 +30604,7 @@ function Safari() {
                 if (this.cyclePhase == "receive") {
                     p.canHit = false;
                     p.canTip = false;
-                    p.actSkills.quick = false;
-                    p.actSkills.psyspike = false;
+                    p.quickattack = false;
                     p.receiver = false;
                     p.passval = 0;
                     p.setval = 0;
@@ -30968,8 +30614,7 @@ function Safari() {
                     }
                 }
                 if (this.cyclePhase == "set") {
-                    p.actSkills.quick = false;
-                    p.actSkills.psyspike = false;
+                    p.quickattack = false;
                     p.freepass = false;
                     p.receiver = false;
                     p.moved = 0;
@@ -30978,8 +30623,7 @@ function Safari() {
                     this.inputVal(p.id, "canSet", false);
                 }
                 if (this.cyclePhase == "serve") {
-                    p.actSkills.quick = false;
-                    p.actSkills.psyspike = false;
+                    p.quickattack = false;
                     p.freepass = false;
                     p.receiver = false;
                     p.passval = 0;
@@ -30987,9 +30631,7 @@ function Safari() {
                     p.moved = 0;
                 }
                 for (var s in p.actSkills) {
-                    if (s !== "sneak") {
-                        p.actSkills[s] = false;
-                    }
+                    p.actSkills[s] = false;
                 }
                 this.inputVal(p.id, "action", "");
                 if (this.cyclePhase !== "serve") {
@@ -31116,8 +30758,6 @@ function Safari() {
             if (this.teams[0][p].volleysIn === 5 && this.hasSkill(this.teams[0][p], "slacker")) {
                 this.sendMessageTeam(0, this.actName(this.teams[0][p]) + " has finally reached full strength!", "green");
             }
-            this.teams[0][p].observed = false;
-            this.teams[0][p].autotarget = false;
             this.teams[0][p].stunned = false;
             this.teams[0][p].frozen = false;
             this.teams[0][p].canSwap = true;
@@ -31133,8 +30773,6 @@ function Safari() {
             if (this.teams[1][p].volleysIn === 5 && this.hasSkill(this.teams[1][p], "slacker")) {
                 this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
             }
-            this.teams[1][p].observed = false;
-            this.teams[1][p].autotarget = false;
             this.teams[1][p].stunned = false;
             this.teams[1][p].frozen = false;
             this.teams[1][p].canSwap = true;
@@ -31290,14 +30928,6 @@ function Safari() {
                 prec += 2;
             }
         }
-        for (var t in this.teams[defteam]) {
-            q = this.teams[defteam][t];
-            if (this.hasSkill(q, "haze") && (q.zone == "front")) {
-                if (!(hasType(player.party[player.currentPoke]), "Water") && (!(hasType(player.party[player.currentPoke]), "Ghost"))) {
-                    pow -= 2;
-                }
-            }
-        }
         if (player.serveEffort === 0) {
             prec++;
         }
@@ -31381,7 +31011,6 @@ function Safari() {
         }
         var might = "FREE";
         switch (pow) {
-            case 9: might = "EARTHSHATTERING"; break;
             case 8: might = "METEORIC"; break;
             case 7: might = "FIERCE"; break;
             case 6: might = "FORCEFUL"; break;
@@ -31414,7 +31043,6 @@ function Safari() {
                 this.sendMessage(p.id, "You spent " + stcost + " stamina blocking! You now have " + p.stamina + "!" , "red");
                 p.canBlock = false;
                 p.blocking = false;
-                p.prep = 0;
             }
         }
     }
@@ -31450,7 +31078,13 @@ function Safari() {
         bonus = player.prep >= 1 ? 1 : 0;
         proficiency = Math.min(Math.floor((passscore + player.toss + bonus + (Math.random() * 2 * player.toss))/2), 10);
         stcost = Math.max(Math.floor(7.2 - Math.random() - (0.75 * passscore)), 0);
-        if (dist >= 4) {
+        if (dist === 1) {
+            if (proficiency <= 7) {
+                proficiency = Math.floor(0.75 * proficiency);
+            }
+            target.quickattack = true;
+        }
+        else if (dist >= 4) {
             if (proficiency < 7) {
                 proficiency += 1;
             }
@@ -31485,10 +31119,6 @@ function Safari() {
         }
         if (this.hasSkill(player, "performer") && (target.spike <= 2)) {
             proficiency += 2;
-            this.sendMessageTeam(player.team, this.actName(player) + "'s Performer activates!", "green");
-        }
-        if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
-            proficiency += 1;
         }
         var atkteam = player.team;
         var defteam = (player.team === 1 ? 0 : 1);
@@ -31500,18 +31130,6 @@ function Safari() {
                     }
                 }
             }
-        }
-        var q;
-        if (this.hasSkill(player, "alignment")) {
-            for (var t in this.teams[player.team]) {
-                q = this.teams[player.team][t];
-                if ((q.row == player.row || player.column == q.column) && ((hasType(q.party[q.currentPoke], "Normal") || (hasType(q.party[q.currentPoke], "Fairy"))))) {
-                    proficiency++;
-                }
-            }
-        }
-        if (target.actSkills.quick) {
-            proficiency -= 1;
         }
         target.setval = Math.max(0, Math.min(proficiency, 6));
         switch (target.setval) {
@@ -31530,10 +31148,6 @@ function Safari() {
             target.stamina += 2;
             this.sendMessageTeam(player.team, this.actName(target) + " was energized!", "green");
         }
-        if (this.hasSkill(player, "autotargeting")) {
-            target.autotarget = true;
-            this.sendMessageTeam(player.team, this.actName(player) + " provides aiming assistance to " + this.actName(target) + "!", "green");
-        }
         if (this.hasSkill(target, "psyspike")) {
             this.sendMessage(target.id, "You can activate " + link("/vol psyspike") + " to increase your power and precision and bypass blockers! (Costs 5 stamina)", "red");
         }
@@ -31542,10 +31156,10 @@ function Safari() {
                 var m = this.teams[0][t];
                 if (m.zone === "front" && (!hasType(m.party[m.currentPoke], "Water"))) {
                     if (hasType(m.party[m.currentPoke], "Fire")) {
-                        m.stamina = (Math.max(m.stamina - 5, 0));
+                        m.stamina = (Math.max(m.stamina - 3, 0));
                     }
                     else {
-                        m.stamina = (Math.max(m.stamina - 3, 0));
+                        m.stamina = (Math.max(m.stamina - 2, 0));
                     }
                 } 
             }
@@ -31560,7 +31174,7 @@ function Safari() {
                     }
                 } 
             }
-            this.sendMessageTeam(player.team, this.actName(player) + "'s Splash hits the net!", "green");
+            this.sendMessageTeam(player.team, this.actName(player) + "'s' Splash hits the net!", "green");
         }
         this.cyclePhase = "attack";
         this.clearVals();
@@ -31569,40 +31183,13 @@ function Safari() {
         player.actSkills.sneak = false;
         this.recordSetter = player.id;
         this.recordSpiker = target.id;
-        if (target.actSkills.quick) {
-            var torow = "", tocolumn = "";
-            if (target.action[0] == "x") {
-                if (target.action[1] == "a") {
-                    torow = 1;
-                }
-                if (target.action[1] == "b") {
-                    torow = 2;
-                }
-                if (target.action[1] == "c") {
-                    torow = 3;
-                }
-                if (target.action[1] == "d") {
-                    torow = 4;
-                }
-                tocolumn = parseInt(target.action[2], 10);
-            }
-            if (isNaN(torow)) {
-                torow = (chance(0.5) ? 3 : 2);
-            }
-            if (isNaN(tocolumn)) {
-                tocolumn = (chance(0.33) ? 4 : (chance(0.5) ? 3 : 5));
-            }
-            this.processAttack(target, torow, tocolumn);
-            target.actSkills.quick = false;
-        } else {
-            var defteam = (this.teamHasBall === 1 ? 0 : 1);
-            this.sendMessageTeam(0, this.courtView(0), null, true);
-            this.sendMessageTeam(1, this.courtView(1), null, true);
-            for (var t in this.teams[defteam]) {
-                var p = this.teams[defteam];
-                if (p.zone === "front" && p.row === 4) {
-                    this.sendMessage(p.id, "You can block by clicking on the net!", "red");
-                }
+        var defteam = (this.teamHasBall === 1 ? 0 : 1);
+        this.sendMessageTeam(0, this.courtView(0), null, true);
+        this.sendMessageTeam(1, this.courtView(1), null, true);
+        for (var t in this.teams[defteam]) {
+            var p = this.teams[defteam];
+            if (p.zone === "front" && p.row === 4) {
+                this.sendMessage(p.id, "You can block by clicking on the net!", "red");
             }
         }
         return;
@@ -31613,7 +31200,7 @@ function Safari() {
         var prec = player.precision;
         for (var t in this.teams[player.team]) {
             var p = this.teams[player.team][t];
-            if (p.zone === player.zone && p.id !== player.id && (this.hasSkill(p, "clairvoyant"))) {
+            if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
                 prec += 2;
             }
         }
@@ -31643,7 +31230,7 @@ function Safari() {
             this.cyclePhase = "set";
             this.teamHasBall = defteam;
             for (var s in this.teams[defteam]) {
-                if (this.teams[defteam].row === 4) {
+                if (this.teams[defteam].zone === "front") {
                     this.teams[defteam].canSet = true;
                     this.teams[defteam].passval = 5;
                     if (this.hasSkill(p, "guardian")) {
@@ -31682,12 +31269,6 @@ function Safari() {
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
         this.setterLinks(defteam);
-        for (var t in this.teams[p.team]) {
-            q = this.teams[p.team][t];
-            if (this.hasSkill(q, "quick")) {
-                this.sendMessage(q.id, "You can do a quick attack by clicking " + link("/vol quick") + " and choosing your spike location. If the setter tosses the ball to you, you will spike instantly!" , "red");
-            }
-        }
         return;
     };
     Volleyball.prototype.processAttack = function(player, row, column) {
@@ -31722,25 +31303,14 @@ function Safari() {
             return;
         }
         var prec = player.precision;
-        if (player.autotarget) {
-            prec = Math.max(prec, 4);
-            player.autotarget = false;
-        }
         for (var t in this.teams[player.team]) {
             var p = this.teams[player.team][t];
             if (p.zone === player.zone && (this.hasSkill(p, "clairvoyant"))) {
                 prec += 2;
             }
         }
-        if (player.setVal) {
-            prec += (player.setVal * 0.5);
-            prec -= 1;
-        }
         if (player.actSkills.psyspike) {
             prec += 2;
-        }
-        if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
-            prec += 1;
         }
 
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
@@ -31803,9 +31373,6 @@ function Safari() {
                     }
                 }
             }
-            if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
-                k += 1;
-            }
             if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke], "Fire"))) {
                 k += 2;
             }
@@ -31853,23 +31420,11 @@ function Safari() {
                 break;
             }
         }
-        if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
-            pow += 1;
-        }
         if (this.hasSkill(player, "dagger") && (this.turn >= 5)) {
             pow += 2;
         }
         if (this.hasSkill(player, "wide") && (player.column === 1 || player.column === 7)) {
             pow += 2;
-        }
-        if (this.hasSkill(p, "lightbane")) {
-            for (var t in this.teams[defteam]) {
-                var q = this.teams[defteam][t];
-                if (hasType(q.party[q.currentPoke], "Psychic")) {
-                    pow += 1;
-                    break;
-                }
-            }
         }
         if (player.stamina <= 10) {
             pow -= 1;
@@ -31881,19 +31436,22 @@ function Safari() {
             if (this.teams[atkteam][t].zone == "back") {
                 if (this.hasSkill(this.teams[atkteam][t], "telepathy") && (hasType(player.party[player.currentPoke], "Fighting"))) {
                     pow += 1;
+                    break;
                 }
                 if (this.hasSkill(this.teams[atkteam][t], "guts") && (hasType(player.party[player.currentPoke], "Dark"))) {
                     pow += 1;
+                    break;
                 }
                 if (this.hasSkill(this.teams[atkteam][t], "defiant") && (hasType(player.party[player.currentPoke], "Psychic"))) {
                     pow += 1;
+                    break;
                 }
             }
         }
         if (player.actSkills.psyspike) {
             pow++;
         }
-        pow = Math.min(9, pow);
+        pow = Math.min(8, pow);
         this.sendMessageAll(this.actName(player) + " spikes the ball!" + player.row === 3 ? " It's a Back Attack!" : "", "blue");
         stcost = Math.floor(6 - Math.random() - (0.4 * player.setval));
         if (player.row === 3) {
@@ -31905,6 +31463,9 @@ function Safari() {
         if (blkevade > 0) {
             blkevade += 4 * (Math.min(prec, player.setval));
             blkevade = blkevade * 0.04;
+        }
+        if (player.quickattack) {
+            blkevade = Math.max(blkevade, 0.45);
         }
         if (player.zone == "back") {
             blkevade += 0.15;
@@ -32000,7 +31561,6 @@ function Safari() {
         this.ballRow = row;
         this.ballColumn = (8 - column);
         switch (pow) {
-            case 9: might = "EARTH-SHATTERING"; break;
             case 8: might = "METEORIC"; break;
             case 7: might = "FIERCE"; break;
             case 6: might = "FORCEFUL"; break;
@@ -32031,7 +31591,7 @@ function Safari() {
             If two players are in the same range of it, they both try to receive. The higher score prevails. Both players lose stamina as though they had received.
             The score is determined by their Pass Score, their amount of Prep, and whether they are at disadvantage or not. Some skills may apply.
         */
-        var p, rec, prec, proficiency, maxPass = -99, atkteam = this.teamHasBall === 0 ? 1 : 0, passed = false;
+        var p, rec, proficiency, maxPass = -99, atkteam = this.teamHasBall === 0 ? 1 : 0, passed = false;
         this.turn++;
         for (var t in this.teams[this.teamHasBall]) {
             p = this.teams[this.teamHasBall][t];
@@ -32041,14 +31601,10 @@ function Safari() {
             if (p.row === 4) {
                 continue;
             }
-            prec = p.receive;
-            if (p.observed) {
-                prec = 7;
-            }
             p.prep = Math.min(p.prep, 3);
             if (p.row === this.ballRow && p.column === this.ballColumn) {
                 //direct receive, able to dig almost anything
-                rec = prec + p.prep + 2 + ((3 * Math.random()) - (2 * Math.random()));
+                rec = p.receive + p.prep + 2 + ((3 * Math.random()) - (2 * Math.random()));
                 proficiency = (rec - this.ballPower - (Math.max(this.ballPower - 5, 0)));
                 if (proficiency <= 2) {
                     proficiency += 1;
@@ -32060,7 +31616,7 @@ function Safari() {
             }
             if (p.row === this.ballRow + 1 && p.column === this.ballColumn) {
                 //if the player is directly in front of the ball's spike, receive overhand, which uses toss
-                rec = ((p.toss + prec)/2 + (p.prep * 2) + 3);
+                rec = ((p.toss + p.receive)/2 + (p.prep * 2) + 3);
                 proficiency = (rec + p.toss + (p.toss * Math.random()) - (1.5 * this.ballPower) - ((2.5 * Math.max(this.ballPower - 5, 0))));
                 if (proficiency >= 2) {
                     proficiency += 3;
@@ -32075,7 +31631,7 @@ function Safari() {
             }
             if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is in front of the receiver, they can perform a dig - this costs more stamina but is pretty good for getting the ball up if their rec is good
-                rec = prec + p.prep + 1 + ((3 * Math.random()) - (4 * Math.random()));
+                rec = p.receive + p.prep + 1 + ((3 * Math.random()) - (4 * Math.random()));
                 proficiency = (this.ballPower - rec);
                 if (proficiency >= 5) {
                     proficiency -= 1;
@@ -32094,7 +31650,7 @@ function Safari() {
             }
             if (p.row === this.ballRow && ((p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is to the side of the ball, they will be able to save it, but the pass will not be good
-                rec = prec + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
+                rec = p.receive + p.prep + 2 + ((2 * Math.random()) - (2 * Math.random()));
                 proficiency = ((rec - this.ballPower - (1.5 * Math.max(this.ballPower - 5, 0))));
                 if (proficiency > 3) {
                     proficiency--;
@@ -32141,9 +31697,6 @@ function Safari() {
             if (p.stamina <= 4) {
                 proficiency--;
             }
-            if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
-                proficiency += 1;
-            }
             if ((p.prep >= 1) && (this.hasSkill(p, "grounded"))) {
                 proficiency += 2;
             }
@@ -32166,7 +31719,7 @@ function Safari() {
                 continue;
             }
             if (p.digUsed) {
-                stcost += 5;
+                stcost += 4;
                 this.sendMessageAll(this.actName(p) + " activated its Dig Skill!");
             }
             if (this.hasSkill(p, "guardian") && this.ballPower < 1) {
@@ -32179,12 +31732,14 @@ function Safari() {
             p.actSkills.sneak = false;
             passed = true;
             if (maxPass <= 0) {
-                //chances to make a miraculous dig. RNG based, but can be done more reliably by waiting in one spot. Harder to do on harder driven balls.
-                if (p.stamina >= 5 && ((maxPass >= -3) && (p.prep >= 2)) || ((maxPass >= -2) && (p.prep >= 1)) || maxPass >= -1) {
-                    boost = Math.max(3 * (Math.min(Math.random(), Math.random())) + (Math.min(2, (((p.stamina * Math.random()) - (this.ballPower)) * 0.5))), 0);
-                    maxPass += boost;
+                stcost += 3;
+                if (p.stamina >= 10 && maxPass >= -2) {
+                    boost = (0.25 + (Math.min(5, ((p.stamina-10) * 0.5)) * Math.random()));
+                    diff = (boost - maxPass);
+                    stcost += Math.floor(diff * 2);
+                    maxPass = boost;
                 }
-                if (maxPass < 0) {
+                else {
                     if (this.ballPower >= 6 && this.official) {
                         var player = getAvatarOff(p.id);
                         if (player && player.volleyballRecords) {
@@ -32198,8 +31753,6 @@ function Safari() {
                     this.cyclePhase = "prep";
                     this.phase = "prep";
                     break;
-                } else {
-                    stcost += 3 + boost;
                 }
             }
             if ((this.hasSkill(p, "rollout")) && this.ballPower >= 6) {
@@ -32237,16 +31790,6 @@ function Safari() {
                         this.sendMessageAll(this.actName(p) + " was frozen!", "blue");
                     }
                     this.ballFreeze = false;
-                }
-                for (var s in this.teams[this.teamHasBall]) {
-                    var q = this.teams[this.teamHasBall][s];
-                    if (q.id === p.id) {
-                        continue;
-                    }
-                    if (this.hasSkill(q, "observer") && (chance(0.25))) {
-                        q.observed = true;
-                        this.sendMessageTeam(q.team, this.actName(q) + " is prepared to receive a hard-driven ball!", "green");
-                    }
                 }
                 return;
             }
@@ -32298,22 +31841,12 @@ function Safari() {
                 }
                 this.sendMessageAll(volleyballScoreIcon(might) + this.actName(p) + " received the ball! Any teammate in the front row may now set!", "blue");
                 for (var s in this.teams[this.teamHasBall]) {
-                    if (this.teams[this.teamHasBall][s].row === 4) {
+                    if (this.teams[this.teamHasBall][s].zone === "front") {
                         this.teams[this.teamHasBall][s].canSet = true;
                         this.teams[this.teamHasBall][s].passval = maxPass;
-                        if (maxPass >= 5 && this.teams[this.teamHasBall][s].row === 4 && this.teams[this.teamHasBall][s].zone === "front" && this.teams[this.teamHasBall][s].skills.indexOf("dump") > -1) {
+                        if (maxPass >= 5 && this.teams[this.teamHasBall][s].row === 4 && this.teams[this.teamHasBall][s].skills.indexOf("dump") > -1) {
                             this.teams[this.teamHasBall][s].canTip = true;
                         }
-                    }
-                }
-                for (var s in this.teams[this.teamHasBall]) {
-                    var q = this.teams[this.teamHasBall][s];
-                    if (q.id === p.id) {
-                        continue;
-                    }
-                    if (this.hasSkill(q, "observer") && (chance(0.25))) {
-                        q.observed = true;
-                        this.sendMessageTeam(q.team, this.actName(q) + " is prepared to receive a hard-driven ball!", "green");
                     }
                 }
                 stcost += 2;
@@ -32334,7 +31867,7 @@ function Safari() {
             return;
         }
         if (this.ballBurn && (!hasType(p.party[p.currentPoke], "Water"))) {
-            stcost += 5;
+            stcost += 3;
         }
         if (this.ballStun && (!hasType(p.party[p.currentPoke], "Ground"))) {
             if (!p.stunned) {
@@ -32354,7 +31887,7 @@ function Safari() {
             }
         }
         p.stamina = Math.max(p.stamina - stcost, 0);
-        this.sendMessage(p.id, "You expended " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
+        this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
         this.ballBurn = false;
         this.ballStun = false;
         this.ballFreeze = false;
@@ -32367,13 +31900,6 @@ function Safari() {
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
         this.setterLinks(p.team);
-        var q;
-        for (var t in this.teams[p.team]) {
-            q = this.teams[p.team][t];
-            if (this.hasSkill(q, "quick")) {
-                this.sendMessage(q.id, "You can do a quick attack by clicking " + link("/vol quick") + " and choosing your spike location. If the setter tosses the ball to you, you will spike instantly!" , "red");
-            }
-        }
         return;
     };
     Volleyball.prototype.inputMove = function(name, data) {
@@ -32426,8 +31952,8 @@ function Safari() {
             this.sendMessageAll(name + " input " + data + ".");
         }
         
-        var volleyballActSkills = ["swap", "float", "sneak", "psyspike", "quick"];
-        if (volleyballActSkills.indexOf(data) !== -1 && this.hasSkill(player, data)) {
+        var volleyballActSkills = ["swap", "float", "sneak", "psyspike"];
+        if (volleyballActSkills.indexOf(data) !== -1) {
             this.inputVal(player.id, "action", data);
             var active = true;
             if (player.actSkills[player.action] === true) {
@@ -32436,9 +31962,6 @@ function Safari() {
             if ((this.phase === "assemble" || this.phase === "prep") && (player.action !== "swap")) {
                 active = false;
             }
-            if ((player.action == "quick") && this.phase !== "set") {
-                active = false;
-            } 
             if ((player.action == "sneak") && this.phase == "serve") {
                 active = false;
             } 
@@ -32459,21 +31982,12 @@ function Safari() {
                 player.actSkills[player.action] = true;
                 switch (player.action) {
                     case "swap": stcost = 3; break;
-                    case "quick": stcost = 2; break;
                     case "float": stcost = 2; break;
                     case "sneak": stcost = 3; break;
                     case "psyspike": stcost = 5; break;
                 }
                 player.stamina = Math.max(player.stamina - stcost, 0);
                 this.sendMessage(name, "You activated " + player.action + "! (You spent " + stcost + " and now have " + player.stamina + "stamina!)", "red");
-                if (data == "quick") {
-                    this.sendMessageTeam(player.team, this.actName(player) + " wants to do a minus tempo attack! If set to, they will spike immediately!", "green");
-                    player.action = "";
-                }
-                if (data == "psyspike") {
-                    this.sendMessageTeam(player.team, this.actName(player) + " prepares to spike the ball using psychic power!", "green");
-                    player.action = "";
-                }
                 return;
             }
             else {
@@ -32577,9 +32091,8 @@ function Safari() {
                     this.sendMessage(name, "Select a number between 0-2 to choose your serving power!", "red");
                     return false;
                 }
-                var holdText = (hold == 0 ? "EASY" : (hold == 1 ? "NORMAL" : "HARD"));
-                this.sendMessage(name, "Your serve effort will be " + holdText + "!", "red");
-                this.sendMessageTeam(player.team, player.id + "'s serve effort will be " + holdText + "!", "blue");
+                this.sendMessage(name, "Your serve effort will be level " + hold + "!", "red");
+                this.sendMessageTeam(player.team, player.id + "'s serve effort will be level " + hold + "!", "blue");
                 this.inputVal(player.id, "serveEffort", hold);
                 return true;
             }
@@ -32621,7 +32134,7 @@ function Safari() {
                             if (p.id.toLowerCase() === name.toLowerCase()) {
                                 continue;
                             }
-                            if ((!((p.zone === "back") && (p.row == 3) && (p.skills.indexOf("back-attack") === -1))) || ((!(p.zone == "front" && p.row == 4)))) {
+                            if (!(p.zone === "front") && (p.skills.indexOf("back-attack") === -1)) {
                                 continue;
                             }
                             if (p.id.toLowerCase() === cdata[1].toLowerCase()) {
@@ -32654,10 +32167,10 @@ function Safari() {
                 if (player.canTip && (this.excludeActions.indexOf("tip") === -1)) {
                     opt.push("tip");
                 }
-                if (player.team !== this.teamHasBall && player.row === 4 && (this.phase == "attack" || this.phase == "set")) {
+                if (player.team !== this.teamHasBall && player.row === 4 && (this.phase == "attack")) {
                     opt.push("block");
                 }
-                if (((player.canHit  || ((player.actSkills.quick) && this.phase == "set")) && (this.excludeActions.indexOf("attack") === -1) && (player.row === 4 || (player.row === 3 && player.skills.indexOf("back-attack") !== -1)))) {
+                if (player.canHit && (this.excludeActions.indexOf("attack") === -1) && (player.row === 4 || (player.row === 3 && player.skills.indexOf("back-attack") !== -1))) {
                     opt.push("xa1");
                     opt.push("xa2");
                     opt.push("xa3");
@@ -32732,13 +32245,6 @@ function Safari() {
                     opt.push("c5");
                     opt.push("c6");
                     opt.push("c7");
-                    opt.push("d1");
-                    opt.push("d2");
-                    opt.push("d3");
-                    opt.push("d4");
-                    opt.push("d5");
-                    opt.push("d6");
-                    opt.push("d7");
                 }
             }
         }
@@ -32752,11 +32258,7 @@ function Safari() {
         }
         if (cdata[0] == "block") {
             if (player.zone == "back" || player.row !== 4) {
-                if (player.row == 4 && player.zone == "back") {
-                    this.sendMessage(name, "You can't block if you began the rally in the back row!", "red");
-                } else {
-                    this.sendMessage(name, "You must be in the front row to block!", "red");
-                }
+                this.sendMessage(name, "You must be in the front row to block!", "red");
                 return false;
             }
             player.blocking = true;
