@@ -29230,7 +29230,7 @@ function Safari() {
         "282": {"stamina": 29, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "autotargeting", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
         "289": {"stamina": 40, "serve": 5, "receive": 5, "toss": 4, "spike": 4, "block": 4, "precision": 4,"speed": 2, "skills": ["slacker", "banner", "back-attack"]},
-        "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "guardian"]},
+        "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "grounded"]},
         "376": {"stamina": 35, "serve": 3, "receive": 5, "toss": 1, "spike": 4, "block": 4, "precision": 1,"speed": 2, "skills": ["back-attack", "interference", "psyspike"]},
         "424": {"stamina": 32, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 3, "skills": ["back-attack", "wide", "dump"]},
         "428": {"stamina": 28, "serve": 4, "receive": 1, "toss": 1, "spike": 5, "block": 3, "precision": 3,"speed": 4, "skills": ["dig", "banner", "ace"]},
@@ -29241,12 +29241,13 @@ function Safari() {
         "461": {"stamina": 27, "serve": 4, "receive": 1, "toss": 4, "spike": 3, "block": 1, "precision": 5,"speed": 5, "skills": ["dump", "observer", "defiant"]},
         "466": {"stamina": 30, "serve": 3, "receive": 4, "toss": 4, "spike": 3, "block": 2, "precision": 3,"speed": 3, "skills": ["back-attack", "stun", "energize"]},
         "475": {"stamina": 30, "serve": 1, "receive": 4, "toss": 1, "spike": 4, "block": 1, "precision": 4,"speed": 4, "skills": ["ace", "dagger", "float"]},
-        "531": {"stamina": 38, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner", "energize", "float"]},
+        "531": {"stamina": 38, "serve": 2, "receive": 3, "toss": 4, "spike": 1, "block": 2, "precision": 3,"speed": 2, "skills": ["banner", "energize", "alignment"]},
         "556": {"stamina": 32, "serve": 4, "receive": 3, "toss": 5, "spike": 2, "block": 3, "precision": 3,"speed": 3, "skills": ["overgrow", "guardian", "performer"]},
         "579": {"stamina": 34, "serve": 2, "receive": 4, "toss": 4, "spike": 2, "block": 5, "precision": 4,"speed": 1, "skills": ["psyspike", "interference", "energize"]},
         "652": {"stamina": 33, "serve": 2, "receive": 5, "toss": 2, "spike": 3, "block": 4, "precision": 2,"speed": 3, "skills": ["grounded", "overgrow", "guts"]},
         "655": {"stamina": 32, "serve": 5, "receive": 2, "toss": 5, "spike": 2, "block": 1, "precision": 3,"speed": 2, "skills": ["performer", "dump", "burn"]},
         "658": {"stamina": 30, "serve": 3, "receive": 2, "toss": 4, "spike": 2, "block": 2, "precision": 5,"speed": 5, "skills": ["wide", "sneak", "lightbane"]},
+        "675": {"stamina": 33, "serve": 4, "receive": 4, "toss": 2, "spike": 3, "block": 3, "precision": 2,"speed": 1, "skills": ["back-attack", "ace", "lightbane"]},
         "724": {"stamina": 30, "serve": 3, "receive": 3, "toss": 3, "spike": 2, "block": 5, "precision": 3,"speed": 2, "skills": ["reach", "overgrow", "float"]},
         "727": {"stamina": 33, "serve": 4, "receive": 5, "toss": 1, "spike": 4, "block": 2, "precision": 1,"speed": 1, "skills": ["burn", "grounded", "dagger"]},
         "730": {"stamina": 31, "serve": 5, "receive": 4, "toss": 5, "spike": 1, "block": 0, "precision": 4,"speed": 2, "skills": ["splash", "performer", "haze"]},
@@ -29512,7 +29513,7 @@ function Safari() {
             case "tutorial_spiking2":
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}, "xb2": {mon: 428, id: "Foe"}, "xb6": {mon: 260, id: "Foe"}}, ["xa1", "xa2", "xa3", "xa4", "xb1", "xb2", "xb3", "xc1", "xc2", "xc3", "xc4"], "tutorial_spiking3", "tutorial_spiking2_fail"), safchan);
+                safaribot.sendHtmlMessage(src, tutorialCourtView({"d6": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "d2": {mon: 475, id: "Teammate"}, "xb2": {mon: 428, id: "Foe"}, "xb6": {mon: 260, id: "Foe"}}, ["xa1", "xa2", "xa3", "xa4", "xb1", "xb2", "xb3", "xc1", "xc2", "xc3", "xc4"], "tutorial_spiking3", "tutorial_spiking2_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- Gardevoir sets the ball to " + name + "'s Bulbasaur!", safchan);
                 safaribot.sendHtmlMessage(src, "- When Spiking, try to aim your spike away from the strong receivers on the other team. In this example, avoid spiking around the area with a strong receiver.", safchan);
                 break;
@@ -29521,7 +29522,7 @@ function Safari() {
             case "tutorial_spiking3":
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, toColor("Gardevoir sets the ball to " + name + "'s Bulbasaur!", "blue"), safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "xd5": {mon: X, id: "Foe"}}, ["xc7", "xb7", "xc3", "xb3", "xa2", "xa1", "xb2", "xb1", "xc2", "xc1"]), safchan);
+                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd5": {mon: 257, id: "Foe"}}, ["xc7", "xb7", "xc3", "xb3", "xa2", "xa1", "xb2", "xb1", "xc2", "xc1"]), safchan);
                 safaribot.sendHtmlMessage(src, "- Nice! You now understand how to cleverly aim your spike!", safchan);
                 safaribot.sendHtmlMessage(src, "- In this example, you are faced with a potential blocker. As long as you aim away from the blocker, they cannot block you.", safchan);
                 break;
@@ -29532,7 +29533,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Spiking </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Nicely done! Let's put it all together for a more complicated example:", safchan);
                 safaribot.sendHtmlMessage(src, "- Gardevoir sets the ball to " + name + "'s Bulbasaur!", safchan);
-                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: X, id: "Teammate"}, "xd5": {mon: 460, id: "Foe"}, "xd6": {mon: 257, id: "Foe"}, "xa1": {mon: 727, id: "Foe"}, "xc1": {mon: 260, id: "Foe"}}, ["xb3"], "tutorial_spiking5", "tutorial_spiking4_fail"), safchan);
+                safaribot.sendHtmlMessage(src, tutorialCourtView({"d5": {mon: 1, id: name}, "d4": {mon: 282, id: "Teammate"}, "xd5": {mon: 460, id: "Foe"}, "xd6": {mon: 257, id: "Foe"}, "xa1": {mon: 727, id: "Foe"}, "xc1": {mon: 260, id: "Foe"}}, ["xb3"], "tutorial_spiking5", "tutorial_spiking4_fail"), safchan);
                 safaribot.sendHtmlMessage(src, "- This time, there are two potential blockers and two possible receivers.", safchan);
                 safaribot.sendHtmlMessage(src, "- Find the spot that avoids the blockers and does not go directly to the strong receiver!", safchan);
                 break;
@@ -31488,6 +31489,9 @@ function Safari() {
             this.sendMessageTeam(player.team, this.actName(player) + "'s Performer activates!", "green");
         }
         if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
+            proficiency += 1;
+        }
+        if (player.column === 4) {
             proficiency += 1;
         }
         var atkteam = player.team;
