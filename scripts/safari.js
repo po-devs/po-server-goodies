@@ -29246,7 +29246,7 @@ function Safari() {
         "282": {"stamina": 29, "serve": 5, "receive": 3, "toss": 5, "spike": 1, "block": 1, "precision": 4,"speed": 2, "skills": ["clairvoyant", "autotargeting", "float"]},
         "286": {"stamina": 32, "serve": 2, "receive": 4, "toss": 1, "spike": 4, "block": 2, "precision": 2,"speed": 1, "skills": ["overgrow", "ace", "back-attack"]},
         "289": {"stamina": 40, "serve": 5, "receive": 5, "toss": 4, "spike": 4, "block": 4, "precision": 4,"speed": 2, "skills": ["slacker", "banner", "back-attack"]},
-        "302": {"stamina": 28, "serve": 4, "receive": 5, "toss": 4, "spike": 2, "block": 0, "precision": 4,"speed": 2, "skills": ["float", "sneak", "autotargeting"]},
+        "302": {"stamina": 28, "serve": 4, "receive": 5, "toss": 4, "spike": 2, "block": 0, "precision": 4,"speed": 2, "skills": ["lightbane", "sneak", "autotargeting"]},
         "303": {"stamina": 30, "serve": 5, "receive": 5, "toss": 3, "spike": 2, "block": 1, "precision": 2,"speed": 2, "skills": ["swap", "dagger", "grounded"]},
         "376": {"stamina": 35, "serve": 3, "receive": 5, "toss": 1, "spike": 4, "block": 4, "precision": 1,"speed": 2, "skills": ["back-attack", "interference", "psyspike"]},
         "424": {"stamina": 32, "serve": 5, "receive": 2, "toss": 3, "spike": 4, "block": 4, "precision": 2,"speed": 3, "skills": ["back-attack", "wide", "dump"]},
