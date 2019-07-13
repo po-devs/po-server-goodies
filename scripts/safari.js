@@ -30006,7 +30006,7 @@ function Safari() {
         for (var t in tm2) {
             q = tm2[t];
             if (this.hasSkill(q, "haze") && (q.zone == "front")) {
-                if (!(hasType(p.party[p.currentPoke]), "Water") && (!(hasType(p.party[p.currentPoke]), "Ghost"))) {
+                if (!(hasType(p.party[p.currentPoke].id), "Water") && (!(hasType(p.party[p.currentPoke].id), "Ghost"))) {
                     srv2 -= 2;
                 }
             }
@@ -30032,7 +30032,7 @@ function Safari() {
         for (var t in tm2) {
             q = tm2[t];
             if (this.hasSkill(q, "interference") && (q.zone == "front")) {
-                if (!(hasType(p.party[p.currentPoke]), "Psychic") && (!(hasType(p.party[p.currentPoke]), "Dark"))) {
+                if (!(hasType(p.party[p.currentPoke]), "Psychic") && (!(hasType(p.party[p.currentPoke].id), "Dark"))) {
                     set2 -= 1;
                 }
             }
@@ -30043,7 +30043,7 @@ function Safari() {
         if (this.hasSkill(p, "alignment")) {
             for (var t in tm) {
                 q = tm[t];
-                if ((q.row == p.row || p.column == q.column) && ((hasType(q.party[q.currentPoke], "Normal") || (hasType(q.party[q.currentPoke], "Fairy"))))) {
+                if ((q.row == p.row || p.column == q.column) && ((hasType(q.party[q.currentPoke].id, "Normal") || (hasType(q.party[q.currentPoke].id, "Fairy"))))) {
                     set2++;
                 }
             }
@@ -30051,13 +30051,13 @@ function Safari() {
         for (var t in tm) {
             q = tm[t];
             if (this.hasSkill(q, "guts") && (q.zone == "back") & q.id !== p.id) {
-                if (this.hasSkill(q, "telepathy") && (hasType(p.party[p.currentPoke], "Fighting"))) {
+                if (this.hasSkill(q, "telepathy") && (hasType(p.party[p.currentPoke].id, "Fighting"))) {
                     spk2 += 1;
                 }
-                if (this.hasSkill(q, "guts") && (hasType(p.party[p.currentPoke], "Dark"))) {
+                if (this.hasSkill(q, "guts") && (hasType(p.party[p.currentPoke].id, "Dark"))) {
                     spk2 += 1;
                 }
-                if (this.hasSkill(q, "defiant") && (hasType(p.party[p.currentPoke], "Psychic"))) {
+                if (this.hasSkill(q, "defiant") && (hasType(p.party[p.currentPoke].id, "Psychic"))) {
                     spk2 += 1;
                 }
             }
@@ -30082,7 +30082,7 @@ function Safari() {
         }
         for (var t in tm2) {
             q = tm2[t];
-            if (q.zone == "back" && this.hasSkill(q, "overgrow") && (hasType(p.party[p.currentPoke], "Water"))) {
+            if (q.zone == "back" && this.hasSkill(q, "overgrow") && (hasType(p.party[p.currentPoke].id, "Water"))) {
                 spk2 -= 1;
                 break;
             }
@@ -30090,9 +30090,9 @@ function Safari() {
         if (this.hasSkill(p, "lightbane")) {
             for (var t in tm2) {
                 q = tm2[t];
-                if (hasType(q.party[q.currentPoke], "Psychic")) {
+                if (hasType(q.party[q.currentPoke].id, "Psychic")) {
                     spk2 += 1;
-                    srv += 1;
+                    srv2 += 1;
                     break;
                 }
             }
@@ -30881,7 +30881,7 @@ function Safari() {
                         for (var s in team) {
                             q = team[s];
                             act2 = q.id.toLowerCase();
-                            if (((!(q.zone == "front" && q.row == 4)) && (!(this.hasSkill(q, "back-attack")))) || (q.id == p.id)) {
+                            if ((!((((q.zone == "front" && q.row == 4)) || ((this.hasSkill(q, "back-attack")))))) || (q.id == p.id)) {
                                 continue;
                             }
                             if (q.spike === maxHit && chooseHitter === 1) {
@@ -31357,7 +31357,7 @@ function Safari() {
         for (var t in this.teams[defteam]) {
             q = this.teams[defteam][t];
             if (this.hasSkill(q, "haze") && (q.zone == "front")) {
-                if (!(hasType(player.party[player.currentPoke]), "Water") && (!(hasType(player.party[player.currentPoke]), "Ghost"))) {
+                if (!(hasType(player.party[player.currentPoke].id), "Water") && (!(hasType(player.party[player.currentPoke].id), "Ghost"))) {
                     pow -= 2;
                 }
             }
@@ -31560,7 +31560,7 @@ function Safari() {
         }
         var atkteam = player.team;
         var defteam = (player.team === 1 ? 0 : 1);
-        if (!(hasType(player.party[player.currentPoke]), "Psychic") && (!(hasType(player.party[player.currentPoke]), "Dark"))) {
+        if (!(hasType(player.party[player.currentPoke].id), "Psychic") && (!(hasType(player.party[player.currentPoke].id), "Dark"))) {
             for (var t in this.teams[defteam]) {
                 if (this.teams[defteam][t].zone == "front") {
                     if (this.hasSkill(this.teams[defteam][t], "interference")) {
@@ -31573,7 +31573,7 @@ function Safari() {
         if (this.hasSkill(player, "alignment")) {
             for (var t in this.teams[player.team]) {
                 q = this.teams[player.team][t];
-                if ((q.row == player.row || player.column == q.column) && ((hasType(q.party[q.currentPoke], "Normal") || (hasType(q.party[q.currentPoke], "Fairy"))))) {
+                if ((q.row == player.row || player.column == q.column) && ((hasType(q.party[q.currentPoke].id, "Normal") || (hasType(q.party[q.currentPoke].id, "Fairy"))))) {
                     proficiency++;
                 }
             }
@@ -31608,7 +31608,7 @@ function Safari() {
         if (this.hasSkill(player, "splash")) {
             for (var t in this.teams[0]) {
                 var m = this.teams[0][t];
-                if (m.zone === "front" && (!hasType(m.party[m.currentPoke], "Water"))) {
+                if (m.zone === "front" && (!hasType(m.party[m.currentPoke].id, "Water"))) {
                     if (hasType(m.party[m.currentPoke], "Fire")) {
                         m.stamina = (Math.max(m.stamina - 5, 0));
                     }
@@ -31619,12 +31619,12 @@ function Safari() {
             }
             for (var t in this.teams[1]) {
                 var m = this.teams[1][t];
-                if (m.zone === "front" && (!hasType(m.party[m.currentPoke], "Water"))) {
-                    if (hasType(m.party[m.currentPoke], "Fire")) {
-                        m.stamina = (Math.max(m.stamina - 3, 0));
+                if (m.zone === "front" && (!hasType(m.party[m.currentPoke].id, "Water"))) {
+                    if (hasType(m.party[m.currentPoke].id, "Fire")) {
+                        m.stamina = (Math.max(m.stamina - 5, 0));
                     }
                     else {
-                        m.stamina = (Math.max(m.stamina - 2, 0));
+                        m.stamina = (Math.max(m.stamina - 3, 0));
                     }
                 } 
             }
@@ -31877,7 +31877,7 @@ function Safari() {
             if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
                 k += 1;
             }
-            if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke], "Fire"))) {
+            if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke].id, "Fire"))) {
                 k += 2;
             }
             if (p.stamina <= 10) {
@@ -31919,7 +31919,7 @@ function Safari() {
             }
         }
         for (var t in this.teams[defteam]) {
-            if (this.teams[defteam][t].zone == "back" && this.hasSkill(this.teams[defteam][t], "overgrow") && (hasType(player.party[player.currentPoke], "Water"))) {
+            if (this.teams[defteam][t].zone == "back" && this.hasSkill(this.teams[defteam][t], "overgrow") && (hasType(player.party[player.currentPoke].id, "Water"))) {
                 pow -= 1;
                 break;
             }
@@ -31936,7 +31936,7 @@ function Safari() {
         if (this.hasSkill(p, "lightbane")) {
             for (var t in this.teams[defteam]) {
                 var q = this.teams[defteam][t];
-                if (hasType(q.party[q.currentPoke], "Psychic")) {
+                if (hasType(q.party[q.currentPoke].id, "Psychic")) {
                     pow += 1;
                     break;
                 }
@@ -31950,13 +31950,13 @@ function Safari() {
         }
         for (var t in this.teams[atkteam]) {
             if (this.teams[atkteam][t].zone == "back") {
-                if (this.hasSkill(this.teams[atkteam][t], "telepathy") && (hasType(player.party[player.currentPoke], "Fighting"))) {
+                if (this.hasSkill(this.teams[atkteam][t], "telepathy") && (hasType(player.party[player.currentPoke].id, "Fighting"))) {
                     pow += 1;
                 }
-                if (this.hasSkill(this.teams[atkteam][t], "guts") && (hasType(player.party[player.currentPoke], "Dark"))) {
+                if (this.hasSkill(this.teams[atkteam][t], "guts") && (hasType(player.party[player.currentPoke].id, "Dark"))) {
                     pow += 1;
                 }
-                if (this.hasSkill(this.teams[atkteam][t], "defiant") && (hasType(player.party[player.currentPoke], "Psychic"))) {
+                if (this.hasSkill(this.teams[atkteam][t], "defiant") && (hasType(player.party[player.currentPoke].id, "Psychic"))) {
                     pow += 1;
                 }
             }
@@ -32299,14 +32299,14 @@ function Safari() {
                 this.sendMessageTeam(1, this.courtView(1), null, true);
                 this.sendAllStats();
                 if (this.ballStun) {
-                    if ((!p.stunned) && (!hasType(p.party[p.currentPoke], "Ground")) && (!this.hasSkill(p, "grounded"))) {
+                    if ((!p.stunned) && (!hasType(p.party[p.currentPoke].id, "Ground")) && (!this.hasSkill(p, "grounded"))) {
                         p.stunned = true;
                         this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
                     }
                     this.ballStun = false;
                 }
                 if (this.ballFreeze) {
-                    if ((!p.frozen) && (!hasType(p.party[p.currentPoke], "Fire") && (!hasType(p.party[p.currentPoke], "Ice")))) {
+                    if ((!p.frozen) && (!hasType(p.party[p.currentPoke].id, "Fire") && (!hasType(p.party[p.currentPoke].id, "Ice")))) {
                         p.frozen = true;
                         this.sendMessageAll(this.actName(p) + " was frozen!", "blue");
                     }
@@ -32407,17 +32407,17 @@ function Safari() {
             this.scorePoint(atkteam);
             return;
         }
-        if (this.ballBurn && (!hasType(p.party[p.currentPoke], "Water"))) {
+        if (this.ballBurn && (!hasType(p.party[p.currentPoke].id, "Water"))) {
             stcost += 5;
         }
-        if (this.ballStun && (!hasType(p.party[p.currentPoke], "Ground"))) {
+        if (this.ballStun && (!hasType(p.party[p.currentPoke].id, "Ground"))) {
             if (!p.stunned) {
                 p.stunned = true;
                 this.sendMessageAll(this.actName(p) + " was stunned!", "blue");
             }
         }
         if (this.ballFreeze) {
-            if ((!p.frozen) && (!hasType(p.party[p.currentPoke], "Fire") && (!hasType(p.party[p.currentPoke], "Ice")))) {
+            if ((!p.frozen) && (!hasType(p.party[p.currentPoke].id, "Fire") && (!hasType(p.party[p.currentPoke].id, "Ice")))) {
                 p.frozen = true;
                 this.sendMessageAll(this.actName(p) + " was frozen!", "blue");
             }
