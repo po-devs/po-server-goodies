@@ -29760,7 +29760,7 @@ function Safari() {
         this.npcMons1 = [];
         this.npcMons2 = [];
 
-        if (officialVolleyballTeam1 && officialVolleyballTeam2) {
+        if (officialVolleyballTeam1 && officialVolleyballTeam2 && team1 && team2) {
             if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 === team2)) {
                 this.official = true;
             }
@@ -31176,7 +31176,7 @@ function Safari() {
             //this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
         }
         for (var i in this.teams[team]) {
-            player = getAvatarOff(i);
+            player = getAvatarOff(this.teams[0][i]);
             if (player) {
                 if (team === 0) {
                     giveStuff(player, toStuffObj(this.reward1));
@@ -31187,7 +31187,7 @@ function Safari() {
         }
         if (this.official) {
             for (var i in this.teams[0]) {
-                player = getAvatarOff(i);
+                player = getAvatarOff(this.teams[0][i]);
                 if (player) {
                     player.volleyballRecords.points += this.teamData[0].score;
                     player.volleyballRecords.pointsGiven += this.teamData[1].score;
@@ -31195,7 +31195,7 @@ function Safari() {
                 }
             }
             for (var i in this.teams[1]) {
-                player = getAvatarOff(i);
+                player = getAvatarOff(this.teams[0][i]);
                 if (player) {
                     player.volleyballRecords.points += this.teamData[1].score;
                     player.volleyballRecords.pointsGiven += this.teamData[0].score;
