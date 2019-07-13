@@ -30102,7 +30102,7 @@ function Safari() {
             }
         }
         if (p.autotarget) {
-            prc2 = (Math.max(prec2), 4);
+            prc2 = (Math.max(prc2), 4);
         }
         for (var t in tm) {
             q = tm[t];
