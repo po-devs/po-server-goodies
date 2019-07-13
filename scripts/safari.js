@@ -29971,6 +29971,7 @@ function Safari() {
         return;
     };
     Volleyball.prototype.statPrintout = function(p) {
+        //stat printout is here
         var stm = p.stamina;
         var srv = srv2 = p.serve;
         var rec = rec2 = p.receive;
