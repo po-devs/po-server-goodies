@@ -29726,7 +29726,7 @@ function Safari() {
 
         this.teamData = [
             {score: 0, name: team1, signups: [], firstBall: false},
-            {score: 0, name: team2, signups: [], firstBall: true}
+            {score: 0, name: team2, signups: [], firstBall: false}
         ];
         this.turnLength = 6;
         this.step = 0;
@@ -30727,7 +30727,7 @@ function Safari() {
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if (p.canSet && p.zone == "front" && p.ai) {
+                    if (p.canSet && p.row == 4 && p.ai) {
                         if (p.toss >= maxSet) {
                             maxSet = p.toss;
                             setter = p.id;
@@ -31180,7 +31180,9 @@ function Safari() {
         this.turn = 0;
         for (var p in this.teams[0]) {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
-            this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            if (p.currentPoke < 2) {
+                this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            }
             this.teams[0][p].volleysIn++;
             if (this.teams[0][p].volleysIn === 5 && this.hasSkill(this.teams[0][p], "slacker")) {
                 this.sendMessageTeam(0, this.actName(this.teams[0][p]) + " has finally reached full strength!", "green");
@@ -31197,7 +31199,9 @@ function Safari() {
         }
         for (var p in this.teams[1]) {
             this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + regen, this.teams[1][p].maxStamina);
-            this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            if (p.currentPoke < 2) {
+                this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
+            }
             this.teams[1][p].volleysIn++;
             if (this.teams[1][p].volleysIn === 5 && this.hasSkill(this.teams[1][p], "slacker")) {
                 this.sendMessageTeam(1, this.actName(this.teams[1][p]) + " has finally reached full strength!", "green");
