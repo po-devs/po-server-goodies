@@ -30134,7 +30134,7 @@ function Safari() {
             p = this.teams[defteam][t];
             if (!p.actSkills.sneak || (identify)) {
                 mon = parseInt(p.party[p.currentPoke].id, 10);
-                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id, "p": p};
+                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id, "user": p};
             }
         }
         for (var t in this.teams[atkteam]) {
@@ -30151,7 +30151,7 @@ function Safari() {
                 ret += "<td align=center width=88>";
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += this.courtIcon(inp, rows[place].owner);
+                    ret += this.courtIcon(inp, rows[place].owner, rows[place].user);
                 }
                 else if (place === "---") {
                     ret += link("/vol block:" + (j + 1), place) + " ";
@@ -30370,9 +30370,9 @@ function Safari() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
             if (this.step === 12) {
-                safaribot.sendAll("", safchan);
+                sendAll("", safchan);
                 safaribot.sendHtmlAll("You have about a minute left to join the Volleyball match with " + link("/vol join") + "!", safchan);
-                safaribot.sendAll("", safchan);
+                sendAll("", safchan);
             }
             if (this.step === 20) {
                 //after 400 seconds
