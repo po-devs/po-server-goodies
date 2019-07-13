@@ -29970,7 +29970,7 @@ function Safari() {
         }
         return;
     };
-    Volleyball.prototype.statPrintout = function(player) {
+    Volleyball.prototype.statPrintout = function(player, court) {
         var p = null;
         for (var t in this.teams[0]) {
             if (this.teams[0][t].id === player) {
@@ -29982,11 +29982,12 @@ function Safari() {
             for (var t in this.teams[1]) {
                 if (this.teams[1][t].id === player) {
                     p = this.teams[1][t];
+                    break;
                 }
             }
         }
         if (!p) {
-            return;
+            return " ";
         }
         //stat printout is here
         var stm = p.stamina;
@@ -30114,18 +30115,29 @@ function Safari() {
             srv++;
         }
         var out = "";
-        out += ("REC: " + rec2 + (rec2 > rec ? (toColor(" (+" + rec2 - rec + ")", "green")) : (rec2 < rec ? (toColor(" (-" + rec - rec2 + ")", "red")) : "")) + " "); 
-        out += ("SET: " + set + (set2 > set ? (toColor(" (+" + set2 - set + ")", "green")) : (set2 < set ? (toColor(" (-" + set - set2 + ")", "red")) : "")) + " "); 
-        out += ("SPK: " + spk + (spk2 > spk ? (toColor(" (+" + spk2 - spk + ")", "green")) : (spk2 < spk ? (toColor(" (-" + spk - spk2 + ")", "red")) : "")) + " "); 
-        out += ("PRC: " + prc + (prc2 > prc ? (toColor(" (+" + prc2 - prc + ")", "green")) : (prc2 < prc ? (toColor(" (-" + prc - prc2 + ")", "red")) : "")) + " "); 
-        out += ("BLK: " + blk + (blk2 > blk ? (toColor(" (+" + blk2 - blk + ")", "green")) : (blk2 < blk ? (toColor(" (-" + blk - blk2 + ")", "red")) : "")) + " "); 
-        out += ("SRV: " + srv + (srv2 > srv ? (toColor(" (+" + srv2 - srv + ")", "green")) : (srv2 < srv ? (toColor(" (-" + srv - srv2 + ")", "red")) : "")) + " "); 
-        out += ("SPEED: " + speed + " "); 
-        out += ("STAMINA: " + stm + " "); 
+        if (court) {
+            out += ("REC: " + rec2 + " ");
+            out += ("SET: " + set2 + " ");
+            out += ("SPK: " + spk2 + " ");
+            out += ("PRC: " + prc2 + " ");
+            out += ("BLK: " + blk2 + " ");
+            out += ("SRV: " + srv2 + " ");
+            out += ("SPEED: " + speed + " ");
+            out += ("STAMINA: " + stm + " ");
+        } else {
+            out += ("REC: " + rec2 + " " + (rec2 > rec ? (toColor("(+" + rec2 - rec + ")", "green")) : (rec2 < rec ? (toColor(" (-" + rec - rec2 + ")", "red")) : "")) + " "); 
+            out += ("SET: " + set2 + " " + (set2 > set ? (toColor("(+" + set2 - set + ")", "green")) : (set2 < set ? (toColor(" (-" + set - set2 + ")", "red")) : "")) + " "); 
+            out += ("SPK: " + spk2 + " " + (spk2 > spk ? (toColor("(+" + spk2 - spk + ")", "green")) : (spk2 < spk ? (toColor(" (-" + spk - spk2 + ")", "red")) : "")) + " "); 
+            out += ("PRC: " + prc2 + " " + (prc2 > prc ? (toColor("(+" + prc2 - prc + ")", "green")) : (prc2 < prc ? (toColor(" (-" + prc - prc2 + ")", "red")) : "")) + " "); 
+            out += ("BLK: " + blk2 + " " + (blk2 > blk ? (toColor("(+" + blk2 - blk + ")", "green")) : (blk2 < blk ? (toColor(" (-" + blk - blk2 + ")", "red")) : "")) + " "); 
+            out += ("SRV: " + srv2 + " " + (srv2 > srv ? (toColor("(+" + srv2 - srv + ")", "green")) : (srv2 < srv ? (toColor(" (-" + srv - srv2 + ")", "red")) : "")) + " "); 
+            out += ("SPEED: " + speed + " "); 
+            out += ("STAMINA: " + stm + " "); 
+        }
         return out;
     };
     Volleyball.prototype.courtIcon = function(mon, owner) {
-       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + " \n" + this.statPrintout(owner) + "'>";
+       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + " \n" + this.statPrintout(owner, true) + "'>";
     };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
@@ -32202,7 +32214,7 @@ function Safari() {
             if (p.stamina <= 4) {
                 proficiency--;
             }
-            if (player.stamina >= 25 && this.hasSkill(player, "simplicity")) {
+            if (p.stamina >= 25 && this.hasSkill(player, "simplicity")) {
                 proficiency += 1;
             }
             if ((p.prep >= 1) && (this.hasSkill(p, "grounded"))) {
@@ -32441,10 +32453,10 @@ function Safari() {
     };
     Volleyball.prototype.sendAllStats = function() {
         for (var p in this.teams[0]) {
-            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p]));
+            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p].id));
         }
         for (var p in this.teams[1]) {
-            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p]));
+            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p].id));
         }
     };
     Volleyball.prototype.inputMove = function(name, data) {
@@ -39999,4 +40011,3 @@ function Safari() {
     };
 }
 module.exports = new Safari();
-  
