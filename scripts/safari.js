@@ -3139,7 +3139,7 @@ function Safari() {
     function ballMacro(src, override) {
         var player = getAvatar(src);
         var name = sys.name(src);
-        if (!player || (currentEvent && currentEvent.isInEvent(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
+        if (!player || (currentEvent && currentEvent.isInEvent(name)) || (currentGame && currentGame.playerInGame(name)) || (player.tutorial.inTutorial && !override) || safari.isBattling(name)) {
             return;
         }
         for (var p in currentPyramids) {
@@ -31171,19 +31171,22 @@ function Safari() {
         }
         this.sendMessageAll("");
         this.sendMessageAll("SCORE: ");
-        this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
-        this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageTeam(0, "<b>" + this.teamData[0].name + ": <b>" + this.teamData[0].score);
+        this.sendMessageTeam(0, this.teamData[1].name + ": " + this.teamData[1].score);
+        this.sendMessageTeam(1, this.teamData[0].name + ": " + this.teamData[0].score);
+        this.sendMessageTeam(1, "<b>" + this.teamData[1].name + ": <b>" + this.teamData[1].score);
         this.sendMessageAll("");
         this.clearVals();
         this.resetPosition(team);
         this.resetPosition(team2);
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendMessageAll("Choose a nearby position to begin the rally in!", "blue");
         var regen = (3 + (Math.max(Math.min(((this.turn * 3) - 7), 10), 0)));
         this.turn = 0;
         for (var p in this.teams[0]) {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
-            if (p.currentPoke < 2) {
+            if (this.teams[0][p].currentPoke < 2) {
                 this.sendMessage(this.teams[0][p].id, "You have " + this.teams[0][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
             }
             this.teams[0][p].volleysIn++;
@@ -31202,7 +31205,7 @@ function Safari() {
         }
         for (var p in this.teams[1]) {
             this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + regen, this.teams[1][p].maxStamina);
-            if (p.currentPoke < 2) {
+            if (this.teams[0][1].currentPoke < 2) {
                 this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
             }
             this.teams[1][p].volleysIn++;
@@ -32456,10 +32459,12 @@ function Safari() {
         this.ballRow = -1;
         this.ballColumn = -1;
         this.clearVals();
-        this.sendMessageTeam(0, this.courtView(0), null, true);
-        this.sendMessageTeam(1, this.courtView(1), null, true);
-        this.sendAllStats();
-        this.setterLinks(p.team);
+        if (this.cyclePhase !== "prep") {
+            this.sendMessageTeam(0, this.courtView(0), null, true);
+            this.sendMessageTeam(1, this.courtView(1), null, true);
+            this.sendAllStats();
+            this.setterLinks(p.team);
+        }
         var q;
         for (var t in this.teams[p.team]) {
             q = this.teams[p.team][t];
@@ -32529,7 +32534,6 @@ function Safari() {
         
         var volleyballActSkills = ["swap", "float", "sneak", "psyspike", "quick"];
         if (volleyballActSkills.indexOf(data) !== -1 && this.hasSkill(player, data)) {
-            this.inputVal(player.id, "action", data);
             var active = true;
             if (player.actSkills[player.action] === true) {
                 active = false;
@@ -32556,8 +32560,9 @@ function Safari() {
                 active = false;
             } 
             if (active) {
+                player.action = data;
                 var stcost = 0;
-                player.actSkills[player.action] = true;
+                player.actSkills[data] = true;
                 switch (player.action) {
                     case "swap": stcost = 3; break;
                     case "quick": stcost = 2; break;
