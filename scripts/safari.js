@@ -29940,7 +29940,7 @@ function Safari() {
                         continue;
                     }
                     if ((q.row === 4 && q.zone == "front") || (q.row === 3 && q.skills.indexOf("back-attack") !== -1)) {
-                        links += (link("/vol set:" + q.id) + " (" + poke(q.party[q.currentPoke]) + ") ");
+                        links += (link("/vol set:" + q.id) + " (" + poke(q.party[q.currentPoke].id) + ") ");
                         if (first) {
                             first = false;
                         }
@@ -31875,11 +31875,13 @@ function Safari() {
                     }
                 }
             }
-            if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
-                k += 1;
-            }
-            if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke].id, "Fire"))) {
-                k += 2;
+            if (k > 0) {
+                if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
+                    k += 1;
+                }
+                if (k > 0 && this.hasSkill(p, "reach") && (!hasType(player.party[player.currentPoke].id, "Fire"))) {
+                    k += 2;
+                }
             }
             if (p.stamina <= 10) {
                 k = Math.max(k - 0.5, 0);
@@ -31891,7 +31893,7 @@ function Safari() {
                 k = Math.max(k - 0.75, 0);
             }
             if (k > 0) {
-                k += ((10 - player.setval) * 0.1);
+                k += Math.max((((Math.random() + 0.1) * (6 - player.setval)) * 0.5), 0);
             }
             totalblk += k;
             if (k > 0) {
@@ -31987,20 +31989,23 @@ function Safari() {
         if (player.setval <= 4) {
             blkevade = blkevade * 0.5;
         }
-        if (player.actSkills.psyspike) {
+        if (player.actSkills.psyspike && totalblk > 0) {
             blkevade = 1;
             player.actSkills.psyspike = false;
             this.sendMessageAll(this.actName(player) + "'s Psyspike bypasses the blockers!", "blue");
         }
         var free = false;
-        if (!(chance( blkevade )) && totalblk > 0) {
-            totalblk += (Math.min(Math.random() * 3), 6 - player.setval);
+        if (!(chance( blkevade )) && totalblk > 2) {
+            totalblk += (Math.min(Math.random() * 3, 6 - player.setval));
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
-            } 
-            else if (Math.floor( pow - totalblk ) <= 1) {
+            } else if (Math.floor( pow - totalblk ) <= 1) {
                 free = true;
                 pow = 0;
+            } else if (chance(0.1 * Math.min((totalblk + 5 - pow), (10 * Math.random())))) {
+                this.sendMessageAll(this.actName(player) + "'s spike was touched by the the blockers and slowed down!", "blue");
+                pow -= 2;
+                row = (Math.min(row + 1, 3));
             }
         }
         player.setval = 0;
@@ -32013,7 +32018,7 @@ function Safari() {
             this.ballPower = 0;
             this.teamHasBall = defteam;
             this.cyclePhase = "receive";
-            this.sendMessageAll(this.actName(player) + "'s spike was slowed down by "  + blockers.join(" and ") + "! It's a FREE ball (b" + this.ballColumn + ") for the blocking team!", "blue");
+            this.sendMessageAll(this.actName(player) + "'s spike was blocked by "  + blockers.join(" and ") + " but it wasn't a kill! It's a FREE ball (b" + this.ballColumn + ") for the blocking team!", "blue");
             this.sendMessageTeam(defteam, "The ball soars to b" + this.ballColumn + "!", "green");
             this.sendMessageTeam(0, this.courtView(0), null, true);
             this.sendMessageTeam(1, this.courtView(1), null, true);
@@ -32149,13 +32154,16 @@ function Safari() {
             }
             if (p.row === this.ballRow - 1 && ((p.column === this.ballColumn) || (p.column === this.ballColumn - 1) || (p.column === this.ballColumn + 1))) {
                 //if the player is in front of the receiver, they can perform a dig - this costs more stamina but is pretty good for getting the ball up if their rec is good
-                rec = prec + p.prep + 1 + ((3 * Math.random()) - (4 * Math.random()));
+                rec = prec + p.prep + 1 + ((3 * Math.random()) - (5 * Math.min(Math.random(), Math.random())));
                 proficiency = (this.ballPower - rec);
                 if (proficiency >= 5) {
                     proficiency -= 1;
                 }
                 if (this.ballColumn === p.column) {
                     proficiency *= 1.15;
+                }
+                if (this.ballFloat) {
+                    proficiency -= (2 * Math.random());
                 }
                 p.receiveType = "dig";
                 if (proficiency <= 2 && (this.hasSkill(p, "dig")) && (chance(1.2 - (this.ballPower/10)))) {
