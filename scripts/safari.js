@@ -32704,7 +32704,14 @@ function Safari() {
                             if (p.id.toLowerCase() === name.toLowerCase()) {
                                 continue;
                             }
-                            if ((!((p.zone === "back") && (p.row == 3) && (p.skills.indexOf("back-attack") === -1))) || ((!(p.zone == "front" && p.row == 4)))) {
+                            var canSetTo = false;
+                            if ((p.zone === "back") && (p.skills.indexOf("back-attack") !== -1)) {
+                                canSetTo = true;
+                            }
+                            if ((p.zone == "front" && p.row == 4)) {
+                                canSetTo = true;
+                            }
+                            if (!(canSetTo)) {
                                 continue;
                             }
                             if (p.id.toLowerCase() === cdata[1].toLowerCase()) {
