@@ -31171,7 +31171,12 @@ function Safari() {
         this.sendMessageAll(this.teamData[0].name + ": " + this.teamData[0].score);
         this.sendMessageAll(this.teamData[1].name + ": " + this.teamData[1].score);
         this.sendMessageAll("");
-        var regen = (1 + (Math.max(2 * (this.turn - 3), 0)));
+        this.clearVals();
+        this.resetPosition(team);
+        this.resetPosition(team2);
+        this.sendMessageTeam(0, this.courtView(0), null, true);
+        this.sendMessageTeam(1, this.courtView(1), null, true);
+        var regen = (3 + (Math.max(Math.min(((this.turn * 3) - 7), 10), 0)));
         this.turn = 0;
         for (var p in this.teams[0]) {
             this.teams[0][p].stamina = Math.min(this.teams[0][p].stamina + regen, this.teams[0][p].maxStamina);
@@ -31207,9 +31212,6 @@ function Safari() {
             }
             this.teams[1][p].prep = 0;
         }
-        this.clearVals();
-        this.resetPosition(team);
-        this.resetPosition(team2);
         this.phase = "prep";
         this.cyclePhase = "prep";
         return;
@@ -32855,6 +32857,8 @@ function Safari() {
                 this.sendMessage(name, "You can only block when the opposing team is getting ready to spike!", "red");
             } else if (data.substring(0, 1) == "xd") {
                 this.sendMessage(name, "You can't spike into the front row!", "red");
+            } else if (data[0] == "x") {
+                this.sendMessage(name, "You can only hit the ball when you are serving or once you've been set to!", "red");
             } else {
                 this.sendMessage(name, "No such action as " + data + "!", "red");
             }
