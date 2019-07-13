@@ -30125,12 +30125,12 @@ function Safari() {
             out += ("SPEED: " + speed + " ");
             out += ("STAMINA: " + stm + " ");
         } else {
-            out += ("REC: " + rec2 + " " + (rec2 > rec ? (toColor("(+" + rec2 - rec + ")", "green")) : (rec2 < rec ? (toColor(" (-" + rec - rec2 + ")", "red")) : "")) + " "); 
-            out += ("SET: " + set2 + " " + (set2 > set ? (toColor("(+" + set2 - set + ")", "green")) : (set2 < set ? (toColor(" (-" + set - set2 + ")", "red")) : "")) + " "); 
-            out += ("SPK: " + spk2 + " " + (spk2 > spk ? (toColor("(+" + spk2 - spk + ")", "green")) : (spk2 < spk ? (toColor(" (-" + spk - spk2 + ")", "red")) : "")) + " "); 
-            out += ("PRC: " + prc2 + " " + (prc2 > prc ? (toColor("(+" + prc2 - prc + ")", "green")) : (prc2 < prc ? (toColor(" (-" + prc - prc2 + ")", "red")) : "")) + " "); 
-            out += ("BLK: " + blk2 + " " + (blk2 > blk ? (toColor("(+" + blk2 - blk + ")", "green")) : (blk2 < blk ? (toColor(" (-" + blk - blk2 + ")", "red")) : "")) + " "); 
-            out += ("SRV: " + srv2 + " " + (srv2 > srv ? (toColor("(+" + srv2 - srv + ")", "green")) : (srv2 < srv ? (toColor(" (-" + srv - srv2 + ")", "red")) : "")) + " "); 
+            out += ("REC: " + rec2 + " " + (rec2 > rec ? (toColor("(+" + (rec2 - rec) + ")", "green")) : (rec2 < rec ? (toColor(" (-" + (rec - rec2) + ")", "red")) : "")) + " "); 
+            out += ("SET: " + set2 + " " + (set2 > set ? (toColor("(+" + (set2 - set) + ")", "green")) : (set2 < set ? (toColor(" (-" + (set - set2) + ")", "red")) : "")) + " "); 
+            out += ("SPK: " + spk2 + " " + (spk2 > spk ? (toColor("(+" + (spk2 - spk) + ")", "green")) : (spk2 < spk ? (toColor(" (-" + (spk - spk2) + ")", "red")) : "")) + " "); 
+            out += ("PRC: " + prc2 + " " + (prc2 > prc ? (toColor("(+" + (prc2 - prc) + ")", "green")) : (prc2 < prc ? (toColor(" (-" + (prc - prc2) + ")", "red")) : "")) + " "); 
+            out += ("BLK: " + blk2 + " " + (blk2 > blk ? (toColor("(+" + (blk2 - blk) + ")", "green")) : (blk2 < blk ? (toColor(" (-" + (blk - blk2) + ")", "red")) : "")) + " "); 
+            out += ("SRV: " + srv2 + " " + (srv2 > srv ? (toColor("(+" + (srv2 - srv) + ")", "green")) : (srv2 < srv ? (toColor(" (-" + (srv - srv2) + ")", "red")) : "")) + " "); 
             out += ("SPEED: " + speed + " "); 
             out += ("STAMINA: " + stm + " "); 
         }
@@ -32214,7 +32214,7 @@ function Safari() {
             if (p.stamina <= 4) {
                 proficiency--;
             }
-            if (p.stamina >= 25 && this.hasSkill(player, "simplicity")) {
+            if (p.stamina >= 25 && this.hasSkill(p, "simplicity")) {
                 proficiency += 1;
             }
             if ((p.prep >= 1) && (this.hasSkill(p, "grounded"))) {
