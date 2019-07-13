@@ -31294,7 +31294,7 @@ function Safari() {
         }
         for (var p in this.teams[1]) {
             this.teams[1][p].stamina = Math.min(this.teams[1][p].stamina + regen, this.teams[1][p].maxStamina);
-            if (this.teams[0][1].currentPoke < 2) {
+            if (this.teams[1][p].currentPoke < 2) {
                 this.sendMessage(this.teams[1][p].id, "You have " + this.teams[1][p].stamina + " stamina remaining. Type " + link("/vol sub") + " to switch into your next Pokémon.", "red");
             }
             this.teams[1][p].volleysIn++;
