@@ -77,6 +77,8 @@ function Safari() {
     var vbdebug = false;
     var officialVolleyballTeam1 = "Paranormal Phanpies";
     var officialVolleyballTeam2 = "Gloomy Oddishes";
+    var officialVolleyballWins1 = 0;
+    var officialVolleyballWins2 = 0;
 
     var starters = [1, 4, 7];
     var playerTemplate = {
@@ -31200,6 +31202,12 @@ function Safari() {
                     safari.saveGame(player);
                 }
             }
+            if (this.teamData[team].name == officialVolleyballTeam1) {
+                officialVolleyballWins1++;
+            }
+            else if (this.teamData[team].name == officialVolleyballTeam2) {
+                officialVolleyballWins2++;
+            }
         }
         this.finished = true;
         return;
@@ -36348,6 +36356,10 @@ function Safari() {
                 }
                 var vb = new Volleyball(src, names[0], names[1], "@rock", "@rock", true);
                 currentGame = vb;
+                return true;
+            }
+            if (command === "volleyballrecords") {
+                safaribot.sendMessage(src, officialVolleyballTeam1 + ": " + officialVolleyballWins1 + " | " + officialVolleyballTeam2 + " | " + officialVolleyballWins2, safchan);
                 return true;
             }
             if (command === "shove") {
