@@ -31196,6 +31196,7 @@ function Safari() {
         this.sendMessageAll(this.actName(p) + " prepares to serve!", "blue");
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         this.sendMessage(p.id, "Choose " + link("/vol effort:0", "Easy") + " " + link("/vol effort:1", "Normal") + " " + link("/vol effort:2", "Strong") + " for your serve strength!");
         if (this.hasSkill(p, "float")) {
             this.sendMessage(p.id, "Type " + link("/vol float") + " to perform a Float Serve!");
@@ -31434,6 +31435,7 @@ function Safari() {
         this.sendMessageTeam(defteam, "The ball was served to " + this.getPos(this.ballRow, this.ballColumn, 0) + "!", "blue");
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         this.clearVals();
         return;
     }
@@ -31634,6 +31636,7 @@ function Safari() {
             var defteam = (this.teamHasBall === 1 ? 0 : 1);
             this.sendMessageTeam(0, this.courtView(0), null, true);
             this.sendMessageTeam(1, this.courtView(1), null, true);
+            this.sendAllStats();
             for (var t in this.teams[defteam]) {
                 var p = this.teams[defteam];
                 if (p.zone === "front" && p.row === 4) {
@@ -31717,6 +31720,7 @@ function Safari() {
         this.turn++;
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         this.setterLinks(defteam);
         for (var t in this.teams[p.team]) {
             q = this.teams[p.team][t];
@@ -31754,6 +31758,7 @@ function Safari() {
             this.sendMessageTeam(0, "The ball goes to " + this.getPos(this.ballRow, this.ballColumn, 0) + "! [Strength: FREE]", "blue");
             this.sendMessageTeam(0, this.courtView(0), null, true);
             this.sendMessageTeam(1, this.courtView(1), null, true);
+            this.sendAllStats();
             this.teamHasBall = defteam;
             return;
         }
@@ -31981,6 +31986,7 @@ function Safari() {
             this.sendMessageTeam(defteam, "The ball soars to b" + this.ballColumn + "!", "green");
             this.sendMessageTeam(0, this.courtView(0), null, true);
             this.sendMessageTeam(1, this.courtView(1), null, true);
+            this.sendAllStats();
             return;
         }
         if (kill) {
@@ -32054,6 +32060,7 @@ function Safari() {
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         return;
     }
     Volleyball.prototype.processReceive = function() {
@@ -32260,6 +32267,7 @@ function Safari() {
                 this.sendMessage(p.id, "You spent " + stcost + " stamina receiving the ball! You now have " + p.stamina + "!" , "red");
                 this.sendMessageTeam(0, this.courtView(0), null, true);
                 this.sendMessageTeam(1, this.courtView(1), null, true);
+                this.sendAllStats();
                 if (this.ballStun) {
                     if ((!p.stunned) && (!hasType(p.party[p.currentPoke], "Ground")) && (!this.hasSkill(p, "grounded"))) {
                         p.stunned = true;
@@ -32402,6 +32410,7 @@ function Safari() {
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         this.setterLinks(p.team);
         var q;
         for (var t in this.teams[p.team]) {
@@ -32411,6 +32420,14 @@ function Safari() {
             }
         }
         return;
+    };
+    Volleyball.prototype.sendAllStats = function() {
+        for (var p in this.teams[0]) {
+            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p]));
+        }
+        for (var p in this.teams[1]) {
+            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p]));
+        }
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
