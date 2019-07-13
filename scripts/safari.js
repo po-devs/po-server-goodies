@@ -11025,7 +11025,7 @@ function Safari() {
 
             var perkBonus = getPerkBonus(player, "battery");
             var recharges = 30 + perkBonus;
-            player.balls.itemfinder = recharges;
+            player.balls.itemfinder = (recharges * 2);
 
             var out = giveStuff(player, reward, true);
 
