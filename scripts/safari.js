@@ -2144,6 +2144,9 @@ function Safari() {
             if (currentEvent && currentEvent.isInEvent(name)) {
                 return false;
             }
+            if (currentGame && currentGame.playerInGame(name)) {
+                return false;
+            }
             for (var p in currentPyramids) {
                 if (currentPyramids[p].isInPyramid(name)) {
                     return false;
