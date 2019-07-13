@@ -29922,6 +29922,7 @@ function Safari() {
         this.sendMessageTeam(0, "Your team is: " + Object.keys(this.teams[0]).join(", ") + "!");
         this.sendMessageTeam(1, "Your team is: " + Object.keys(this.teams[1]).join(", ") + "!");
         this.sendMessageAll("Now it is time to decide your service order! Type /vol 0 to serve first, or /vol 1 if you want to serve last!");
+        this.sendMessageAll("" + link("/vol 0", "Serving (Back-left)") + " " + link("/vol 1", "Back-center") + " " + link("/vol 2", "Back-right") + " " + link("/vol 3", "Front-right") + " " + link("/vol 4", "Front-center") + " " + link("/vol 5", "Front-left"));
         this.turn = 0;
         this.phase = "assemble";
     };
@@ -30740,7 +30741,7 @@ function Safari() {
             p = team[t];
             if (this.teamHasBall === ind) {
                 if (this.phase == "set") {
-                    if ((p.zone == "front" || (this.hasSkill(p, "back-attack"))) && (setter !== p.id)) {
+                    if (((p.zone == "front" && p.row == 4) || (this.hasSkill(p, "back-attack"))) && (setter !== p.id)) {
                         if (p.spike >= maxHit) {
                             maxHit = p.spike;
                         }
@@ -31157,7 +31158,7 @@ function Safari() {
                 }
             }
         }
-        if (this.teamData[team].score >= 6 && Math.abs(this.teamData[1].score - this.teamData[0].score) > 1) {
+        if (this.teamData[team].score >= 7 && Math.abs(this.teamData[1].score - this.teamData[0].score) > 1) {
             this.winGame(team);
             return;
         }
@@ -32272,7 +32273,7 @@ function Safari() {
                     this.phase = "prep";
                     break;
                 } else {
-                    stcost += 3 + boost;
+                    stcost += Math.round(3 + boost);
                 }
             }
             if ((this.hasSkill(p, "rollout")) && this.ballPower >= 6) {
@@ -32628,7 +32629,16 @@ function Safari() {
             else {
                 this.inputVal(player.id, "zone", "front"); 
             }
-            this.sendMessageTeam(player.team, this.actName(player) + " will begin at position " + hold + "!", "green");
+            var place = "";
+            switch (hold) {
+                case 0: place = "Service"; break;
+                case 1: place = "Back-center"; break;
+                case 2: place = "Back-right"; break;
+                case 3: place = "Front-right"; break;
+                case 4: place = "Front-center"; break;
+                case 5: place = "Front-left"; break;
+            }
+            this.sendMessageTeam(player.team, this.actName(player) + " will begin at " + hold + "!", "green");
             return true;
         } else {
         if (this.phase === "serve" && player.canServe) {
@@ -32682,7 +32692,7 @@ function Safari() {
                 case 5: opt = ["c1", "c2", "c3", "d1", "d2", "d3"]; break;
             }
             if (opt.indexOf(data) !== -1) {
-                this.sendMessageTeam(player.team, player.id + " is moving to " + data + "!", "green");
+                this.sendMessageTeam(player.team, this.actName(player) + " will begin the rally at " + data + "!", "green");
                 this.movePlayer(player.id, data);
                 return true;
             }
@@ -32833,7 +32843,13 @@ function Safari() {
             }
         }
         if (opt.indexOf(cdata[0]) === -1) {
-            this.sendMessage(name, "No such action as " + data + "!", "red");
+            if (cdata[0] == "block") {
+                this.sendMessage(name, "You can only block when the opposing team is getting ready to spike!", "red");
+            } else if (data.substring(0, 1) == "xd") {
+                this.sendMessage(name, "You can't spike into the front row!", "red");
+            } else {
+                this.sendMessage(name, "No such action as " + data + "!", "red");
+            }
             return false;
         }
         if (this.excludePos[player.team].indexOf(data) !== -1) {
