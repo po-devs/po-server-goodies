@@ -5341,10 +5341,12 @@ function Safari() {
             out = Math.max(2, out + 0.5);
             if (hasType(sys.pokeType2(poke1), poke2) && sys.pokeType2(poke1) === "???") {
                 out = Math.max(2, out + 2);
+            } else if (hasType(sys.pokeType2(poke1), poke2)) {
+                out = Math.max(out + 2, 4);
             }
         }
-        if (hasType(sys.pokeType2(poke1), poke2) && sys.pokeType2(poke1) !== "???") {
-            out = Math.max(2, out + 1);
+        else if (hasType(sys.pokeType2(poke1), poke2) && sys.pokeType2(poke1) !== "???") {
+            out = Math.max(2, out + 0.5);
         }
         var ab = [];
         ab.push(sys.pokeAbility(poke1, 0));
@@ -5352,11 +5354,11 @@ function Safari() {
         ab.push(sys.pokeAbility(poke1, 2));
         for (var a in ab) {
             if (ab[a] && canHaveAbility(poke2, ab[a])) {
-                out = Math.max(4, out + 1);
+                out = Math.max(6, out + 1);
             }
         }
         if (userColor === getPokeColor(poke2)) {
-            out += 1.5;
+            out += 2;
         }
         if (hasCommonEggGroup(poke1, poke2)) {
             out *= 1.667;
@@ -32960,6 +32962,9 @@ function Safari() {
                 this.sendMessage(name, "You can't spike into the front row!", "red");
             } else if (data[0] == "x") {
                 this.sendMessage(name, "You can only hit the ball when you are serving or once you've been set to!", "red");
+                if (player.zone == "back" && (!(this.hasSkill(player, "back-attack")))) {
+                    this.sendMessage(name, "If you started the rally in the back row, you can only spike if you have a 'back-attack' skill!", "red");
+                }
             } else {
                 this.sendMessage(name, "No such action as " + data + "!", "red");
             }
