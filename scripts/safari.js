@@ -29970,24 +29970,7 @@ function Safari() {
         }
         return;
     };
-    Volleyball.prototype.statPrintout = function(player) {
-        var p = null;
-        for (var t in this.teams[0]) {
-            if (this.teams[0][t].id === player) {
-                p = this.teams[0][t];
-                break;
-            }
-        }
-        if (!p) {
-            for (var t in this.teams[1]) {
-                if (this.teams[1][t].id === player) {
-                    p = this.teams[1][t];
-                }
-            }
-        }
-        if (!p) {
-            return;
-        }
+    Volleyball.prototype.statPrintout = function(p) {
         //stat printout is here
         var stm = p.stamina;
         var srv = srv2 = p.serve;
@@ -30124,8 +30107,8 @@ function Safari() {
         out += ("STAMINA: " + stm + " "); 
         return out;
     };
-    Volleyball.prototype.courtIcon = function(mon, owner) {
-       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + " \n" + this.statPrintout(owner) + "'>";
+    Volleyball.prototype.courtIcon = function(mon, owner, p) {
+       return "<img src='icon:" + mon + "' title='" + owner + " - " + poke(mon) + " \n" + this.statPrintout(p) + "'>";
     };
     Volleyball.prototype.courtView = function(team) {
         var atkteam = team, defteam = (team === 0 ? 1 : 0), p, mon;
@@ -30152,7 +30135,7 @@ function Safari() {
             p = this.teams[defteam][t];
             if (!p.actSkills.sneak || (identify)) {
                 mon = parseInt(p.party[p.currentPoke].id, 10);
-                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id};
+                rows["x" + p.pos[0] + (8 - p.column)] = {"mon": mon, "owner": p.id, "user": p};
             }
         }
         for (var t in this.teams[atkteam]) {
@@ -30169,7 +30152,7 @@ function Safari() {
                 ret += "<td align=center width=88>";
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += this.courtIcon(inp, rows[place].owner);
+                    ret += this.courtIcon(inp, rows[place].owner, rows[place].user);
                 }
                 else if (place === "---") {
                     ret += link("/vol block:" + (j + 1), place) + " ";
@@ -30388,9 +30371,9 @@ function Safari() {
         this.step++; //every 8 seconds
         if (this.phase == "signups") {
             if (this.step === 12) {
-                sys.sendAll("", safchan);
+                sendAll("", safchan);
                 safaribot.sendHtmlAll("You have about a minute left to join the Volleyball match with " + link("/vol join") + "!", safchan);
-                sys.sendAll("", safchan);
+                sendAll("", safchan);
             }
             if (this.step === 20) {
                 //after 400 seconds
