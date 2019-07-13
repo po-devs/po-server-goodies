@@ -32402,6 +32402,7 @@ function Safari() {
         this.clearVals();
         this.sendMessageTeam(0, this.courtView(0), null, true);
         this.sendMessageTeam(1, this.courtView(1), null, true);
+        this.sendAllStats();
         this.setterLinks(p.team);
         var q;
         for (var t in this.teams[p.team]) {
@@ -32411,6 +32412,14 @@ function Safari() {
             }
         }
         return;
+    };
+    Volleyball.prototype.sendAllStats = function() {
+        for (var p in this.teams[0]) {
+            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p]));
+        }
+        for (var p in this.teams[1]) {
+            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p]));
+        }
     };
     Volleyball.prototype.inputMove = function(name, data) {
         var setting = false;
