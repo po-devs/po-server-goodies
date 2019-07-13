@@ -32441,10 +32441,10 @@ function Safari() {
     };
     Volleyball.prototype.sendAllStats = function() {
         for (var p in this.teams[0]) {
-            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p]));
+            this.sendMessage(this.teams[0][p].id, "Your stats: " + this.statPrintout(this.teams[0][p].id));
         }
         for (var p in this.teams[1]) {
-            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p]));
+            this.sendMessage(this.teams[1][p].id, "Your stats: " + this.statPrintout(this.teams[1][p].id));
         }
     };
     Volleyball.prototype.inputMove = function(name, data) {
@@ -39999,4 +39999,3 @@ function Safari() {
     };
 }
 module.exports = new Safari();
-  
