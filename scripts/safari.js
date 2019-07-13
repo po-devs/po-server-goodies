@@ -75,8 +75,8 @@ function Safari() {
     var eliteStrongCounterPicks = [];
 
     var vbdebug = false;
-    var officialVolleyballTeam1 = null;
-    var officialVolleyballTeam2 = null;
+    var officialVolleyballTeam1 = "Paranormal Phanpies";
+    var officialVolleyballTeam2 = "Gloomy Oddishes";
 
     var starters = [1, 4, 7];
     var playerTemplate = {
@@ -210,6 +210,7 @@ function Safari() {
             points: 0,
             pointsGiven: 0
         },
+        volleyballTeam: "none",
         costumeInfo: {
             preschooler: {
                 level: 1,
@@ -9392,6 +9393,16 @@ function Safari() {
                     
                     while (extra1.toLowerCase() === extra2.toLowerCase()) {
                         extra2 = sys.pokemon(sys.rand(1, 803));
+                    }
+
+                    if (extra1 == "official") {
+                        if (chance(0.5)) {
+                            extra1 = officialVolleyballTeam1;
+                            extra2 = officialVolleyballTeam2;
+                        } else {
+                            extra2 = officialVolleyballTeam1;
+                            extra1 = officialVolleyballTeam2;
+                        }
                     }
                     
                     ev = new Volleyball(src, extra1, extra2, reward[0], reward[1], false);
@@ -29744,17 +29755,23 @@ function Safari() {
         this.ballFloat = false;
 
         this.official = false;
+        this.npcMons1 = [];
+        this.npcMons2 = [];
 
         if (officialVolleyballTeam1 && officialVolleyballTeam2) {
             if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 === team2)) {
                 this.official = true;
             }
-            if ((officialVolleyballTeam1 === team1) && (officialVolleyballTeam2 === team2)) {
+            if ((officialVolleyballTeam1 === team2) && (officialVolleyballTeam2 === team1)) {
                 this.official = true;
             }
         }
 
-        safaribot.sendMessage(src, "You started a Volleyball match!", safchan);   
+        safaribot.sendMessage(src, "You started a Volleyball match!", safchan);
+        if (this.official) {
+            giveStuff(player, toStuffObj("@form"), true);
+            safaribot.sendMessage(src, "Since this is a sponsored match, your Event Form is compensated.", safchan);
+        }
 
         if (!silent) {
             sys.sendAll("", safchan);
@@ -29803,10 +29820,41 @@ function Safari() {
                     return;
                 }
             }
+            if (cdata1 == "npc") {
+                var m = getInputPokemon(cdata2).num;
+                if (Object.keys(safari.volleyballStats).indexOf(mon+"") === -1) {
+                    this.sendMessage(name, poke(mon) + " cannot play volleyball!", "red");
+                    return false;
+                }
+                if (this.teamData[0].signups.contains(player.id)) {
+                    this.npcMons1.push(mon);
+                    for (var t in this.teamData[0].signups) {
+                        this.sendMessage(this.teamData[0].signups[t], poke(mon) + " was added to the list of NPC teammates.", "green");
+                    }
+                }
+                if (this.teamData[1].signups.contains(player.id)) {
+                    this.npcMons2.push(mon);
+                    for (var t in this.teamData[1].signups) {
+                        this.sendMessage(this.teamData[1].signups[t], poke(mon) + " was added to the list of NPC teammates.", "green");
+                    }
+                }
+            }
             if (cdata1 == "join") {
                 if (this.playerInGame(name)) {
                     this.sendMessage(name, "You've already joined this game!", "red");
                     return false;
+                }
+                if (this.official) {
+                    if (player.volleyballTeam) {
+                        if (player.volleyballTeam == this.teamData[0].name) {
+                            cdata2 = this.teamData[0].name;
+                        } else if (player.volleyballTeam == this.teamData[1].name) {
+                            cdata2 = this.teamData[1].name;
+                        } else {
+                            this.sendMessage(name, "This is an official volleyball league match! You must be affiliated with a team to play!", "red");
+                            return false;
+                        }
+                    }
                 }
                 if (this.teamData[0].name.toLowerCase() === cdata2.toLowerCase()) {
                     if (this.teamData[0].signups.length === 6) {
@@ -30070,7 +30118,7 @@ function Safari() {
             var activate = true;
             for (var t in tm) {
                 q = tm[t];
-                if (this.hasSkill(q, "ace")) {
+                if (this.hasSkill(q, "ace") && q.id !== p.id) {
                     activate = false;
                 }
             }
@@ -30309,7 +30357,38 @@ function Safari() {
         };
 
         if (isNPC) {
-            party = this.generateVolleyballParty();
+            party = [];
+            var j = 0;
+            if (team == 0) {
+                while (this.npcMons1.length > 0) {
+                    if (party.length > 1) {
+                        break;
+                    }
+                    party.push(this.npcMons1.pop());
+                    j++;
+                    if (j > 1000) {
+                        break;
+                    }
+                }
+            } else {
+                while (this.npcMons2.length > 0) {
+                    if (party.length > 1) {
+                        break;
+                    }
+                    party.push(this.npcMons2.pop());
+                    j++;
+                    if (j > 1000) {
+                        break;
+                    }
+                }
+            }
+            while (party.length < 3) {
+                party.push(parseInt(Object.keys(safari.volleyballStats).random()));
+                j++;
+                if (j > 1000) {
+                    break;
+                }
+            }
             out.id = data.id;
         }
 
@@ -31925,7 +32004,7 @@ function Safari() {
         if (this.hasSkill(player, "ace")) {
             var activate = true;
             for (var t in this.teams[player.team]) {
-                if (this.hasSkill(this.teams[player.team][t], "ace")) {
+                if (this.hasSkill(this.teams[player.team][t], "ace") && this.teams[player.team][t].id !== player.id) {
                     activate = false;
                 }
             }
@@ -36262,7 +36341,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "volleyball" || command == "vb") {
+            if (command === "volleyball") {
                 var names = commandData.split(":");
                 if (names.length < 2) {
                     names = ["One", "Two"];
