@@ -31181,7 +31181,7 @@ function Safari() {
             //this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
         }
         for (var i in this.teams[team]) {
-            player = getAvatarOff(this.teams[0][i]);
+            player = getAvatarOff(this.teams[0][i].id);
             if (player) {
                 if (team === 0) {
                     giveStuff(player, toStuffObj(this.reward1));
@@ -31192,7 +31192,7 @@ function Safari() {
         }
         if (this.official) {
             for (var i in this.teams[0]) {
-                player = getAvatarOff(this.teams[0][i]);
+                player = getAvatarOff(this.teams[0][i].id);
                 if (player) {
                     player.volleyballRecords.points += this.teamData[0].score;
                     player.volleyballRecords.pointsGiven += this.teamData[1].score;
@@ -31200,7 +31200,7 @@ function Safari() {
                 }
             }
             for (var i in this.teams[1]) {
-                player = getAvatarOff(this.teams[0][i]);
+                player = getAvatarOff(this.teams[0][i].id);
                 if (player) {
                     player.volleyballRecords.points += this.teamData[1].score;
                     player.volleyballRecords.pointsGiven += this.teamData[0].score;
@@ -31953,6 +31953,7 @@ function Safari() {
 
         totalblk = 0;
         var blockers = [];
+        var blockersID = [];
         var blockAim;
         for (var t in this.teams[defteam]) {
             p = this.teams[defteam][t];
@@ -32003,6 +32004,7 @@ function Safari() {
             if (k > 0) {
                 p.actSkills.sneak = false;
                 blockers.push(this.actName(p));
+                blockersID.push(p.id);
             }
         }
         /*
@@ -32131,7 +32133,7 @@ function Safari() {
         }
         if (kill) {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
-            this.recordBlockers = blockers;
+            this.recordBlockers = blockersID;
             if (this.official) {
                 var mp = getAvatarOff(this.recordSetter);
                 if (mp) {
