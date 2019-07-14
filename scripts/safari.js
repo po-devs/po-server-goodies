@@ -29830,19 +29830,19 @@ function Safari() {
             if (cdata1 == "npc") {
                 var m = getInputPokemon(cdata2).num;
                 if (Object.keys(safari.volleyballStats).indexOf(mon+"") === -1) {
-                    this.sendMessage(name, poke(mon) + " cannot play volleyball!", "red");
+                    this.sendMessage(name, poke(m) + " cannot play volleyball!", "red");
                     return false;
                 }
                 if (this.teamData[0].signups.contains(player.id)) {
-                    this.npcMons1.push(mon);
+                    this.npcMons1.push(m);
                     for (var t in this.teamData[0].signups) {
-                        this.sendMessage(this.teamData[0].signups[t], poke(mon) + " was added to the list of NPC teammates.", "green");
+                        this.sendMessage(this.teamData[0].signups[t], poke(m) + " was added to the list of NPC teammates.", "green");
                     }
                 }
                 if (this.teamData[1].signups.contains(player.id)) {
-                    this.npcMons2.push(mon);
+                    this.npcMons2.push(m);
                     for (var t in this.teamData[1].signups) {
-                        this.sendMessage(this.teamData[1].signups[t], poke(mon) + " was added to the list of NPC teammates.", "green");
+                        this.sendMessage(this.teamData[1].signups[t], poke(m) + " was added to the list of NPC teammates.", "green");
                     }
                 }
             }
