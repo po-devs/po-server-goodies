@@ -31181,7 +31181,7 @@ function Safari() {
             //this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
         }
         for (var i in this.teams[team]) {
-            player = getAvatarOff(this.teams[team][i].id);
+            player = getAvatarOff(this.teams[0][i].id);
             if (player) {
                 if (team === 0) {
                     giveStuff(player, toStuffObj(this.reward1));
@@ -31200,7 +31200,7 @@ function Safari() {
                 }
             }
             for (var i in this.teams[1]) {
-                player = getAvatarOff(this.teams[1][i].id);
+                player = getAvatarOff(this.teams[0][i].id);
                 if (player) {
                     player.volleyballRecords.points += this.teamData[1].score;
                     player.volleyballRecords.pointsGiven += this.teamData[0].score;
