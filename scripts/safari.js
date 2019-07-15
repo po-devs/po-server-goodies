@@ -29692,6 +29692,7 @@ function Safari() {
             case "attack":
                 safaribot.sendHtmlMessage(src, "<b>*** Tips for spiking in Volleyball:</b>", safchan);
                 safaribot.sendHtmlMessage(src, "- Spiking the ball uses the Spike stat of your active Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "- You can spike if you started in the front row and are currently in the front row.", safchan);
                 safaribot.sendHtmlMessage(src, "- The higher your spike stat, the further you can spike the ball without suffering a distance penalty.", safchan);
                 safaribot.sendHtmlMessage(src, "- The higher your precision stat, the more likely you are to spike to the target you chose.", safchan);
                 safaribot.sendHtmlMessage(src, "- If you spike towards a blocker in the front row, you may be blocked!", safchan);
@@ -29776,7 +29777,7 @@ function Safari() {
 
         safaribot.sendMessage(src, "You started a Volleyball match!", safchan);
         if (this.official) {
-            giveStuff(player, toStuffObj("@form"), true);
+            giveStuff(getAvatar(src), toStuffObj("@form"), true);
             safaribot.sendMessage(src, "Since this is a sponsored match, your Event Form is compensated.", safchan);
         }
 
@@ -29928,6 +29929,62 @@ function Safari() {
         }
         if (team2.length < 3) {
             this.official = false;
+        }
+        var hold = this.npcMon1s;
+        this.npcMons1 = [];
+        var j = 0, i = -1, ds = 0;
+        var npcNum = (6 - team1.length);
+        while (j < 50) {
+            i++;
+            if (i >= hold.length || i >= npcNum) {
+                break;
+            }
+            this.npcMons1.push(hold[i]);
+            if (i + npcNum >= hold.length) {
+                continue;
+            } else {
+                ds += npcNum;
+                i += npcNum;
+                this.npcMons1.push(hold[i]);
+            }
+            if (i + npcNum >= hold.length) {
+                continue;
+            } else {
+                ds += npcNum;
+                i += npcNum;
+                this.npcMons1.push(hold[i]);
+            }
+            i -= ds;
+            ds = 0;
+            j++;
+        }
+        hold = this.npcMon2s;
+        this.npcMons2 = [];
+        j = 0, i = -1, ds = 0;
+        npcNum = (6 - team2.length);
+        while (j < 50) {
+            i++;
+            if (i >= hold.length || i >= npcNum) {
+                break;
+            }
+            this.npcMons2.push(hold[i]);
+            if (i + npcNum >= hold.length) {
+                continue;
+            } else {
+                ds += npcNum;
+                i += npcNum;
+                this.npcMons2.push(hold[i]);
+            }
+            if (i + npcNum >= hold.length) {
+                continue;
+            } else {
+                ds += npcNum;
+                i += npcNum;
+                this.npcMons2.push(hold[i]);
+            }
+            i -= ds;
+            ds = 0;
+            j++;
         }
         while (team1.length < 6) {
             index = Math.floor(npcs.length * Math.random());
