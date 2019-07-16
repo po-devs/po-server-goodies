@@ -29930,7 +29930,7 @@ function Safari() {
         if (team2.length < 3) {
             this.official = false;
         }
-        var hold = this.npcMon1s;
+        var hold = this.npcMonss;
         this.npcMons1 = [];
         var j = 0, i = -1, ds = 0;
         var npcNum = (6 - team1.length);
@@ -29958,7 +29958,7 @@ function Safari() {
             ds = 0;
             j++;
         }
-        hold = this.npcMon2s;
+        hold = this.npcMons2;
         this.npcMons2 = [];
         j = 0, i = -1, ds = 0;
         npcNum = (6 - team2.length);
