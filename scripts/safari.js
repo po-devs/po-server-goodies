@@ -28509,7 +28509,7 @@ function Safari() {
             if (full) {
                 pk.findItem = true;
                 pk.meter = Math.min(pk.meter + 1, 20);
-                if (chance(0.15)) {
+                if (chance(0.05)) {
                     pk.hunger = Math.min(pk.hunger + 1, 20);
                 }
                 if (pk.toHolding < now()) {
@@ -28900,19 +28900,19 @@ function Safari() {
                     }
                 }
                 if (featureCount.water < maxFeatures.water) {
-                    if (this.getNearbyFeatures(t, "grotto").contains("water") && (chance(0.1) && full)) {
+                    if ((this.getNearbyFeatures(t, "grotto").contains("water") && (chance(0.5) && full)) || (chance(0.01))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 2 && (chance(0.02))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 2 && (chance(0.04))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 3 && (chance(0.04))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 3 && (chance(0.15))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
-                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 4 && (chance(0.08))) {
+                    else if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "water") >= 4 && (chance(0.25))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
                     }
@@ -30048,7 +30048,7 @@ function Safari() {
         var team = this.teams[ind], p, q, links = "", links2 = "", first = false, first2 = false;
         for (var t in team) {
             p = team[t];
-            if (p.canSet && p.zone == "front") {
+            if (p.canSet) {
                 for (var s in team) {
                     q = team[s];
                     if (q.id == p.id) {
@@ -32158,7 +32158,7 @@ function Safari() {
             this.sendMessageAll(this.actName(player) + "'s Psyspike bypasses the blockers!", "blue");
         }
         var free = false;
-        if (!(chance( blkevade )) && totalblk > 2) {
+        if (!(chance( blkevade )) && totalblk > 2 && (chance(0.2 * (totalkblk - (2 * Math.random()))))) {
             totalblk += (Math.min(Math.random() * 3, 6 - player.setval));
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
@@ -32875,7 +32875,7 @@ function Safari() {
             }
             return false;
         } else {
-                if (this.phase == "set" && (player.team === this.teamHasBall) && player.zone == "front" && player.canSet) {
+                if (this.phase == "set" && (player.team === this.teamHasBall) && player.canSet) {
                     if (cdata[0] == "set") {
                         if (!player.canSet) {
                             //redundtant but keep this
