@@ -29930,7 +29930,7 @@ function Safari() {
         if (team2.length < 3) {
             this.official = false;
         }
-        var hold = this.npcMonss;
+        var hold = this.npcMons1;
         this.npcMons1 = [];
         var j = 0, i = -1, ds = 0;
         var npcNum = (6 - team1.length);
