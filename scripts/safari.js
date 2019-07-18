@@ -32159,7 +32159,7 @@ function Safari() {
             this.sendMessageAll(this.actName(player) + "'s Psyspike bypasses the blockers!", "blue");
         }
         var free = false;
-        if (!(chance( blkevade )) && totalblk > 2 && (chance(0.2 * (totalkblk - (2 * Math.random()))))) {
+        if (!(chance( blkevade )) && totalblk > 2 && (chance(0.2 * (totalblk - (2 * Math.random()))))) {
             totalblk += (Math.min(Math.random() * 3, 6 - player.setval));
             if (totalblk > 6 || totalblk > pow) {
                 kill = true;
