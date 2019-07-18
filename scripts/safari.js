@@ -29784,6 +29784,7 @@ function Safari() {
         if (!silent) {
             sys.sendAll("", safchan);
             safaribot.sendHtmlAll("A Volleyball Event has started with teams " + team1 + " and " + team2 + " ready to rumble! Type " + link("/vol join:" + team1) + " or " + link("/vol join:" + team2) + " to join!", safchan);
+            safaribot.sendHtmlAll("The winning team gets " + translateAsset(this.reward1) + "!", safchan);
             sys.sendAll("", safchan);
         }     
     };
@@ -31230,12 +31231,12 @@ function Safari() {
         if (team === 0) {
             this.sendMessageAll("Team " + this.teamData[0].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[0]).join(", ") + " are the victors!" , "blue");
-            //this.sendMessageAll("The winners receive " + translateAsset(this.reward1) + "!" , "blue");
+            this.sendMessageAll("The winners receive " + translateAsset(this.reward1) + "!" , "blue");
         }
         if (team === 1) {
             this.sendMessageAll("Team " + this.teamData[1].name + " won the match! Congratulations to the winners!", "blue");
             this.sendMessageAll(Object.keys(this.teams[1]).join(", ") + " are the victors!" , "blue");
-            //this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
+            this.sendMessageAll("The winners receive " + translateAsset(this.reward2) + "!" , "blue");
         }
         for (var i in this.teams[team]) {
             player = getAvatarOff(this.teams[team][i].id);
