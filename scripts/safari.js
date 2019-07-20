@@ -29341,15 +29341,19 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         });
         if (playerPoints.length > 6) {
             playerPoints = playerPoints.slice(0, 5);
         }
-        safaribot.sendMessage(src, "Top " + (playerPoints.length) + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
-        var j = 0;
-        for (var j = 0; j < playerPoints.length; j++;) {
-            safaribot.sendMessage(src, "#" + (j + 1) + ": " + playerPoints[j].id + " (" + playerPoints[j].points + ")", safchan);
+        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
+        var j = 1;
+        for (var i = playerPoints.length; i--;) {
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+            j++;
+            if (j >= playerPoints.length) {
+                break;
+            }
         }
         return true;
     };
