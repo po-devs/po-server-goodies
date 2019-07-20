@@ -27907,7 +27907,7 @@ function Safari() {
             }
         }
         else if (!aspect) {
-            safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps") +, safchan);
+            safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps"), safchan);
         }
     };
     this.handleDayCareCommand = function(src, cdata, auth) {
