@@ -29343,15 +29343,15 @@ function Safari() {
         playerPoints.sort(function(a, b) { 
             return a.points - b.points;
         });
-        if (playerPoints.length > 5) {
+        if (playerPoints.length > 6) {
             playerPoints = playerPoints.slice(0, 5);
         }
         safaribot.sendMessage(src, "Top " + playerPoints.length + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
         var j = 1;
         for (var i = playerPoints.length; i--;) {
-            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[j].id + " (" + playerPoints[j].points + ")", safchan);
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             j++;
-            if (j > playerPoints.length) {
+            if (j >= playerPoints.length) {
                 break;
             }
         }
@@ -31393,7 +31393,7 @@ function Safari() {
         if (this.official) {
             for (var i in this.teams[0]) {
                 player = getAvatarOff(this.teams[0][i].id);
-                if (player) {
+                if (player && (!this.teams[0][i].ai)) {
                     player.volleyballRecords.points += this.teamData[0].score;
                     player.volleyballRecords.pointsGiven += this.teamData[1].score;
                     safari.saveGame(player);
@@ -31401,7 +31401,7 @@ function Safari() {
             }
             for (var i in this.teams[1]) {
                 player = getAvatarOff(this.teams[1][i].id);
-                if (player) {
+                if (player && (!this.teams[1][i].ai)) {
                     player.volleyballRecords.points += this.teamData[1].score;
                     player.volleyballRecords.pointsGiven += this.teamData[0].score;
                     safari.saveGame(player);
@@ -31940,8 +31940,12 @@ function Safari() {
         player.canTip = false;
         player.canHit = false;
         player.actSkills.sneak = false;
-        this.recordSetter = player.id;
-        this.recordSpiker = target.id;
+        if (!(player.ai)) {
+            this.recordSetter = player.id;
+        }
+        if (!(target.ai)) {
+            this.recordSpiker = target.id;
+        }
         if (target.actSkills.quick) {
             var torow = "", tocolumn = "";
             if (target.action[0] == "x") {
@@ -32573,7 +32577,7 @@ function Safari() {
                     maxPass += boost;
                 }
                 if (maxPass < 0) {
-                    if (this.ballPower >= 6 && this.official) {
+                    if (this.ballPower >= 6 && this.official && (!p.ai)) {
                         var player = getAvatarOff(p.id);
                         if (player && player.volleyballRecords) {
                             player.volleyballRecords.digs--;
