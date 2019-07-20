@@ -36091,6 +36091,7 @@ function Safari() {
             }
             if (command == "vblb") {
                 this.viewVolleyballLb(src, commandData.toLowerCase());
+                return true;
             }
             if ((command === "daycare" || command === "dc") && (dayCareEnabled)) {
                 safari.handleDayCareCommand(src, commandData.split(":"));
