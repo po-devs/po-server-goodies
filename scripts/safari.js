@@ -29318,16 +29318,16 @@ function Safari() {
                 player = JSON.parse(rawPlayers.hash[e]);
                 name = player.casedName;
                 id = player.id;
-                if (!player.volleyballStats) {
+                if (!player.volleyballRecords) {
                     continue;
                 }
                 if (info == "mvp") {
-                    if (player.volleyballStats.points && player.volleyballStats.pointsGiven) {
-                        score = (player.volleyballStats.points - player.volleyballStats.pointsGiven);
+                    if (player.volleyballRecords.points && player.volleyballRecords.pointsGiven) {
+                        score = (player.volleyballRecords.points - player.volleyballRecords.pointsGiven);
                     }
                 } else {
-                    if (player.volleyballStats[info]) {
-                        score = player.volleyballStats[info];
+                    if (player.volleyballRecords[info]) {
+                        score = player.volleyballRecords[info];
                     }
                 }
                 if (score <= 0) {
