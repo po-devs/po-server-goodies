@@ -29318,6 +29318,7 @@ function Safari() {
                 player = JSON.parse(rawPlayers.hash[e]);
                 name = player.casedName;
                 id = player.id;
+                score = 0;
                 if (!player.volleyballRecords) {
                     continue;
                 }
@@ -29343,13 +29344,16 @@ function Safari() {
             return a.points - b.points;
         });
         if (playerPoints.length > 5) {
-            playerPoints = playerPoints.slice(0, 4);
+            playerPoints = playerPoints.slice(0, 5);
         }
         safaribot.sendMessage(src, "Top " + playerPoints.length + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
         var j = 1;
         for (var i = playerPoints.length; i--;) {
             safaribot.sendMessage(src, "#" + j + ": " + playerPoints[j].id + " (" + playerPoints[j].points + ")", safchan);
             j++;
+            if (j > playerPoints.length) {
+                break;
+            }
         }
         return true;
     };
