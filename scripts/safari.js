@@ -29348,7 +29348,7 @@ function Safari() {
         }
         safaribot.sendMessage(src, "Top " + (playerPoints.length) + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
         var j = 0;
-        for (var j = 0; j < playerPoints.length; j++;) {
+        for (var j = 0; j < playerPoints.length; j++) {
             safaribot.sendMessage(src, "#" + (j + 1) + ": " + playerPoints[j].id + " (" + playerPoints[j].points + ")", safchan);
         }
         return true;
