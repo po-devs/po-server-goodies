@@ -27862,6 +27862,54 @@ function Safari() {
         var n = name.toLowerCase();
         return signupsLower.contains(n) && !this.winners.contains(n);
     };
+    this.castleCommand = function(src, command) {
+        var player = getAvatar(src);
+        if (!player) {
+            return false;
+        }
+        if (!command) {
+            return false;
+        }
+        var cdata = command.split(":");
+        command = cdata.shift();
+        switch (command) {
+            case "edit": this.editCastle(src, player, cdata); break;
+            default: safaribot.sendHtmlMessage(src, "The commands in Castle are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", and " + link("/dc help", "Help") + "!", safchan);
+        }
+    };
+    this.editCastle = function(src, player, cdata) {
+        var room = null, aspect = null, element = null;
+        if (cdata,length > 0) {
+            room = cdata[0]
+        }
+        if (cdata,length > 1) {
+            aspect = cdata[1]
+        }
+        if (cdata,length > 2) {
+            element = cdata[2]
+        }
+        if (!room) {
+            safaribot.sendHtmlMessage(src, "Challenges to your Castle must clear three rooms to defeat your castle. Pick " + link("/castle edit:1", "1") + ", " + link("/castle edit:2", "2") + ", or " + link("/castle edit:3", "3") + " that you would like to edit.", safchan);
+            safaribot.sendHtmlMessage(src, "You can also change your theme using " + link("/castle edit:theme", "Theme") + ".", safchan);
+        }
+        if (room == "theme") {
+            if (!aspect) {
+                safaribot.sendHtmlMessage(src, "There are 10 theme available for your castle. Be aware that if you have assigned your castle a theme before, you may need to change aspects of your Rooms in order to adapt to the Castle's Theme.", safchan);
+                safaribot.sendHtmlMessage(src, "The themes to choose from are " + link("/castle edit:theme:aquatic", "Aquatic") + ", " + link("/castle edit:theme:space", "Space") + ".", safchan);
+                if ((!player.castle.theme) || player.castle.theme == "") {
+                    safaribot.sendHtmlMessage(src, "You do not have a theme assigned now. You can assign one to allow certain traps in your rooms.", safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, "Your current theme is " + player.castle.theme + ".", safchan);
+                }
+            } else {
+                player.castle.theme = aspect;
+                safaribot.sendHtmlMessage(src, "You've changed your castle theme to " + player.castle.theme + "!", safchan);
+            }
+        }
+        else if (!aspect) {
+            safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps") +, safchan);
+        }
+    };
     this.handleDayCareCommand = function(src, cdata, auth) {
         var player = getAvatar(src);
         var command = cdata[0], c2 = "", c3 = "";
@@ -29214,6 +29262,96 @@ function Safari() {
         ret += "</table>";
         sys.sendHtmlMessage(src, ret, safchan);
         return;
+    };
+    this.viewVolleyballLb = function(src, type) {
+        var player, name, id;
+        var playerPoints = [];
+        var info = null;
+        var ca = "";
+        var score = 0;
+        switch (type) {
+            case "spike":
+            case "spikes":
+            case "serve":
+            case "serves":
+            case "attack":
+            case "spiking":
+            case "spk":
+                info = "spikes";
+                ca = "Ace";
+                break;
+            case "set":
+            case "sets":
+            case "toss":
+                info = "sets";
+                ca = "Setter";
+                break;
+            case "blk":
+            case "block":
+            case "blocks":
+                info = "blocks";
+                ca = "Middle Blocker";
+                break;
+            case "dig":
+            case "digs":
+            case "rec":
+            case "receive":
+            case "libero":
+                info = "digs";
+                ca = "Libero";
+                break;
+            case "point":
+            case "points":
+            case "score":
+            case "mvp":
+                info = "mvp";
+                ca = "MVP";
+                break;
+        }
+        if (!info) {
+            safaribot.sendMessage(src, "That is not a valid leaderboard!", safchan);
+            return false;
+        }
+
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                player = JSON.parse(rawPlayers.hash[e]);
+                name = player.casedName;
+                id = player.id;
+                if (!player.volleyballStats) {
+                    continue;
+                }
+                if (info == "mvp") {
+                    if (player.volleyballStats.points && player.volleyballStats.pointsGiven) {
+                        score = (player.volleyballStats.points - player.volleyballStats.pointsGiven);
+                    }
+                } else {
+                    if (player.volleyballStats[info]) {
+                        score = player.volleyballStats[info];
+                    }
+                }
+                if (score <= 0) {
+                    continue;
+                }
+                playerPoints.push({
+                    id: id,
+                    points: score
+                });
+            }
+        }
+        playerPoints.sort(function(a, b) { 
+            return a.points - b.points;
+        });
+        if (playerPoints.length > 5) {
+            playerPoints = playerPoints.slice(0, 4);
+        }
+        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in Current Volleyball " + ca + " Leaderboard: ", safchan);
+        var j = 1;
+        for (var i = playerPoints.length; i--;) {
+            safaribot.sendMessage(src, "#" + j + ": " + playerPoints[j].id + " (" + playerPoints[j].points + ")", safchan);
+            j++;
+        }
+        return true;
     };
     safari.volleyballStats = {
         "1": {"stamina": 30, "serve": 3, "receive": 4, "toss": 5, "spike": 1, "block": 3, "precision": 2,"speed": 2, "skills": ["reach", "overgrow", "simplicity"]},
@@ -35950,6 +36088,9 @@ function Safari() {
             if (command === "mail") {
                 safari.useMail(src, commandData);
                 return true;
+            }
+            if (command == "vblb") {
+                this.viewVolleyballLb(src, commandData.toLowerCase());
             }
             if ((command === "daycare" || command === "dc") && (dayCareEnabled)) {
                 safari.handleDayCareCommand(src, commandData.split(":"));
