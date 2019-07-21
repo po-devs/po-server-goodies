@@ -3717,7 +3717,7 @@ function Safari() {
                             }
                         }
                         if (theme && theme.eventFinal && theme.eventFlags && theme.eventFinal == id) {
-                            if (chance(0.01) && (chance(0.5))) {
+                            if (chance(0.02)) {
                                 var players = sys.playersOfChannel(safchan);
                                 for (var pid in players) {
                                     var player = getAvatar(players[pid]);
@@ -5195,6 +5195,11 @@ function Safari() {
             }
             if (parseInt(currentPokemon, 10) === 584) {
                 this.missionProgress(player, "catchScoop", 0, 4);
+            }
+            if (currentTheme && contestThemes && contestThemes[currentTheme].eventFinal && contestThemes[currentTheme].eventFinal == parseInt(currentPokemon, 10)) {
+                for (var i in player.eventFlags) {
+                    player.eventFlags[i] = 0;
+                }
             }
             if (amt < 1) {
                 sendAll("", true, true);
