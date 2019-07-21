@@ -31667,10 +31667,12 @@ function Safari() {
             prec++;
         }
         if (player.serveEffort === 2) {
-            prec--;
+            prec -= (chance(0.5) ? 2 : 1);
         }
         if (player.actSkills.float) {
             prec -= 2;
+        } else {
+            pow--;
         }
         xvar = Math.max(Math.floor((1.5 * Math.random()) + (Math.max((7 - (prec * Math.random())), 1)) - ((3 + prec) * (1 + Math.random()))), 0);
         xvar = (chance(0.5) ? xvar * -1 : xvar);
@@ -31729,7 +31731,7 @@ function Safari() {
         this.ballPower = pow;
         this.ballRow = torow;
         this.ballColumn = (8 - tocolumn);
-        stcost = (2 + (player.serveEffort * 2));
+        stcost = (2 + (player.serveEffort * 4));
         player.stamina = Math.max(player.stamina - stcost, 0);
         if (player.actSkills.float) {
             this.ballFloat = true;
@@ -31936,10 +31938,10 @@ function Safari() {
         player.canTip = false;
         player.canHit = false;
         player.actSkills.sneak = false;
-        if (!(player.ai)) {
+        if ((player.ai == false)) {
             this.recordSetter = player.id;
         }
-        if (!(target.ai)) {
+        if (target.ai == false) {
             this.recordSpiker = target.id;
         }
         if (target.actSkills.quick) {
@@ -33035,7 +33037,7 @@ function Safari() {
                                 continue;
                             }
                             var canSetTo = false;
-                            if ((p.zone === "back") && (p.skills.indexOf("back-attack") !== -1)) {
+                            if ((p.skills.indexOf("back-attack") !== -1)) {
                                 canSetTo = true;
                             }
                             if ((p.zone == "front" && p.row == 4)) {
