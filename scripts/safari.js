@@ -3699,6 +3699,7 @@ function Safari() {
                             list.push(i);
                         }
                     }
+                    var hitEvent = false;
                     for (h in theme.include) {
                         id = theme.include[h];
                         bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
@@ -3724,15 +3725,16 @@ function Safari() {
                                     if (player) {
                                         if (safari.allFlagsMet(player, theme.eventFlags)) {
                                             list = [id];
+                                            hitEvent = true;
                                             sendAll(poke(id) + " appeared because it sensed someone worthy!");
                                             break;
                                         }
                                     }
                                 }
-                                if (list == [id]) {
-                                    break;
-                                }
                             }
+                        }
+                        if (hitEvent) {
+                            break;
                         }
                     }
                 }
