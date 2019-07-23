@@ -29580,7 +29580,7 @@ function Safari() {
             case "tutorial":
                 safaribot.sendHtmlMessage(src, "<b>*** Volleyball Tutorial </b>", safchan);
                 safaribot.sendHtmlMessage(src, "- This is a comprehensive interactive tutorial that will help you learn how to play the Volleyball minigame.", safchan);
-                safaribot.sendHtmlMessage(src, "- To get started, press " + link("/tutorial_serving", "Serving") + ".", safchan);
+                safaribot.sendHtmlMessage(src, "- To get started, press " + link("/vbhints tutorial_serving", "Serving") + ".", safchan);
                 break;
             case "tutorial_serving_fail":
                 safaribot.sendMessage(src, "", safchan);
@@ -30042,13 +30042,13 @@ function Safari() {
                     cdata2 = this.teamData[0].name;
                     this.teamData[0].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
-                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!", "blue");
+                    sendAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
                     cdata2 = this.teamData[1].name;
                     this.teamData[1].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
-                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!", "blue");
+                    sendAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
                     this.assemblePhase();
@@ -32344,15 +32344,19 @@ function Safari() {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
             this.recordBlockers = blockersID;
             if (this.official) {
-                var mp = getAvatarOff(this.recordSetter);
-                if (mp) {
-                    mp.volleyballRecords.sets--;
-                    safari.saveGame(mp);
+                if (this.recordSetter) {
+                    var mp = getAvatarOff(this.recordSetter);
+                    if (mp) {
+                        mp.volleyballRecords.sets--;
+                        safari.saveGame(mp);
+                    }
                 }
-                mp = getAvatarOff(this.recordSpiker);
-                if (mp) {
-                    mp.volleyballRecords.spikes--;
-                    safari.saveGame(mp);
+                if (this.recordSpiker) {
+                    mp = getAvatarOff(this.recordSpiker);
+                    if (mp) {
+                        mp.volleyballRecords.spikes--;
+                        safari.saveGame(mp);
+                    }
                 }
             }
             this.recordSetter = null;
