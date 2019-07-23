@@ -32344,15 +32344,19 @@ function Safari() {
             this.sendMessageAll(this.actName(player) + "'s spike was BLOCKED by " + blockers.join(" and ") + "!", "blue");
             this.recordBlockers = blockersID;
             if (this.official) {
-                var mp = getAvatarOff(this.recordSetter);
-                if (mp) {
-                    mp.volleyballRecords.sets--;
-                    safari.saveGame(mp);
+                if (this.recordSetter) {
+                    var mp = getAvatarOff(this.recordSetter);
+                    if (mp) {
+                        mp.volleyballRecords.sets--;
+                        safari.saveGame(mp);
+                    }
                 }
-                mp = getAvatarOff(this.recordSpiker);
-                if (mp) {
-                    mp.volleyballRecords.spikes--;
-                    safari.saveGame(mp);
+                if (this.recordSpiker) {
+                    mp = getAvatarOff(this.recordSpiker);
+                    if (mp) {
+                        mp.volleyballRecords.spikes--;
+                        safari.saveGame(mp);
+                    }
                 }
             }
             this.recordSetter = null;
