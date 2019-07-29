@@ -5385,10 +5385,45 @@ function Safari() {
         }
         return out;
     };
-    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted) {
+    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted, select) {
         var result = 1;
         var immuneCount = 0;
         var typeCount = 1;
+
+
+        if (select) {
+            if (select.classicTypes) {
+                if (["Dark", "Steel", "Fairy"].contains(def1)) {
+                    def1 = "???";
+                }
+                if (["Dark", "Steel", "Fairy"].contains(def2)) {
+                    def2 = "???";
+                }
+            }
+            if (select.corrosion) {
+                if (atk1 == "Poison") {
+                    if (def1 == "Steel") {
+                        return (2 * this.checkEffective(atk1, "???", def2, "???", "???", inverted))
+                    }
+                    if (def2 == "Steel") {
+                        return (2 * this.checkEffective(atk1, "???", def1, "???", "???", inverted))
+                    }
+                }
+            }
+            if (select.normalcy) {
+                var third = ([def1, def2].contains("Normal") ? "???": "Normal");
+                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+            }
+            if (select.draconian) {
+                var third = ([def1, def2].contains("Dragon") ? "???": "Dragon");
+                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+            }
+            if (select.mechanical) {
+                var third = ([def1, def2].contains("Steel") ? "???": "Steel");
+                return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+            }
+            return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+        }
 
         var countImmune = function(value) {
             if (value === 0) {
@@ -11995,7 +12030,7 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return b.points - a.points;
+            return a.points - b.points;
         })
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
@@ -13941,6 +13976,8 @@ function Safari() {
             "spikes": 0,
             "stealthrock": false,
             "toxicspikes": false,
+            "dynamicweb": false,
+            "quicksand": false,
             "reflect": -1,
             "lightscreen": -1
         };
@@ -13948,6 +13985,8 @@ function Safari() {
             "spikes": 0,
             "stealthrock": false,
             "toxicspikes": false,
+            "dynamicweb": false,
+            "quicksand": false,
             "reflect": -1,
             "lightscreen": -1
         };
@@ -13980,7 +14019,10 @@ function Safari() {
             else if (select.fullrestore) {
                 this.npcItems.full = 1;
             }
-            if (select.spikes2) {
+            if (select.spikes3) {
+                this.side1Field.spikes = 3;
+            }
+            else if (select.spikes2) {
                 this.side1Field.spikes = 2;
             }
             else if (select.spikes) {
@@ -13991,6 +14033,12 @@ function Safari() {
             }
             if (select.toxicspikes) {
                 this.side1Field.toxicspikes = true;
+            }
+            if (select.dynamicWeb) {
+                this.side1Field.dynamicweb = true;
+            }
+            if (select.quickSand) {
+                this.side1Field.quicksand = true;
             }
             if (select.initialReflect) {
                 this.side2Field.reflect = 5;
@@ -14009,6 +14057,15 @@ function Safari() {
                 this.selectData.analyticType1 = "---"; //not ???, since this would make it hit single type Pokémon turn 1
                 this.selectData.analyticType2 = "---";
                 this.selectData.analyticCount = 0;
+            }
+            if (select.rollout) {
+                this.selectData.rolloutUser = -1;
+                this.selectData.rolloutCount = 0;
+                this.selectData.rolloutUser2 = -1;
+                this.selectData.rolloutCount2 = 0;
+            }
+            if (select.lastStand) {
+                this.selectData.lastStandReady = true;
             }
             if (select.moonblast) {
                 this.selectData.moonblastTimer = (3 + Math.floor(4 * Math.random()));
@@ -14290,91 +14347,7 @@ function Safari() {
         }
         if (this.select) {
             for (var j in this.select) {
-                switch (j) {
-                    case "sandstorm": m = "A Sandstorm rages."; break;
-                    case "hail": m = "Hail begins to fall."; break;
-                    case "sun": m = "The sunlight is intense."; break;
-                    case "rain": m = "There is a heavy downpour of rain."; break;
-                    case "electricterrain": m = "The field surges with electric terrain."; break;
-                    case "grassyterrain": m = "The field surges with grassy terrain."; break;
-                    case "psychicterrain": m = "The field surges with psychic terrain."; break;
-                    case "mistyterrain": m = "The field surges with misty terrain."; break;
-                    case "powertrick": m = "All Pokémons' Atk and Def as well as their Special Atk and Special Def are swapped."; break;
-                    case "statjumble": m = "Stats are shuffled."; break;
-                    case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
-                    case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
-                    case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
-                    case "hazardsetter": m = "The foe sets up a layer of spikes every 5 turns."; break;
-                    case "stealthrock": m = "The battle begins with Stealth Rock on challenger's side of the field."; break;
-                    case "toxicspikes": m = "The battle begins with one layer of toxic spikes on challenger's side of the field."; break;
-                    case "initialReflect": m = "Reflect begins active on foe's side."; break;
-                    case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
-                    case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
-                    case "initialLightScreen2": m = "Light Screen begins active on challenger's side."; break;
-                    case "boostType": m = (this.select[j].length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
-                    case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
-                    case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
-                    case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
-                    case "shellArmor": m = "Critical hits cannot occur."; break;
-                    case "criticalDouble": m = "Critical hits do increased damage."; break;
-                    case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
-                    case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
-                    case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
-                    case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
-                    case "fortress": m = "Foe's Pokémon begin with their defences boosted, but attacks reduced."; break;
-                    case "brawler": m = "Foe's Pokémon power up when hit with physical moves."; break;
-                    case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
-                    case "heatproof": m = "Foe's Pokémon are resistant to Fire."; break;
-                    case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
-                    case "weightattack": m = "Heavier Pokémon take more damage from Grass- and Fighting- type attacks."; break;
-                    case "dragonslayer": m = "Foe's Fighting-type moves deal double damage to Dragon-type Pokémon."; break;
-                    case "freezedry": m = "Foe's Ice-type moves are quadruply effective against Water."; break;
-                    case "overheated": m = "Foe's Fire-type Pokémon resist Water, but are weaker to Fire."; break;
-                    case "retaliate": m = "Foe's attack power is doubled until the end of the turn if hit with a Special Attack."; break;
-                    case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
-                    case "intimidate": m = "Challenger's Pokémon begin the game with debuffed attack."; break;
-                    case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
-                    case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
-                    case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
-                    case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
-                    case "vicious": m = "Landing an attacking move provides raises a random stat two stages and lowers another by one."; break;
-                    case "moonblast": m = "Every three to six turns, both Pokémon on the field are struck with a Moonblast."; break;
-                    case "irontail": m = "Every three to six turns, both Pokémon on the field are struck with an Iron Tail."; break;
-                    case "topsyturvy": m = "Every seven turns, all stat changes are inverted."; break;
-                    case "dancer": m = "Every five turns, foe's SATK SDEF SPE +1."; break;
-                    case "speedboost": m = "Foe's speed increases at the end of every turn."; break;
-                    case "categorySplit": m = "Move category is determined by type."; break;
-                    case "inverted": m = "Inverted Battle."; break;
-                    case "simple": m = "All stat changes are doubly influential."; break;
-                    case "reversal": m = "Pokémon near fainting receive extreme power boost."; break;
-                    case "brine": m = "Pokémon near fainting suffer more damage."; break;
-                    case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
-                    case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
-                    case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition."; break;
-                    case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
-                    case "nostab": m = "Move types do not align with the user's type."; break;
-                    case "galeWings": m = "All Flying-type moves have increased priority."; break;
-                    case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
-                    case "zapcannon": m = "All Electric-type moves have a 50% chance to paralyze."; break;
-                    case "toxic": m = "All Poison-type moves have a 75% chance to inflict poison."; break;
-                    case "chillPhysical": m = "All Dragon-type moves lower target's speed and attack unless the target is a Dragon type Pokémon."; break;
-                    case "chillSpecial": m = "All Ice-type moves lower target's speed and special attack unless the target is an Ice type Pokémon."; break;
-                    case "psyDrop": m = "All Psychic-type moves lower have a 30% chance to drop the target's Special Attack and Special Defense."; break;
-                    case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
-                    case "leftovers": m = "The foe's team restores HP gradually."; break;
-                    case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
-                    case "leechseed": m = "Pokémon that learn Leech Seed recover HP."; break;
-                    case "drainpunch": m = "Pokémon that learn Drain Punch deal more damage when using drain attacks."; break;
-                    case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
-                    case "fullrestore2": m = "Foe has 2 Full Restores at their disposal."; break;
-                    case "fullrestore3": m = "Foe has 3 Full Restores at their disposal."; break;
-                    case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
-                    case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
-                    case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
-                    case "boostType1": m = ""; break;
-                    case "boostType2": m = ""; break;
-                    default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
-                }
+                m = safari.getFieldConditionDescription(j);
                 if (m !== "") {
                     this.sendMessage(id, toColor("- " + m, "#DC143C"));
                 }
@@ -14454,7 +14427,7 @@ function Safari() {
                             this.team2[i].stats["atk"] *= 2;
                             this.sendToViewers(poke(this.team2[i].id) + "'s Huge Power activates!");
                             break;
-                        }1
+                        }
                     }
                 }
                 if (this.select.balloon) {
@@ -14480,6 +14453,20 @@ function Safari() {
                         this.team2[i].boosts["satk"] = -2
                         this.team2[i].boosts["def"] = 3
                         this.team2[i].boosts["sdef"] = 3
+                    }
+                }
+                if (this.select.autopara) {
+                    for (i = 0; i < this.team1.length; i++) {
+                        if (!(hasType(this.team1[i].id, "Electric"))) {
+                            this.team1[i].status = "paralyzed";
+                        }
+                    }
+                }
+                if (this.select.autopoison) {
+                    for (i = 0; i < this.team1.length; i++) {
+                        if ((!(hasType(this.team1[i].id, "Steel"))) && (!(hasType(this.team1[i].id, "Steel")))) {
+                            this.team1[i].status = "poison";
+                        }
                     }
                 }
                 if (this.select.nerfBestStat) {
@@ -14900,7 +14887,7 @@ function Safari() {
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
             if (this.npcBattle) {
                 if (this.npcItems && (!this.player2Fainted)) {
-                    if (this.npcItems.hyper > 0 && (this.poke2.maxhp - this.poke2.hp > 200)) {
+                    if (this.npcItems.hyper > 0 && (this.poke2.maxhp - this.poke2.hp > 200) || this.poke2.hp < (50 + (50 * Math.random()))) {
                         this.sendToViewers(this.name2 + " used a Hyper Potion!");
                         this.sendToViewers(poke(this.poke2.id) + " restored 200 HP!");
                         this.poke2.hp = (Math.min(this.poke2.hp + 200, this.poke2.maxhp));
@@ -14911,11 +14898,12 @@ function Safari() {
                         this.sendToViewers(poke(this.poke2.id) + " restored its HP and condition!");
                         this.poke2.hp = this.poke2.maxhp;
                         this.poke2.condition = "none";
+                        this.poke2.badlyPoisoned = 0;
                         this.npcItems.full--;
                     } 
                 }
                 if (this.npcItems2 && (!this.player4Fainted)) {
-                    if (this.npcItems2.hyper > 0 && (this.poke4.maxhp - this.poke4.hp > 200)) {
+                    if (this.npcItems2.hyper > 0 && ((this.poke4.maxhp - this.poke4.hp > 200) || this.poke4.hp < (50 + (50 * Math.random())))) {
                         this.sendToViewers(this.name4 + " used a Hyper Potion!");
                         this.sendToViewers(poke(this.poke4.id) + " restored 200 HP!");
                         this.poke4.hp = (Math.min(this.poke4.hp + 200, this.poke4.maxhp));
@@ -14926,6 +14914,7 @@ function Safari() {
                         this.sendToViewers(poke(this.poke4.id) + " restored its HP and condition!");
                         this.poke4.hp = this.poke4.maxhp;
                         this.poke4.condition = "none";
+                        this.poke4.badlyPoisoned = 0;
                         this.npcItems2.full--;
                     } 
                 }
@@ -15109,10 +15098,28 @@ function Safari() {
                             if (hasType(user.id, "Poison") && (!hasType(user.id, "Flying"))) {
                                 this.sendToViewers(toColor("The Toxic Spikes were removed from the field!", sColor));
                                 this.side1Field.toxicspikes = false;
-                            } else if ((!hasType(user.id, "Flying")) && (!hasType(user.id, "Steel")) && user.condition === "none") {
+                            } else if ((!hasType(user.id, "Flying")) && ((!hasType(user.id, "Steel")) || (this.select && this.select.corrosion)) && user.condition === "none") {
                                 this.sendToViewers(toColor(name + " became poisoned!", sColor));
                                 user.condition = "poison";
                             }
+                        }
+                    }
+                    if (this.side1Field.dynamicweb && (isP1 || isP3)) {
+                        if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
+                            this.sendToViewers(toColor(name + " was entangled in the web!", sColor));
+                            var stat = ["def", "spe", "sdef"].random();
+                            user.boosts[stat] -= 2;
+                            user.boosts[stat] = Math.min(6, Math.max(user.boosts[stat], -6));
+                            out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
+                        }
+                    }
+                    if (this.side1Field.quicksand && (isP1 || isP3)) {
+                        if ((user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
+                            this.sendToViewers(toColor(name + " sinks further into the quicksand!", sColor));
+                            var stat = ["def", "spe", "sdef"].random();
+                            user.boosts[stat] -= 2;
+                            user.boosts[stat] = Math.min(6, Math.max(user.boosts[stat], -6));
+                            out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
                         }
                     }
                     if (user.flinch) {
@@ -15217,7 +15224,7 @@ function Safari() {
                 this.selectData.moonblastTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier;
-                if (poke1 && (poke1.hp > 0) && (!this.usedProtect1)) {
+                if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen ? 0.5 : 1) * 0.84);
@@ -15231,7 +15238,7 @@ function Safari() {
                     }
                 }
 
-                if (poke2 && (poke2.hp > 0) && (!this.usedProtect2)) {
+                if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen ? 0.5 : 1) * 0.84);
@@ -15250,7 +15257,7 @@ function Safari() {
                 this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier;
-                if (poke1 && (poke1.hp > 0)) {
+                if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * 100) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect ? 0.5 : 1) * 0.84);
@@ -15264,7 +15271,7 @@ function Safari() {
                     }
                 }
 
-                if (poke2 && (poke2.hp > 0)) {
+                if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((275 * 100) / this.getStatValue(poke2, "def"));
                     typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect ? 0.5 : 1) * 0.84);
@@ -15307,7 +15314,7 @@ function Safari() {
                     this.sendToViewers("All stat bonuses were flipped!");
                 }
             }
-            if ((this.turn % 5 === 0) && (this.select) && (this.turn !== 0)) {
+            if ((this.turn % 6 === 0) && (this.select) && (this.turn !== 0)) {
                 if (this.select.dancer) {
                     var foeMons = this.team2.concat(this.team4), mon, k, o;
                     for (var i = 0; i < foeMons.length; i++) {
@@ -15323,6 +15330,36 @@ function Safari() {
                     }
                     this.sendToViewers("The foe's Pokémon powered up!");
                 }
+                if (this.select.dancer2) {
+                    var foeMons = this.team2.concat(this.team4), mon, k, o;
+                    for (var i = 0; i < foeMons.length; i++) {
+                        mon = foeMons[i];
+                        mon.boosts["atk"] += 1;
+                        mon.boosts["spe"] += 1;
+                        mon.boosts["atk"] = Math.min(mon.boosts["atk"], 6);
+                        mon.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
+                    }
+                    this.sendToViewers("The foe's Pokémon powered up!");
+                }
+            }
+            if ((this.turn % 6 === 0) && (this.select) && (this.turn !== 0)) {
+                if (this.select.smasher) {
+                    var foeMons = this.team2.concat(this.team4), mon, k, o;
+                    for (var i = 0; i < foeMons.length; i++) {
+                        mon = foeMons[i];
+                        mon.boosts["atk"] += 2;
+                        mon.boosts["satk"] += 2;
+                        mon.boosts["spe"] += 2;
+                        mon.boosts["def"] -= 1;
+                        mon.boosts["sdef"] -= 1;
+                        mon.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
+                        mon.boosts["atk"] = Math.min(mon.boosts["sdef"], 6);
+                        mon.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
+                        mon.boosts["def"] = Math.max(mon.boosts["satk"], -6);
+                        mon.boosts["sdef"] = Math.max(mon.boosts["sdef"], -6);
+                    }
+                    this.sendToViewers("The foe's Pokémon smashed their shells!");
+                }
             }
             if (this.select && this.select.speedboost) {
                 if (poke2 && (!poke2.fainted)) {
@@ -15337,6 +15374,28 @@ function Safari() {
             if (this.select) {
                 if (this.select.slowStart && this.turn === 5) {
                     this.sendToViewers(this.name2 + "'s Slow Start wore off!");
+                }
+            }
+            if (this.select) {
+                if (this.select.lastStand && this.selectData.lastStandReady) {
+                    var foeMons = this.team2.concat(this.team4), mon, count, remaining = null;
+                    for (var i = 0; i < foeMons.length; i++) {
+                        mon = foeMons[i];
+                        if (mon.hp > 0) {
+                            count++;
+                            remaining = mon;
+                        }
+                    }
+                    if (count === 1 && (remaining !== null)) {
+                        this.selectData.lastStandReady = false;
+                        this.sendToViewers("The foe won't go down without a fight!");
+                        remaining.boosts["atk"] += 2;
+                        remaining.boosts["satk"] += 2;
+                        remaining.boosts["spe"] += 2;
+                        remaining.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
+                        remaining.boosts["atk"] = Math.min(mon.boosts["sdef"], 6);
+                        remaining.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
+                    }
                 }
             }
             if (this.side1Field.reflect > 0) {
@@ -15384,7 +15443,12 @@ function Safari() {
             this.sendToViewers(name + " was hurt by its burn!");
         }
         else if (user.condition === "poison") {
-            user.hp -= Math.round(user.maxhp / 8);
+            if (user.badlyPoisoned > 0) {
+                user.hp -= Math.round(user.maxhp * user.badlyPoisoned / 16);
+                user.badlyPoisoned++;
+            } else {
+                user.hp -= Math.round(user.maxhp / 8);
+            }
             this.sendToViewers(name + " was hurt by its poison!");
         }
         if ((this.select && this.select.sandstorm) && ((!hasType(user.id, "Rock")) && (!hasType(user.id, "Steel")) && (!hasType(user.id, "Ground")))) {
@@ -15691,6 +15755,13 @@ function Safari() {
             boost = 1;
         }
         extraMod = extraMod || 1;
+
+        if (this.select && this.select.thickPollen && stat == "spe" && (!((hasType(user.id, "Bug") || hasType(user.id, "Grass"))))) {
+            base = 0.1 * base;
+        }
+        if (this.select && this.select.trickRoom && stat == "spe") {
+            base = (1000 / base);
+        }
         
         return Math.round(base * boost * extraMod);
     };
@@ -15707,10 +15778,27 @@ function Safari() {
         }
         var atk = move.category === "physical" ? this.getStatValue(user, "atk", 1, (crit ? 1 : 0)) : this.getStatValue(user, "satk", 1, (crit ? 1 : 0));
         var def = move.category === "physical" ? this.getStatValue(target, "def", 1, (crit ? -1 : 0)) : this.getStatValue(target, "sdef", 1, (crit ? -1 : 0));
+        if (this.select && this.select.psystrike) {
+            if (move.type == "Psychic") {
+                def = Math.min(this.getStatValue(target, "def", 1, (crit ? -1 : 0)), this.getStatValue(target, "sdef", 1, (crit ? -1 : 0)));
+            }
+        }
+
         var burn = user.condition === "burn" && move.category === "physical";
         var dmg = atk * move.power / def;
         var rng = sys.rand(85, 100) / 100;
         var stab = hasType(user.id, move.type);
+        if (!stab && this.select) {
+            if (this.select.normalcy && move.type == "Normal") {
+                stab = true;
+            }
+            if (this.select.draconian && move.type == "Dragon") {
+                stab = true;
+            }
+            if (this.select.mechanical && move.type == "Steel") {
+                stab = true;
+            }
+        }
         var helped = (user.helped ? 1.5 : 1);
         var screen = ((!crit) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
         
@@ -15718,7 +15806,8 @@ function Safari() {
         if (this.select) {
             bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
-            bonus *= ((isP1 || isP3) && (this.select.heatProof) && (move.type === "Fire") ? 0.5 : 1);
+            bonus *= ((isP1 || isP3) && (this.select.heatproof) && (move.type === "Fire") ? 0.5 : 1);
+            bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
             bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
@@ -15728,9 +15817,11 @@ function Safari() {
             bonus *= (move.type == "Psychic" && (this.select.psychicterrain) ? 1.5 : 1);
             bonus *= (move.type == "Electric" && (this.select.electricterrain) ? 1.5 : 1);
             bonus *= (move.type == "Dragon" && (this.select.mistyterrain) ? 0.5 : 1);
-            bonus *= ((this.select.critDouble && crit) ? 1.33 : 1);
+            bonus *= ((this.select.criticalDouble && crit) ? 1.33 : 1);
+            bonus *= ((this.select.adaptability && stab) ? 1.33 : 1);
             bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
             bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+            bonus *= ((this.select.overgrowblazetorrent && (user.hp <= (user.maxhp/3)) && ["Fire", "Grass", "Water"].contains(move.type) && (hasType(user.id, move.type))) ? 2 : 1);
             bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
             bonus *= ((this.select.brine && (target.hp <= (target.maxhp/2))) ? (1.75 - (1.75 * target.hp/target.maxhp)) : 1);
             bonus *= ((this.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
@@ -15744,15 +15835,20 @@ function Safari() {
             bonus *= ((this.select.weightattack) && (move.type == "Grass" || move.type == "Fighting") && (pokedex.getWeight(target) > 50) ? 1.2 : 1);
             bonus *= ((this.select.weightattack) && (move.type == "Grass" || move.type == "Fighting") && (pokedex.getWeight(target) < 25) ? 0.8 : 1);
             bonus *= ((this.select.drainpunch && move.drain && move.drain > 0 && (canLearnMove(pokeInfo.species(user.id), 409))) ? 2 : 1);
+            bonus *= ((this.select.skyBattle && (!((canLearnMove(pokeInfo.species(user.id), 19)) || (canLearnMove(pokeInfo.species(user.id), 340))))) ? 0.75 : 1);
+            bonus *= ((this.select.skyBattle && (!((canLearnMove(pokeInfo.species(target.id), 19)) || (canLearnMove(pokeInfo.species(target.id), 340))))) ? 1.25 : 1);
+            bonus *= ((this.select.arenaBattle && (!((canLearnMove(pokeInfo.species(user.id), 69))))) ? 0.75 : 1);
+            bonus *= ((this.select.arenaBattle && (!((canLearnMove(pokeInfo.species(target.id), 69))))) ? 1.25 : 1);
             var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
-                if (analytic) {
-                    this.selectData.analyticCount++;
-                }
-                else {
-                    this.selectData.analyticCount = 0;
-                }
                 bonus *= (analytic ? (1 + Math.max(this.selectData.analyticCount/6, 1)) : 1);
+            }
+            if (this.select.rollout) {
+                if (this.selectData.rolloutUser == user.id && (isP1 || isP3)) {
+                    bonus *= (1 + (Math.min(this.selectData.rolloutCount, 6) / 12));
+                } else if (this.selectData.rolloutUser2 == user.id && (isP2 || isP4)) {
+                    bonus *= (1 + (Math.min(this.selectData.rolloutCount2, 6) / 12));
+                } 
             }
             if (this.select.guts) {
                 burn = false;
@@ -15867,22 +15963,28 @@ function Safari() {
                 switch (move.refresh) {
                     case "self": 
                         user.condition = "none";
+                        user.badlyPoisoned = 0;
                         out.push(name + "'s status returned to normal!");
                     break;
                     case "field":
                         if (isP1 || isP3) {
                             this.poke1.condition = "none";
                             this.poke3.condition = "none";
+                            this.poke1.badlyPoisoned = 0;
+                            this.poke3.badlyPoisoned = 0;
                         }
                         else if (isP2 || isP4) {
                             this.poke2.condition = "none";
                             this.poke4.condition = "none";
+                            this.poke2.badlyPoisoned = 0;
+                            this.poke4.badlyPoisoned = 0;
                         }
                         out.push("Pokémon on " + name + "'s side of the field had their status returned to normal!");
                     break;
                     case "party":
                         for (e = 0; e < party.length; e++) {
                             party[e].condition = "none";
+                            party[e].badlyPoisoned = 0;
                         }
                         out.push(user.owner + "'s party's status returned to normal!");
                     break;
@@ -16141,9 +16243,28 @@ function Safari() {
                     }
                 }
                 if (self.select) {
+                    if (self.select.harshWinds && (isP1 || isP3) && (move.type == "Flying")) {
+                        placeholder = Math.min(Math.floor(user.maxhp * 0.25), user.hp);
+                        user.hp -= placeholder;
+                        out.push(name + " lost " + placeholder + " HP from the harsh winds!");
+                    }
                     if (self.select.analytic && (isP2 || isP4)) {
                         self.selectData.analyticType1 = sys.type(sys.pokeType1(target.id));
                         self.selectData.analyticType2 = sys.type(sys.pokeType2(target.id));
+                    }
+                }
+                if (self.select && self.select.spectralThief) {
+                    var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select);
+                    if (typeMultiplier < 1) {
+                        var hold = {};
+                        for (var b in user.boosts) {
+                            hold[b] = user.boosts[b];
+                            user.boosts[b] = target.boosts[b];
+                        }
+                        for (var b in hold) {
+                            target.boosts[b] = hold[b];
+                        }
+                        out.push(tname + " stat changes were transfered to " + name + "!");
                     }
                 }
                 if (self.select) {
@@ -16169,8 +16290,14 @@ function Safari() {
                         target.condition = "paralyze";
                     }
                     if (self.select.toxic && chance(0.75) && target.condition === "none" && move.type === "Poison" && (!hasType(target.id, "Poison"))) {
-                        out.push(tname + " was poisoned!");
-                        target.condition = "poison";
+                        if (hasType(user.id, "Poison")) {
+                            target.badlyPoisoned = 1;
+                            out.push(tname + " was badly poisoned!");
+                            target.condition = "poison";
+                        } else {
+                            out.push(tname + " was poisoned!");
+                            target.condition = "poison";
+                        }
                     }
                     if (self.select.chillSpecial && move.type === "Ice" && (!hasType(target.id, "Ice"))) {
                         target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
@@ -16184,7 +16311,7 @@ function Safari() {
                         target.boosts["spe"] = Math.min(6, Math.max(target.boosts["spe"] - 1, -6));
                         out.push(tname + "'s Speed -1!");
                     }
-                    if (self.select.psyDrop && move.type === "Psychic" && chance(0.3)) {
+                    if (self.select.psyDrop && move.type === "Psychic" && chance(0.5)) {
                         if (self.select.singlespecialstat) {
                             target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
                             out.push(tname + "'s Special -1!");
@@ -16214,7 +16341,7 @@ function Safari() {
             var inver = (this.select && this.select.inverted ? true : false);
             if (wide) {
                 if (isP1) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16227,7 +16354,7 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16241,7 +16368,7 @@ function Safari() {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
                         if (move.type == "Ground" && poke3.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16257,7 +16384,7 @@ function Safari() {
                     }
                 }
                 else if (isP3) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16270,7 +16397,7 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16284,7 +16411,7 @@ function Safari() {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
                         if (move.type == "Ground" && poke1.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16300,7 +16427,7 @@ function Safari() {
                     }
                 }
                 else if (isP2) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16313,7 +16440,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16327,7 +16454,7 @@ function Safari() {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
                         if (move.type == "Ground" && poke4.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16343,7 +16470,7 @@ function Safari() {
                     }
                 }
                 else if (isP4) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16356,7 +16483,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16370,7 +16497,7 @@ function Safari() {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
                         if (move.type == "Ground" && poke2.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16387,7 +16514,7 @@ function Safari() {
                 }
             }
             else {
-                var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver);
+                var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select);
                 if (move.type == "Ground" && target.item.balloon) {
                     typeMultiplier = 0;
                 }
@@ -16447,14 +16574,20 @@ function Safari() {
                         if (move.status == "sleep" && this.select && this.select.extendedSleep) {
                             target.conditionDuration++;
                         }
-                        var conditionVerb = {
-                            sleep: "fell asleep",
-                            paralyzed: "was paralyzed",
-                            burn: "got burned",
-                            freeze: "was frozen solid",
-                            poison: "got poisoned"
-                        };
-                        out.push(tname + " " + conditionVerb[move.status] + "!");
+                        if (move.status == "poison" && (hasType(user.id, "Poison"))) {
+                            target.badlyPoisoned = 1;
+                            out.push(tname + " got badly poisoned!");
+                        }
+                        else {
+                            var conditionVerb = {
+                                sleep: "fell asleep",
+                                paralyzed: "was paralyzed",
+                                burn: "got burned",
+                                freeze: "was frozen solid",
+                                poison: "got poisoned"
+                            };
+                            out.push(tname + " " + conditionVerb[move.status] + "!");
+                        }
                     }
                 } else {
                     out.push(cap(move.status) + " Clause prevented the " + (move.status === "sleep" ? "sleep inducing" : "freezing") + " effect of the move from working!");
@@ -16604,6 +16737,9 @@ function Safari() {
                 b = "satk";
                 n = n.splice(n.indexOf("sdef"), 1);
             }
+            if (n.contains(b)) {
+                n = n.splice(n.indexOf(b), 1);
+            }
             n = n.random();
             if (this.select.singlespecialstat && n == "sdef") {
                 n = "satk";
@@ -16623,6 +16759,33 @@ function Safari() {
             }
             else {
                 out.push(name + "'s " + this.statName(n) + " -1!");
+            }
+        }
+        if (this.select && this.select.rollout) {
+            var analytic = ((hasType(target.id, this.selectData.analyticType1) || (hasType(target.id, this.selectData.analyticType2))));
+            if (isP2 || isP4) {
+                if (analytic) {
+                    this.selectData.analyticCount++;
+                }
+                else {
+                    this.selectData.analyticCount = 0;
+                    this.selectData.analyticType1 = sys.type(sys.pokeType1(target.id));
+                    this.selectData.analyticType2 = sys.type(sys.pokeType2(target.id));
+                }
+            }
+            if (this.select.rollout) {
+                if (this.selectData.rolloutUser == user.id && (isP1 || isP3)) {
+                    this.selectData.rolloutCount++;
+                } else if (this.selectData.rolloutUser2 == user.id && (isP2 || isP4)) {
+                    this.selectData.rolloutCount2++;
+                } 
+                if (isP1 || isP3) {
+                    this.selectData.rolloutUser = user.id;
+                    this.selectData.rolloutCount = 0;
+                } else if (isP2 || isP4) {
+                    this.selectData.rolloutUser2 = user.id;
+                    this.selectData.rolloutCount2 = 0;
+                } 
             }
         }
         if (!fainted && (move.type === "Fire") && target.condition === "freeze") {
@@ -16680,6 +16843,7 @@ function Safari() {
                 lastPlayed2: true,
                 condition: "none",
                 conditionDuration: 0,
+                badlyPoisoned: 0,
                 types: this.getMoveTypes(p),
                 movepowers: this.getMovePowers(p),
                 drain: this.getMoveSet(p, "drain"),
@@ -16706,7 +16870,11 @@ function Safari() {
             out += this.getEffectDesc(move);
         } else {
             var effs = this.getEffectDesc(move);
-            out += typeIcon(move.type) + " " + (move.category === "physical" ? toColor("PHYSICAL", "#ff6600") : toColor("SPECIAL", "#800080")) + " (" + move.power + " BP) " + (effs ? ", " + effs : "");
+            var pow = move.power;
+            if (this.select && this.select.powerUnknown && chance(0.5)) {
+                pow = "???";
+            }
+            out += typeIcon(move.type) + " " + (move.category === "physical" ? toColor("PHYSICAL", "#ff6600") : toColor("SPECIAL", "#800080")) + " (" + pow + " BP) " + (effs ? ", " + effs : "");
         }
         return out;
     };
@@ -16857,10 +17025,20 @@ function Safari() {
                 if (move.power < 90) {
                     move.power = Math.round(move.power + (20 * Math.random()));
                 }
+                if (move.type == "Normal" && this.select && this.select.pixelate) {
+                    move.type = "Fairy";
+                    move.power = Math.round(move.power * 1.2);
+                }
+                if (move.type == "Water" && this.select && this.select.sweltering) {
+                    move.type = "Normal";
+                }
+                if (move.type == "Ice" && this.select && this.select.sweltering) {
+                    move.type = "Water";
+                }
                 move.power = Math.min(data.movepowers[move.type], move.power);
                 move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
-                if (this.select && this.select.categorySplit) {
+                if (this.select && (this.select.categorySplit || this.select.specBan || this.select.physBan)) {
                     switch (move.type) {
                         case "Normal": case "Fighting": case "Flying": case "Rock": case "Ground": case "Bug": case "Poison": case "Ghost": case "Steel":
                             move.category = "physical"; break;
@@ -17053,6 +17231,12 @@ function Safari() {
         }
         catch (err) {
             //
+        }
+        if (this.select && this.select.noStatBoost) {
+            effChance.nerf = 0;
+            effChance.buff = 0;
+            effChance.haze = 0;
+            effChance.burnout = 0;
         }
         var eff = randomSample(effChance);
         var out = { type: "none" }, buff, nerf, val;
@@ -17338,6 +17522,9 @@ function Safari() {
             freeze: ["Ice"],
             poison: ["Poison", "Steel"]
         };
+        if (this.select && this.select.corrosion) {
+            immunities.poison = ["Poison"];
+        }
         for (var i = immunities[condition].length; i--; ) {
             if (hasType(id, immunities[condition][i])) {
                 isImmune = true;
@@ -17432,7 +17619,7 @@ function Safari() {
                                 val *= (0.75);
                             }
                             if (move.flinch && (spdadv || move.priority > 0) && (diff > 0.95)) {
-                                val *= (1 + move.flinch*4);
+                                val *= (1 + move.flinch*2);
                             }
                             if (move.critical) {
                                 val *= (1 + move.critical);
@@ -17809,6 +17996,27 @@ function Safari() {
                 out[sys.type(sys.pokeType2(pokeInfo.species(num)))] = 0;
             }
         }
+        if (this.select && this.select.physBan) {
+            out.Normal = 0;
+            out.Fighting = 0;
+            out.Flying = 0;
+            out.Bug = 0;
+            out.Rock = 0;
+            out.Ground = 0;
+            out.Steel = 0;
+            out.Ghost = 0;
+            out.Poison = 0;
+        } else if (this.select && this.select.specBan) {
+            out.Grass = 0;
+            out.Water = 0;
+            out.Fire = 0;
+            out.Ice = 0;
+            out.Electric = 0;
+            out.Psychic = 0;
+            out.Dragon = 0;
+            out.Dark = 0;
+            out.Fairy = 0;
+        }
         return out;
     };
     Battle2.prototype.getMovePowers = function(id) {
@@ -17904,7 +18112,9 @@ function Safari() {
         this.sendToViewers("<b>" + winnerName + " defeated " + loser + " in a battle!</b>", true);
         
         if (this.npcBattle && this.postBattle) {
-            this.postBattle(this.name1, winnerName === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers);
+            var extraArgs = {};
+            extraArgs.turn = this.turn;
+            this.postBattle(this.name1, winnerName === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
@@ -21016,7 +21226,7 @@ function Safari() {
             }
         }
 
-        var postBattle = function(name, isWinner, hpLeft, args, viewers) {
+        var postBattle = function(name, isWinner, hpLeft, args, viewers, extraArgs) {
             var player = getAvatarOff(name), e;
             var id = sys.id(name);
             sys.sendMessage(id, "", safchan);
@@ -21148,7 +21358,6 @@ function Safari() {
 
                 safari.missionProgress(player, "celebrity", next, 1, {gen: m, mono: n, unique: u, level: args.difficulty});
                 
-                safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me!", safchan);
                 for (e = 0; e < viewers.length; e++) {
                     safaribot.sendMessage(sys.id(viewers[e]), "Announcer: " + name + " has defeated " + next + " trainer(s)! (Difficulty: " + level + ").", safchan);
                 }
@@ -21188,7 +21397,7 @@ function Safari() {
                         return;
                     }
 
-                    var pow, trainer = {}, f = args.firstRun;
+                    var pow, trainer = {}, f = args.firstRun, speedBonusHeal = 1;
                     if (next > 7) {
                         trainer = celebs.elite[next-8];
                     }
@@ -21197,15 +21406,26 @@ function Safari() {
                     }
                     trainer.desc = "Celebrity NPC";
 
-                    if (level == "Abyssal") {
-                        safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! Good luck on your next challenge with " + trainer.name + "!", safchan);
-                    }
-                    else {
-                        safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! I will heal your party for a slight amount before you challenge " + trainer.name + "!", safchan);
+                    if (trainer.loseMsg) {
+                        var m = trainer.loseMsg.replace("{Name}", name).replace("{Next}", trainer.name);
+                        safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> " + m, safchan);
+                    } else {
+                        if (level == "Abyssal") {
+                            safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Oh, I have been defeated! Good luck on your next challenge with " + trainer.name + "!", safchan);
+                        }
+                        else {
+                            safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Good going, " + name + "! You defeated me! I will heal your party for a slight amount before you challenge " + trainer.name + "!", safchan);
+                        }
                     }
 
-                    
-                    var regen = hpLeft.map(function(x) { return Math.min(1, x + args.heal); });
+                    if (extraArgs.turn) {
+                        if (extraArgs.turn <= 10) {
+                            speedBonusHeal = 1.5;
+                        } else if (extraArgs.turn <= 15) {
+                            speedBonusHeal = 1.2;
+                        } 
+                    }
+                    var regen = hpLeft.map(function(x) { return Math.min(1, x + (args.heal * speedBonusHeal)); });
                     var healing = args.heal;
                     var difficultyLevel = args.difficulty;
                     trainer.party = trainer.party.shuffle().slice(0, 6);
@@ -21252,7 +21472,12 @@ function Safari() {
                     }*/
                 }
             } else {
-                safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
+                if (trainer.winMsg) {
+                    var m = trainer.winMsg.replace("{Name}", name);
+                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> " + m, safchan);
+                } else {
+                    safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
+                }
 
                 safari.addToMonthlyLeaderboards(player.id, "celebrityScore", 1);
                 
@@ -21284,10 +21509,10 @@ function Safari() {
         npc.postBattle = postBattle;
         var heal;
         switch (difficulty) {
-            case 0: heal = 0.25; break;
-            case 1: heal = 0.20; break;
-            case 2: heal = 0.18; break;
-            case 3: heal = 0.15; break;
+            case 0: heal = 0.2; break;
+            case 1: heal = 0.18; break;
+            case 2: heal = 0.16; break;
+            case 3: heal = 0.14; break;
             case 4: heal = 0; break;
         }
         
@@ -21316,8 +21541,10 @@ function Safari() {
             currentTrainer = {};
             trainer = data[i];
             currentTrainer.name = trainer.name;
+            currentTrainer.winMsg = (trainer.winMsg ? trainer.winMsg.random() : null);
+            currentTrainer.loseMsg = (trainer.loseMsg ? trainer.loseMsg.random() : null);
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.027 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.1 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
             if (ind >= 5) {
                 chal++;
@@ -21351,8 +21578,8 @@ function Safari() {
                     if (hold.contains(parseInt(obj[j])) || hold.contains(obj[j] + "")) {
                         continue;
                     }
-                    if (trainer.shiny === parseInt(j, 10)) {
-                        hold.push(obj[j]);
+                    if (parseInt(trainer.shiny, 10) === parseInt(obj[j], 10)) {
+                        hold.push(obj[j] + "");
                     }
                     else {
                         hold.push(parseInt(obj[j], 10));
@@ -27915,6 +28142,457 @@ function Safari() {
         }
         else if (!aspect) {
             safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps"), safchan);
+        }
+    };
+    this.getFieldConditionDescription = function(condition) {
+        var m = "";
+        switch (condition) {
+            case "sandstorm": m = "A Sandstorm rages."; break;
+            case "hail": m = "Hail begins to fall."; break;
+            case "sun": m = "The sunlight is intense."; break;
+            case "rain": m = "There is a heavy downpour of rain."; break;
+            case "electricterrain": m = "The field surges with electric terrain."; break;
+            case "grassyterrain": m = "The field surges with grassy terrain."; break;
+            case "psychicterrain": m = "The field surges with psychic terrain."; break;
+            case "mistyterrain": m = "The field surges with misty terrain."; break;
+            case "powertrick": m = "All Pokémons' Atk and Def as well as their Special Atk and Special Def are swapped."; break;
+            case "statjumble": m = "Stats are shuffled."; break;
+            case "singlespecialstat": m = "All Pokémon use Special Attack as their Special Defense."; break;
+            case "spikes3": m = "The battle begins with three layers of spikes on challenger's side of the field."; break;
+            case "spikes2": m = "The battle begins with two layers of spikes on challenger's side of the field."; break;
+            case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
+            case "hazardsetter": m = "The foe sets up a layer of Spikes every 5 turns."; break;
+            case "stealthrock": m = "The battle begins with Stealth Rock on challenger's side of the field."; break;
+            case "toxicspikes": m = "The battle begins with one layer of Toxic Spikes on challenger's side of the field."; break;
+            case "dynamicWeb": m = "The battle begins with a stat reducing Web on challenger's side of the field."; break;
+            case "quickSand": m = "The battle begins with Quicksand on challenger's side of the field."; break;
+            case "harshWinds": m = "The battle begins with Harsh Winds on challenger's side of the field."; break;
+            case "initialReflect": m = "Reflect begins active on foe's side."; break;
+            case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
+            case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
+            case "initialLightScreen2": m = "Light Screen begins active on challenger's side."; break;
+            case "boostType": m = (this.select[j].length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
+            case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
+            case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
+            case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
+            case "shellArmor": m = "Critical hits cannot occur."; break;
+            case "criticalDouble": m = "Critical hits do increased damage."; break;
+            case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
+            case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
+            case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
+            case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
+            case "fortress": m = "Foe's Pokémon begin with their defences boosted, but attacks reduced."; break;
+            case "brawler": m = "Foe's Pokémon power up when hit with physical moves."; break;
+            case "balloon": m = "Foe's Pokémon begin the game holding a Balloon."; break;
+            case "autopara": m = "Challenger's Pokémon begin paralyzed."; break;
+            case "autopoison": m = "Challenger's Pokémon begin poisoned."; break;
+            case "heatproof": m = "Foe's Pokémon are resistant to Fire."; break;
+            case "adaptability": m = "All STAB is increased in power."; break;
+            case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
+            case "skyBattle": m = "Sky Battle - Pokémon that cannot use Fly or Bounce suffer more damage and deal less damage."; break;
+            case "arenaBattle": m = "Arena Battle - Pokémon that cannot use Seismic Toss suffer more damage and deal less damage."; break;
+            case "weightattack": m = "Heavier Pokémon take more damage from Grass- and Fighting- type attacks."; break;
+            case "dragonslayer": m = "Foe's Fighting-type moves deal double damage to Dragon-type Pokémon."; break;
+            case "freezedry": m = "Foe's Ice-type moves are quadruply effective against Water."; break;
+            case "thickFat": m = "Foe's Pokémon are more resistant to Fire and Ice."; break;
+            case "corrosion": m = "Poison type moves are super-effective on Steel types and Steel types may be poisoned."; break;
+            case "overheated": m = "Foe's Fire-type Pokémon resist Water, but are weaker to Fire."; break;
+            case "retaliate": m = "Foe's attack power is doubled until the end of the turn if hit with a Special Attack."; break;
+            case "nerfBestStat": m = "All Pokémon's best stat(s) begin with a debuff."; break;
+            case "intimidate": m = "Challenger's Pokémon begin the game with debuffed attack."; break;
+            case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
+            case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
+            case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
+            case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
+            case "vicious": m = "Landing an attacking move provides raises a random stat two stages and lowers another by one."; break;
+            case "moonblast": m = "Every three to six turns, both Pokémon on the field are struck with a Moonblast."; break;
+            case "irontail": m = "Every three to six turns, both Pokémon on the field are struck with an Iron Tail."; break;
+            case "topsyturvy": m = "Every seven turns, all stat changes are inverted."; break;
+            case "dancer": m = "Every six turns, foe's SATK SDEF SPE +1."; break;
+            case "dancer2": m = "Every six turns, foe's ATK SPE +1."; break;
+            case "smasher": m = "Every six turns, foe's ATK SATK SPE +2 and DEF SDEF -1."; break;
+            case "speedboost": m = "Foe's speed increases at the end of every turn."; break;
+            case "lastStand": m = "Foe's last Pokémon's ATK SATK SPE +2."; break;
+            case "rollout": m = "Attacking with the same Pokémon consecutively boosts its attack power."; break;
+            case "categorySplit": m = "Move category is determined by type."; break;
+            case "specBan": m = "Special moves cannot be used."; break;
+            case "physBan": m = "Physical moves cannot be used."; break;
+            case "normalcy": m = "All Pokémon gain NORMAL type."; break;
+            case "draconian": m = "All Pokémon gain DRAGON type."; break;
+            case "mechanical": m = "All Pokémon gain STEEL type."; break;
+            case "classicTypes": m = "DARK, STEEL, or FAIRY types are not accounted for."; break;
+            case "inverted": m = "Inverted Battle."; break;
+            case "trickRoom": m = "Trick Room is in effect."; break;
+            case "powerUnknown": m = "Move damage may be hidden."; break;
+            case "simple": m = "All stat changes are doubly influential."; break;
+            case "noStatBoost": m = "Stat changes cannot occur."; break;
+            case "reversal": m = "Pokémon near fainting receive extreme power boost."; break;
+            case "overgrowblazetorrent": m = "Pokémon's Grass/Fire/Water STAB increases when below 33%."; break;
+            case "brine": m = "Pokémon near fainting suffer more damage."; break;
+            case "analytic": m = "Foe's attacks adapt to their target's type over consecutive hits."; break;
+            case "slowStart": m = "Foe damage output is halved for the first 5 turns."; break;
+            case "guts": m = "All Pokémon have increased attack stat while inflicted with a status condition."; break;
+            case "hex": m = "All Pokémon suffer double damage while afflicted with a status condition."; break;
+            case "nostab": m = "Move types do not align with the user's type."; break;
+            case "thickPollen": m = "All non-Grass non-Bug Pokémon suffer reduced SPE from pollen."; break;
+            case "galeWings": m = "All Flying-type moves have increased priority."; break;
+            case "psystrike": m = "All Psychic-type moves target the lower defense stat."; break;
+            case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
+            case "zapcannon": m = "All Electric-type moves have a 50% chance to paralyze."; break;
+            case "toxic": m = "All Poison-type moves have a 75% chance to inflict poison."; break;
+            case "chillPhysical": m = "All Dragon-type moves lower target's speed and attack unless the target is a Dragon type Pokémon."; break;
+            case "chillSpecial": m = "All Ice-type moves lower target's speed and special attack unless the target is an Ice type Pokémon."; break;
+            case "psyDrop": m = "All Psychic-type moves lower have a 50% chance to drop the target's Special Attack and Special Defense."; break;
+            case "pixelate": m = "All Normal type moves become Fairy type moves and are increased in damage by 20%."; break;
+            case "sweltering": m = "All Water type moves becomes Normal type moves, while all Ice type moves become Water type moves."; break;
+            case "extendedSleep": m = "All Pokémon are deep sleepers."; break;
+            case "leftovers": m = "The foe's team restores HP gradually."; break;
+            case "bypassImmune": m = "The foe's team ignores type immunities with their attacks."; break;
+            case "spectralThief": m = "'Not Very Effective' attacks transfer stat boosts."; break;
+            case "leechseed": m = "Pokémon that learn Leech Seed recover HP."; break;
+            case "drainpunch": m = "Pokémon that learn Drain Punch deal more damage when using drain attacks."; break;
+            case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
+            case "fullrestore2": m = "Foe has 2 Full Restores at their disposal."; break;
+            case "fullrestore3": m = "Foe has 3 Full Restores at their disposal."; break;
+            case "hyperpotion": m = "Foe has a Hyper Potion at their disposal."; break;
+            case "hyperpotion2": m = "Foe has 2 Hyper Potions at their disposal."; break;
+            case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
+            case "boostType1": m = ""; break;
+            case "boostType2": m = ""; break;
+            default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
+        }
+        return m;
+    }
+    this.pokesHas = function(party, attribute, number) {
+        if (attribute == "move") {
+            for (var i = 0; i < party.length; i++) {
+                if (canLearnMove(party[i], number)) {
+                    return true;
+                }
+            }
+        }
+        else if (attribute == "exact") {
+            for (var i = 0; i < party.length; i++) {
+                if (number.contains(parseInt(party[i], 10))) {
+                    return true;
+                }
+            }
+        }
+    };
+    this.getFieldConditionCost = function(condition, theme, pokes, checkDiscounted) {
+        var out = 0;
+        switch (condition) {
+            case "spikes": out = 25; break;
+            case "2spikes": out = 45; break;
+            case "3spikes": out = 65; break;
+            case "hazardsetter": out = 52; break;
+            case "stealthrock": out = 30; break;
+            case "toxicspikes": out = 30; break;
+            case "dynamicWeb": out = 35; break;
+            case "quickSand": out = 35; break;
+            case "harshWinds": out = 25; break;
+            case "rain": out = 50; break;
+            case "sun": out = 50; break;
+            case "sandstorm": out = 35; break;
+            case "hail": out = 35; break;
+            case "electricterrain": out = 20; break;
+            case "mistyterrain": out = 20; break;
+            case "psychicterrain": out = 20; break;
+            case "grassyterrain": out = 20; break;
+            case "toxic": out = 9; break;
+            case "zapcannon": out = 9; break;
+            case "inferno": out = 9; break;
+            case "psyDrop": out = 8; break;
+            case "chillSpecial": out = 12; break;
+            case "chillPhysical": out = 12; break;
+            case "freezedry": out = 14; break;
+            case "dragonslayer": out = 11; break;
+            case "galeWings": out = 10; break;
+            case "hugePower": out = 18; break;
+            case "psystrike": out = 10; break;
+            case "pixelate": out = 20; break;
+            case "sweltering": out = 20; break;
+            case "overgrowblazetorrent": out = 15; break;
+            case "bypassImmune": out = 25; break;
+            case "initialReflect": out = 9; break;
+            case "initialLightScreen": out = 9; break;
+            case "multiscale": out = 25; break;
+            case "solidRock": out = 20; break;
+            case "hpboost": out = 30; break;
+            case "leftovers": out = 20; break;
+            case "heatproof": out = 17; break;
+            case "thickFat": out = 27; break;
+            case "balloon": out = 16; break;
+            case "intimidate": out = 13; break;
+            case "shellArmor": out = 10; break;
+            case "fortress": out = 8; break;
+            case "autopara": out = 35; break;
+            case "autopoison": out = 35; break;
+            case "brawler": out = 24; break;
+            case "retaliate": out = 12; break;
+            case "dancer": out = 40; break;
+            case "dancer2": out = 30; break;
+            case "smasher": out = 35; break;
+            case "chargebeam": out = 21; break;
+            case "skyBattle": out = 22; break;
+            case "arenaBattle": out = 22; break;
+            case "thickPollen": out = 15; break;
+            case "guts": out = 8; break;
+            case "reversal": out = 7; break;
+            case "weightattack": out = 11; break;
+            case "brine": out = 13; break;
+            case "vicious": out = 9; break;
+            case "hex": out = 6; break;
+            case "boostDrain": out = 5; break;
+            case "criticalDouble": out = 6; break;
+            case "adaptability": out = 10; break;
+            case "speedcrit": out = 12; break;
+            case "extendedSleep": out = 7; break;
+            case "inverted": out = 15; break;
+            case "trickRoom": out = 15; break;
+            case "powerUnknown": out = 20; break;
+            case "statjumble": out = 20; break;
+            case "spectralThief": out = 25; break;
+            case "simple": out = 15; break;
+            case "noStatBoost": out = 15; break;
+            case "topsyturvy": out = 25; break;
+            case "nerfBestStat": out = 5; break;
+            case "classicTypes": out = 15; break;
+            case "categorySplit": out = 10; break;
+            case "physBan": out = 25; break;
+            case "specBan": out = 25; break;
+            case "normalcy": out = 25; break;
+            case "draconian": out = 25; break;
+            case "mechanical": out = 25; break;
+            case "powertrick": out = 10; break;
+            default: out = 10; break;
+        }
+        var xout = out;
+
+        switch (condition) {
+            case "spikes":
+            case "2spikes":
+            case "3spikes":
+            case "hazardsetter":
+                if (this.pokesHas(pokes, "move", 191)) {
+                    out *= 0.67; 
+                } break;
+            case "stealthrock":
+                if (this.pokesHas(pokes, "move", 446)) {
+                    out *= 0.82; 
+                } break;
+            case "toxicspikes":
+                if (this.pokesHas(pokes, "move", 390)) {
+                    out *= 0.5; 
+                } break;
+            case "multiscale":
+                if (this.pokesHas(pokes, "exact", [149, 250])) {
+                    out *= 0.6; 
+                } break;
+        }
+
+        switch (theme) {
+            case "Aquatic":
+                if (condition == "rain") { out *= 0.25; };
+                break;
+            case "Boxing":
+                if (condition == "brawler") { out *= 0.25; };
+                if (condition == "reversal") { out *= 0.25; };
+                if (condition == "arenaBattle") { out *= 0.25; };
+                if (condition == "normalcy") { out *= 0.25; };
+                if (condition == "specBan") { out *= 0.25; };
+                if (condition == "hpboost") { out *= 0.5; };
+                if (condition == "dragonslayer") { out *= 0.5; };
+                if (condition == "guts") { out *= 0.5; };
+                break;
+            case "Desert":
+                if (condition == "sun") { out *= 0.25; };
+                if (condition == "sandstorm") { out *= 0.25; };
+                if (condition == "harshWinds") { out *= 0.5; };
+                if (condition == "quickSand") { out *= 0.25; };
+                if (condition == "sweltering") { out *= 0.5; };
+                if (condition == "sweltering") { out *= 0.5; };
+                if (condition == "adaptability") { out *= 0.33; };
+                if (condition == "solidRock") { out *= 0.25; };
+                if (condition == "hpboost") { out *= 0.33; };
+                if (condition == "leftovers") { out *= 0.5; };
+                if (condition == "trickRoom") { out *= 0.33; };
+                break;
+            case "Haunted":
+                if (condition == "bypassImmune") { out *= 0.2; };
+                if (condition == "autoPara") { out *= 0.5; };
+                if (condition == "chargebeam") { out *= 0.33; };
+                if (condition == "vicious") { out *= 0.25; };
+                if (condition == "simple") { out *= 0.5; };
+                if (condition == "statjumble") { out *= 0.25; };
+                if (condition == "spectralThief") { out *= 0.2; };
+                if (condition == "classicTypes") { out *= 0.5; };
+                if (condition == "hex") { out *= 0.25; };
+                if (condition == "extendedSleep") { out *= 0.25; };
+                if (condition == "powerUnknown") { out *= 0.2; };
+                if (condition == "topsyturvy") { out *= 0.25; };
+                break;
+            case "Ironworks":
+                break;
+            case "Jungle":
+                break;
+            case "Mythical":
+                break;
+            case "Space":
+                break;
+            case "Summit":
+                break;
+        }
+
+        if (checkDiscounted) {
+            if (xout < out) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
+    this.fieldConditionMess = function(condition, args) {
+        var out = "", cost = 0;
+        var pokes = args.pokes;
+        var theme = args.theme;
+        var existing = args.existing;
+        var roomNum = args.roomNum;
+        var allConditions = args.allConditions;
+        out += this.getFieldConditionDescription(condition);
+        out += " [" + this.getFieldConditionCost(condition, theme, pokes) + "]";
+        if ((!(existing.contains(condition))) && allConditions.contains(condition)) {
+            out = toColor(out, "purple");
+        }
+        else {
+            if (this.getFieldConditionCost(condition, theme, pokes, true)) {
+                out = toColor(out, "green");
+            }
+            if (existing.contains(condition)) {
+                out = toColor(out, "blue");
+                out += " " + link("/castle edit:" + roomNum + ":conditions:" + existing.indexOf(condition), "[Remove]");
+            } else {
+                out += " " + link("/castle edit:" + roomNum + ":conditions:" + condition + "[Add]");
+            }
+        }
+        return out;
+    }
+    this.showRoomFieldConditionOptions = function(src, player, number, type) {
+        var m = "", theme = player.castle.theme, pokes = player.castle.rooms[number].party, existing = player.castle.rooms[number].conditions, roomNum = number;
+        var allConditions = [];
+        for (var i = 0; i < player.castle.rooms.length; i++) {
+            if (player.castle.rooms[i].conditions) {
+                allConditions = allConditions.concat(player.castle.rooms[i].conditions);
+            }
+        }
+        var args = {
+            "theme": theme,
+            "pokes": pokes,
+            "existing": existing,
+            "roomNum": roomNum,
+            "allConditions": allConditions
+        }
+        switch (type) {
+            case "stage": 
+                m += this.fieldConditionMess("rain", args);
+                m += this.fieldConditionMess("sun", args);
+                m += this.fieldConditionMess("sandstorm", args);
+                m += this.fieldConditionMess("hail", args);
+                m += this.fieldConditionMess("electricterrain", args);
+                m += this.fieldConditionMess("mistyterrain", args);
+                m += this.fieldConditionMess("psychicterrain", args);
+                m += this.fieldConditionMess("grassyterrain", args);
+                break;
+            case "hazards": 
+                m += this.fieldConditionMess("spikes", args);
+                m += this.fieldConditionMess("2spikes", args);
+                m += this.fieldConditionMess("3spikes", args);
+                m += this.fieldConditionMess("hazardsetters", args);
+                m += this.fieldConditionMess("stealthrock", args);
+                m += this.fieldConditionMess("toxicspikes", args);
+                m += this.fieldConditionMess("dynamicWeb", args);
+                m += this.fieldConditionMess("quickSand", args);
+                m += this.fieldConditionMess("harshWinds", args);
+                break;
+            case "offense": 
+                m += this.fieldConditionMess("toxic", args);
+                m += this.fieldConditionMess("zapcannon", args);
+                m += this.fieldConditionMess("inferno", args);
+                m += this.fieldConditionMess("psyDrop", args);
+                m += this.fieldConditionMess("chillSpecial", args);
+                m += this.fieldConditionMess("chillPhysical", args);
+                m += this.fieldConditionMess("overgrowblazetorrent", args);
+                m += this.fieldConditionMess("freezedry", args);
+                m += this.fieldConditionMess("galeWings", args);
+                m += this.fieldConditionMess("hugePower", args);
+                m += this.fieldConditionMess("psystrike", args);
+                m += this.fieldConditionMess("dragonslayer", args);
+                m += this.fieldConditionMess("spectralThief", args);
+                m += this.fieldConditionMess("bypassImmune", args);
+                break;
+            case "defense": 
+                m += this.fieldConditionMess("initialReflect", args);
+                m += this.fieldConditionMess("initialLightScreen", args);
+                m += this.fieldConditionMess("multiscale", args);
+                m += this.fieldConditionMess("solidRock", args);
+                m += this.fieldConditionMess("hpboost", args);
+                m += this.fieldConditionMess("leftovers", args);
+                m += this.fieldConditionMess("heatproof", args);
+                m += this.fieldConditionMess("thickFat", args);
+                m += this.fieldConditionMess("balloon", args);
+                m += this.fieldConditionMess("intimidate", args);
+                m += this.fieldConditionMess("shellArmor", args);
+                m += this.fieldConditionMess("fortress", args);
+                m += this.fieldConditionMess("autopara", args);
+                m += this.fieldConditionMess("autopoison", args);
+                m += this.fieldConditionMess("retaliate", args);
+                break;
+            case "moves": 
+                m += this.fieldConditionMess("pixelate", args);
+                m += this.fieldConditionMess("sweltering", args);
+                m += this.fieldConditionMess("classicTypes", args);
+                m += this.fieldConditionMess("categorySplit", args);
+                m += this.fieldConditionMess("physBan", args);
+                m += this.fieldConditionMess("specBan", args);
+                m += this.fieldConditionMess("normalcy", args);
+                m += this.fieldConditionMess("draconian", args);
+                m += this.fieldConditionMess("mechanical", args);
+                m += this.fieldConditionMess("nostab", args);
+                break;
+            case "stats": 
+                m += this.fieldConditionMess("dancer", args);
+                m += this.fieldConditionMess("dancer2", args);
+                m += this.fieldConditionMess("smasher", args);
+                m += this.fieldConditionMess("chargebeam", args);
+                m += this.fieldConditionMess("brawler", args);
+                m += this.fieldConditionMess("vicious", args);
+                break;
+            case "world": 
+                m += this.fieldConditionMess("skyBattle", args);
+                m += this.fieldConditionMess("arenaBattle", args);
+                m += this.fieldConditionMess("thickPollen", args);
+                m += this.fieldConditionMess("guts", args);
+                m += this.fieldConditionMess("reversal", args);
+                m += this.fieldConditionMess("weightattack", args);
+                m += this.fieldConditionMess("brine", args);
+                m += this.fieldConditionMess("hex", args);
+                m += this.fieldConditionMess("boostDrain", args);
+                m += this.fieldConditionMess("adaptability", args);
+                m += this.fieldConditionMess("criticalDouble", args);
+                m += this.fieldConditionMess("speedcrit", args);
+                m += this.fieldConditionMess("extendedSleep", args);
+                break;
+            case "weird": 
+                m += this.fieldConditionMess("inverted", args);
+                m += this.fieldConditionMess("trickRoom", args);
+                m += this.fieldConditionMess("simple", args);
+                m += this.fieldConditionMess("noStatBoost", args);
+                m += this.fieldConditionMess("powerUnknown", args);
+                m += this.fieldConditionMess("topsyturvy", args);
+                m += this.fieldConditionMess("nerfBestStat", args);
+                m += this.fieldConditionMess("powertrick", args);
+                m += this.fieldConditionMess("statjumble", args);
+                break;
         }
     };
     this.handleDayCareCommand = function(src, cdata, auth) {
