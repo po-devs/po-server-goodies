@@ -13956,6 +13956,9 @@ function Safari() {
             this.viewers = [this.name1.toLowerCase()];
         }
 
+        this.winMsg = opt.winMsg;
+        this.loseMsg = opt.loseMsg;
+
         var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
         var npcDesc = null;
@@ -14587,6 +14590,40 @@ function Safari() {
                         
                         if (!isNPC) {
                             self.sendMessage(name, "Moves: " + moves.join(" --- "));
+                            if (self.select) {
+                                var m = "";
+                                if (self.npcItems.hyper && self.npcItems.hyper > 0) {
+                                    m += toColor("Hyper Potion: " + self.npcItems.hyper + " ", "purple");
+                                }
+                                if (self.npcItems.fullrestore && self.npcItems.fullrestore > 0) {
+                                    m += toColor("Full Restore: " + self.npcItems.fullrestore + " ", "purple");
+                                }
+                                if (self.side2Field.reflect || self.side2Field.lightscreen) {
+                                    if (m !== "") {
+                                        m += "||";
+                                    }
+                                    if (self.side2Field.reflect) {
+                                        m += toColor("Reflect ", "red");
+                                    }
+                                    if (self.side2Field.lightscreen) {
+                                        m += toColor("Light Screen ", "red");
+                                    }
+                                }
+                                if (self.side1Field.reflect || self.side1Field.lightscreen) {
+                                    if (m !== "") {
+                                        m += "||";
+                                    }
+                                    if (self.side1Field.reflect) {
+                                        m += toColor("Reflect ", "blue");
+                                    }
+                                    if (self.side1Field.lightscreen) {
+                                        m += toColor("Light Screen ", "blue");
+                                    }
+                                }
+                                if (m !== "") {
+                                    self.sendMessage(name, m);
+                                }
+                            }
                         }
                     }
                 }
@@ -18118,6 +18155,8 @@ function Safari() {
         if (this.npcBattle && this.postBattle) {
             var extraArgs = {};
             extraArgs.turn = this.turn;
+            extraArgs.loseMsg = this.loseMsg;
+            extraArgs.winMsg = this.winMsg;
             this.postBattle(this.name1, winnerName === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
@@ -21410,8 +21449,8 @@ function Safari() {
                     }
                     trainer.desc = "Celebrity NPC";
 
-                    if (trainer.loseMsg) {
-                        var m = trainer.loseMsg.replace("{Name}", name).replace("{Next}", trainer.name);
+                    if (extraArgs.loseMsg) {
+                        var m = extraArgs.loseMsg.replace("{Name}", name).replace("{Next}", trainer.name);
                         safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> " + m, safchan);
                     } else {
                         if (level == "Abyssal") {
@@ -21456,7 +21495,9 @@ function Safari() {
                         npc2.bias = trainer.bias2;
                         var battle = new Battle2(id, trainer, {
                             cantWatch: false,
-                            t1HP: regen
+                            t1HP: regen,
+                            winMsg: trainer.winMsg,
+                            loseMsg: trainer.loseMsg
                         },
                         null, npc2, trainer.select, viewers);
                     }
@@ -21476,8 +21517,8 @@ function Safari() {
                     }*/
                 }
             } else {
-                if (trainer.winMsg) {
-                    var m = trainer.winMsg.replace("{Name}", name);
+                if (extraArgs.winMsg) {
+                    var m = extraArgs.winMsg.replace("{Name}", name);
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> " + m, safchan);
                 } else {
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
