@@ -14004,6 +14004,7 @@ function Safari() {
 
         this.npcItems = {
             hyper: 0,
+            revive: 0,
             full: 0
         };
         this.selectData = null;
@@ -14595,8 +14596,8 @@ function Safari() {
                                 if (self.npcItems.hyper && self.npcItems.hyper > 0) {
                                     m += toColor("Hyper Potion: " + self.npcItems.hyper + " ", "purple");
                                 }
-                                if (self.npcItems.fullrestore && self.npcItems.fullrestore > 0) {
-                                    m += toColor("Full Restore: " + self.npcItems.fullrestore + " ", "purple");
+                                if (self.npcItems.full && self.npcItems.full > 0) {
+                                    m += toColor("Full Restore: " + self.npcItems.full + " ", "purple");
                                 }
                                 if (self.side2Field.reflect || self.side2Field.lightscreen) {
                                     if (m !== "") {
@@ -14941,7 +14942,19 @@ function Safari() {
                         this.poke2.condition = "none";
                         this.poke2.badlyPoisoned = 0;
                         this.npcItems.full--;
-                    } 
+                    }
+                    if (this.npcItems.revive > 0) {
+                        var foeMons = this.team2.concat(this.team4), mon, k, o;
+                        for (var i = 0; i < foeMons.length; i++) {
+                            mon = foeMons[i];
+                            if (mon.hp <= 0) {
+                                this.sendToViewers(toColor(this.name2 + " used a Revive!", "purple"));
+                                this.sendToViewers(poke(mon.id) + " was revived!");
+                                mon.hp = Math.round(mon.maxhp / 2);
+                                this.npcItems.revive--;
+                                break;
+                            }
+                        }
                 }
                 if (this.npcItems2 && (!this.player4Fainted)) {
                     if (this.npcItems2.hyper > 0 && ((this.poke4.maxhp - this.poke4.hp > 200) || this.poke4.hp < (50 + (50 * Math.random())))) {
@@ -28296,6 +28309,7 @@ function Safari() {
             case "spectralThief": m = "'Not Very Effective' attacks transfer stat boosts."; break;
             case "leechseed": m = "Pokémon that learn Leech Seed recover HP."; break;
             case "drainpunch": m = "Pokémon that learn Drain Punch deal more damage when using drain attacks."; break;
+            case "revive": m = "Foe has a Revive at their disposal."; break;
             case "fullrestore": m = "Foe has a Full Restore at their disposal."; break;
             case "fullrestore2": m = "Foe has 2 Full Restores at their disposal."; break;
             case "fullrestore3": m = "Foe has 3 Full Restores at their disposal."; break;
