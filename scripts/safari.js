@@ -15821,7 +15821,7 @@ function Safari() {
             bonus *= ((this.select.adaptability && stab) ? 1.33 : 1);
             bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
             bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
-            bonus *= ((this.select.overgrowblazetorrent && (user.hp <= (user.maxhp/3)) && ["Fire", "Grass", "Water"].contains(move.type) && (hasType(user.id, move.type))) ? (2 : 1));
+            bonus *= ((this.select.overgrowblazetorrent && (user.hp <= (user.maxhp/3)) && ["Fire", "Grass", "Water"].contains(move.type) && (hasType(user.id, move.type))) ? 2 : 1);
             bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
             bonus *= ((this.select.brine && (target.hp <= (target.maxhp/2))) ? (1.75 - (1.75 * target.hp/target.maxhp)) : 1);
             bonus *= ((this.select.dragonslayer && move.type === "Fighting" && (hasType(target.id, "Dragon")) && (isP2 || isP4)) ? 2 : 1);
@@ -21541,8 +21541,8 @@ function Safari() {
             currentTrainer = {};
             trainer = data[i];
             currentTrainer.name = trainer.name;
-            currentTrainer.winMsg = trainer.winMsg ? (trainer.winMsg.random() : null);
-            currentTrainer.loseMsg = trainer.loseMsg ? (trainer.loseMsg.random() : null);
+            currentTrainer.winMsg = (trainer.winMsg ? trainer.winMsg.random() : null);
+            currentTrainer.loseMsg = (trainer.loseMsg ? trainer.loseMsg.random() : null);
             var ind = (trainer.elite ? eliteindex : index);
             currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0));
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
