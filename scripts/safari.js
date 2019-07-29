@@ -14944,7 +14944,7 @@ function Safari() {
                         this.npcItems.full--;
                     }
                     if (this.npcItems.revive > 0) {
-                        var foeMons = this.team2.concat(this.team4), mon, k, o;
+                        var foeMons = this.team2.concat(this.team4), mon;
                         for (var i = 0; i < foeMons.length; i++) {
                             mon = foeMons[i];
                             if (mon.hp <= 0) {
@@ -14955,6 +14955,7 @@ function Safari() {
                                 break;
                             }
                         }
+                    }
                 }
                 if (this.npcItems2 && (!this.player4Fainted)) {
                     if (this.npcItems2.hyper > 0 && ((this.poke4.maxhp - this.poke4.hp > 200) || this.poke4.hp < (50 + (50 * Math.random())))) {
