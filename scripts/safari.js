@@ -14928,14 +14928,14 @@ function Safari() {
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
             if (this.npcBattle) {
                 if (this.npcItems && (!this.player2Fainted)) {
-                    if (this.npcItems.hyper > 0 && (this.poke2.maxhp - this.poke2.hp > 200) || this.poke2.hp < (50 + (50 * Math.random()))) {
-                        this.sendToViewers(this.name2 + " used a Hyper Potion!");
+                    if (this.npcItems.hyper > 0 && ((this.poke2.maxhp - this.poke2.hp > 200) || this.poke2.hp < (50 + (50 * Math.random())))) {
+                        this.sendToViewers(toColor(this.name2 + " used a Hyper Potion!", "purple"));
                         this.sendToViewers(poke(this.poke2.id) + " restored 200 HP!");
                         this.poke2.hp = (Math.min(this.poke2.hp + 200, this.poke2.maxhp));
                         this.npcItems.hyper--;
                     } 
                     if (this.npcItems.full > 0 && (((this.poke2.maxhp / this.poke2.hp > 1.75) && this.poke2.condition !== "none") || this.poke2.maxhp / this.poke2.hp > 2.5)) {
-                        this.sendToViewers(this.name2 + " used a Full Restore!");
+                        this.sendToViewers(toColor(this.name2 + " used a Full Restore!", "purple"));
                         this.sendToViewers(poke(this.poke2.id) + " restored its HP and condition!");
                         this.poke2.hp = this.poke2.maxhp;
                         this.poke2.condition = "none";
@@ -14945,13 +14945,13 @@ function Safari() {
                 }
                 if (this.npcItems2 && (!this.player4Fainted)) {
                     if (this.npcItems2.hyper > 0 && ((this.poke4.maxhp - this.poke4.hp > 200) || this.poke4.hp < (50 + (50 * Math.random())))) {
-                        this.sendToViewers(this.name4 + " used a Hyper Potion!");
+                        this.sendToViewers(toColor(this.name4 + " used a Hyper Potion!", "purple"));
                         this.sendToViewers(poke(this.poke4.id) + " restored 200 HP!");
                         this.poke4.hp = (Math.min(this.poke4.hp + 200, this.poke4.maxhp));
                         this.npcItems2.hyper--;
                     } 
                     if (this.npcItems2.full > 0 && (((this.poke4.maxhp / this.poke4.hp > 1.75) && this.poke4.condition !== "none") || this.poke4.maxhp / this.poke4.hp > 2.5)) {
-                        this.sendToViewers(this.name4 + " used a Full Restore!");
+                        this.sendToViewers(toColor(this.name4 + " used a Full Restore!", "purple"));
                         this.sendToViewers(poke(this.poke4.id) + " restored its HP and condition!");
                         this.poke4.hp = this.poke4.maxhp;
                         this.poke4.condition = "none";
