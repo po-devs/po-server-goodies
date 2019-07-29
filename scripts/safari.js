@@ -14599,25 +14599,25 @@ function Safari() {
                                 if (self.npcItems.full && self.npcItems.full > 0) {
                                     m += toColor("Full Restore: " + self.npcItems.full + " ", "purple");
                                 }
-                                if (self.side2Field.reflect || self.side2Field.lightscreen) {
+                                if (self.side2Field.reflect > 0 || self.side2Field.lightscreen > 0) {
                                     if (m !== "") {
                                         m += "||";
                                     }
-                                    if (self.side2Field.reflect) {
+                                    if (self.side2Field.reflect > 0) {
                                         m += toColor("Reflect ", "red");
                                     }
-                                    if (self.side2Field.lightscreen) {
+                                    if (self.side2Field.lightscreen > 0) {
                                         m += toColor("Light Screen ", "red");
                                     }
                                 }
-                                if (self.side1Field.reflect || self.side1Field.lightscreen) {
+                                if (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) {
                                     if (m !== "") {
                                         m += "||";
                                     }
-                                    if (self.side1Field.reflect) {
+                                    if (self.side1Field.reflect > 0) {
                                         m += toColor("Reflect ", "blue");
                                     }
-                                    if (self.side1Field.lightscreen) {
+                                    if (self.side1Field.lightscreen > 0) {
                                         m += toColor("Light Screen ", "blue");
                                     }
                                 }
@@ -15282,7 +15282,7 @@ function Safari() {
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * 0.84);
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
@@ -15296,7 +15296,7 @@ function Safari() {
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * 0.84);
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
@@ -15315,7 +15315,7 @@ function Safari() {
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * 100) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * 0.84);
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
@@ -15329,7 +15329,7 @@ function Safari() {
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((275 * 100) / this.getStatValue(poke2, "def"));
                     typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * 0.84);
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
