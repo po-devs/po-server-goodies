@@ -11270,6 +11270,10 @@ function Safari() {
             safaribot.sendMessage(src, "Player not found!", safchan);
             return;
         }
+        if (player.medals.length < 1) {
+            safaribot.sendMessage(src, "You do not have any medals!", safchan);
+            return;
+        }
 
         for (var i = 0; i < player.medals.length; i++) {
             m = player.medals[i];
@@ -14347,7 +14351,7 @@ function Safari() {
         }
         if (this.select) {
             for (var j in this.select) {
-                m = safari.getFieldConditionDescription(j);
+                m = safari.getFieldConditionDescription(j, this.select);
                 if (m !== "") {
                     this.sendMessage(id, toColor("- " + m, "#DC143C"));
                 }
@@ -28144,7 +28148,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps"), safchan);
         }
     };
-    this.getFieldConditionDescription = function(condition) {
+    this.getFieldConditionDescription = function(condition, select) {
         var m = "";
         switch (condition) {
             case "sandstorm": m = "A Sandstorm rages."; break;
@@ -28171,7 +28175,7 @@ function Safari() {
             case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
             case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
             case "initialLightScreen2": m = "Light Screen begins active on challenger's side."; break;
-            case "boostType": m = (this.select[j].length > 0 ? "The foe's " + this.select[j].join(" and ") + " attacks are more powerful." : ""); break;
+            case "boostType": m = (select[condition].length > 0 ? "The foe's " + select[condition].join(" and ") + " attacks are more powerful." : ""); break;
             case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
             case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
