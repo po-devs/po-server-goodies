@@ -17409,7 +17409,7 @@ function Safari() {
                 lightscreen: 0.5
             };
         }
-        if (damaging && user.movePowers[type] && (user.movePowers[type] >= 140)) {
+        if (damaging && user.movepowers[type] && (user.movepowers[type] >= 140)) {
             effChance.recharge = 2;
         }
         if (damaging && this.tagBattle) {
@@ -18415,7 +18415,12 @@ function Safari() {
             this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
         }
         if (this.npcBattle && this.postBattle) {
-            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers);
+            var extraArgs = {
+                turn: this.turn,
+                winMsg: this.winMsg,
+                loseMsg: this.loseMsg
+            }
+            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
@@ -36788,10 +36793,10 @@ function Safari() {
                     cdata.unshift("kanto");
                 }
                 if (cdata.length < 1) {
-                    cdata.unshift("total");
+                    cdata.push("total");
                 }
                 if (cdata.length < 2) {
-                    cdata.unshift("percentage");
+                    cdata.push("percentage");
                 }
 
                 if (!celebrityPKs.hasOwnProperty(cdata[0])) {
