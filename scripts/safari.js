@@ -14603,7 +14603,7 @@ function Safari() {
                         }
                     }
                 }
-                this.sendMessage(name, "Moves: " + moves.join(" --- "));
+                self.sendMessage(name, "Moves: " + moves.join(" --- "));
             };
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
