@@ -5390,7 +5390,6 @@ function Safari() {
         var immuneCount = 0;
         var typeCount = 1;
 
-
         if (select) {
             if (select.classicTypes) {
                 if (["Dark", "Steel", "Fairy"].contains(def1)) {
@@ -5421,6 +5420,9 @@ function Safari() {
             if (select.mechanical) {
                 var third = ([def1, def2].contains("Steel") ? "???": "Steel");
                 return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
+            }
+            if (select.resistMode) {
+                return (this.checkEffective(def, def2, atk1, "???", "???", (inverted ? false : true)));
             }
             return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
         }
@@ -13901,7 +13903,11 @@ function Safari() {
             this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
         }
         if (this.npcBattle && this.postBattle) {
-            this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs, this.viewers);
+            var extraArgs = {};
+            extraArgs.turn = this.turn;
+            extraArgs.winMsg = this.winMsg;
+            extraArgs.loseMsg = this.loseMsg;
+            this.postBattle(this.name1, winner === this.name1, this.p1Score, this.p2Score, this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
@@ -14072,6 +14078,10 @@ function Safari() {
                 this.selectData.rolloutUser2 = -1;
                 this.selectData.rolloutCount2 = 0;
             }
+            if (select.retaliate2) {
+                this.selectData.retaliate1 = false;
+                this.selectData.retaliate2 = false;
+            }
             if (select.lastStand) {
                 this.selectData.lastStandReady = true;
             }
@@ -14080,6 +14090,9 @@ function Safari() {
             }
             if (select.irontail) {
                 this.selectData.irontailTimer = (3 + Math.floor(4 * Math.random()));
+            }
+            if (select.waterfall) {
+                this.selectData.waterfallTimer = (3 + Math.floor(4 * Math.random()));
             }
             this.jumbledStats = {};
             if (select && select.statjumble) {
@@ -14107,9 +14120,9 @@ function Safari() {
                 }
             }
             this.selectData.shieldHP = 0;
-            if (select.iceshield || select.electroshield || select.genesisshield) {
+            if (select.iceshield || select.electroshield || select.dracoshield || select.genesisshield) {
                 if (difficulty) {
-                    this.selectData.shieldHP = 400 + (difficulty * 150);
+                    this.selectData.shieldHP = 400 + (difficulty * 100);
                 } else {
                     this.selectData.shieldHP = 400;
                 }
@@ -14648,22 +14661,68 @@ function Safari() {
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
-            this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
-            
-            prepareTeamForTurn(this.name1, this.team1, this.p1MoveCodes);
-            prepareTeamForTurn(this.name2, this.team2, this.p2MoveCodes, this.npcBattle);
-            if (this.tagBattle) {
-                if (!this.oneOnTwo) {
-                    prepareTeamForTurn(this.name3, this.team3, this.p3MoveCodes, this.npcBattle);
-                }
-                prepareTeamForTurn(this.name4, this.team4, this.p4MoveCodes, this.npcBattle);
-            }
             
             this.player1Input = null;
             this.player2Input = null;
             this.player3Input = null;
             this.player4Input = null;
             this.canPickMoves = true;
+
+            this.recharge1 = false;
+            this.recharge2 = false;
+            this.recharge3 = false;
+            this.recharge4 = false;
+            for (var a in this.team1) {
+                if (this.team1[a].mustRecharge) {
+                    this.recharge1 = true;
+                    break;
+                }
+            }
+            for (var a in this.team2) {
+                if (this.team2[a].mustRecharge) {
+                    this.recharge2 = true;
+                    break;
+                }
+            }
+
+            
+            if (!(this.recharge1)) {
+                this.sendMessage(this.name1, "Your team (use /bat [Letter] to choose a move): ");
+                prepareTeamForTurn(this.name1, this.team1, this.p1MoveCodes);
+            } else {
+                this.player1Input = "---";
+            }
+            if (!(this.recharge2)) {
+                prepareTeamForTurn(this.name2, this.team2, this.p2MoveCodes, this.npcBattle);
+            } else {
+                this.player2Input = "---";
+            }
+            if (this.tagBattle) {
+                if (!this.oneOnTwo) {
+                    for (var a in this.team3) {
+                        if (this.team3[a].mustRecharge) {
+                            this.recharge3 = true;
+                            break;
+                        }
+                    }
+                    if (!(this.recharge3)) {
+                        prepareTeamForTurn(this.name3, this.team3, this.p3MoveCodes, this.npcBattle);
+                    } else {
+                        this.player3Input = "---";
+                    }
+                }
+                for (var a in this.team4) {
+                    if (this.team4[a].mustRecharge) {
+                        this.recharge4 = true;
+                        break;
+                    }
+                }
+                if (!(this.recharge4)) {
+                    prepareTeamForTurn(this.name4, this.team4, this.p4MoveCodes, this.npcBattle);
+                } else {
+                    this.player4Input = "---";
+                }
+            }
         }
         else if (this.subturn % 8 === 6) {
             
@@ -14795,8 +14854,18 @@ function Safari() {
             var poke1 = emptyPoke;
             var spd1 = 0;
             if (!this.player1Fainted) {
-                move1 = this.p1MoveCodes[this.player1Input];
-                poke1 = this.team1[move1.ownerId];
+                if (this.recharge1) {
+                    for (var a in this.team1) {
+                        if (this.team1[a].mustRecharge) {
+                            poke1 = this.team1[a];
+                            move1 = {"recharge": true, "priority": 0};
+                            break;
+                        }
+                    }
+                } else {
+                    move1 = this.p1MoveCodes[this.player1Input];
+                    poke1 = this.team1[move1.ownerId];
+                }
                 spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
             }
             if (this.npcBattle) {
@@ -14845,8 +14914,18 @@ function Safari() {
             var poke2 = emptyPoke;
             var spd2 = 0;
             if (!this.player2Fainted) {
-                var move2 = this.p2MoveCodes[this.player2Input];
-                var poke2 = this.team2[move2.ownerId];
+                if (this.recharge2) {
+                    for (var a in this.team2) {
+                        if (this.team2[a].mustRecharge) {
+                            poke2 = this.team2[a];
+                            move2 = {"recharge": true, "priority": 0};
+                            break;
+                        }
+                    }
+                } else {
+                    move2 = this.p2MoveCodes[this.player2Input];
+                    poke2 = this.team2[move2.ownerId];
+                }
                 spd2 = this.getStatValue(poke2, "spe", (poke2.condition === "paralyzed" ? 0.5 : 1));
             }
 
@@ -14951,6 +15030,10 @@ function Safari() {
                                 this.sendToViewers(toColor(this.name2 + " used a Revive!", "purple"));
                                 this.sendToViewers(poke(mon.id) + " was revived!");
                                 mon.hp = Math.round(mon.maxhp / 2);
+                                mon.status = "none";
+                                for (var a in mon.boosts) {
+                                    mon.boosts[a] = 0;
+                                }
                                 this.npcItems.revive--;
                                 break;
                             }
@@ -15163,9 +15246,9 @@ function Safari() {
                         if ((!user.lastPlayed2) && (!hasType(user.id, "Flying"))) {
                             this.sendToViewers(toColor(name + " was entangled in the web!", sColor));
                             var stat = ["def", "spe", "sdef"].random();
-                            user.boosts[stat] -= 2;
+                            user.boosts[stat] -= 1;
                             user.boosts[stat] = Math.min(6, Math.max(user.boosts[stat], -6));
-                            out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
+                            out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -1!");
                         }
                     }
                     if (this.side1Field.quicksand && (isP1 || isP3)) {
@@ -15177,12 +15260,36 @@ function Safari() {
                             out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
                         }
                     }
+                    if (move.recharge === true) {
+                        this.sendToViewers(toColor(name + " must recharge!", sColor));
+                        user.mustRecharge = false;
+                        continue;
+                    }
                     if (user.flinch) {
                         this.sendToViewers(toColor(name + " flinched!", sColor));
                         continue;
                     }
+                    if (user.confused) {
+                        if (chance(0.25)) {
+                            this.sendToViewers(toColor(name + " snapped out of its confusion!", sColor));
+                            user.confused = false;
+                        } else {
+                            this.sendToViewers(toColor(name + " is confused!", sColor));
+                        }
+                    }
                     if (user.condition === "paralyzed" && chance(0.25)) {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is paralyzed! It can't move!", sColor));
+                        continue;
+                    }
+                    if (user.confused && chance(0.5)) {
+                        this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
+                        var dmg = ((this.getStatValue(user, "atk") * 40) / this.getStatValue(user, "def"));
+                        dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
+                        user.hp -= dmg;
+                        this.sendToViewers(name + " lost " + dmg + "HP!");
+                        if (user.hp <= 0) {
+                            this.sendToViewers("<b>" + name + " fainted!</b>");
+                        }
                         continue;
                     }
                     if (user.condition === "sleep") {
@@ -15196,7 +15303,7 @@ function Safari() {
                         }
                     }
                     if (user.condition === "freeze") {
-                        if (move.type === "fire" && chance(0.5)) {
+                        if (move.type === "Fire" && chance(0.5)) {
                             this.sendToViewers(toColor(name + " thawed out!", sColor));
                             user.condition = "none";
                         }
@@ -15282,61 +15389,63 @@ function Safari() {
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
                     poke1.hp -= dmg;
                     this.sendToViewers(poke(poke1.id) + " lost " + dmg + " HP!");
                     if (poke1.hp <= 0) {
-                        this.sendToViewers(poke(poke1.id) + " fainted!");
+                        this.sendToViewers("<b>" + poke(poke1.id) + " fainted!</b>");
                     }
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * 0.84);
+                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
                     poke2.hp -= dmg;
                     this.sendToViewers(poke(poke2.id) + " lost " + dmg + " HP!");
                     if (poke2.hp <= 0) {
-                        this.sendToViewers(poke(poke2.id) + " fainted!");
+                        this.sendToViewers("<b>" + poke(poke2.id) + " fainted!</b>");
                     }
                 }
             }
-            if (this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) {
+            if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer))) {
                 this.sendToViewers("The Iron Tail strikes the field!");
                 this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
 
-                var dmg, typeMultiplier;
+                var dmg, typeMultiplier, type, pow;
+                type = (this.select.irontail ? "Steel": "Water");
+                pow = (this.select.irontail ? 100 : 80);
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
-                    dmg = ((350 * 100) / this.getStatValue(poke1, "def"));
-                    typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * 0.84);
+                    dmg = ((350 * pow) / this.getStatValue(poke1, "def"));
+                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
+                    dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
                     }
                     poke1.hp -= dmg;
                     this.sendToViewers(poke(poke1.id) + " lost " + dmg + " HP!");
                     if (poke1.hp <= 0) {
-                        this.sendToViewers(poke(poke1.id) + " fainted!");
+                        this.sendToViewers("<b>" + poke(poke1.id) + " fainted!</b>");
                     }
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((275 * 100) / this.getStatValue(poke2, "def"));
-                    typeMultiplier = safari.checkEffective("Steel", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
-                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * 0.84);
+                    dmg = ((275 * pow) / this.getStatValue(poke2, "def"));
+                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
+                    dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
                     }
                     poke2.hp -= dmg;
                     this.sendToViewers(poke(poke2.id) + " lost " + dmg + " HP!");
                     if (poke2.hp <= 0) {
-                        this.sendToViewers(poke(poke2.id) + " fainted!");
+                        this.sendToViewers("<b>" + poke(poke2.id) + " fainted!</b>");
                     } else if (this.select.brawler) {
                         var stat = ["atk", "def", "spe", "satk", "sdef"].random();
                         poke2.boosts[stat] += 2;
@@ -15448,7 +15557,7 @@ function Safari() {
                         remaining.boosts["satk"] += 2;
                         remaining.boosts["spe"] += 2;
                         remaining.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
-                        remaining.boosts["atk"] = Math.min(mon.boosts["sdef"], 6);
+                        remaining.boosts["atk"] = Math.min(mon.boosts["atk"], 6);
                         remaining.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
                     }
                 }
@@ -15634,16 +15743,36 @@ function Safari() {
 
         var codeList;
         if (isP1) {
-            codeList = this.p1MoveCodes;
+            if (this.recharge1) {
+                codeList = this.p1MoveCodes;
+            } else {
+                this.sendMessage(name, "You cannot choose moves!");
+                return;
+            }
         }
         else if (isP2) {
-            codeList = this.p2MoveCodes;
+            if (this.recharge2) {
+                codeList = this.p2MoveCodes;
+            } else {
+                this.sendMessage(name, "You cannot choose moves!");
+                return;
+            }
         }
         else if (isP3) {
-            codeList = this.p3MoveCodes;
+            if (this.recharge3) {
+                codeList = this.p3MoveCodes;
+            } else {
+                this.sendMessage(name, "You cannot choose moves!");
+                return;
+            }
         }
         else if (isP4) {
-            codeList = this.p4MoveCodes;
+            if (this.recharge4) {
+                codeList = this.p4MoveCodes;
+            } else {
+                this.sendMessage(name, "You cannot choose moves!");
+                return;
+            }
         }
         var aim = 0;
         if (this.tagBattle) {
@@ -15863,6 +15992,7 @@ function Safari() {
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
             bonus *= ((isP1 || isP3) && (this.select.heatproof) && (move.type === "Fire") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
+            bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
             bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
@@ -15875,7 +16005,11 @@ function Safari() {
             bonus *= ((this.select.criticalDouble && crit) ? 1.33 : 1);
             bonus *= ((this.select.adaptability && stab) ? 1.33 : 1);
             bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
+            bonus *= ((this.select.retaliate2 && (isP1 || isP3) && (this.selectData.retaliate1)) ? 2 : 1);
+            bonus *= ((this.select.retaliate2 && (isP2 || isP4) && (this.selectData.retaliate2)) ? 2 : 1);
             bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+            bonus *= ((this.select.dualscale && (target.hp >= target.maxhp)) ? 0.5 : 1);
+            bonus *= ((this.select.dualscale && (user.hp >= user.maxhp)) ? 0.5 : 1);
             bonus *= ((this.select.overgrowblazetorrent && (user.hp <= (user.maxhp/3)) && ["Fire", "Grass", "Water"].contains(move.type) && (hasType(user.id, move.type))) ? 2 : 1);
             bonus *= ((this.select.reversal && (user.hp <= (user.maxhp/2))) ? (1.75 - (1.75 * user.hp/user.maxhp)) : 1);
             bonus *= ((this.select.brine && (target.hp <= (target.maxhp/2))) ? (1.75 - (1.75 * target.hp/target.maxhp)) : 1);
@@ -16213,6 +16347,22 @@ function Safari() {
                             }
                         }
                     }
+                    if (self.select.dracoshield) {
+                        if (["Dragon"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Draco Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Fairy") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Draco Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Draco Shield shattered!");
+                            }
+                        }
+                    }
                     if (self.select.electroshield) {
                         if (["Electric", "Ghost"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
@@ -16252,6 +16402,13 @@ function Safari() {
                 }
                 tname = target.owner + "'s " + poke(target.id);
                 target.hp -= dmg;
+                if (self.select.retaliate2) {
+                    if (isP1 || isP3) {
+                        self.selectData.retaliate1 = false;
+                    } else if (isP2 || isP4) {
+                        self.selectData.retaliate2 = false;
+                    }
+                }
                 out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (self.crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
                 if (target.hp <= 0) {
                     if (isPlayerVsNPC) {
@@ -16264,6 +16421,13 @@ function Safari() {
                         target.hp = 0;
                         fainted = true;
                         out.push("<b>" + tname + " fainted!</b>");
+                        if (self.select && self.select.retaliate2) {
+                            if (isP1 || isP3) {
+                                self.selectData.retaliate2 = true;
+                            } else {
+                                self.selectData.retaliate1 = true;
+                            }
+                        }
                     }
                 }
                 else {
@@ -16295,6 +16459,11 @@ function Safari() {
                     }
                     if (user.hp <= 0) {
                         out.push("<b>" + name + " fainted!</b>");
+                    }
+                }
+                if (move.recharge) {
+                    if (user.hp > 0) {
+                        user.mustRecharge = true;
                     }
                 }
                 if (self.select) {
@@ -16816,6 +16985,12 @@ function Safari() {
                 out.push(name + "'s " + this.statName(n) + " -1!");
             }
         }
+        if (this.select && this.select.dynamicPunch) {
+            if (move.type == "Fighting") {
+                target.confused = true;
+                out.push(tname + " was confused!");
+            }
+        }
         if (this.select && this.select.rollout) {
             var analytic = ((hasType(target.id, this.selectData.analyticType1) || (hasType(target.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
@@ -16897,6 +17072,7 @@ function Safari() {
                 lastPlayed: false,
                 lastPlayed2: true,
                 condition: "none",
+                confused: false,
                 conditionDuration: 0,
                 badlyPoisoned: 0,
                 types: this.getMoveTypes(p),
@@ -16972,6 +17148,9 @@ function Safari() {
         }
         if (data.hasOwnProperty("recoil")) {
             out.push("Suffers 1/3 of damage dealt in recoil");
+        }
+        if (data.hasOwnProperty("recharge")) {
+            out.push("Requires a turn of recharge");
         }
         if (data.hasOwnProperty("target")) {
             if (data.target == "TEAM") {
@@ -17121,7 +17300,7 @@ function Safari() {
                 if (isP4) {
                     bias = this.biasNPC2;
                 }
-                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, used);
+                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, move.type, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["target"].contains(p)) {
@@ -17133,7 +17312,10 @@ function Safari() {
                                 move.power = (5 * Math.round(move.power * 0.85/5));
                             }
                         }
-                        if (["burnout"].contains(p)) {
+                        if (["recharge"].contains(p)) {
+                            move.power = (145 + (5 * (Math.round(3 * Math.random()))));
+                        }
+                        else if (["burnout"].contains(p)) {
                             if (eff[p] === 2) {
                                 move.power = (5 * Math.round((Math.max(move.power, Math.ceil(120 + (20 * Math.random()))))/5));
                             }
@@ -17196,7 +17378,7 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, used) {
+    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, type, used) {
         var effChance;
         if (damaging) {
             effChance = {
@@ -17211,6 +17393,7 @@ function Safari() {
                 buff: 1.8,
                 nerf: 1.8,
                 haze: 1 * factor,
+                recharge: 0,
                 refresh: 1.2 * factor
             };
         } else {
@@ -17226,9 +17409,13 @@ function Safari() {
                 lightscreen: 0.5
             };
         }
+        if (damaging && user.movePowers[type] && (user.movePowers[type] >= 140)) {
+            effChance.recharge = 2;
+        }
         if (damaging && this.tagBattle) {
             effChance.targetAll = 1.75;
             effChance.targetTeam = 2.875;
+            effChance.recharge = 0;
         }
         else if (this.tagBattle) {
             effChance.protect = 2.4;
@@ -17356,17 +17543,27 @@ function Safari() {
                 out.type = eff;
             break;
             case "recoil":
-                if (used.contains("burnout")) {
+                if (used.contains("burnout") || used.contains("recoil")) {
                     return out;
                 }
-                if (factor < -0.2 || factor > 0.2) {
+                if (factor < -0.25 || factor > 0.15) {
                     return out;
                 }
                 out.recoil = true;
                 out.type = eff;
             break;
+            case "recharge":
+                if (used.contains("recoil") || used.contains("burnout")) {
+                    return out;
+                }
+                if (factor > -0.15) {
+                    return out;
+                }
+                out.recharge = true;
+                out.type = eff;
+            break;
             case "burnout":
-                if (used.contains("recoil") || factor > -0.3) {
+                if (used.contains("recoil") || used.contains("recharge") || factor > -0.3) {
                     return out;
                 }
                 buff = {};
@@ -17946,6 +18143,9 @@ function Safari() {
                 if ((move.status ==  "burn") && (bias.burn)) {
                     c += 100;
                 }
+            }
+            if (this.select && this.select.dynamicPunch && move.type == "Fighting" && val >= 0) {
+                c += 45;
             }
             var dif = (user.hp / user.maxhp);
             if (move.drain && val >= 0) {
@@ -21424,6 +21624,9 @@ function Safari() {
                     rewardCapCheck(player, reward[0], 0, true);
                     safari.saveGame(player);
                 }
+                if (extraArgs.turn && extraArgs.turn >= 2) {
+                    safari.addToCelebrityLeaderboard(args.name, safari.celebrityRegion, args.difficulty, true);
+                }
                 
                 if (next >= 13) {
                     player.firstCelebrityRun = false;
@@ -21538,19 +21741,15 @@ function Safari() {
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Well, guess that's it! Better luck next time!", safchan);
                 }
 
+                if (extraArgs.turn && extraArgs.turn >= 3) {
+                    safari.addToCelebrityLeaderboard(args.name, safari.celebrityRegion, args.difficulty, false);
+                }
+
                 safari.addToMonthlyLeaderboards(player.id, "celebrityScore", 1);
                 
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 player.firstCelebrityRun = false;
                 safari.saveGame(player);
-
-                if (!celebrityPKs.hasOwnProperty(safari.celebrityRegion)) {
-                    celebrityPKs[safari.celebrityRegion] = {};
-                }
-                if (!celebrityPKs[safari.celebrityRegion].hasOwnProperty(args.name)) {
-                    celebrityPKs[safari.celebrityRegion][args.name] = 0;
-                }
-                celebrityPKs[safari.celebrityRegion][args.name] += 1;
             }
         };
 
@@ -21588,6 +21787,31 @@ function Safari() {
             cantWatch: false
         }, null, null, npc.select);
         currentBattles.push(battle);
+    };
+    this.addToCelebrityLeaderboard = function(leader, region, difficulty, won) {
+        if (!celebrityPKs.hasOwnProperty(region)) {
+            celebrityPKs[safari.celebrityRegion] = {};
+        }
+        if (!celebrityPKs[region].hasOwnProperty("total")) {
+            celebrityPKs[region].total = {};
+        }
+        if (!celebrityPKs[region].hasOwnProperty(difficulty)) {
+            celebrityPKs[region][difficulty] = {};
+        }
+        if (!celebrityPKs[region].total.hasOwnProperty(leader)) {
+            celebrityPKs[region].total[leader] = [0, 0];
+        }
+        if (!celebrityPKs[region][difficulty].hasOwnProperty(leader)) {
+            celebrityPKs[region][difficulty][leader] = [0, 0];
+        }
+        if (won) {
+            celebrityPKs[region][difficulty][leader][1]++;
+            celebrityPKs[region].total[leader][1]++;
+        } else {
+            celebrityPKs[region][difficulty][leader][0]++;
+            celebrityPKs[region].total[leader][0]++;
+        }
+        return;
     };
     this.getCelebrities = function(data, difficulty) {
         var index = 0, eliteindex = 8, trainer, chal, partyStrength, diff, hold, maxLoop, hazard, currentTrainer, b;
@@ -28233,6 +28457,7 @@ function Safari() {
             case "boostType": m = (select[condition].length > 0 ? "The foe's " + select[condition].join(" and ") + " attacks are more powerful." : ""); break;
             case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
             case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
+            case "dracoshield": m = "The foe's team is surrounded with a Draco Shield."; break;
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
             case "criticalDouble": m = "Critical hits do increased damage."; break;
@@ -28246,8 +28471,10 @@ function Safari() {
             case "autopara": m = "Challenger's Pokémon begin paralyzed."; break;
             case "autopoison": m = "Challenger's Pokémon begin poisoned."; break;
             case "heatproof": m = "Foe's Pokémon are resistant to Fire."; break;
+            case "furcoat": m = "Foe's Pokémon take half damage from Physical moves."; break;
             case "adaptability": m = "All STAB is increased in power."; break;
             case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
+            case "dualscale": m = "All Pokémon take and deal reduced damage while at full HP."; break;
             case "skyBattle": m = "Sky Battle - Pokémon that cannot use Fly or Bounce suffer more damage and deal less damage."; break;
             case "arenaBattle": m = "Arena Battle - Pokémon that cannot use Seismic Toss suffer more damage and deal less damage."; break;
             case "weightattack": m = "Heavier Pokémon take more damage from Grass- and Fighting- type attacks."; break;
@@ -28272,6 +28499,7 @@ function Safari() {
             case "smasher": m = "Every six turns, foe's ATK SATK SPE +2 and DEF SDEF -1."; break;
             case "speedboost": m = "Foe's speed increases at the end of every turn."; break;
             case "lastStand": m = "Foe's last Pokémon's ATK SATK SPE +2."; break;
+            case "retaliate2": m = "Attack power is doubled the turn after a teammate has fainted."; break;
             case "rollout": m = "Attacking with the same Pokémon consecutively boosts its attack power."; break;
             case "categorySplit": m = "Move category is determined by type."; break;
             case "specBan": m = "Special moves cannot be used."; break;
@@ -28281,6 +28509,7 @@ function Safari() {
             case "mechanical": m = "All Pokémon gain STEEL type."; break;
             case "classicTypes": m = "DARK, STEEL, or FAIRY types are not accounted for."; break;
             case "inverted": m = "Inverted Battle."; break;
+            case "resistMode": m = "Move's type effectiveness is determined by its resistance to the foe's typing."; break;
             case "trickRoom": m = "Trick Room is in effect."; break;
             case "powerUnknown": m = "Move damage may be hidden."; break;
             case "simple": m = "All stat changes are doubly influential."; break;
@@ -28299,6 +28528,7 @@ function Safari() {
             case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
             case "zapcannon": m = "All Electric-type moves have a 50% chance to paralyze."; break;
             case "toxic": m = "All Poison-type moves have a 75% chance to inflict poison."; break;
+            case "dynamicPunch": m = "All Fighting-type moves inflict confusion."; break;
             case "chillPhysical": m = "All Dragon-type moves lower target's speed and attack unless the target is a Dragon type Pokémon."; break;
             case "chillSpecial": m = "All Ice-type moves lower target's speed and special attack unless the target is an Ice type Pokémon."; break;
             case "psyDrop": m = "All Psychic-type moves lower have a 50% chance to drop the target's Special Attack and Special Defense."; break;
@@ -28371,7 +28601,7 @@ function Safari() {
             case "hugePower": out = 18; break;
             case "psystrike": out = 10; break;
             case "pixelate": out = 20; break;
-            case "sweltering": out = 20; break;
+            case "sweltering": out = 30; break;
             case "overgrowblazetorrent": out = 15; break;
             case "bypassImmune": out = 25; break;
             case "initialReflect": out = 9; break;
@@ -28381,6 +28611,7 @@ function Safari() {
             case "hpboost": out = 30; break;
             case "leftovers": out = 20; break;
             case "heatproof": out = 17; break;
+            case "furcoat": out = 30; break;
             case "thickFat": out = 27; break;
             case "balloon": out = 16; break;
             case "intimidate": out = 13; break;
@@ -28390,6 +28621,7 @@ function Safari() {
             case "autopoison": out = 35; break;
             case "brawler": out = 24; break;
             case "retaliate": out = 12; break;
+            case "analytic": out = 12; break;
             case "dancer": out = 40; break;
             case "dancer2": out = 30; break;
             case "smasher": out = 35; break;
@@ -28409,10 +28641,13 @@ function Safari() {
             case "speedcrit": out = 12; break;
             case "extendedSleep": out = 7; break;
             case "inverted": out = 15; break;
+            case "resistMode": out = 15; break;
             case "trickRoom": out = 15; break;
             case "powerUnknown": out = 20; break;
             case "statjumble": out = 20; break;
             case "spectralThief": out = 25; break;
+            case "leechseed": out = 15; break;
+            case "drainpunch": out = 15; break;
             case "simple": out = 15; break;
             case "noStatBoost": out = 15; break;
             case "topsyturvy": out = 25; break;
@@ -28459,18 +28694,18 @@ function Safari() {
                 if (condition == "brawler") { out *= 0.25; };
                 if (condition == "reversal") { out *= 0.25; };
                 if (condition == "arenaBattle") { out *= 0.25; };
-                if (condition == "normalcy") { out *= 0.25; };
-                if (condition == "specBan") { out *= 0.25; };
-                if (condition == "hpboost") { out *= 0.5; };
+                if (condition == "normalcy") { out *= 0.5; };
+                if (condition == "specBan") { out *= 0.5; };
+                if (condition == "hpboost") { out *= 0.25; };
                 if (condition == "dragonslayer") { out *= 0.5; };
                 if (condition == "guts") { out *= 0.5; };
+                if (condition == "drainpunch") { out *= 0.33; };
                 break;
             case "Desert":
                 if (condition == "sun") { out *= 0.25; };
                 if (condition == "sandstorm") { out *= 0.25; };
                 if (condition == "harshWinds") { out *= 0.5; };
                 if (condition == "quickSand") { out *= 0.25; };
-                if (condition == "sweltering") { out *= 0.5; };
                 if (condition == "sweltering") { out *= 0.5; };
                 if (condition == "adaptability") { out *= 0.33; };
                 if (condition == "solidRock") { out *= 0.25; };
@@ -28495,6 +28730,22 @@ function Safari() {
             case "Ironworks":
                 break;
             case "Jungle":
+                if (condition == "statjumble") { out *= 0.5; };
+                if (condition == "vicious") { out *= 0.5; };
+                if (condition == "corrosion") { out *= 0.2; };
+                if (condition == "dynamicWeb") { out *= 0.33; };
+                if (condition == "toxic") { out *= 0.25; };
+                if (condition == "smasher") { out *= 0.33; };
+                if (condition == "hpboost") { out *= 0.5; };
+                if (condition == "toxicspikes") { out *= 0.67; };
+                if (condition == "weightattack") { out *= 0.25; };
+                if (condition == "thickPollen") { out *= 0.25; };
+                if (condition == "hex") { out *= 0.25; };
+                if (condition == "powertrick") { out *= 0.5; };
+                if (condition == "retaliate") { out *= 0.5; };
+                if (condition == "overgrowblazetorrent") { out *= 0.33; };
+                if (condition == "topsyturvy") { out *= 0.5; };
+                if (condition == "leechseed") { out *= 0.33; };
                 break;
             case "Mythical":
                 break;
@@ -28599,6 +28850,7 @@ function Safari() {
                 m += this.fieldConditionMess("leftovers", args);
                 m += this.fieldConditionMess("heatproof", args);
                 m += this.fieldConditionMess("thickFat", args);
+                m += this.fieldConditionMess("furcoat", args);
                 m += this.fieldConditionMess("balloon", args);
                 m += this.fieldConditionMess("intimidate", args);
                 m += this.fieldConditionMess("shellArmor", args);
@@ -28644,6 +28896,7 @@ function Safari() {
                 break;
             case "weird": 
                 m += this.fieldConditionMess("inverted", args);
+                m += this.fieldConditionMess("resistMode", args);
                 m += this.fieldConditionMess("trickRoom", args);
                 m += this.fieldConditionMess("simple", args);
                 m += this.fieldConditionMess("noStatBoost", args);
@@ -36525,21 +36778,42 @@ function Safari() {
                 safari.dataDumps2[title][moveNum+""].Completed = true;
                 return true;
             }
+            if (command === "clearcpksconfirm") {
+                celebrityPKs = {};
+                return;
+            };
             if (command === "celebritypks" || command == "cpks") {
-                var rec = commandData.toLowerCase(), e, out, i;
+                var rec = commandData.toLowerCase(), e, g, out, i, cdata = rec.split(":");
+                if (cdata.length < 0) {
+                    cdata.unshift("kanto");
+                }
+                if (cdata.length < 1) {
+                    cdata.unshift("total");
+                }
+                if (cdata.length < 2) {
+                    cdata.unshift("percentage");
+                }
 
-                if (!celebrityPKs.hasOwnProperty(rec)) {
-                    safaribot.sendMessage(src, "There is no celebrity data for region " + rec + "!", safchan);
+                if (!celebrityPKs.hasOwnProperty(cdata[0])) {
+                    safaribot.sendMessage(src, "There is no celebrity data for region " + cdata[0] + "!", safchan);
                     return true;
                 }
-                e = celebrityPKs[rec];
+                e = celebrityPKs[cdata[0]];
+                if (!e.hasOwnProperty(cdata[1])) {
+                    safaribot.sendMessage(src, "There is no celebrity data for " + cdata[1] + " in that region!", safchan);
+                    return true;
+                }
+                e = e[cdata[1]];
                 list = Object.keys(e);
                 out = list.sort(function(a, b) {
-                    return e[b] - e[a];
+                    if (cdata[2] == "percentage") {
+                        return ((e[b][0]/(Math.max(e[b][1] + e[b][0], 1))) - ((e[a][0]/(Math.max(e[a][1] + e[a][0], 1)))));
+                    }
+                    return e[b][0] - e[a][0];
                 });
-                safaribot.sendMessage(src, "Top run killers in " + rec + ": ", safchan);
+                safaribot.sendMessage(src, "Top run killers in " + rec + " for " + cdata[1] + " difficulty: ", safchan);
                 for (var i = 0; i < list.length; i++) {
-                    safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]] + "].", safchan);
+                    safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]] + (cdata[2] == "percentage" ? "%" : "") + "].", safchan);
                 }
                 return true;
             }
