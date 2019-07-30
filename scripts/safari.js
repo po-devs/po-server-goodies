@@ -14603,43 +14603,7 @@ function Safari() {
                         }
                     }
                 }
-                if (!isNPC) {
-                    self.sendMessage(name, "Moves: " + moves.join(" --- "));
-                    if (self.select) {
-                        var m = "";
-                        if (self.npcItems.hyper && self.npcItems.hyper > 0) {
-                            m += toColor("Hyper Potion: " + self.npcItems.hyper + " ", "purple");
-                        }
-                        if (self.npcItems.full && self.npcItems.full > 0) {
-                            m += toColor("Full Restore: " + self.npcItems.full + " ", "purple");
-                        }
-                        if (self.side2Field.reflect > 0 || self.side2Field.lightscreen > 0) {
-                            if (m !== "") {
-                                m += "||";
-                            }
-                            if (self.side2Field.reflect > 0) {
-                                m += toColor("Reflect ", "red");
-                            }
-                            if (self.side2Field.lightscreen > 0) {
-                                m += toColor("Light Screen ", "red");
-                            }
-                        }
-                        if (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) {
-                            if (m !== "") {
-                                m += "||";
-                            }
-                            if (self.side1Field.reflect > 0) {
-                                m += toColor("Reflect ", "blue");
-                            }
-                            if (self.side1Field.lightscreen > 0) {
-                                m += toColor("Light Screen ", "blue");
-                            }
-                        }
-                        if (m !== "") {
-                            self.sendMessage(name, m);
-                        }
-                    }
-                }
+                this.sendMessage(name, "Moves: " + moves.join(" --- "));
             };
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
@@ -14659,6 +14623,40 @@ function Safari() {
             this.sendToViewers(this.name1 + "'s Team: " + opponentInfo(this.team1), null, [this.name1.toLowerCase()]);
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
+            }
+            if (self.select) {
+                var m = "";
+                if (this.npcItems.hyper && this.npcItems.hyper > 0) {
+                    m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
+                }
+                if (this.npcItems.full && this.npcItems.full > 0) {
+                    m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
+                }
+                if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
+                    if (m !== "") {
+                        m += "||";
+                    }
+                    if (this.side2Field.reflect > 0) {
+                        m += toColor("Reflect ", "red");
+                    }
+                    if (this.side2Field.lightscreen > 0) {
+                        m += toColor("Light Screen ", "red");
+                    }
+                }
+                if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
+                    if (m !== "") {
+                        m += "||";
+                    }
+                    if (this.side1Field.reflect > 0) {
+                        m += toColor("Reflect ", "blue");
+                    }
+                    if (this.side1Field.lightscreen > 0) {
+                        m += toColor("Light Screen ", "blue");
+                    }
+                }
+                if (m !== "") {
+                    this.sendMessage(name, m);
+                }
             }
             
             this.player1Input = null;
@@ -17101,7 +17099,7 @@ function Safari() {
         } else {
             var effs = this.getEffectDesc(move);
             var pow = move.power;
-            if (this.select && this.select.powerUnknown && chance(0.5)) {
+            if (this.select && this.select.powerUnknown && (((this.turn % 3 == 0 ? 0 : 1) + (this.turn % 5 == 0 ? 0 : -1) + (move.power % 20 == 0 ? 1 : 0) - (move.power % 35 == 0 ? -1 : 0) + (move.category == "physical" ? (move.power % 15 == 5 ? 1 : 0) : (move.power % 15 == 0 ? 1 : 0))) == 0 ? true : false)) {
                 pow = "???";
             }
             out += typeIcon(move.type) + " " + (move.category === "physical" ? toColor("PHYSICAL", "#ff6600") : toColor("SPECIAL", "#800080")) + " (" + pow + " BP) " + (effs ? ", " + effs : "");
