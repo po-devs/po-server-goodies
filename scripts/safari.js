@@ -17409,7 +17409,7 @@ function Safari() {
                 lightscreen: 0.5
             };
         }
-        if (damaging && user.movePowers[type] && (user.movePowers[type] >= 140)) {
+        if (damaging && user.movepowers[type] && (user.movepowers[type] >= 140)) {
             effChance.recharge = 2;
         }
         if (damaging && this.tagBattle) {
@@ -36788,10 +36788,10 @@ function Safari() {
                     cdata.unshift("kanto");
                 }
                 if (cdata.length < 1) {
-                    cdata.unshift("total");
+                    cdata.push("total");
                 }
                 if (cdata.length < 2) {
-                    cdata.unshift("percentage");
+                    cdata.push("percentage");
                 }
 
                 if (!celebrityPKs.hasOwnProperty(cdata[0])) {
