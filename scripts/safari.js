@@ -14601,43 +14601,42 @@ function Safari() {
                             codesObj[codes[t]] = p.moves[m];
                             t++;
                         }
-                        
-                        if (!isNPC) {
-                            self.sendMessage(name, "Moves: " + moves.join(" --- "));
-                            if (self.select) {
-                                var m = "";
-                                if (self.npcItems.hyper && self.npcItems.hyper > 0) {
-                                    m += toColor("Hyper Potion: " + self.npcItems.hyper + " ", "purple");
-                                }
-                                if (self.npcItems.full && self.npcItems.full > 0) {
-                                    m += toColor("Full Restore: " + self.npcItems.full + " ", "purple");
-                                }
-                                if (self.side2Field.reflect > 0 || self.side2Field.lightscreen > 0) {
-                                    if (m !== "") {
-                                        m += "||";
-                                    }
-                                    if (self.side2Field.reflect > 0) {
-                                        m += toColor("Reflect ", "red");
-                                    }
-                                    if (self.side2Field.lightscreen > 0) {
-                                        m += toColor("Light Screen ", "red");
-                                    }
-                                }
-                                if (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) {
-                                    if (m !== "") {
-                                        m += "||";
-                                    }
-                                    if (self.side1Field.reflect > 0) {
-                                        m += toColor("Reflect ", "blue");
-                                    }
-                                    if (self.side1Field.lightscreen > 0) {
-                                        m += toColor("Light Screen ", "blue");
-                                    }
-                                }
-                                if (m !== "") {
-                                    self.sendMessage(name, m);
-                                }
+                    }
+                }
+                if (!isNPC) {
+                    self.sendMessage(name, "Moves: " + moves.join(" --- "));
+                    if (self.select) {
+                        var m = "";
+                        if (self.npcItems.hyper && self.npcItems.hyper > 0) {
+                            m += toColor("Hyper Potion: " + self.npcItems.hyper + " ", "purple");
+                        }
+                        if (self.npcItems.full && self.npcItems.full > 0) {
+                            m += toColor("Full Restore: " + self.npcItems.full + " ", "purple");
+                        }
+                        if (self.side2Field.reflect > 0 || self.side2Field.lightscreen > 0) {
+                            if (m !== "") {
+                                m += "||";
                             }
+                            if (self.side2Field.reflect > 0) {
+                                m += toColor("Reflect ", "red");
+                            }
+                            if (self.side2Field.lightscreen > 0) {
+                                m += toColor("Light Screen ", "red");
+                            }
+                        }
+                        if (self.side1Field.reflect > 0 || self.side1Field.lightscreen > 0) {
+                            if (m !== "") {
+                                m += "||";
+                            }
+                            if (self.side1Field.reflect > 0) {
+                                m += toColor("Reflect ", "blue");
+                            }
+                            if (self.side1Field.lightscreen > 0) {
+                                m += toColor("Light Screen ", "blue");
+                            }
+                        }
+                        if (m !== "") {
+                            self.sendMessage(name, m);
                         }
                     }
                 }
@@ -15743,7 +15742,7 @@ function Safari() {
 
         var codeList;
         if (isP1) {
-            if (this.recharge1) {
+            if (!(this.recharge1)) {
                 codeList = this.p1MoveCodes;
             } else {
                 this.sendMessage(name, "You cannot choose moves!");
@@ -15751,7 +15750,7 @@ function Safari() {
             }
         }
         else if (isP2) {
-            if (this.recharge2) {
+            if (!this.recharge2) {
                 codeList = this.p2MoveCodes;
             } else {
                 this.sendMessage(name, "You cannot choose moves!");
@@ -15759,7 +15758,7 @@ function Safari() {
             }
         }
         else if (isP3) {
-            if (this.recharge3) {
+            if (!this.recharge3) {
                 codeList = this.p3MoveCodes;
             } else {
                 this.sendMessage(name, "You cannot choose moves!");
@@ -15767,7 +15766,7 @@ function Safari() {
             }
         }
         else if (isP4) {
-            if (this.recharge4) {
+            if (!this.recharge4) {
                 codeList = this.p4MoveCodes;
             } else {
                 this.sendMessage(name, "You cannot choose moves!");
