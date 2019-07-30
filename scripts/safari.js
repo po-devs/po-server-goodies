@@ -18415,7 +18415,12 @@ function Safari() {
             this.sendToViewers("<b>This battle was aborted by " + sys.name(src) + "! " + (winner !== "Tie" ? winner + " was declared the winner!" : "") + "</b>", true);
         }
         if (this.npcBattle && this.postBattle) {
-            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers);
+            var extraArgs = {
+                turn: this.turn,
+                winMsg: this.winMsg,
+                loseMsg: this.loseMsg
+            }
+            this.postBattle(this.name1, winner === this.name1, this.getHpPercent(this.name1), this.postArgs, this.viewers, extraArgs);
         }
         this.finished = true;
     };
