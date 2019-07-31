@@ -28495,6 +28495,7 @@ function Safari() {
             case "vicious": m = "Landing an attacking move provides raises a random stat two stages and lowers another by one."; break;
             case "moonblast": m = "Every three to six turns, both Pokémon on the field are struck with a Moonblast."; break;
             case "irontail": m = "Every three to six turns, both Pokémon on the field are struck with an Iron Tail."; break;
+            case "waterfall": m = "Every three to six turns, both Pokémon on the field are struck with a Waterfall."; break;
             case "topsyturvy": m = "Every seven turns, all stat changes are inverted."; break;
             case "dancer": m = "Every six turns, foe's SATK SDEF SPE +1."; break;
             case "dancer2": m = "Every six turns, foe's ATK SPE +1."; break;
@@ -28551,7 +28552,7 @@ function Safari() {
             case "hyperpotion3": m = "Foe has 3 Hyper Potions at their disposal."; break;
             case "boostType1": m = ""; break;
             case "boostType2": m = ""; break;
-            default: m = ("Missing help text: " + j + ". Please contact a Safari Admin");
+            default: m = ("Missing help text: " + condition + ". Please contact a Safari Admin");
         }
         return m;
     }
