@@ -15539,7 +15539,7 @@ function Safari() {
             }
             if (this.select) {
                 if (this.select.lastStand && this.selectData.lastStandReady) {
-                    var foeMons = this.team2.concat(this.team4), mon, count, remaining = null;
+                    var foeMons = this.team2.concat(this.team4), mon, count = 0, remaining = null;
                     for (var i = 0; i < foeMons.length; i++) {
                         mon = foeMons[i];
                         if (mon.hp > 0) {
@@ -16959,7 +16959,7 @@ function Safari() {
                 n = n.splice(n.indexOf("sdef"), 1);
             }
             if (n.contains(b)) {
-                n = n.splice(n.indexOf(b), 1);
+                n.splice(n.indexOf(b), 1);
             }
             n = n.random();
             if (this.select.singlespecialstat && n == "sdef") {
