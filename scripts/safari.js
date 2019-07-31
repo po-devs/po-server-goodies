@@ -14655,7 +14655,7 @@ function Safari() {
                     }
                 }
                 if (m !== "") {
-                    this.sendMessage(name, m);
+                    this.sendMessage(this.name1, m);
                 }
             }
             
