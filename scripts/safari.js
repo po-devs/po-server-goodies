@@ -14624,37 +14624,39 @@ function Safari() {
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
-            var m = "";
-            if (this.npcItems.hyper && this.npcItems.hyper > 0) {
-                m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
-            }
-            if (this.npcItems.full && this.npcItems.full > 0) {
-                m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
-            }
-            if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
+            if (this.select) {
+                var m = "";
+                if (this.npcItems.hyper && this.npcItems.hyper > 0) {
+                    m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
+                }
+                if (this.npcItems.full && this.npcItems.full > 0) {
+                    m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
+                }
+                if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
+                    if (m !== "") {
+                        m += "||";
+                    }
+                    if (this.side2Field.reflect > 0) {
+                        m += toColor("Reflect ", "red");
+                    }
+                    if (this.side2Field.lightscreen > 0) {
+                        m += toColor("Light Screen ", "red");
+                    }
+                }
+                if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
+                    if (m !== "") {
+                        m += "||";
+                    }
+                    if (this.side1Field.reflect > 0) {
+                        m += toColor("Reflect ", "blue");
+                    }
+                    if (this.side1Field.lightscreen > 0) {
+                        m += toColor("Light Screen ", "blue");
+                    }
+                }
                 if (m !== "") {
-                    m += "||";
+                    this.sendMessage(name, m);
                 }
-                if (this.side2Field.reflect > 0) {
-                    m += toColor("Reflect ", "red");
-                }
-                if (this.side2Field.lightscreen > 0) {
-                    m += toColor("Light Screen ", "red");
-                }
-            }
-            if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
-                if (m !== "") {
-                    m += "||";
-                }
-                if (this.side1Field.reflect > 0) {
-                    m += toColor("Reflect ", "blue");
-                }
-                if (this.side1Field.lightscreen > 0) {
-                    m += toColor("Light Screen ", "blue");
-                }
-            }
-            if (m !== "") {
-                this.sendMessage(this.name1, m);
             }
             
             this.player1Input = null;
@@ -15537,7 +15539,7 @@ function Safari() {
             }
             if (this.select) {
                 if (this.select.lastStand && this.selectData.lastStandReady) {
-                    var foeMons = this.team2.concat(this.team4), mon, count = 0, remaining = null;
+                    var foeMons = this.team2.concat(this.team4), mon, count, remaining = null;
                     for (var i = 0; i < foeMons.length; i++) {
                         mon = foeMons[i];
                         if (mon.hp > 0) {
@@ -16954,10 +16956,10 @@ function Safari() {
             var n = ["atk", "def", "spe", "satk", "sdef"];
             if (this.select.singlespecialstat && b == "sdef") {
                 b = "satk";
-                n.splice(n.indexOf("sdef"), 1);
+                n = n.splice(n.indexOf("sdef"), 1);
             }
             if (n.contains(b)) {
-                n.splice(n.indexOf(b), 1);
+                n = n.splice(n.indexOf(b), 1);
             }
             n = n.random();
             if (this.select.singlespecialstat && n == "sdef") {
@@ -17097,7 +17099,7 @@ function Safari() {
         } else {
             var effs = this.getEffectDesc(move);
             var pow = move.power;
-            if (this.select && this.select.powerUnknown && (((this.turn % 3 == 0 ? 0 : 1) + (this.turn % 2 == 0 ? 0 : -1) + (this.turn % 5 == 0 ? 0 : -1) + (move.power % 20 == 0 ? 1 : 0) - (move.power % 35 == 0 ? -1 : 0) + (move.category == "physical" ? (move.power % 15 == 5 ? 1 : 0) : (move.power % 15 == 0 ? 1 : 0))) == 0 ? true : false)) {
+            if (this.select && this.select.powerUnknown && (((this.turn % 3 == 0 ? 0 : 1) + (this.turn % 5 == 0 ? 0 : -1) + (move.power % 20 == 0 ? 1 : 0) - (move.power % 35 == 0 ? -1 : 0) + (move.category == "physical" ? (move.power % 15 == 5 ? 1 : 0) : (move.power % 15 == 0 ? 1 : 0))) == 0 ? true : false)) {
                 pow = "???";
             }
             out += typeIcon(move.type) + " " + (move.category === "physical" ? toColor("PHYSICAL", "#ff6600") : toColor("SPECIAL", "#800080")) + " (" + pow + " BP) " + (effs ? ", " + effs : "");
