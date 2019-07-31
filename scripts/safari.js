@@ -36786,13 +36786,13 @@ function Safari() {
             };
             if (command === "celebritypks" || command == "cpks") {
                 var rec = commandData.toLowerCase(), e, g, out, i, cdata = rec.split(":");
-                if (cdata.length < 0) {
+                if (cdata.length < 1) {
                     cdata.unshift("kanto");
                 }
-                if (cdata.length < 1) {
+                if (cdata.length < 2) {
                     cdata.push("total");
                 }
-                if (cdata.length < 2) {
+                if (cdata.length < 3) {
                     cdata.push("percentage");
                 }
 
@@ -36814,8 +36814,14 @@ function Safari() {
                     return e[b][0] - e[a][0];
                 });
                 safaribot.sendMessage(src, "Top run killers in " + rec + " for " + cdata[1] + " difficulty: ", safchan);
-                for (var i = 0; i < list.length; i++) {
-                    safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]] + (cdata[2] == "percentage" ? "%" : "") + "].", safchan);
+                if (cdata[2] !== "percentage") {
+                    for (var i = 0; i < list.length; i++) {
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i][0]] + "].", safchan);
+                    }
+                } else {
+                    for (var i = 0; i < list.length; i++) {
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + (100 * e[list[i][0]] / (Math.max(e[b][1] + e[b][0], 1))) + "%" + "].", safchan);
+                    }
                 }
                 return true;
             }
