@@ -14576,11 +14576,11 @@ function Safari() {
                 return out.join(" || ");
             };
             var prepareTeamForTurn = function(name, team, codesObj, isNPC) {
-                var e, t = 0, p, m, moves,  codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+                var e, t = 0, p, m, moves = [],  codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
                 for (e = 0; e < team.length; e++) {
                     p = team[e];
                     if (p.hp > 0) {
-                        p.moves = [];
+                        moves = [];
                         p.moves = self.generateMoves(e, p, name);
                         p.flinch = false;
                         p.protect = false;
@@ -14601,9 +14601,9 @@ function Safari() {
                             codesObj[codes[t]] = p.moves[m];
                             t++;
                         }
+                        self.sendMessage(name, "Moves: " + moves.join(" --- "));
                     }
                 }
-                self.sendMessage(name, "Moves: " + moves.join(" --- "));
             };
             
             this.sendToViewers(toColor("<b>TURN " + this.turn+"</b>", "red"));
