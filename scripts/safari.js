@@ -16399,7 +16399,7 @@ function Safari() {
                 }
                 tname = target.owner + "'s " + poke(target.id);
                 target.hp -= dmg;
-                if (self.select.retaliate2) {
+                if (self.select && self.select.retaliate2) {
                     if (isP1 || isP3) {
                         self.selectData.retaliate1 = false;
                     } else if (isP2 || isP4) {
