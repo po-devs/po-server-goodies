@@ -14624,7 +14624,7 @@ function Safari() {
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
-            if (self.select) {
+            if (this.select) {
                 var m = "";
                 if (this.npcItems.hyper && this.npcItems.hyper > 0) {
                     m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
@@ -14676,7 +14676,7 @@ function Safari() {
                 }
             }
             for (var a in this.team2) {
-                if (this.team2[a].mustRecharge && this.team1[b].hp > 0) {
+                if (this.team2[a].mustRecharge && this.team2[a].hp > 0) {
                     this.recharge2 = true;
                     break;
                 }
@@ -15280,10 +15280,10 @@ function Safari() {
                     }
                     if (user.confused && chance(0.5)) {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
-                        var dmg = ((this.getStatValue(user, "atk") * 40) / this.getStatValue(user, "def"));
+                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
                         dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
                         user.hp -= dmg;
-                        this.sendToViewers(name + " lost " + dmg + "HP!");
+                        this.sendToViewers(name + " lost " + dmg + " HP!");
                         if (user.hp <= 0) {
                             this.sendToViewers("<b>" + name + " fainted!</b>");
                         }
@@ -15563,28 +15563,28 @@ function Safari() {
                 this.side1Field.reflect--;
                 if (this.side1Field.reflect <= 0) {
                     this.side1Field.reflect = -1;
-                    this.sendToViewers("Reflect on " + this.name1 + "'s side wore off!");
+                    this.sendToViewers(toColor("Reflect on " + this.name1 + "'s side wore off!", "purple"));
                 }
             }
             if (this.side1Field.lightscreen > 0) {
                 this.side1Field.lightscreen--;
                 if (this.side1Field.lightscreen <= 0) {
                     this.side1Field.lightscreen = -1;
-                    this.sendToViewers("Light Screen on " + this.name1 + "'s side wore off!");
+                    this.sendToViewers(toColor("Light Screen on " + this.name1 + "'s side wore off!", "purple"));
                 }
             }
             if (this.side2Field.reflect > 0) {
                 this.side2Field.reflect--;
                 if (this.side2Field.reflect <= 0) {
                     this.side2Field.reflect = -1;
-                    this.sendToViewers("Reflect on " + this.name2 + "'s side wore off!");
+                    this.sendToViewers(toColor("Reflect on " + this.name2 + "'s side wore off!", "purple"));
                 }
             }
             if (this.side2Field.lightscreen > 0) {
                 this.side2Field.lightscreen--;
                 if (this.side2Field.lightscreen <= 0) {
                     this.side2Field.lightscreen = -1;
-                    this.sendToViewers("Light Screen on " + this.name2 + "'s side wore off!");
+                    this.sendToViewers(toColor("Light Screen on " + this.name2 + "'s side wore off!", "purple"));
                 }
             }
             
@@ -16982,7 +16982,7 @@ function Safari() {
                 out.push(name + "'s " + this.statName(n) + " -1!");
             }
         }
-        if (this.select && this.select.dynamicPunch) {
+        if (this.select && this.select.dynamicPunch && target.hp > 0) {
             if (move.type == "Fighting") {
                 target.confused = true;
                 out.push(tname + " was confused!");
