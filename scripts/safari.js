@@ -36819,11 +36819,11 @@ function Safari() {
                 safaribot.sendMessage(src, "Top run killers in " + rec + " for " + cdata[1] + " difficulty: ", safchan);
                 if (cdata[2] !== "percentage") {
                     for (var i = 0; i < list.length; i++) {
-                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i][0]] + "].", safchan);
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + e[list[i]][0] + "].", safchan);
                     }
                 } else {
                     for (var i = 0; i < list.length; i++) {
-                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + (100 * e[list[i][0]] / (Math.max(e[b][1] + e[b][0], 1))) + "%" + "].", safchan);
+                        safaribot.sendMessage(src, (i + 1) + ": " + list[i] + " [" + (100 * e[list[i]][0] / (Math.max(e[list[i]][1] + e[list[i]][0], 1))) + "%" + "].", safchan);
                     }
                 }
                 return true;
