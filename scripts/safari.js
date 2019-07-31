@@ -14580,7 +14580,7 @@ function Safari() {
                 for (e = 0; e < team.length; e++) {
                     p = team[e];
                     if (p.hp > 0) {
-                        moves = [];
+                        p.moves = [];
                         p.moves = self.generateMoves(e, p, name);
                         p.flinch = false;
                         p.protect = false;
@@ -14670,13 +14670,13 @@ function Safari() {
             this.recharge3 = false;
             this.recharge4 = false;
             for (var a in this.team1) {
-                if (this.team1[a].mustRecharge) {
+                if (this.team1[a].mustRecharge && this.team1[a].hp > 0) {
                     this.recharge1 = true;
                     break;
                 }
             }
             for (var a in this.team2) {
-                if (this.team2[a].mustRecharge) {
+                if (this.team2[a].mustRecharge && this.team1[b].hp > 0) {
                     this.recharge2 = true;
                     break;
                 }
