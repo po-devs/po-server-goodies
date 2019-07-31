@@ -5422,7 +5422,7 @@ function Safari() {
                 return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
             }
             if (select.resistMode) {
-                return (this.checkEffective(def, def2, atk1, "???", "???", (inverted ? false : true)));
+                return (this.checkEffective(def1, def2, atk1, "???", "???", (inverted ? false : true)));
             }
             return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
         }
@@ -14855,7 +14855,7 @@ function Safari() {
                     for (var a in this.team1) {
                         if (this.team1[a].mustRecharge) {
                             poke1 = this.team1[a];
-                            move1 = {"recharge": true, "priority": 0};
+                            move1 = {"isRecharged": true, "priority": 0};
                             break;
                         }
                     }
@@ -15257,7 +15257,7 @@ function Safari() {
                             out.push(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
                         }
                     }
-                    if (move.recharge === true) {
+                    if (move.isRecharged === true) {
                         this.sendToViewers(toColor(name + " must recharge!", sColor));
                         user.mustRecharge = false;
                         continue;
