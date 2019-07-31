@@ -2824,7 +2824,10 @@ function Safari() {
         if ("color" in colors[type]) {
             text = colors[type].color;
         }
-        var bg = colors[type].bg;
+        var bg = "#a8a878";
+        if (type && colors[type] && "bg" in colors[type]) {
+            bg = colors[type].bg;
+        }
         
         return "<background color='"+bg+"'><font color='" + text + "' style='background-color:"+bg+";'> " + type + " </font></background>";
     }
