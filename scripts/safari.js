@@ -21723,7 +21723,9 @@ function Safari() {
                     else {
                         var battle = new Battle2(id, trainer, {
                             cantWatch: false,
-                            t1HP: regen
+                            t1HP: regen,
+                            winMsg: trainer.winMsg,
+                            loseMsg: trainer.loseMsg
                         },
                         null, null, trainer.select, viewers);
                     }
