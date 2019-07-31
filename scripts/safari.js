@@ -15280,10 +15280,10 @@ function Safari() {
                     }
                     if (user.confused && chance(0.5)) {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
-                        var dmg = ((this.getStatValue(user, "atk") * 40) / this.getStatValue(user, "def"));
+                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
                         dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
                         user.hp -= dmg;
-                        this.sendToViewers(name + " lost " + dmg + "HP!");
+                        this.sendToViewers(name + " lost " + dmg + " HP!");
                         if (user.hp <= 0) {
                             this.sendToViewers("<b>" + name + " fainted!</b>");
                         }
