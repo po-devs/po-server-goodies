@@ -15514,9 +15514,9 @@ function Safari() {
                         mon.boosts["def"] -= 1;
                         mon.boosts["sdef"] -= 1;
                         mon.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
-                        mon.boosts["atk"] = Math.min(mon.boosts["sdef"], 6);
+                        mon.boosts["atk"] = Math.min(mon.boosts["atk"], 6);
                         mon.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
-                        mon.boosts["def"] = Math.max(mon.boosts["satk"], -6);
+                        mon.boosts["def"] = Math.max(mon.boosts["def"], -6);
                         mon.boosts["sdef"] = Math.max(mon.boosts["sdef"], -6);
                     }
                     this.sendToViewers("The foe's Pokémon smashed their shells!");
