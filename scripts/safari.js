@@ -30894,7 +30894,7 @@ function Safari() {
             {score: 0, name: team1, signups: [], firstBall: false},
             {score: 0, name: team2, signups: [], firstBall: false}
         ];
-        this.turnLength = 6;
+        this.turnLength = 5;
         this.step = 0;
         this.finished = false;
         this.phase = "signups";
@@ -31042,12 +31042,13 @@ function Safari() {
                     this.teamData[0].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
                     sendAll(name + " signed up for Team " + cdata2 + "!");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
                     cdata2 = this.teamData[1].name;
                     this.teamData[1].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
-                    sendAll(name + " signed up for Team " + cdata2 + "!");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
                     this.assemblePhase();
