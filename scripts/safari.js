@@ -2836,11 +2836,11 @@ function Safari() {
             Fairy: { bg: "#ee99ac" }
         };
         var text = "a8a878";
-        if (type && colors[type] && "color" in colors[type]) {
+        if (type && colors[type] && ("color" in colors[type])) {
             text = colors[type].color;
         }
         var bg = "#a8a878";
-        if (type && colors[type] && "bg" in colors[type]) {
+        if (type && colors[type] && ("bg" in colors[type])) {
             bg = colors[type].bg;
         }
         
@@ -9907,6 +9907,8 @@ function Safari() {
         preschoolerPack6: "Received prizes for leveling up",
         preschoolerPack7: "Received prizes for leveling up",
         preschoolerPack8: "Received prizes for leveling up",
+        preschoolerPack9: "Received prizes for leveling up",
+        preschoolerPack10: "Received prizes for leveling up",
         fasterFinder: "Itemfinder can be used faster",
         evolveCheap: "Evolve Pokémon cheaper",
         mythBallBoost: "Increased ability to successfully use Myth Ball",
@@ -10125,7 +10127,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare" "10@bigpearl", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
