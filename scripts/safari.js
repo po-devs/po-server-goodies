@@ -15415,7 +15415,11 @@ function Safari() {
                 }
             }
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer))) {
-                this.sendToViewers("The Iron Tail strikes the field!");
+                if (this.select.irontail) {
+                    this.sendToViewers("The Iron Tail strikes the field!");
+                } else {
+                    this.sendToViewers("The Waterfall strikes the field!");
+                }
                 this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier, type, pow;
@@ -15450,7 +15454,7 @@ function Safari() {
                         var stat = ["atk", "def", "spe", "satk", "sdef"].random();
                         poke2.boosts[stat] += 2;
                         poke2.boosts[stat] = Math.min(6, Math.max(poke2.boosts[stat], -6));
-                        out.push(poke(poke2.id) + "'s " + self.statName(stat) + " +2!");
+                        this.sendToViewers(poke(poke2.id) + "'s " + self.statName(stat) + " +2!");
                     }
                 }
             }
