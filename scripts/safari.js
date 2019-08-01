@@ -8829,7 +8829,7 @@ function Safari() {
         }
         if (player.costume == "flower" || player.costume == "fisherman") {
             cd *= 1.4;
-        } else if (player.costume == "preschooler" && this.hasSkill(player, "fasterFinder")) {
+        } else if (player.costume == "preschooler" && safari.hasCostumeSkill(player, "fasterFinder")) {
             cd *= 0.5;
         }
 
