@@ -827,7 +827,7 @@ function Safari() {
                 preschoolerPack2: [4, 4],
                 fasterFinder: [5, 5],
                 preschoolerPack3: [7, 7],
-                preschoolerPack4: [9, 0],
+                preschoolerPack4: [9, 9],
                 preschoolerPack5: [11, 11],
                 preschoolerPack6: [13, 13],
                 preschoolerPack7: [15, 15],
