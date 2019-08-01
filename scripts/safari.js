@@ -824,15 +824,16 @@ function Safari() {
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             skills: {
                 preschoolerPack1: [2, 2],
-                preschoolerPack2: [5, 5],
-                fasterFinder: [6, 6],
-                preschoolerPack3: [8, 8],
-                preschoolerPack4: [10, 10],
-                preschoolerPack4: [12, 12],
-                preschoolerPack5: [15, 15],
-                preschoolerPack6: [17, 17],
-                preschoolerPack7: [19, 19],
-                preschoolerPack8: [20, 20]
+                preschoolerPack2: [4, 4],
+                fasterFinder: [5, 5],
+                preschoolerPack3: [7, 7],
+                preschoolerPack4: [9, 0],
+                preschoolerPack4: [11, 11],
+                preschoolerPack5: [13, 13],
+                preschoolerPack6: [15, 15],
+                preschoolerPack7: [17, 17],
+                preschoolerPack8: [19, 19],
+                preschoolerPack9: [20, 20]
             },
             expTypes: []
         },
@@ -9906,6 +9907,7 @@ function Safari() {
         preschoolerPack6: "Received prizes for leveling up",
         preschoolerPack7: "Received prizes for leveling up",
         preschoolerPack8: "Received prizes for leveling up",
+        fasterFinder: "Itemfinder can be used faster",
         evolveCheap: "Evolve Pokémon cheaper",
         mythBallBoost: "Increased ability to successfully use Myth Ball",
         quickBallBoost: "Increased ability to successfully use Quick Ball",
@@ -10016,7 +10018,7 @@ function Safari() {
     this.costumeEXP = function(player, type, val) {
         var exp = 0, src = sys.id(player.id);
         var cos = player.costume;
-        if (cos == "inver" || cos == "preschooler") {
+        if (cos == "inver") {
             return false;
         }
         if (cos == "" || cos == "none" || !cos) {
@@ -10056,6 +10058,11 @@ function Safari() {
                     exp = 100; 
                 }
                 break;
+        }
+        if (player.costume == "preschooler" && player.records.pokesCaught > 999) {
+            exp *= 0.5;
+        } else if (player.costume == "preschooler") {
+            exp *= 1.5;
         }
         if (!player.costumeInfo[cos]) {
             player.costumeInfo[cos] = {};
@@ -10110,31 +10117,35 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack2") {
-                        g = giveStuff(player, toStuffObj("15@bluapricorn", "15@pnkapricorn", "15@pnkapricorn", "20@bait"));
+                        g = giveStuff(player, toStuffObj("15@bluapricorn", "15@pnkapricorn", "15@pnkapricorn", "20@bait", "5@pearl"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack3") {
-                        g = giveStuff(player, toStuffObj("15@redapricorn", "15@ylwapricorn", "15@grnapricorn", "20@bait"));
+                        g = giveStuff(player, toStuffObj("15@redapricorn", "15@ylwapricorn", "15@grnapricorn", "20@bait", "5@pearl"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "10@bigpearl", "20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
-                        g = giveStuff(player, toStuffObj("2@eviolite", "@honey", "@amulet", "@scarf", "50@great"));
+                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack6") {
-                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait"));
+                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack7") {
-                        g = giveStuff(player, toStuffObj("10@egg"));
+                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack8") {
-                        g = giveStuff(player, toStuffObj("@nugget", "@stardust", "5@eviolite", "50@bait", "100@safari"));
+                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack9") {
+                        g = giveStuff(player, toStuffObj("@nugget", "10@golden", "@stardust", "5@eviolite", "50@bait", "100@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "pokefanPack") {
