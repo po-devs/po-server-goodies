@@ -827,13 +827,13 @@ function Safari() {
                 preschoolerPack2: [4, 4],
                 fasterFinder: [5, 5],
                 preschoolerPack3: [7, 7],
-                preschoolerPack4: [9, 0],
-                preschoolerPack4: [11, 11],
-                preschoolerPack5: [13, 13],
-                preschoolerPack6: [15, 15],
-                preschoolerPack7: [17, 17],
-                preschoolerPack8: [19, 19],
-                preschoolerPack9: [20, 20]
+                preschoolerPack4: [9, 9],
+                preschoolerPack5: [11, 11],
+                preschoolerPack6: [13, 13],
+                preschoolerPack7: [15, 15],
+                preschoolerPack8: [17, 17],
+                preschoolerPack9: [19, 19],
+                preschoolerPack10: [20, 20]
             },
             expTypes: []
         },
@@ -9907,6 +9907,8 @@ function Safari() {
         preschoolerPack6: "Received prizes for leveling up",
         preschoolerPack7: "Received prizes for leveling up",
         preschoolerPack8: "Received prizes for leveling up",
+        preschoolerPack9: "Received prizes for leveling up",
+        preschoolerPack10: "Received prizes for leveling up",
         fasterFinder: "Itemfinder can be used faster",
         evolveCheap: "Evolve Pokémon cheaper",
         mythBallBoost: "Increased ability to successfully use Myth Ball",
@@ -10125,7 +10127,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "10@bigpearl", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare" "10@bigpearl", "20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
@@ -10133,19 +10135,23 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack6") {
-                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
+                        g = giveStuff(player, toStuffObj("3@rare", "@battery", "20@bait", "75@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack7") {
-                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
+                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack8") {
-                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack9") {
-                        g = giveStuff(player, toStuffObj("@nugget", "10@golden", "@stardust", "5@eviolite", "50@bait", "100@safari"));
+                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack10") {
+                        g = giveStuff(player, toStuffObj("@nugget", "10@rare", "10@golden", "@stardust", "5@eviolite", "50@bait", "100@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "pokefanPack") {
