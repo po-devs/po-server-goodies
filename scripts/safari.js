@@ -31042,12 +31042,13 @@ function Safari() {
                     this.teamData[0].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
                     sendAll(name + " signed up for Team " + cdata2 + "!");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[1].name.toLowerCase() === cdata2.toLowerCase()) {
                     cdata2 = this.teamData[1].name;
                     this.teamData[1].signups.push(player.id);
                     this.sendMessage(name, "You signed up for Team " + cdata2 + "!", "red");
-                    sendAll(name + " signed up for Team " + cdata2 + "!");
+                    this.sendMessageAll(name + " signed up for Team " + cdata2 + "!");
                 }
                 if (this.teamData[0].signups.length >= 6 && this.teamData[1].signups.length >= 6) {
                     this.assemblePhase();
