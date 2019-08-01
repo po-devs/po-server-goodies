@@ -2821,7 +2821,8 @@ function Safari() {
             Dark: { bg: "#705848" },
             Fairy: { bg: "#ee99ac" }
         };
-        if ("color" in colors[type]) {
+        var text = "a8a878";
+        if (type && colors[type] && "color" in colors[type]) {
             text = colors[type].color;
         }
         var bg = "#a8a878";
