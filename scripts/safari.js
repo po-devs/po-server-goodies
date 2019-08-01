@@ -819,8 +819,22 @@ function Safari() {
     };
     var costumeData = {
         preschooler: {
-            icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases by 15% the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
-            skills: {},
+            icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, 
+            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases by 15% the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
+            expTypes: ["daycareplay", "bait", "wincontest", "catch"],
+            skills: {
+                preschoolerPack1: [2, 2],
+                preschoolerPack2: [4, 4],
+                fasterFinder: [5, 5],
+                preschoolerPack3: [7, 7],
+                preschoolerPack4: [9, 9],
+                preschoolerPack5: [11, 11],
+                preschoolerPack6: [13, 13],
+                preschoolerPack7: [15, 15],
+                preschoolerPack8: [17, 17],
+                preschoolerPack9: [19, 19],
+                preschoolerPack10: [20, 20]
+            },
             expTypes: []
         },
         breeder: {
@@ -8815,6 +8829,8 @@ function Safari() {
         }
         if (player.costume == "flower" || player.costume == "fisherman") {
             cd *= 1.4;
+        } else if (player.costume == "preschooler" && this.hasSkill(player, "fasterFinder")) {
+            cd *= 0.5;
         }
 
         player.cooldowns.itemfinder = currentTime + cd;
@@ -9883,6 +9899,17 @@ function Safari() {
         flowerPack: "Received prizes for leveling up",
         fisherPack: "Received prizes for leveling up",
         rocketPack: "Received prizes for leveling up",
+        preschoolerPack1: "Received prizes for leveling up",
+        preschoolerPack2: "Received prizes for leveling up",
+        preschoolerPack3: "Received prizes for leveling up",
+        preschoolerPack4: "Received prizes for leveling up",
+        preschoolerPack5: "Received prizes for leveling up",
+        preschoolerPack6: "Received prizes for leveling up",
+        preschoolerPack7: "Received prizes for leveling up",
+        preschoolerPack8: "Received prizes for leveling up",
+        preschoolerPack9: "Received prizes for leveling up",
+        preschoolerPack10: "Received prizes for leveling up",
+        fasterFinder: "Itemfinder can be used faster",
         evolveCheap: "Evolve Pokémon cheaper",
         mythBallBoost: "Increased ability to successfully use Myth Ball",
         quickBallBoost: "Increased ability to successfully use Quick Ball",
@@ -9993,7 +10020,7 @@ function Safari() {
     this.costumeEXP = function(player, type, val) {
         var exp = 0, src = sys.id(player.id);
         var cos = player.costume;
-        if (cos == "inver" || cos == "preschooler") {
+        if (cos == "inver") {
             return false;
         }
         if (cos == "" || cos == "none" || !cos) {
@@ -10033,6 +10060,11 @@ function Safari() {
                     exp = 100; 
                 }
                 break;
+        }
+        if (player.costume == "preschooler" && player.records.pokesCaught > 999) {
+            exp *= 0.5;
+        } else if (player.costume == "preschooler") {
+            exp *= 1.5;
         }
         if (!player.costumeInfo[cos]) {
             player.costumeInfo[cos] = {};
@@ -10080,6 +10112,46 @@ function Safari() {
                     }
                     if (c == "fisherPack") {
                         g = giveStuff(player, toStuffObj("100@dew,100@hdew"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack1") {
+                        g = giveStuff(player, toStuffObj("2@gem", "10@gacha", "10@bait", "30@safari"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack2") {
+                        g = giveStuff(player, toStuffObj("15@bluapricorn", "15@pnkapricorn", "15@pnkapricorn", "20@bait", "5@pearl"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack3") {
+                        g = giveStuff(player, toStuffObj("15@redapricorn", "15@ylwapricorn", "15@grnapricorn", "20@bait", "5@pearl"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack4") {
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack5") {
+                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack6") {
+                        g = giveStuff(player, toStuffObj("3@rare", "@battery", "20@bait", "75@safari"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack7") {
+                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack8") {
+                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack9") {
+                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
+                    }
+                    if (c == "preschoolerPack10") {
+                        g = giveStuff(player, toStuffObj("@nugget", "10@rare", "10@golden", "@stardust", "5@eviolite", "50@bait", "100@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "pokefanPack") {
