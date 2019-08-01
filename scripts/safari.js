@@ -827,7 +827,7 @@ function Safari() {
                 preschoolerPack2: [4, 4],
                 fasterFinder: [5, 5],
                 preschoolerPack3: [7, 7],
-                preschoolerPack4: [9, 0],
+                preschoolerPack4: [9, 9],
                 preschoolerPack5: [11, 11],
                 preschoolerPack6: [13, 13],
                 preschoolerPack7: [15, 15],
@@ -2836,11 +2836,11 @@ function Safari() {
             Fairy: { bg: "#ee99ac" }
         };
         var text = "a8a878";
-        if (type && colors[type] && "color" in colors[type]) {
+        if (type && colors[type] && ("color" in colors[type])) {
             text = colors[type].color;
         }
         var bg = "#a8a878";
-        if (type && colors[type] && "bg" in colors[type]) {
+        if (type && colors[type] && ("bg" in colors[type])) {
             bg = colors[type].bg;
         }
         
