@@ -10127,7 +10127,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare" "10@bigpearl", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
