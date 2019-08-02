@@ -14942,7 +14942,11 @@ function Safari() {
                 spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
             }
             if (this.npcBattle) {
-                this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
+                if (this.recharge2) {
+                    this.player2Input = "---";
+                } else {
+                    this.player2Input = this.chooseNPCMove(this.p2MoveCodes, this.team2, this.team1);
+                }
                 if (this.tagBattle) {
                     if ((!this.oneOnTwo) && this.player3Input === null) {
                         this.player3Input = Object.keys(this.p3MoveCodes).random();
@@ -14991,7 +14995,7 @@ function Safari() {
                     for (var a in this.team2) {
                         if (this.team2[a].mustRecharge) {
                             poke2 = this.team2[a];
-                            move2 = {"recharge": true, "priority": 0};
+                            move2 = {"isRecharged": true, "priority": 0};
                             break;
                         }
                     }
