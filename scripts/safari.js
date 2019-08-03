@@ -834,8 +834,7 @@ function Safari() {
                 preschoolerPack8: [17, 17],
                 preschoolerPack9: [19, 19],
                 preschoolerPack10: [20, 20]
-            },
-            expTypes: []
+            }
         },
         breeder: {
             icon: 379, name: "breeder", fullName: "PokeBreeder", aliases: ["pokébreeder", "breeder", "pokebreeder", "poke breeder", "pokemonbreeder", "pokemon breeder"], 
@@ -17467,7 +17466,7 @@ function Safari() {
                 lowpriority: (6 * (0.08 - factor)),
                 flinch: 2.65,
                 drain: (0.75 + factor + drain),
-                recoil: (0.7 + recoil - factor),
+                recoil: (0.75 * (0.7 + recoil - factor)),
                 critical: (0.75 + critical + factor),
                 burnout: (5 + (burnout * 4)),
                 status: 2,
