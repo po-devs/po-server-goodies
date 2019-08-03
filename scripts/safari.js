@@ -14097,7 +14097,7 @@ function Safari() {
                 this.npcItems.hyper = 2;
             }
             else if (select.hyperpotion) {
-                this.npcItemshyper = 1;
+                this.npcItems.hyper = 1;
             }
             if (select.fullrestore3) {
                 this.npcItems.full = 3;
@@ -14195,7 +14195,7 @@ function Safari() {
                 }
             }
             this.selectData.shieldHP = 0;
-            if (select.iceshield || select.electroshield || select.dracoshield || select.genesisshield) {
+            if (select.iceshield || select.electroshield || select.dracoshield || select.sludgeshield || select.genesisshield) {
                 if (difficulty) {
                     this.selectData.shieldHP = 400 + (difficulty * 100);
                 } else {
@@ -15636,9 +15636,9 @@ function Safari() {
                         remaining.boosts["atk"] += 2;
                         remaining.boosts["satk"] += 2;
                         remaining.boosts["spe"] += 2;
-                        remaining.boosts["satk"] = Math.min(mon.boosts["satk"], 6);
-                        remaining.boosts["atk"] = Math.min(mon.boosts["atk"], 6);
-                        remaining.boosts["spe"] = Math.min(mon.boosts["spe"], 6);
+                        remaining.boosts["satk"] = Math.min(remaining.boosts["satk"], 6);
+                        remaining.boosts["atk"] = Math.min(remaining.boosts["atk"], 6);
+                        remaining.boosts["spe"] = Math.min(remaining.boosts["spe"], 6);
                     }
                 }
             }
@@ -16424,6 +16424,22 @@ function Safari() {
                                 out.push("The foe's Ice Shield sustained damage!");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select.sludgeshield) {
+                        if (["Poison", "Steel"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Sludge Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Water") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Sludge Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Sludge Shield shattered!");
                             }
                         }
                     }
@@ -28544,6 +28560,7 @@ function Safari() {
             case "boostType": m = (select[condition].length > 0 ? "The foe's " + select[condition].join(" and ") + " attacks are more powerful." : ""); break;
             case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
             case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
+            case "sludgeshield": m = "The foe's team is surrounded with an Sludge Shield."; break;
             case "dracoshield": m = "The foe's team is surrounded with a Draco Shield."; break;
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
