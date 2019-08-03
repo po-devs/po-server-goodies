@@ -28560,7 +28560,7 @@ function Safari() {
             case "boostType": m = (select[condition].length > 0 ? "The foe's " + select[condition].join(" and ") + " attacks are more powerful." : ""); break;
             case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
             case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
-            case "sludgeshield": m = "The foe's team is surrounded with an Sludge Shield."; break;
+            case "sludgeshield": m = "The foe's team is surrounded with a Sludge Shield."; break;
             case "dracoshield": m = "The foe's team is surrounded with a Draco Shield."; break;
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
