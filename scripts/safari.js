@@ -15493,10 +15493,11 @@ function Safari() {
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer))) {
                 if (this.select.irontail) {
                     this.sendToViewers("The Iron Tail strikes the field!");
+                    this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
                 } else {
                     this.sendToViewers("The Waterfall strikes the field!");
+                    this.selectData.waterfallTimer += (3 + Math.floor(4 * Math.random()));
                 }
-                this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier, type, pow;
                 type = (this.select.irontail ? "Steel": "Water");
