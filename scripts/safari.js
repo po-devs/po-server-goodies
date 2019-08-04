@@ -15493,10 +15493,11 @@ function Safari() {
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer))) {
                 if (this.select.irontail) {
                     this.sendToViewers("The Iron Tail strikes the field!");
+                    this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
                 } else {
                     this.sendToViewers("The Waterfall strikes the field!");
+                    this.selectData.waterfallTimer += (3 + Math.floor(4 * Math.random()));
                 }
-                this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
 
                 var dmg, typeMultiplier, type, pow;
                 type = (this.select.irontail ? "Steel": "Water");
@@ -22013,6 +22014,9 @@ function Safari() {
                 currentTrainer.party2 = hold;
             }
             chal += diff;
+            if (difficulty >= 4) {
+                chal -= 5;
+            }
 
             diff = 100;
             maxLoop = 2000;
@@ -28560,7 +28564,7 @@ function Safari() {
             case "boostType": m = (select[condition].length > 0 ? "The foe's " + select[condition].join(" and ") + " attacks are more powerful." : ""); break;
             case "iceshield": m = "The foe's team is surrounded with an Ice Shield."; break;
             case "electroshield": m = "The foe's team is surrounded with an Electro Shield."; break;
-            case "sludgeshield": m = "The foe's team is surrounded with an Sludge Shield."; break;
+            case "sludgeshield": m = "The foe's team is surrounded with a Sludge Shield."; break;
             case "dracoshield": m = "The foe's team is surrounded with a Draco Shield."; break;
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
