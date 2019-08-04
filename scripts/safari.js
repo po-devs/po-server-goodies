@@ -15324,7 +15324,7 @@ function Safari() {
                             var stat = ["def", "spe", "sdef"].random();
                             user.boosts[stat] -= 1;
                             user.boosts[stat] = Math.min(6, Math.max(user.boosts[stat], -6));
-                            this.sendToViewers(poke(poke2.id) + "'s " + self.statName(stat) + " -1!");
+                            this.sendToViewers(poke(user.id) + "'s " + self.statName(stat) + " -1!");
                         }
                     }
                     if (this.side1Field.quicksand && (isP1 || isP3)) {
@@ -15333,7 +15333,7 @@ function Safari() {
                             var stat = ["def", "spe", "sdef"].random();
                             user.boosts[stat] -= 2;
                             user.boosts[stat] = Math.min(6, Math.max(user.boosts[stat], -6));
-                            this.sendToViewers(poke(poke2.id) + "'s " + self.statName(stat) + " -2!");
+                            this.sendToViewers(poke(user.id) + "'s " + self.statName(stat) + " -2!");
                         }
                     }
                     if (move.isRecharged === true) {
