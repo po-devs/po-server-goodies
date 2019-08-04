@@ -22014,6 +22014,9 @@ function Safari() {
                 currentTrainer.party2 = hold;
             }
             chal += diff;
+            if (difficulty >= 4) {
+                chal -= 5;
+            }
 
             diff = 100;
             maxLoop = 2000;
