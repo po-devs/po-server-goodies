@@ -11143,7 +11143,7 @@ function Safari() {
 
             var perkBonus = getPerkBonus(player, "battery");
             var recharges = 30 + perkBonus;
-            player.balls.itemfinder = (recharges * 2);
+            player.balls.itemfinder = (recharges);
 
             var out = giveStuff(player, reward, true);
 
@@ -12139,7 +12139,7 @@ function Safari() {
             if (player && player.id) {
                 src = sys.id(player.id);
                 p = getAvatarOff(player.id);
-                if (p) {
+                if (p && p.spiritDuels) {
                     p.spiritDuels.rank = 0;
                     p.spiritDuels.rankName = "Grunt";
                     p.spiritDuels.team = "None";
