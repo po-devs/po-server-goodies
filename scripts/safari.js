@@ -12131,6 +12131,28 @@ function Safari() {
         return;
     };
     /* Spirit Duels */
+    this.clearSpiritDuels = function() {
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                player = JSON.parse(rawPlayers.hash[e]);
+            }
+            if (player && player.id) {
+                src = sys.id(player.id);
+                p = getAvatarOff(player.id);
+                if (p) {
+                    p.spiritDuels.rank = 0;
+                    p.spiritDuels.rankName = "Grunt";
+                    p.spiritDuels.team = "None";
+                    p.spiritDuels.exp = 0;
+                    p.spiritDuels.box = [];
+                    p.spiritDuels.skills = [];
+                    p.spiritDuels.skillChoices = {};
+                    safari.saveGame(p);
+                }
+            }
+        }
+        return;
+    }
     this.loadDuels = function( src,data ) {
         //Just loads the data
         safari.events.spiritDuelsTeams = [];
@@ -40501,6 +40523,10 @@ function Safari() {
             }
             if (command === "resetcostumes") {
                 safari.resetCostumes();
+                return true;
+            }
+            if (command == "resetduels") {
+                safari.clearSpiritDuels();
                 return true;
             }
             if (command === "monthlymedals") {
