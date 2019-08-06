@@ -522,7 +522,15 @@ function Safari() {
             points: 0,
             bonusPointsReceived: false
         },
-        spiritDuels: null,
+        spiritDuels: {
+            rank: 0,
+            rankName: "Grunt",
+            team: "None",
+            exp: 0,
+            box: [],
+            skills: [],
+            skillChoices: {}
+        },
         bonusLogin: {
             index: 0,
             name: ""
