@@ -522,15 +522,7 @@ function Safari() {
             points: 0,
             bonusPointsReceived: false
         },
-        spiritDuels: {
-            rank: 0,
-            rankName: "Grunt",
-            team: "None",
-            exp: 0,
-            box: [],
-            skills: [],
-            skillChoices: {}
-        },
+        spiritDuels: null,
         bonusLogin: {
             index: 0,
             name: ""
@@ -2834,7 +2826,6 @@ function Safari() {
             Dark: { bg: "#705848" },
             Fairy: { bg: "#ee99ac" }
         };
-        var text = "a8a878";
         if (type && colors[type] && ("color" in colors[type])) {
             text = colors[type].color;
         }
