@@ -522,7 +522,15 @@ function Safari() {
             points: 0,
             bonusPointsReceived: false
         },
-        spiritDuels: null,
+        spiritDuels: {
+            rank: null,
+            rankName: null,
+            team: null,
+            exp: null,
+            box: null,
+            skills: null,
+            skillChoices: null
+        },
         bonusLogin: {
             index: 0,
             name: ""
@@ -21542,14 +21550,19 @@ function Safari() {
         }
         var difficulty = 0;
         switch (opt2) {
+            case "easy": difficulty = -1; break;
             case "normal": difficulty = 0; break;
             case "hard": difficulty = 1; break;
             case "expert": difficulty = 2; break;
             case "super expert": difficulty = 3; break;
             case "abyssal": difficulty = 4; break;
             default: 
-                safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:normal", "Normal") + " " + link("/quest celebrity:start:hard", "Hard") + " " + link("/quest celebrity:start:expert", "Expert") + " and " + link("/quest celebrity:start:super expert", "Super Expert") + "!", safchan);
-                return;
+                if (player.costume == "preschooler") {
+                    difficulty = -1;
+                } else {
+                    safaribot.sendHtmlMessage(src, "Please choose a difficulty level between " + link("/quest celebrity:start:normal", "Normal") + " " + link("/quest celebrity:start:hard", "Hard") + " " + link("/quest celebrity:start:expert", "Expert") + " and " + link("/quest celebrity:start:super expert", "Super Expert") + "!", safchan);
+                    return;
+                }
         }
         
         if (stopQuests.celebrity) {
@@ -21559,12 +21572,12 @@ function Safari() {
         if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid"])) {
             return;
         }
-        if (contestCooldown <= 35) {
+        if (contestCooldown <= 0) {
             safaribot.sendHtmlMessage(src, "Announcer: You cannot battle right before a contest is about to start!", safchan);
             return;
         }
-        if (player.party.length < 3) {
-            safaribot.sendMessage(src, "Announcer: You need at least 3 Pokémon in your party to challenge Celebrities!", safchan);
+        if (player.party.length < 6) {
+            safaribot.sendMessage(src, "Announcer: You need at least 6 Pokémon in your party to challenge Celebrities!", safchan);
             return;
         }
         if (difficulty < 2) {
@@ -21575,6 +21588,17 @@ function Safari() {
                 }
             }
         }
+        if (difficulty < 0) {
+            for (var i in player.party) {
+                if (getBST(player.party[i]) > 480) {
+                    safaribot.sendMessage(src, "Announcer: For Easy level difficulty, you cannot use Pokémon with a Base Stat Total above 480!", safchan);
+                    return;
+                }
+            }
+            if (player.costume !== "preschooler") {
+                safaribot.sendMessage(src, "Announcer: Sorry! Only Preschoolers can do Easy level difficulty!", safchan);
+            }
+        }
 
         var postBattle = function(name, isWinner, hpLeft, args, viewers, extraArgs) {
             var player = getAvatarOff(name), e;
@@ -21582,6 +21606,7 @@ function Safari() {
             sys.sendMessage(id, "", safchan);
             var level = "";
             switch (args.difficulty) {
+                case -1: level = "Easy"; break;
                 case 0: level = "Normal"; break;
                 case 1: level = "Hard"; break;
                 case 2: level = "Expert"; break;
@@ -21593,6 +21618,21 @@ function Safari() {
                 var celebs = args.celebs;
                 var reward;
                 switch (args.difficulty) {
+                    case -1: reward = [
+                        ["gacha", 3],
+                        ["egg", 1],
+                        ["gem", 1],
+                        ["pack", 1],
+                        ["rare", 1],
+                        ["gacha", 10],
+                        ["rare", 3],
+                        ["pack", 5],
+                        ["eviolite", 2],
+                        ["gem", 20],
+                        ["pack", 10],
+                        ["bignugget", 1],
+                        ["pack", 50]
+                    ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
                         ["gacha", 2],
@@ -21606,7 +21646,6 @@ function Safari() {
                         ["gacha", 30],
                         ["nugget", 2],
                         ["dew", 20],
-                        ["pack", 5],
                         ["pack", 10]
                     ][args.index]; break;
                     case 1: reward = [
@@ -21619,7 +21658,7 @@ function Safari() {
                         ["dew", 12],
                         ["nugget", 3],
                         ["pack", 5],
-                        ["megastone", 1],
+                        ["mega", 1],
                         ["dew", 40],
                         ["pack", 12],
                         ["pack", 25]
@@ -21862,6 +21901,7 @@ function Safari() {
         npc.postBattle = postBattle;
         var heal;
         switch (difficulty) {
+            case -1: heal = 0.25; break;
             case 0: heal = 0.2; break;
             case 1: heal = 0.18; break;
             case 2: heal = 0.16; break;
@@ -21922,7 +21962,7 @@ function Safari() {
             currentTrainer.winMsg = (trainer.winMsg ? trainer.winMsg.random() : null);
             currentTrainer.loseMsg = (trainer.loseMsg ? trainer.loseMsg.random() : null);
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.33 : 0);
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
             if (ind >= 5) {
                 chal++;
