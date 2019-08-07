@@ -12152,12 +12152,11 @@ function Safari() {
             }
         }
         return;
-    }
+    };
     this.loadDuels = function( src,data ) {
         //Just loads the data
-        safari.events.spiritDuelsTeams = [];
-        safari.events.spiritDuelsSignups = [];
         var m;
+        safari.events.spiritDuelsTeams = [];
         for (var k in data.teams) {
             m = data.teams[k];
             safari.events.spiritDuelsTeams.push({
@@ -12284,6 +12283,9 @@ function Safari() {
                 {type: "move", target: "Psyshock", val: 40, desc: "Spirits that can know Psyshock receive a fighting advantage."}
             ]
         }
+    };
+    this.resetDuelsTeams = function() {
+        safari.events.spiritDuelsSignups = [];
     };
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
@@ -12920,7 +12922,7 @@ function Safari() {
         player.spiritDuels.exp = 0;
         player.spiritDuels.skills = [];
         player.spiritDuels.skillChoices = {};
-        //player.balls.spirit += 5;
+        player.balls.spirit = Math.max(player.balls.spirit, 5);
         safari.sanitize(player);
         safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
@@ -37223,14 +37225,14 @@ function Safari() {
                     var evoData = evolutions[species];
                     var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.25 : 1));
                     var breederRequired = safari.candyCostConversion(null, candiesRequired * costumeData.breeder.rate);
-                    candiesRequired = safari.candyCostConversion(player, candiesRequired);
                     var evo = evoData.evo;
 
                     var conditionals = [];
                     if (!info.shiny) {
-                        conditionals.push(Math.floor(candiesRequired *  1.15) + " if shiny");
+                        conditionals.push(Math.floor(safari.candyCostConversion(player, candiesRequired *  1.25)) + " if shiny");
                     }
-                    if (player && player.costumes.contains("breeder")) {
+                    candiesRequired = safari.candyCostConversion(player, candiesRequired);
+                    if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
                         conditionals.push(Math.floor(Math.max(breederRequired, 1)) + " if using " + costumeAlias("breeder", true, true));
                     }
 
@@ -40523,6 +40525,10 @@ function Safari() {
             }
             if (command === "resetcostumes") {
                 safari.resetCostumes();
+                return true;
+            }
+            if (command === "clearduels") {
+                safari.resetDuelsTeams();
                 return true;
             }
             if (command == "resetduels") {
