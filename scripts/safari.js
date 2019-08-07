@@ -21654,7 +21654,7 @@ function Safari() {
                         ["eviolite", 1],
                         ["gem", 10],
                         ["pack", 10],
-                        ["bignugget", 1],
+                        ["nugget", 3],
                         ["pack", 30]
                     ][args.index]; break;
                     case 0: reward = [
