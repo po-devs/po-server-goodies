@@ -21646,16 +21646,16 @@ function Safari() {
                         ["gacha", 3],
                         ["egg", 1],
                         ["gem", 1],
+                        ["gacha", 10],
                         ["pack", 1],
                         ["rare", 1],
-                        ["gacha", 10],
-                        ["rare", 3],
-                        ["pack", 5],
-                        ["eviolite", 2],
-                        ["gem", 20],
+                        ["pack", 4],
+                        ["rare", 2],
+                        ["eviolite", 1],
+                        ["gem", 10],
                         ["pack", 10],
-                        ["bignugget", 1],
-                        ["pack", 50]
+                        ["nugget", 3],
+                        ["pack", 30]
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
