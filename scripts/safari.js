@@ -12152,12 +12152,11 @@ function Safari() {
             }
         }
         return;
-    }
+    };
     this.loadDuels = function( src,data ) {
         //Just loads the data
-        safari.events.spiritDuelsTeams = [];
-        safari.events.spiritDuelsSignups = [];
         var m;
+        safari.events.spiritDuelsTeams = [];
         for (var k in data.teams) {
             m = data.teams[k];
             safari.events.spiritDuelsTeams.push({
@@ -12284,6 +12283,9 @@ function Safari() {
                 {type: "move", target: "Psyshock", val: 40, desc: "Spirits that can know Psyshock receive a fighting advantage."}
             ]
         }
+    };
+    this.resetDuelsTeams = function() {
+        safari.events.spiritDuelsSignups = [];
     };
     this.toRate = function( rate ) {
         return (Math.floor(rate * 10000)/100);
@@ -12920,7 +12922,7 @@ function Safari() {
         player.spiritDuels.exp = 0;
         player.spiritDuels.skills = [];
         player.spiritDuels.skillChoices = {};
-        //player.balls.spirit += 5;
+        player.balls.spirit = Math.max(player.balls.spirit, 5);
         safari.sanitize(player);
         safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
@@ -40523,6 +40525,10 @@ function Safari() {
             }
             if (command === "resetcostumes") {
                 safari.resetCostumes();
+                return true;
+            }
+            if (command === "clearduels") {
+                safari.resetDuelsTeams();
                 return true;
             }
             if (command == "resetduels") {
