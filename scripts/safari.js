@@ -37225,14 +37225,14 @@ function Safari() {
                     var evoData = evolutions[species];
                     var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.25 : 1));
                     var breederRequired = safari.candyCostConversion(null, candiesRequired * costumeData.breeder.rate);
-                    candiesRequired = safari.candyCostConversion(player, candiesRequired);
                     var evo = evoData.evo;
 
                     var conditionals = [];
                     if (!info.shiny) {
-                        conditionals.push(Math.floor(candiesRequired *  1.15) + " if shiny");
+                        conditionals.push(Math.floor(safari.candyCostConversion(player, candiesRequired *  1.25)) + " if shiny");
                     }
-                    if (player && player.costumes.contains("breeder")) {
+                    candiesRequired = safari.candyCostConversion(player, candiesRequired);
+                    if (player && player.costumes.contains("breeder") && (!(player.costume == "breeder"))) {
                         conditionals.push(Math.floor(Math.max(breederRequired, 1)) + " if using " + costumeAlias("breeder", true, true));
                     }
 
