@@ -12349,6 +12349,7 @@ function Safari() {
             player.spiritDuels.team = safari.events.spiritDuelsTeams[t].name;
             player.spiritDuels.exp = 0;
             safaribot.sendMessage( src,"Added player " + player.id + " to " + data + ".",safchan );
+            this.shoveDuelSignups(src,player.id);
             return;
         }
         safaribot.sendMessage( src,"No team exists!",safchan );
