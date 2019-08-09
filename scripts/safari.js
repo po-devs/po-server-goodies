@@ -12301,11 +12301,21 @@ function Safari() {
             if (safari.events.spiritDuelsTeams[t].players.indexOf(idnum) === -1) {
                 continue;
             }
-            safari.events.spiritDuelsTeams[t].players = safari.events.spiritDuelsTeams[t].players.slice(safari.events.spiritDuelsTeams[t].players.indexOf(idnum), 1);
+            safari.events.spiritDuelsTeams[t].players.splice(safari.events.spiritDuelsTeams[t].players.indexOf(idnum), 1);
             safaribot.sendMessage( src,"Removed player " + name + " from " + data + ".",safchan );
             return;
         }
         safaribot.sendMessage( src,"No team exists, or that player is not assigned to that team!",safchan );
+    };
+    this.shoveDuelSignups = function( src,name ) {
+        var oldBox, id;
+        name = name.toLowerCase();
+        idnum = getAvatarOff(name).idnum;
+        if (safari.events.spiritDuelsSignups.indexOf(idnum) === -1) {
+            return;
+        }
+        safari.events.spiritDuelsSignups.splice(safari.events.spiritDuelsSignups.indexOf(idnum), 1);
+        return;
     };
     this.pushDuelTeam = function( src,player,data ) {
         var oldBox;
@@ -21649,13 +21659,13 @@ function Safari() {
                         ["gacha", 10],
                         ["pack", 1],
                         ["rare", 1],
-                        ["pack", 4],
+                        ["pack", 2],
                         ["rare", 2],
                         ["eviolite", 1],
-                        ["gem", 10],
-                        ["pack", 10],
-                        ["nugget", 3],
-                        ["pack", 30]
+                        ["gem", 5],
+                        ["pack", 5],
+                        ["nugget", 1],
+                        ["pack", 10]
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
@@ -21670,7 +21680,7 @@ function Safari() {
                         ["gacha", 30],
                         ["nugget", 2],
                         ["dew", 20],
-                        ["pack", 10]
+                        ["pack", 30]
                     ][args.index]; break;
                     case 1: reward = [
                         ["dew", 5],
@@ -21684,34 +21694,34 @@ function Safari() {
                         ["pack", 5],
                         ["mega", 1],
                         ["dew", 40],
-                        ["pack", 12],
-                        ["pack", 25]
+                        ["pack", 30],
+                        ["pack", 50]
                     ][args.index]; break;
                     case 2: reward = [
                         ["gacha", 5],
                         ["gacha", 8],
-                        ["dew", 2],
+                        ["dew", 8],
                         ["pack", 1],
-                        ["dew", 5],
-                        ["nugget", 1],
-                        ["pack", 2],
-                        ["bignugget", 1],
                         ["dew", 15],
-                        ["megastone", 2],
+                        ["nugget", 1],
+                        ["pack", 3],
+                        ["bignugget", 1],
                         ["dew", 25],
+                        ["mega", 2],
+                        ["dew", 50],
                         ["ldew", 2],
                         ["ldew", 5]
                     ][args.index]; break;
                     case 3: reward = [
                         ["gacha", 6],
                         ["gacha", 10],
-                        ["dew", 3],
+                        ["dew", 15],
                         ["pack", 2],
-                        ["dew", 7],
-                        ["nugget", 2],
-                        ["pack", 4],
-                        ["bignugget", 2],
                         ["dew", 25],
+                        ["nugget", 2],
+                        ["pack", 10],
+                        ["bignugget", 2],
+                        ["dew", 60],
                         ["megastone", 3],
                         ["bright", 2],
                         ["ldew", 4],
