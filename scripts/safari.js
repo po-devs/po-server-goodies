@@ -10125,11 +10125,11 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
-                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great"));
+                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack6") {
@@ -10137,15 +10137,15 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack7") {
-                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
+                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack8") {
-                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
+                        g = giveStuff(player, toStuffObj("25@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack9") {
-                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        g = giveStuff(player, toStuffObj("10@egg", "@golden", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack10") {
