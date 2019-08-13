@@ -10125,11 +10125,11 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha"));
+                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
-                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great"));
+                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack6") {
@@ -10137,15 +10137,15 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack7") {
-                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra"));
+                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack8") {
-                        g = giveStuff(player, toStuffObj("50@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn"));
+                        g = giveStuff(player, toStuffObj("25@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn", "5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack9") {
-                        g = giveStuff(player, toStuffObj("10@egg", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        g = giveStuff(player, toStuffObj("10@egg", "@golden", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack10") {
@@ -12393,7 +12393,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = "", i = teams.length, r;
+        var g = "", i = teams.length, r, rew, amt, members, t, player, g = "";
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -12403,11 +12403,34 @@ function Safari() {
             "5": "10@dew",
             "6": "5@dew"
         }
+        var j = 0;
+        var round = (7 - teams.length);
         for (var t in teams) {
             g = prizes[i+""];
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
-            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
+            amt = Math.round((((7 - j) * 2) + (7 - teams.length))/2);
+            rew = ("" + amt + "@rare");
+            if (r >= 50) {
+                rew += ("," + ((((round * 2) + 5)) * i) + "@dew");
+            }
+            if (round >= 1) {
+                rew = ("" + amt + "@pearl");
+            }
+            members = teams[t].players;
+            for (var p in members) {
+                t = idnumList.get(members[p]);
+                if (!(t)) {
+                    continue;
+                }
+                player = getAvatarOff(t);
+                if (!player) {
+                    continue;
+                }
+                g = giveStuff(player, toStuffObj(rew));
+            }
+            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (Prizes: " + g + ")", true);
+            j++;
         }
         sendAll("");
     }
@@ -12862,7 +12885,8 @@ function Safari() {
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
-            case "skill": case "skills": this.ownSpiritSkills(src,player);
+            case "party": this.showSpiritDuelsTeam(src,player); break;
+            case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, skill, and watch!]",safchan );
         }
         return;
@@ -12938,6 +12962,35 @@ function Safari() {
         safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
         return true;
+    };
+    this.showSpiritDuelsTeam = function(src, player) {
+        var army1 = null, passed = false, out = "", name = "";
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
+                army1 = safari.events.spiritDuelsTeams[a].players
+                passed = true;
+                name = safari.events.spiritDuelsTeams[a].name;
+                break;
+            }
+        }
+        if (!passed) {
+            safaribot.sendMessage( src,"You are not on a team!",safchan );
+            return;
+        }
+        for (var a in army1) {
+            p = getAvatarOff(idnumList.get(army1[a]));
+            j = 0;
+            for (var i = 0; i < 4; i++) {
+                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p + ") ");
+                j++;
+                if (j >= p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        safaribot.sendMessage( src,"Your team (" + name + ") 's Spirit Duel Party: ",safchan );
+        safaribot.sendMessage( src,out,safchan );
+        return;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
         //Shows them their spirit monns
