@@ -12965,6 +12965,7 @@ function Safari() {
     };
     this.showSpiritDuelsTeam = function(src, player) {
         var army1 = null, passed = false, out = "", name = "";
+        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         for (var a in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
                 army1 = safari.events.spiritDuelsTeams[a].players
@@ -12980,7 +12981,7 @@ function Safari() {
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
-            for (var i = 0; i < 4; i++) {
+            for (var i = 0; i < enlistPerPlayer1; i++) {
                 out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
