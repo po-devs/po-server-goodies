@@ -12393,7 +12393,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = "", i = teams.length, r, rew, amt, members, t, player, g = "";
+        var g = "", i = teams.length, r, rew, amt, members, s, player, g = "";
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -12419,11 +12419,11 @@ function Safari() {
             }
             members = teams[t].players;
             for (var p in members) {
-                t = idnumList.get(members[p]);
-                if (!(t)) {
+                s = idnumList.get(members[p]);
+                if (!(s)) {
                     continue;
                 }
-                player = getAvatarOff(t);
+                player = getAvatarOff(s);
                 if (!player) {
                     continue;
                 }
