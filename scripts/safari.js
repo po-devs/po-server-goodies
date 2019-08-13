@@ -12885,7 +12885,8 @@ function Safari() {
             case "join": this.joinSpiritDuels(src,player); break;
             case "watch": this.watchSpiritDuels(src,player); break;
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
-            case "skill": case "skills": this.ownSpiritSkills(src,player);
+            case "party": this.showSpiritDuelsTeam(src,player); break;
+            case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, skill, and watch!]",safchan );
         }
         return;
@@ -12961,6 +12962,35 @@ function Safari() {
         safari.saveGame(player);
         safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
         return true;
+    };
+    this.showSpiritDuelsTeam = function(src, player) {
+        var army1 = null, passed = false, out = "", name = "";
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
+                army1 = safari.events.spiritDuelsTeams[a].players
+                passed = true;
+                name = safari.events.spiritDuelsTeams[a].name;
+                break;
+            }
+        }
+        if (!passed) {
+            safaribot.sendMessage( src,"You are not on a team!",safchan );
+            return;
+        }
+        for (var a in army1) {
+            p = getAvatarOff(idnumList.get(army1[a]));
+            j = 0;
+            for (var i = 0; i < 4; i++) {
+                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p + ") ");
+                j++;
+                if (j >= p.spiritDuels.box.length) {
+                    j = 0;
+                }
+            }
+        }
+        safaribot.sendMessage( src,"Your team (" + name + ") 's Spirit Duel Party: ",safchan );
+        safaribot.sendMessage( src,out,safchan );
+        return;
     };
     this.showSpiritBox = function( src,player,isAndroid,textOnly ) {
         //Shows them their spirit monns
