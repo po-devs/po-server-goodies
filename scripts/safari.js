@@ -12409,10 +12409,10 @@ function Safari() {
             g = prizes[i+""];
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
-            amt = Math.round((((7 - j) * 2) + (7 - teams.length))/2);
+            amt = Math.round((((j) * 2) + (7 - teams.length))/2);
             rew = ("" + amt + "@rare");
             if (r >= 50) {
-                rew += ("," + ((((round * 2) + 5)) * i) + "@dew");
+                rew += ("," + ((((round * 2) + 5)) * j) + "@dew");
             }
             if (round >= 1) {
                 rew = ("" + amt + "@pearl");
@@ -12970,7 +12970,6 @@ function Safari() {
     };
     this.showSpiritDuelsTeam = function(src, player) {
         var army1 = null, passed = false, out = "", name = "";
-        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         for (var a in safari.events.spiritDuelsTeams) {
             if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
                 army1 = safari.events.spiritDuelsTeams[a].players
@@ -12983,6 +12982,7 @@ function Safari() {
             safaribot.sendMessage( src,"You are not on a team!",safchan );
             return;
         }
+        var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
