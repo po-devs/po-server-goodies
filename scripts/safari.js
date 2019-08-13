@@ -12449,7 +12449,7 @@ function Safari() {
 
         this.spiritDuelsPrizes(safari.events.spiritDuelsTeams);
 
-        sendAll(safari.events.spiritDuelsTeams[0].name + " has been eliminated!!", true);
+        safaribot.sendHtmlAll("<b>" + safari.events.spiritDuelsTeams[0].name + " has been eliminated!</b>", safchan);
         
         for (var p in safari.events.spiritDuelsTeams[0].players) {
             var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
@@ -12461,6 +12461,10 @@ function Safari() {
         safari.events.spiritDuelsTeams.sort( function(a, b) {
             return a.players.length - b.players.length;
         });
+        for (var t in safari.events.spiritDuelsTeams) {
+            team.won = 0;
+            team.fought = 0;
+        }
         this.assignDuelsTeams();
     };
     this.prepareNextSpiritDuel = function() {
