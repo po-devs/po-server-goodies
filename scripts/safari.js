@@ -12393,7 +12393,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = "", i = teams.length, r;
+        var g = "", i = teams.length, r, rew, amt, members, t, player, g = "";
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -12403,11 +12403,34 @@ function Safari() {
             "5": "10@dew",
             "6": "5@dew"
         }
+        var j = 0;
+        var round = (7 - teams.length);
         for (var t in teams) {
             g = prizes[i+""];
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
-            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
+            amt = Math.round((((7 - j) * 2) + (7 - teams.length))/2);
+            rew = ("" + amt + "@rare");
+            if (r >= 50) {
+                rew += ("," + ((((round * 2) + 5)) * i) + "@dew");
+            }
+            if (round >= 1) {
+                rew = ("" + amt + "@pearl");
+            }
+            members = teams[t].players;
+            for (var p in members) {
+                t = idnumList.get(members[p]);
+                if (!(t)) {
+                    continue;
+                }
+                player = getAvatarOff(t);
+                if (!player) {
+                    continue;
+                }
+                g = giveStuff(player, toStuffObj(rew));
+            }
+            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (Prizes: " + g + ")", true);
+            j++;
         }
         sendAll("");
     }
