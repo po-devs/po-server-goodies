@@ -12393,7 +12393,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = "", i = teams.length, r, rew, amt, members, t, player, g = "";
+        var g = "", i = teams.length, r, rew, amt, members, s, player, g = "";
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -12419,11 +12419,11 @@ function Safari() {
             }
             members = teams[t].players;
             for (var p in members) {
-                t = idnumList.get(members[p]);
-                if (!(t)) {
+                s = idnumList.get(members[p]);
+                if (!(s)) {
                     continue;
                 }
-                player = getAvatarOff(t);
+                player = getAvatarOff(s);
                 if (!player) {
                     continue;
                 }
@@ -12887,7 +12887,7 @@ function Safari() {
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
-            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, skill, and watch!]",safchan );
+            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
         }
         return;
     };
@@ -12981,7 +12981,7 @@ function Safari() {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             for (var i = 0; i < 4; i++) {
-                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p + ") ");
+                out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     j = 0;
