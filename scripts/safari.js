@@ -12428,6 +12428,7 @@ function Safari() {
                     continue;
                 }
                 g = giveStuff(player, toStuffObj(rew));
+                safari.saveGame(player);
             }
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (Prizes: " + g + ")", true);
             j++;
