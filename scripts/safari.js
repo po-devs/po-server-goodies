@@ -1810,7 +1810,7 @@ function Safari() {
     var lastContests = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
-    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : ["safari warden"]);
+    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : []);
     var dailyBoost;
     var scientistQuest;
     var photographQuest;
@@ -34639,9 +34639,6 @@ function Safari() {
         }
         for (e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
-                if (e.toLowerCase() === "safari warden") {
-                    continue;
-                }
                 data = JSON.parse(rawPlayers.hash[e]);
                 if (data.removedFromLB || data.isInTutorial) {
                     continue;
@@ -38004,9 +38001,6 @@ function Safari() {
                         if (trackerId && trackerId !== src) {
                             safaribot.sendMessage(trackerId, sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                         }
-                    }
-                    if (sys.id("Safari Warden") !== undefined) {
-                        safaribot.sendMessage(sys.id("Safari Warden"), sys.name(src).toCorrectCase() + " is tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
                     }
                 } else {
                     safaribot.sendMessage(src, "Tricking " + sys.name(targetId) + " into seeing a wild " + input.name + "!", safchan);
