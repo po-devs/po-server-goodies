@@ -14278,7 +14278,7 @@ function Safari() {
                 this.selectData.waterfallTimer = (3 + Math.floor(4 * Math.random()));
             }
             this.jumbledStats = {};
-            if ((select && select.statjumble) (select2 && select2.statjumble)) {
+            if ((select && select.statjumble) || (select2 && select2.statjumble)) {
                 var s = ["atk", "def", "satk", "sdef", "spe"];
                 var s2 = ["atk", "def", "satk", "sdef", "spe"];
                 var tos = "";
