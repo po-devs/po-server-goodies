@@ -40730,10 +40730,12 @@ function Safari() {
                     safaribot.sendMessage(src, "You must supply two trainers for a celebrity match", safchan);
                     return;
                 }
-                var reg, p1 = {"party": [], "name": ""}, p2 = {"party": [], "name": ""}, s1 = null, s2 = null, b1, b2;
-                for (var r in safari.celebrityData) {
-                    reg = safari.celebrityData[reg];
-                    for (var t in reg) {
+                safaribot.sendMessage(src, "Trainers: " + info[0] + " and " + info[1] + ".", safchan);
+                var reg, p1 = {"party": [], "name": ""}, p2 = {"party": [], "name": ""}, s1 = null, s2 = null, b1, b2, data;
+                data = JSON.parse(JSON.stringify((safari.celebrityData)));
+                for (var r in data) {
+                    reg = data[reg];
+                    for (var t = 0; t < reg.length; t++) {
                         if (reg[t].name.toLowerCase() == info[0].toLowerCase()) {
                             b1 = reg[t];
                             p1.party = Object.keys(b1.party).shuffle().slice(0, 6);
@@ -40747,6 +40749,14 @@ function Safari() {
                             s2 = b2.npcDuelEffects;
                         }
                     }
+                }
+                if (p1.name == "") {
+                    safaribot.sendMessage(src, "No trainer found " + info[0] + ".", safchan);
+                    return;
+                }
+                if (p2.name == "") {
+                    safaribot.sendMessage(src, "No trainer found " + info[1] + ".", safchan);
+                    return;
                 }
                 var battle = new Battle2(p1, p2, {
                     cantWatch: true
