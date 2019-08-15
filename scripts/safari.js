@@ -1810,6 +1810,7 @@ function Safari() {
     var lastContests = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
+    var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : [""]);
     var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : []);
     var dailyBoost;
     var scientistQuest;
@@ -5401,7 +5402,7 @@ function Safari() {
         }
         return out;
     };
-    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted, select) {
+    this.checkEffective = function(atk1, atk2, def1, def2, def3, inverted, select, select2) {
         var result = 1;
         var immuneCount = 0;
         var typeCount = 1;
@@ -5437,7 +5438,7 @@ function Safari() {
                 var third = ([def1, def2].contains("Steel") ? "???": "Steel");
                 return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
             }
-            if (select.resistMode) {
+            if ((select.resistMode) || (select2 && select2.resistMode)) {
                 return (this.checkEffective(def1, def2, atk1, "???", "???", (inverted ? false : true)));
             }
             return (this.checkEffective(atk1, "???", def1, def2, third, inverted));
@@ -12473,7 +12474,7 @@ function Safari() {
         //Should use a formula that makes teams with similar records fight
         if (chance(0.4)) {
             safari.events.spiritDuelsTeams.sort( function(a, b) {
-                return a.fought - b.fought;
+                return b.fought - a.fought;
             });
         }
         else {
@@ -14113,21 +14114,29 @@ function Safari() {
         };
     }
 
-    function Battle2(p1, p2, opt, p3, p4, select, viewers, difficulty) {
+    function Battle2(p1, p2, opt, p3, p4, select, viewers, difficulty, select2) {
         this.battle2 = true;
         this.tagBattle = false;
         this.oneOnTwo = false;
-        var player1 = getAvatar(p1);
-        
+        this.fullNPC = typeof p1 == "object";
+        if (viewers) {
+            this.viewers = viewers;
+        } else {
+            this.viewers = [];
+        }
         this.moveAmt = 3;
         this.cantWatch = opt.cantWatch || false;
 
-        this.name1 = sys.name(p1);
-        if (viewers) {
-            this.viewers = viewers;
-        }
-        else {
-            this.viewers = [this.name1.toLowerCase()];
+        var player1;
+        if (this.fullNPC) {
+            player1 = p1;
+            this.name1 = player1.name;
+            this.biasNPC0 = player1.bias;
+        } else {
+            player1 = getAvatar(p1);
+
+            this.name1 = sys.name(p1);
+            this.viewers = this.viewers.concat(this.name1.toLowerCase());
         }
 
         this.winMsg = opt.winMsg;
@@ -14172,8 +14181,13 @@ function Safari() {
             "lightscreen": -1
         };
         this.select = null;
+        this.select2 = null;
         if (select) {
             this.select = select;
+        }
+        if (select2) {
+            this.select2 = this.select;
+            this.select = select2;
         }
 
         this.npcItems = {
@@ -14182,6 +14196,7 @@ function Safari() {
             full: 0
         };
         this.selectData = null;
+        this.selectData2 = null;
         if (select) {
             if (select.hyperpotion3) {
                 this.npcItems.hyper = 3;
@@ -14259,11 +14274,11 @@ function Safari() {
             if (select.irontail) {
                 this.selectData.irontailTimer = (3 + Math.floor(4 * Math.random()));
             }
-            if (select.waterfall) {
+            if (select.waterfall || (select2 && select2.waterfall)) {
                 this.selectData.waterfallTimer = (3 + Math.floor(4 * Math.random()));
             }
             this.jumbledStats = {};
-            if (select && select.statjumble) {
+            if ((select && select.statjumble) (select2 && select2.statjumble)) {
                 var s = ["atk", "def", "satk", "sdef", "spe"];
                 var s2 = ["atk", "def", "satk", "sdef", "spe"];
                 var tos = "";
@@ -14296,6 +14311,43 @@ function Safari() {
                 }
                 if (select.genesisshield) {
                     this.selectData.shieldHP = Math.floor(this.selectData.shieldHP * 1.25);
+                }
+            }
+        }
+        if (select2) {
+            this.selectData2 = {};
+            if (select2.spikes3) {
+                this.side2Field.spikes = 3;
+            }
+            else if (select2.spikes2) {
+                this.side2Field.spikes = 2;
+            }
+            else if (select2.spikes) {
+                this.side2Field.spikes = 1;
+            }
+            if (select2.stealthrock) {
+                this.side2Field.stealthrock = true;
+            }
+            if (select2.initialReflect) {
+                this.side1Field.reflect = 5;
+            }
+            if (select2.initialReflect2) {
+                this.side2Field.reflect = 5;
+            }
+            if (select2.initialLightScreen) {
+                this.side1Field.lightscreen = 5;
+            }
+            if (select2.initialLightScreen2) {
+                this.side2Field.lightscreen = 5;
+            }
+            if (select2.iceshield || select2.electroshield || select2.dracoshield || select2.sludgeshield || select2.genesisshield) {
+                if (difficulty) {
+                    this.selectData2.shieldHP = 400 + (difficulty * 100);
+                } else {
+                    this.selectData2.shieldHP = 400;
+                }
+                if (select2.genesisshield) {
+                    this.selectData2.shieldHP = Math.floor(this.selectData2.shieldHP * 1.25);
                 }
             }
         }
@@ -14507,6 +14559,30 @@ function Safari() {
                     this.sendMessage(id, toColor("+ " + m, "#3CB371"));
                 }
             }
+            if (this.biasNPC0.length > 0) {
+                m = "", name = this.name;
+                this.sendMessage(id, "");
+                for (var j in this.biasNPC0) {
+                    switch (this.biasNPC0[j]) {
+                        case "aggressive": m = name + " likes to attack."; break;
+                        case "stats": m = name + " likes stat-raising moves."; break;
+                        case "priority": m = name + " favors priority moves."; break;
+                        case "recoil": m = name + " favors recoil moves."; break;
+                        case "drain": m = name + " favors drain moves."; break;
+                        case "burnout": m = name + " favors high-risk moves."; break;
+                        case "critical": m = name + " favors critical-hit moves."; break;
+                        case "helpingHand": m = name + " likes to support their teammate."; break;
+                        case "reflect": m = name + " likes to set up Reflect."; break;
+                        case "lightscreen": m = name + " likes to set up Light Screen."; break;
+                        case "paralyze": m = name + " favors moves that Paralyze."; break;
+                        case "poison": m = name + " favors moves that Poison."; break;
+                        case "burn": m = name + " favors moves that Burn."; break;
+                        case "freeze": m = name + " favors moves that Freeze."; break;
+                        case "sleep": m = name + " favors moves that induce Sleep."; break;
+                    }
+                    this.sendMessage(id, toColor("+ " + m, "#3CB371"));
+                }
+            }
             if (this.biasNPC2) {
                 if (this.biasNPC2.length > 0) {
                     m = "", name = this.name4;
@@ -14539,6 +14615,15 @@ function Safari() {
                 m = safari.getFieldConditionDescription(j, this.select);
                 if (m !== "") {
                     this.sendMessage(id, toColor("- " + m, "#DC143C"));
+                }
+            }
+            this.sendMessage(id, "");
+        }
+        if (this.select2) {
+            for (var j in this.select2) {
+                m = safari.getFieldConditionDescription(j, this.select2);
+                if (m !== "") {
+                    this.sendMessage(id, toColor("- " + m, "#7d34eb"));
                 }
             }
             this.sendMessage(id, "");
@@ -14658,7 +14743,53 @@ function Safari() {
                         }
                     }
                 }
-                if (this.select.nerfBestStat) {
+                if ((this.select.nerfBestStat) || (this.select2 && this.select2.nerfBestStat)) {
+                    var highStat;
+                    for (i = 0; i < this.team1.length; i++) {
+                        highStat = -1;
+                        for (var j in this.team1[i].stats) {
+                            if (this.team1[i].stats[j] >= highStat) {
+                                highStat = this.team1[i].stats[j];
+                            }
+                        }
+                        for (var j in this.team1[i].stats) {
+                            if (this.team1[i].stats[j] >= highStat) {
+                                this.team1[i].boosts[j] = -1;
+                            }
+                        }
+                    }
+                    for (i = 0; i < this.team2.length; i++) {
+                        highStat = -1;
+                        for (var j in this.team2[i].stats) {
+                            if (this.team2[i].stats[j] >= highStat) {
+                                highStat = this.team2[i].stats[j];
+                            }
+                        }
+                        for (var j in this.team2[i].stats) {
+                            if (this.team2[i].stats[j] >= highStat) {
+                                this.team2[i].boosts[j] = -1;
+                            }
+                        }
+                    }
+                }
+            }
+            if ((this.turn === 0) && (this.select2)) {
+                if (this.select2.hugePower) {
+                    var minbst = 1000;
+                    for (i = 0; i < this.team1.length; i++) {
+                        if (getBST(this.team1[i].id) < minbst) {
+                            minbst = getBST(this.team1[i].id);
+                        }
+                    }
+                    for (i = 0; i < this.team1.length; i++) {
+                        if (getBST(this.team1[i].id) <= minbst) {
+                            this.team1[i].stats["atk"] *= 2;
+                            this.sendToViewers(poke(this.team1[i].id) + "'s Huge Power activates!");
+                            break;
+                        }
+                    }
+                }
+                if (this.select2.nerfBestStat) {
                     var highStat;
                     for (i = 0; i < this.team1.length; i++) {
                         highStat = -1;
@@ -14695,11 +14826,14 @@ function Safari() {
             this.p3MoveCodes = {};
             this.p4MoveCodes = {};
             
-            var showBoosts = function(user, select) {
+            var showBoosts = function(user, select, select2) {
                 var out = [], val;
                 for (var e in user.boosts) {
                     val = user.boosts[e];
                     if (select && select.singlespecialstat && e == "satk") {
+                        e = "spc";
+                    }
+                    if (select2 && select2.singlespecialstat && e == "satk") {
                         e = "spc";
                     }
                     if (val !== 0) {
@@ -14734,7 +14868,7 @@ function Safari() {
                     if (p.condition !== "none") {
                         info.push(getConditionCode(p.condition));
                     }
-                    b = showBoosts(p, this.select);
+                    b = showBoosts(p, this.select, this.select2);
                     if (b) {
                         info.push(b);
                     }
@@ -14888,6 +15022,18 @@ function Safari() {
                     this.player4Input = "---";
                 }
             }
+            if (this.fullNPC) {
+                this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
+                this.subturn = 5;
+            }
+            else if (this.player1Input == "---" && this.npcBattle) {
+                this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
+                this.subturn = 5;
+            }
+            else if (this.player1Input == "---" && this.player2Input == "---") {
+                this.sendToViewers(toColor("Turn is ending early since all players picked their moves!", "crimson"));
+                this.subturn = 5;
+            }
         }
         else if (this.subturn % 8 === 6) {
             
@@ -15018,20 +15164,28 @@ function Safari() {
             var move1 = emptyMove;
             var poke1 = emptyPoke;
             var spd1 = 0;
-            if (!this.player1Fainted) {
+            if (this.fullNPC) {
                 if (this.recharge1) {
-                    for (var a in this.team1) {
-                        if (this.team1[a].mustRecharge) {
-                            poke1 = this.team1[a];
-                            move1 = {"isRecharged": true, "priority": 0};
-                            break;
-                        }
-                    }
+                    this.player1Input = "---";
                 } else {
-                    move1 = this.p1MoveCodes[this.player1Input];
-                    poke1 = this.team1[move1.ownerId];
+                    this.player1Input = this.chooseNPCMove(this.p1MoveCodes, this.team1, this.team2);
                 }
-                spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
+            } else {
+                if (!this.player1Fainted) {
+                    if (this.recharge1) {
+                        for (var a in this.team1) {
+                            if (this.team1[a].mustRecharge) {
+                                poke1 = this.team1[a];
+                                move1 = {"isRecharged": true, "priority": 0};
+                                break;
+                            }
+                        }
+                    } else {
+                        move1 = this.p1MoveCodes[this.player1Input];
+                        poke1 = this.team1[move1.ownerId];
+                    }
+                    spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
+                }
             }
             if (this.npcBattle) {
                 if (this.recharge2) {
@@ -15392,7 +15546,18 @@ function Safari() {
                     if (this.side1Field.stealthrock && (isP1 || isP3)) {
                         if (!user.lastPlayed2) {
                             var dmgPerc = 0.08;
-                            var mult = safari.checkEffective("Rock", "???", sys.type(sys.pokeType1(user.id)), sys.type(sys.pokeType2(user.id)), null, this.select.inverted);
+                            var mult = safari.checkEffective("Rock", "???", sys.type(sys.pokeType1(user.id)), sys.type(sys.pokeType2(user.id)), null, this.select.inverted, this.select, this.select2);
+                            dmgPerc *= mult;
+                            if (dmgPerc > 0) {
+                                user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
+                                this.sendToViewers(toColor(name + " is hurt by the Stealth Rock!", sColor));
+                            }
+                        }
+                    }
+                    if (this.side2Field.stealthrock && (isP2 || isP4)) {
+                        if (!user.lastPlayed2) {
+                            var dmgPerc = 0.08;
+                            var mult = safari.checkEffective("Rock", "???", sys.type(sys.pokeType1(user.id)), sys.type(sys.pokeType2(user.id)), null, this.select.inverted, this.select, this.select2);
                             dmgPerc *= mult;
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
@@ -15570,7 +15735,7 @@ function Safari() {
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((275 * 95) / this.getStatValue(poke2, "sdef"));
+                    dmg = ((350 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
@@ -15583,7 +15748,7 @@ function Safari() {
                     }
                 }
             }
-            if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer))) {
+            if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer)) || ((this.select2 && this.select2.waterfall && this.turn === this.selectData.waterfallTimer))) {
                 if (this.select.irontail) {
                     this.sendToViewers("The Iron Tail strikes the field!");
                     this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
@@ -15597,7 +15762,7 @@ function Safari() {
                 pow = (this.select.irontail ? 100 : 80);
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * pow) / this.getStatValue(poke1, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
+                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
@@ -15606,12 +15771,17 @@ function Safari() {
                     this.sendToViewers(poke(poke1.id) + " lost " + dmg + " HP!");
                     if (poke1.hp <= 0) {
                         this.sendToViewers("<b>" + poke(poke1.id) + " fainted!</b>");
+                    }else if (this.select2 && this.select2.brawler) {
+                        var stat = ["atk", "def", "spe", "satk", "sdef"].random();
+                        poke1.boosts[stat] += 2;
+                        poke1.boosts[stat] = Math.min(6, Math.max(poke1.boosts[stat], -6));
+                        this.sendToViewers(poke(poke1.id) + "'s " + self.statName(stat) + " +2!");
                     }
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((275 * pow) / this.getStatValue(poke2, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
+                    dmg = ((350 * pow) / this.getStatValue(poke2, "def"));
+                    typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
@@ -15640,7 +15810,7 @@ function Safari() {
                 }
             }
             if ((this.turn % 7 === 0) && (this.select) && (this.turn !== 0)) {
-                if (this.select.topsyturvy) {
+                if ((this.select.topsyturvy) || (this.select2 && this.select2.topsyturvy)) {
                     var allMons = this.team1.concat(this.team2).concat(this.team3).concat(this.team4), mon, k, o;
                     for (var i = 0; i < allMons.length; i++) {
                         mon = allMons[i];
@@ -15709,9 +15879,20 @@ function Safari() {
                     poke4.boosts["spe"] = Math.min(poke4.boosts["spe"], 6);
                 }
             }
+            if (this.select2 && this.select2.speedboost) {
+                if (poke1 && (!poke1.fainted)) {
+                    poke1.boosts["spe"] += 1;
+                    poke1.boosts["spe"] = Math.min(poke1.boosts["spe"], 6);
+                }
+            }
             if (this.select) {
                 if (this.select.slowStart && this.turn === 5) {
                     this.sendToViewers(this.name2 + "'s Slow Start wore off!");
+                }
+            }
+            if (this.select2) {
+                if (this.select2.slowStart && this.turn === 5) {
+                    this.sendToViewers(this.name1 + "'s Slow Start wore off!");
                 }
             }
             if (this.select) {
@@ -15789,7 +15970,7 @@ function Safari() {
             }
             this.sendToViewers(name + " was hurt by its poison!");
         }
-        if ((this.select && this.select.sandstorm) && ((!hasType(user.id, "Rock")) && (!hasType(user.id, "Steel")) && (!hasType(user.id, "Ground")))) {
+        if (((this.select && this.select.sandstorm) || (this.select2 && this.select2.sandstorm)) && ((!hasType(user.id, "Rock")) && (!hasType(user.id, "Steel")) && (!hasType(user.id, "Ground")))) {
             user.hp -= Math.round(user.maxhp / 16);
             this.sendToViewers(name + " was buffeted by the Sandstorm!");
         }
@@ -15806,7 +15987,7 @@ function Safari() {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP with its leftovers!");
         }
-        if ((this.select && this.select.grassyterrain) && (!(hasType(user.id, "Flying")))) {
+        if (((this.select && this.select.grassyterrain) || (this.select2 && this.select2.grassyterrain)) && (!(hasType(user.id, "Flying")))) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP from the Grassy Terrain!");
         }
@@ -16081,6 +16262,11 @@ function Safari() {
                 stat = "satk";
             }
         }
+        else if (this.select2 && this.select2.singlespecialstat) {
+            if (stat == "sdef") {
+                stat = "satk";
+            }
+        }
         if (this.select && this.select.powertrick) {
             if (stat == "atk") {
                 stat = "def";
@@ -16095,12 +16281,12 @@ function Safari() {
                 stat = "satk";
             }
         }
-        if (this.select && this.select.statjumble) {
+        if ((this.select && this.select.statjumble) || (this.select2 && this.select2.statjumble)) {
             stat = this.jumbledStats[stat];
         }
         var base = user.stats[stat];
         var val = user.boosts[stat];
-        if (this.select && this.select.simple) {
+        if ((this.select && this.select.simple) || (this.select2 && this.select2.simple)) {
             val *= 2;
         }
         var boost = 1;
@@ -16167,21 +16353,23 @@ function Safari() {
             bonus *= ((isP1 || isP3) && (this.select.heatproof) && (move.type === "Fire") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
-            bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm) && (move.category === "special") ? 0.667 : 1);
+            bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1);
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
             bonus *= (move.type == "Water" && (this.select.rain) ? 1.5 : 1);
             bonus *= (move.type == "Fire" && (this.select.rain) ? 0.5 : 1);
-            bonus *= (move.type == "Grass" && (this.select.grassyterrain) ? 1.5 : 1);
+            bonus *= (move.type == "Grass" && ((this.select.grassyterrain) || (this.select2 && this.select2.grassyterrain)) ? 1.5 : 1);
             bonus *= (move.type == "Psychic" && (this.select.psychicterrain) ? 1.5 : 1);
             bonus *= (move.type == "Electric" && (this.select.electricterrain) ? 1.5 : 1);
             bonus *= (move.type == "Dragon" && (this.select.mistyterrain) ? 0.5 : 1);
             bonus *= ((this.select.criticalDouble && crit) ? 1.33 : 1);
             bonus *= ((this.select.adaptability && stab) ? 1.33 : 1);
             bonus *= ((this.select.slowStart && (isP2 || isP4) && this.turn <= 5) ? 0.5 : 1);
+            bonus *= ((this.select2 && this.select2.slowStart && (isP1 || isP3) && this.turn <= 5) ? 0.5 : 1);
             bonus *= ((this.select.retaliate2 && (isP1 || isP3) && (this.selectData.retaliate1)) ? 2 : 1);
             bonus *= ((this.select.retaliate2 && (isP2 || isP4) && (this.selectData.retaliate2)) ? 2 : 1);
             bonus *= ((this.select.multiscale && (isP1 || isP3) && (target.hp >= target.maxhp)) ? 0.5 : 1);
+            bonus *= ((this.select2 && this.select2.multiscale && (isP2 || isP4) && (target.hp >= target.maxhp)) ? 0.5 : 1);
             bonus *= ((this.select.dualscale && (target.hp >= target.maxhp)) ? 0.5 : 1);
             bonus *= ((this.select.dualscale && (user.hp >= user.maxhp)) ? 0.5 : 1);
             bonus *= ((this.select.overgrowblazetorrent && (user.hp <= (user.maxhp/3)) && ["Fire", "Grass", "Water"].contains(move.type) && (hasType(user.id, move.type))) ? 2 : 1);
@@ -16586,6 +16774,93 @@ function Safari() {
                         }
                     }
                 }
+                if (self.select2 && self.selectData2 && self.selectData2.shieldHP > 0 && targetSide === 1) {
+                    dmg = Math.ceil(dmg * 0.5);
+                    sdmg = Math.ceil(dmg * 0.5);
+                    if (self.select.genesisshield) {
+                        dmg = Math.ceil(dmg * 0.75);
+                    }
+                    if (self.select.iceshield) {
+                        if (["Water", "Ice"].contains(move.type)) {
+                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Ice Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Fire") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            if (self.selectData.shieldHP > 0) {
+                                out.push("The foe's Ice Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Ice Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select2.sludgeshield) {
+                        if (["Poison", "Steel"].contains(move.type)) {
+                            self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Sludge Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Water") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            if (self.selectData2.shieldHP > 0) {
+                                out.push("The foe's Sludge Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Sludge Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select2.dracoshield) {
+                        if (["Dragon"].contains(move.type)) {
+                            self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Draco Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Fairy") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            if (self.selectData2.shieldHP > 0) {
+                                out.push("The foe's Draco Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Draco Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select2.electroshield) {
+                        if (["Electric", "Ghost"].contains(move.type)) {
+                            self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Electro Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Ground") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            if (self.selectData2.shieldHP > 0) {
+                                out.push("The foe's Electro Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Electro Shield shattered!");
+                            }
+                        }
+                    }
+                    if (self.select2.genesisshield) {
+                        if (["Dragon"].contains(move.type)) {
+                            self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            out.push("The foe's Genesis Shield absorbed energy!");
+                        } else {
+                            if (move.type == "Psychic") {
+                                sdmg *= 1.5;
+                            }
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            if (self.selectData2.shieldHP > 0) {
+                                out.push("The foe's Genesis Shield sustained damage!");
+                            } else {
+                                out.push("The foe's Genesis Shield shattered!");
+                            }
+                        }
+                    }
+                }
 
                 if (dmg > target.hp) {
                     dmg = target.hp;
@@ -16668,7 +16943,7 @@ function Safari() {
                     }
                 }
                 if (self.select && self.select.spectralThief) {
-                    var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select);
+                    var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select, this.select2);
                     if (typeMultiplier < 1) {
                         var hold = {};
                         for (var b in user.boosts) {
@@ -16686,6 +16961,39 @@ function Safari() {
                         user.boosts["satk"] += 1;
                         user.boosts["satk"] = Math.min(6, Math.max(user.boosts["satk"], -6));
                         out.push(name + "'s " + self.statName("satk") + " +1!");
+                    }
+                }
+                if (self.select2) {
+                    if (self.select2.chargebeam && (isP1 || isP3) && move.category == "special") {
+                        user.boosts["satk"] += 1;
+                        user.boosts["satk"] = Math.min(6, Math.max(user.boosts["satk"], -6));
+                        out.push(name + "'s " + self.statName("satk") + " +1!");
+                    }
+                }
+                if (self.select2 && (!fainted)) {
+                    if (self.select2.brawler && (isP2 || isP4) && move.category === "physical") {
+                        var stat = ["atk", "def", "spe", "satk", "sdef"].random();
+                        target.boosts[stat] += 2;
+                        target.boosts[stat] = Math.min(6, Math.max(target.boosts[stat], -6));
+                        out.push(tname + "'s " + self.statName(stat) + " +2!");
+                    }
+                    if (self.select2.inferno && chance(0.25) && target.condition === "none" && move.type === "Fire" && (!hasType(target.id, "Fire"))) {
+                        out.push(tname + " got burned!");
+                        target.condition = "burn";
+                    }
+                    if (self.select2.zapcannon && chance(0.5) && target.condition === "none" && move.type === "Electric" && (!hasType(target.id, "Electric"))) {
+                        out.push(tname + " was paralyzed!");
+                        target.condition = "paralyze";
+                    }
+                    if (self.select2.toxic && chance(0.75) && target.condition === "none" && move.type === "Poison" && (!hasType(target.id, "Poison"))) {
+                        if (hasType(user.id, "Poison")) {
+                            target.badlyPoisoned = 1;
+                            out.push(tname + " was badly poisoned!");
+                            target.condition = "poison";
+                        } else {
+                            out.push(tname + " was poisoned!");
+                            target.condition = "poison";
+                        }
                     }
                 }
                 if (self.select && (!fainted)) {
@@ -16725,8 +17033,12 @@ function Safari() {
                         target.boosts["spe"] = Math.min(6, Math.max(target.boosts["spe"] - 1, -6));
                         out.push(tname + "'s Speed -1!");
                     }
-                    if (self.select.psyDrop && move.type === "Psychic" && chance(0.5)) {
+                    if ((self.select.psyDrop || (self.select2 && self.select2.psyDrop)) && move.type === "Psychic" && chance(0.5)) {
                         if (self.select.singlespecialstat) {
+                            target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
+                            out.push(tname + "'s Special -1!");
+                        }
+                        if (self.select2 && self.select2.singlespecialstat) {
                             target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
                             out.push(tname + "'s Special -1!");
                         }
@@ -16755,7 +17067,7 @@ function Safari() {
             var inver = (this.select && this.select.inverted ? true : false);
             if (wide) {
                 if (isP1) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16768,7 +17080,7 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke1, move, poke2, typeMultiplier, 2, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16782,7 +17094,7 @@ function Safari() {
                         out = dealDamage(poke1, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select, this.select2);
                         if (move.type == "Ground" && poke3.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16798,7 +17110,7 @@ function Safari() {
                     }
                 }
                 else if (isP3) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke2.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16811,7 +17123,7 @@ function Safari() {
                     else if (poke2.hp > 0) {
                         out = dealDamage(poke3, move, poke2, typeMultiplier, 2, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke4.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16825,7 +17137,7 @@ function Safari() {
                         out = dealDamage(poke3, move, poke4, typeMultiplier, 2, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select, this.select2);
                         if (move.type == "Ground" && poke1.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16841,7 +17153,7 @@ function Safari() {
                     }
                 }
                 else if (isP2) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16854,7 +17166,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke2, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16868,7 +17180,7 @@ function Safari() {
                         out = dealDamage(poke2, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke4.id)), sys.type(sys.pokeType2(poke4.id)), null, inver, this.select, this.select2);
                         if (move.type == "Ground" && poke4.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16884,7 +17196,7 @@ function Safari() {
                     }
                 }
                 else if (isP4) {
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke1.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16897,7 +17209,7 @@ function Safari() {
                     else if (poke1.hp > 0) {
                         out = dealDamage(poke4, move, poke1, typeMultiplier, 1, out);
                     }
-                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select);
+                    typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke3.id)), sys.type(sys.pokeType2(poke3.id)), null, inver, this.select, this.select2);
                     if (move.type == "Ground" && poke3.item.balloon) {
                         typeMultiplier = 0;
                     }
@@ -16911,7 +17223,7 @@ function Safari() {
                         out = dealDamage(poke4, move, poke3, typeMultiplier, 1, out);
                     }
                     if (target !== "TEAM") {
-                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select);
+                        typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), null, inver, this.select, this.select2);
                         if (move.type == "Ground" && poke2.item.balloon) {
                             typeMultiplier = 0;
                         }
@@ -16928,7 +17240,7 @@ function Safari() {
                 }
             }
             else {
-                var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select);
+                var typeMultiplier = safari.checkEffective(move.type, "???", sys.type(sys.pokeType1(target.id)), sys.type(sys.pokeType2(target.id)), null, inver, this.select, this.select2);
                 if (move.type == "Ground" && target.item.balloon) {
                     typeMultiplier = 0;
                 }
@@ -17098,7 +17410,7 @@ function Safari() {
                     if (chance(obj.buffChance)) {
                         user.boosts[obj.buffStat] += obj.buff;
                         user.boosts[obj.buffStat] = Math.min(6, Math.max(user.boosts[obj.buffStat], -6));
-                        if (this.select && this.select.singlespecialstat && obj.buffStat == "satk") {
+                        if (((this.select && this.select.singlespecialstat) || (this.select2 && this.select2.singlespecialstat)) && obj.buffStat == "satk") {
                             out.push(name + "'s Special " + addSign(obj.buff) + "!");
                         }
                         else {
@@ -17134,7 +17446,7 @@ function Safari() {
                     if (chance(obj.nerfChance)) {
                         target.boosts[obj.nerfStat] += obj.nerf;
                         target.boosts[obj.nerfStat] = Math.min(6, Math.max(target.boosts[obj.nerfStat], -6));
-                        if (this.select && this.select.singlespecialstat && obj.nerfStat == "satk") {
+                        if (((this.select && this.select.singlespecialstat) || (this.select2 && this.select2.singlespecialstat)) && obj.nerfStat == "satk") {
                             out.push(tname + "'s Special " + addSign(obj.nerf) + "!");
                         }
                         else {
@@ -17144,10 +17456,10 @@ function Safari() {
                 }
             }
         }
-        if (this.select && this.select.vicious && move.category !== "other") {
+        if (((this.select && this.select.vicious) || (this.select2 && this.select2.vicious)) && move.category !== "other") {
             var b = ["atk", "def", "spe", "satk", "sdef"].random();
             var n = ["atk", "def", "spe", "satk", "sdef"];
-            if (this.select.singlespecialstat && b == "sdef") {
+            if ((this.select.singlespecialstat || ((this.select2 && this.select2.singlespecialstat))) && b == "sdef") {
                 b = "satk";
                 n = n.splice(n.indexOf("sdef"), 1);
             }
@@ -17162,21 +17474,21 @@ function Safari() {
             user.boosts[b] = Math.min(6, Math.max(user.boosts[b], -6));
             user.boosts[n] -= 1;
             user.boosts[n] = Math.min(6, Math.max(user.boosts[n], -6));
-            if (this.select.singlespecialstat && b == "satk") {
+            if ((this.select.singlespecialstat || (this.select2 && this.select2.singlespecialstat)) && b == "satk") {
                 out.push(name + "'s Special +2!");
             }
             else {
                 out.push(name + "'s " + this.statName(b) + " +2!");
             }
-            if (this.select.singlespecialstat && n == "satk") {
+            if ((this.select.singlespecialstat || (this.select2 && this.select2.singlespecialstat)) && n == "satk") {
                 out.push(name + "'s Special -1!");
             }
             else {
                 out.push(name + "'s " + this.statName(n) + " -1!");
             }
         }
-        if (this.select && this.select.dynamicPunch && target.hp > 0) {
-            if (move.type == "Fighting") {
+        if (((this.select && this.select.dynamicPunch) || (this.select && this.select.dynamicPunch)) && target.hp > 0) {
+            if (move.type == "Fighting" && (!(target.confused))) {
                 target.confused = true;
                 out.push(tname + " was confused!");
             }
@@ -17388,7 +17700,7 @@ function Safari() {
         if (data.hasOwnProperty("buff")) {
             for (e = 0; e < data.buff.length; e++) {
                 eff = data.buff[e];
-                if (this.select && this.select.singlespecialstat && eff.buffStat.toLowerCase() == "satk") {
+                if (((this.select && this.select.singlespecialstat) || ((this.select2 && this.select2.singlespecialstat))) && eff.buffStat.toLowerCase() == "satk") {
                     out.push("Own Special " + addSign(eff.buff) + (eff.buffChance && eff.buffChance < 1 ? " (" + Math.round(eff.buffChance * 100) + "%)" : ""));
                 }
                 else {
@@ -17399,7 +17711,7 @@ function Safari() {
         if (data.hasOwnProperty("nerf")) {
             for (e = 0; e < data.nerf.length; e++) {
                 eff = data.nerf[e];
-                if (this.select && this.select.singlespecialstat && eff.nerfStat.toLowerCase() == "satk") {
+                if (((this.select && this.select.singlespecialstat) || ((this.select2 && this.select2.singlespecialstat))) && eff.nerfStat.toLowerCase() == "satk") {
                     out.push("Opponent's Special " + addSign(eff.nerf) + (eff.nerfChance && eff.nerfChance < 1 ? " (" + Math.round(eff.nerfChance * 100) + "%)" : ""));
                 }
                 else {
@@ -17462,7 +17774,7 @@ function Safari() {
                 move.power = Math.min(data.movepowers[move.type], move.power);
                 move.power = Math.round(move.power * moveBoost / 5) * 5;
                 move.category = chance(0.5) ? "physical" : "special";
-                if (this.select && (this.select.categorySplit || this.select.specBan || this.select.physBan)) {
+                if ((this.select && (this.select.categorySplit || this.select.specBan || this.select.physBan)) || (this.select2 && (this.select2.categorySplit || this.select2.specBan || this.select2.physBan))) {
                     switch (move.type) {
                         case "Normal": case "Fighting": case "Flying": case "Rock": case "Ground": case "Bug": case "Poison": case "Ghost": case "Steel":
                             move.category = "physical"; break;
@@ -17556,7 +17868,7 @@ function Safari() {
                 }
             }
             
-            if (this.select && this.select.galeWings && move.type === "Flying") {
+            if (((this.select && this.select.galeWings) || (this.select2 && this.select2.galeWings)) && move.type === "Flying") {
                 if (move.priority) {
                     move.priority++;
                 }
@@ -17660,11 +17972,22 @@ function Safari() {
                     effChance.flinch *= 1.5;
                 }
             }
+            if (this.select2) {
+                if (this.select2.grassyterrain && effChance.drain) {
+                    effChance.drain *= 1.5;
+                }
+                if (this.select2.psychicterrain && effChance.priority) {
+                    effChance.priority = 0;
+                }
+                if (this.select2.electricterrain && effChance.flinch) {
+                    effChance.flinch *= 1.5;
+                }
+            }
         }
         catch (err) {
             //
         }
-        if (this.select && this.select.noStatBoost) {
+        if ((this.select && this.select.noStatBoost) || (this.select2 && this.select2.noStatBoost)) {
             effChance.nerf = 0;
             effChance.buff = 0;
             effChance.haze = 0;
@@ -17727,7 +18050,15 @@ function Safari() {
                         out.drain *= 1.5;
                     }
                 }
+                if (this.select2) {
+                    if (this.select2.boostDrain) {
+                        out.drain *= 1.5;
+                    }
+                }
                 if (this.select && this.select.grassyterrain && hasType(user.id, "Grass")) {
+                    val *= 1.5;
+                }
+                if (this.select2 && this.select2.grassyterrain && hasType(user.id, "Grass")) {
                     val *= 1.5;
                 }
                 out.type = eff;
@@ -17807,6 +18138,11 @@ function Safari() {
                         return out;
                     }
                 }
+                if (this.select2) {
+                    if (this.select2.shellArmor) {
+                        return out;
+                    }
+                }
                 if (factor < -0.275) {
                     return out;
                 }
@@ -17871,7 +18207,7 @@ function Safari() {
             case "buff":
                 buff = {};
                 buff.buffStat = ["atk", "def", "satk", "sdef", "spe"].random();
-                if (buff.buffStat == "sdef" && this.select && this.select.singlespecialstat) {
+                if (buff.buffStat == "sdef" && ((this.select && this.select.singlespecialstat) || (this.select2 && this.select2.singlespecialstat))) {
                     buff.buffStat = "satk";
                 }
                 if (used.contains("buff" + buff.buffStat)) {
@@ -17918,7 +18254,7 @@ function Safari() {
                 if (used.contains("nerf" + nerf.nerfStat)) {
                     return out;
                 }
-                if (nerf.nerfStat == "sdef" && this.select && this.select.singlespecialstat) {
+                if (nerf.nerfStat == "sdef" && ((this.select && this.select.singlespecialstat) || (this.select2 && this.select2.singlespecialstat))) {
                     nerf.nerfStat = "satk";
                 }
                 if (factor > 0) {
@@ -40254,7 +40590,7 @@ function Safari() {
                 return true;
             }
             if (command === "itemicon") {
-                safaribot.sendHtmlMessage(src, "<img src = 'item:" + commandData + "'>", safchan);
+                safaribot.sendHtmlMessage(src, "" + commandData + "<img src = 'item:" + commandData + "'>", safchan);
                 return true;
             }
             if (command === "costumeicon") {
@@ -40317,6 +40653,34 @@ function Safari() {
                 var battle = new Battle2(src, npc, {
                     cantWatch: true
                 }, null, null, npc.select);
+                currentBattles.push(battle);
+                return;
+            }
+            if (command === "celebritydeathmatch" || command == "cdm") {
+                var info = commandData.split(":");
+                if (info.length < 2) {
+                    safaribot.sendMessage(src, "You must supply two trainers for a celebrity match", safchan);
+                    return;
+                }
+                var reg, p1 = {}, p2 = {}, s1 = null, s2 = null, b1, b2;
+                for (var r in safari.celebrityData) {
+                    reg = safari.celebrityData[reg];
+                    for (var t in reg) {
+                        if (reg[t].name.toLowerCase() == info[0].toLowerCase()) {
+                            b1 = reg[t];
+                            p1.party = Object.keys(b1.party).shuffle().slice(0, 6);
+                            s1 = b1.npcDuelEffects;
+                        }
+                        if (reg[t].name.toLowerCase() == info[1].toLowerCase()) {
+                            b2 = reg[t];
+                            p2.party = Object.keys(b2.party).shuffle().slice(0, 6);
+                            s2 = b2.npcDuelEffects;
+                        }
+                    }
+                }
+                var battle = new Battle2(src, npc, {
+                    cantWatch: true
+                }, null, null, null);
                 currentBattles.push(battle);
                 return;
             }
