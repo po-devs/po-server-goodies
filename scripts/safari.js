@@ -14137,6 +14137,7 @@ function Safari() {
 
             this.name1 = sys.name(p1);
             this.viewers = this.viewers.concat(this.name1.toLowerCase());
+            this.biasNPC0 = null;
         }
 
         this.winMsg = opt.winMsg;
@@ -14559,7 +14560,7 @@ function Safari() {
                     this.sendMessage(id, toColor("+ " + m, "#3CB371"));
                 }
             }
-            if (this.biasNPC0.length > 0) {
+            if (this.biasNPC0 && this.biasNPC0.length > 0) {
                 m = "", name = this.name;
                 this.sendMessage(id, "");
                 for (var j in this.biasNPC0) {
