@@ -14142,6 +14142,7 @@ function Safari() {
         this.tagBattle = false;
         this.oneOnTwo = false;
         this.fullNPC = typeof p1 == "object";
+        var isNPC = this.npcBattle = typeof p2 == "object";
         if (viewers) {
             this.viewers = viewers;
         } else {
@@ -14166,7 +14167,6 @@ function Safari() {
         this.winMsg = opt.winMsg;
         this.loseMsg = opt.loseMsg;
 
-        var isNPC = this.npcBattle = typeof p2 == "object";
         var player2 = isNPC ? p2 : getAvatar(p2);
         var npcDesc = null;
         this.canPickMoves = false;
@@ -14376,7 +14376,11 @@ function Safari() {
             }
         }
 
-        this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
+        if (this.fullNPC) {
+            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party);
+        } else {
+            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished);
+        }
         if (isNPC) {
             this.name2 = player2.name;
             this.powerBoost = player2.powerBoost || 0;
@@ -40726,18 +40730,20 @@ function Safari() {
                     safaribot.sendMessage(src, "You must supply two trainers for a celebrity match", safchan);
                     return;
                 }
-                var reg, p1 = {}, p2 = {}, s1 = null, s2 = null, b1, b2;
+                var reg, p1 = {"party": [], "name": ""}, p2 = {"party": [], "name": ""}, s1 = null, s2 = null, b1, b2;
                 for (var r in safari.celebrityData) {
                     reg = safari.celebrityData[reg];
                     for (var t in reg) {
                         if (reg[t].name.toLowerCase() == info[0].toLowerCase()) {
                             b1 = reg[t];
                             p1.party = Object.keys(b1.party).shuffle().slice(0, 6);
+                            p1.name = b1.name;
                             s1 = b1.npcDuelEffects;
                         }
                         if (reg[t].name.toLowerCase() == info[1].toLowerCase()) {
                             b2 = reg[t];
                             p2.party = Object.keys(b2.party).shuffle().slice(0, 6);
+                            p2.name = b2.name;
                             s2 = b2.npcDuelEffects;
                         }
                     }
