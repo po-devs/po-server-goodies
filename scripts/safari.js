@@ -40761,13 +40761,23 @@ function Safari() {
                     safaribot.sendMessage(src, "No trainer found " + info[1] + ".", safchan);
                     return true;
                 }
+                p1.select = {};
+                p2.select = {};
+                for (var a in s1) {
+                    p1.select[s1[a]] = true;
+                }
+                for (var a in s2) {
+                    p2.select[s2[a]] = true;
+                }
+                p1.select.boostType = [];
+                p2.select.boostType = [];
                 var watchable = true;
                 if (command == "cdms") {
                     watchable = false;
                 }
                 var battle = new Battle2(p1, p2, {
                     cantWatch: watchable
-                }, null, null, s1, null, null, s2);
+                }, null, null, p1.select, null, null, p2.select);
                 currentBattles.push(battle);
                 return true;
             }
