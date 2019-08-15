@@ -13823,6 +13823,29 @@ function Safari() {
         
     };
     this.watchBattle = function(src, data) {
+        for (b in currentBattles) {
+            battle = currentBattles[b];
+            if (!(battle.fullNPC)) {
+                continue;
+            }
+            if (data.toLowerCase() == battle.name1.toLowerCase() || data.toLowerCase() == battle.name2.toLowerCase()) {
+                if (battle.cantWatch && !SESSION.channels(safchan).isChannelAdmin(src)) {
+                    safaribot.sendMessage(src, "You cannot watch/unwatch this battle!", safchan);
+                    return;
+                }
+                if (battle.viewers.indexOf(name.toLowerCase()) !== -1) {
+                    battle.sendToViewers(name + " stopped watching this battle!");
+                    battle.viewers.splice(battle.viewers.indexOf(name.toLowerCase()), 1);
+                } else {
+                    battle.viewers.push(name.toLowerCase());
+                    battle.sendToViewers(name + " is watching this battle!");
+                    if (battle.battle2 && (battle.select || battle.biasNPC)) {
+                        battle.showInfo(name.toLowerCase());
+                    } 
+                }
+                return;
+            }
+        }
         if (!validPlayers("target", src, data)) {
             return;
         }
@@ -14633,6 +14656,9 @@ function Safari() {
     Battle2.prototype.nextTurn = function() {
         if (this.phase === "preview") {
             this.subturn++;
+            if (this.fullNPC && this.subturn >= 2) {
+                this.subturn = 7;
+            }
             if (this.subturn === 7) {
                 this.phase = "battle";
                 this.turn++;
@@ -14648,6 +14674,43 @@ function Safari() {
                     
                     return out;
                 };
+                var smartFillTeam = function(team, foeTeam, size, inver, select, select2) {
+                    var out = [], options = {}, moves, powers, a, n, p, q, e, t1, t2, id;
+                    for (a = 0; a < team.length; a++) {
+                        id = parseInt(team[a].id, 10);
+                        q = getBST(id);
+                        moves = team[a].types;
+                        powers = team[a].movepowers;
+                        for (var t in foeTeam) {
+                            t1 = sys.type(sys.pokeType1(parseInt(foeTeam[t].id, 10)));
+                            t2 = sys.type(sys.pokeType2(parseInt(foeTeam[t].id, 10)));
+                            for (var m in moves) {
+                                n = (powers[m] ? powers[m] : 1);
+                                p = (moves[m] * n);
+                                e = safari.checkEffective(m, "???", t1, t2, "???", inver, select, select2);
+                                if (e > 1) {
+                                    q += ((n * e)/3);
+                                }
+                            }
+                        }
+                        q += (300 * Math.random());
+                        options["" + a] = q;
+                    }
+                    var out2 = Object.keys(options).sort(function(a, b){
+                        return options[a] - options[b];
+                    }).slice(0, 3);
+                    for (var k in out2) {
+                        out.push(parseInt(out2[k], 10));
+                    }
+                    out = out.slice(0, 3);
+                    return out;
+                }
+                if (this.fullNPC) {
+                    this.p1PickedTeam = smartFillTeam(this.team1, this.team2, this.partySizeP1, (this.select && this.select.inverted), this.select, this.select2);
+                }
+                if (this.npcBattle) {
+                    this.p2PickedTeam = smartFillTeam(this.team2, this.team1, this.partySize, (this.select && this.select.inverted), this.select, this.select2);
+                }
                 if (this.tagBattle) {
                     if (this.p1PickedTeam.length < this.partySizeP1) {
                         this.p1PickedTeam = fillTeam(this.p1PickedTeam, this.team1, this.partySizeP1);
@@ -18739,12 +18802,12 @@ function Safari() {
         var exclude = [0, 1, 3][alive-1];
         var ordered = Object.keys(moveChance).sort(function(a, b){
             return moveChance[a] - moveChance[b];
-        });/*
+        });
         while (exclude) {
             e = ordered.shift();
             delete moveChance[e];
             exclude--;
-        }*/
+        }
         
         return randomSample(moveChance);
     };
@@ -40679,9 +40742,9 @@ function Safari() {
                         }
                     }
                 }
-                var battle = new Battle2(src, npc, {
+                var battle = new Battle2(p1, p2, {
                     cantWatch: true
-                }, null, null, null);
+                }, null, null, s1, null, null, s2);
                 currentBattles.push(battle);
                 return;
             }
