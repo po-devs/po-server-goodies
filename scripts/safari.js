@@ -40724,11 +40724,11 @@ function Safari() {
                 currentBattles.push(battle);
                 return;
             }
-            if (command === "celebritydeathmatch" || command == "cdm") {
+            if (command === "celebritydeathmatch" || command == "cdm" || "cdms") {
                 var info = commandData.split(":");
                 if (info.length < 2) {
                     safaribot.sendMessage(src, "You must supply two trainers for a celebrity match", safchan);
-                    return;
+                    return true;
                 }
                 safaribot.sendMessage(src, "Trainers: " + info[0] + " and " + info[1] + ".", safchan);
                 var reg, p1 = {"party": [], "name": ""}, p2 = {"party": [], "name": ""}, s1 = null, s2 = null, b1, b2, data;
@@ -40752,17 +40752,21 @@ function Safari() {
                 }
                 if (p1.name == "") {
                     safaribot.sendMessage(src, "No trainer found " + info[0] + ".", safchan);
-                    return;
+                    return true;
                 }
                 if (p2.name == "") {
                     safaribot.sendMessage(src, "No trainer found " + info[1] + ".", safchan);
-                    return;
+                    return true;
+                }
+                var watchable = true;
+                if (command == "cdms") {
+                    watchable = false;
                 }
                 var battle = new Battle2(p1, p2, {
-                    cantWatch: true
+                    cantWatch: watchable
                 }, null, null, s1, null, null, s2);
                 currentBattles.push(battle);
-                return;
+                return true;
             }
             if (command === "choosecelebrities") {
                 safari.celebrityRegion = commandData.toLowerCase();
