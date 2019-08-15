@@ -1810,11 +1810,8 @@ function Safari() {
     var lastContests = [];
     var gachaJackpotAmount = 200; //Jackpot for gacha tickets. Number gets divided by 10 later.
     var gachaJackpot = (SESSION.global() && SESSION.global().safariGachaJackpot ? SESSION.global().safariGachaJackpot : gachaJackpotAmount);
-<<<<<<< HEAD
     var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : [""]);
-=======
     var allTrackers = (SESSION.global() && SESSION.global().allTrackers ? SESSION.global().allTrackers : []);
->>>>>>> 11dd829d538eee748ecff1e31b04d631d930df41
     var dailyBoost;
     var scientistQuest;
     var photographQuest;
@@ -17459,7 +17456,7 @@ function Safari() {
                 }
             }
         }
-        if (((this.select && this.select.vicious) || (this.select2 && this.select2.vicious))) && move.category !== "other") {
+        if (((this.select && this.select.vicious) || (this.select2 && this.select2.vicious)) && move.category !== "other") {
             var b = ["atk", "def", "spe", "satk", "sdef"].random();
             var n = ["atk", "def", "spe", "satk", "sdef"];
             if ((this.select.singlespecialstat || ((this.select2 && this.select2.singlespecialstat))) && b == "sdef") {
@@ -40683,7 +40680,7 @@ function Safari() {
                 }
                 var battle = new Battle2(src, npc, {
                     cantWatch: true
-                }, null, null, ¥¥¥);
+                }, null, null, null);
                 currentBattles.push(battle);
                 return;
             }
