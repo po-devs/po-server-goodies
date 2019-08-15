@@ -40734,7 +40734,7 @@ function Safari() {
                 var reg, p1 = {"party": [], "name": ""}, p2 = {"party": [], "name": ""}, s1 = null, s2 = null, b1, b2, data;
                 data = JSON.parse(JSON.stringify((safari.celebrityData)));
                 for (var r in data) {
-                    reg = data[reg];
+                    reg = data[r];
                     for (var t = 0; t < reg.length; t++) {
                         if (reg[t].name.toLowerCase() == info[0].toLowerCase()) {
                             b1 = reg[t];
