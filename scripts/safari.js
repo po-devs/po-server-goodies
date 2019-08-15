@@ -186,6 +186,7 @@ function Safari() {
             easteregg: 0,
             celebrityTicket: 0,
             pokeblock: 0,
+            lucky: 0,
             dummy: 0,
             dummy2: 0,
             dummy3: 0
@@ -13570,6 +13571,46 @@ function Safari() {
         }
     }
 
+    this.betCelebrity = function(src, data) {
+        var reason = "start a battle";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        var player = getAvatar(src);
+        var cdata;
+        if (!data) {
+            safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
+            return;
+        }
+        cata = data.split(":");
+        if (cdata.length < 2) {
+            safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
+            return;
+        }
+        var trainer = data[0];
+        var amt = parseInt(data[1], 10);
+        if (amt > player.balls.lucky) {
+            safaribot.sendMessage(src, "You don't have " + amt + " Lucky Coins!", safchan);
+            return;
+        }
+        if (amt % 5 !== 0) {
+            safaribot.sendMessage(src, "You can only bet in multiples of 5!", safchan);
+            return;
+        }
+        if (!(npcMatchAlive.contains(trainer.toLowerCase()))) {
+            safaribot.sendMessage(src, "That's not a valid trainer in this tournament!", safchan);
+            return;
+        }
+        if (!(player.npcBets)) {
+            player.npcBets = {};
+        }
+        if (!(player.npcBets[trainer])) {
+            player.npcBets[trainer] = 0;
+        }
+        player.npcBets[trainer] += amt;
+        player.balls.lucky -= amt;
+        return;
+    };
     /* Battles */
     this.challengePlayerTag = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -37252,6 +37293,10 @@ function Safari() {
             }
             if (command === "challenge3" || command === "challengetag") {
                 safari.challengePlayerTag(src, commandData);
+                return true;
+            }
+            if (command === "npcbet" || command === "betnpc" || command === "betceleb") {
+                safari.betCelebrity(src, commandData);
                 return true;
             }
             if (command === "watch") {
