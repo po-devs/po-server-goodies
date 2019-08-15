@@ -40744,12 +40744,23 @@ function Safari() {
                             p1.party = Object.keys(b1.party).shuffle().slice(0, 6);
                             p1.name = b1.name;
                             s1 = b1.npcDuelEffects;
+                            p1.bias = b1.bias;
+                            for (var a in b1.chanceBias) {
+                                if (chance(0.5)) {
+                                    p1.bias = p1.bias.concat(b1.chanceBias[a]);
+                                }
+                            }
                         }
                         if (reg[t].name.toLowerCase() == info[1].toLowerCase()) {
                             b2 = reg[t];
                             p2.party = Object.keys(b2.party).shuffle().slice(0, 6);
                             p2.name = b2.name;
                             s2 = b2.npcDuelEffects;
+                            for (var a in b2.chanceBias) {
+                                if (chance(0.5)) {
+                                    p2.bias = p2.bias.concat(b2.chanceBias[a]);
+                                }
+                            }
                         }
                     }
                 }
