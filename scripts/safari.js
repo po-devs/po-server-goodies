@@ -15184,7 +15184,7 @@ function Safari() {
                 }
             };
 
-            if (this.player1Input === null) {
+            if (this.player1Input === null && (!(this.fullNPC))) {
                 this.player1Input = Object.keys(this.p1MoveCodes).random();
                 this.target1 = (chance(0.5) ? 2 : 4);
             }
@@ -15237,7 +15237,10 @@ function Safari() {
                     this.player1Input = "---";
                 } else {
                     this.player1Input = this.chooseNPCMove(this.p1MoveCodes, this.team1, this.team2);
+                    move1 = this.p1MoveCodes[this.player1Input];
+                    poke1 = this.team1[move1.ownerId];
                 }
+                spd1 = this.getStatValue(poke1, "spe", (poke1.condition === "paralyzed" ? 0.5 : 1));
             } else {
                 if (!this.player1Fainted) {
                     if (this.recharge1) {
