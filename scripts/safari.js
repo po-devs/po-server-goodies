@@ -13823,6 +13823,7 @@ function Safari() {
         
     };
     this.watchBattle = function(src, data) {
+        var name = sys.name(src);
         for (b in currentBattles) {
             battle = currentBattles[b];
             if (!(battle.fullNPC)) {
@@ -13849,7 +13850,6 @@ function Safari() {
         if (!validPlayers("target", src, data)) {
             return;
         }
-        var name = sys.name(src);
         var tName = sys.name(sys.id(data)).toLowerCase();
         var canView = function(src, name) {
             var target = getAvatarOff(name);
