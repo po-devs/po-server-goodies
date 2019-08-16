@@ -15819,17 +15819,6 @@ function Safari() {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is paralyzed! It can't move!", sColor));
                         continue;
                     }
-                    if (user.confused && chance(0.5)) {
-                        this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
-                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
-                        dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
-                        user.hp -= dmg;
-                        this.sendToViewers(name + " lost " + dmg + " HP!");
-                        if (user.hp <= 0) {
-                            this.sendToViewers("<b>" + name + " fainted!</b>");
-                        }
-                        continue;
-                    }
                     if (user.condition === "sleep") {
                         if (user.conditionDuration <= 0 || ((this.select && this.select.extendedSleep) ? chance(0.04) : chance(0.12))) {
                             this.sendToViewers(toColor(name + " woke up!", sColor));
@@ -15852,6 +15841,17 @@ function Safari() {
                             this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is frozen solid!", sColor));
                             continue;
                         }
+                    }
+                    if (user.confused && chance(0.5)) {
+                        this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
+                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
+                        dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
+                        user.hp -= dmg;
+                        this.sendToViewers(name + " lost " + dmg + " HP!");
+                        if (user.hp <= 0) {
+                            this.sendToViewers("<b>" + name + " fainted!</b>");
+                        }
+                        continue;
                     }
                     this.sendToViewers(pokeInfo.icon(user.id));
                     if (this.tagBattle) {
@@ -15953,7 +15953,7 @@ function Safari() {
                 }
             }
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer)) || ((this.select2 && this.select2.waterfall && this.turn === this.selectData.waterfallTimer))) {
-                if (this.select.irontail || this.select2.irontail) {
+                if (this.select.irontail || (this.select2 && this.select2.irontail)) {
                     this.sendToViewers("The Iron Tail strikes the field!");
                     this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
                 } else {
