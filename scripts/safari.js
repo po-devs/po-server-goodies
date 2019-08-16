@@ -13620,8 +13620,13 @@ function Safari() {
             }
             return;
         }
-        var amt = parseInt(data, 10), cost = 1000;
-        if (player.balls.lucky == 0) {
+        var amt = parseInt(data, 10), cost = 1000, extraCount = 0;
+        for (var a in player.npcBets) {
+            if (player.npcBets[a] > 0) {
+                extraCount += player.npcBets[a];
+            }
+        }
+        if (player.balls.lucky + extraCount == 0) {
             amt = 300;
             cost = 1000;
         }
@@ -13633,8 +13638,8 @@ function Safari() {
             safaribot.sendMessage(src, "You can buy Lucky Coins in multiples of 10 only!", safchan);
             return;
         }
-        if (amt + player.balls.lucky > 400) {
-            safaribot.sendMessage(src, "You can't buy more than 400 Lucky Coins!", safchan);
+        if (amt + player.balls.lucky + extraCount > 400) {
+            safaribot.sendMessage(src, "You can't buy more than 400 Lucky Coins per Tournament!", safchan);
             return;
         }
         if (player.balls.lucky !== 0) {
