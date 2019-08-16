@@ -795,7 +795,7 @@ function Safari() {
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
             easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false, cap: 9999},
             celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: false},
-            lucky: {name: "lucky", fullName: "Lucky Coin", type: "valuables", icon: 273, price: 100000, aliases: ["luckycoin", "lucky coin", "luckycoins"], tradable: false},
+            lucky: {name: "lucky", fullName: "Lucky Coin", type: "valuables", icon: 273, price: 0, aliases: ["luckycoin", "lucky coin", "luckycoins"], tradable: false},
 
             //Alchemy related items
             materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -14291,7 +14291,6 @@ function Safari() {
             player1 = getAvatar(p1);
 
             this.name1 = sys.name(p1);
-            this.viewers = this.viewers.concat(this.name1.toLowerCase());
             this.biasNPC0 = null;
         }
 
