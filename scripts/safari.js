@@ -15953,7 +15953,7 @@ function Safari() {
                 }
             }
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer)) || ((this.select2 && this.select2.waterfall && this.turn === this.selectData.waterfallTimer))) {
-                if (this.select.irontail) {
+                if (this.select.irontail || this.select2.irontail) {
                     this.sendToViewers("The Iron Tail strikes the field!");
                     this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
                 } else {
@@ -15964,6 +15964,10 @@ function Safari() {
                 var dmg, typeMultiplier, type, pow;
                 type = (this.select.irontail ? "Steel": "Water");
                 pow = (this.select.irontail ? 100 : 80);
+                if (this.select2.irontail) {
+                    type = "Steel";
+                    pow = 100;
+                }
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((350 * pow) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), (this.select.inverted ? true : false), this.select, this.select2);
