@@ -71,6 +71,9 @@ function Safari() {
     var marketData = {};
     var dayCareEnabled = true;
 
+    var npcMatchAlive = [];
+    var buyLuckyPossible = false;
+
     var eliteCounterPicks = [];
     var eliteStrongCounterPicks = [];
 
@@ -196,6 +199,7 @@ function Safari() {
             "145": 0,
             "146": 0
         },
+        celebBetEarned: 0,
         decorations: {},
         firstCelebrityRun: true,
         cherishOff: false,
@@ -513,6 +517,7 @@ function Safari() {
                 cooldown: 0
             }
         },
+        npcBets: {},
         missions: [],
         trials: {
             name: "",
@@ -13571,6 +13576,57 @@ function Safari() {
         }
     }
 
+    this.buyLuckyCoins = function(src, data) {
+        var reason = "buy stuff";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        if (!(buyLuckyPossible)) {
+            safaribot.sendMessage(src, "You cannot buy Lucky Coins anymore!", safchan);
+            return;
+        }
+        var player = getAvatar(src);
+        if (player.balls.lucky > 400) {
+            safaribot.sendMessage(src, "You cannot buy any more Lucky Coins!", safchan);
+            return;
+        }
+        if (!data) {
+            safaribot.sendMessage(src, "You can buy Lucky Coins with /buylucky [amt]!", safchan);
+            if (player.balls.lucky == 0) {
+                safaribot.sendMessage(src, "You can get 300 Lucky Coins with $1,000 to begin!", safchan);
+            }
+            return;
+        }
+        var amt = parseInt(data, 10), cost = 1000;
+        if (player.balls.lucky == 0) {
+            amt = 300;
+            cost = 1000;
+        }
+        if (!data) {
+            safaribot.sendMessage(src, "You can buy Lucky Coins with /buylucky [amt]!", safchan);
+            return;
+        }
+        if (amt % 10 !== 0) {
+            safaribot.sendMessage(src, "You can buy Lucky Coins in multiples of 10 only!", safchan);
+            return;
+        }
+        if (amt + player.balls.lucky > 400) {
+            safaribot.sendMessage(src, "You can't buy more than 400 Lucky Coins!", safchan);
+            return;
+        }
+        if (player.balls.lucky !== 0) {
+            cost = (amt * 5000);
+        }
+        if (cost > player.money) {
+            safaribot.sendMessage(src, "You don't have $" + cost + " to buy the lucky coins!", safchan);
+            return;
+        }
+        player.money -= cost;
+        player.balls.lucky += amt;
+
+        safaribot.sendMessage(src, "You purchased " + amt + " Lucky Coins with $" + cost + "!", safchan);
+        return;
+    };
     this.betCelebrity = function(src, data) {
         var reason = "start a battle";
         if (cantBecause(src, reason, ["tutorial"])) {
@@ -13582,7 +13638,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
             return;
         }
-        cata = data.split(":");
+        cata = data.toLowerCase().split(":");
         if (cdata.length < 2) {
             safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
             return;
@@ -13609,6 +13665,7 @@ function Safari() {
         }
         player.npcBets[trainer] += amt;
         player.balls.lucky -= amt;
+        safaribot.sendMessage(src, "You bet " + amt + " Lucky Coins on Trainer " + trainer.toUpperCase() + "!", safchan);
         return;
     };
     /* Battles */
@@ -37295,6 +37352,10 @@ function Safari() {
                 safari.challengePlayerTag(src, commandData);
                 return true;
             }
+            if (command === "buylucky" || command === "buyluckycoins" || command === "buynpcbet") {
+                safari.buyLuckyCoins(src, commandData);
+                return true;
+            }
             if (command === "npcbet" || command === "betnpc" || command === "betceleb") {
                 safari.betCelebrity(src, commandData);
                 return true;
@@ -40772,6 +40833,67 @@ function Safari() {
                 currentBattles.push(battle);
                 return;
             }
+            if (command == "enablebuylucky") {
+                buyLuckyPossible = (buyLuckyPossible ? false : true);
+                return true;
+            }
+            if (command == "addcelebritytrainer") {
+                npcMatchAlive.push(commandData.toLowerCase());
+                return true;
+            }
+            if (command == "killcelebritytrainer") {
+                npcMatchAlive.splice(npcMatchAlive.indexOf(commandData.toLowerCase()), 1);
+                return true;
+            }
+            if (command == "celebritybetsranked") {
+                var out = {}
+                for (var e in rawPlayers.hash) {
+                    if (rawPlayers.hash.hasOwnProperty(e)) {
+                        player = getAvatarOff(e);
+                        if (!player) {
+                            continue;
+                        }
+                        if (!player.celebBetEarned) {
+                            continue;
+                        }
+                        if (player.celebBetEarned > 0) {
+                            out[player.id] = player.celebBetEarned;
+                        }
+                    }
+                }
+                out.sort(function(a, b) { 
+                    return out[a] - out[b];
+                })
+                if (Object.keys(out).length > 0) {
+                    safaribot.sendMessage(src, "No results yet!", safchan);
+                }
+                for (var a in out) {
+                    safaribot.sendMessage(src, a + ": " + out[a], safchan);
+                }
+                return true;
+            }
+            if (command == "payoutcelebritytrainer") {
+                var trainer = commandData.toLowerCase();
+                if (!(npcMatchAlive.contains(trainer))) {
+                    safaribot.sendMessage(src, "That trainer isn't in this round!", safchan);
+                }
+                for (var e in rawPlayers.hash) {
+                    if (rawPlayers.hash.hasOwnProperty(e)) {
+                        player = getAvatarOff(e);
+                        if (!player) {
+                            continue;
+                        }
+                        if (!player.npcBets[trainer]) {
+                            continue;
+                        }
+                        player.balls.lucky += (Math.round(player.npcBets[trainer]) * 0.4);
+                        player.celebBetEarned += (Math.round(player.npcBets[trainer]) * 0.4);
+                        this.saveGame(player);
+                        safari.inboxMessage(player, "You earned " + (Math.round(player.npcBets[trainer]) * 0.4) + " Lucky Coins from your bet on Trainer " + trainer.toUpperCase() + "!", false);
+                    }
+                }
+                return true;
+            }
             if (command === "celebritydeathmatch" || command == "cdm" || "cdms") {
                 var info = commandData.split(":");
                 if (info.length < 2) {
@@ -40801,6 +40923,7 @@ function Safari() {
                             p2.party = Object.keys(b2.party).shuffle().slice(0, 6);
                             p2.name = b2.name;
                             s2 = b2.npcDuelEffects;
+                            p2.bias = b2.bias;
                             for (var a in b2.chanceBias) {
                                 if (chance(0.5)) {
                                     p2.bias = p2.bias.concat(b2.chanceBias[a]);
