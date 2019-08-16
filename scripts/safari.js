@@ -12503,11 +12503,11 @@ function Safari() {
         //Should use a formula that makes teams with similar records fight
         if (chance(0.4)) {
             safari.events.spiritDuelsTeams.sort( function(a, b) {
-                return b.fought - a.fought;
+                return a.fought - b.fought;
             });
         }
         else {
-            safari.events.spiritDuelsTeams.shuffle();
+            safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle();
         }
         sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
         //Add some print or something to say which teams are up
