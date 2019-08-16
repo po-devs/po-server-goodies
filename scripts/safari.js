@@ -15819,17 +15819,6 @@ function Safari() {
                         this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is paralyzed! It can't move!", sColor));
                         continue;
                     }
-                    if (user.confused && chance(0.5)) {
-                        this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
-                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
-                        dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
-                        user.hp -= dmg;
-                        this.sendToViewers(name + " lost " + dmg + " HP!");
-                        if (user.hp <= 0) {
-                            this.sendToViewers("<b>" + name + " fainted!</b>");
-                        }
-                        continue;
-                    }
                     if (user.condition === "sleep") {
                         if (user.conditionDuration <= 0 || ((this.select && this.select.extendedSleep) ? chance(0.04) : chance(0.12))) {
                             this.sendToViewers(toColor(name + " woke up!", sColor));
@@ -15852,6 +15841,17 @@ function Safari() {
                             this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is frozen solid!", sColor));
                             continue;
                         }
+                    }
+                    if (user.confused && chance(0.5)) {
+                        this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " attacked itself in its confusion!", sColor));
+                        var dmg = ((this.getStatValue(user, "atk") * 60) / this.getStatValue(user, "def"));
+                        dmg = Math.min(Math.round(dmg * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15))), user.hp);
+                        user.hp -= dmg;
+                        this.sendToViewers(name + " lost " + dmg + " HP!");
+                        if (user.hp <= 0) {
+                            this.sendToViewers("<b>" + name + " fainted!</b>");
+                        }
+                        continue;
                     }
                     this.sendToViewers(pokeInfo.icon(user.id));
                     if (this.tagBattle) {
@@ -15925,7 +15925,7 @@ function Safari() {
 
                 var dmg, typeMultiplier;
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
-                    dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
+                    dmg = ((150 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
@@ -15939,7 +15939,7 @@ function Safari() {
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((350 * 95) / this.getStatValue(poke2, "sdef"));
+                    dmg = ((150 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
@@ -15953,7 +15953,7 @@ function Safari() {
                 }
             }
             if ((this.select && this.select.irontail && this.turn === this.selectData.irontailTimer) || ((this.select && this.select.waterfall && this.turn === this.selectData.waterfallTimer)) || ((this.select2 && this.select2.waterfall && this.turn === this.selectData.waterfallTimer))) {
-                if (this.select.irontail || this.select2.irontail) {
+                if (this.select.irontail || (this.select2 && this.select2.irontail)) {
                     this.sendToViewers("The Iron Tail strikes the field!");
                     this.selectData.irontailTimer += (3 + Math.floor(4 * Math.random()));
                 } else {
@@ -15969,7 +15969,7 @@ function Safari() {
                     pow = 100;
                 }
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
-                    dmg = ((350 * pow) / this.getStatValue(poke1, "def"));
+                    dmg = ((150 * pow) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
@@ -15988,7 +15988,7 @@ function Safari() {
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((350 * pow) / this.getStatValue(poke2, "def"));
+                    dmg = ((150 * pow) / this.getStatValue(poke2, "def"));
                     typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
