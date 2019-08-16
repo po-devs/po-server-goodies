@@ -12425,7 +12425,10 @@ function Safari() {
                 rew += ("," + ((((round * 2) + 5)) * j) + "@dew");
             }
             if (round >= 1) {
-                rew = ("" + amt + "@pearl");
+                rew += ("" + amt + "@pearl");
+            }
+            if (round >= 2) {
+                rew += ("" + amt + "@cookie");
             }
             members = teams[t].players;
             for (var p in members) {
@@ -13673,6 +13676,7 @@ function Safari() {
         player.npcBets[trainer] += amt;
         player.balls.lucky -= amt;
         safaribot.sendMessage(src, "You bet " + amt + " Lucky Coins on Trainer " + trainer.toUpperCase() + "!", safchan);
+        this.saveGame(player);
         return;
     };
     /* Battles */
