@@ -13617,7 +13617,7 @@ function Safari() {
             return;
         }
         if (player.balls.lucky !== 0) {
-            cost = (amt * 5000);
+            cost = (amt * 500);
         }
         if (cost > player.money) {
             safaribot.sendMessage(src, "You don't have $" + cost + " to buy the lucky coins!", safchan);
@@ -40896,7 +40896,7 @@ function Safari() {
                 }
                 return true;
             }
-            if (command === "celebritydeathmatch" || command == "cdm" || "cdms") {
+            if ((command === "celebritydeathmatch") || (command == "cdm") || (command == "cdms")) {
                 var info = commandData.split(":");
                 if (info.length < 2) {
                     safaribot.sendMessage(src, "You must supply two trainers for a celebrity match", safchan);
