@@ -73,6 +73,7 @@ function Safari() {
 
     var npcMatchAlive = [];
     var buyLuckyPossible = false;
+    var npcBetCap = 200;
 
     var eliteCounterPicks = [];
     var eliteStrongCounterPicks = [];
@@ -13640,7 +13641,7 @@ function Safari() {
             safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
             return;
         }
-        cata = data.toLowerCase().split(":");
+        cdata = data.toLowerCase().split(":");
         if (cdata.length < 2) {
             safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
             return;
@@ -13664,6 +13665,10 @@ function Safari() {
         }
         if (!(player.npcBets[trainer])) {
             player.npcBets[trainer] = 0;
+        }
+        if (amt + player.npcBets[trainer] > npcBetCap) {
+            safaribot.sendMessage(src, "You cannot bet more than " + npcBetCap + " on a single trainer in this round!", safchan);
+            return;
         }
         player.npcBets[trainer] += amt;
         player.balls.lucky -= amt;
@@ -40837,6 +40842,10 @@ function Safari() {
             }
             if (command == "enablebuylucky") {
                 buyLuckyPossible = (buyLuckyPossible ? false : true);
+                return true;
+            }
+            if (command == "npcbetcap") {
+                npcBetCap = parseInt(commandData, 10);
                 return true;
             }
             if (command == "addcelebritytrainer") {
