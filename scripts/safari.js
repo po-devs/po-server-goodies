@@ -16951,7 +16951,7 @@ function Safari() {
                     if (self.select.genesisshield) {
                         dmg = Math.ceil(dmg * 0.75);
                     }
-                    if (self.select.iceshield) {
+                    if (self.select2.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
                             out.push("The foe's Ice Shield absorbed energy!");
