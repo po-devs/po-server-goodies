@@ -40861,7 +40861,7 @@ function Safari() {
                 return true;
             }
             if (command == "celebritybetsranked") {
-                var out = {}
+                var out = {}, out2;
                 for (var e in rawPlayers.hash) {
                     if (rawPlayers.hash.hasOwnProperty(e)) {
                         player = getAvatarOff(e);
@@ -40876,7 +40876,8 @@ function Safari() {
                         }
                     }
                 }
-                out.sort(function(a, b) { 
+                out2 = Object.keys(out);
+                out2.sort(function(a, b) { 
                     return out[a] - out[b];
                 })
                 if (Object.keys(out).length > 0) {
@@ -40896,6 +40897,9 @@ function Safari() {
                     if (rawPlayers.hash.hasOwnProperty(e)) {
                         player = getAvatarOff(e);
                         if (!player) {
+                            continue;
+                        }
+                        if (!player.npcBets) {
                             continue;
                         }
                         if (!player.npcBets[trainer]) {
