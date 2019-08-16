@@ -8316,7 +8316,7 @@ function Safari() {
         var candiesRequired = Math.floor((evoData.candies || 300) * (info.shiny ? 1.25 : 1));
         var costumed = player.costume === "breeder";
         var prev = this.candyCostConversion(player, candiesRequired);
-        var discountRate = (costumed ? costumeData.breeder.rate : 1) - this.getFortune(player, "breeder", 0, null, true);
+        var discountRate = (costumed ? costumeData.breeder.rate : 1);
         candiesRequired = Math.floor(candiesRequired * discountRate);
         candiesRequired = this.candyCostConversion(player, candiesRequired);
 
@@ -8363,9 +8363,6 @@ function Safari() {
             return;
         }
         
-        if (this.getFortune(player, "breeder", 0, null, true)) {
-            this.useFortuneCharge(player, "breeder", 1);
-        }
         
         var evolveTo = getPossibleEvo(id);
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
@@ -8382,6 +8379,9 @@ function Safari() {
         var amt = ((bstval + (Math.max((bstval-300) * 2, 0)) + (Math.max((bstval-480) * 4, 0))) * (0.075 + (Math.random() * 0.05))) * 2 * (shiny ? 1.5 : 1);
         if (this.hasCostumeSkill(player, "extraDust")) {
             amt *= (1 + (this.getCostumeLevel(player)/30));
+        }
+        if (this.getFortune(player, "breeder", 0, null, true)) {
+            amt *= (1 + (0.01 * this.getFortune(player, "breeder", 0, null, false)));
         }
         amt = Math.round(amt);
 
