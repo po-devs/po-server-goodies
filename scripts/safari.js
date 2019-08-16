@@ -14688,7 +14688,7 @@ function Safari() {
                 }
             }
             if (this.biasNPC0 && this.biasNPC0.length > 0) {
-                m = "", name = this.name;
+                m = "", name = this.name1;
                 this.sendMessage(id, "");
                 for (var j in this.biasNPC0) {
                     switch (this.biasNPC0[j]) {
@@ -17047,7 +17047,7 @@ function Safari() {
                 }
                 out.push((typeMultiplier > 1 ? "It's super effective! " : (typeMultiplier < 1 ? "It's not very effective... " : "")) + (self.crit ? "A CRITICAL HIT! " : "") + tname + " loses " + dmg + " HP!");
                 if (target.hp <= 0) {
-                    if (isPlayerVsNPC) {
+                    if (isPlayerVsNPC && (!(self.fullNPC))) {
                         if (chance((0.0125 * Math.random()) + (getCherished(target.id, self.name1.toLowerCase()) > 0 ? 0.01 : 0) + safari.hasCostumeSkill(getAvatarOff(self.name1), "kiai") ? 0.0125 : 0)) {
                             target.hp = 1;
                             out.push("<b>" + tname + " endured the hit!</b>");
