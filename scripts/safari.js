@@ -15964,7 +15964,7 @@ function Safari() {
                 var dmg, typeMultiplier, type, pow;
                 type = (this.select.irontail ? "Steel": "Water");
                 pow = (this.select.irontail ? 100 : 80);
-                if (this.select2.irontail) {
+                if (this.select2 && this.select2.irontail) {
                     type = "Steel";
                     pow = 100;
                 }
