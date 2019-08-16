@@ -15925,7 +15925,7 @@ function Safari() {
 
                 var dmg, typeMultiplier;
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
-                    dmg = ((350 * 95) / this.getStatValue(poke1, "sdef"));
+                    dmg = ((150 * 95) / this.getStatValue(poke1, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
@@ -15939,7 +15939,7 @@ function Safari() {
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((350 * 95) / this.getStatValue(poke2, "sdef"));
+                    dmg = ((150 * 95) / this.getStatValue(poke2, "sdef"));
                     typeMultiplier = safari.checkEffective("Fairy", "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)));
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
@@ -15969,7 +15969,7 @@ function Safari() {
                     pow = 100;
                 }
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
-                    dmg = ((350 * pow) / this.getStatValue(poke1, "def"));
+                    dmg = ((150 * pow) / this.getStatValue(poke1, "def"));
                     typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke1.id)), sys.type(sys.pokeType2(poke1.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
@@ -15988,7 +15988,7 @@ function Safari() {
                 }
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
-                    dmg = ((350 * pow) / this.getStatValue(poke2, "def"));
+                    dmg = ((150 * pow) / this.getStatValue(poke2, "def"));
                     typeMultiplier = safari.checkEffective(type, "???", sys.type(sys.pokeType1(poke2.id)), sys.type(sys.pokeType2(poke2.id)), (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
