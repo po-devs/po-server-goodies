@@ -14834,7 +14834,7 @@ function Safari() {
                         options["" + a] = q;
                     }
                     var out2 = Object.keys(options).sort(function(a, b){
-                        return options[a] - options[b];
+                        return options[b] - options[a];
                     }).slice(0, 3);
                     for (var k in out2) {
                         out.push(parseInt(out2[k], 10));
