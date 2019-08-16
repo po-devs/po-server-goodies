@@ -518,7 +518,24 @@ function Safari() {
                 cooldown: 0
             }
         },
-        npcBets: {},
+        npcBets: {
+            giovanni: 0,
+            koga: 0,
+            sabrina: 0,
+            erika: 0,
+            chuck: 0,
+            clair: 0,
+            jasmine: 0,
+            pryce: 0,
+            norman: 0,
+            flannery: 0,
+            winona: 0,
+            wallace: 0,
+            fantina: 0,
+            volkner: 0,
+            roark: 0,
+            candice: 0
+        },
         missions: [],
         trials: {
             name: "",
