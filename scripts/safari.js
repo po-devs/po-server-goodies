@@ -777,6 +777,7 @@ function Safari() {
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
             easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false, cap: 9999},
             celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: false},
+            lucky: {name: "lucky", fullName: "Lucky Coin", type: "valuables", icon: 273, price: 100000, aliases: ["luckycoin", "lucky coin", "luckycoins"], tradable: false},
 
             //Alchemy related items
             materia: {name: "materia", fullName: "Prima Materia", type: "alchemy", icon: 93, price: 2000, aliases: ["materia", "prima", "primamateria", "prima materia"], threshold: 400, tradable: true},
@@ -1214,6 +1215,7 @@ function Safari() {
             hdew: "Can be used to make special Pokéballs. Use /quest arborist for more details.",
             ldew: "A mysterious substance radiating an aura of light. Can be used to create extremely rare Pokéballs. Use /quest arborist for more details.",
             easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use egg, /use egg:10, /use egg:100, and /use egg:1000. Don't open until Easter!",
+            lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
             celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run."
         };
         perkHelp = {
@@ -6375,7 +6377,7 @@ function Safari() {
         var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew", "materia", "fragment"];
         var line5 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
-        var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "gem",  "stick", "rock"];
+        var line6 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "gem",  "stick", "rock", "lucky"];
         var line7 = ["mega", "spray", "burn", "form", "mail", "celebrityTicket", "crystal", "scale", "mushroom", "brush", "easteregg", "philosopher", "soda", "cookie"];
 
         if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities"].indexOf(search) === -1) {
