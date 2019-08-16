@@ -13646,13 +13646,13 @@ function Safari() {
             safaribot.sendMessage(src, "You can bet on which celebrity you think will win with /betnpc [name]:[amt]!", safchan);
             return;
         }
-        var trainer = data[0];
-        var amt = parseInt(data[1], 10);
+        var trainer = cdata[0];
+        var amt = parseInt(cdata[1], 10);
         if (amt > player.balls.lucky) {
             safaribot.sendMessage(src, "You don't have " + amt + " Lucky Coins!", safchan);
             return;
         }
-        if (amt % 5 !== 0) {
+        if ((amt % 5) !== 0) {
             safaribot.sendMessage(src, "You can only bet in multiples of 5!", safchan);
             return;
         }
