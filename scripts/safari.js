@@ -16195,6 +16195,10 @@ function Safari() {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP with its leftovers!");
         }
+        if ((this.select2 && this.select2.leftovers) && ((!npc))) {
+            user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
+            this.sendToViewers(name + " restored some HP with its leftovers!");
+        }
         if (((this.select && this.select.grassyterrain) || (this.select2 && this.select2.grassyterrain)) && (!(hasType(user.id, "Flying")))) {
             user.hp = Math.min(Math.round(user.hp + (user.maxhp / 16)), user.maxhp);
             this.sendToViewers(name + " restored some HP from the Grassy Terrain!");
@@ -16564,10 +16568,15 @@ function Safari() {
             bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1);
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
+            bonus *= (move.type == "Fire" && (this.select2 && this.select2.sun) ? 1.5 : 1);
+            bonus *= (move.type == "Water" && (this.select2 && this.select2.sun) ? 0.5 : 1);
             bonus *= (move.type == "Water" && (this.select.rain) ? 1.5 : 1);
+            bonus *= (move.type == "Water" && (this.select2 && this.select2.rain) ? 1.5 : 1);
             bonus *= (move.type == "Fire" && (this.select.rain) ? 0.5 : 1);
+            bonus *= (move.type == "Fire" && (this.select2 && this.select2.rain) ? 0.5 : 1);
             bonus *= (move.type == "Grass" && ((this.select.grassyterrain) || (this.select2 && this.select2.grassyterrain)) ? 1.5 : 1);
             bonus *= (move.type == "Psychic" && (this.select.psychicterrain) ? 1.5 : 1);
+            bonus *= (move.type == "Psychic" && (this.select2 && this.select2.psychicterrain) ? 1.5 : 1);
             bonus *= (move.type == "Electric" && (this.select.electricterrain) ? 1.5 : 1);
             bonus *= (move.type == "Dragon" && (this.select.mistyterrain) ? 0.5 : 1);
             bonus *= ((this.select.criticalDouble && crit) ? 1.33 : 1);
@@ -18977,7 +18986,7 @@ function Safari() {
             }
             out[t]++;
         }
-        if (this.select && this.select.nostab) {
+        if ((this.select && this.select.nostab) || (this.select2 && this.select2.nostab)) {
             if (out.hasOwnProperty(sys.type(sys.pokeType1(pokeInfo.species(num))))) {
                 out[sys.type(sys.pokeType1(pokeInfo.species(num)))] = 0;
             }
