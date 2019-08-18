@@ -14343,7 +14343,8 @@ function Safari() {
             this.select = select;
         }
         if (select2) {
-            this.select2 = select2;
+            this.select2 = this.select;
+            this.select = select2;
         }
 
         this.npcItems = {
@@ -14353,56 +14354,56 @@ function Safari() {
         };
         this.selectData = null;
         this.selectData2 = null;
-        if (select) {
-            if (select.hyperpotion3) {
+        if (this.select) {
+            if (this.select.hyperpotion3) {
                 this.npcItems.hyper = 3;
             }
-            else if (select.hyperpotion2) {
+            else if (this.select.hyperpotion2) {
                 this.npcItems.hyper = 2;
             }
-            else if (select.hyperpotion) {
+            else if (this.select.hyperpotion) {
                 this.npcItems.hyper = 1;
             }
-            if (select.fullrestore3) {
+            if (this.select.fullrestore3) {
                 this.npcItems.full = 3;
             }
-            else if (select.fullrestore2) {
+            else if (this.select.fullrestore2) {
                 this.npcItems.full = 2;
             }
-            else if (select.fullrestore) {
+            else if (this.select.fullrestore) {
                 this.npcItems.full = 1;
             }
-            if (select.spikes3) {
+            if (this.select.spikes3) {
                 this.side1Field.spikes = 3;
             }
-            else if (select.spikes2) {
+            else if (this.select.spikes2) {
                 this.side1Field.spikes = 2;
             }
-            else if (select.spikes) {
+            else if (this.select.spikes) {
                 this.side1Field.spikes = 1;
             }
-            if (select.stealthrock) {
+            if (this.select.stealthrock) {
                 this.side1Field.stealthrock = true;
             }
-            if (select.toxicspikes) {
+            if (this.select.toxicspikes) {
                 this.side1Field.toxicspikes = true;
             }
-            if (select.dynamicWeb) {
+            if (this.select.dynamicWeb) {
                 this.side1Field.dynamicweb = true;
             }
-            if (select.quickSand) {
+            if (this.select.quickSand) {
                 this.side1Field.quicksand = true;
             }
-            if (select.initialReflect) {
+            if (this.select.initialReflect) {
                 this.side2Field.reflect = 5;
             }
-            if (select.initialReflect2) {
+            if (this.select.initialReflect2) {
                 this.side1Field.reflect = 5;
             }
-            if (select.initialLightScreen) {
+            if (this.select.initialLightScreen) {
                 this.side2Field.lightscreen = 5;
             }
-            if (select.initialLightScreen2) {
+            if (this.select.initialLightScreen2) {
                 this.side1Field.lightscreen = 5;
             }
             this.selectData = {};
@@ -14470,30 +14471,30 @@ function Safari() {
                 }
             }
         }
-        if (select2) {
+        if (this.select2) {
             this.selectData2 = {};
-            if (select2.spikes3) {
+            if (this.select2.spikes3) {
                 this.side2Field.spikes = 3;
             }
-            else if (select2.spikes2) {
+            else if (this.select2.spikes2) {
                 this.side2Field.spikes = 2;
             }
-            else if (select2.spikes) {
+            else if (this.select2.spikes) {
                 this.side2Field.spikes = 1;
             }
-            if (select2.stealthrock) {
+            if (this.select2.stealthrock) {
                 this.side2Field.stealthrock = true;
             }
-            if (select2.initialReflect) {
+            if (this.select2.initialReflect) {
                 this.side1Field.reflect = 5;
             }
-            if (select2.initialReflect2) {
+            if (this.select2.initialReflect2) {
                 this.side2Field.reflect = 5;
             }
-            if (select2.initialLightScreen) {
+            if (this.select2.initialLightScreen) {
                 this.side1Field.lightscreen = 5;
             }
-            if (select2.initialLightScreen2) {
+            if (this.select2.initialLightScreen2) {
                 this.side2Field.lightscreen = 5;
             }
             if (select2.iceshield || select2.electroshield || select2.dracoshield || select2.sludgeshield || select2.genesisshield) {
