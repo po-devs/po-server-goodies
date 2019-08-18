@@ -14343,8 +14343,7 @@ function Safari() {
             this.select = select;
         }
         if (select2) {
-            this.select2 = this.select;
-            this.select = select2;
+            this.select2 = select2;
         }
 
         this.npcItems = {
