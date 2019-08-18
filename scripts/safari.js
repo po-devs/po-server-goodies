@@ -14422,13 +14422,13 @@ function Safari() {
                 this.selectData.retaliate1 = false;
                 this.selectData.retaliate2 = false;
             }
-            if (select.lastStand) {
+            if (this.select.lastStand) {
                 this.selectData.lastStandReady = true;
             }
-            if (select.moonblast) {
+            if (this.select.moonblast) {
                 this.selectData.moonblastTimer = (3 + Math.floor(4 * Math.random()));
             }
-            if (select.irontail) {
+            if (this.select.irontail) {
                 this.selectData.irontailTimer = (3 + Math.floor(4 * Math.random()));
             }
             if (select.waterfall || (select2 && select2.waterfall)) {
@@ -14460,7 +14460,7 @@ function Safari() {
                 }
             }
             this.selectData.shieldHP = 0;
-            if (select.iceshield || select.electroshield || select.dracoshield || select.sludgeshield || select.genesisshield) {
+            if (this.select.iceshield || this.select.electroshield || this.select.dracoshield || this.select.sludgeshield || this.select.genesisshield) {
                 if (difficulty) {
                     this.selectData.shieldHP = 400 + (difficulty * 100);
                 } else {
@@ -14497,13 +14497,13 @@ function Safari() {
             if (this.select2.initialLightScreen2) {
                 this.side2Field.lightscreen = 5;
             }
-            if (select2.iceshield || select2.electroshield || select2.dracoshield || select2.sludgeshield || select2.genesisshield) {
+            if (this.select2.iceshield || this.select2.electroshield || this.select2.dracoshield || this.select2.sludgeshield || this.select2.genesisshield) {
                 if (difficulty) {
                     this.selectData2.shieldHP = 400 + (difficulty * 100);
                 } else {
                     this.selectData2.shieldHP = 400;
                 }
-                if (select2.genesisshield) {
+                if (this.select2.genesisshield) {
                     this.selectData2.shieldHP = Math.floor(this.selectData2.shieldHP * 1.25);
                 }
             }
