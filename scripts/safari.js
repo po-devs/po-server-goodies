@@ -16994,19 +16994,19 @@ function Safari() {
                 if (self.select2 && self.selectData2 && self.selectData2.shieldHP > 0 && targetSide === 1) {
                     dmg = Math.ceil(dmg * 0.5);
                     sdmg = Math.ceil(dmg * 0.5);
-                    if (self.select.genesisshield) {
+                    if (self.select2.genesisshield) {
                         dmg = Math.ceil(dmg * 0.75);
                     }
                     if (self.select2.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
-                            self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
+                            self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
                             out.push("The foe's Ice Shield absorbed energy!");
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
-                            if (self.selectData.shieldHP > 0) {
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            if (self.selectData2.shieldHP > 0) {
                                 out.push("The foe's Ice Shield sustained damage!");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
