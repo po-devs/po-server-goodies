@@ -12442,10 +12442,10 @@ function Safari() {
                 rew += ("," + ((((round * 2) + 5)) * j) + "@dew");
             }
             if (round >= 1) {
-                rew += ("" + amt + "@pearl");
+                rew += ("," + amt + "@pearl");
             }
             if (round >= 2) {
-                rew += ("" + amt + "@cookie");
+                rew += ("," + amt + "@cookie");
             }
             members = teams[t].players;
             for (var p in members) {
