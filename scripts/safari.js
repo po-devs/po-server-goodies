@@ -12420,7 +12420,7 @@ function Safari() {
         safari.events.spiritDuelsBattling = true;
     };
     this.spiritDuelsPrizes = function( teams ) {
-        var g = "", i = teams.length, r, rew, amt, members, s, player, g = "";
+        var g = "", i = teams.length, r, rew, amt, apri, members, s, player, g = "";
         var prizes = {
             "0": "2@mega,@bright,30@dew",
             "1": "2@mega,25@dew",
@@ -12438,14 +12438,34 @@ function Safari() {
             i--;
             amt = Math.round((((j) * 2) + (7 - teams.length))/2);
             rew = ("" + amt + "@rare");
+            apri = ["redapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"].random();
             if (r >= 50) {
                 rew += ("," + ((((round * 2) + 5)) * j) + "@dew");
             }
-            if (round >= 1) {
+            if (round >= 1 && round < 3) {
                 rew += ("," + amt + "@pearl");
+                rew += ("," + amt + "@silver");
+                rew += ("," + (5 * amt) + "@" + apri);
             }
             if (round >= 2) {
                 rew += ("," + amt + "@cookie");
+            }
+            if (round >= 3) {
+                rew += ("," + amt + "@golden");
+                rew += ("," + amt + "@bigpearl");
+                rew += ("," + (2 * amt) + "@silver");
+                rew += ("," + (10 * amt) + "@" + apri);
+            }
+            if (round >= 4) {
+                rew += ("," + amt + "@mega");
+                rew += ("," + (2 * amt) + "@pearl");
+            }
+            if (round >= 5) {
+                rew += ("," + amt + "@mega");
+                rew += ("," + (2 * amt) + "@pearl");
+            }
+            if (round >= 6) {
+                rew += ("," + amt + "@nugget");
             }
             members = teams[t].players;
             for (var p in members) {
@@ -13653,6 +13673,24 @@ function Safari() {
         safaribot.sendMessage(src, "You purchased " + amt + " Lucky Coins with $" + cost + "!", safchan);
         return;
     };
+    this.myCelebrityBets = function(src) {
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        var player = getAvatar(src);
+        var out = [];
+        for (var a in player.npcBets) {
+            if (player.npcBets[a] > 0) {
+                out.push((a + "").toUpperCase() + ": " + (player.npcBets[a] + ""));
+            }
+        }
+        if (out.length <= 0) {
+            safaribot.sendMessage(src, "You don't have any bets yet!", safchan);
+            return;
+        }
+        safaribot.sendMessage(src, "Your current Celebrity Bets are " + out.join(", ") + "!", safchan);
+        return;
+    };
     this.betCelebrity = function(src, data) {
         var reason = "start a battle";
         if (cantBecause(src, reason, ["tutorial"])) {
@@ -13673,6 +13711,10 @@ function Safari() {
         var amt = parseInt(cdata[1], 10);
         if (amt > player.balls.lucky) {
             safaribot.sendMessage(src, "You don't have " + amt + " Lucky Coins!", safchan);
+            return;
+        }
+        if (amt < 0) {
+            safaribot.sendMessage(src, "You can't bet " + amt + " Lucky Coins!", safchan);
             return;
         }
         if ((amt % 5) !== 0) {
@@ -37404,6 +37446,10 @@ function Safari() {
             }
             if (command === "npcbet" || command === "betnpc" || command === "betceleb") {
                 safari.betCelebrity(src, commandData);
+                return true;
+            }
+            if (command === "mybet" || command === "mybets" || command === "mycelebritybets") {
+                safari.myCelebrityBets(src);
                 return true;
             }
             if (command === "watch") {
