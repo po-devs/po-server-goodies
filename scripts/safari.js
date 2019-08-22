@@ -13674,9 +13674,6 @@ function Safari() {
         return;
     };
     this.myCelebrityBets = function(src) {
-        if (cantBecause(src, reason, ["tutorial"])) {
-            return;
-        }
         var player = getAvatar(src);
         var out = [];
         for (var a in player.npcBets) {
