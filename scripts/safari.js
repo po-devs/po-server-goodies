@@ -5080,6 +5080,8 @@ function Safari() {
                 g = readable(g.gained);
                 player.pokemon.push(currentPokemon);
                 sendAll("The " + pokeName + " was holding " + g + "!");
+                rafflePlayers.add(player.id, player.balls.entry);
+                rafflePlayers.save();
             } else if (ball !== "spirit") {
                 if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
@@ -42392,6 +42394,10 @@ function Safari() {
                                     player.balls[r] += amt;
                                     if (player.balls[r] > getCap(r)) {
                                         player.balls[r] = getCap(r);
+                                    }
+                                    if (r == "entry") {
+                                        rafflePlayers.add(player.id, player.balls.entry);
+                                        rafflePlayers.save();
                                     }
                                     rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
                                     safari.missionProgress(player, "contestPrize", r, amt);
