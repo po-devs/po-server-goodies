@@ -42393,6 +42393,10 @@ function Safari() {
                                     if (player.balls[r] > getCap(r)) {
                                         player.balls[r] = getCap(r);
                                     }
+                                    if (r == "entry") {
+                                        rafflePlayers.add(player.id, player.balls.entry);
+                                        rafflePlayers.save();
+                                    }
                                     rewardName.push(amt + " " + itemAlias(r, false, true) + (amt === 1 ? "" : "s"));
                                     safari.missionProgress(player, "contestPrize", r, amt);
                                 }
