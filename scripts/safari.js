@@ -752,7 +752,7 @@ function Safari() {
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Water Balloon", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
+            rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
@@ -764,7 +764,7 @@ function Safari() {
             dust: {name: "dust", fullName: "Candy Dust", type: "items", icon: 24, price: 100, aliases:["dust", "candydust", "candy dust"], tradable: false, cap: 9999},
             salt: {name: "salt", fullName: "Salt", type: "items", icon: 127, price: 1000, aliases: ["salt", "nacl"], tradable: false, invisible: true},
             burn: {name: "burn", fullName: "Burn Heal", type: "items", icon: 54, price: 5000, cooldown: 3600000, threshold: 96, aliases: ["burn", "burnheal", "burn heal"], tradable: false},
-            dummy: {name: "dummy", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
+            dummy: {name: "dummy", fullName: "Cherished Shiny Monkey-like Pokémon of Choice", type: "items", icon: 50, price: 1000, aliases: ["dummy"], tradable: false, invisible: true},
             dummy2: {name: "dummy2", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy2"], tradable: false, invisible: true},
             dummy3: {name: "dummy3", fullName: "Dummy", type: "items", icon: 50, price: 1000, aliases: ["dummy3"], tradable: false, invisible: true},
 
@@ -1362,6 +1362,7 @@ function Safari() {
     var contestantsCount = {};
     var contestantsWild = [];
     var currentTheme;
+    var currentThemeAlter;
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
@@ -2158,6 +2159,7 @@ function Safari() {
         isBaited = false;
         if (!saveContest) {
             currentTheme = null;
+            currentThemeAlter = false;
             contestVotes = null;
         }
     }
@@ -3951,6 +3953,7 @@ function Safari() {
         var votesResult;
         if (commandData.toLowerCase() === "none") {
             currentTheme = null;
+            currentThemeAlter = false;
             currentRules = this.pickRules(currentTheme);
         } else if (commandData.toLowerCase() in contestThemes) {
             currentTheme = commandData.toLowerCase();
@@ -4003,7 +4006,17 @@ function Safari() {
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + contestThemes[currentTheme].name + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
+        var alterMsg = "";
+        if (currentTheme) {
+            if (contestThemes[currentTheme].alterName && (chance(0.25))) {
+                alterMsg = " (" + (contestThemes[currentTheme].alterName) + ")";
+                if (contestThemes[currentTheme].alterColor) {
+                    alterMsg = toColor(alterMsg, contestThemes[currentTheme].alterColor);
+                }
+                currentThemeAlter = true;
+            }
+        }
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + contestThemes[currentTheme].name + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
@@ -4152,6 +4165,14 @@ function Safari() {
                 }
             }
         }
+        if ("exactBuff" in rules) {
+            var obj = getRule("exactBuff");
+            out.buffMons = [];
+            for (e in obj) {
+                out.buffMons.push(obj[e]);
+            }
+            out.buffMonDesc = obj.exactBuffDesc;
+        }
 
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
             out.noLegendaries = true;
@@ -4295,6 +4316,9 @@ function Safari() {
                 buffed.push("Pokémon that learn " + sys.move(parseInt(rules.buffMoves[i], 10)));
             }
         }
+        if (rules.buffMons && rules.buffMonsDesc) {
+            buffed.push(rules.buffMonsDesc + " Pokémon");
+        }
         if (rules.nerfSingle) {
             nerfed.push("Single-type");
         } else if (rules.buffSingle) {
@@ -4416,6 +4440,14 @@ function Safari() {
         var theme = contestThemes[name];
         var pokeNum = parseInt(pokeId, 10);
 
+        if (theme.alter && theme.alter.length > 0 && currentThemeAlter) {
+            if (theme.alter.indexOf(pokeNum) !== -1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
         var period = new Date().getUTCHours();
         period = ["night", "morning", "afternoon", "evening"][Math.floor(period/6)];
 
@@ -4497,6 +4529,13 @@ function Safari() {
         if (rules.buffMoves) {
             for (var i = 0; i < rules.buffMoves.length; i++) {
                 if (canLearnMove(id, parseInt(rules.buffMoves, 10))) {
+                    val += RULES_BUFF;
+                }
+            }
+        }
+        if (rules.buffMons) {
+            for (var i = 0; i < rules.buffMons.length; i++) {
+                if (id == parseInt(rules.buffMons[i], 10)) {
                     val += RULES_BUFF;
                 }
             }
@@ -5036,6 +5075,11 @@ function Safari() {
                 player.eventFlags[currentPokemon+""] = now() + (72 * 60 * 60 * 1000); //flag set for 72 hours
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
+            } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon+"")) {
+                var g = giveStuff(player, contestThemes[currentTheme].catchRewards[currentPokemon+""], true);
+                g = readable(g.gained);
+                player.pokemon.push(currentPokemon);
+                sendAll("The " + pokeName + " was holding " + g + "!");
             } else if (ball !== "spirit") {
                 if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
                     var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
@@ -7865,7 +7909,7 @@ function Safari() {
             success = 0;
         }
 
-        var verb = "soaked"; //change to stunned, seasonal change
+        var verb = "stunned"; //change to stunned, seasonal change
         if (rng < success) {
             if (rng2 < 0.4) {
                 if (this.getFortune(target, "rockshield", 0)) {
@@ -20786,13 +20830,15 @@ function Safari() {
             if (player.photos && index && (!(isNaN(index))) && index > -1 && index < player.photos.length) {
                 if (player.quests.scientist.photo === id) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hey, you already showed me a picture of a " + poke(id) + "! Don't you have someone else to give photos to?", safchan);
+                    return;
                 }
                 var req = {species: id, quality: 7};
                 if (this.photoMatchesRequest(player.photos[index], req)) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of a " + poke(id) + "! I think I can use this!", safchan);
                     rew = 3;
+                    rew = Math.round(1.75 * (player.photos[index].quality) - 5);
                     if (this.hasCostumeSkill(player, "extraScientistSilver")) {
-                        rew = Math.round(rew * (2 + ((this.getCostumeLevel(player)-2)/18)));
+                        rew = Math.round(rew * (1.66 + ((this.getCostumeLevel(player)-2)/15)));
                     }
                     if (player.balls.silver + rew > getCap("silver")) {
                         safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I see you brought the correct photograph, but you are currently unable to carry any more Silver Coin! Come back after spending some of them!", safchan);
@@ -24446,7 +24492,7 @@ function Safari() {
         for (var i in this.parties) {
             for (var j in this.parties[i]) {
                 if (pyrBonusMons.contains(this.parties[i][j])) {
-                    bonusMult = Math.min(bonusMult + 0.1, 1.3);
+                    bonusMult = Math.min(bonusMult + 0.1, 1.5);
                 }
             }
         }
@@ -29222,13 +29268,13 @@ function Safari() {
             room = cdata[0]
         }
         if (cdata,length > 1) {
-            aspect = cdata[1]
+            aspect = cdata[1].toLowerCase();
         }
         if (cdata,length > 2) {
             element = cdata[2]
         }
         if (!room) {
-            safaribot.sendHtmlMessage(src, "Challenges to your Castle must clear three rooms to defeat your castle. Pick " + link("/castle edit:1", "1") + ", " + link("/castle edit:2", "2") + ", or " + link("/castle edit:3", "3") + " that you would like to edit.", safchan);
+            safaribot.sendHtmlMessage(src, "Challenges to your Castle are required to clear three rooms to win. Pick " + link("/castle edit:1", "1") + ", " + link("/castle edit:2", "2") + ", or " + link("/castle edit:3", "3") + " that you would like to edit.", safchan);
             safaribot.sendHtmlMessage(src, "You can also change your theme using " + link("/castle edit:theme", "Theme") + ".", safchan);
         }
         if (room == "theme") {
@@ -29245,8 +29291,56 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "You've changed your castle theme to " + player.castle.theme + "!", safchan);
             }
         }
-        else if (!aspect) {
-            safaribot.sendHtmlMessage(src, "Edit Room " + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps"), safchan);
+        room = parseInt(room, 10);
+        if (room && (!aspect)) {
+            safaribot.sendHtmlMessage(src, "Edit Room #" + room + "'s " + link("/castle edit:" + room + ":pokemon", "Pokémon") + " or " + link("/castle edit:" + room + ":traps", "Traps"), safchan);
+        }
+        if (aspect == "pokemon") {
+            if (element && player.castle.rooms[room+""].pokemon.length >= 6) {
+                safaribot.sendHtmlMessage(src, "You already have 6 Pokémon in your #" + room + ":" + m + "!", safchan);
+            }
+            else {
+                element = getInputPokemon(element);
+                if (!element.num) {
+                    safaribot.sendHtmlMessage(src, "That's not a valid Pokémon!", safchan);
+                }
+                else {
+                    player.castle.rooms[room+""].push(element.id);
+                    safaribot.sendHtmlMessage(src, "You added " + element.input + " to your team!", safchan);
+                }
+            }
+            //Send the existing Pokémon in that room.
+            if (player.castle.rooms[room+""].pokemon.length > 0) {
+                var m = "";
+                for (var a in player.castle.rooms[room+""].pokemon) {
+                    m += poke(player.castle.rooms[room+""].pokemon[a]) + " " + link("/castle edit:" + room + ":remove:" + poke(player.castle.rooms[room-1].pokemon[a]), "(Remove)");
+                }
+                safaribot.sendHtmlMessage(src, "Pokémon already in your #" + room + ":" + m + ".", safchan);
+            }
+            else if (!element) {
+                safaribot.sendHtmlMessage(src, "There are no Pokémon in your #" + room + " room!", safchan);
+            }
+        }
+        if (aspect == "remove") {
+            if (player.castle.rooms[room-1].pokemon.length > 0) {
+                for (var a in player.castle.rooms[room-1].pokemon) {
+                    if ((poke(player.castle.rooms[room-1].pokemon[a])) == element) {
+                        player.castle.rooms[room-1].pokemon.splice(a);
+                        break;
+                    }
+                }
+                safaribot.sendHtmlMessage(src, "Removed " + element + " from room #" + room + ".", safchan);
+            }
+        }
+        if (aspect == "traps") {
+            var t = player.castle.rooms[room+""].traps;
+            if (t.length == 0) {
+                safaribot.sendHtmlMessage(src, "No traps yet!", safchan);
+            }
+            var m = "";
+            for (var a in t) {
+                m += toColor(this.getFieldConditionDescription(t[a], []) + " (" + this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon) + ")", (this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon, true) ? "green" : "blue"));
+            }
         }
     };
     this.getFieldConditionDescription = function(condition, select) {
@@ -35614,6 +35708,15 @@ function Safari() {
         pyrBonusMons = out;
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
+    this.pyrBonusMonsManual = function(str) {
+        var arr = str.split(",");
+        pyrBonusMons = [];
+        for (var i in arr) {
+            pyrBonusMons.push(parseInt(arr[i], 10));
+        }
+        pyrBonusMons = arr;
+        permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
+    };
     this.checkNewWeek = function() {
         var today = getDay(now()) - 3;
         var week = Math.floor(today/7);
@@ -39520,6 +39623,7 @@ function Safari() {
                     contestCooldown = contestCooldownLength;
                     contestCount = 0;
                     currentTheme = null;
+                    currentThemeAlter = false;
                     nextRules = null;
                     nextTheme = null;
                     contestCatchers = {};
@@ -41324,6 +41428,10 @@ function Safari() {
                 safari.pyrBonusMons();
                 return true;
             }
+            if (command === "choosepyrbonusmons") {
+                safari.pyrBonusMonsManual(commandData);
+                return true;
+            }
             if (command === "resetcostumes") {
                 safari.resetCostumes();
                 return true;
@@ -42050,7 +42158,7 @@ function Safari() {
             var possibleThemes = Object.keys(contestThemes).concat();
             var repetitionCooldown = 4;
             for (var e = lastContests.length - 1, i = 0; e >= 0 && i < repetitionCooldown; e--, i++) {
-                if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal")) {
+                if (possibleThemes.contains(lastContests[e].themeId) && (lastContests[e].themeId !== "seasonal" && lastContests[e].themeId !== "seasonal2")) {
                     possibleThemes.splice(possibleThemes.indexOf(lastContests[e].themeId), 1);
                 }
             }
@@ -42061,6 +42169,8 @@ function Safari() {
                 nextTheme = ["seasonal"];
                 possibleThemes.splice(possibleThemes.indexOf("seasonal"), 1);
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
+            } else if (possibleThemes.contains("seasonal2") && (chance(0.45))) {
+                nextTheme = ["seasonal2"];
             }
             else if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
@@ -42355,7 +42465,7 @@ function Safari() {
             } else {
                 if (!currentPokemon && (chance(0.092743 + (sys.playersOfChannel(safchan).length > 54 ? 0.011 : 0)) || ((lastWild > now() + 12000 && (chance(0.25))) )) ) {
                     var amt = chance(0.05919) ? (chance(0.35) ? 3 : 2) : 1;
-                    if (currentTheme && (chance(0.02)) && currentTheme === "seasonal") {
+                    if (currentTheme && (chance(0.02)) && (currentTheme === "seasonal" || (currentTheme === "seasonal2"))) {
                         amt++;
                     }
                     if (safari.events.spiritDuelsEnabled && spiritSpawn && chance(0.3) && contestCount < 150) {
