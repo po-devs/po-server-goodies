@@ -29339,7 +29339,7 @@ function Safari() {
             }
             var m = "";
             for (var a in t) {
-                m += toColor(this.getFieldConditionDescription(t[a], []) + " (" + this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon); + ")" (this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon, true) ? "green" : "blue");
+                m += toColor(this.getFieldConditionDescription(t[a], []) + " (" + this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon) + ")", (this.getFieldConditionCost(t[a], player.castle.theme, player.castle[room+""].pokemon, true) ? "green" : "blue"));
             }
         }
     };
