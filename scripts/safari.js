@@ -35714,7 +35714,6 @@ function Safari() {
         for (var i in arr) {
             pyrBonusMons.push(parseInt(arr[i], 10));
         }
-        pyrBonusMons = arr;
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
     this.checkNewWeek = function() {
