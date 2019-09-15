@@ -42174,6 +42174,8 @@ function Safari() {
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             } else if (possibleThemes.contains("seasonal2") && (chance(0.45))) {
                 nextTheme = ["seasonal2"];
+                possibleThemes.splice(possibleThemes.indexOf("seasonal"), 1);
+                nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             }
             else if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
