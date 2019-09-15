@@ -16688,6 +16688,8 @@ function Safari() {
             bonus *= ((this.select.skyBattle && (!((canLearnMove(pokeInfo.species(target.id), 19)) || (canLearnMove(pokeInfo.species(target.id), 340))))) ? 1.25 : 1);
             bonus *= ((this.select.arenaBattle && (!((canLearnMove(pokeInfo.species(user.id), 69))))) ? 0.75 : 1);
             bonus *= ((this.select.arenaBattle && (!((canLearnMove(pokeInfo.species(target.id), 69))))) ? 1.25 : 1);
+            bonus *= ((this.select.blueBoost && (pokeColors.blue.contains(pokeInfo.species(user.id)))) ? 1.2 : 1);
+            bonus *= ((this.select.pinkBoost && (pokeColors.pink.contains(pokeInfo.species(user.id)))) ? 1.2 : 1);
             var analytic = (this.select.analytic && (hasType(user.id, this.selectData.analyticType1) || (hasType(user.id, this.selectData.analyticType2))));
             if (isP2 || isP4) {
                 bonus *= (analytic ? (1 + Math.max(this.selectData.analyticCount/6, 1)) : 1);
@@ -29392,6 +29394,8 @@ function Safari() {
             case "adaptability": m = "All STAB is increased in power."; break;
             case "multiscale": m = "Foe's Pokémon take reduced damage while at full HP."; break;
             case "dualscale": m = "All Pokémon take and deal reduced damage while at full HP."; break;
+            case "blueBoost": m = "Blue Pokémon receive a fighting boost."; break;
+            case "pinkBoost": m = "Pink Pokémon receive a fighting boost."; break;
             case "skyBattle": m = "Sky Battle - Pokémon that cannot use Fly or Bounce suffer more damage and deal less damage."; break;
             case "arenaBattle": m = "Arena Battle - Pokémon that cannot use Seismic Toss suffer more damage and deal less damage."; break;
             case "weightattack": m = "Heavier Pokémon take more damage from Grass- and Fighting- type attacks."; break;
