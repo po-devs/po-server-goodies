@@ -5075,7 +5075,7 @@ function Safari() {
                 player.eventFlags[currentPokemon+""] = now() + (72 * 60 * 60 * 1000); //flag set for 72 hours
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
-            } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon+"")) {
+            } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon)) {
                 var g = giveStuff(player, contestThemes[currentTheme].catchRewards[currentPokemon+""], true);
                 g = readable(g.gained);
                 player.pokemon.push(currentPokemon);
@@ -42174,6 +42174,8 @@ function Safari() {
                 nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             } else if (possibleThemes.contains("seasonal2") && (chance(0.45))) {
                 nextTheme = ["seasonal2"];
+                possibleThemes.splice(possibleThemes.indexOf("seasonal"), 1);
+                nextTheme = nextTheme.concat(possibleThemes.shuffle().slice(0, 2));
             }
             else if (sys.rand(0, 100) < 38) {
                 nextTheme = ["none"];
