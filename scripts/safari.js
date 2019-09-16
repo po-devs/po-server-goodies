@@ -4000,7 +4000,7 @@ function Safari() {
 
         var icon = currentTheme && contestThemes[currentTheme].icon ? pokeInfo.icon(contestThemes[currentTheme].icon) + " " : "";
         if (icon && currentTheme && contestThemes[currentTheme].icon2) {
-            icon +=  (contestThemes[currentTheme].icon2 + " ");
+            icon += (pokeInfo.icon(contestThemes[currentTheme].icon2) + " ");
         }
         if (icon) {
             sys.sendHtmlAll(toColor("<timestamp/> *** *********************************************************** ", "magenta") + icon, safchan);
