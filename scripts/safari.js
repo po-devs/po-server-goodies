@@ -4172,7 +4172,7 @@ function Safari() {
             for (e in obj) {
                 out.buffMons.push(obj[e]);
             }
-            out.buffMonsDesc = rules.exactBuffDesc;
+            out.buffMonsDesc = contestThemes[theme].exactBuffDesc;
         }
 
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
