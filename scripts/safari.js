@@ -4172,7 +4172,7 @@ function Safari() {
             for (e in obj) {
                 out.buffMons.push(obj[e]);
             }
-            out.buffMonsDesc = contestThemes[theme].exactBuffDesc;
+            out.buffMonsDesc = rules.exactBuffDesc;
         }
 
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
@@ -5077,7 +5077,7 @@ function Safari() {
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
             } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon+"")) {
-                var g = giveStuff(player, [contestThemes[currentTheme].catchRewards[currentPokemon+""]], true);
+                var g = giveStuff(player, contestThemes[currentTheme].catchRewards[currentPokemon+""], true);
                 g = readable(g.gained);
                 player.pokemon.push(currentPokemon);
                 sendAll("The " + pokeName + " was holding " + g + "!");
@@ -40074,7 +40074,7 @@ function Safari() {
                 safaribot.sendMessage(src, target.toCorrectCase() + "'s cooldown for " + type + " was reset!", safchan);
                 return true;
             }
-            if (command === "disablequest" || command === "enablequest") {
+            if (command === "disablequest" || command === "stopquest" || command === "enablequest") {
                 if (commandData === "*") {
                     var status = [];
                     for (var e in stopQuests) {
@@ -40083,7 +40083,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Disabled? " + status.join(", "), safchan);
                     return true;
                 }
-                var off = command === "disablequest";
+                var off = (command === "disablequest" || command === "stopquest");
                 if (commandData.toLowerCase() === "all") {
                     for (var e in stopQuests) {
                         stopQuests[e] = off;
