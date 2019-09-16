@@ -3408,6 +3408,7 @@ function Safari() {
             return out;
         }
         if (typeof stuff === "string") {
+            asset = stuff;
             stuff = {};
             if (asset[0] === "$") {
                 stuff.$ = parseInt(asset.replace(",", "").substr(1), 10);
@@ -4171,7 +4172,7 @@ function Safari() {
             for (e in obj) {
                 out.buffMons.push(obj[e]);
             }
-            out.buffMonsDesc = rules.exactBuffDesc;
+            out.buffMonsDesc = contestThemes[theme].exactBuffDesc;
         }
 
         if ("noLegendaries" in rules && chance(getRule("noLegendaries").chance)) {
@@ -5076,7 +5077,7 @@ function Safari() {
                 sendAll("The captured " + pokeName + " was a mirage! " + name + " is one step closer to unlocking the Legendary Pokémon!");
                 this.missionProgress(player, "catchMirage", 0, 1);
             } else if (currentTheme && contestThemes[currentTheme] && contestThemes[currentTheme].catchRewards && Object.keys(contestThemes[currentTheme].catchRewards).contains(currentPokemon+"")) {
-                var g = giveStuff(player, contestThemes[currentTheme].catchRewards[currentPokemon+""], true);
+                var g = giveStuff(player, [contestThemes[currentTheme].catchRewards[currentPokemon+""]], true);
                 g = readable(g.gained);
                 player.pokemon.push(currentPokemon);
                 sendAll("The " + pokeName + " was holding " + g + "!");
