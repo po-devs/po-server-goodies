@@ -14383,6 +14383,10 @@ function Safari() {
             }
             this.biasNPC0 = null;
         }
+        if (typeof p2 !== "object") {
+            this.name2 = sys.name(p2);
+            this.viewers.push(this.name2.toLowerCase());
+        }
 
         this.winMsg = opt.winMsg;
         this.loseMsg = opt.loseMsg;
@@ -14612,8 +14616,6 @@ function Safari() {
 
             this.biasNPC = player2.bias;
         } else {
-            this.name2 = sys.name(p2);
-            this.viewers.push(this.name2.toLowerCase());
             this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, player2.cherished);
         }
         
