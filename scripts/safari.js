@@ -2716,7 +2716,7 @@ function Safari() {
             var name = sys.pokemon(num);
         }
 
-        return name ? name : null;
+        return name ? name : "Missingno";
     }
     var ultraPokes = {
         803: {
