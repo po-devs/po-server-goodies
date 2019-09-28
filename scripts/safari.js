@@ -2708,7 +2708,7 @@ function Safari() {
             num = parseInt(num, 10);
         }
         if (isNaN(num)) {
-            return null;
+            return "Missingno";
         }
         if (ultraPokes.hasOwnProperty(num)) {
             var name = ultraPokes[num].name;
