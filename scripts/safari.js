@@ -3848,7 +3848,7 @@ function Safari() {
                         canLegend = false;
                     }
                     var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.2;
-                    for (i = 1; i < 803; i++) {
+                    for (i = 1; i < 807; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
                         if (bst >= 600) {
@@ -4072,7 +4072,7 @@ function Safari() {
                 ret += "</center><hr>";
                 sendAll(ret, true, true);
             } else {
-                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + pokeInfo.sprite(currentPokemonDisplay) + "</center><hr>", true, true);
+                sendAll("<hr><center>" + (shiny ? toColor(appmsg, "DarkOrchid") : appmsg) + "<br/>" + (wildEvent ? "<b>This is an Event Pokémon! No " + es(finishName("master")) + " allowed!</b><br/>" : "") + sprite + "</center><hr>", true, true);
             }
             var onChannel = sys.playersOfChannel(safchan);
             for (var e in onChannel) {
@@ -7009,7 +7009,7 @@ function Safari() {
                 return false;
             }
             if (val === 0) {
-                for (var i = 1, l = 802; i <= l; i++) {
+                for (var i = 1, l = 806; i <= l; i++) {
                     if (!box.contains(i)) {
                         list.push(i);
                     }
