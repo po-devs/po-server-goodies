@@ -1664,7 +1664,7 @@ function Safari() {
         },
         sprite: function(pk) {
             if (ultraPokes.hasOwnProperty(pk+"")) {
-                return '<img src="' + ultraPokes[pk+""].sprite + "' title='#" + pokeInfo.readableNum(pk) + " " + poke(pk) + (shinyBG && pokeInfo.shiny(pk) ? '" style="background:yellow"' : '"') + '>';
+                return '<img src="' + ultraPokes[pk+""].sprite + "' title='#" + pokeInfo.readableNum(pk) + " " + poke(pk) + '>';
             }
             var ret = [];
             ret += "<img src='pokemon:num=";
