@@ -6980,7 +6980,7 @@ function Safari() {
                 safaribot.sendMessage(src, type_1 + " is not a valid type!", safchan);
                 return false;
             }
-            if (type2 && !(type2 in effectiveness)) {
+            if (type_2 && !(type_2 in effectiveness)) {
                 safaribot.sendMessage(src, type_2 + " is not a valid type!", safchan);
                 return false;
             }
@@ -7324,8 +7324,8 @@ function Safari() {
                 safaribot.sendMessage(src, "Please specify a valid type!", safchan);
                 return;
             }
-            var type2 = info.length > 2 ? cap(info[2].toLowerCase()) : null;
-            if (type2 && !(type2 in effectiveness)) {
+            var type_2 = info.length > 2 ? cap(info[2].toLowerCase()) : null;
+            if (type_2 && !(type_2 in effectiveness)) {
                 safaribot.sendMessage(src, "Please specify a valid secondary type!", safchan);
                 return;
             }
