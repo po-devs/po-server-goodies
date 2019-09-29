@@ -5487,6 +5487,9 @@ function Safari() {
                 }
             }
             pokeName = poke(currentDisplay);
+            if (currentTheme && contestThemes[currentTheme].disguises && contestThemes[currentTheme].notDisguised && (!(contestThemes[currentTheme].notDisguised.contains(currentDisplay)))) {
+                pokeName = "Trick-or-treater";
+            }
             safaribot.sendHtmlMessage(src, "You threw a  " + ballName + " at " + pokeName +"! " + (keep ? "<i>A quick jerk of your fishing rod snags the " + finishName(ball) + " you just threw, allowing you to recover it!</i> " : "") + itemsLeft(player, ball), safchan);
             if (rng < finalChance + 0.1) {
                 safaribot.sendHtmlMessage(src, "<b>Gah! It was so close, too!</b>", safchan);
@@ -5815,6 +5818,10 @@ function Safari() {
             if (cantBecause(src, reason, ["tutorial"])) {
                 return;
             }
+        }
+        if (currentTheme && contestThemes[currentTheme].disguises) {
+            safaribot.sendMessage(src, "You can't take photos in this theme!", safchan);
+            return;
         }
 
         var name = sys.name(src);
