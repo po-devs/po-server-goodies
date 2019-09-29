@@ -2781,7 +2781,7 @@ function Safari() {
         var out = sys.pokeNum(name);
         if (!(out)) {
             for (var a in ultraPokes) {
-                if (out[a].name.toLowerCase() == name.toLowerCase()) {
+                if (ultraPokes[a].name.toLowerCase() == name.toLowerCase()) {
                     out = parseInt(a, 10);
                 }
             }
