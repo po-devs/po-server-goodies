@@ -193,6 +193,7 @@ function Safari() {
             candybag: 0,
             celebrityTicket: 0,
             pokeblock: 0,
+            ash: 0,
             lucky: 0,
             dummy: 0,
             dummy2: 0,
@@ -806,6 +807,7 @@ function Safari() {
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
             fragment: {name: "fragment", fullName: "Ball Fragment", type: "alchemy", icon: 120, price: 2000, aliases:["fragment", "ball fragment", "ballfragment"], threshold: 5, tradable: true},
             philosopher: {name: "philosopher", fullName: "Philosopher's Stone", type: "alchemy", icon: 252, price: 10000, aliases: ["philosopher's stone", "philosopher'sstone", "philosophersstone", "philosopherstone", "philosophers stone", "philosopher stone", "philosopher", "stone", "philosopher's", "philosopher"], tradable: true },
+            ash: {name: "ash", fullName: "Sacred Ash", type: "alchemy", icon: 257, price: 10000, aliases: ["sacred ash", "sacredash", "ash", "sacred", "ash ketchum"], tradable: true },
 
             //Pokéball related items
             dew: {name: "dew", fullName: "Mystical Dew", type: "alchemy", icon: 8017, price: 9999, aliases: ["dew", "mdew", "mysticdew", "mysticaldew", "mystical dew"], threshold: 400, tradable: false},
@@ -1219,6 +1221,7 @@ function Safari() {
             fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary red gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
+            ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity Expert/Super Expert quest.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\". Obtained from Pyramid quest.",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\". Obtained from Pyramid quest.",
             water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
@@ -2751,7 +2754,31 @@ function Safari() {
             "tier": "SM OU",
             "sprite": "data:image/png;base64,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",
             "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAJeSURBVHja7Jgtc9swGMf/3hW0rINjMkyYN7RCw8GOFdp038CBhoUri1jD2qEtzGILU8syZgml3yAX9gy4cuU5fkkdp9mddZeTI9nRz8/LX4/iEBGOub3DkbcBcAAcAP93wJM2NzmO03gPYywXVK210+Z322jwSdc3NGBKqXzMdV3aBbTxLZo+dXCmjZK00BMR2VZ99dqvBczhohcgu42SlOj3qhayzdrdkyR2s36iCv3Sd4H5Bm/iYmM9252lFqXZfJRWWrF3Cy79zHpjoQo9Fk9HooO2O60e8w3GPiBHXzH23whwwnk5/hZPwEQVoC6VOCwgY4xszSskysUH4MsplgJYCuDTn3sYjWySnF6SJJpOKzWQojSf75IkrQHNIrY4G0gDUje2DXJvgIwxSqQkxhh5nkdBEBARUSJlCcoGM/NdLOi02bBd1yV+n8WTeHzE/OYGnucBADjnlc+FYQghBLTWjoE011rrVmvv5OJoOqVESrq7uqW7q1tijFEQBCWLmrHz7z/J8zyyY9ZcP/f7saApt/51lbHG9UWM+emLnPz4eInz62844wKfZzE455hwjjgMba9AKeX0ksVVWZ1ISUEQkJ1QJrPt2DTzbdbeWz0oHh5Kc1prh4U+uc9aOOEcszjerU7sWg8m6zWNkjSPu1GS0nrllTKXMVYa67UetF1oqpb1ysu/b4PsTWbqziSMMfL9bPMVQmC5eI8z9QuYb+DO/Fp37lVmKl0sZS7iecJEmUXt8YOX/HZcbYu3JriDADYdpPYB2FlmKrbGnc7HtfE//IE5AA6AA2C/7e8Ap13/Va3JdXAAAAAASUVORK5CYII="
-        }
+        },
+        "66336": {
+            "types": ["Psychic", "???"],
+            "name": "Necrozma-Dusk Mane",
+            "stats": [97, 157, 127, 113, 109, 77],
+            "tier": "SM Ubers",
+            "sprite": "",
+            "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAPWSURBVHja7JgvcNtIFMY/dQwOalnEtNBhEctClyksPWQZXWHN3LIYxawj5sIwy+galmUVO4U5LIIrpjIbhqlgvauVbNmy68x0bvJmNLaklf3b7/3Zt7KKosCfbO/wh9sb4P8eEEVR6ONQc123eG2mThuILMusbWCM9QDEBQDUx5zKOvvgFIQCcF23oPQcq1UOACCEwLYdANBqtoFVk9w3tnPMrFarHLbtIM9/6nMREQAADZatQoOxnnp+J2jn0JhTIN5QKriYrm92Z0A6aPUblJ4jTZ8AAEHwEUKIipeOAnRdtxCLB3mSDjDyKQJfSLC1RZyCSP7GuCWE6PDodi+QJI9YrXIQ+eDGc502bpgEHoLRrYQIxwCoPjct5AK+f40outv4rYeH8tp8ngCAhvP967WKUElntVYwnuSIONVwgS9KxcKxdNPoFt77AXz/GpzfYxJ4uInKpGGsh/k8Qb/PAEDDmHBJEh+eJCoJlGm47kzDRpxW4BY/ZuuxA8P1K3AhMJ9DQwKAbTsarilJdq4kjF3CG1bVqsMpt2q4dFAmS3eGiFNwYWvllHuV7YJrBFSZpgI55GI/nJnN6yMKxxquBHrU34V4Pr4OMnapY0VCPgGQcFLVGpyRzUpxE84Mlzz/Ccc5a1U9LHMNtixLK1jWp9JU7fL9awAA5/cY+bQap6NbROEYd8mLLuh1E+J554pTYaoDKjjb/4bPLEduXeFz/0wroJRN06fSraZynGrIegkCgOVyudetJlOji9vCqRJkKmh+ljZGMLoF9a4OWla3KigbhDJeet//RfzhbzjOGdL0qeJWE2QRz+H1+huxqMZR76pVI9HoYkppJfZMOLU8qTrXZArSBOt9+NIqY1sBMtZDdzrdCmXGVd2Fi3gumwhDwSgc63Ft1dsLqL4TQipgXNhbY68Oak5CZfLix+w0gKrMqFJDCEG3e6Hrloq/ynpcS5K75GWjd1QTPSYGG5e6LMus5XK5UWgVXMSpLCm+0Nea4IJh+Dotv5xtrFt8mb1Cg226eoyL/icMhyGEeAYhBMEwRDQdHQ3Y6OJtzarOTL8KWWlawzFuogWyLLNc1y0mgQcA+trJYnAfpJnN3vsBFlPAG8qMV5CUniOe5Hqv8mqAZncTf/+qA15m/jkYuwTn95XmgQZLTAIPd8kLPrK/jlaw1b7Y/KMtRbdg7FI3BbbtgAbyvuqqb8Tx++bWCm4mT3XvQilFkjzCcc72NqGvEoO7NlY+Xekyc8iS1gbw6HczrusW/f4/RfHfhf481bsak+m3FWxy/akUtN5eAb8BvgHutl8DACLsBWjpAWB1AAAAAElFTkSuQmCC"
+        },
+        "131872": {
+            "types": ["Psychic", "Ghost"],
+            "name": "Necrozma-Dawn Wings",
+            "stats": [97, 113, 109, 157, 127, 77],
+            "tier": "SM Ubers",
+            "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAQtSURBVHja7JgtdKNKFMf/9EREEhfcjKQO3OOppY7n2qc6VWVlZRxxm7gnd11xO6vSusUtrtSBK3LiqNpE1s0T6UwhX6VJu2fPnt5zOJzAJPz434+5N4aUEr+zHeA3t3fAPx6ws+6iYRiNz4QQCQDT6dR4a6CVpJVSrhzLcOc3P+X5zU+pQN8asH4Y68oMpVRf9HneuJcy902VXObpbFroeT4AQAzPQEdf8ZCIvR5cV/8lL7hWQcMwQAiRCrKq7pGm30Ep3Uk9Qoise2KbF5Z5tmZxVd2jqu73Vm45THyeo208d7bd3Obatpk9nU6NlLnSY1cAgG5ANWTKXLm8dqc6GIY22DCHEAKEELmsSl0NdX/5wRk/AR+5+oXF8Aye54OxEIyFr1eoPXYFn+d4SATi9A6EEMlY2AB/zoXFxREsqw9KKYQQ4Dze6IkXAbquq12krNfr6TOlhygujp6NMzu4RFkWSJJrZFm6NUwONsWX5/kQwzN9rUw+wrYdFBdHeEgE+MjFKPwXQXAMIQRs28F8XsE0LQ25LWTs4BLO5x/77cWW1QfEF8Rx2Vrl+bxCEByjuDhqla3PrelsyjwglZQeLkBrXrVtB2XyEX5mIRjlGHjfURn/YHDah2lamM+rX9PNTKdTQ4g70NFXAMB/Vzcoy6KxZuBVGk6pZ9tOIxnWWRyXCEO71e500KKGoRvQhptVvA2HIw3HTXc1GWqwyvjIBR+5rcOm8xpu4KYL9zZuAJmmVc9yKcRCLTbMddIBgBP82K9hrauoyoNSJ0muEY4+Ix2c1zshZNktLKu/EhJKQWVBcIyHLwN4nr8xUVopqLYrn+dA0nTh4OTvje5UJoTQyimbzWbIslt43l+PLxaC81gCMHZysYIEgLIsYNsOuOmC2U9uZvMnCKVenucaLgwXi0P/UBVnuXiBu9eJwVrFl8sxWHevsjzPG8U5jkt0AwqPXQH8RD42DFt3klaAy52LqpPMW9xXytEefSo3weWKcmqb7AYUHq72q4MKSm179YZAdyhZqtVTZwUXhjbC0NZQoX+IlLm6Ye0GtNX4sHEmYSwE5zE8z0cUMYzHXLuwHjO9Xg+27YBSiiS5bjQE9cZCwRBCZP2880wihNCdCgANqbJONQZC3KEsC504jeYCC8iHROBx25TNMNmjUJdlgSiKMB6PcXbWfLhl9WFZ/XqrJBkLcXrq6TXj8ROk6s6x6I7kS+aag03ZOpvNUBQlTNNCFEWNoptl6do+7tu37BGO62vdgOp4E+Jua1FuNSjXY0AlRRR9kh8+BHJdO08IkZPJRDqOI6Pok3QcR56enkvHceRkMln5zrrf2MbTaVP3Hiv8xrgpilJvfSosTNNCUZQrw9BLx9aNc/EuQ3mv10MQHCNJrjGbzXYCWuZ5FcB9/z14MeD7/4PvgO+AT/b/ACcrrZo31UbmAAAAAElFTkSuQmCC",
+            "sprite": ""
+        },
+        "197408": {
+            "types": ["Psychic", "Dragon"],
+            "name": "Necrozma-Ultra",
+            "stats": [97, 167, 97, 167, 97, 129],
+            "tier": "SM Ubers",
+            "sprite": "",
+            "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAMrSURBVHja7Fghk+IwFH7d2R+AxSWyyLrDUYmNQ15lZSWgAIk7ZP/Bxp6sW9xWgtvW4Rj+QU4cL7ykCV1YmONmyAwTJm3pl+9933svBEopeOTxAg8+ngCfAP/5UErpz7WDMabuhevbABljSu0/1K1BIqaXS4Dcg6mbarAqpRFOxpiqSundzE021BZiGxCGkzGmBoOhUvsP/cF1e+1uIWaMqbIQDRNw3oOyEBBHHb02XywhEX2gjPJIQF3XwV1DvFrtAEHWdR3wSBjX54slzBdLSNOusX4LcF6AGKqyEBokHTIP9VqadiFNu7Ba7WAyzrx6vTYlvbp+AMM0Xyw1iNzyQswPEA5D5waQZcogAisLAVEsNchWlqlJUOCzbGQIfZaN1P4zU4wx/R0/avRDf59lI+VjDa/bs8/xzkRNXWg7cpaN1GAwNMD9fN9rgHRTrhciyM+3QeN+l+MRU0DTSxAE+seQehryWExB5qFhIBxUfz6joK5tvaKUJuNMP6Nx+fKgnf+QTWQRw/T+a9jIh3ao8Xkfc1cxWJWyIXbGmEpEH4ryYGymkLOTecQUqmoDdV0H1BjIuM00TVv4zrMM2rpDc1A2KIv0XluH1Dx4zda5r94jptev5CKaGjjvaR2maddIRahJZCGKpUpEH3K5Ntg53qPsFONKOUaIOeeN4k8BiGRrmGT7ewvhMNTzarWDXK4bxsBwuwD41hFXK0AbaFEeYH6UDSZqqi/U4LkkTEHbzNoAvbWYR8IQ8GSc/Q1VtYGJBM0cMkkNw3lPlzqXzrC2Ixm+suhlkO7I3iWt0QiuqDoNd8ZienLnkdGvOBrfi7haTXLsYLROUPyc93So7YHgTnptJndXYm9lMAgCr2jtEAGANo1IthBHJxbniyXkcg0AAInoG8+3AbPzoDNRtzWxnPd0s0qTNq6laReiWAI1ggsI6u8cwIvOJMge7aTjqANVtQGZh0bT6mpy6VzXdYDX7Cb46nMxral0xmtYMVytF73v3PEVK8y3zsX0ZXYjQOdLu2daAi8+F7tKEoYJ19EYOD/MXx+uEF573NTNhKvdev679QT4BPgfAvwzAMS2/pAm/zsRAAAAAElFTkSuQmCC"
+        },
     };
     function getPokeNum(name) {
         var out = sys.pokeNum(name);
@@ -2779,16 +2806,37 @@ function Safari() {
     function hasType(pokeNum, type) {
         return type1(pokeNum) == type || type2(pokeNum) == type;
     }
-    function canLearnMove(num, moveNum) {
+    function fetchMoves(num) {
+        var out;
         if (ultraPokes.hasOwnProperty(num+"")) {
-            return false;
+            if (ultraPokes[num+""].moves) {
+                out = ultraPokes[num+""].moves;
+            } else {
+                out = [];
+            }
         }
         var id = parseInt(num, 10);
         var moves = pokedex.getAllMoves(id);
         var move = moveNum + "";
         
-        if (!moves) {
+        if ((!moves) || (moves && moves.length == 0)) {
             moves = pokedex.getAllMoves(pokeInfo.species(id));
+        }
+        if ((!moves) || (moves && moves.length == 0)) {
+            return out;
+        }
+        return moves.contains(move);
+    }
+    function canLearnMove(num, moveNum) {
+        if (ultraPokes.hasOwnProperty(num+"")) {
+            return false;
+        }
+        var id = parseInt(num, 10);
+        var moves = fetchMoves(id);
+        var move = moveNum + "";
+        
+        if (!moves) {
+            moves = fetchMoves(pokeInfo.species(id));
         }
         return moves.contains(move);
     }
@@ -19239,9 +19287,9 @@ function Safari() {
     };
     Battle2.prototype.getMoveTypes = function(id) {
         var num = parseInt(id, 10), m, out = {}, t,
-            moves = pokedex.getAllMoves(num);
+            moves = fetchMoves(num);
         if (!moves) {
-            moves = pokedex.getAllMoves(pokeInfo.species(num));
+            moves = fetchMoves(pokeInfo.species(num));
         }
         for (m = moves.length; m--; ) {
             t = sys.type(sys.moveType(moves[m]));
@@ -19283,9 +19331,9 @@ function Safari() {
     };
     Battle2.prototype.getMovePowers = function(id) {
         var num = parseInt(id, 10), m, out = {}, t, k,
-            moves = pokedex.getAllMoves(num);
+            moves = fetchMoves(num);
         if (!moves) {
-            moves = pokedex.getAllMoves(pokeInfo.species(num));
+            moves = fetchMoves(pokeInfo.species(num));
         }
         for (var o in effectiveness) {
             out[o] = 40;
@@ -22532,31 +22580,31 @@ function Safari() {
                 var reward;
                 switch (args.difficulty) {
                     case -1: reward = [
-                        ["gacha", 3],
+                        ["gacha", 2],
                         ["egg", 1],
                         ["gem", 1],
-                        ["gacha", 10],
+                        ["gacha", 5],
                         ["pack", 1],
                         ["rare", 1],
                         ["pack", 2],
                         ["rare", 2],
                         ["eviolite", 1],
-                        ["gem", 5],
-                        ["pack", 5],
-                        ["nugget", 1],
-                        ["pack", 10]
+                        ["gem", 3],
+                        ["pack", 4],
+                        ["stardust", 3],
+                        ["pack", 8]
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
                         ["gacha", 2],
                         ["pearl", 3],
                         ["gem", 1],
-                        ["stardust", 2],
-                        ["gacha", 10],
+                        ["stardust", 1],
+                        ["bigpearl", 5],
                         ["pack", 1],
                         ["dew", 8],
                         ["nugget", 1],
-                        ["gacha", 30],
+                        ["mega", 1],
                         ["nugget", 2],
                         ["dew", 20],
                         ["pack", 30]
@@ -22571,7 +22619,7 @@ function Safari() {
                         ["dew", 12],
                         ["nugget", 3],
                         ["pack", 5],
-                        ["mega", 1],
+                        ["mega", 2],
                         ["dew", 40],
                         ["pack", 30],
                         ["pack", 50]
@@ -22586,25 +22634,25 @@ function Safari() {
                         ["pack", 3],
                         ["bignugget", 1],
                         ["dew", 25],
-                        ["mega", 2],
-                        ["dew", 50],
+                        ["mega", 3],
                         ["ldew", 2],
-                        ["ldew", 5]
+                        ["ldew", 5],
+                        ["ash", 2]
                     ][args.index]; break;
                     case 3: reward = [
-                        ["gacha", 6],
-                        ["gacha", 10],
-                        ["dew", 15],
-                        ["pack", 2],
-                        ["dew", 25],
+                        ["pearl", 10],
+                        ["bigpearl", 10],
+                        ["dew", 20],
+                        ["pack", 5],
+                        ["dew", 40],
                         ["nugget", 2],
                         ["pack", 10],
                         ["bignugget", 2],
-                        ["dew", 60],
                         ["megastone", 3],
                         ["bright", 2],
                         ["ldew", 4],
-                        ["ldew", 12]
+                        ["ldew", 12],
+                        ["ash", 5]
                     ][args.index]; break;
                     case 4: reward = [
                         ["nugget", 1],
@@ -22790,6 +22838,12 @@ function Safari() {
 
                 if (extraArgs.turn && extraArgs.turn >= 3) {
                     safari.addToCelebrityLeaderboard(args.name, safari.celebrityRegion, args.difficulty, false);
+                }
+
+                if (args.difficulty < 0 && player.records.pokesCaught > 2000 && extraArgs.turn && extraArgs.turn >= 3) {
+                    sys.sendAll("", safchan);
+                    safaribot.sendHtmlAll("<b> Hahahaha! " + player.id + " just lost to " + args.name + " on Easy! Everyone make fun of them with " + link("/rock " + player.id) + "!</b> " + m, safchan);
+                    sys.sendAll("", safchan);
                 }
 
                 safari.addToMonthlyLeaderboards(player.id, "celebrityScore", 1);
@@ -25582,7 +25636,7 @@ function Safari() {
             hints.push("Can have the ability '{0}'".format(sys.ability(h)));
         }
         var maxMoves = level <= 2 ? 6 : 8;
-        var moves = pokedex.getAllMoves(this.answerId).shuffle().slice(0, maxMoves).map(sys.move);
+        var moves = fetchMoves(this.answerId).shuffle().slice(0, maxMoves).map(sys.move);
         for (h = moves.length; h--; ) {
             if (h >= 1) {
                 hints.push("Can have the moves '{0} and {1}'".format(moves[h], moves[h-1]));
@@ -26095,7 +26149,7 @@ function Safari() {
             this.opponent = sys.rand(1, 803);
         } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665, 771, 789, 790].contains(this.opponent));
 
-        var moves = pokedex.getAllMoves(this.opponent), damaging = [], m;
+        var moves = fetchMoves(this.opponent), damaging = [], m;
         for (m = moves.length; m--; ) {
             if (pokedex.getMoveBP(moves[m]) !== "---") {
                 damaging.push(moves[m]);
@@ -26373,9 +26427,9 @@ function Safari() {
             this.moveUsers[p] = {};
             for (m = parties[p].length; m--; ) {
                 id = parseInt(parties[p][m], 10);
-                set = pokedex.getAllMoves(id);
+                set = fetchMoves(id);
                 if (!set) {
-                    set = pokedex.getAllMoves(pokeInfo.species(id));
+                    set = fetchMoves(pokeInfo.species(id));
                 }
                 for (c = this.validMoves.length; c--;) {
                     move = this.validMoves[c] + "";
