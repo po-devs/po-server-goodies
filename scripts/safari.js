@@ -1662,20 +1662,20 @@ function Safari() {
             }
            return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
         },
-        sprite: function(poke) {
-            if (ultraPokes.hasOwnProperty(poke+"")) {
-                return '<img src="' + ultraPokes[poke+""].png2 + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+        sprite: function(pk) {
+            if (ultraPokes.hasOwnProperty(pk+"")) {
+                return '<img src="' + ultraPokes[pk+""].sprite + "' title='#" + pokeInfo.readableNum(pk) + " " + poke(pk) + (shinyBG && pokeInfo.shiny(pk) ? '" style="background:yellow"' : '"') + '>';
             }
             var ret = [];
             ret += "<img src='pokemon:num=";
-            ret += poke;
-            var shiny = pokeInfo.shiny(poke);
+            ret += pk;
+            var shiny = pokeInfo.shiny(pk);
             if (shiny) {
                 ret += "&shiny=true";
             }
             // ret += "&gen=7'>";
             /* Start of temporary hack due to windows client bug with shiny sprites. Enable the line above and remove this block once the client can properly show shiny sprites for non-gen 7 Pokémon*/
-            var g = 6, id = parseInt(poke, 10), sp = pokeInfo.species(id);
+            var g = 6, id = parseInt(pk, 10), sp = pokeInfo.species(id);
             var withback = false;
             if ((sp >= 722 && sp < 803) || [131730, 66254, 131790, 458777, 524313, 589849, 655385, 720921, 786457, 65555, 65556, 65562, 65563, 65564, 65573, 65574, 65586, 65587, 65588, 65589, 65610, 65611, 65612, 65624, 65625, 65639, 65641].contains(id)) {
                 g = 7;
@@ -1689,11 +1689,11 @@ function Safari() {
             
             return ret;
         },
-        valid: function(poke) {
-            if (ultraPokes.hasOwnProperty(poke+"")) {
+        valid: function(pk) {
+            if (ultraPokes.hasOwnProperty(pk+"")) {
                 return true;
             }
-            return pokePlain(poke) !== "Missingno";
+            return pokePlain(pk) !== "Missingno";
         },
         calcForme: function(base, forme) {
             return parseInt(base,10) + parseInt(forme << 16, 10);
