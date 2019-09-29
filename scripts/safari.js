@@ -1662,8 +1662,8 @@ function Safari() {
            return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
         },
         sprite: function(poke) {
-            if (ultraPokes.hasOwnProperty(p2+"")) {
-                return '<img src="' + ultraPokes[p2+""].png2 + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+            if (ultraPokes.hasOwnProperty(poke+"")) {
+                return '<img src="' + ultraPokes[poke+""].png2 + "' title='#" + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
             }
             var ret = [];
             ret += "<img src='pokemon:num=";
