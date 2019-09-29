@@ -18836,7 +18836,7 @@ function Safari() {
                     val = 0;
                     if (move.power) {
                         var inver = ((this.select && this.select.inverted) ? true : false);
-                        eff = safari.checkEffective(move.type, "???", typ1(opp.id), type2(opp.id), null, inver);
+                        eff = safari.checkEffective(move.type, "???", type1(opp.id), type2(opp.id), null, inver);
 
                         dmg = this.damageCalc(user, move, opp, eff, 1, isP1, isP2, isP3, isP4);
 
