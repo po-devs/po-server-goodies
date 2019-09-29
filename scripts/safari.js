@@ -2817,7 +2817,6 @@ function Safari() {
         }
         var id = parseInt(num, 10);
         var moves = pokedex.getAllMoves(id);
-        var move = moveNum + "";
         
         if ((!moves) || (moves && moves.length == 0)) {
             moves = pokedex.getAllMoves(pokeInfo.species(id));
@@ -2825,7 +2824,7 @@ function Safari() {
         if ((!moves) || (moves && moves.length == 0)) {
             return out;
         }
-        return moves.contains(move);
+        return moves;
     }
     function canLearnMove(num, moveNum) {
         if (ultraPokes.hasOwnProperty(num+"")) {
