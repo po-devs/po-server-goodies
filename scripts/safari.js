@@ -2756,7 +2756,7 @@ function Safari() {
             "png": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAYAAACM/rhtAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAAJeSURBVHja7Jgtc9swGMf/3hW0rINjMkyYN7RCw8GOFdp038CBhoUri1jD2qEtzGILU8syZgml3yAX9gy4cuU5fkkdp9mddZeTI9nRz8/LX4/iEBGOub3DkbcBcAAcAP93wJM2NzmO03gPYywXVK210+Z322jwSdc3NGBKqXzMdV3aBbTxLZo+dXCmjZK00BMR2VZ99dqvBczhohcgu42SlOj3qhayzdrdkyR2s36iCv3Sd4H5Bm/iYmM9252lFqXZfJRWWrF3Cy79zHpjoQo9Fk9HooO2O60e8w3GPiBHXzH23whwwnk5/hZPwEQVoC6VOCwgY4xszSskysUH4MsplgJYCuDTn3sYjWySnF6SJJpOKzWQojSf75IkrQHNIrY4G0gDUje2DXJvgIwxSqQkxhh5nkdBEBARUSJlCcoGM/NdLOi02bBd1yV+n8WTeHzE/OYGnucBADjnlc+FYQghBLTWjoE011rrVmvv5OJoOqVESrq7uqW7q1tijFEQBCWLmrHz7z/J8zyyY9ZcP/f7saApt/51lbHG9UWM+emLnPz4eInz62844wKfZzE455hwjjgMba9AKeX0ksVVWZ1ISUEQkJ1QJrPt2DTzbdbeWz0oHh5Kc1prh4U+uc9aOOEcszjerU7sWg8m6zWNkjSPu1GS0nrllTKXMVYa67UetF1oqpb1ysu/b4PsTWbqziSMMfL9bPMVQmC5eI8z9QuYb+DO/Fp37lVmKl0sZS7iecJEmUXt8YOX/HZcbYu3JriDADYdpPYB2FlmKrbGnc7HtfE//IE5AA6AA2C/7e8Ap13/Va3JdXAAAAAASUVORK5CYII="
         },
         "66336": {
-            "types": ["Psychic", "???"],
+            "types": ["Psychic", "Steel"],
             "name": "Necrozma-Dusk Mane",
             "stats": [97, 157, 127, 113, 109, 77],
             "tier": "SM Ubers",
@@ -14718,12 +14718,18 @@ function Safari() {
             }
             if (this.select.initialReflect) {
                 this.side2Field.reflect = 5;
+                if (this.select.lightClay) {
+                    this.side2Field.reflect = 8;
+                }
             }
             if (this.select.initialReflect2) {
                 this.side1Field.reflect = 5;
             }
             if (this.select.initialLightScreen) {
                 this.side2Field.lightscreen = 5;
+                if (this.select.lightClay) {
+                    this.side2Field.lightscreen = 8;
+                }
             }
             if (this.select.initialLightScreen2) {
                 this.side1Field.lightscreen = 5;
@@ -16838,6 +16844,9 @@ function Safari() {
         if (this.select && this.select.trickRoom && stat == "spe") {
             base = (1000 / base);
         }
+        if (((this.select && this.select.sandBoostGround) || (this.select2 && this.select2.sandBoostGround)) && (stat == "spe")) {
+            base = base * 2;
+        }
         
         return Math.round(base * boost * extraMod);
     };
@@ -16886,6 +16895,7 @@ function Safari() {
             bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
             bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1);
+            bonus *= (this.select.sandBoostGround && (hasType(target.id, "Ground") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1));
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
             bonus *= (move.type == "Fire" && (this.select2 && this.select2.sun) ? 1.5 : 1);
@@ -17136,6 +17146,9 @@ function Safari() {
                     }
                     else {
                         this.side2Field.reflect = 5;
+                        if (this.select && this.select.lightClay) {
+                            this.side2Field.reflect = 8;
+                        }
                         out.push("Reflect was put up on " + user.owner + "'s side of the field!");
                     }
                 }
@@ -17156,6 +17169,9 @@ function Safari() {
                     }
                     else {
                         this.side2Field.lightscreen = 5;
+                        if (this.select && this.select.lightClay) {
+                            this.side2Field.lightscreen = 8;
+                        }
                         out.push("Light Screen was put up on " + user.owner + "'s side of the field!");
                     }
                 }
@@ -17475,6 +17491,11 @@ function Safari() {
                         placeholder = Math.min(Math.floor(user.maxhp * 0.25), user.hp);
                         user.hp -= placeholder;
                         out.push(name + " lost " + placeholder + " HP from the harsh winds!");
+                    }
+                    if (self.select.shellBurn && (isP1 || isP3) && (move.type == "Fire")) {
+                        placeholder = Math.min(Math.floor(user.maxhp * 0.25), user.hp);
+                        user.hp -= placeholder;
+                        out.push(name + " lost " + placeholder + " HP from the shell burn!");
                     }
                     if (self.select.analytic && (isP2 || isP4)) {
                         self.selectData.analyticType1 = type1(target.id);
@@ -18049,11 +18070,22 @@ function Safari() {
             }
         }
         if (!fainted && (move.type === "Fire") && target.condition === "freeze") {
-            this.sendToViewers(toColor(tname + " thawed out!", "#55E"));
+            out.push(toColor(tname + " thawed out!", "#55E"));
             target.condition = "none";
         }
         if (!fainted && move.flinch && chance(move.flinch)) {
             target.flinch = true;
+        }
+        if (move.brickBreak) {
+            if (isP1 || isP3) {
+                this.side2Field.reflect = 0;
+                this.side2Field.lightscreen = 0;
+            }
+            if (isP2 || isP4) {
+                this.side1Field.reflect = 0;
+                this.side1Field.lightscreen = 0;
+            }
+            out.push(toColor("The screens were shattered!", "#c03028"));
         }
         if (!fainted && this.select) {
             if (this.select.retaliate && move.category == "special") {
@@ -18178,6 +18210,9 @@ function Safari() {
         }
         if (data.hasOwnProperty("recoil")) {
             out.push("Suffers 1/3 of damage dealt in recoil");
+        }
+        if (data.hasOwnProperty("brickBreak")) {
+            out.push("Removes Reflect/Light Screen");
         }
         if (data.hasOwnProperty("recharge")) {
             out.push("Requires a turn of recharge");
@@ -18330,7 +18365,9 @@ function Safari() {
                 if (isP4) {
                     bias = this.biasNPC2;
                 }
-                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, move.type, used);
+                var screenUp = (((isP2 || isP4) && (this.side1Field.reflect || this.side2Field.lightscreen)) || ((isP1 || isP3) && (this.side2Field.reflect || this.side1Field.lightscreen)));
+                var pokeTypes = [type1(move.owner), type2(move.owner)];
+                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, move.type, pokeTypes, screenUp, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["target"].contains(p)) {
@@ -18408,7 +18445,7 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, type, used) {
+    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, type, pokeTypes, screenUp, used) {
         var effChance;
         if (damaging) {
             effChance = {
@@ -18455,6 +18492,12 @@ function Safari() {
             effChance.nerf = 3;
             effChance.reflect = 1;
             effChance.lightscreen = 1;
+        }
+        if (screenUp && move.type == "Fighting") {
+            effChance.brickBreak = 1;
+            if (pokeTypes.contains("Fighting")) {
+                effChance.brickBreak = 2;
+            }
         }
         if (bias) {
             if (bias.recoil) {
@@ -18626,6 +18669,10 @@ function Safari() {
                 out.buff = buff;
                 out.burnout = ints;
                 out.type = "buff" + buff.buffStat;
+            break;
+            case "brickBreak":
+                out.brickBreak = true;
+                out.type = eff;
             break;
             case "priority":
                 val = Math.round(Math.random() * (5+(2.25*priority)) * (factor + 0.12));
@@ -22916,6 +22963,7 @@ function Safari() {
     };
     this.getCelebrities = function(data, difficulty) {
         var index = 0, eliteindex = 8, trainer, chal, partyStrength, diff, hold, maxLoop, hazard, currentTrainer, b;
+        var pack1 = false;
         var out = {
             "gym": [],
             "elite": []
@@ -22924,6 +22972,15 @@ function Safari() {
         for (var i = 0; i < data.length; i++) {
             currentTrainer = {};
             trainer = data[i];
+
+            if (trainer.pack1) {
+                if (pack1) {
+                    continue;
+                } else {
+                    pack1 = true;
+                }
+            }
+
             currentTrainer.name = trainer.name;
             currentTrainer.winMsg = (trainer.winMsg ? trainer.winMsg.random() : null);
             currentTrainer.loseMsg = (trainer.loseMsg ? trainer.loseMsg.random() : null);
@@ -29602,6 +29659,8 @@ function Safari() {
             case "dynamicWeb": m = "The battle begins with a stat reducing Web on challenger's side of the field."; break;
             case "quickSand": m = "The battle begins with Quicksand on challenger's side of the field."; break;
             case "harshWinds": m = "The battle begins with Harsh Winds on challenger's side of the field."; break;
+            case "shellBurn": m = "Fire-type moves harm the user"; break;
+            case "sandBoostGround": m = "Ground-type Pokémon have their speed doubled and receive Special Defense boost from Sandstorm."; break;
             case "initialReflect": m = "Reflect begins active on foe's side."; break;
             case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
             case "initialLightScreen": m = "Light Screen begins active on foe's side."; break;
@@ -29664,6 +29723,7 @@ function Safari() {
             case "draconian": m = "All Pokémon gain DRAGON type."; break;
             case "mechanical": m = "All Pokémon gain STEEL type."; break;
             case "classicTypes": m = "DARK, STEEL, or FAIRY types are not accounted for."; break;
+            case "lightClay": m = "Foe's Reflect and Light Screen are extended."; break;
             case "inverted": m = "Inverted Battle."; break;
             case "resistMode": m = "Move's type effectiveness is determined by its resistance to the foe's typing."; break;
             case "trickRoom": m = "Trick Room is in effect."; break;
@@ -29737,6 +29797,7 @@ function Safari() {
             case "dynamicWeb": out = 35; break;
             case "quickSand": out = 35; break;
             case "harshWinds": out = 25; break;
+            case "shellBurn": out = 25; break;
             case "rain": out = 50; break;
             case "sun": out = 50; break;
             case "sandstorm": out = 35; break;
@@ -29861,6 +29922,7 @@ function Safari() {
                 if (condition == "sun") { out *= 0.25; };
                 if (condition == "sandstorm") { out *= 0.25; };
                 if (condition == "harshWinds") { out *= 0.5; };
+                if (condition == "shellBurn") { out *= 0.5; };
                 if (condition == "quickSand") { out *= 0.25; };
                 if (condition == "sweltering") { out *= 0.5; };
                 if (condition == "adaptability") { out *= 0.33; };
@@ -29980,6 +30042,7 @@ function Safari() {
                 m += this.fieldConditionMess("dynamicWeb", args);
                 m += this.fieldConditionMess("quickSand", args);
                 m += this.fieldConditionMess("harshWinds", args);
+                m += this.fieldConditionMess("shellBurn", args);
                 break;
             case "offense": 
                 m += this.fieldConditionMess("toxic", args);
