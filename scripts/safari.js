@@ -18365,7 +18365,7 @@ function Safari() {
                 if (isP4) {
                     bias = this.biasNPC2;
                 }
-                var screenUp = (((isP2 || isP4) && (this.side1Field.reflect || this.side2Field.lightscreen)) || ((isP1 || isP3) && (this.side2Field.reflect || this.side1Field.lightscreen)));
+                var screenUp = (((isP2 || isP4) && (this.side1Field.reflect || this.side2Field.lightscreen)) || ((!(isP2 || isP4)) && (this.side2Field.reflect || this.side1Field.lightscreen)));
                 var pokeTypes = [type1(move.owner), type2(move.owner)];
                 eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, move.type, pokeTypes, screenUp, used);
                 if (eff.type !== "none") {
