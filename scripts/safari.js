@@ -15259,14 +15259,14 @@ function Safari() {
                 if (this.select.autopara) {
                     for (i = 0; i < this.team1.length; i++) {
                         if (!(hasType(this.team1[i].id, "Electric"))) {
-                            this.team1[i].status = "paralyzed";
+                            this.team1[i].condition = "paralyzed";
                         }
                     }
                 }
                 if (this.select.autopoison) {
                     for (i = 0; i < this.team1.length; i++) {
-                        if ((!(hasType(this.team1[i].id, "Steel"))) && (!(hasType(this.team1[i].id, "Steel")))) {
-                            this.team1[i].status = "poison";
+                        if ((!(hasType(this.team1[i].id, "Steel"))) && (!(hasType(this.team1[i].id, "Poison")))) {
+                            this.team1[i].condition = "poison";
                         }
                     }
                 }
@@ -15883,7 +15883,7 @@ function Safari() {
                                 this.sendToViewers(toColor(this.name2 + " used a Revive!", "purple"));
                                 this.sendToViewers(poke(mon.id) + " was revived!");
                                 mon.hp = Math.round(mon.maxhp / 2);
-                                mon.status = "none";
+                                mon.condition = "none";
                                 for (var a in mon.boosts) {
                                     mon.boosts[a] = 0;
                                 }
@@ -37852,6 +37852,10 @@ function Safari() {
                 safari.myCelebrityBets(src);
                 return true;
             }
+            if (command === "movenum") {
+                getInputMove(src, commandData);
+                return true;
+            }
             if (command === "watch") {
                 if (currentEvent && commandData === "*") {
                     currentEvent.watchEvent(src);
@@ -41253,10 +41257,6 @@ function Safari() {
                     missionsData = cThemes;
                     safaribot.sendMessage(src, "Couldn't load Missions from " + url + "! Error: " + err, safchan);
                 }
-                return true;
-            }
-            if (command === "movenum") {
-                getInputMove(src, commandData);
                 return true;
             }
             if (command === "itemicon") {
