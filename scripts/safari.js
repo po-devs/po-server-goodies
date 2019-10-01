@@ -16895,7 +16895,7 @@ function Safari() {
             bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
             bonus *= (hasType(target.id, "Rock") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1);
-            bonus *= (this.select.sandBoostGround && (hasType(target.id, "Ground") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special") ? 0.667 : 1));
+            bonus *= ((this.select.sandBoostGround && (hasType(target.id, "Ground") && (this.select.sandstorm || ((this.select2 && this.select2.sandstorm))) && (move.category === "special"))) ? 0.667 : 1);
             bonus *= (move.type == "Fire" && (this.select.sun) ? 1.5 : 1);
             bonus *= (move.type == "Water" && (this.select.sun) ? 0.5 : 1);
             bonus *= (move.type == "Fire" && (this.select2 && this.select2.sun) ? 1.5 : 1);
@@ -29659,7 +29659,7 @@ function Safari() {
             case "dynamicWeb": m = "The battle begins with a stat reducing Web on challenger's side of the field."; break;
             case "quickSand": m = "The battle begins with Quicksand on challenger's side of the field."; break;
             case "harshWinds": m = "The battle begins with Harsh Winds on challenger's side of the field."; break;
-            case "shellBurn": m = "Fire-type moves harm the user"; break;
+            case "shellBurn": m = "Fire-type moves harm the user."; break;
             case "sandBoostGround": m = "Ground-type Pokémon have their speed doubled and receive Special Defense boost from Sandstorm."; break;
             case "initialReflect": m = "Reflect begins active on foe's side."; break;
             case "initialReflect2": m = "Reflect begins active on challenger's side."; break;
