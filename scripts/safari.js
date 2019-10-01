@@ -18493,7 +18493,7 @@ function Safari() {
             effChance.reflect = 1;
             effChance.lightscreen = 1;
         }
-        if (screenUp && move.type == "Fighting") {
+        if (screenUp && type == "Fighting") {
             effChance.brickBreak = 1;
             if (pokeTypes.contains("Fighting")) {
                 effChance.brickBreak = 2;
