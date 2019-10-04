@@ -2647,6 +2647,7 @@ function Safari() {
         */
         var shiny = false, id, num, name;
         info = info.replace(/flabebe|flabébe|flabebé/gi, "flabébé").toLowerCase();
+        info = info.replace(/pokédex|pokedex/gi, "pokédex").toLowerCase();
         
         if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
             shiny = true;
