@@ -14598,8 +14598,8 @@ function Safari() {
         var stat = sys.rand(0, 6);
         var sName = statName[stat];
 
-        var p1Stat = sys.baseStats(p1, stat) + (ch1 ? ch1 : 0);
-        var p2Stat = sys.baseStats(p2, stat) + (ch2 ? ch2 : 0);
+        var p1Stat = getStats(p1)[stat] + (ch1 ? ch1 : 0);
+        var p2Stat = getStats(p2)[stat] + (ch2 ? ch2 : 0);
 
         var p1Power = Math.round((p1Stat + p1Move) * p1Bonus);
         var p2Power = Math.round((p2Stat + p2Move) * p2Bonus);
