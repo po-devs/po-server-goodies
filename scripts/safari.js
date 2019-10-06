@@ -4738,8 +4738,8 @@ function Safari() {
         (rules["nerfGen" + generations[gen]]) ||
         (rules["nerfColor" + cap(color)]) ||
         (rules.nerfShiny && typeof pokeId === "string") ||
-        (rules.nerfSingle && type2 === "???") ||
-        (rules.nerfDual && type2 !== "???")) {
+        (rules.nerfSingle && type_2 === "???") ||
+        (rules.nerfDual && type_2 !== "???")) {
             val = RULES_NERF;
         }
 
