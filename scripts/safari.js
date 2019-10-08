@@ -10309,9 +10309,15 @@ function Safari() {
         }
         else if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
+            return;
         }
         if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
+            return;
+        }
+        if (!player.costumeInfo[cos].exp) {
+            safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
+            return;
         }
         var lev = this.getCostumeLevel(player);
         var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
@@ -24580,9 +24586,9 @@ function Safari() {
         this.finishMode = null;
 
         this.stamina = {};
-        this.stamina[p1.id] = 300 + Math.floor(300 * p1.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrBonusStamina") ? 10 : 0));
-        this.stamina[p2.id] = 300 + Math.floor(300 * p2.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrBonusStamina") ? 10 : 0));
-        this.stamina[p3.id] = 300 + Math.floor(300 * p3.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrBonusStamina") ? 10 : 0));
+        this.stamina[p1.id] = 300 + Math.floor(300 * p1.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrStaminaBoost") ? 10 : 0));
+        this.stamina[p2.id] = 300 + Math.floor(300 * p2.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrStaminaBoost") ? 10 : 0));
+        this.stamina[p3.id] = 300 + Math.floor(300 * p3.quests.pyramid.bonusStamina + (safari.hasCostumeSkill(p1, "pyrStaminaBoost") ? 10 : 0));
 
         this.recentRooms = [];
 
