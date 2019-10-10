@@ -775,7 +775,7 @@ function Safari() {
             silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false, cap: 9999},
             shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false, cap: 9999},
 
-            entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false},
+            entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false, cap: 9999},
             coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 132, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
             fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
             
@@ -1221,7 +1221,7 @@ function Safari() {
             fragment: "A fragment of a broken Pokéball. Collecting " + itemData.fragment.threshold + " is said to be enough to form a Master Ball! Obtained from Itemfinder and when obtaining a Master Ball while having one already.",
             materia: "A basic substance required for various alchemic creations. Obtained from Alchemy quest.",
             philosopher: "A legendary red gem that is said to be capable of performing outstanding transformations. Obtained from League quest.",
-            ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity Expert/Super Expert quest.",
+            ash: "An extremely rare material useful in transmutation. Obtained from clearing Celebrity quest on Normal or harder.",
             egg: "An egg that seems to have a non-legendary Pokémon inside. Use with \"/use egg\". Obtained from Pyramid quest.",
             bright: "A mysterious egg that gives birth to a Pokémon when hatched. Small chance that this Pokémon will be shiny or even legendary! Use with \"/use bright\". Obtained from Pyramid quest.",
             water: "Water with high mineral content that increases your stamina at Pyramid by " + (itemData.water.bonusRate * 100) + "%. Use with \"/use water\".",
@@ -22677,18 +22677,18 @@ function Safari() {
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
-                        ["gacha", 2],
                         ["pearl", 3],
                         ["gem", 1],
                         ["stardust", 1],
-                        ["bigpearl", 5],
+                        ["bigpearl", 3],
                         ["pack", 1],
                         ["dew", 8],
                         ["nugget", 1],
                         ["mega", 1],
                         ["nugget", 2],
                         ["dew", 20],
-                        ["pack", 30]
+                        ["pack", 30],
+                        ["ash", 1]
                     ][args.index]; break;
                     case 1: reward = [
                         ["dew", 5],
@@ -22702,8 +22702,8 @@ function Safari() {
                         ["pack", 5],
                         ["mega", 2],
                         ["dew", 40],
-                        ["pack", 30],
-                        ["pack", 50]
+                        ["pack", 50],
+                        ["ash", 3]
                     ][args.index]; break;
                     case 2: reward = [
                         ["gacha", 5],
@@ -22718,7 +22718,7 @@ function Safari() {
                         ["mega", 3],
                         ["ldew", 2],
                         ["ldew", 5],
-                        ["ash", 2]
+                        ["ash", 9]
                     ][args.index]; break;
                     case 3: reward = [
                         ["pearl", 10],
@@ -22733,22 +22733,22 @@ function Safari() {
                         ["bright", 2],
                         ["ldew", 4],
                         ["ldew", 12],
-                        ["ash", 5]
+                        ["ash", 27]
                     ][args.index]; break;
                     case 4: reward = [
                         ["nugget", 1],
                         ["pack", 5],
                         ["dew", 10],
                         ["bignugget", 1],
-                        ["nugget", 3],
-                        ["dew", 20],
-                        ["pack", 20],
+                        ["dew", 100],
+                        ["pack", 75],
                         ["bignugget", 5],
                         ["dew", 80],
                         ["bright", 5],
                         ["pack", 100],
                         ["ldew", 20],
-                        ["ldew", 50]
+                        ["ldew", 50],
+                        ["ash", 81]
                     ][args.index]; break;
                 }
 
@@ -24819,7 +24819,7 @@ function Safari() {
         var bonusMult = 1;
         for (var i in this.parties) {
             for (var j in this.parties[i]) {
-                if (pyrBonusMons.contains(this.parties[i][j])) {
+                if (pyrBonusMons.contains(parseInt(this.parties[i][j], 10))) {
                     bonusMult = Math.min(bonusMult + 0.1, 1.5);
                 }
             }
