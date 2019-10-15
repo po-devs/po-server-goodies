@@ -42028,6 +42028,15 @@ function Safari() {
                 safari.safariEvents( src,"duels",false );
                 return true;
             }
+            if (command === "enablehq") {
+                safari.safariEvents( src,"hiddenquiz",true );
+                safari.quizEventInitialize();
+                return true;
+            }
+            if (command === "disablehq") {
+                safari.safariEvents( src,"hiddenquiz",false );
+                return true;
+            }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
