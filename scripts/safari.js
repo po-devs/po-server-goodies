@@ -13639,6 +13639,10 @@ function Safari() {
     };
 
     this.nextQuiz = function(src) {
+        if (!(safari.events.hiddenQuizEnabled)) {
+            safaribot.sendHtmlMessage(src, "The Hidden Quiz Event is not currently enabled.", safchan);
+            return;
+        }
         safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + "!", safchan);
         if (now() > safari.events.hiddenQuizData.nextQuiz) {
             safaribot.sendHtmlMessage(src, "<b>The next Hidden Quiz will begin when the market updates.</b>", safchan);
@@ -42789,7 +42793,9 @@ function Safari() {
 
         if (contestCooldown === 60 * 13) {
             safari.updateMarket();
-            safari.startQuizEvent();
+            if (safari.events.hiddenQuizEnabled && safari.events.hiddenQuizData.nextQuiz < now()) {
+                safari.startQuizEvent();
+            }
             if (dayCareEnabled) {
                 safari.dayCareStep(0);
             }
