@@ -563,6 +563,10 @@ function Safari() {
             index: 0,
             name: ""
         },
+        hiddenQuiz: {
+            lastPlayed: [],
+            points: 1000
+        },
         nextSpawn: {
             pokemon: {},
             amt: 1,
@@ -12133,7 +12137,9 @@ function Safari() {
                 trialsEnabled: false,
                 trialsData: {},
                 spiritDuelsEnabled: false,
-                spiritDuelsData: {}
+                spiritDuelsData: {},
+                hiddenQuizEnabled: false,
+                hiddenQuizData: {}
             };
         }
         switch (what) {
@@ -12160,6 +12166,11 @@ function Safari() {
             case "login":
                 safari.events.bonusLoginEnabled = (enable ? true : false);
                 safaribot.sendMessage(src,"Event Login Bonus " + (enable ? "enabled" : "disabled") + "!" );
+                break;
+            case "hiddenquiz":
+            case "quiz":
+                safari.events.hiddenQuizEnabled = (enable ? true : false);
+                safaribot.sendMessage(src,"Event Hidden Quiz " + (enable ? "enabled" : "disabled") + "!" );
                 break;
         }
     }
@@ -13471,6 +13482,204 @@ function Safari() {
             this.spiritDuelsMessage(name + " is watching this battle!");
         }
         return;
+    };
+
+    /* Hidden Quiz Event */
+    this.quizEventInitialize = function() {
+        safari.events.hiddenQuizData = {};
+        safari.events.hiddenQuizData.currentID = 0;
+        safari.events.hiddenQuizData.nextQuiz = now();
+    };
+    this.viewQuizLb = function(src, public) {
+        var player, points, name, id;
+        var playerPoints = [];
+        var limit = parseInt(num, 10);
+
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                player = JSON.parse(rawPlayers.hash[e]);
+                name = player.casedName;
+                id = player.id;
+                if (!player.hiddenQuiz) {
+                    continue;
+                }
+                if (!player.hiddenQuiz.points) {
+                    continue;
+                }
+                if (player.hiddenQuiz.points <= 0) {
+                    continue;
+                }
+                points = player.hiddenQuiz.points;
+                playerPoints.push({
+                    id: id,
+                    points: points
+                });
+            }
+        }
+        playerPoints.sort(function(a, b) { 
+            return a.points - b.points;
+        });
+        safaribot.sendMessage(src, "Top " + playerPoints.length + " players in Hidden Quiz Event by points: ", safchan);
+        var j = 1;
+        for (var i = playerPoints.length; i--;) {
+            //p = getAvatarOff(playerPoints[i].id);
+            if (public) {
+                safaribot.sendMessageAll("#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+            } else {
+                safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+            }
+            j++;
+        }
+        return;
+    };
+    this.quizRankDecay = function() {
+        var player, points, name, id;
+        var limit = parseInt(num, 10);
+        var currentID = this.events.hiddenQuizData.currentID
+
+        for (e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                player = JSON.parse(rawPlayers.hash[e]);
+                name = player.casedName;
+                id = player.id;
+                if (!player.hiddenQuiz) {
+                    continue;
+                }
+                if (!player.hiddenQuiz.points) {
+                    continue;
+                }
+                if (player.hiddenQuiz.points <= 0) {
+                    continue;
+                }
+                points = player.hiddenQuiz.points;
+
+                //Every 24 games, we expect/require the player to play 3 times to avoid decay.
+                decay = false;
+                if (player.hiddenQuiz.lastPlayed.length > 3) {
+                    player.hiddenQuiz = player.hiddenQuiz.lastPlayed.slice(0, 3);
+                }
+                for (var i in player.hiddenQuiz.lastPlayed) {
+                    if (player.hiddenQuiz.lastPlayed[i] + 24 < currentID) {
+                        decay = true;
+                        break;
+                    }
+                }
+                //Only decay if they're above 1k
+                if (decay && (player.hiddenQuiz.points > 1000)) {
+                    player.hiddenQuiz.points -= ((player.hiddenQuiz.points - 1000) * 0.02);
+                    player.hiddenQuiz.points = Math.round(player.hiddenQuiz.points);
+                }
+                safari.saveGame(player);
+            }
+        }
+    }
+    this.quizRankUpdate = function(points) {
+        /*
+            We pass this an array of players, where players is an an array of objects designed like this:
+            {
+                id: id of the player
+                rank: placement of the player
+            }
+        */
+        var players = [];
+        for (var a in points) {
+            players.push(
+            {
+                "id": a,
+                "points": points[a]
+            });
+        }
+        this.quizRankDecay();
+        var player, player2, diff, out = {}, src;
+        for (var i = 0; i < players.length; i++) {
+            player = getAvatarOff(players[i].id);
+            if (!player.hiddenQuiz) {
+                player.hiddenQuiz = {};
+            }
+            if (!player.hiddenQuiz.points) {
+                player.hiddenQuiz.points = 1000;
+            }
+            if (!player.hiddenQuiz.lastPlayed) {
+                player.hiddenQuiz.lastPlayed = [];
+            }
+        }
+        for (var i = 0; i < players.length; i++) {
+            player = getAvatarOff(players[i].id);
+            out[player.id] = 0;
+            for (var j = 0; j < players.length; j++) {
+                if (i == j) { //Same player
+                    continue;
+                }
+                diff = 0;
+                player2 = getAvatarOff(players[j].id);
+                diff = player2.hiddenQuiz.points - player.hiddenQuiz.points;
+                if (player.points[i] > player.points[j]) { //Means the first player won
+                    diff = 17 + Math.min(Math.max(-15, diff * 0.04), 15);
+                }
+                else if (player.points[i] < player.points[j]) { //Means the first player lost
+                    diff = 17 + Math.min(Math.max(-15, diff * -0.04), 15);
+                    diff *= -1;
+                } else { //Tie
+                    diff = 0 + Math.min(Math.max(-15, diff * 0.04), 15);
+                }
+                out[player.id] += Math.round(diff);
+            }
+        }
+        for (var i = 0; i < players.length; i++) {
+            src = sys.id(players[i].id);
+            player = getAvatarOff(players[i].id);
+            player.hiddenQuiz.points += out[player.id];
+            safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + toColor(" <b>(" + out[player.id] + ")</b>", out[player.id] < 0 ? "red" : "green"), safchan);
+            player.hiddenQuiz.lastPlayed.push(safari.events.hiddenQuiz.currentID);
+            safari.saveGame(player);
+        }
+        safari.events.hiddenQuizData.nextQuiz = now() + (4 * 60 * 60 * 1000); //Every 4 hours.
+        safari.events.hiddenQuizData.currentID += 1;
+        return;
+    };
+
+    this.nextQuiz = function(src) {
+        safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + "!", safchan);
+        if (now() > safari.events.hiddenQuizData.nextQuiz) {
+            safaribot.sendHtmlMessage(src, "<b>The next Hidden Quiz will begin when the market updates.</b>", safchan);
+        }
+        safaribot.sendHtmlMessage(src, "The next Hidden Quiz will be in  " + timeLeftString(safari.events.hiddenQuizData.nextQuiz) + "!", safchan);
+        safari.getQuizPrizes(src);
+        return;
+    };
+
+    this.getQuizPrizes = function(src) {
+        var rew = [];
+        if ((safari.events.hiddenQuizData.currentID + 1) % 31 === 0) {
+            rew = ["cosmog", "5@rare", "2@rare"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 10 === 0) {
+            rew = ["10@rare", "3@rare", "@rare"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 0) {
+            rew = ["3@golden", "@golden", "2@silver"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 1) {
+            rew = ["@mega", "@rare", "100@dust"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 1) {
+            rew = ["25@hdew", "5@hdew", "5@gacha"]
+        }
+        else {
+            rew = ["@mega", "9@silver", "3@silver"]
+        }
+        if (src) {
+            var out = ("1st: " + translateStuff(rew[0]) + ", 2nd: " + translateStuff(rew[1]) + ", 3rd: " + translateStuff(rew[2]));
+            safaribot.sendHtmlMessage(src, "The prizes will be <b>" + out + "</b>!", safchan);
+            return;
+        }
+        return rew;
+    };
+    this.startQuizEvent = function() {
+        var rew = this.getQuizPrizes(false);
+        var ev = new Quiz(src, rew[0], rew[1], rew[2], true, true);
+        currentEvent = ev;
+        safari.flashPlayers();
     };
 
     /* Celebrity Battles */
@@ -28227,13 +28436,14 @@ function Safari() {
         return signupsLower.contains(n) && (this.phase === "signup" || (this.survivors.contains(n) || this.fightingForThird.contains(n)));
     };
 
-    function Quiz(src, reward1, reward2, reward3, silent) {
+    function Quiz(src, reward1, reward2, reward3, silent, official) {
         SafariEvent.call(this, src);
         this.eventName = (silent ? "Hidden " : "") + "Quiz";
         this.minPlayers = 2;
         this.turnLength = 5;
         this.signupsDuration = 8;
         this.silentMode = silent;
+        this.official = official ? true : false;
 
         this.round = 0;
         this.phase = "signup";
@@ -28267,10 +28477,17 @@ function Safari() {
         var joinCommand = "/signup";
         this.joinmsg = "Type " + link(joinCommand) + " to participate! Rewards: " + this.rewardNameB + "!";
 
-        sys.sendAll("", safchan);
-        safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
-        safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
-        sys.sendAll("", safchan);
+        if (official) {
+            sys.sendAll("", safchan);
+            safaribot.sendHtmlAll("The Official <b>" + this.eventName + "</b> event is beginning with the following rewards: " + this.rewardNameB + "!", safchan);
+            safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+            sys.sendAll("", safchan);
+        } else {
+            sys.sendAll("", safchan);
+            safaribot.sendHtmlAll(sys.name(src) + " is starting a <b>" + this.eventName + "</b> event with the following rewards: " + this.rewardNameB + "!", safchan);
+            safaribot.sendHtmlAll("Type " + link(joinCommand) + " to participate (you have " + (this.signupsDuration * this.turnLength) + " seconds)!", safchan);
+            sys.sendAll("", safchan);
+        }
     }
     Quiz.prototype = new SafariEvent();
     Quiz.prototype.setupEvent = function() {
@@ -28664,6 +28881,10 @@ function Safari() {
 
         this.log(true, "1st: " + winnerName + ", 2nd: " + runnerupName + (thirdplaceName ? ", 3rd: " + thirdplaceName : ""));
         this.finished = true;
+
+        if (this.official) {
+            safari.quizRankUpdate(this.points);
+        }
     };
     Quiz.prototype.canJoin = function(src) {
         var player = getAvatar(src);
@@ -38404,6 +38625,10 @@ function Safari() {
                 this.viewVolleyballLb(src, commandData.toLowerCase());
                 return true;
             }
+            if (["nextquiz", "nexthiddenquiz", "hiddenquiz", "hq"].indexOf(command) !== -1) {
+                safari.nextQuiz(src);
+                return true;
+            }
             if ((command === "daycare" || command === "dc") && (dayCareEnabled)) {
                 safari.handleDayCareCommand(src, commandData.split(":"));
                 return true;
@@ -38965,16 +39190,8 @@ function Safari() {
                 SESSION.global().allTrackers = allTrackers;
                 return true;
             }
-            if (command === "challenge3test" || command === "challengetagtest") {
-                safaribot.sendMessage(src, "Tag Battle requests: " + challengeRequests2 + ".", safchan);
-                for (var i = 0; i < challengeRequests2.length; i++) {
-                    for (var j in challengeRequests2[i][0]) {
-                        safaribot.sendMessage(src, "Request includes " + j + ".", safchan);
-                    }
-                    for (var j in challengeRequests2[i][1]) {
-                        safaribot.sendMessage(src, "Request includes " + j + ".", safchan);
-                    }
-                }
+            if (command === "eventhiddenquiz") {
+                safari.startQuizEvent();
                 return true;
             }
             if (command === "supdatemarket") {
@@ -42570,9 +42787,12 @@ function Safari() {
         SESSION.global().safariBaitCooldown = baitCooldown;
         SESSION.global().safariReleaseCooldown = releaseCooldown;
 
-        if (contestCooldown === 60 * 13 && dayCareEnabled) {
+        if (contestCooldown === 60 * 13) {
             safari.updateMarket();
-            safari.dayCareStep(0);
+            safari.startQuizEvent();
+            if (dayCareEnabled) {
+                safari.dayCareStep(0);
+            }
         }
         if (contestCooldown === 60 * 5 && dayCareEnabled) {
             safari.dayCareStep(0);
