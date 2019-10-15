@@ -13643,13 +13643,10 @@ function Safari() {
         }
         var player = getAvatar(src);
         if (!player.hiddenQuiz) {
-            continue;
+            player.hiddenQuiz = {};
         }
         if (!player.hiddenQuiz.points) {
-            continue;
-        }
-        if (player.hiddenQuiz.points <= 0) {
-            continue;
+            player.hiddenQuiz.points = 1000;
         }
         safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + "!", safchan);
         if (now() > safari.events.hiddenQuizData.nextQuiz) {
