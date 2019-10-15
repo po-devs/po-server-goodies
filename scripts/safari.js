@@ -13643,6 +13643,16 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "The Hidden Quiz Event is not currently enabled.", safchan);
             return;
         }
+        var player = getAvatar(src);
+        if (!player.hiddenQuiz) {
+            continue;
+        }
+        if (!player.hiddenQuiz.points) {
+            continue;
+        }
+        if (player.hiddenQuiz.points <= 0) {
+            continue;
+        }
         safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + "!", safchan);
         if (now() > safari.events.hiddenQuizData.nextQuiz) {
             safaribot.sendHtmlMessage(src, "<b>The next Hidden Quiz will begin when the market updates.</b>", safchan);
