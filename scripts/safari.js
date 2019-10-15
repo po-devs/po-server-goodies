@@ -13493,7 +13493,6 @@ function Safari() {
     this.viewQuizLb = function(src, public) {
         var player, points, name, id;
         var playerPoints = [];
-        var limit = parseInt(num, 10);
 
         for (e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
@@ -13534,7 +13533,6 @@ function Safari() {
     };
     this.quizRankDecay = function() {
         var player, points, name, id;
-        var limit = parseInt(num, 10);
         var currentID = this.events.hiddenQuizData.currentID
 
         for (e in rawPlayers.hash) {
