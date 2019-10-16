@@ -13628,7 +13628,7 @@ function Safari() {
             player = getAvatarOff(players[i].id);
             player.hiddenQuiz.points += out[player.id];
             safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + toColor(" <b>(" + out[player.id] + ")</b>", out[player.id] < 0 ? "red" : "green"), safchan);
-            player.hiddenQuiz.lastPlayed.push(safari.events.hiddenQuiz.currentID);
+            player.hiddenQuiz.lastPlayed.push(safari.events.hiddenQuizData.currentID);
             safari.saveGame(player);
         }
         safari.events.hiddenQuizData.nextQuiz = now() + (4 * 60 * 60 * 1000); //Every 4 hours.
