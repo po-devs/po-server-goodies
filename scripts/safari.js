@@ -13656,23 +13656,41 @@ function Safari() {
 
     this.getQuizPrizes = function(src) {
         var rew = [];
-        if ((safari.events.hiddenQuizData.currentID + 1) % 31 === 0) {
-            rew = ["cosmog", "5@rare", "2@rare"]
+        if ((safari.events.hiddenQuizData.currentID + 1) % 100 === 50) {
+            rew = ["@bignugget,@crystal,@mega", "@nugget,@cookie,@rare", "@stardust,@gacha,@dust"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 100 === 0) {
+            rew = ["@scale,@spray,@prima", "@cherry,@ampere,@pack", "@silver,@egg,@safari"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 31 === 0) {
+            rew = ["5@mega", "2@mega", "5@rare"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 24 === 0) {
+            rew = ["2@mushroom", "6@cookie", "@soda"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 43 === 0) {
+            rew = ["2@crystal", "2@ampere", "2@silver"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 10 === 0) {
             rew = ["10@rare", "3@rare", "@rare"]
         }
-        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 0) {
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 0) {
             rew = ["3@golden", "@golden", "2@silver"]
         }
-        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 1) {
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 1) {
             rew = ["@mega", "@rare", "100@dust"]
         }
-        else if ((safari.events.hiddenQuizData.currentID + 1) % 4 === 1) {
-            rew = ["25@hdew", "5@hdew", "5@gacha"]
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 2) {
+            rew = ["25@hdew", "4@egg", "@egg"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 3) {
+            rew = ["35@silver", "7@silver", "@rock"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 4) {
+            rew = ["@mega", "2@stardust", "3@pearl"]
         }
         else {
-            rew = ["@mega", "9@silver", "3@silver"]
+            rew = ["25@hdew", "5@hdew", "5@gacha"]
         }
         if (src) {
             var out = ("1st: " + translateStuff(rew[0]) + ", 2nd: " + translateStuff(rew[1]) + ", 3rd: " + translateStuff(rew[2]));
@@ -25035,10 +25053,11 @@ function Safari() {
         for (var i in this.parties) {
             for (var j in this.parties[i]) {
                 if (pyrBonusMons.contains(parseInt(this.parties[i][j], 10))) {
-                    bonusMult = Math.round(Math.min(bonusMult + 0.1, 1.5));
+                    bonusMult = (Math.min(bonusMult + 0.1, 1.5));
                 }
             }
         }
+        bonusMult = Math.round(bonusMult * 10) * 0.1
         if (bonusMult > 1) {
             this.sendToViewers("You received a bonus x" + bonusMult + " from your Bonus Pokémon!");
         }
