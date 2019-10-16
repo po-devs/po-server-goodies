@@ -13573,11 +13573,7 @@ function Safari() {
     }
     this.quizRankUpdate = function(points) {
         /*
-            We pass this an array of players, where players is an an array of objects designed like this:
-            {
-                id: id of the player
-                rank: placement of the player
-            }
+            We pass this the object "points" from a quiz event
         */
         var players = [];
         for (var a in points) {
@@ -13611,10 +13607,10 @@ function Safari() {
                 diff = 0;
                 player2 = getAvatarOff(players[j].id);
                 diff = player2.hiddenQuiz.points - player.hiddenQuiz.points;
-                if (points[i] > points[j]) { //Means the first player won
+                if (players[i].points > players[j].points) { //Means the first player won
                     diff = 17 + Math.min(Math.max(-15, diff * 0.04), 15);
                 }
-                else if (points[i] < points[j]) { //Means the first player lost
+                else if (players[i].points < players[j].points) { //Means the first player lost
                     diff = 17 + Math.min(Math.max(-15, diff * -0.04), 15);
                     diff *= -1;
                 } else { //Tie
@@ -28454,6 +28450,9 @@ function Safari() {
         this.signupsDuration = 8;
         this.silentMode = silent;
         this.official = official ? true : false;
+        if (official) { 
+            this.signupsDuration = 12;
+        }
 
         this.round = 0;
         this.phase = "signup";
