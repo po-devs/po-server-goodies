@@ -13611,7 +13611,7 @@ function Safari() {
                 diff = 0;
                 player2 = getAvatarOff(players[j].id);
                 diff = player2.hiddenQuiz.points - player.hiddenQuiz.points;
-                if (player.points[i] > player.points[j]) { //Means the first player won
+                if (points[i] > points[j]) { //Means the first player won
                     diff = 17 + Math.min(Math.max(-15, diff * 0.04), 15);
                 }
                 else if (player.points[i] < player.points[j]) { //Means the first player lost
@@ -13651,8 +13651,9 @@ function Safari() {
         safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + "!", safchan);
         if (now() > safari.events.hiddenQuizData.nextQuiz) {
             safaribot.sendHtmlMessage(src, "<b>The next Hidden Quiz will begin when the market updates.</b>", safchan);
+        } else {
+            safaribot.sendHtmlMessage(src, "The next Hidden Quiz will be in  " + timeLeftString(safari.events.hiddenQuizData.nextQuiz) + "!", safchan);
         }
-        safaribot.sendHtmlMessage(src, "The next Hidden Quiz will be in  " + timeLeftString(safari.events.hiddenQuizData.nextQuiz) + "!", safchan);
         safari.getQuizPrizes(src);
         return;
     };
@@ -20756,7 +20757,7 @@ function Safari() {
                 }
             }
         }
-        var maxSize = 100;
+        var maxSize = 101;
         if (list.length > maxSize) {
             safaribot.sendMessage(src, "You can only add up to " + maxSize + " Items/Pokémon to your Tradeblocked list.", safchan);
             return;
@@ -25038,7 +25039,7 @@ function Safari() {
         for (var i in this.parties) {
             for (var j in this.parties[i]) {
                 if (pyrBonusMons.contains(parseInt(this.parties[i][j], 10))) {
-                    bonusMult = Math.min(bonusMult + 0.1, 1.5);
+                    bonusMult = Math.round(Math.min(bonusMult + 0.1, 1.5));
                 }
             }
         }
@@ -36287,7 +36288,7 @@ function Safari() {
         var week = Math.floor(today/7);
         if (week != permObj.get("currentWeek")) {
             this.renewLeague();
-            this.pyrBonusMons();
+            //this.pyrBonusMons();
             permObj.add("currentWeek", week);
             
             var old = {}, e, lbInfo;
