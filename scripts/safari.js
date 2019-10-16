@@ -13614,7 +13614,7 @@ function Safari() {
                 if (points[i] > points[j]) { //Means the first player won
                     diff = 17 + Math.min(Math.max(-15, diff * 0.04), 15);
                 }
-                else if (player.points[i] < player.points[j]) { //Means the first player lost
+                else if (points[i] < points[j]) { //Means the first player lost
                     diff = 17 + Math.min(Math.max(-15, diff * -0.04), 15);
                     diff *= -1;
                 } else { //Tie
