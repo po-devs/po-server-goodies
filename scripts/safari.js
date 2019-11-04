@@ -9430,38 +9430,38 @@ function Safari() {
             if (giveReward) {
                 safaribot.sendMessage(src, "You " + finishName("candybag") + " to reveal " + plural(amount, reward) + "!", safchan);
                 if (reward === "mega" && amount === 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "mega" && amount >= 2) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("mega") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("mega") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "bignugget" && amount === 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "bignugget" && amount >= 2) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("bignugget") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("bignugget") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "dew") {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("dew") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("dew") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "golden") {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("golden") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("golden") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "silver" && amount >= 200) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("silver") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("silver") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "water" && amount === 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "water" && amount >= 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("water") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("water") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "rare" && amount === 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("rare")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("rare")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "rare" && amount >= 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("rare") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("rare") + "s in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "fossil") {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("fossil")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("fossil")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "celebrityTicket" && amount === 1) {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("candybag") + "!</b>", safchan);
                 } else if (reward === "celebrityTicket") {
-                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + finishName("celebrityTicket") + " in their " + finishName("easteregg") + "!</b>", safchan);
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + finishName("celebrityTicket") + " in their " + finishName("candybag") + "!</b>", safchan);
                 }
                 rewardCapCheck(player, reward, amount);
             }
             player.balls.easteregg -= pulled;
-            safaribot.sendMessage(src, itemsLeft(player, "easteregg"), safchan);
+            safaribot.sendMessage(src, itemsLeft(player, "candybag"), safchan);
             this.saveGame(player);
             return;
         }
