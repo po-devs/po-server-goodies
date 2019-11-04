@@ -9279,7 +9279,190 @@ function Safari() {
             return;
         }
         if (item === "candybag") {
-            //under construction;
+            var pulled;
+            if (!info.target) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 1) {
+                pulled = 1;
+            } else if (parseInt(info.target, 10) === 10) {
+                pulled = 10;
+            } else if (parseInt(info.target, 10) === 100) {
+                pulled = 100;
+            } else if (parseInt(info.target, 10) === 1000) {
+                pulled = 1000;
+            } else {
+                safaribot.sendMessage(src, "Type /use easteregg:1, /use easteregg:10, /use easteregg:100, or /use easteregg:1000, to open your Easter Eggs!", safchan);
+                return;
+            }
+            if (pulled > player.balls.easteregg) {
+                safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
+                return;
+            }
+            var candybagprizes = {
+                "1": {
+                    rock: 40, 
+                    money: 30,
+                    pnkapricorn: 10, grnapricorn: 10, bluapricorn: 10,
+                    ylwapricorn: 5,
+                    safari: 10,
+                    great: 15,
+                    ultra: 10,
+                    gacha: 6, bait: 2, silver: 2,
+                    mail: 5,
+                    pearl: 2,
+                    rare: 3
+                },
+                "10": {
+                    money: 50,
+                    bait: 12,
+                    mail: 10,
+                    pnkapricorn: 20, grnapricorn: 20, bluapricorn: 20,
+                    ylwapricorn: 5,
+                    great: 50,
+                    ultra: 20,
+                    amulet: 2, crown: 2,
+                    scarf: 1, soothe: 3, battery: 2,
+                    honey: 2, eviolite: 3,
+                    rare: 30, silver: 16,
+                    gem: 3, gacha: 19,
+                    pearl: 30, bigpearl: 15,
+                    hdew: 3,
+                    water: 2,
+                    scale: 1,
+                    brush: 1,
+                    celebrityTicket: 5,
+                    prize: 3,
+                    mega: 2,
+                    mega2: 1
+                },
+                "100": {
+                    money: 25,
+                    mail: 7,
+                    ultra: 12,
+                    eviolite: 10,
+                    fossil: 4,
+                    scale: 8,
+                    brush: 8,
+                    rare: 45, spray: 5, nugget: 8,
+                    bignugget: 1,
+                    rare2: 10,
+                    gacha: 15,
+                    celebrityTicket: 10,
+                    prize: 5,
+                    golden: 1,
+                    silver: 12,
+                    mega: 15,
+                    mega2: 5,
+                    water: 5,
+                    hdew: 5
+                },
+                "1000": {
+                    shiny: 2,
+                    hdew: 5, 
+                    bignugget: 10,
+                    mega: 6,
+                    mega2: 3,
+                    golden: 10,
+                    silver: 8,
+                    money: 17
+                },
+            }
+            var reward = randomSample(candybagprizes[""+pulled]);
+            var amount = 1;
+            var giveReward = true;
+            switch (reward) {
+                case "gem": amount = (pulled === 10 ? 3 : 1); break;
+                case "rare": amount = (pulled === 100 ? 13 : (pulled === 10 ? 3 : 1)); break;
+                case "rare2": amount = 10; reward = "rare"; break;
+                case "celebrityTicket": amount = (pulled === 100 ? 3 : 1); break;
+                case "bait": amount = (pulled === 10 ? 8 : 2); break;
+                case "gacha": amount = (pulled === 100 ? 30 : (pulled === 10 ? 5 : 1)); break;
+                case "silver": amount = (pulled === 1000 ? 200 : (pulled === 100 ? 40 : (pulled === 10 ? 5 : 1))); break;
+                case "golden": amount = (pulled === 1000 ? 15 : 5); break;
+                case "mega": amount = (pulled === 1000 ? 5 : (pulled === 100 ? 3 : 1)); break;
+                case "mega2": amount = (pulled === 1000 ? 10 : (pulled === 100 ? 5 : 2)); reward = "mega"; break;
+                case "dew": amount = (pulled === 1000 ? 50 : (pulled === 100 ? 20 : 5)); break;
+                case "bignugget": amount = (pulled === 1000 ? 2 : 1); break;
+                case "scale": case "brush": amount = (pulled === 100 ? 3 : 1); break;
+                case "bluapricorn": case "grnapricorn": case "pnkapricorn": case "ylwapricorn": amount = (pulled === 1 ? 1 : 5); break;
+                case "water": amount = (pulled === 100 ? 2 : 1); break;
+                case "mail": amount = (pulled === 100 ? 15 : (pulled === 10 ? 5 : 3)); break;
+                case "ultra": case "great": amount = (pulled === 100 ? 25 : (pulled === 10 ? 5 : 1)); break;
+            }
+            if (reward == "shiny") {
+                giveReward = false;
+                if (currentPokemon || contestCount > 0 || contestCooldown <= 13) {
+                    reward = "money";
+                } else {
+                    var spawn = true;
+                    var ballUsed;
+                    if (!isBall(ballUsed) || player.balls[ballUsed] === 0) {
+                        ballUsed = (player.balls[player.favoriteBall] > 0 ? player.favoriteBall : "safari");
+                    }
+                    safaribot.sendAll(sys.name(src) + " goes to open their Candy Bags but they startled a nearby Pokémon!", safchan);
+
+                    var monlist = [151, 27, 52, 677, 570, 92, 66, 231, 238, 239, 240, 172, 355, 406, 427, 191, 179, 177, 170, 298, 246, 147, 371, 328, 374, 443, 633];
+                    var mon = monlist.random();
+                    if (mon == 151) {
+                        monlist = monlist.slice(1)
+                        safari.createWild(mon, false, 1, null, null, null, {"num": monlist.random(), "shiny": true});
+                    } else {
+                        safari.createWild(mon, true, 1);
+                    }
+
+                    safari.throwBall(src, ballUsed, true);
+                    preparationFirst = sys.name(src).toLowerCase();
+                    if (baitCooldown <= 9) {
+                        baitCooldown = sys.rand(9, 13);
+                    }
+                    if (goldenBaitCooldown <= 6) {
+                        goldenBaitCooldown = sys.rand(6, 11);
+                    }
+                }
+            }
+            if (reward == "money") {
+                giveReward = false;
+                amount = Math.round(((12 * Math.random()) + 3) * (12 + (3 * Math.random())) * (pulled >= 100 ? pulled : (pulled/3)));
+                player.money += amount;
+                this.sanitize(player);
+                safaribot.sendMessage(src, "You " + finishName("candybag") + " to reveal $" + amount + "!", safchan);
+            }
+            if (giveReward) {
+                safaribot.sendMessage(src, "You " + finishName("candybag") + " to reveal " + plural(amount, reward) + "!", safchan);
+                if (reward === "mega" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "mega" && amount >= 2) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("mega") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "bignugget" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "bignugget" && amount >= 2) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("bignugget") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "dew") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("dew") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "golden") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("golden") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "silver" && amount >= 200) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("silver") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "water" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "water" && amount >= 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("water") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "rare" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("rare")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "rare" && amount >= 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + " " + finishName("rare") + "s in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "fossil") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("fossil")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "celebrityTicket" && amount === 1) {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("easteregg") + "!</b>", safchan);
+                } else if (reward === "celebrityTicket") {
+                    safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + amount + finishName("celebrityTicket") + " in their " + finishName("easteregg") + "!</b>", safchan);
+                }
+                rewardCapCheck(player, reward, amount);
+            }
+            player.balls.easteregg -= pulled;
+            safaribot.sendMessage(src, itemsLeft(player, "easteregg"), safchan);
+            this.saveGame(player);
             return;
         }
         /*if (item === "easteregg") {
