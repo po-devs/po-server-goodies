@@ -9460,7 +9460,7 @@ function Safari() {
                 }
                 rewardCapCheck(player, reward, amount);
             }
-            player.balls.easteregg -= pulled;
+            player.balls.candybag -= pulled;
             safaribot.sendMessage(src, itemsLeft(player, "candybag"), safchan);
             this.saveGame(player);
             return;
