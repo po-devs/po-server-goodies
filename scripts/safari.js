@@ -9422,7 +9422,7 @@ function Safari() {
             }
             if (reward == "money") {
                 giveReward = false;
-                amount = Math.round(((12 * Math.random()) + 3) * (12 + (3 * Math.random())) * (pulled >= 100 ? pulled : (pulled/3)));
+                amount = Math.round(((13 * Math.random()) + 2.7) * (13 + (2.7 * Math.random())) * (pulled >= 100 ? pulled : (pulled/3)));
                 player.money += amount;
                 this.sanitize(player);
                 safaribot.sendMessage(src, "You " + finishName("candybag") + " to reveal $" + amount + "!", safchan);
