@@ -9291,11 +9291,11 @@ function Safari() {
             } else if (parseInt(info.target, 10) === 1000) {
                 pulled = 1000;
             } else {
-                safaribot.sendMessage(src, "Type /use easteregg:1, /use easteregg:10, /use easteregg:100, or /use easteregg:1000, to open your Easter Eggs!", safchan);
+                safaribot.sendMessage(src, "Type /use candybag:1, /use candybag:10, /use candybag:100, or /use candybag:1000, to open your Candy Bags!", safchan);
                 return;
             }
-            if (pulled > player.balls.easteregg) {
-                safaribot.sendMessage(src, "You don't have " + pulled + " Easter Eggs!", safchan);
+            if (pulled > player.balls.candybag) {
+                safaribot.sendMessage(src, "You don't have " + pulled + " Candy Bags!", safchan);
                 return;
             }
             var candybagprizes = {
@@ -12677,7 +12677,7 @@ function Safari() {
             }
         }
         playerPoints.sort(function(a, b) { 
-            return a.points - b.points;
+            return b.points - a.points;
         })
         var j = 1;
         var limit = Math.min(playerPoints.length, 2);
