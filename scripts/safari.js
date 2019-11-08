@@ -13779,7 +13779,7 @@ function Safari() {
                 //Every 48 games, we expect/require the player to play 5 times to avoid decay.
                 decay = false;
                 if (player.hiddenQuiz.lastPlayed.length > 5) {
-                    player.hiddenQuiz = player.hiddenQuiz.lastPlayed.slice(0, 5);
+                    player.hiddenQuiz.lastPlayed = player.hiddenQuiz.lastPlayed.slice(0, 5);
                 }
                 for (var i in player.hiddenQuiz.lastPlayed) {
                     if (player.hiddenQuiz.lastPlayed[i] + 48 < currentID) {
