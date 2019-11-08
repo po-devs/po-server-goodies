@@ -29195,13 +29195,13 @@ function Safari() {
                 }
 
                 if (player.hiddenQuiz.responseData.hit > 0) {
-                    player.hiddenQuiz.responseData.answerTime += this.answerSpeeds[name];
+                    player.hiddenQuiz.responseData.answerTime += this.finalAnswerSpeeds[name];
                     player.hiddenQuiz.responseData.responseSpeed = (Math.round((player.hiddenQuiz.responseData.answerTime * 100) / player.hiddenQuiz.responseData.hit));
                 }
 
                 if (player.hiddenQuiz.responseData.obscureHit > 0) {
-                    player.hiddenQuiz.responseData.obscureAnswerTime += this.obscureResponseSpeed[name];
-                    player.hiddenQuiz.responseData.responseSpeed = (Math.round((player.hiddenQuiz.responseData.obscureAnswerTime * 100) / player.hiddenQuiz.responseData.obscureHit));
+                    player.hiddenQuiz.responseData.obscureAnswerTime += this.finalAnswerSpeedsObscure[name];
+                    player.hiddenQuiz.responseData.obscureResponseSpeed = (Math.round((player.hiddenQuiz.responseData.obscureAnswerTime * 100) / player.hiddenQuiz.responseData.obscureHit));
                 }
 
                 safari.saveGame(player);
