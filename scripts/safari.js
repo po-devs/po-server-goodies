@@ -565,7 +565,19 @@ function Safari() {
         },
         hiddenQuiz: {
             lastPlayed: [],
-            points: 1000
+            points: 1000,
+            responseData: {
+                hit: 0,
+                tried: 0,
+                hitRate: 0,
+                obscureHit: 0,
+                obscureTried: 0,
+                obscureHitRate: 0,
+                responseSpeed: 0,
+                obscureResponseSpeed: 0,
+                obscureAnswerTime: 0,
+                answerTime: 0
+            }
         },
         nextSpawn: {
             pokemon: {},
@@ -28698,6 +28710,12 @@ function Safari() {
         this.playersAnswered = [];
         this.silentAnswers = {};
         this.noSmeargle = false;
+        this.obscure = false;
+        this.obscureAmt = 0;
+        this.answerSpeeds = {};
+        this.finalAnswerSpeeds = {};
+        this.finalAnswerSpeedsObscure = {};
+        this.answeredObscure = {};
 
         this.reward1 = reward1;
         this.reward2 = reward2;
@@ -28737,6 +28755,10 @@ function Safari() {
         for (var e = 0; e < this.signups.length; e++) {
             this.points[this.signups[e].toLowerCase()] = 0;
             this.answered[this.signups[e].toLowerCase()] = 0;
+            this.answerSpeeds[this.signups[e].toLowerCase()] = 0;
+            this.finalAnswerSpeeds[this.signups[e].toLowerCase()] = 0;
+            this.finalAnswerSpeedsObscure[this.signups[e].toLowerCase()] = 0;
+            this.answeredObscure[this.signups[e].toLowerCase()] = 0;
         }
 
         this.sendToViewers("");
@@ -28821,6 +28843,14 @@ function Safari() {
                     break;
                 }
             }
+            this.obscure = false;
+            for (e = 0; e < typesUsed.length; e++) {
+                if (typesUsed[e] === "weight" || typesUsed[e] === "height") {
+                    this.obscure = true;
+                    this.obscureAmt++;
+                    break;
+                }
+            }
 
             this.currentQuestion = cap(readable(desc));
             this.usedAnswers = [];
@@ -28830,6 +28860,7 @@ function Safari() {
             this.sendToViewers("<b>Round " + this.round + "</b>: Use /ans [Pokémon] to say a Pokémon with these features: " + toColor(this.currentQuestion, "blue") + " (You have 15 seconds)!");
             this.sendToViewers("");
             this.phase = "answer";
+            this.answerTime = now()
         }
 
     };
@@ -28852,6 +28883,11 @@ function Safari() {
             for (c = list.length; c--; ) {
                 this.points[list[c]] += p;
                 this.answered[list[c]] += 1;
+                this.finalAnswerSpeeds[list[c]] += this.answerSpeeds[list[c]];
+                if (this.obscure) {
+                    this.finalAnswerSpeedsObscure[list[c]] += this.answerSpeeds[list[c]];
+                    this.answeredObscure[list[c]] += 1;
+                }
             }
         }
         this.silentAnswers = {};
@@ -29007,6 +29043,9 @@ function Safari() {
         if (this.silentMode) {
             if (this.silentAnswers.hasOwnProperty(name)) {
                 this.sendMessage(name, "You changed your answer to " + toColor(info.name, "blue") + "!");
+                if (this.official) {
+                    this.answerSpeeds[name] = (now() - this.questionTime);
+                }
             } else {
                 this.sendMessage(name, "You answered " + toColor(info.name, "blue") + "!");
             }
@@ -29125,6 +29164,48 @@ function Safari() {
 
         if (this.official) {
             safari.quizRankUpdate(this.points);
+
+            for (var e = 0; e < this.signups.length; e++) {
+                var player = getAvatarOff(this.signups[e]);
+                var name = this.signups[e].toLowerCase();
+
+                if (!(player.hiddenQuiz.hasOwnProperty("responseData"))) {
+                    player.hiddenQuiz.responseData = {
+                        hit: 0,
+                        tried: 0,
+                        hitRate: 0,
+                        obscureHit: 0,
+                        obscureTried: 0,
+                        obscureHitRate: 0,
+                        responseSpeed: 0,
+                        obscureResponseSpeed: 0,
+                        obscureAnswerTime: 0,
+                        answerTime: 0
+                    }
+                }
+
+                player.hiddenQuiz.responseData.hit += this.answered[name];
+                player.hiddenQuiz.responseData.tried += 10;
+                player.hiddenQuiz.responseData.hitRate = (Math.round((player.hiddenQuiz.responseData.hit * 100) / player.hiddenQuiz.responseData.tried));
+
+                player.hiddenQuiz.responseData.obscureHit += this.answeredObscure[name];
+                player.hiddenQuiz.responseData.obscureTried += this.obscureAmt;
+                if (player.hiddenQuiz.responseData.obscureTried > 0) {
+                    player.hiddenQuiz.responseData.obscureHitRate = (Math.round((player.hiddenQuiz.responseData.obscureHit * 100) / player.hiddenQuiz.responseData.obscureTried));
+                }
+
+                if (player.hiddenQuiz.responseData.hit > 0) {
+                    player.hiddenQuiz.responseData.answerTime += this.answerSpeeds[name];
+                    player.hiddenQuiz.responseData.responseSpeed = (Math.round((player.hiddenQuiz.responseData.answerTime * 100) / player.hiddenQuiz.responseData.hit));
+                }
+
+                if (player.hiddenQuiz.responseData.obscureHit > 0) {
+                    player.hiddenQuiz.responseData.obscureAnswerTime += this.obscureResponseSpeed[name];
+                    player.hiddenQuiz.responseData.responseSpeed = (Math.round((player.hiddenQuiz.responseData.obscureAnswerTime * 100) / player.hiddenQuiz.responseData.obscureHit));
+                }
+
+                safari.saveGame(player);
+            }
         }
     };
     Quiz.prototype.canJoin = function(src) {
