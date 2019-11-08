@@ -13776,20 +13776,20 @@ function Safari() {
                 }
                 points = player.hiddenQuiz.points;
 
-                //Every 24 games, we expect/require the player to play 3 times to avoid decay.
+                //Every 48 games, we expect/require the player to play 5 times to avoid decay.
                 decay = false;
-                if (player.hiddenQuiz.lastPlayed.length > 3) {
-                    player.hiddenQuiz = player.hiddenQuiz.lastPlayed.slice(0, 3);
+                if (player.hiddenQuiz.lastPlayed.length > 5) {
+                    player.hiddenQuiz = player.hiddenQuiz.lastPlayed.slice(0, 5);
                 }
                 for (var i in player.hiddenQuiz.lastPlayed) {
-                    if (player.hiddenQuiz.lastPlayed[i] + 24 < currentID) {
+                    if (player.hiddenQuiz.lastPlayed[i] + 48 < currentID) {
                         decay = true;
                         break;
                     }
                 }
                 //Only decay if they're above 1k
                 if (decay && (player.hiddenQuiz.points > 1000)) {
-                    player.hiddenQuiz.points -= ((player.hiddenQuiz.points - 1000) * 0.02);
+                    player.hiddenQuiz.points -= ((player.hiddenQuiz.points - 1000) * 0.012);
                     player.hiddenQuiz.points = Math.round(player.hiddenQuiz.points);
                 }
                 safari.saveGame(player);
@@ -13852,7 +13852,7 @@ function Safari() {
             player.hiddenQuiz.lastPlayed.push(safari.events.hiddenQuizData.currentID);
             safari.saveGame(player);
         }
-        safari.events.hiddenQuizData.nextQuiz = now() + (4 * 60 * 60 * 1000); //Every 4 hours.
+        safari.events.hiddenQuizData.nextQuiz = now() + (2.9 * 60 * 60 * 1000); //Every 3 hours (but 6 minutes back to ensure it starts before the market updates).
         safari.events.hiddenQuizData.currentID += 1;
         return;
     };
