@@ -13849,7 +13849,7 @@ function Safari() {
             player = getAvatarOff(players[i].id);
             player.hiddenQuiz.points += out[player.id];
             safaribot.sendHtmlMessage(src, "Your Hidden Quiz score: " + player.hiddenQuiz.points + toColor(" <b>(" + out[player.id] + ")</b>", out[player.id] < 0 ? "red" : "green"), safchan);
-            player.hiddenQuiz.lastPlayed.push(safari.events.hiddenQuizData.currentID);
+            player.hiddenQuiz.lastPlayed.unshift(safari.events.hiddenQuizData.currentID);
             safari.saveGame(player);
         }
         safari.events.hiddenQuizData.nextQuiz = now() + (2.9 * 60 * 60 * 1000); //Every 3 hours (but 6 minutes back to ensure it starts before the market updates).
