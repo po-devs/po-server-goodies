@@ -28860,7 +28860,7 @@ function Safari() {
             this.sendToViewers("<b>Round " + this.round + "</b>: Use /ans [Pokémon] to say a Pokémon with these features: " + toColor(this.currentQuestion, "blue") + " (You have 15 seconds)!");
             this.sendToViewers("");
             this.phase = "answer";
-            this.answerTime = now()
+            this.questionTime = now()
         }
 
     };
