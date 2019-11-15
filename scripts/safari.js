@@ -2932,7 +2932,7 @@ function Safari() {
         },
         "731": {
         "name": "No Retreat",
-        "learned": [Falinks],
+        "learned": [870],
         "type": "Fighting",
         "power": "---"
         },
