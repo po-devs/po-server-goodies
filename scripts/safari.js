@@ -1391,7 +1391,7 @@ function Safari() {
     var contestVotes;
     var contestVotingCooldown = 4;
     var contestVotingCount = (SESSION.global() && SESSION.global().contestVotingCount ? SESSION.global().contestVotingCount : contestVotingCooldown);
-    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola"];
+    var generations = ["None", "Kanto", "Johto", "Hoenn", "Sinnoh", "Unova", "Kalos", "Alola", "Galar"];
     var nextTheme;
     var currentRules;
     var nextRules;
@@ -5104,8 +5104,10 @@ function Safari() {
             ret = 5;
         } else if (inclusive(num, 650, 721)) {
             ret = 6;
-        } else if (inclusive(num, 722, 807)) {
+        } else if (inclusive(num, 722, 809)) {
             ret = 7;
+        } else if (inclusive(num, 810, 890)) {
+            ret = 8;
         }
         if (wordy) {
             return generations[ret];
@@ -17427,18 +17429,20 @@ function Safari() {
         }
         this.weather = "";
         this.weatherTimer = 0;
-        if (this.select.sandstorm) {
-            this.weather = "Sand";
-            this.weatherTimer = 256;
-        } else if (this.select.rain) {
-            this.weather = "Rain";
-            this.weatherTimer = 256;
-        } else if (this.select.sun) {
-            this.weather = "Sun";
-            this.weatherTimer = 256;
-        } else if (this.select.hail) {
-            this.weather = "Hail";
-            this.weatherTimer = 256;
+        if (this.select) {
+            if (this.select.sandstorm) {
+                this.weather = "Sand";
+                this.weatherTimer = 256;
+            } else if (this.select.rain) {
+                this.weather = "Rain";
+                this.weatherTimer = 256;
+            } else if (this.select.sun) {
+                this.weather = "Sun";
+                this.weatherTimer = 256;
+            } else if (this.select.hail) {
+                this.weather = "Hail";
+                this.weatherTimer = 256;
+            }
         }
         this.abilityUsed = {
             "1": false,
