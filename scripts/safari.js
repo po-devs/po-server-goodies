@@ -28161,8 +28161,8 @@ function Safari() {
         for (var i = 0; i < this.table.length; i++) {
             this.tableReadable.push(link("/bak fetch:" + this.table[i], this.table[i]));
         }
-        for (var p in players) {
-            this.playersActions[p.toLowerCase()] = {
+        for (var p in this.players) {
+            this.playersActions[this.players[p].toLowerCase()] = {
                 "actioned": "" //Action taken this turn
             };
         }
