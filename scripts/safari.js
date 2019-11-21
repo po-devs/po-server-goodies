@@ -5510,11 +5510,6 @@ function Safari() {
                 return;
             }
         }
-        for (var p in currentBakings) {
-            if (currentBakings[p].isInPyramid(name)) {
-                return;
-            }
-        }
         var ret = "", hasBalls = false, isAndroid = sys.os(src) === "android";
         for (var i = 0; i < allBalls.length; i++) {
             var e = allBalls[i];
@@ -7373,7 +7368,7 @@ function Safari() {
             safaribot.sendMessage(src, "Your boxes are full! You cannot catch any more Pokémon unless you buy another " + finishName("box") + " or decrease the number of Pokémon in your possession.", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid", "baking"], ball)) {
+        if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid"], ball)) {
             return;
         }
         var currentTime = now();
@@ -10293,7 +10288,7 @@ function Safari() {
         var baitName = finishName(item);
         var bName = baitName.toLowerCase();
 
-        if (cantBecause(src, "throw " + bName, ["contest", "auction", "battle", "item", "event", "pyramid", "baking", "tutorial"], item)) {
+        if (cantBecause(src, "throw " + bName, ["contest", "auction", "battle", "item", "event", "pyramid", "tutorial"], item)) {
             return;
         }
         if (isPreparing) {
@@ -28236,23 +28231,23 @@ function Safari() {
             validItems = ["oran", "pecha", "leppa", "bluk", "razz", "tamato", "pinap", "nanab", "petaya", "watmel", "miracle", "platinum"]
         }
         if (!(validItems.contains(get))) {
-            this.msg(playerName, "What are you doing? You can't just add " + get + " to the recipe now!");
+            this.msg(player, "What are you doing? You can't just add " + get + " to the recipe now!");
             return false;
         }
         if (player.balls[get] <= 0) {
-            this.msg(playerName, "Sorry, you don't have any " + get + " to add to the table!");
+            this.msg(player, "Sorry, you don't have any " + get + " to add to the table!");
             return false;
         }
         if (["ingredient", "ingredient2"].contains(this.playersActions[playerName.toLowerCase()])) {
-            this.msg(playerName, "Your hands are too covered in baking ingredients to reach into your bag! Try again next turn!");
+            this.msg(player, "Your hands are too covered in baking ingredients to reach into your bag! Try again next turn!");
             return false;
         }
         if (["add"].contains(this.playersActions[playerName.toLowerCase()])) {
-            this.msg(playerName, "You don't have enough time to add two items to the table!");
+            this.msg(player, "You don't have enough time to add two items to the table!");
             return false;
         }
-        if (this.turn >= 7) {
-            this.msg(playerName, "This is the last turn of the phase, so don't add anything else to the table!");
+        if (this.turn >= 8) {
+            this.msg(player, "This is the last turn of the phase, so don't add anything else to the table!");
             return false;
         }
         player.balls[get] -= 1;
@@ -28786,7 +28781,7 @@ function Safari() {
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
-        judgeScore = Math.round(((balance * 0.025) + Math.max((this.blend * 0.03), 0) + (this.quality * 0.05)) * 222) * 0.01;
+        judgeScore = Math.round(((balance * 0.025) + Math.max((this.blend * 0.03), 0) + (this.quality * 0.05)) * 150) * 0.01;
         judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
@@ -28796,26 +28791,23 @@ function Safari() {
         bakeScores = {};
         var underbaked = false;
         for (var a in this.bakeTimes) {
-            score = Math.abs(this.bakeTimes[a] - this.bakeTimeNeeded);
-            if (isNaN(score)) {
-                score = 10;
-            }
-            underbaked = this.bakeTimes[a] - this.bakeTimeNeeded > 0 ? false : true;
+            score = Math.abs(this.bakeTimes[a.toLowerCase()] - this.bakeTimeNeeded);
+            underbaked = this.bakeTimes[a.toLowerCase()] - this.bakeTimeNeeded > 0 ? false : true;
             if (score < 0.75) {
                 score = 0;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": PERFECT.", true);
             } else if (score < 1.5) {
                 score *= 1;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? "[Slightly Underbaked]." : "[Slightly Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score * 10), "orange") + ") " + (underbaked ? "[Slightly Underbaked]." : "[Slightly Overbaked]."), true);
             } else if (score < 5) {
                 score *= 1.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             } else if (score < 10) {
                 score *= 2;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             } else {
                 score *= 2.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTEROUS. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             }
             bakeScores[a.toLowerCase()] = score;
         }
@@ -28963,7 +28955,7 @@ function Safari() {
         }
         var player;
         for (var p in this.players) {
-            player = getAvatarOff(this.players[p]);
+            player = getAvatarOff(p);
             player.deluxeBait = {
                 "commons": {
                     "rate": 0,
