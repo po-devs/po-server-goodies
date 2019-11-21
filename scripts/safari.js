@@ -28480,12 +28480,12 @@ function Safari() {
         this.msgAll("");
         for (var a in this.flavors) {
             if (this.flavors[a] >= 3) {
-                this.msgAll(toColor("It has a strong " + a + " flavor!"), true);
+                this.msgAll(toColor("It has a strong " + a + " flavor!", "blue"), true);
                 this.flavors[a] = 3;
             } else if (this.flavors[a] >= 2) {
-                this.msgAll(toColor("It has a noticeable " + a + " flavor!"), true);
+                this.msgAll(toColor("It has a noticeable " + a + " flavor!", "blue"), true);
             } else if (this.flavors[a] >= 1) {
-                this.msgAll(toColor("It has a faint " + a + " flavor!"), true);
+                this.msgAll(toColor("It has a faint " + a + " flavor!"), "blue", true);
             } 
         }
         this.msgAll("");
