@@ -23688,6 +23688,7 @@ function Safari() {
             case "monger":
             case "suspicious dude":
                 this.mafiaAuction(src, args);
+            break;
             case "baking":
             case "great galarian bait off":
             case "great galarian bait-off":
@@ -25055,7 +25056,7 @@ function Safari() {
                     }
                     if (unavailable.length > 0) {
                         for (e = players.length; e--;) {
-                            safaribot.sendMessage(sys.id(players[e]), "Pyramid Quest couldn't be started due to the following reasons: " + unavailable.join(", "), safchan);
+                            safaribot.sendMessage(sys.id(players[e]), "Baking Quest couldn't be started due to the following reasons: " + unavailable.join(", "), safchan);
                         }
                         return;
                     }
@@ -25076,7 +25077,7 @@ function Safari() {
                 var out = "", item, value = action;
                 for (var i in bakingData[value]) {
                     item = bakingData[value][i];
-                    out += itemAlias(item, false, true) + ": " + item.description + "\n";
+                    out += itemAlias((i+""), false, true) + ": " + item.description + "\n";
                 }
             break;
             default:
