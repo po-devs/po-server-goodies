@@ -28203,7 +28203,7 @@ function Safari() {
                     validItems = ["oran", "pecha", "leppa", "bluk", "razz", "tamato", "pinap", "nanab", "petaya", "watmel", "miracle", "platinum"];
                 }
                 var validItemsReadable = [];
-                for (var i = 0; i < validItems.length; i++) {else {
+                for (var i = 0; i < validItems.length; i++) {
                     validItemsReadable.push(link("/bak fetch:" + validItems[i], itemAlias(validItems[i], false, true)), true);
                 }
                 if (this.phase == 1 || this.phase == 2) {
