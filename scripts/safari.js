@@ -71,6 +71,8 @@ function Safari() {
     var marketData = {};
     var dayCareEnabled = true;
 
+    var needsPechaCleared = [];
+
     var npcMatchAlive = [];
     var buyLuckyPossible = false;
     var npcBetCap = 200;
@@ -6815,7 +6817,7 @@ function Safari() {
         if ("berries" in rules) {
             list = [];
             for (var e in rules.berries) {
-                list.push(rules.berries[e] + " " + itemAlias(e, false, true) + (rules.berries[e] === 1 ? "" : "s"));
+                list.push(itemAlias(rules.berries[e], false, true) + (rules.berries[e] === 1 ? "" : "s"));
             }
             if (list.length > 0) {
                 out.push(optionalColor("Berries: " + readable(list, "and"), colored, "darkgreen"));
@@ -7518,11 +7520,11 @@ function Safari() {
                         } else {
                             berry = berry[0];
                         }
+                        var g = giveStuff(player, berry, true);
+                        g = readable(g.gained);
+                        player.pokemon.push(currentPokemon);
+                        sendAll("The " + pokeName + " was holding " + g + "!");
                     }
-                    var g = giveStuff(player, berry, true);
-                    g = readable(g.gained);
-                    player.pokemon.push(currentPokemon);
-                    sendAll("The " + pokeName + " was holding " + g + "!");
                 }
             } else if (ball !== "spirit") {
                 if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
@@ -24873,7 +24875,7 @@ function Safari() {
 
         if (bakingRequests.hasOwnProperty(player.id) && now() > bakingRequests[player.id].deadline) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You prepared for Baking quest before, but couldn't start it before deadline! Please use " + link("/quest baking:start:", null, true) + " to start it again!", safchan);
-            delete pyramidRequests[player.id];
+            delete bakingRequests[player.id];
         }
         if (data.length < 1 || !data[0]) {
             action = "*";
@@ -25079,8 +25081,9 @@ function Safari() {
                 for (var i = 0; i < Object.keys(obj).length; i++) {
                     str = Object.keys(obj)[i];
                     item = obj[str];
-                    out += itemAlias((i+""), false, true) + ": " + item.description + "\n";
+                    out += itemAlias((str+""), false, true) + ": " + item.description + "\n";
                 }
+                sys.sendMessage(src, out, safchan);
             break;
             default:
                 safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You can make customized baits using various ingredients! Get started with " + link("/quest baking:start") + "!", safchan);
