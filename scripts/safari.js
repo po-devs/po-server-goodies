@@ -2320,7 +2320,7 @@ function Safari() {
                 }
             }
             for (var p in currentBakings) {
-                if (currentPyramids[p].isInKitchen(name)) {
+                if (currentBakings[p].isInKitchen(name)) {
                     return false;
                 }
             }
@@ -25082,7 +25082,7 @@ function Safari() {
                 for (var i = 0; i < Object.keys(obj).length; i++) {
                     str = Object.keys(obj)[i];
                     item = obj[str];
-                    if (item == "milk") {
+                    if (str == "milk") {
                         out = "Moomoo Milk: " + item.description;
                     } else {
                         out = itemAlias((str+""), false, true) + ": " + item.description;
@@ -28108,6 +28108,8 @@ function Safari() {
         this.secretFlavor = 0;
 
         this.finished = false;
+
+        this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
     };
     Baking.prototype.nextTurn = function() {
         this.turn++;
@@ -28999,7 +29001,7 @@ function Safari() {
         if (host) {
             msg = "Paul Politoed: " + msg;
         }
-        for (e = 0 ; e < list.length; e++) {
+        for (e = 0; e < list.length; e++) {
             this.msg(list[e], msg, flashing, colored);
         }
     };
