@@ -24892,7 +24892,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You need to wait " + timeLeftString(quest.cooldown) + " before baking again!", safchan);
                     return;
                 }
-                cost = Math.round(cost * (1 - (safari.hasSkill(player, "bakingDiscount") ? 0.5 : 0)));
+                cost = Math.round(cost * (1 - (safari.hasCostumeSkill(player, "bakingDiscount") ? 0.5 : 0)));
                 if (player.money < cost) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You need $" + addComma(cost) + " to enter the Pyramid!", safchan);
                     return;
@@ -25081,7 +25081,7 @@ function Safari() {
                 }
             break;
             default:
-                safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You can make customized baits using various ingredients!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You can make customized baits using various ingredients! Get started with " + link("/quest baking:start") + "!", safchan);
                 safaribot.sendHtmlMessage(src, "For information on the ingredients available, type " + link("/quest baking:berries") + " and " + link("/quest baking:apricorns") + ".", safchan);
                 sys.sendMessage(src, "", safchan);
             break;
