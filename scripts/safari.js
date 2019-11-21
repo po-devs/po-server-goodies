@@ -24921,7 +24921,7 @@ function Safari() {
                 }
                 var players = data[1].toLowerCase().split(",");
 
-                var id1, p1, n1, taking = [];
+                var id1, p1, n1, taking = [], takingPretty = [];
                 for (var p in players) {
                     id1 = sys.id(players[p]);
                     p1 = getAvatar(id1);
@@ -24929,8 +24929,8 @@ function Safari() {
                         safaribot.sendMessage(src, "There's no player with the name '" + players[p] + "' around to join you in the Kitchen!", safchan);
                         return;
                     }
-                    n1 = p1.id;
-                    if (n1 == player.id) {
+                    n1 = p1.id.toLowerCase();
+                    if (n1 == player.id.toLowerCase()) {
                         safaribot.sendMessage(src, "You cannot invite yourself to the Kitchen!", safchan);
                         return;
                     }
@@ -24939,12 +24939,13 @@ function Safari() {
                         return;
                     }
                     taking.push(n1);
+                    takingPretty.push(toColored(n1.toCorrectCase(), n1));
                 }
-                safaribot.sendMessage(src, "You invited " + taking.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
+                safaribot.sendMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
                 safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
 
                 for (var p in taking) {
-                    safaribot.sendHtmlMessage(id1, name + " is inviting " + taking.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
+                    safaribot.sendHtmlMessage(id1, name + " is inviting " + takingPretty.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
                 }
 
                 bakingRequests[player.id.toLowerCase()] = {
@@ -24963,7 +24964,7 @@ function Safari() {
                 }
                 var invites = [];
                 for (var e in bakingRequests) {
-                    if (bakingRequests.hasOwnProperty(e) && bakingRequests[e].invites.hasOwnProperty(player.id)) {
+                    if (bakingRequests.hasOwnProperty(e) && bakingRequests[e].invites.hasOwnProperty(player.id.toLowerCase())) {
                         invites.push(e);
                     }
                 }
