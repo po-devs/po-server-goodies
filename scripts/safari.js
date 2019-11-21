@@ -28159,7 +28159,7 @@ function Safari() {
         }
         this.tableReadable = [];
         for (var i = 0; i < this.table.length; i++) {
-            this.tableReadable.push(link("/bak fetch:" + this.table[i], toCapital(this.table[i])));
+            this.tableReadable.push(link("/bak fetch:" + this.table[i], this.table[i]));
         }
         for (var p in players) {
             this.playersActions[p.toLowerCase()] = {
@@ -28189,7 +28189,7 @@ function Safari() {
                 }
                 var validItemsReadable = [];
                 for (var i = 0; i < validItems.length; i++) {
-                    validItemsReadable.push(link("/bak add:" + this.table[i], toCapital(this.table[i])), true);
+                    validItemsReadable.push(link("/bak add:" + this.table[i], this.table[i]), true);
                 }
                 if (this.phase == 1 || this.phase == 2) {
                     this.msg(player, "Items on the table (you can add up to two to the bowl): " + this.tableReadable.join(", ") + ".");
