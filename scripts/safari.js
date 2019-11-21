@@ -28132,7 +28132,7 @@ function Safari() {
                     }
                 }
                 this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge] + ". Keep this in mind if you want your bait to succeed!");
-                this.judges = [judge1, judge2];
+                this.judges = [judge, judge2];
                 this.msgAll("Remember: if you want your bait to be popular amongst rare Pokémon, you'll need to impress all 3 of us!");
                 this.msgAll("");
             } else if (this.turn == 2) {
@@ -28194,7 +28194,17 @@ function Safari() {
                 }
                 var validItemsReadable = [];
                 for (var i = 0; i < validItems.length; i++) {
-                    validItemsReadable.push(link("/bak add:" + this.table[i], this.table[i]), true);
+                    if (validItems[i] == "milk") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Moomoo Milk"), true);
+                    } else if (validItems[i] == "flour") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Flour"), true);
+                    } else if (validItems[i] == "flour") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Sugar"), true);
+                    } else if (validItems[i] == "blend") {
+                        validItemsReadable.push(link("/bak add:blend", "Blend"), true);
+                    } else {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], itemAlias(validItems[i], false, true)), true);
+                    }
                 }
                 if (this.phase == 1 || this.phase == 2) {
                     this.msg(player, "Items on the table (you can add up to two to the bowl): " + this.tableReadable.join(", ") + ".");
@@ -29009,7 +29019,7 @@ function Safari() {
         }
     };
     Baking.prototype.handleCommand = function(player, command) {
-        if (!(playersLower.contains(player.toLowerCase()))) {
+        if (!(this.playersLower.contains(player.toLowerCase()))) {
             return false;
         }
         command = command.split(":");
@@ -29029,7 +29039,7 @@ function Safari() {
         return;
     };
     Baking.prototype.isInKitchen = function(player) {
-        if (!(playersLower.contains(player.toLowerCase()))) {
+        if (!(this.playersLower.contains(player.toLowerCase()))) {
             return false;
         }
         return true;
