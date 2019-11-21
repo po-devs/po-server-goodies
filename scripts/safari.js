@@ -28107,6 +28107,9 @@ function Safari() {
         this.quality = 0;
         this.secretFlavor = 0;
 
+        this.phase = 0;
+        this.turn = 0;
+
         this.finished = false;
 
         this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
