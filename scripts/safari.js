@@ -28311,7 +28311,7 @@ function Safari() {
             if (["flour", "sugar"].contains(item)) {
                 data = {
                     "flour": {
-                        "texture": 1,
+                        "texture": 0,
                         "bulk": 6,
                         "taste": 0,
                         "acidity": 0,
