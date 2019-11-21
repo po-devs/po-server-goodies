@@ -6814,8 +6814,8 @@ function Safari() {
         }
         if ("berries" in rules) {
             list = [];
-            for (var e in rules.rewards) {
-                list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+            for (var e in rules.berries) {
+                list.push(rules.berries[e] + " " + itemAlias(e, false, true) + (rules.berries[e] === 1 ? "" : "s"));
             }
             if (list.length > 0) {
                 out.push(optionalColor("Berries: " + readable(list, "and"), colored, "darkgreen"));
@@ -7504,7 +7504,7 @@ function Safari() {
                     var itemPower = itemBST;
                     if (itemBST > 500) {
                         itemPower += (itemBST - 400);
-                    } else if (bst > 550) {
+                    } else if (itemBST > 550) {
                         itemPower += (itemBST - 450);
                     }
                     itemPower += (100 * Math.random()) + (100 * Math.random()) - (200 * Math.random());
@@ -25074,9 +25074,11 @@ function Safari() {
             break;
             case "berries":
             case "apricorns":
-                var out = "", item, value = action;
-                for (var i in bakingData[value]) {
-                    item = bakingData[value][i];
+                var out = "", item, value = action, obj, str;
+                obj = bakingData[value];
+                for (var i = 0; i < Object.keys(obj).length; i++) {
+                    str = Object.keys(obj)[i];
+                    item = obj[str];
                     out += itemAlias((i+""), false, true) + ": " + item.description + "\n";
                 }
             break;
