@@ -23615,7 +23615,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
@@ -25065,9 +25065,10 @@ function Safari() {
                     }
                     for (var e = 0; e < players.length; e++) {
                         p = getAvatarOff(players[e]);
+                        var cost = Math.round(5000 * (1 - (safari.hasCostumeSkill(p, "bakingDiscount") ? 0.5 : 0)));
                         p.money -= cost;
                         p.quests.baking.cooldown = now() + Math.round(hours(1));
-                        safaribot.sendHtmlMessage(p.id, trainerSprite + "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
+                        safaribot.sendHtmlMessage(p.id, "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
                         this.saveGame(p);
                     }
 
