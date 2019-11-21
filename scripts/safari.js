@@ -25074,9 +25074,11 @@ function Safari() {
             break;
             case "berries":
             case "apricorns":
-                var out = "", item, value = action;
-                for (var i in bakingData[value]) {
-                    item = bakingData[value][i];
+                var out = "", item, value = action, obj, str;
+                obj = bakingData[value];
+                for (var i = 0; i < Object.keys(obj).length; i++) {
+                    str = Object.keys(obj)[i];
+                    item = obj[str];
                     out += itemAlias((i+""), false, true) + ": " + item.description + "\n";
                 }
             break;
