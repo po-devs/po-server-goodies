@@ -28149,7 +28149,7 @@ function Safari() {
         }
         if (this.blending) {
             this.blending = false;
-            this.needsBlending -= ((now() - (this.blendStartTime)) * 0.0001);
+            this.needsBlending -= ((now() - (this.blendStartTime)) * 0.001);
         }
         if (this.phase == 1 || this.phase == 2) {
             if (this.turn >= 7) {
@@ -28166,13 +28166,13 @@ function Safari() {
         tableReadable = [];
         for (var i = 0; i < this.table.length; i++) {
             if (this.table[i] == "milk") {
-                tableReadable.push(link("/bak add:" + this.table[i], "Moomoo Milk"), true);
+                tableReadable.push(link("/bak add:" + this.table[i], "Moomoo Milk"));
             } else if (this.table[i] == "flour") {
-                tableReadable.push(link("/bak add:" + this.table[i], "Flour"), true);
+                tableReadable.push(link("/bak add:" + this.table[i], "Flour"));
             } else if (this.table[i] == "sugar") {
-                tableReadable.push(link("/bak add:" + this.table[i], "Sugar"), true);
+                tableReadable.push(link("/bak add:" + this.table[i], "Sugar"));
             } else if (this.table[i] == "blend") {
-                tableReadable.push(link("/bak add:blend", "Blend"), true);
+                tableReadable.push(link("/bak add:blend", "Blend"));
             } else {
                 tableReadable.push(link("/bak add:" + this.table[i], itemAlias(this.table[i], false, true)));
             }
@@ -28402,11 +28402,11 @@ function Safari() {
         //We create ratios from the provided data
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
-        this.needsSweet = ((100 * ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (this.qualityDry.bulk));
-        this.needsWet = ((100 * ((this.qualityDry.dry * 10) - this.qualityDry.texture)) / (this.qualityDry.bulk));
-        this.needsRich = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.texture + this.qualityDry.taste))) / (this.qualityDry.bulk));
-        this.needsScent = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.acidity + this.qualityDry.taste))) / (this.qualityDry.bulk));
-        this.needsThick = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.dry + this.qualityDry.texture))) / (this.qualityDry.bulk));
+        this.needsSweet = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
+        this.needsRich = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.texture + this.qualityDry.taste))) / (1));
+        this.needsScent = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
+        this.needsThick = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.dry + this.qualityDry.texture))) / (1));
 
         this.flavors = [];
         var get = "";
@@ -28528,7 +28528,7 @@ function Safari() {
             this.msg(player, "It's not even the baking phase yet!");
             return;
         }
-        var diff = (now() - this.bakeStarted) * 0.0001;
+        var diff = (now() - this.bakeStarted) * 0.001;
         if (diff < 5) {
             this.msg(player, "You can't bake your bait for less than 5 seconds!");
             return false;
@@ -28589,8 +28589,8 @@ function Safari() {
             }
             flavor += Math.max(this.flavors[a] - 2, 0) + (Math.max(this.flavors[a] * 0.75, 1.2) - 1.2) + this.flavors[a];
         }
-        flavor = Math.round(flavor * 2.5);
-        var flavorBonus = ((Math.min(this.sweetTotal, this.acidityTotal * 2) / this.qualityDry.bulk) * 100);
+        flavor = Math.round(flavor * 1.5);
+        var flavorBonus = Math.round((Math.min(this.sweetTotal, this.acidityTotal * 2) / this.qualityDry.bulk) * 33);
         flavor += flavorBonus;
 
         this.msgAll("", true);
@@ -28784,7 +28784,7 @@ function Safari() {
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
-        judgeScore = Math.round(balance * 0.02 + this.blend * 0.023 + (this.quality * 0.05));
+        judgeScore = Math.round((balance * 0.025) + (this.blend * 0.03) + (this.quality * 0.05));
         judgeScore = Math.max(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
@@ -28816,7 +28816,7 @@ function Safari() {
         }
         var eggTypes = {}, mon, player, data;
         for (var p in this.players) {
-            player = getAvatarOff(p);
+            player = getAvatarOff(this.players[p]);
             mon = pokeInfo.species(parseInt(player.party[0], 10));
             data = eggData[mon+""];
             for (var i = 0; i < data.length; i++) {
