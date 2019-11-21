@@ -28117,6 +28117,8 @@ function Safari() {
         this.turn = 0;
 
         this.finished = false;
+        this.bakeTimeNeeded = 0;
+        this.bakeTimes = {};
 
         this.msgAll("You all paid your entrance fees and now you get to enter the tent of the Great Galarian Bait-Off!");
     };
@@ -28514,8 +28516,8 @@ function Safari() {
                 this.msgAll(toColor("It has a faint " + a + " flavor.", "blue"), true);
             } 
         }
-        this.bakeTimeNeeded = (this.qualityDry.bulk * 1.2) + (this.blend * 0.005) + (this.needsWet * 0.01);
-        this.bakeTimeNeeded = (8 + (Math.min(((Math.max(this.bakeTimeNeeded - 30, 0)) / this.qualityDry.bulk), 1) * 22));
+        var val = (this.qualityDry.bulk * 1.5) + (this.blend * 0.005) - (this.needsWet * 0.01);
+        this.bakeTimeNeeded = (8 + (Math.min(((Math.max(val - 30, 0)) / this.qualityDry.bulk), 1) * 22));
         this.bakeTimes = {};
         for (var p in this.players) {
             this.bakeTimes[this.players[p].toLowerCase()] = 0;
@@ -28531,7 +28533,7 @@ function Safari() {
             this.msg(player, "It's not even the baking phase yet!");
             return;
         }
-        var diff = (now() - this.bakeStarted) * 0.001;
+        var diff = parseInt(Math.round(now() - this.bakeStarted) * 0.001, 10);
         if (diff < 5) {
             this.msg(player, "You can't bake your bait for less than 5 seconds!");
             return false;
@@ -28799,9 +28801,11 @@ function Safari() {
         var underbaked = false;
         for (var a in this.bakeTimes) {
             score = Math.abs(this.bakeTimes[a] - this.bakeTimeNeeded);
+            score = parseInt(score, 10);
             if (isNaN(score)) {
                 score = 10;
             }
+            score = Math.round(score * 100) * 0.01;
             underbaked = this.bakeTimes[a] - this.bakeTimeNeeded > 0 ? false : true;
             if (score < 0.75) {
                 score = 0;
@@ -28811,13 +28815,13 @@ function Safari() {
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? "[Slightly Underbaked]." : "[Slightly Overbaked]."), true);
             } else if (score < 5) {
                 score *= 1.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             } else if (score < 10) {
                 score *= 2;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             } else {
                 score *= 2.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (-" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             }
             bakeScores[a.toLowerCase()] = score;
         }
@@ -28852,9 +28856,9 @@ function Safari() {
                 "rate": 0,
                 "list": []
             }
-        }
+        };
         for (var j = 0; j < 891; j++) {
-            for (var i = 0; i < 27; j++) {
+            for (var i = 0; i < 27; i++) {
                 mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
                     break;
@@ -28984,11 +28988,11 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max((((aggregateScore - (bakeScores[player.id.toLowerCase()] * 2.5)) * 0.011) - 2, 0.1));
+            player.deluxeBait.rares.rate = Math.max((((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.011) - 2, 0.1));
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
-            player.deluxeBait.uncommons.rate = ((aggregateScore - (bakeScores[player.id.toLowerCase()] * 2)) * 0.04) - player.deluxeBait.rares.rate;
+            player.deluxeBait.uncommons.rate = ((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.04) - player.deluxeBait.rares.rate;
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
             safari.saveGame(player);
