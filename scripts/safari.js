@@ -24964,7 +24964,7 @@ function Safari() {
                 }
                 var invites = [];
                 for (var e in bakingRequests) {
-                    if (bakingRequests.hasOwnProperty(e) && bakingRequests[e].invites.hasOwnProperty(player.id.toLowerCase())) {
+                    if (bakingRequests.hasOwnProperty(e) && bakingRequests[e].invites.contains(player.id.toLowerCase())) {
                         invites.push(e);
                     }
                 }
