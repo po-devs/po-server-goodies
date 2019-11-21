@@ -24947,7 +24947,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(id1, name + " is inviting " + taking.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
                 }
 
-                bakingRequests[player.id] = {
+                bakingRequests[player.id.toLowerCase()] = {
                     invites: taking,
                     accepted: [],
                     deadline: now() + 60*1000
