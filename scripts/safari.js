@@ -25026,7 +25026,7 @@ function Safari() {
 
                 if (isReady) {
                     var leaderPlayer = getAvatarOff(leader);
-                    var players = [leader].concat(Object.keys(req.invites));
+                    var players = [leader].concat(req.invites);
                     var unavailable = [], n, p, m;
                     for (e = 0; e < players.length; e++) {
                         n = players[e];
