@@ -6814,8 +6814,8 @@ function Safari() {
         }
         if ("berries" in rules) {
             list = [];
-            for (var e in rules.rewards) {
-                list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+            for (var e in rules.berries) {
+                list.push(rules.berries[e] + " " + itemAlias(e, false, true) + (rules.berries[e] === 1 ? "" : "s"));
             }
             if (list.length > 0) {
                 out.push(optionalColor("Berries: " + readable(list, "and"), colored, "darkgreen"));
