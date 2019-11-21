@@ -24910,7 +24910,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can't make any more deluxe bait until you use up or sell what you have!", safchan);
                     return;
                 }
-                if (bakingRequests.hasOwnProperty(player.id)) {
+                if (bakingRequests.hasOwnProperty(player.id.toLowerCase())) {
                     var invited = (bakingRequests[player.id].invites).map(function(x) { return x.toCorrectCase(); });
                     safaribot.sendMessage(src, "You already have invited " + readable(invited, "and") + " to join you in the kitchen!", safchan);
                     return;
@@ -24938,7 +24938,7 @@ function Safari() {
                         safaribot.sendMessage(src, "You cannot invite the same person twice!", safchan);
                         return;
                     }
-                    taking.push(n1);
+                    taking.push(n1.toLowerCase());
                     takingPretty.push(toColored(n1.toCorrectCase(), n1));
                 }
                 safaribot.sendHtmlMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
@@ -24964,7 +24964,7 @@ function Safari() {
                 }
                 var invites = [];
                 for (var e in bakingRequests) {
-                    if (bakingRequests.hasOwnProperty(e) && bakingRequests[e].invites.contains(player.id.toLowerCase())) {
+                    if (bakingRequests[e].invites.contains(player.id.toLowerCase()) || bakingRequests[e].invites.contains(player.id)) {
                         invites.push(e);
                     }
                 }
@@ -24975,23 +24975,23 @@ function Safari() {
                     }
                     return;
                 }
-                if (bakingRequests.hasOwnProperty(player.id)) {
+                if (bakingRequests.hasOwnProperty(player.id.toLowerCase())) {
                     safaribot.sendMessage(src, "You can't accept an invitation to the Kitchen because you are already preparing to start your own Baking quest!", safchan);
                     return;
                 }
                 for (e in bakingRequests) {
-                    if (bakingRequests[e].invites[player.id] && now() <= bakingRequests[e].deadline) {
+                    if (bakingRequests[e].accepted.contains(player.id.toLowerCase()) && now() <= bakingRequests[e].deadline) {
                         safaribot.sendMessage(src, "You already accepted an invitation to a Kitchen quest!", safchan);
                         return;
                     }
                 }
                 var leader = data[1].toLowerCase();
-                if (!bakingRequests.hasOwnProperty(leader)) {
+                if (!bakingRequests.hasOwnProperty(leader.toLowerCase())) {
                     safaribot.sendMessage(src, "You didn't receive any invitation from " + leader.toCorrectCase() + "!", safchan);
                     return;
                 }
-                var req = bakingRequests[leader];
-                if (!req.invites.hasOwnProperty(player.id)) {
+                var req = bakingRequests[leader.toLowerCase()];
+                if (!req.invites.contains(player.id.toLowerCase())) {
                     safaribot.sendMessage(src, "You didn't receive any invitation from " + leader.toCorrectCase() + "!", safchan);
                     return;
                 }
