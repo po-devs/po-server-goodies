@@ -28132,7 +28132,7 @@ function Safari() {
                     }
                 }
                 this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge] + ". Keep this in mind if you want your bait to succeed!");
-                this.judges = [judge1, judge2];
+                this.judges = [judge, judge2];
                 this.msgAll("Remember: if you want your bait to be popular amongst rare Pokémon, you'll need to impress all 3 of us!");
                 this.msgAll("");
             } else if (this.turn == 2) {
@@ -29009,7 +29009,7 @@ function Safari() {
         }
     };
     Baking.prototype.handleCommand = function(player, command) {
-        if (!(playersLower.contains(player.toLowerCase()))) {
+        if (!(this.playersLower.contains(player.toLowerCase()))) {
             return false;
         }
         command = command.split(":");
@@ -29029,7 +29029,7 @@ function Safari() {
         return;
     };
     Baking.prototype.isInKitchen = function(player) {
-        if (!(playersLower.contains(player.toLowerCase()))) {
+        if (!(this.playersLower.contains(player.toLowerCase()))) {
             return false;
         }
         return true;
