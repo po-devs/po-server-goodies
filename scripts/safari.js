@@ -877,7 +877,7 @@ function Safari() {
             oran: {name: "oran", fullName: "Oran Berry", type: "berry", icon: 59, price: 1000, aliases:["oran", "oran berry", "oranberry"], tradable: true},
             pecha: {name: "pecha", fullName: "Pecha Berry", type: "berry", icon: 59, price: 1000, aliases:["pecha", "pecha berry", "pechaberry"], tradable: true},
             razz: {name: "razz", fullName: "Razz Berry", type: "berry", icon: 59, price: 1000, aliases:["razz", "razz berry", "razzberry"], tradable: true},
-            bluk: {name: "bluk", fullName: "Bulk Berry", type: "berry", icon: 59, price: 1000, aliases:["bluk", "bluk berry", "blukberry"], tradable: true},
+            bluk: {name: "bluk", fullName: "Bluk Berry", type: "berry", icon: 59, price: 1000, aliases:["bluk", "bluk berry", "blukberry"], tradable: true},
             leppa: {name: "leppa", fullName: "Leppa Berry", type: "berry", icon: 59, price: 1000, aliases:["leppa", "leppa berry", "leppaberry"], tradable: true},
             tamato: {name: "tamato", fullName: "Tamato Berry", type: "berry", icon: 59, price: 1000, aliases:["tamato", "tamato berry", "tamatoberry"], tradable: true},
             pinap: {name: "pinap", fullName: "Pinap Berry", type: "berry", icon: 59, price: 1000, aliases:["pinap", "pinap berry", "pinapberry"], tradable: true},
@@ -3557,7 +3557,8 @@ function Safari() {
               "Telepathy"
             ],
             "types": [
-              "Bug"
+              "Bug",
+              "???"
             ],
             "height": 4,
             "weight": 8,
@@ -8665,7 +8666,7 @@ function Safari() {
             }
             var j = 0;
             while (player.party.length > player.helds.length) {
-                player.helds.length.push(-1);
+                player.helds.push(-1);
                 j++;
                 if (j > 6) {
                     break;
@@ -8834,7 +8835,7 @@ function Safari() {
         }
         player.helds = [];
         while (player.party.length > player.helds.length) {
-            player.helds.length.push(-1);
+            player.helds.push(-1);
             j++;
             if (j > 6) {
                 break;
@@ -17169,6 +17170,8 @@ function Safari() {
         var player2 = isNPC ? p2 : getAvatar(p2);
         var npcDesc = null;
 
+        this.pinap = [];
+
         if (isNPC) {
             var costumeBonus = player1.costume === "battle" ? costumeData.battle.rate : 0;
             if (safari.hasCostumeSkill("battleBoost")) {
@@ -17240,7 +17243,7 @@ function Safari() {
         var p1Power = res.power[0];
         var p2Power = res.power[1];
 
-        if (isNPC && (this.pinap.contains(p1Poke))) {
+        if ((this.pinap.contains(p1Poke))) {
             p1Power += 18;
         }
 
@@ -23609,6 +23612,8 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "-" + link("/quest journal", "Journal") + " " + (quest.journal.cooldown > n ? "[Available in " + timeLeftString(quest.journal.cooldown) + "]" : "[Available]") + (stopQuests.journal ? " <b>[Disabled]</b>" : ""), safchan);
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
+
+            safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
@@ -24863,7 +24868,7 @@ function Safari() {
             return;
         }
         var trainerSprite = '<img src="' + base64trainers.baking + '">';
-        var quest = player.quest.baking;
+        var quest = player.quests.baking;
 
         if (bakingRequests.hasOwnProperty(player.id) && now() > bakingRequests[player.id].deadline) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You prepared for Baking quest before, but couldn't start it before deadline! Please use " + link("/quest baking:start:", null, true) + " to start it again!", safchan);
