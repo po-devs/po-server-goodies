@@ -7504,7 +7504,7 @@ function Safari() {
                     var itemPower = itemBST;
                     if (itemBST > 500) {
                         itemPower += (itemBST - 400);
-                    } else if (bst > 550) {
+                    } else if (itemBST > 550) {
                         itemPower += (itemBST - 450);
                     }
                     itemPower += (100 * Math.random()) + (100 * Math.random()) - (200 * Math.random());
