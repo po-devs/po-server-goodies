@@ -25035,7 +25035,7 @@ function Safari() {
                             continue;
                         }
                         p = getAvatar(sys.id(n));
-                        var cost = Math.round(5000 * (1 - (safari.hasSkill(p, "bakingDiscount") ? 0.5 : 0)));
+                        var cost = Math.round(5000 * (1 - (safari.hasCostumeSkill(p, "bakingDiscount") ? 0.5 : 0)));
                         if (!p) {
                             unavailable.push(n + " couldn't be found");
                             continue;
