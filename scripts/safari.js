@@ -28148,7 +28148,7 @@ function Safari() {
         }
         if (this.blending) {
             this.blending = false;
-            this.needsBlending -= ((now() - (this.blendStartTime)) * 0.00001);
+            this.needsBlending -= ((now() - (this.blendStartTime)) * 0.0001);
         }
         if (this.phase == 1 || this.phase == 2) {
             if (this.turn >= 7) {
@@ -28245,7 +28245,7 @@ function Safari() {
             this.msg(player, "Your hands are too covered in baking ingredients to reach into your bag! Try again next turn!");
             return false;
         }
-        if (["add"].contains(this.playersActions[player.toLowerCase()].actioned)) {
+        if (["add"].contains(this.playersActions[playerName].actioned)) {
             this.msg(player, "You don't have enough time to add two items to the table!");
             return false;
         }
@@ -28310,15 +28310,15 @@ function Safari() {
             if (["flour", "sugar"].contains(item)) {
                 data = {
                     "flour": {
-                        "texture": 3,
-                        "bulk": 5,
+                        "texture": 1,
+                        "bulk": 6,
                         "taste": 0,
                         "acidity": 0,
-                        "dryness": 5,
+                        "dryness": 6,
                         "flavor": "None"
                     },
                     "sugar": {
-                        "texture": 3,
+                        "texture": 0,
                         "bulk": 0,
                         "taste": 5,
                         "acidity": 0,
@@ -28402,7 +28402,7 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = ((100 * ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (this.qualityDry.bulk));
-        this.needsWet = ((100 * ((this.qualityDry.dry * 5) - this.qualityDry.texture)) / (this.qualityDry.bulk));
+        this.needsWet = ((100 * ((this.qualityDry.dry * 10) - this.qualityDry.texture)) / (this.qualityDry.bulk));
         this.needsRich = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.texture + this.qualityDry.taste))) / (this.qualityDry.bulk));
         this.needsScent = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.acidity + this.qualityDry.taste))) / (this.qualityDry.bulk));
         this.needsThick = ((100 * ((this.qualityDry.bulk * 3) - (this.qualityDry.dry + this.qualityDry.texture))) / (this.qualityDry.bulk));
@@ -28517,7 +28517,7 @@ function Safari() {
             this.bakeTimes[p] = 0;
         }
         this.msgAll("");
-        this.msgAll("Now it's time to add the berries to the batter! If you don't have berries, use Moomoo Milk!");
+        this.msgAll("Now it's put it in the oven! Good luck! Take it out when you think it's done!");
         this.msgAll("");
         this.turn = 0;
         this.phase = 3;
@@ -28527,7 +28527,7 @@ function Safari() {
             this.msg(player, "It's not even the baking phase yet!");
             return;
         }
-        var diff = (now() - this.bakeStarted) * 0.00001;
+        var diff = (now() - this.bakeStarted) * 0.0001;
         if (diff < 5) {
             this.msg(player, "You can't bake your bait for less than 5 seconds!");
             return false;
@@ -28547,8 +28547,8 @@ function Safari() {
     };
     Baking.prototype.finalScore = function() {
         for (var a in this.bakeTimes) {
-            if (bakeTimes[a] == 0) {
-                bakeTimes[a] = 30;
+            if (this.bakeTimes[a] == 0) {
+                this.bakeTimes[a] = 30;
                 this.msgAll(a.toCorrectCase() + " takes the bait out of the oven!");
             }
         }
