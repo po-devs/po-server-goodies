@@ -28258,7 +28258,7 @@ function Safari() {
         this.tableNext.push(get);
         safari.saveGame(player);
         this.msgAll(playerName.toCorrectCase() + " is adding a " + itemAlias(get, false, true) + " to the table!");
-        this.playersActions[player.toLowerCase()] = "add";
+        this.playersActions[playerName.toLowerCase()] = "add";
         return true;
     };
     Baking.prototype.addToBowl = function(player, item) {
@@ -28302,7 +28302,7 @@ function Safari() {
         }
         this.bowlEnter(player, get); //Pass the user's party lead
         if (!(["flour", "sugar", "milk"].contains(get))) {
-            this.table.remove(get);
+            this.table.splice(this.table.indexOf(get), 1);
         }
     };
     Baking.prototype.bowlEnter = function(player, item) {
@@ -28486,7 +28486,7 @@ function Safari() {
             } else if (this.flavors[a] >= 2) {
                 this.msgAll(toColor("It has a noticeable " + a + " flavor!", "blue"), true);
             } else if (this.flavors[a] >= 1) {
-                this.msgAll(toColor("It has a faint " + a + " flavor!"), "blue", true);
+                this.msgAll(toColor("It has a faint " + a + " flavor!", "blue") true);
             } 
         }
         this.msgAll("");
