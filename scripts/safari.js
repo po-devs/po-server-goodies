@@ -12844,6 +12844,8 @@ function Safari() {
         kiai: "Fierce bonds with your Pokémon grant them an increased chance to survive KO moves in Rotation Battles against NPC",
         superChef: "Your skills as a Chef are dramatically increased",
         extendedMushroom: "Mushroom effect lasts longer",
+        berryCatcher:"Wild Pokémon hold berries more often",
+        bakingDiscount:"Enter the Baking Quest for half the price",
         battleBoost: "Fight against NPCs better in autobattles",
         reducedCatchFailCD: "Faster recovery from a bad Pokéball throw",
         lowUltraCD: "Able to recover from an unsuccessful catch with an Ultra ball faster",
