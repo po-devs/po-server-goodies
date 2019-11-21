@@ -7520,7 +7520,7 @@ function Safari() {
                         } else {
                             berry = berry[0];
                         }
-                        var g = giveStuff(player, berry, true);
+                        var g = giveStuff(player, "@" + berry, true);
                         g = readable(g.gained);
                         player.pokemon.push(currentPokemon);
                         sendAll("The " + pokeName + " was holding " + g + "!");
