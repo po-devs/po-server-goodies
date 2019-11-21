@@ -28194,7 +28194,17 @@ function Safari() {
                 }
                 var validItemsReadable = [];
                 for (var i = 0; i < validItems.length; i++) {
-                    validItemsReadable.push(link("/bak add:" + this.table[i], this.table[i]), true);
+                    if (validItems[i] == "milk") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Moomoo Milk"), true);
+                    } else if (validItems[i] == "flour") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Flour"), true);
+                    } else if (validItems[i] == "flour") {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], "Sugar"), true);
+                    } else if (validItems[i] == "blend") {
+                        validItemsReadable.push(link("/bak add:blend", "Blend"), true);
+                    } else {
+                        validItemsReadable.push(link("/bak add:" + validItems[i], itemAlias(validItems[i], false, true)), true);
+                    }
                 }
                 if (this.phase == 1 || this.phase == 2) {
                     this.msg(player, "Items on the table (you can add up to two to the bowl): " + this.tableReadable.join(", ") + ".");
