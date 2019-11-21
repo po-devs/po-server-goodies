@@ -9024,7 +9024,7 @@ function Safari() {
         //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
         var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "pokeblock", "itemfinder", "pack", "rare", "dust"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
-        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew", "materia", "fragment"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
         var line6 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
@@ -24911,7 +24911,7 @@ function Safari() {
                     return;
                 }
                 if (bakingRequests.hasOwnProperty(player.id)) {
-                    var invited = Object.keys(bakingRequests[player.id].invites).map(function(x) { return x.toCorrectCase(); });
+                    var invited = (bakingRequests[player.id].invites).map(function(x) { return x.toCorrectCase(); });
                     safaribot.sendMessage(src, "You already have invited " + readable(invited, "and") + " to join you in the kitchen!", safchan);
                     return;
                 }
@@ -24941,11 +24941,11 @@ function Safari() {
                     taking.push(n1);
                     takingPretty.push(toColored(n1.toCorrectCase(), n1));
                 }
-                safaribot.sendMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
+                safaribot.sendHtmlMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
                 safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
 
                 for (var p in taking) {
-                    safaribot.sendHtmlMessage(id1, name + " is inviting " + takingPretty.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
+                    safaribot.sendHtmlMessage(sys.id(taking[p]), name + " is inviting " + takingPretty.join(", ") + " to join their party in the Kitchen quest! To accept it, type " + link("/quest baking:join:"+name) + " within the next minute!", safchan);
                 }
 
                 bakingRequests[player.id.toLowerCase()] = {
