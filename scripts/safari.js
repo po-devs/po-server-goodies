@@ -3003,7 +3003,7 @@ function Safari() {
         },
         "727": {
             "name": "Steel Beam",
-            "learned": [884],
+            "learned": [681, 884],
             "type": "Steel",
             "power": 140
         },
