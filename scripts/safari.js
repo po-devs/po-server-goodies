@@ -6906,13 +6906,13 @@ function Safari() {
         (rules.nerfDual && type_2 !== "???")) {
             val = RULES_NERF;
             if (player.helds.length > 0 && player.helds[0] == 2) {
-                player.berryEffect.pecha = true;
+                player.berries.pecha = true;
                 needsPechaCleared.push(player.id.toLowerCase());
                 player.helds[0] = -1;
                 var src = sys.id(player.id);
                 safaribot.sendMessage(src, "Your " + poke(player.party[0]) + " ate its Pecha Berry and weakened the nerf!", safchan)
             }
-            if (player.berryEffect.pecha) {
+            if (player.berries.pecha) {
                 val = (val + RULES_NERF) * 0.5;
             }
         }
@@ -7707,9 +7707,9 @@ function Safari() {
             }
             if (evolutions.hasOwnProperty(parseInt(player.party[0], 10) + "")) {
                 if (player.helds[0] == 9) {
-                    player.petayaCombo++;
-                    if (player.petayaCombo >= candyCostConversion(null, (evolutions[player.party[0]+""].candies))) {
-                        player.petayaCombo = 0;
+                    player.berries.petayaCombo++;
+                    if (player.berries.petayaCombo >= candyCostConversion(null, (evolutions[player.party[0]+""].candies))) {
+                        player.berries.petayaCombo = 0;
                         player.helds[0] = -1;
                         var evolvedId = evolutions[player.party[0]+""];
                         if (Array.isArray(evolvedId)) {
@@ -8633,7 +8633,7 @@ function Safari() {
                 return;
             }
             if (player.party.indexOf(id) == 0) {
-                player.petayaCombo = 0;
+                player.berries.petayaCombo = 0;
             }
             var getItem = player.helds[player.party.indexOf(id)];
             player.party.splice(player.party.indexOf(id), 1);
@@ -8693,7 +8693,7 @@ function Safari() {
 
             player.party.splice(0, 0, id);
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
-            player.petayaCombo = 0;
+            player.berries.petayaCombo = 0;
             this.saveGame(player);
         } else if (action === "save") {
             if (cantBecause(src, "modify your party", ["tutorial"])) {
@@ -8844,7 +8844,7 @@ function Safari() {
             }
         }
         if (player.party[0] !== firstInParty) {
-            player.petayaCombo = 0;
+            player.berries.petayaCombo = 0;
         }
         safaribot.sendMessage(src, "Quick loaded party " + readable(player.party.map(poke), "and") + "!", safchan);
         this.saveGame(player);
@@ -23615,7 +23615,7 @@ function Safari() {
             
             safaribot.sendHtmlMessage(src, "-" + link("/quest monger", "Monger") + " " + (mAuctionsData.length > 0 ? "[Next Auction " + (mAuctionsData[0].deadline < n ? "after contest" : "in about " + timeLeftString(mAuctionsData[0].deadline)) + "]" : "[Standby]") + (stopQuests.monger ? " <b>[Disabled]</b>" : ""), safchan);
 
-            safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.league.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.league.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
