@@ -6817,7 +6817,7 @@ function Safari() {
         if ("berries" in rules) {
             list = [];
             for (var e in rules.berries) {
-                list.push(itemAlias(rules.berries[e], false, true) + (rules.berries[e] === 1 ? "" : "s"));
+                list.push(itemAlias(rules.berries[e], false, true));
             }
             if (list.length > 0) {
                 out.push(optionalColor("Berries: " + readable(list, "and"), colored, "darkgreen"));
@@ -25081,9 +25081,13 @@ function Safari() {
                 for (var i = 0; i < Object.keys(obj).length; i++) {
                     str = Object.keys(obj)[i];
                     item = obj[str];
-                    out += itemAlias((str+""), false, true) + ": " + item.description + "\n";
+                    if (item == "milk") {
+                        out = "Moomoo Milk: " + item.description;
+                    } else {
+                        out = itemAlias((str+""), false, true) + ": " + item.description;
+                    }
+                    sys.sendMessage(src, out, safchan);
                 }
-                sys.sendMessage(src, out, safchan);
             break;
             default:
                 safaribot.sendHtmlMessage(src, trainerSprite + "Baking Administrator: You can make customized baits using various ingredients! Get started with " + link("/quest baking:start") + "!", safchan);
@@ -28057,7 +28061,7 @@ function Safari() {
                 "scent": 0,
                 "quality": 0,
                 "flavor": "None",
-                "description": "Moo Moo Milk helps keep thick recipes under control!"
+                "description": "Moomoo Milk helps keep thick recipes under control!"
             }
         }
     }
@@ -28094,7 +28098,7 @@ function Safari() {
             "Pineco": "appreciate when multiple flavors are present",
             "Drilbur": "value the quality of ingredients above all else",
             "Rookidee": "have a knack for identifying a good sweet-acidic balance",
-            "Makuhita": "prefer bakes with lots of Moo Moo Milk",
+            "Makuhita": "prefer bakes with lots of Moomoo Milk",
         };
         this.sweetTotal = 0;
         this.acidityTotal = 0;
@@ -28355,7 +28359,7 @@ function Safari() {
             this.needsBlending += data.viscosity;
         }
         var translations = {
-            "milk": "Moo Moo Milk",
+            "milk": "Moomoo Milk",
             "flour": "Flour",
             "sugar": "Sugar"
         }
@@ -28469,7 +28473,7 @@ function Safari() {
             } 
         }
         this.msgAll("");
-        this.msgAll("Now it's time to add the berries to the batter! If you don't have berries, use Moo Moo Milk! And remember to blend your ingredients, especially if you use viscous berries!");
+        this.msgAll("Now it's time to add the berries to the batter! If you don't have berries, use Moomoo Milk! And remember to blend your ingredients, especially if you use viscous berries!");
         this.msgAll("");
         this.turn = 0;
         this.phase = 2;
@@ -28497,7 +28501,7 @@ function Safari() {
             this.bakeTimes[p] = 0;
         }
         this.msgAll("");
-        this.msgAll("Now it's time to add the berries to the batter! If you don't have berries, use Moo Moo Milk!");
+        this.msgAll("Now it's time to add the berries to the batter! If you don't have berries, use Moomoo Milk!");
         this.msgAll("");
         this.turn = 0;
         this.phase = 3;
@@ -28757,7 +28761,7 @@ function Safari() {
             }
             if (this.milkUsed > 6) {
                 judgeScore += 2;
-                this.msgAll("Makuhita is pleased with the amount of Moo Moo Milk used.");
+                this.msgAll("Makuhita is pleased with the amount of Moomoo Milk used.");
             }
             judgeScore = Math.max(judgeScore, 5);
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
