@@ -28084,9 +28084,7 @@ function Safari() {
         this.playersLower = players.map(function(x) { return x.toLowerCase(); });
         this.playersActions = {};
         for (var p in players) {
-            this.playersActions[p.toLowerCase()] = {
-                "actioned": "" //Action taken this turn
-            };
+            this.playersActions[p.toLowerCase()] = "";
         }
         this.judges = [];
         this.blending = false;
@@ -28178,9 +28176,7 @@ function Safari() {
             }
         }
         for (var p in this.players) {
-            this.playersActions[this.players[p].toLowerCase()] = {
-                "actioned": "" //Action taken this turn
-            };
+            this.playersActions[this.players[p].toLowerCase()] = "";
         }
         for (p in this.players) {
             var player = this.players[p];
@@ -28242,11 +28238,11 @@ function Safari() {
             this.msg(player, "Sorry, you don't have any " + get + " to add to the table!");
             return false;
         }
-        if (["ingredient", "ingredient2"].contains(this.playersActions[playerName.toLowerCase()].actioned)) {
+        if (["ingredient", "ingredient2"].contains(this.playersActions[playerName.toLowerCase()])) {
             this.msg(player, "Your hands are too covered in baking ingredients to reach into your bag! Try again next turn!");
             return false;
         }
-        if (["add"].contains(this.playersActions[playerName].actioned)) {
+        if (["add"].contains(this.playersActions[playerName.toLowerCase()])) {
             this.msg(player, "You don't have enough time to add two items to the table!");
             return false;
         }
@@ -28280,11 +28276,11 @@ function Safari() {
             this.msg(player, "What are you doing? You can't just add " + get + " to the bowl now!");
             return false;
         }
-        if (["add"].contains(this.playersActions[player.toLowerCase()].actioned)) {
+        if (["add"].contains(this.playersActions[player.toLowerCase()])) {
             this.msg(player, "You already did action this turn!");
             return false;
         }
-        if (["ingredient2"].contains(this.playersActions[player.toLowerCase()].actioned)) {
+        if (["ingredient2"].contains(this.playersActions[player.toLowerCase()])) {
             this.msg(player, "You can only add two ingredients to the bowl per turn!");
             return false;
         }
@@ -28402,11 +28398,11 @@ function Safari() {
         //We create ratios from the provided data
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
-        this.needsSweet = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
-        this.needsRich = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.texture + this.qualityDry.taste))) / (1));
-        this.needsScent = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
-        this.needsThick = (((70 + (this.qualityDry.bulk)) * ((this.qualityDry.bulk * 3) - (this.qualityDry.dry + this.qualityDry.texture))) / (1));
+        this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
+        this.needsRich = (((75 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
+        this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
+        this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
 
         this.flavors = [];
         var get = "";
@@ -28515,7 +28511,7 @@ function Safari() {
         this.bakeTimeNeeded = (8 + (Math.min(((Math.max(this.bakeTimeNeeded - 30, 0)) / this.qualityDry.bulk), 1) * 22));
         this.bakeTimes = {};
         for (var p in this.players) {
-            this.bakeTimes[p] = 0;
+            this.bakeTimes[this.players[p].toLowerCase()] = 0;
         }
         this.msgAll("");
         this.msgAll("Now it's put it in the oven! Good luck! Take it out when you think it's done!");
@@ -28533,11 +28529,12 @@ function Safari() {
             this.msg(player, "You can't bake your bait for less than 5 seconds!");
             return false;
         }
-        if (this.bakeTimes[player] > 0) {
+        if (this.bakeTimes[player.toLowerCase()] > 0) {
             this.msg(player, "You already took your bait out of the oven!");
             return false;
         }
-        this.bakeTimes[player] = diff;
+        this.msgAll(player.toCorrectCase() + " took their bait out of the oven!");
+        this.bakeTimes[player.toLowerCase()] = diff;
         for (var a in this.bakeTimes) {
             if (this.bakeTimes[a] == 0) {
                 return;
@@ -28686,7 +28683,7 @@ function Safari() {
                 judgeScore += 1;
                 this.msgAll("Chespin is glad it's moist enough.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Chespin's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 4;
         }
@@ -28703,7 +28700,7 @@ function Safari() {
                 judgeScore += 1;
                 this.msgAll("Fennekin appreciates the richness.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Fennekin's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
@@ -28720,7 +28717,7 @@ function Safari() {
                 judgeScore += 2;
                 this.msgAll("Pineco is impressed with the variety of flavors.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Pineco's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
@@ -28740,7 +28737,7 @@ function Safari() {
                 judgeScore += 2;
                 this.msgAll("Drilbur is impressed with the quality of the ingredients.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Drilbur's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
@@ -28760,7 +28757,7 @@ function Safari() {
                 judgeScore += 2;
                 this.msgAll("Rookidee is pleased with the balance of acidity and sweetness.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Rookidee's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
@@ -28785,7 +28782,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         judgeScore = Math.round((balance * 0.025) + (this.blend * 0.03) + (this.quality * 0.05));
-        judgeScore = Math.max(judgeScore, 5);
+        judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
 
@@ -28794,8 +28791,8 @@ function Safari() {
         bakeScores = {};
         var underbaked = false;
         for (var a in this.bakeTimes) {
-            score = Math.abs(this.bakeTimes[a] - this.bakeTimeNeeded);
-            underbaked = this.bakeTimes[a] - this.bakeTimeNeeded > 0 ? false : true;
+            score = Math.abs(this.bakeTimes[a.toLowerCase()] - this.bakeTimeNeeded);
+            underbaked = this.bakeTimes[a.toLowerCase()] - this.bakeTimeNeeded > 0 ? false : true;
             if (score < 0.75) {
                 score = 0;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": PERFECT.", true);
@@ -28812,13 +28809,13 @@ function Safari() {
                 score *= 2.5;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTEROUS. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             }
-            bakeScores[a] = score;
+            bakeScores[a.toLowerCase()] = score;
         }
         var eggTypes = {}, mon, player, data;
         for (var p in this.players) {
             player = getAvatarOff(this.players[p]);
             mon = pokeInfo.species(parseInt(player.party[0], 10));
-            data = eggData[mon+""];
+            data = eggdata[mon+""];
             for (var i = 0; i < data.length; i++) {
                 if (data[i] == "Undiscovered") {
                     continue;
@@ -28869,8 +28866,8 @@ function Safari() {
                 val = 0;
                 eggval = 0;
                 for (var a in eggTypes) {
-                    if (eggData.hasOwnProperty(mon+"")) {
-                        if (eggData[mon+""].contains(a)) {
+                    if (eggdata.hasOwnProperty(mon+"")) {
+                        if (eggdata[mon+""].contains(a)) {
                             eggval += (eggTypes[a] * Math.random());
                         }
                     }
