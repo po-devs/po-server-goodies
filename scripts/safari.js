@@ -28486,7 +28486,7 @@ function Safari() {
             } else if (this.flavors[a] >= 2) {
                 this.msgAll(toColor("It has a noticeable " + a + " flavor!", "blue"), true);
             } else if (this.flavors[a] >= 1) {
-                this.msgAll(toColor("It has a faint " + a + " flavor!", "blue") true);
+                this.msgAll(toColor("It has a faint " + a + " flavor!", "blue"), true);
             } 
         }
         this.msgAll("");
