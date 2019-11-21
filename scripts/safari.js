@@ -28162,9 +28162,19 @@ function Safari() {
             this.finalScore();
             return;
         }
-        this.tableReadable = [];
+        tableReadable = [];
         for (var i = 0; i < this.table.length; i++) {
-            this.tableReadable.push(link("/bak fetch:" + this.table[i], this.table[i]));
+            if (this.table[i] == "milk") {
+                tableReadable.push(link("/bak add:" + this.table[i], "Moomoo Milk"), true);
+            } else if (this.table[i] == "flour") {
+                tableReadable.push(link("/bak add:" + this.table[i], "Flour"), true);
+            } else if (this.table[i] == "sugar") {
+                tableReadable.push(link("/bak add:" + this.table[i], "Sugar"), true);
+            } else if (this.table[i] == "blend") {
+                tableReadable.push(link("/bak add:blend", "Blend"), true);
+            } else {
+                tableReadable.push(link("/bak add:" + this.table[i], itemAlias(this.table[i], false, true)), true);
+            }
         }
         for (var p in this.players) {
             this.playersActions[this.players[p].toLowerCase()] = {
@@ -28190,24 +28200,14 @@ function Safari() {
                 }
                 if (this.phase == 2) {
                     this.msg(player, "(Batter) Turn " + this.turn + ": ");
-                    validItems = ["oran", "pecha", "leppa", "bluk", "razz", "tamato", "pinap", "nanab", "petaya", "watmel", "miracle", "platinum", "milk", "blend"];
+                    validItems = ["oran", "pecha", "leppa", "bluk", "razz", "tamato", "pinap", "nanab", "petaya", "watmel", "miracle", "platinum"];
                 }
                 var validItemsReadable = [];
-                for (var i = 0; i < validItems.length; i++) {
-                    if (validItems[i] == "milk") {
-                        validItemsReadable.push(link("/bak add:" + validItems[i], "Moomoo Milk"), true);
-                    } else if (validItems[i] == "flour") {
-                        validItemsReadable.push(link("/bak add:" + validItems[i], "Flour"), true);
-                    } else if (validItems[i] == "flour") {
-                        validItemsReadable.push(link("/bak add:" + validItems[i], "Sugar"), true);
-                    } else if (validItems[i] == "blend") {
-                        validItemsReadable.push(link("/bak add:blend", "Blend"), true);
-                    } else {
-                        validItemsReadable.push(link("/bak add:" + validItems[i], itemAlias(validItems[i], false, true)), true);
-                    }
+                for (var i = 0; i < validItems.length; i++) {else {
+                    validItemsReadable.push(link("/bak fetch:" + validItems[i], itemAlias(validItems[i], false, true)), true);
                 }
                 if (this.phase == 1 || this.phase == 2) {
-                    this.msg(player, "Items on the table (you can add up to two to the bowl): " + this.tableReadable.join(", ") + ".");
+                    this.msg(player, "Items on the table (you can add up to two to the bowl): " + tableReadable.join(", ") + ".");
                     this.msg(player, "Or you can add the following to the table: " + validItemsReadable.join(", ") + ".");
                     if (this.turn == 6) {
                         this.msg(player, "<b>This is the last turn of the phase!</b>")
@@ -28266,7 +28266,7 @@ function Safari() {
             get = item;
         }
         else {
-            get = itemAlias(data.toLowerCase());
+            get = itemAlias(item.toLowerCase());
         }
         var validItems = [];
         if (this.phase == 1) {
