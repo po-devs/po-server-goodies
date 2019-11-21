@@ -28130,7 +28130,7 @@ function Safari() {
                         break;
                     }
                 }
-                this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge] + ". Keep this in mind if you want your bait to succeed!");
+                this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge2] + ". Keep this in mind if you want your bait to succeed!");
                 this.judges = [judge, judge2];
                 this.msgAll("Remember: if you want your bait to be popular amongst rare Pokémon, you'll need to impress all 3 of us!");
                 this.msgAll("");
@@ -28590,7 +28590,7 @@ function Safari() {
         var flavorBonus = Math.round((Math.min(this.sweetTotal, this.acidityTotal * 2) / this.qualityDry.bulk) * 33);
         flavor += flavorBonus;
 
-        this.msgAll("", true);
+        this.msgAll("");
 
         this.msgAll("Flavor score: " + flavor + " (Bonus: " + flavorBonus + ").", true);
 
@@ -28620,7 +28620,7 @@ function Safari() {
 
         var judgeScore = 0;
         if (this.judges.contains("Totodile")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Salty")) {
                 judgeScore += 1;
                 this.msgAll("Totodile appreciates the inclusion of Salty taste.");
@@ -28632,12 +28632,12 @@ function Safari() {
                 judgeScore += 1;
                 this.msgAll("Totodile is impressed that the dough is sufficiently thick.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Totodile's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Pachirisu")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Umami")) {
                 judgeScore += 1;
                 this.msgAll("Pachirisu appreciates the inclusion of Umami taste.");
@@ -28649,12 +28649,12 @@ function Safari() {
                 judgeScore += 1;
                 this.msgAll("Pachirisu is happy that it's sweet enough.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Pachirisu's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Galarian Meowth")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Kokumi")) {
                 judgeScore += 2;
                 this.msgAll("Galarian Meowth appreciates the inclusion of Kokumi taste.");
@@ -28671,7 +28671,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Chespin")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Sour")) {
                 judgeScore += 2;
                 this.msgAll("Chespin appreciates the inclusion of Sour taste.");
@@ -28688,7 +28688,7 @@ function Safari() {
             aggregateScore += judgeScore * 4;
         }
         if (this.judges.contains("Fennekin")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Tart")) {
                 judgeScore += 2;
                 this.msgAll("Fennekin appreciates the inclusion of Tart taste.");
@@ -28705,7 +28705,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Pineco")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Citrus")) {
                 judgeScore += 2;
                 this.msgAll("Pineco appreciates the inclusion of Citrus taste.");
@@ -28722,7 +28722,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Drilbur")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Spicy")) {
                 judgeScore += 2;
                 this.msgAll("Drilbur appreciates the inclusion of Spicy taste.");
@@ -28742,7 +28742,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Rookidee")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Spicy")) {
                 judgeScore += 2;
                 this.msgAll("Rookidee appreciates the inclusion of Savory taste.");
@@ -28762,7 +28762,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Makuhita")) {
-            judgeScore = Math.round(balance * 0.03);
+            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Bitter")) {
                 judgeScore += 2;
                 this.msgAll("Makuhita appreciates the inclusion of Bitter taste.");
@@ -28777,16 +28777,16 @@ function Safari() {
                 judgeScore += 2;
                 this.msgAll("Makuhita is pleased with the amount of Moomoo Milk used.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
-        judgeScore = Math.round((balance * 0.025) + (this.blend * 0.03) + (this.quality * 0.05));
+        judgeScore = Math.round(((balance * 0.025) + Math.max((this.blend * 0.03), 0) + (this.quality * 0.05)) * 150) * 0.01;
         judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
 
-        var amtGiven = (Math.round(0.5 * this.qualityDry.bulk * (100 / this.players.length)) * 0.01);
+        var amtGiven = (Math.round(0.5 * Math.max(this.qualityDry.bulk - 6, 2) * (100 / this.players.length)) * 0.01);
 
         bakeScores = {};
         var underbaked = false;
@@ -28798,14 +28798,14 @@ function Safari() {
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": PERFECT.", true);
             } else if (score < 1.5) {
                 score *= 1;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score * 10), "orange") + ") " + (underbaked ? "[Slighty Underbaked]." : "[Slightly Overbaked]."), true);
-            } else if (score < 3) {
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score * 10), "orange") + ") " + (underbaked ? "[Slightly Underbaked]." : "[Slightly Overbaked]."), true);
+            } else if (score < 5) {
                 score *= 1.5;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
-            } else if (score < 6) {
+            } else if (score < 10) {
                 score *= 2;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
-            } else if (score < 12) {
+            } else {
                 score *= 2.5;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTEROUS. (-" + toColor("-" + (score * 10), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
             }
@@ -28845,7 +28845,7 @@ function Safari() {
         }
         for (var j = 0; j < 891; j++) {
             for (var i = 0; i < 27; j++) {
-                mon = getInputPokemon(j + (65536 * i));
+                mon = getInputPokemon(poke(j + (65536 * i)));
                 if (!(mon.num)) {
                     break;
                 }
@@ -28857,7 +28857,11 @@ function Safari() {
                     if (!(wildForms.hasOwnProperty(j+""))) {
                         if (this.secretFlavor == 0) {
                             break;
-                        } else if (!(chance(0.2 * this.secretFlavor))) {
+                        } 
+                        if (poke(j + (65536 * i)).slice(0, 5) == "Mega ") {
+                            break;
+                        } 
+                        if (!(chance(0.2 * this.secretFlavor))) {
                             continue;
                         }
                         rareForm = true;
