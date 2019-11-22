@@ -28071,11 +28071,11 @@ function Safari() {
                 "description": "A magical berry. Its Secret taste is capable of baiting even rare Pokémon formes."
             },
             "milk": {
-                "sweet": 3,
+                "sweet": 2,
                 "acidity": 0,
                 "wet": 6,
                 "viscosity": 0,
-                "rich": 1,
+                "rich": 0,
                 "scent": 0,
                 "quality": 0,
                 "flavor": "None",
@@ -28121,6 +28121,7 @@ function Safari() {
         this.milkUsed = 0;
         this.quality = 0;
         this.secretFlavor = 0;
+        this.needsBlending = 0;
 
         this.phase = 0;
         this.turn = 0;
@@ -28140,7 +28141,7 @@ function Safari() {
                 this.msgAll("The wild Pokémon pay close attention to judge's reviews, so if you want your bait to be successful, you will need to earn their scores!", true);
                 this.msgAll("My name is Paul Politoed and I will be your bait judge for today.", true);
                 var judge = (Object.keys(this.judgeData)).random();
-                this.msgAll("I am joined by my fellow judge <b>" + judge + "</b> today. " + judge + " is known to " + this.judgeData[judge] + ", so be on the look-out!");
+                this.msgAll("I am joined by my fellow judge <b>" + judge + "</b> today. " + judge + " is known to " + this.judgeData[judge] + ", so be on the look-out!", true);
                 
                 for (var i = 0; i < 100; i++) {
                     var judge2 = (Object.keys(this.judgeData)).random();
@@ -28148,9 +28149,9 @@ function Safari() {
                         break;
                     }
                 }
-                this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge2] + ". Keep this in mind if you want your bait to succeed!");
+                this.msgAll("We are also joined by <b>" + judge2 + "</b> as our third judge. " + judge2 + " is known to " + this.judgeData[judge2] + ". Keep this in mind if you want your bait to succeed!", true);
                 this.judges = [judge, judge2];
-                this.msgAll("Remember: if you want your bait to be popular amongst rare Pokémon, you'll need to impress all 3 of us!");
+                this.msgAll("Remember: if you want your bait to be popular amongst rare Pokémon, you'll need to impress all 3 of us!", true);
                 this.msgAll("");
             } else if (this.turn == 2) {
                 this.phase = 1;
@@ -28417,8 +28418,8 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
-        this.needsRich = (((75 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 3) - this.qualityDry.texture)) / (1));
+        this.needsRich = (((75 + (this.qualityDry.bulk * 2.4)) - (1.2 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
         this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
 
@@ -28508,7 +28509,7 @@ function Safari() {
         this.msgAll("");
         this.turn = 0;
         this.phase = 2;
-        this.table = ["milk"];
+        this.table = ["milk", "blend"];
     };
     Baking.prototype.compileWet = function(item) {
         this.msgAll("");
@@ -28525,7 +28526,7 @@ function Safari() {
                 this.msgAll(toColor("It has a faint " + a + " flavor.", "blue"), true);
             } 
         }
-        var val = (this.qualityDry.bulk * 1.5) + (this.blend * 0.005) - (this.needsWet * 0.01);
+        var val = (this.qualityDry.bulk * 1.2) + (this.blend * 0.005) - (this.needsWet * 0.03);
         this.bakeTimeNeeded = (8 + (Math.min(((Math.max(val - 30, 0)) / this.qualityDry.bulk), 1) * 22));
         this.bakeTimes = {};
         for (var p in this.players) {
@@ -28574,30 +28575,31 @@ function Safari() {
 
         var balance = 100, val = 0;
         if (this.needsWet > 100) {
-            val = (this.needsWet - 100);
+            val = Math.max(this.needsWet - 100, 0);
             balance -= val;
             this.msgAll(toColor("The recipe is too dry. -" + val + ".", "red"), true);
         }
         if (this.needsRich > 100) {
-            val = (this.needsRich - 100);
+            val = Math.max(this.needsRich - 100, 0);
             balance -= val;
             this.msgAll(toColor("The recipe isn't rich enough, so it feels as though it's lacking something. -" + val + ".", "red"), true);
         }
         if (this.needsSweet > 100) {
-            val = (this.needsSweet - 100);
+            val = Math.max(this.needsSweet - 100, 0);
             balance -= val;
             this.msgAll(toColor("The recipe lacks sweetness. -" + val + ".", "red"), true);
         }
         if (this.needsScent > 100) {
-            val = (this.needsScent - 100);
+            val = Math.max(this.needsScent - 100, 0);
             balance -= val;
             this.msgAll(toColor("I really can't even sense the aroma this bait is supposed to have. -" + val + ".", "red"), true);
         }
         if (this.needsThick > 100) {
-            val = (this.needsThick - 100);
+            val = Math.max(this.needsThick - 100, 0);
             balance -= val;
             this.msgAll(toColor("The dough is crumbing. You need more viscosity and firm ingredients to hold it together. -" + val + ".", "red"), true);
         }
+        balance = Math.max(balance, 0);
         this.msgAll("Balance score: " + balance + ".", true);
 
         var flavor = 0;
@@ -28802,7 +28804,7 @@ function Safari() {
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
-        judgeScore = Math.round(((balance * 0.025) + Math.max((this.blend * 0.03), 0) + (this.quality * 0.05)) * 222) * 0.01;
+        judgeScore = Math.round(((balance * 0.025) + Math.max((this.blend * 0.03), 0) + (this.quality * 0.05)) * 115) * 0.01;
         judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
@@ -28814,7 +28816,6 @@ function Safari() {
         var underbaked = false, score = 0;
         for (var a in this.bakeTimes) {
             score = Math.abs(this.bakeTimes[a] - this.bakeTimeNeeded);
-            score = parseInt(score, 10);
             if (isNaN(score)) {
                 score = 10;
             }
@@ -28858,7 +28859,7 @@ function Safari() {
             }
         }
 
-        var mon, val = 0, eggval = 0, bstval = 0, flavorval = 0, bst;
+        var mon, val = 0, eggval = 0, bstval = 0, flavorval = 0, bst, hits;
         var out = {
             "commons": {
                 "rate": 0,
@@ -28949,24 +28950,25 @@ function Safari() {
                 if (val < 15 && (chance(0.75))) {
                     continue; //Doesn't spawn
                 }
-                if (val < 7 && (chance(0.5))) {
+                if (val < 7 && (chance(0.85))) {
                     continue; //Doesn't spawn
                 }
                 searchedMons2 += 1;
                 if (val > 100) {
                     val = 100;
                 }
-                var hits = 0, bst = getBST(mon.num) + rareForm ? 50 : 0;
+                hits = 0;
+                bst = getBST(mon.num) + rareForm ? 50 : 0;
                 if (bst <= 400) {
                     hits = (chance(0.5) ? val : (chance(0.5) ? val * 0.5 : val * 0.25));
                 }
                 else {
-                    for (var i = 0; i < 10; i++) {
+                    for (var k = 0; k < 10; k++) {
                         if (((Math.random() * (val * 2)) + 400) >= bst) {
                             hits++;
                         }
                     }
-                    for (var i = 0; i < 6; i++) {
+                    for (var k = 0; k < 6; k++) {
                         if (((Math.random() * (80 + val)) + 500) >= bst) {
                             hits++;
                         }
