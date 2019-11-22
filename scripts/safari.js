@@ -28513,7 +28513,7 @@ function Safari() {
             if (this.flavors.hasOwnProperty(get)) {
                 this.flavors[get] += 1;
             } else {
-                this.flavors[get] = 0;
+                this.flavors[get] = 1;
             }
         }
         if (this.needsSweet > 140) {
@@ -28733,7 +28733,7 @@ function Safari() {
         var judgeScore = 0;
         if (this.judges.contains("Totodile")) {
             judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
-            if (this.flavors.hasOwnProperty("Salty")) {
+            if (this.flavors.hasOwnProperty("Salt")) {
                 judgeScore += 1;
                 this.msgAll("Totodile appreciates the inclusion of Salty taste.");
             }
@@ -29036,7 +29036,7 @@ function Safari() {
                     var target = [];
                     switch (f) {
                         case "Sour": target = ["Grass", "Rock"]; break;
-                        case "Salty": target = ["Poison", "Water"]; break;
+                        case "Salt": target = ["Poison", "Water"]; break;
                         case "Bitter": target = ["Fighting", "Ghost"]; break;
                         case "Savory": target = ["Dark", "Flying"]; break;
                         case "Tart": target = ["Psychic", "Fire"]; break;
