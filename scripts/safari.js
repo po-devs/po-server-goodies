@@ -10425,7 +10425,7 @@ function Safari() {
                     p.amt = 1;
                 } else {
                     if (deluxe) {
-                        var mon = 0, val = (100 * Math.random()) - (Math.random());
+                        var mon = 0, val = (100 * Math.random()) + (Math.random());
                         if (val < (player.deluxeBait.rares.rate)) {
                             mon = player.deluxeBait.rares.list.random();
                         } else if (val < (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate)) {
