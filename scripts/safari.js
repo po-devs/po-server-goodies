@@ -47570,7 +47570,7 @@ function Safari() {
                             rewardName = [];
                             for (r in reward) {
                                 amt = reward[r];
-                                if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"] && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
+                                if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
                                     amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                 }
                                 if (amt > 0) {
