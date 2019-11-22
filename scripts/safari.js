@@ -28304,7 +28304,7 @@ function Safari() {
             return false;
         }
         if (get == "blend") {
-            this.blendBowl();
+            this.blendBowl(player);
             return;
         }
         if (!(this.table.contains(get))) {
@@ -28418,7 +28418,7 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 3) - this.qualityDry.texture)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 2) - this.qualityDry.texture)) / (1));
         this.needsRich = (((75 + (this.qualityDry.bulk * 2.4)) - (1.2 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
         this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
@@ -28937,12 +28937,18 @@ function Safari() {
                     val += flavorval * (5 + eggval);
                 }
                 if (chance((aggregateScore * 0.001))) {
-                    val *= 4;
+                    val *= 6;
                 }
                 else if (chance((aggregateScore * 0.002))) {
-                    val *= 3;
+                    val *= 5;
                 }
                 else if (chance((aggregateScore * 0.003))) {
+                    val *= 4;
+                }
+                else if (chance((aggregateScore * 0.004))) {
+                    val *= 3;
+                }
+                else if (chance((aggregateScore * 0.005))) {
                     val *= 2;
                 }
 
@@ -28961,10 +28967,13 @@ function Safari() {
                 bst = getBST(mon.num) + rareForm ? 50 : 0;
                 if (bst <= 400) {
                     hits = (chance(0.5) ? val : (chance(0.5) ? val * 0.5 : val * 0.25));
+                    if (hits < 1) {
+                        hits = (chance(0.9) ? 12 : 3);
+                    }
                 }
                 else {
                     for (var k = 0; k < 10; k++) {
-                        if (((Math.random() * (val * 2)) + 400) >= bst) {
+                        if (((Math.random() * ((val + k) * 2)) + 400) >= bst) {
                             hits++;
                         }
                     }
@@ -28975,10 +28984,10 @@ function Safari() {
                     }
                 }
                 if (legendaries.contains(mon.num)) {
-                    hits--;
+                    hits -= 1;
                 }
                 if (rareForm) {
-                    hits--;
+                    hits -= 1;
                 }
                 searchedMons3 += 1;
                 if (hits >= 12) {
@@ -28990,6 +28999,30 @@ function Safari() {
                 } else {
                     searchedMons3 -= 1;
                 }
+            }
+        }
+        var loop = 0;
+        while (out.commons.length < 10) {
+            loop += 1;
+            if (loop > 500) {
+                break;
+            }
+            var get = sys.rand(1, 890);
+            bst = getBST(get);
+            if (bst < 361 && (!(legendaries.contains(get)))) {
+                out.commons.push(get);
+            }
+        }
+        loop = 0;
+        while (out.uncommons.length < 8) {
+            loop += 1;
+            if (loop > 200) {
+                break;
+            }
+            var get = sys.rand(1, 890);
+            bst = getBST(get);
+            if (bst < 481 && (!(legendaries.contains(get)))) {
+                out.uncommons.push(get);
             }
         }
         if (bakingDebug) {
@@ -29016,11 +29049,11 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max((((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.011) - 2, 0.1));
+            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.011) - 2, 0.1);
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
-            player.deluxeBait.uncommons.rate = ((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.04) - player.deluxeBait.rares.rate;
+            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.04) - player.deluxeBait.rares.rate, 0.1);
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
             safari.saveGame(player);
