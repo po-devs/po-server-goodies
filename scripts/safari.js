@@ -10428,7 +10428,7 @@ function Safari() {
                     p.amt = 1;
                 } else {
                     if (deluxe) {
-                        var mon = 0, val = (100 * Math.random()) + (Math.random());
+                        var mon = 0, val = (100 * Math.random());
                         if (val < (player.deluxeBait.rares.rate)) {
                             mon = player.deluxeBait.rares.list.random();
                         } else if (val < (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate)) {
@@ -28613,7 +28613,7 @@ function Safari() {
             this.bakeTimes[this.players[p].toLowerCase()] = 0;
         }
         this.msgAll("");
-        this.msgAll("Now it's put it in the oven! Good luck! Take it out when you think it's done!");
+        this.msgAll("Now let's put it in the oven! Good luck! Take it out when you think it's done!");
         this.msgAll("");
         this.turn = 0;
         this.phase = 3;
@@ -28627,7 +28627,7 @@ function Safari() {
             this.msg(player, "Wait until it's gone in the oven first!");
             return;
         }
-        var diff = parseInt(Math.round(now() - this.bakeStarted) * 0.001, 10);
+        var diff = parseInt(Math.round((now() - this.bakeStarted) * 0.001), 10);
         if (diff < 5) {
             this.msg(player, "You can't bake your bait for less than 5 seconds!");
             return false;
@@ -29046,7 +29046,7 @@ function Safari() {
                         case "Citrus": target = ["Bug", "Normal"]; break;
                     }
                     if (target.contains(type1(mon.num)) || target.contains(type2(mon.num))) {
-                        flavorval += 0.3 + (Math.random() * this.flavors[f]);
+                        flavorval += 0.5 + (Math.random() * this.flavors[f]);
                     }
                 }
                 if (flavorval > 3) {
@@ -29185,7 +29185,7 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.016) - 2, 0.01);
+            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.017) - 2, 0.01);
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
@@ -29196,9 +29196,9 @@ function Safari() {
 
             this.msg(player.id, "You " + g + "!");
             this.msg(player.id, "<b>Bait Data:</b>");
-            this.msg(player.id, "- Commons (" + player.deluxeBait.commons.rate + "%): " + player.deluxeBait.commons.list.map(function(x) { return poke(x); }).join(", "));
-            this.msg(player.id, "- Uncommons (" + player.deluxeBait.uncommons.rate + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "));
-            this.msg(player.id, "- Rares (" + player.deluxeBait.rares.rate + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(player.id, "- Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%): " + player.deluxeBait.commons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(player.id, "- Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(player.id, "- Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "));
         }
         this.finished = true;
         this.msgAll("");
