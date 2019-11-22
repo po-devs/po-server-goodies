@@ -8703,7 +8703,7 @@ function Safari() {
                 var removeInd = player.party.indexOf(id)
                 player.party.splice(removeInd, 1);
                 var getItem = player.helds.splice(removeInd, 1);
-                player.helds.unshift(getItem);
+                player.helds.unshift(getItem[0]);
             }
 
             player.party.splice(0, 0, id);
@@ -15090,7 +15090,8 @@ function Safari() {
                 alive: true,
                 won: 0,
                 fought: 0,
-                rate: 0
+                rate: 0,
+                activityWarned: {}
             });
         }
         safari.events.spiritDuelsLog = [];
@@ -15333,7 +15334,7 @@ function Safari() {
             g = prizes[i+""];
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
-            amt = Math.round((((j) * 2) + (7 - teams.length))/2);
+            amt = Math.round((((j) * 1.8) + (9 - teams.length))/2);
             rew = ("" + amt + "@rare");
             apri = ["redapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"].random();
             if (r >= 50) {
@@ -15439,8 +15440,13 @@ function Safari() {
         var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
 
-        var p, j;
+        var p, j, n = now();
         for (var a in army1) {
+            if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army1[a]+"")) {
+                if (n > safari.events.spiritDuelsTeams[0].activityWarned[army1[a]+""]) {
+                    continue;
+                }
+            }
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer1; i++) {
@@ -15459,6 +15465,11 @@ function Safari() {
             }
         }
         for (var a in army2) {
+            if (safari.events.spiritDuelsTeams[1].activityWarned.hasOwnProperty(army2[a]+"")) {
+                if (n > safari.events.spiritDuelsTeams[1].activityWarned[army2[a]+""]) {
+                    continue;
+                }
+            }
             p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer2; i++) {
@@ -15476,8 +15487,8 @@ function Safari() {
                 }
             }
         }
-        team1.shuffle();
-        team2.shuffle();
+        team1 = team1.shuffle();
+        team2 = team2.shuffle();
         var smaller = Math.min(team1.length, team2.length);
         safari.events.sd1 = team1.slice(0, smaller).shuffle();
         safari.events.sd2 = team2.slice(0, smaller).shuffle();
@@ -15839,8 +15850,67 @@ function Safari() {
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
+            case "inactive": this.markInactivity(src,player,commandData); break;
+            case "active": this.markActivity(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
         }
+        return;
+    };
+    this.markActivity = function( src,player ) {
+        var army, named, index, passed = false;
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
+                army = safari.events.spiritDuelsTeams[a].players
+                passed = true;
+                name = safari.events.spiritDuelsTeams[a].name;
+                index = a;
+                break;
+            }
+        }
+        if (!passed) {
+            safaribot.sendMessage( src,"You are not on a team!",safchan );
+            return;
+        }
+        if (Object.keys(safari.events.spiritDuelsTeams[a].activityWarned).contains(player.idnum+"")) {
+            safaribot.sendMessage( src,"You are not activity warned!",safchan );
+            return;
+        }
+        delete safari.events.spiritDuelsTeams[a].activityWarned[player.idnum+""];
+        safaribot.sendMessage( src,"You marked yourself as active!",safchan );
+        return;
+    };
+    this.markInactivity = function( src,player,target ) {
+        var army, named, index, passed = false, targetNum, targetPlayer;
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
+                army = safari.events.spiritDuelsTeams[a].players
+                passed = true;
+                name = safari.events.spiritDuelsTeams[a].name;
+                index = a;
+                break;
+            }
+        }
+        if (!passed) {
+            safaribot.sendMessage( src,"You are not on a team!",safchan );
+            return;
+        }
+        targetPlayer = getAvatarOff(target);
+        if (!targetPlayer) {
+            safaribot.sendMessage( src,"No one named " + target + " around here!",safchan );
+            return;
+        }
+        targetNum = targetPlayer.idnum;
+        if (!(army.contains(targetNum))) {
+            safaribot.sendMessage( src,"No one named " + target + " on this team!",safchan );
+            return;
+        }
+        if (Object.keys(safari.events.spiritDuelsTeams[a].activityWarned).contains(targetNum+"")) {
+            safaribot.sendMessage( src,target + " is already on activity warning!",safchan );
+            return;
+        }
+        safari.events.spiritDuelsTeams[a].activityWarned[targetNum+""] = now() + (24 * 1000 * 60 * 60);
+        safaribot.sendMessage( src,target + " has been warned for their low activity, and will not be able to participate in 24 hours if they don't reactivate!",safchan );
+        safari.inboxMessage(targetPlayer, "You've been marked as inactive in spirit duels by your teammates. Type /spiritduels active to undo this!", false);
         return;
     };
     this.ownSpiritSkills = function( src,player ) {
@@ -15852,7 +15922,7 @@ function Safari() {
         for (var s in player.spiritDuels.skills) {
             safaribot.sendMessage(src, player.spiritDuels.skills[s].desc, safchan);
         }
-        return
+        return;
     }
     this.showSpiritDuelsLog = function( src,player,data ) {
         var log = safari.events.spiritDuelsLog, out = "";
