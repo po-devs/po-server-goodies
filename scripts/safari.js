@@ -46128,7 +46128,7 @@ function Safari() {
                 return true;
             }
             if (command === "costumeicon") {
-                safaribot.sendMessage(src, "<img src='Themes/Classic/Trainer Sprites/" + commandData + ".png'>", safchan);
+                safaribot.sendHtmlMessage(src, "<img src='Themes/Classic/Trainer Sprites/" + commandData + ".png'>", safchan);
                 return true;
             }
             if (command === "ricemode") {
