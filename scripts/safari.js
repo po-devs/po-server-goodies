@@ -72,7 +72,7 @@ function Safari() {
     var dayCareEnabled = true;
 
     var needsPechaCleared = [];
-    var bakingDebug = true;
+    var bakingDebug = false;
 
     var npcMatchAlive = [];
     var buyLuckyPossible = false;
