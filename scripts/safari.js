@@ -28268,7 +28268,7 @@ function Safari() {
             this.msg(playerName, "You don't have enough time to add two items to the table!");
             return false;
         }
-        if (this.turn >= 7) {
+        if (this.turn >= 6) {
             this.msg(playerName, "This is the last turn of the phase, so don't add anything else to the table!");
             return false;
         }
@@ -28544,6 +28544,10 @@ function Safari() {
     Baking.prototype.takeOutOfOven = function(player) {
         if (this.phase !== 3) {
             this.msg(player, "It's not even the baking phase yet!");
+            return;
+        }
+        if (this.turn < 1) {
+            this.msg(player, "Wait until it's gone in the oven first!");
             return;
         }
         var diff = parseInt(Math.round(now() - this.bakeStarted) * 0.001, 10);
