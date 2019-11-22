@@ -28833,7 +28833,7 @@ function Safari() {
             if (isNaN(score)) {
                 score = 10;
             }
-            score = Math.round(score * 100) * 0.01;
+            score = toFixed(Math.round(score * 100) * 0.01, 2);
             if (bakingDebug) {
                 sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Oven score for " + a + ": " + score + ".", safchan);
             }
@@ -28845,13 +28845,13 @@ function Safari() {
                 score *= 1;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? " [Slightly Underbaked])." : " [Slightly Overbaked])."), true);
             } else if (score < 5) {
-                score *= 1.5;
+                score *= toFixed(1.5 * score, 2);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else if (score < 10) {
-                score *= 2;
+                score *= toFixed(2 * score, 2);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else {
-                score *= 2.5;
+                score *= toFixed(2.5 * score, 2);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             }
             bakeScores[a.toLowerCase()] = score;
@@ -42352,7 +42352,7 @@ function Safari() {
                 }
                 var cost = amt * 200;
                 if (commandData !== "confirm") {
-                    safaribot.sendHtmlMessage(src, "You can sell your " + amt + " Deluxe Baits for a total of $" + cost + "!");
+                    safaribot.sendHtmlMessage(src, "You can sell your " + plural(amt, "Deluxe Bait") + " for a total of $" + cost + "!");
                     safaribot.sendHtmlMessage(src, "Type " + link("/selldeluxe confirm", false, true) + " to confirm it.");
                     return true;
                 }
