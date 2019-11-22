@@ -10335,7 +10335,7 @@ function Safari() {
             safaribot.sendMessage(src, "If you throw " + an(bName) + " now, you will have no way to catch a Pokémon because you are out of balls!", safchan);
            return;
         }
-        if (!golden && lastBaiters.indexOf(sys.name(src).toLowerCase()) !== -1) {
+        if (!(golden || deluxe) && lastBaiters.indexOf(sys.name(src).toLowerCase()) !== -1) {
             safaribot.sendMessage(src, "You just threw some " + bName + " not too long ago. Let others have a turn! " + (baitCooldown > 0 ? "[Global cooldown: " + plural(baitCooldown, "second") + "]" : ""), safchan);
             return;
         }
