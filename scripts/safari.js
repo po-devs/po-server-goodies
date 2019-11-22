@@ -28093,7 +28093,7 @@ function Safari() {
             "taste": 0,
             "bulk": 0,
             "acidity": 0,
-            "dryness": 0
+            "dry": 0
         }
         this.dryFlavors = [];
         this.players = players;
@@ -28346,7 +28346,7 @@ function Safari() {
             }
             this.qualityDry.bulk += data.bulk;
             this.qualityDry.texture += data.texture;
-            this.qualityDry.dryness += data.dryness;
+            this.qualityDry.dry += data.dryness;
             this.qualityDry.acidity += data.acidity;
             this.qualityDry.taste += data.taste;
             this.dryFlavors.push(data.flavor);
@@ -28417,7 +28417,7 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 10) - this.qualityDry.texture)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
         this.needsRich = (((75 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
         this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
@@ -28828,16 +28828,16 @@ function Safari() {
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": PERFECT.", true);
             } else if (score < 1.5) {
                 score *= 1;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? "[Slightly Underbaked]." : "[Slightly Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? " [Slightly Underbaked])." : " [Slightly Overbaked])."), true);
             } else if (score < 5) {
                 score *= 1.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else if (score < 10) {
                 score *= 2;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else {
                 score *= 2.5;
-                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (" + toColor("-" + (score), "red") + (underbaked ? "[Underbaked]." : "[Overbaked]."), true);
+                this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             }
             bakeScores[a.toLowerCase()] = score;
         }
@@ -28873,6 +28873,7 @@ function Safari() {
                 "list": []
             }
         };
+        var searchedMons0 = 0;
         var searchedMons1 = 0;
         var searchedMons2 = 0;
         var searchedMons3 = 0;
@@ -28882,9 +28883,7 @@ function Safari() {
                 if (!(mon.num)) {
                     break;
                 }
-                if (!(mon.valid)) {
-                    break;
-                }
+                searchedMons0 += 1;
                 var rareForm = false;
                 if (i > 0) {
                     if (!(wildForms.hasOwnProperty(j+""))) {
@@ -28992,7 +28991,7 @@ function Safari() {
             }
         }
         if (bakingDebug) {
-            sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Searched Mons: " + searchedMons1 + " | " + searchedMons2 + " | " + searchedMons3, safchan);
+            sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Searched Mons: " + searchedMons0 + " | " + searchedMons1 + " | " + searchedMons2 + " | " + searchedMons3, safchan);
         }
         var player;
         for (var p in this.players) {
