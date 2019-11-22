@@ -10293,7 +10293,7 @@ function Safari() {
         }
 
         var item;
-        if (dexlue) {
+        if (deluxe) {
             item = "deluxe";
         } else {
             item = golden ? "golden" : "bait";
