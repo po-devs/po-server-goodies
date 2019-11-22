@@ -10362,7 +10362,7 @@ function Safari() {
                 safaribot.sendMessage(src, "The " + bName + " you were preparing to throw slipped from your hand! You went to catch it and now need to wait " + timeLeftString(player.cooldowns.bait) + " to throw again!", safchan);
                 return;
             }
-            if (golden) {
+            if (golden || deluxe) {
                 if (goldenBaitCooldown > 0) {
                     safaribot.sendMessage(src, "Please wait " + plural(goldenBaitCooldown, "second") + " before trying to attract another Pokémon with " + an(bName) + "!", safchan);
                     return;
