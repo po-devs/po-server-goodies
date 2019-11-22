@@ -28428,7 +28428,7 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 2.3) - this.qualityDry.texture)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 1.65) - this.qualityDry.texture)) / (1));
         this.needsRich = (((95 + (this.qualityDry.bulk * 2.4)) - (1.2 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
         this.needsScent = (((80 + (this.qualityDry.bulk * 2.2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
@@ -28458,7 +28458,7 @@ function Safari() {
         else {
             this.msgAll(toColor("Sweetness: The flavor is good.", "green"), true);
         }
-        if (this.needsWet > 140) {
+        if (this.needsWet > 175) {
             this.msgAll(toColor("Dryness: The base is far too dry. You will need to balance this out with lots of juicy ingredients.", "red"), true);
         }
         else if (this.needsWet > 100) {
@@ -28589,27 +28589,32 @@ function Safari() {
 
         var balance = 100, val = 0;
         if (this.needsWet > 100) {
-            val = Math.max(this.needsWet - 100, 0);
+            val = parseInt(Math.max((this.needsWet - 100) * 0.75, 0), 10);
+            val = Math.min(val, 50);
             balance -= val;
             this.msgAll(toColor("The recipe is too dry. -" + val + ".", "red"), true);
         }
         if (this.needsRich > 100) {
-            val = Math.max(this.needsRich - 100, 0);
+            val = parseInt(Math.max((this.needsRich - 100) * 1, 0), 10);
+            val = Math.min(val, 50);
             balance -= val;
             this.msgAll(toColor("The recipe isn't rich enough, so it feels as though it's lacking something. -" + val + ".", "red"), true);
         }
         if (this.needsSweet > 100) {
-            val = Math.max(this.needsSweet - 100, 0);
+            val = parseInt(Math.max((this.needsSweet - 100) * 1, 0), 10);
+            val = Math.min(val, 50);
             balance -= val;
             this.msgAll(toColor("The recipe lacks sweetness. -" + val + ".", "red"), true);
         }
         if (this.needsScent > 100) {
-            val = Math.max(this.needsScent - 100, 0);
+            val = parseInt(Math.max((this.needsScent - 100) * 1, 0), 10);
+            val = Math.min(val, 50);
             balance -= val;
             this.msgAll(toColor("I really can't even sense the aroma this bait is supposed to have. -" + val + ".", "red"), true);
         }
         if (this.needsThick > 100) {
-            val = Math.max(this.needsThick - 100, 0);
+            val = parseInt(Math.max((this.needsThick - 100) * 1, 0), 10);
+            val = Math.min(val, 50);
             balance -= val;
             this.msgAll(toColor("The dough is crumbing. You need more viscosity and firm ingredients to hold it together. -" + val + ".", "red"), true);
         }
@@ -28833,7 +28838,7 @@ function Safari() {
             if (isNaN(score)) {
                 score = 10;
             }
-            score = toFixed(Math.round(score * 100) * 0.01, 2);
+            score = (Math.round(score * 100) * 0.01);
             if (bakingDebug) {
                 sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Oven score for " + a + ": " + score + ".", safchan);
             }
@@ -28842,16 +28847,15 @@ function Safari() {
                 score = 0;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": PERFECT.", true);
             } else if (score < 1.5) {
-                score *= 1;
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": GOOD. (" + toColor("-" + (score), "orange") + ") " + (underbaked ? " [Slightly Underbaked])." : " [Slightly Overbaked])."), true);
             } else if (score < 5) {
-                score *= toFixed(1.5 * score, 2);
+                score *= parseInt(1.5 * score, 10);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": OKAY. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else if (score < 10) {
-                score *= toFixed(2 * score, 2);
+                score *= parseInt(2 * score, 10);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": POOR. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             } else {
-                score *= toFixed(2.5 * score, 2);
+                score *= parseInt(2.5 * score, 10);
                 this.msgAll("Baking score for " + toColored(a.toCorrectCase(), a) + ": DISASTROUS. (" + toColor("-" + (score), "red") + (underbaked ? " [Underbaked])." : " [Overbaked])."), true);
             }
             bakeScores[a.toLowerCase()] = score;
