@@ -28503,7 +28503,7 @@ function Safari() {
         this.needsScent = (((80 + (this.qualityDry.bulk * 2.2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
 
-        this.flavors = [];
+        this.flavors = {};
         var get = "";
         for (var i = 0; i < 7; i++) {
             get = this.dryFlavors.random();
@@ -28778,7 +28778,7 @@ function Safari() {
                 judgeScore += 1;
                 this.msgAll("Galarian Meowth is impressed it has a strong aroma.");
             }
-            judgeScore = Math.max(judgeScore, 5);
+            judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Galarian Meowth's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
