@@ -25086,8 +25086,8 @@ function Safari() {
                         p = getAvatarOff(players[e]);
                         var cost = Math.round(5000 * (1 - (safari.hasCostumeSkill(p, "bakingDiscount") ? 0.5 : 0)));
                         p.money -= cost;
-                        p.quests.baking.cooldown = now() + Math.round(hours(1));
-                        safaribot.sendHtmlMessage(p.id, "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
+                        p.quests.baking.cooldown = now() + Math.round(hours(0.5));
+                        safaribot.sendHtmlMessage(sys.id(p.id), "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
                         this.saveGame(p);
                     }
 
@@ -28411,6 +28411,10 @@ function Safari() {
         }
     };
     Baking.prototype.blendBowl = function(player) {
+        if (this.blending) {
+            this.msg(player, "The bowl is already blending!");
+            return;
+        }
         this.blendStartTime = now();
         this.blending = true;
         this.msgAll(player.toCorrectCase() + " is blending the bowl! The blender will run for the rest of the turn.");
@@ -28421,9 +28425,9 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 2) - this.qualityDry.texture)) / (1));
-        this.needsRich = (((75 + (this.qualityDry.bulk * 2.4)) - (1.2 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
-        this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 2.3) - this.qualityDry.texture)) / (1));
+        this.needsRich = (((95 + (this.qualityDry.bulk * 2.4)) - (1.2 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
+        this.needsScent = (((80 + (this.qualityDry.bulk * 2.2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
 
         this.flavors = [];
@@ -28811,7 +28815,7 @@ function Safari() {
             this.msgAll("Makuhita's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
-        judgeScore = Math.round(((balance * 0.02) + Math.max((this.blend * 0.015), 0) + (this.quality * 0.03)) * 100) * 0.01;
+        judgeScore = Math.round(((balance * 0.015) + Math.max((this.blend * 0.01), 0) + (this.quality * 0.03)) * 100) * 0.01;
         judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
@@ -29074,11 +29078,11 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.011) - 2, 0.1);
+            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2.5)) * 0.016) - 2, 0.01);
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
-            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.04) - player.deluxeBait.rares.rate, 0.1);
+            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 4)) * 0.06) - player.deluxeBait.rares.rate, 0.1);
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
             safari.saveGame(player);
