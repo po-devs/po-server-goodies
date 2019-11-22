@@ -28991,9 +28991,40 @@ function Safari() {
                 searchedMons1 += 1;
                 val = 0;
                 eggval = 0;
+                bst = getBST(mon.num);
+                if (ultraBeasts.contains(mon.num)) {
+                    bst = 600;
+                }
+                if (galarFormEvos.contains(mon.num)) {
+                    bst = 510;
+                    rareForm = true;
+                }
+                if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
+                    if (bst >= 650) {
+                        if (chance((aggregateScore - 275) * 0.007)) {
+                            eggval = 20;
+                        } else {
+                            continue;
+                        }
+                    }
+                    else if (bst >= 590) {
+                        if (chance((aggregateScore - 115) * 0.003)) {
+                            eggval = 25;
+                        } else {
+                            continue;
+                        }
+                    }
+                    else {
+                        if (chance((aggregateScore - 85) * 0.004)) {
+                            eggval = 30;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
                 for (var a in eggTypes) {
-                    if (eggdata.hasOwnProperty(mon+"")) {
-                        if (eggdata[mon+""].contains(a)) {
+                    if (eggdata.hasOwnProperty(mon.num+"")) {
+                        if (eggdata[mon.num+""].contains(a)) {
                             eggval += (eggTypes[a] * Math.random());
                         }
                     }
@@ -29052,26 +29083,21 @@ function Safari() {
                     val = 100;
                 }
                 hits = 0;
-                bst = getBST(mon.num);
                 if (rareForm) {
                     bst += 50;
-                }
-                if (ultraBeasts.contains(mon.num)) {
-                    bst = 600;
-                }
-                if (galarFormEvos.contains(mon.num)) {
-                    bst = 560;
-                    rareForm = true;
                 }
                 if (bst <= 400) {
                     hits = (chance(0.5) ? val : (chance(0.5) ? val * 0.5 : val * 0.25));
                     if (hits < 1) {
+                        if (chance(0.5)) {
+                            continue;
+                        }
                         hits = (chance(0.9) ? 12 : 6);
                     }
                 }
                 else {
                     for (var k = 0; k < 16; k++) {
-                        if (((Math.random() * ((val) * 2)) + 400) >= bst) {
+                        if (((Math.random() * ((val) * 2)) + 404) >= bst) {
                             hits++;
                         }
                     }
@@ -29084,13 +29110,13 @@ function Safari() {
                 if (bst > 590) {
                     hits -= 1;
                 }
-                if ((legendaries.contains(mon.num) || ultraBeasts.contains(mon.num) && hits > 0)) {
+                if (((legendaries.contains(mon.num) || ultraBeasts.contains(mon.num)) && hits > 0)) {
                     hits *= 0.5;
                     if (bst > 580) {
                         hits -= 1;
                     }
                     if (bst >= 660) {
-                        hits = (chance((aggregateScore - 125) * 0.007) ? 1 : 0);
+                        hits = (chance((aggregateScore - 200) * 0.007) ? 1 : 0);
                     }
                 }
                 if (rareForm) {
@@ -47544,7 +47570,7 @@ function Safari() {
                             rewardName = [];
                             for (r in reward) {
                                 amt = reward[r];
-                                if (r.indexOf("apricorn") !== -1 && safari.hasCostumeSkill("extraApricornsFromContest")) {
+                                if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"] && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
                                     amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                 }
                                 if (amt > 0) {
