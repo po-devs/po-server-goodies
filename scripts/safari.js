@@ -72,6 +72,7 @@ function Safari() {
     var dayCareEnabled = true;
 
     var needsPechaCleared = [];
+    var bakingDebug = true;
 
     var npcMatchAlive = [];
     var buyLuckyPossible = false;
@@ -358,6 +359,7 @@ function Safari() {
             rocksChargesGained: 0,
             rocksChargesLost: 0,
             baitUsed: 0,
+            deluxeBaitUsed: 0,
             goldenBaitUsed: 0,
             goldenBaitWeak: 0,
             baitAttracted: 0,
@@ -5511,7 +5513,7 @@ function Safari() {
             }
         }
         for (var p in currentBakings) {
-            if (currentBakings[p].isInPyramid(name)) {
+            if (currentBakings[p].isInKitchen(name)) {
                 return;
             }
         }
@@ -7504,7 +7506,19 @@ function Safari() {
                 sendAll("The " + pokeName + " was holding " + g + "!");
                 rafflePlayers.add(player.id, player.balls.entry);
                 rafflePlayers.save();
-            } else if (currentRules && currentRules.berries) {
+            } else if (ball !== "spirit") {
+                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
+                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
+                    player.pokemon.push(evolved);
+                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
+                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
+                } else {
+                    player.pokemon.push(currentPokemon);
+                }
+            } else {
+                player.pokemon.push(currentPokemon);
+            }
+            if (currentRules && currentRules.berries) {
                 var berry = currentRules && currentRules.berries ? currentRules.berries : [];
                 if (berry.length > 0) {
                     var itemBST = getBST(currentPokemon);
@@ -7527,18 +7541,8 @@ function Safari() {
                         }
                         var g = giveStuff(player, "@" + berry, true);
                         g = readable(g.gained);
-                        player.pokemon.push(currentPokemon);
                         sendAll("The " + pokeName + " was holding " + g + "!");
                     }
-                }
-            } else if (ball !== "spirit") {
-                if (crystalEffect.effect === "evolution" && evolutions.hasOwnProperty(currentPokemon+"")) {
-                    var evolved = getPossibleEvo(currentPokemon) + (typeof currentPokemon === "string" ? "" : 0);
-                    player.pokemon.push(evolved);
-                    sendAll(pokeInfo.icon(currentPokemon) + " -> " + pokeInfo.icon(parseInt(evolved, 10)), true);
-                    sendAll("The " + pokeName + " that " + name + " just caught instantly evolved into " + poke(evolved) + "!");
-                } else {
-                    player.pokemon.push(currentPokemon);
                 }
             }
             player.records.pokesCaught += 1;
@@ -10288,7 +10292,12 @@ function Safari() {
             this.trackMessage(mess, player);
         }
 
-        var item = golden ? "golden" : "bait";
+        var item;
+        if (dexlue) {
+            item = "deluxe";
+        } else {
+            item = golden ? "golden" : "bait";
+        }
 
         var baitName = finishName(item);
         var bName = baitName.toLowerCase();
@@ -28408,7 +28417,7 @@ function Safari() {
         this.qualityDry.bulk = Math.max(this.qualityDry.bulk, 10);
         this.blend = ((100 * (this.qualityDry.texture + this.qualityDry.taste + this.qualityDry.acidity)) / (this.qualityDry.dry + this.qualityDry.bulk));
         this.needsSweet = (((95 + (this.qualityDry.bulk)) + ((this.qualityDry.acidity * 4) - this.qualityDry.taste)) / (1));
-        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 6) - this.qualityDry.texture)) / (1));
+        this.needsWet = (((70 + (this.qualityDry.bulk)) + ((this.qualityDry.dry * 10) - this.qualityDry.texture)) / (1));
         this.needsRich = (((75 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.texture + this.qualityDry.taste))) / (1));
         this.needsScent = (((70 + (this.qualityDry.bulk * 2)) - (1 * (this.qualityDry.acidity + this.qualityDry.taste))) / (1));
         this.needsThick = (((100 + (this.qualityDry.bulk)) - (1 * (this.qualityDry.dry + this.qualityDry.texture))) / (1));
@@ -28543,7 +28552,10 @@ function Safari() {
             return false;
         }
         this.msgAll(player.toCorrectCase() + " took their bait out of the oven!");
-        this.bakeTimes[player.toLowerCase()] = diff;
+        this.bakeTimes[player.toLowerCase()] = parseInt(diff, 10)
+        if (bakingDebug) {
+            sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Bait removed from oven at " + diff + ".", safchan);
+        }
         for (var a in this.bakeTimes) {
             if (this.bakeTimes[a] == 0) {
                 return;
@@ -28794,11 +28806,12 @@ function Safari() {
         judgeScore = Math.min(judgeScore, 5);
         this.msgAll("Paul Politoed's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
         aggregateScore += judgeScore * 5;
+        this.msgAll("Total Score: " + aggregateScore + "!");
 
         var amtGiven = (Math.round(0.5 * Math.max(this.qualityDry.bulk - 6, 2) * (100 / this.players.length)) * 0.01);
 
         bakeScores = {};
-        var underbaked = false;
+        var underbaked = false, score = 0;
         for (var a in this.bakeTimes) {
             score = Math.abs(this.bakeTimes[a] - this.bakeTimeNeeded);
             score = parseInt(score, 10);
@@ -28806,6 +28819,9 @@ function Safari() {
                 score = 10;
             }
             score = Math.round(score * 100) * 0.01;
+            if (bakingDebug) {
+                sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Oven score for " + a + ": " + score + ".", safchan);
+            }
             underbaked = this.bakeTimes[a] - this.bakeTimeNeeded > 0 ? false : true;
             if (score < 0.75) {
                 score = 0;
@@ -28857,6 +28873,9 @@ function Safari() {
                 "list": []
             }
         };
+        var searchedMons1 = 0;
+        var searchedMons2 = 0;
+        var searchedMons3 = 0;
         for (var j = 0; j < 891; j++) {
             for (var i = 0; i < 27; i++) {
                 mon = getInputPokemon(poke(j + (65536 * i)));
@@ -28881,6 +28900,7 @@ function Safari() {
                         rareForm = true;
                     }
                 }
+                searchedMons1 += 1;
                 val = 0;
                 eggval = 0;
                 for (var a in eggTypes) {
@@ -28933,6 +28953,7 @@ function Safari() {
                 if (val < 7 && (chance(0.5))) {
                     continue; //Doesn't spawn
                 }
+                searchedMons2 += 1;
                 if (val > 100) {
                     val = 100;
                 }
@@ -28958,14 +28979,20 @@ function Safari() {
                 if (rareForm) {
                     hits--;
                 }
+                searchedMons3 += 1;
                 if (hits >= 12) {
                     out.commons.list.push(mon.num);
                 } else if (hits >= 3) {
                     out.uncommons.list.push(mon.num);
                 } else if (hits >= 1) {
                     out.rares.list.push(mon.num);
+                } else {
+                    searchedMons3 -= 1;
                 }
             }
+        }
+        if (bakingDebug) {
+            sys.sendHtmlMessage(sys.id("Miki Sayaka"), "Searched Mons: " + searchedMons1 + " | " + searchedMons2 + " | " + searchedMons3, safchan);
         }
         var player;
         for (var p in this.players) {
@@ -42261,7 +42288,7 @@ function Safari() {
                 }
                 player.balls.deluxe = 0;
                 player.money += cost;
-                safaribot.sendHtmlMessage(src, "You sold your " + amt + " Deluxe Baits for a total of $" + cost + "! You now have " + player.money + "!");
+                safaribot.sendHtmlMessage(src, "You sold your " + amt + " Deluxe Baits for a total of $" + cost + "! You now have $" + addComma(player.money) + "!");
                 safari.saveGame(player);
                 return true;
             }
