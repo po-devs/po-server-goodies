@@ -29069,9 +29069,9 @@ function Safari() {
 
             this.msg(player.id, "You " + g + "!");
             this.msg(player.id, "<b>Bait Data:</b>");
-            this.msg(player.id, "- Commons (" + player.deluxeBait.commons.rate + "%): " + player.deluxeBait.commons.list.join(", "));
-            this.msg(player.id, "- Uncommons (" + player.deluxeBait.uncommons.rate + "%): " + player.deluxeBait.uncommons.list.join(", "));
-            this.msg(player.id, "- Rares (" + player.deluxeBait.rares.rate + "%): " + player.deluxeBait.rares.list.join(", "));
+            this.msg(player.id, "- Commons (" + player.deluxeBait.commons.rate + "%): " + player.deluxeBait.commons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(player.id, "- Uncommons (" + player.deluxeBait.uncommons.rate + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "));
+            this.msg(player.id, "- Rares (" + player.deluxeBait.rares.rate + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "));
         }
         this.finished = true;
         this.msgAll("");
