@@ -7522,7 +7522,7 @@ function Safari() {
                 } else {
                     player.pokemon.push(currentPokemon);
                 }
-            } else {
+            } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
             if (currentRules && currentRules.berries) {
@@ -8527,6 +8527,7 @@ function Safari() {
             }
             player.helds[0] = item;
             player.balls[getItem] -= 1;
+            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[0]) + " the " + itemAlias(getItem, false, true) + "!");
         }
         safari.saveGame(player);
     };
@@ -8926,9 +8927,9 @@ function Safari() {
                 if (player.helds[e] !== -1) {
                     var item = heldCodes[player.helds[e] + ""];
                     var see = "";
-                    for (var e in base64icons) {
-                        if ((e + "").toLowerCase() === (item + "").toLowerCase()) {
-                            see = base64icons[e];
+                    for (var f in base64icons) {
+                        if ((f + "").toLowerCase() === (item + "").toLowerCase()) {
+                            see = base64icons[item+""];
                         }
                     }
                     item = "<img src= 'item:" + see + "' title='" + item + "' >";
