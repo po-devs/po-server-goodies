@@ -18490,7 +18490,7 @@ function Safari() {
                     }
                 }
                 var dynamaxed, which;
-                which = (this.name1 == name1 ? 1 : 2);
+                which = (this.name1 == name ? 1 : 2);
                 var e, t = 0, p, m, moves = [],  codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
                 for (e = 0; e < team.length; e++) {
                     p = team[e];
