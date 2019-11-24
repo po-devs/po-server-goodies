@@ -7522,7 +7522,7 @@ function Safari() {
                 } else {
                     player.pokemon.push(currentPokemon);
                 }
-            } else {
+            } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
             if (currentRules && currentRules.berries) {
@@ -8511,15 +8511,15 @@ function Safari() {
     this.heldItem = function(player, item, taking) {
         var src = sys.id(player.id);
         if (!(heldCodes.hasOwnProperty(item+""))) {
-            safaribot.sendHtmlMessage(src, "No item under " + item + " found!");
+            safaribot.sendHtmlMessage(src, "No item under " + item + " found!", safchan);
         }
         var getItem = heldCodes[item+""];
         if (taking) {
             player.balls[getItem] += 1;
-            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + "!");
+            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + "!", safchan);
         } else {
             if (player.balls[getItem] <= 0) {
-                safaribot.sendHtmlMessage(src, "You don't have any " + getItem + " to give!");
+                safaribot.sendHtmlMessage(src, "You don't have any " + getItem + " to give!", safchan);
                 return;
             }
             if (player.helds[0] !== -1) {
@@ -8527,6 +8527,7 @@ function Safari() {
             }
             player.helds[0] = item;
             player.balls[getItem] -= 1;
+            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[0]) + " the " + itemAlias(getItem, false, true) + "!", safchan);
         }
         safari.saveGame(player);
     };
@@ -8926,9 +8927,9 @@ function Safari() {
                 if (player.helds[e] !== -1) {
                     var item = heldCodes[player.helds[e] + ""];
                     var see = "";
-                    for (var e in base64icons) {
-                        if ((e + "").toLowerCase() === (item + "").toLowerCase()) {
-                            see = base64icons[e];
+                    for (var f in base64icons) {
+                        if ((f + "").toLowerCase() === (item + "").toLowerCase()) {
+                            see = base64icons[item+""];
                         }
                     }
                     item = "<img src= 'item:" + see + "' title='" + item + "' >";
