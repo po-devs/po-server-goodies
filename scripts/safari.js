@@ -8491,8 +8491,8 @@ function Safari() {
         "11": "miracle",
         "12": "platinum"
     };
-    this.giveItem = function(player, item) {
-        var src = sys.id(player.id);
+    this.giveItem = function(src, item) {
+        var player = getAvatar(src);
         if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
@@ -8504,6 +8504,7 @@ function Safari() {
         }
         if (hit == null) {
             safaribot.sendHtmlMessage(sys.id(player.id), "No such item!", safchan);
+            return;
         }
         this.heldItem(player, hit);
     };
@@ -17857,36 +17858,73 @@ function Safari() {
         if (this.select) {
             if (this.select.sandstorm) {
                 this.weather = "Sand";
+                this.weatherTimer = 5;
+            } else if (this.select.sandstorm3) {
+                this.weather = "Sand";
                 this.weatherTimer = 256;
             } else if (this.select.rain) {
                 this.weather = "Rain";
-                this.weatherTimer = 256;
+                this.weatherTimer = 5;
+            } else if (this.select.rain) {
+                this.weather = "Rain";
+                this.weatherTimer = 8;
             } else if (this.select.sun) {
                 this.weather = "Sun";
-                this.weatherTimer = 256;
+                this.weatherTimer = 5;
+            } else if (this.select.sun2) {
+                this.weather = "Sun";
+                this.weatherTimer = 8;
             } else if (this.select.hail) {
+                this.weather = "Hail";
+                this.weatherTimer = 5;
+            } else if (this.select.hail3) {
                 this.weather = "Hail";
                 this.weatherTimer = 256;
             }
-        }
+        };
         this.abilityUsed = {
             "1": false,
             "2": false,
             "3": false,
             "4": false
-        }
+        };
         this.abilityOptions = {
             "1": [],
             "2": [],
             "3": [],
             "4": []
-        }
+        };
         this.abilityQueue = {
             "1": {},
             "2": {},
             "3": {},
             "4": {}
-        }
+        };
+        this.dynamaxLegal = false;
+        this.dynamaxes = {
+            "1": {
+                "mon": -1,
+                "timer": 5
+            },
+            "2": {
+                "mon": -1,
+                "timer": 5
+            },
+            "3": {
+                "mon": -1,
+                "timer": 5
+            },
+            "4": {
+                "mon": -1,
+                "timer": 5
+            }
+        };
+        this.monChosen = {
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0
+        };
 
         var pSize = this.partySize = (this.tagBattle ? 2 : 3);
         this.partySizeP1 = pSize;
@@ -18451,12 +18489,29 @@ function Safari() {
                         self.sendMessage(name, link("/bat ability" + j, abilityList[i] + ": " + self.abilityData[abilityList[i]].desc));
                     }
                 }
+                var dynamaxed, which;
+                which = (this.name1 == name1 ? 1 : 2);
                 var e, t = 0, p, m, moves = [],  codes = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
                 for (e = 0; e < team.length; e++) {
                     p = team[e];
+                    dynamaxed = false
                     if (p.hp > 0) {
                         moves = [];
-                        p.moves = self.generateMoves(e, p, name);
+                        if (this.dynamaxLegal) {
+                            var obj = this.dynamaxes[which+""];
+                            var party;
+                            if (which == 1) {
+                                party = this.team1;
+                            } else {
+                                party = this.team2;
+                            }
+                            if (obj.mon !== -1) {
+                                if (obj.mon == e) {
+                                    dynamaxed = true;
+                                }
+                            }
+                        }
+                        p.moves = self.generateMoves(e, p, name, dynamaxed);
                         p.flinch = false;
                         p.protect = false;
                         p.helped = false;
@@ -18593,6 +18648,40 @@ function Safari() {
                     prepareTeamForTurn(this.name4, this.team4, this.p4MoveCodes, this.abilityOptions["4"], this.npcBattle);
                 } else {
                     this.player4Input = "---";
+                }
+            }
+            if (this.dynamaxLegal) {
+                var obj, name, party;
+                for (var i in this.dynamaxes) {
+                    obj = this.dynamaxes[i];
+                    if (obj.timer > 0) {
+                        obj.timer -= 1;
+                    }
+                    obj.using = false;
+                    if (obj.timer == 0) {
+                        if (obj.mon !== -1) {
+                            if (parseInt(i, 10) == 1) {
+                                obj.timer = -2;
+                                name = this.name1;
+                                party = this.team1;
+                            } else {
+                                obj.timer = 5;
+                                name = this.name2;
+                                party = this.team2;
+                            }
+                            this.sendToViewers(toColor(name + "'s Dynamax " + poke(party[parseInt(obj.mon, 1)]) + " reverted!", "#cc6699"));
+                            obj.mon = 0;
+                        } else {
+                            obj.timer = -1;
+                            if (parseInt(i, 10) == 1) {
+                                name = this.name1;
+                            } else {
+                                name = this.name2;
+                            }
+                            this.sendToViewers(toColor(name + "'s Dynamax is ready!", "#cc6699"));
+                            obj.mon = 0;
+                        }
+                    }
                 }
             }
             if (this.fullNPC) {
@@ -18852,6 +18941,32 @@ function Safari() {
             this.poke2 = poke2;
             this.poke3 = poke3;
             this.poke4 = poke4;
+
+            this.dynamaxUsed = {
+                "1": false,
+                "2": false
+            }
+
+            if (this.dynamaxLegal) {
+                var obj, used, party;
+                for (var i in this.dynamaxes) {
+                    obj = this.dynamaxes[i];
+                    if (parseInt(i, 10) == 1) {
+                        party = this.team1;
+                        used = this.team1.indexOf(poke1);
+                    } else {
+                        party = this.team2;
+                        used = this.team2.indexOf(poke2);
+                    }
+                    if (obj.used) {
+                        obj.timer = 3;
+                        obj.mon = used;
+                        obj.used = false;
+                        this.dynamaxUsed[i+""] = true;
+                        this.sendToViewers(toColor(name + "'s " + poke(party[obj.mon]) + " Dynamaxed!", "#cc6699"));
+                    }
+                }
+            }
             
             
             var order = [], n1, n2, n3, n4;
@@ -19091,7 +19206,21 @@ function Safari() {
                 else {
                     target = id === 1 ? poke2 : poke1;
                 }
-                name = user.owner + "'s " + poke(user.id);
+                name = user.owner + "'s " + poke(user.id), dynamaxed = false;
+                if (this.dynamaxLegal) {
+                    var obj = this.dynamaxes[id+""], party;
+                    if (id == 1) {
+                        party = this.team1;
+                    } else {
+                        party = this.team2;
+                    }
+                    if (party[obj.mon] == user.id) {
+                        dynamaxed = true;
+                    }
+                }
+                if (dynamaxed) {
+                    name = "Dynamax " + name;
+                }
 
                 if (isP1 && (this.player1Fainted)) {
                     continue;
@@ -19199,6 +19328,18 @@ function Safari() {
                             this.sendToViewers(toColor(pokeInfo.icon(user.id) + name + " is fast asleep!", sColor));
                             user.conditionDuration -= 1;
                             continue;
+                        }
+                    }
+                    if ((!(move.dynamaxed) && (this.dynamaxLegal))) {
+                        var dynamaxUsed;
+                        if (isP1) {
+                            dynamaxUsed = this.dynamaxUsed["1"];
+                        } else {
+                            dynamaxUsed = this.dynamaxUsed["2"];
+                        }
+                        if (dynamaxUsed == true) {
+                            var newMove = this.dynamaxMove(move.type);
+                            move = newMove;
                         }
                     }
                     if (user.condition === "freeze") {
@@ -19737,6 +19878,25 @@ function Safari() {
                 }
             }
         }
+        if (data == "dynamax" && this.dynamaxLegal) {
+            var obj;
+            if (isP1) {
+                obj = this.dynamaxes["1"];
+            } else {
+                obj = this.dynamaxes["2"];
+            }
+            if (obj.mon !== 0) {
+                this.sendMessage(name, "You cannot dynamax more than one Pokémon!");
+                return;
+            }
+            if (obj.timer !== -1) {
+                this.sendMessage(name, "You cannot dynamax yet!");
+                return;
+            }
+            obj.using = true;
+            obj.timer = 3;
+            this.sendMessage(name, "You are activating your dynamax this turn!");
+        }
 
 
         var aim = 0;
@@ -19789,6 +19949,13 @@ function Safari() {
             this.player3Input = data;
         } else if (isP4) {
             this.player4Input = data;
+        }
+        if (["a","b","c"].contains(data)) {
+            this.monChosen[which+""] = 1;
+        } else if (["d","e","f"].contains(data)) {
+            this.monChosen[which+""] = 2;
+        } else if (["g","h","i"].contains(data)) {
+            this.monChosen[which+""] = 3;
         }
         var move = codeList[data];
         this.sendMessage(name, toColor("You picked " + poke(move.owner) + "'s move " + data.toUpperCase() + ": " + this.translateMove(move), "crimson"));
@@ -20312,6 +20479,24 @@ function Safari() {
                 self.crit = false;
                 var dmg = self.damageCalc(user, move, target, typeMultiplier, targetSide, isP1, isP2, isP3, isP4);
                 var sdmg = dmg;
+                var dynamaxed = false;
+                var userSide = targetSide == 2 ? 1 : 2;
+                if (this.dynamaxLegal) {
+                    var dynamaxObj = this.dynamaxes[targetSide+""], party;
+                    if (targetSide == 2) {
+                        party = this.team2;
+                    } else {
+                        party = this.team1;
+                    }
+                    if (dynamaxObj.mon !== -1) {
+                        if (party.indexOf(target) == dynamaxObj.mon) {
+                            dynamaxed = true;
+                        }
+                    }
+                }
+                if (dynamaxed) {
+                    dmg = Math.ceil(dmg * 0.25);
+                }
                 if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
                     dmg = Math.ceil(dmg * 0.5);
                     sdmg = Math.ceil(dmg * 0.5);
@@ -21389,7 +21574,90 @@ function Safari() {
         
         return out.join(", ");
     };
-    Battle2.prototype.generateMoves = function(id, data, name) {
+    Battle2.prototype.dynamaxMove = function(type) {
+        var power = (100 + (5 * (Math.round(4 * Math.random()))));
+        var out = {
+            "Normal": {
+                refresh: "self"
+            },
+            "Fighting": {
+                buff: {
+                    "atk": 1
+                }
+            },
+            "Flying": {
+                buff: {
+                    "spd": 1
+                }
+            },
+            "Poison": {
+                buff: {
+                    "satk": 1
+                }
+            },
+            "Ground": {
+                buff: {
+                    "sdef": 1
+                }
+            },
+            "Bug": {
+                nerf: {
+                    "satk": 1
+                }
+            },
+            "Ghost": {
+                nerf: {
+                    "def": 1
+                }
+            },
+            "Steel": {
+                buff: {
+                    "def": 1
+                }
+            },
+            "Rock": {
+                weather: "sand"
+            },
+            "Water": {
+                weather: "rain"
+            },
+            "Fire": {
+                weather: "sun"
+            },
+            "Ice": {
+                weather: "hail"
+            },
+            "Electric": {
+                terrain: "electric"
+            },
+            "Grass": {
+                terrain: "grassy"
+            },
+            "Psychic": {
+                terrain: "psychic"
+            },
+            "Fairy": {
+                terrain: "misty"
+            },
+            "Dark": {
+                nerf: {
+                    "sdef": 1
+                }
+            },
+            "Dragon": {
+                nerf: {
+                    "atk": 1
+                }
+            }
+        }[type];
+        out.power = power;
+        out.type = type;
+        out.category = (chance(0.5) ? "physical" : "special");
+        out.priority = 0;
+        out.dynamax = true;
+        return out;
+    };
+    Battle2.prototype.generateMoves = function(id, data, name, dynamaxed) {
         var out = [], m, move, amt, p, types = data.types, eff, damaging, used, amt, factor;
         var boost = (this.npcBattle && (name === this.name2 || name === this.name4) ? this.powerBoost * 0.8 : 0) + 1;
         var moveBoost = (this.npcBattle && name === this.name2 ? this.powerBoost * 0.6 : 0) + 1;
@@ -21489,6 +21757,12 @@ function Safari() {
                     factor = 0;
                 }
                 damaging = true;
+            }
+            if (dynamaxed) {
+                move = this.dynamaxMove(move.type);
+                factor = 0;
+            } else {
+                move.dynamax = false;
             }
             
             while (factor !== 0) {
@@ -29186,11 +29460,11 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 2)) * 0.017) - 2, 0.01);
+            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 1.75)) * 0.016) - 2, 0.01);
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
-            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 4)) * 0.06) - player.deluxeBait.rares.rate, 0.1);
+            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 3.5)) * 0.06) - player.deluxeBait.rares.rate, 0.1);
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
             safari.saveGame(player);
