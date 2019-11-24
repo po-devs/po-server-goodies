@@ -42722,7 +42722,7 @@ function Safari() {
                 var player = getAvatar(src);
                 var amt = player.balls.deluxe;
                 if (amt == 0) {
-                    safaribot.sendHtmlMessage(src, "You don't have any Deluxe Baits to sell!");
+                    safaribot.sendHtmlMessage(src, "You don't have any Deluxe Baits to sell!", safchan);
                     return true;
                 }
                 var cost = amt * 200;
