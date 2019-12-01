@@ -22934,8 +22934,9 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.getBiteTypes = function(moves) {
+    Battle2.prototype.getBiteTypes = function(p) {
         var out = [], mt;
+        var moves = fetchMoves(p);
         var set = [422, 423, 424, 242, 665, 305, 158, 44];
         for (var i in set) {
             if (!(moves.contains(set[i]))) {
