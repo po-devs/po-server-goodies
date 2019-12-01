@@ -26789,7 +26789,7 @@ function Safari() {
     };
     this.getCelebrities = function(data, difficulty) {
         var index = 0, eliteindex = 8, trainer, chal, partyStrength, diff, hold, maxLoop, hazard, currentTrainer, b;
-        var pack1 = false;
+        var pack1 = false, pack2 = false;
         var out = {
             "gym": [],
             "elite": []
@@ -26804,6 +26804,13 @@ function Safari() {
                     continue;
                 } else {
                     pack1 = true;
+                }
+            }
+            if (trainer.pack2) {
+                if (pack2) {
+                    continue;
+                } else {
+                    pack2 = true;
                 }
             }
 
@@ -47543,7 +47550,7 @@ function Safari() {
         for (var e in monthlyLeaderboardTypes) {
             if (monthlyLeaderboardTypes.hasOwnProperty("file")) {
                 var file = monthlyLeaderboardTypes[e].file;
-                cleanFile(file);
+                //cleanFile(file);
                 monthlyLeaderboards[e] = new MemoryHash(file);
             }
         }
