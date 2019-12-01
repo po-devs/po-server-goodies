@@ -19563,6 +19563,9 @@ function Safari() {
                     var allMons = this.team2.concat(this.team4), mon, k, o;
                     for (var i = 0; i < allMons.length; i++) {
                         mon = allMons[i];
+                        if (mon.hp == 0) {
+                            continue;
+                        }
                         mon.hp = Math.min(mon.maxhp, Math.floor(mon.hp + (0.25 * mon.maxhp)));
                     }
                     this.sendToViewers("The foe's team regenerated!");
@@ -22422,7 +22425,7 @@ function Safari() {
         return isImmune;
     };
     Battle2.prototype.chooseNPCMove = function(moves, team, opponent, ind) {
-        var moveChance = {}, move, user, e, o, opp, val, val2, c, totalc, m, eff, affect = opponent.length; alive = 0, oppAlive = 0;
+        var moveChance = {}, move, user, e, o, opp, val, val2, val3, c, totalc, m, eff, affect = opponent.length; alive = 0, oppAlive = 0;
         var bias = {};
         var bias = (ind === 2 ? this.biasNPC : (ind === 4 ? this.biasNPC2 : {}));
         var isP1 = false, isP2 = false, isP3 = false, isP4 = false;
@@ -22470,25 +22473,27 @@ function Safari() {
                         dmg = this.damageCalc(user, move, opp, eff, 1, isP1, isP2, isP3, isP4);
 
                         var diff = (opp.hp / dmg);
-                        if (dif < 1) {
+                        var diff2 = (opp.maxhp / dmg) * 0.25;
+                        diff = Math.max(diff, diff2);
+                        if (diff < 1) {
                             val = 22;
                         }
-                        else if (dif < 1.5) {
+                        else if (diff < 1.5) {
                             val = 16;
                         }
-                        else if (dif < 2) {
+                        else if (diff < 2) {
                             val = 7;
                         }
-                        else if (dif < 3) {
+                        else if (diff < 3) {
                             val = 4;
                         }
-                        else if (dif < 4) {
+                        else if (diff < 4) {
                             val = 2;
                         }
-                        else if (dif < 6) {
+                        else if (diff < 6) {
                             val = 1;
                         }
-                        else if (dif < 8) {
+                        else if (diff < 8) {
                             val = 0.5;
                         }
                         else {
