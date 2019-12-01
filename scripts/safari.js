@@ -13049,43 +13049,43 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack1") {
-                        g = giveStuff(player, toStuffObj("2@gem", "10@gacha", "10@bait", "30@safari"));
+                        g = giveStuff(player, toStuffObj("2@gem,10@gacha,10@bait,30@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack2") {
-                        g = giveStuff(player, toStuffObj("15@bluapricorn", "15@pnkapricorn", "15@pnkapricorn", "20@bait", "5@pearl"));
+                        g = giveStuff(player, toStuffObj("15@bluapricorn,15@pnkapricorn,15@pnkapricorn,20@bait,5@pearl"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack3") {
-                        g = giveStuff(player, toStuffObj("15@redapricorn", "15@ylwapricorn", "15@grnapricorn", "20@bait", "5@pearl"));
+                        g = giveStuff(player, toStuffObj("15@redapricorn,15@ylwapricorn,15@grnapricorn,20@bait,5@pearl"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack4") {
-                        g = giveStuff(player, toStuffObj("3@eviolite", "2@golden", "@scarf", "@rare", "10@bigpearl", "20@gacha", "5@pokeblock"));
+                        g = giveStuff(player, toStuffObj("3@eviolite,2@golden,@scarf,@rare,10@bigpearl,20@gacha,5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack5") {
-                        g = giveStuff(player, toStuffObj("2@eviolite", "@amulet", "5@egg", "50@great", "5@pokeblock"));
+                        g = giveStuff(player, toStuffObj("2@eviolite,@amulet,5@egg,50@great,5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack6") {
-                        g = giveStuff(player, toStuffObj("3@rare", "@battery", "20@bait", "75@safari"));
+                        g = giveStuff(player, toStuffObj("3@rare,@battery,20@bait,75@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack7") {
-                        g = giveStuff(player, toStuffObj("@eviolite", "2@honey", "2@stardust", "3@golden", "50@ultra", "5@pokeblock"));
+                        g = giveStuff(player, toStuffObj("@eviolite,2@honey,2@stardust,3@golden,50@ultra,5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack8") {
-                        g = giveStuff(player, toStuffObj("25@gacha", "25@bait", "25@bluapricorn", "25@pnkapricorn", "25@pnkapricorn", "5@pokeblock"));
+                        g = giveStuff(player, toStuffObj("25@gacha,25@bait,25@bluapricorn,25@pnkapricorn,25@pnkapricorn,5@pokeblock"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack9") {
-                        g = giveStuff(player, toStuffObj("10@egg", "@golden", "25@redapricorn", "25@ylwapricorn", "25@grnapricorn"));
+                        g = giveStuff(player, toStuffObj("10@egg,@golden,25@redapricorn,25@ylwapricorn,25@grnapricorn"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "preschoolerPack10") {
-                        g = giveStuff(player, toStuffObj("@nugget", "10@rare", "10@golden", "@stardust", "5@eviolite", "50@bait", "100@safari"));
+                        g = giveStuff(player, toStuffObj("@nugget,10@rare,10@golden,@stardust,5@eviolite,50@bait,100@safari"));
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "pokefanPack") {
