@@ -4942,9 +4942,11 @@ function Safari() {
         }
         var id = parseInt(num, 10);
         var moves = pokedex.getAllMoves(id);
+        var mn = 0;
 
         for (var i in ultraMoves) {
-            if (out.contains(ultraMoves[i])) {
+            mn = parseInt(i, 10);
+            if (out.contains(mn)) {
                 continue;
             }
             if (ultraMoves[i].hasOwnProperty("learned")) {
@@ -43621,9 +43623,9 @@ function Safari() {
                     return true;
                 }
                 safaribot.sendMessage(src, poke(info.num) + " cannot learn " + moveName + ".", safchan);
-                return false;
+                return true;
             };
-            if (command === "bst") {
+            if (command === "bst" || command === "dex") {
                 var info = getInputPokemon(commandData);
 
                 if (!info.num) {
