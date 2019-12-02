@@ -4951,7 +4951,7 @@ function Safari() {
             }
             if (ultraMoves[i].hasOwnProperty("learned")) {
                 if (ultraMoves[i].learned.contains(num)) {
-                    out.push(ultraMoves[i]);
+                    out.push(mn);
                 }
             }
         }
@@ -43637,12 +43637,12 @@ function Safari() {
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
                 var ic = pokeInfo.icon(info.num);
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(typeIcon(type_1) + (type_2 === "???" ? "" : " "+typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +"]", safchan);
                 var stats = getStatsNamed(info.num), statsmsg = "";
                 for (var i in stats) {
                     statsmsg += i + ": " + stats[i] + "  ";
                 }
-                safaribot.sendHtmlMessage(src, statsmsg, safchan);
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" + statsmsg + " ]." , safchan);
+                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : " " + typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +"]", safchan);
                 
                 var player = getAvatar(src);
                 if (player) {
