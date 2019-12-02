@@ -7546,9 +7546,9 @@ function Safari() {
                 if (berry.length > 0) {
                     var itemBST = getBST(currentPokemon);
                     var itemPower = itemBST;
-                    if (itemBST > 500) {
-                        itemPower += (itemBST - 400);
-                    } else if (itemBST > 550) {
+                    if (itemBST > 400) {
+                        itemPower += (itemBST - 300);
+                    } else if (itemBST > 500) {
                         itemPower += (itemBST - 450);
                     }
                     itemPower += (100 * Math.random()) + (100 * Math.random()) - (200 * Math.random());
@@ -15911,6 +15911,10 @@ function Safari() {
         }
         if (!passed) {
             safaribot.sendMessage( src,"You are not on a team!",safchan );
+            return;
+        }
+        if (!target) {
+            safaribot.sendMessage( src,"You need to mark a target as inactive!",safchan );
             return;
         }
         targetPlayer = getAvatarOff(target);
@@ -29428,6 +29432,10 @@ function Safari() {
                             continue;
                         }
                         rareForm = true;
+                    } else {
+                        if (wildForms[j+""] <= i) {
+                            break;
+                        }
                     }
                 }
                 searchedMons1 += 1;
@@ -34898,7 +34906,9 @@ function Safari() {
         var m = "";
         switch (condition) {
             case "sandstorm": m = "A Sandstorm rages."; break;
+            case "sandstorm3": m = "A Sandstorm rages."; break;
             case "hail": m = "Hail begins to fall."; break;
+            case "hail3": m = "Hail begins to fall."; break;
             case "sun": m = "The sunlight is intense."; break;
             case "rain": m = "There is a heavy downpour of rain."; break;
             case "electricterrain": m = "The field surges with electric terrain."; break;
@@ -35007,7 +35017,7 @@ function Safari() {
             case "nostab": m = "Move types do not align with the user's type."; break;
             case "thickPollen": m = "All non-Grass non-Bug Pokémon suffer reduced SPE from pollen."; break;
             case "galeWings": m = "All Flying-type moves have increased priority."; break;
-            case "bodypress": m = "All physical moves use the higher of attack and defense sta to deal damage."; break;
+            case "bodypress": m = "All physical moves use the higher of attack and defense stat to deal damage."; break;
             case "psystrike": m = "All Psychic-type moves target the lower defense stat."; break;
             case "fairystrike": m = "All Fairy-type moves target the lower of defense and attack when doing damage."; break;
             case "inferno": m = "All Fire-type moves have a 25% chance to burn."; break;
@@ -43576,6 +43586,31 @@ function Safari() {
                 showVolleyballHints(src, commandData);
                 return true;
             }
+            if (command === "learns") {
+                commandData = commandData.split(":");
+                if (commandData.length < 2) {
+                    safaribot.sendMessage(src, "Supply both a Pokémon and a move to search.", safchan);
+                    return true;
+                }
+                var info = getInputPokemon(commandData[0]);
+
+                if (!info.num) {
+                    safaribot.sendMessage(src, "Invalid Pokémon.", safchan);
+                    return true;
+                }
+                var info2 = movenum(commandData[1]);
+                var moveName = moveOff(info2);
+                if (!moveName) {
+                    safaribot.sendMessage(src, "Invalid Move.", safchan);
+                    return true;
+                }
+                if (canLearnMove(info.num, info2)) {
+                    safaribot.sendMessage(src, poke(info.num) + " can learn " + moveName + ".", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, poke(info.num) + " cannot learn " + moveName + ".", safchan);
+                return false;
+            };
             if (command === "bst") {
                 var info = getInputPokemon(commandData);
 
@@ -43587,7 +43622,14 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
-                safaribot.sendHtmlMessage(src, pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(typeIcon(type_1) + (type_2 === "???" ? "" : " "+typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +"]", safchan);
+                var ic = pokeInfo.icon(info.num);
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [Type: " +(typeIcon(type_1) + (type_2 === "???" ? "" : " "+typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +"]", safchan);
+                var stats = getStatsNamed(info.num), statsmsg = "";
+                for (var i in stats) {
+                    statsmsg += i + ": " + stats[i] + "  ";
+                }
+                safaribot.sendHtmlMessage(src, statsmsg, safchan);
+                
                 var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
