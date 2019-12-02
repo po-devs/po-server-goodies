@@ -2869,11 +2869,14 @@ function Safari() {
         "349": {
             "learned": [330]
         },
+        "370": {
+            "learned": [612]
+        },
         "406": {
             "learned": [757, 758, 776, 780, 782, 783, 784, 799, 800, 66336, 131872, 197408]
         },
         "438": {
-            "learned": [130]
+            "learned": [130, 151]
         },
         "702": {
             "name": "Mind Blown",
@@ -2967,7 +2970,7 @@ function Safari() {
         },
         "717": {
             "name": "Overdrive",
-            "learned": [849, form(849-1)],
+            "learned": [849, form(849, 1)],
             "type": "Electric",
             "power": 80
         },
@@ -3112,7 +3115,7 @@ function Safari() {
                 if (!(ultraMoves[i].hasOwnProperty("name"))) {
                     continue
                 }
-                if (ultraMoves[i].name == name) {
+                if (ultraMoves[i].name.toLowerCase() == name.toLowerCase()) {
                     out = parseInt(i, 10);
                     break;
                 }
@@ -43618,7 +43621,7 @@ function Safari() {
                     safaribot.sendMessage(src, "Invalid Pokémon.", safchan);
                     return true;
                 }
-                var info2 = movenum(commandData[1]);
+                var info2 = movenum(commandData[1].toLowerCase());
                 var moveName = moveOff(info2);
                 if (!moveName) {
                     safaribot.sendMessage(src, "Invalid Move.", safchan);
@@ -43643,12 +43646,13 @@ function Safari() {
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
                 var ic = pokeInfo.icon(info.num);
-                var stats = getStatsNamed(info.num), statsmsg = "";
+                var stats = getStatsNamed(info.num), statsmsg = [];
                 for (var i in stats) {
-                    statsmsg += i + ": " + stats[i] + "  ";
+                    statsmsg.push(i + ": " + stats[i] + "  ");
                 }
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" + statsmsg + " ]." , safchan);
-                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : " " + typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +"]", safchan);
+                statsmsg = statsmsg.join("|");
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" + statsmsg + "]." , safchan);
+                safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : " " + typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
                 
                 var player = getAvatar(src);
                 if (player) {
