@@ -24340,8 +24340,8 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 175 and 320. Reward is 2.4x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 460 and 599. Reward is 4.8x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 480 and 600, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Insane", "Insane") + " - For crazy people.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 720, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
             case "start":
@@ -24397,7 +24397,7 @@ function Safari() {
                 }
 
                 var request = [];
-                var difficultBonus = [2.4, 3.3, 4.8, 9.2, 20][level];
+                var difficultBonus = [2.4, 3.3, 4.8, 10, 20][level];
                 var minBST = [175, 320, 440, 480, 520][level];
                 var maxBST = [320, 460, 599, 600, 750][level];
                 var amount = [3, 4, 5, 5, 9][level];
