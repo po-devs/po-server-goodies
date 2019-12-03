@@ -43998,6 +43998,58 @@ function Safari() {
                 sys.sendHtmlAll("<font color='" + color + "'><timestamp/><b>" + sys.name(src) + ":</b></font> " + out, safchan);
                 return true;
             }
+            if (command === "checktrivia" || command === "showtrivia") {
+                var out, data, approved, mon, hit = false;
+                if (commandData && commandData.length > 0 && commandData !== "unapproved") {
+                    mon = getInputPokemon(commandData).num;
+                    if (triviaData.hasOwnProperty(mon+"")) {
+                        data = triviaData[mon+""];
+                        for (var i in data) {
+                            approved = data[i];
+                            hit = true;
+                            safaribot.sendHtmlMessage(src, i + " " + (approved ? "" : link("/approvetrivia " + mon + ":" + i, "Approve")) + " " + link("/removetrivia " + mon + ":" + i, "Remove"), safchan);
+                        }
+                        if (!(hit)) {
+                            safaribot.sendHtmlMessage(src, "No trivia for " + poke(mon) + " found!", safchan);
+                        }
+                    }
+                    safaribot.sendHtmlMessage(src, "No submitted questions for " + poke(mon) + " found!", safchan);
+                    return true;
+                }
+                for (var a in triviaData) {
+                    data = triviaData[a];
+                    for (var i in data) {
+                        approved = data[i];
+                        if (approved) {
+                            continue;
+                        }
+                        hit = true;
+                        safaribot.sendHtmlMessage(src, poke(parseInt(a, 10)) + ": " + i + (approved ? "" : link("/approvetrivia " + a + ":" + i, "Approve")) + " " + link("/removetrivia " + a + ":" + i, "Remove"), safchan);
+                    }
+                }
+                if (!(hit)) {
+                    safaribot.sendHtmlMessage(src, "No unapproved trivia found!", safchan);
+                }
+                return true;
+            }
+            if (command === "approvetrivia") {
+                data = commandData.split(":");
+                if (data.length !== 2) {
+                    return true;
+                }
+                triviaData[data[0]][data[1]] = true;
+                safaribot.sendHtmlMessage(src, "Approved trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
+                return true;
+            }
+            if (command === "removetrivia") {
+                data = commandData.split(":");
+                if (data.length !== 2) {
+                    return true;
+                }
+                delete triviaData[data[0]][data[1]];
+                safaribot.sendHtmlMessage(src, "Removed trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
+                return true;
+            }
             if (command === "startevent") {
                 if (currentEvent) {
                     safaribot.sendMessage(src, "There's already an event going on!", safchan);
@@ -46656,58 +46708,6 @@ function Safari() {
                     return true;
                 }
                 safaribot.sendMessage(src, "No data dump " + commandData + " found.", safchan);
-                return true;
-            }
-            if (command === "checktrivia" || command === "showtrivia") {
-                var out, data, approved, mon, hit = false;
-                if (commandData && commandData.length > 0 && commandData !== "unapproved") {
-                    mon = getInputPokemon(commandData).num;
-                    if (triviaData.hasOwnProperty(mon+"")) {
-                        data = triviaData[mon+""];
-                        for (var i in data) {
-                            approved = data[i];
-                            hit = true;
-                            safaribot.sendHtmlMessage(src, i + " " + (approved ? "" : link("/approvetrivia " + mon + ":" + i, "Approve")) + " " + link("/removetrivia " + mon + ":" + i, "Remove"), safchan);
-                        }
-                        if (!(hit)) {
-                            safaribot.sendHtmlMessage(src, "No trivia for " + poke(mon) + " found!", safchan);
-                        }
-                    }
-                    safaribot.sendHtmlMessage(src, "No submitted questions for " + poke(mon) + " found!", safchan);
-                    return true;
-                }
-                for (var a in triviaData) {
-                    data = triviaData[a];
-                    for (var i in data) {
-                        approved = data[i];
-                        if (approved) {
-                            continue;
-                        }
-                        hit = true;
-                        safaribot.sendHtmlMessage(src, poke(parseInt(a, 10)) + ": " + i + " " + link("/removetrivia " + a + ":" + i, "Remove"), safchan);
-                    }
-                }
-                if (!(hit)) {
-                    safaribot.sendHtmlMessage(src, "No unapproved trivia found!", safchan);
-                }
-                return true;
-            }
-            if (command === "approvetrivia") {
-                data = commandData.split(":");
-                if (data.length !== 2) {
-                    return true;
-                }
-                triviaData[data[0]][data[1]] = true;
-                safaribot.sendHtmlMessage(src, "Approved trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
-                return true;
-            }
-            if (command === "removetrivia") {
-                data = commandData.split(":");
-                if (data.length !== 2) {
-                    return true;
-                }
-                delete triviaData[data[0]][data[1]];
-                safaribot.sendHtmlMessage(src, "Removed trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
                 return true;
             }
             if (command === "loadthemes" || command === "loadtheme") {
