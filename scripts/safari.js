@@ -43690,6 +43690,7 @@ function Safari() {
                     return true;
                 }
 
+                var player = getAvatar(src);
                 sys.sendMessage(src, "", safchan);
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
@@ -43731,7 +43732,6 @@ function Safari() {
                 if (efmsg !== "") {
                     safaribot.sendHtmlMessage(src, efmsg, safchan);
                 }
-                var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
                         safaribot.sendMessage(src, info.name + " cannot be sold.", safchan);
