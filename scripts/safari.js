@@ -249,6 +249,7 @@ function Safari() {
             "Contest Champion": {},
             "Photographer": {}
         },
+        dexOptional: ["stats", "effectiveness", "trivia"],
         volleyballRecords: {
             spikes: 0,
             blocks: 0,
