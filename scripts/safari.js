@@ -24363,7 +24363,7 @@ function Safari() {
                     return;
                 }
                 if (data.length < 2) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", " + link("/quest collector:start:insane", "Insane") + ", or " + link("/quest collector:start:epic", "Epic") + ") using /quest collector:start:[difficulty]! Type " + link("/quest collector:difficulty") + " to learn more about the different difficulty levels.", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", " + link("/quest collector:start:epic", "Epic") + ", or " + link("/quest collector:start:insane", "Insane") + ") using /quest collector:start:[difficulty]! Type " + link("/quest collector:difficulty") + " to learn more about the different difficulty levels.", safchan);
                     return;
                 }
                 var diff = data[1].toLowerCase();
@@ -24392,7 +24392,7 @@ function Safari() {
                         level = 4;
                     break;
                     default:
-                        safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + /* ", or " + link("/quest collector:start:epic", "Epic") + */ ") using /quest collector:start:[difficulty]!", safchan);
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Please choose a difficulty (" + link("/quest collector:start:easy", "Easy") + ", " + link("/quest collector:start:normal", "Normal") + ", " + link("/quest collector:start:hard", "Hard") + ", or " + link("/quest collector:start:epic", "Epic") + ") using /quest collector:start:[difficulty]!", safchan);
                         return;
                 }
 
@@ -24418,7 +24418,7 @@ function Safari() {
                     var legendNeeded = (level == 3 ? 1 : 3);
                     for (var i = 0; i < legendNeeded; i++) {
                         legend = 0;
-                        while (legend === sys.pokeNum("Phione") || legend === getPokeNum("Meltan") || legend === sys.pokeNum("Cosmoem") || legend === sys.pokeNum("Cosmog") || legend === 0) {
+                        while (((level == 3) && (legend == 0 || getBST(legend) > 600)) || legend === sys.pokeNum("Phione") || legend === getPokeNum("Meltan") || legend === sys.pokeNum("Cosmoem") || legend === sys.pokeNum("Cosmog") || legend === 0) {
                             legend = legendaries.random();
                         }
                         request.push(legend);
