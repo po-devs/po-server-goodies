@@ -44027,7 +44027,7 @@ function Safari() {
             }
             if (command === "checktrivia" || command === "showtrivia") {
                 var out, data, approved, mon, hit = false;
-                if (commandData && commandData.length > 0 && commandData !== "unapproved") {
+                if (commandData && commandData.length > 0 && commandData !== "unapproved" && commandData !== "*") {
                     mon = getInputPokemon(commandData).num;
                     if (triviaData.hasOwnProperty(mon+"")) {
                         data = triviaData[mon+""];
