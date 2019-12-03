@@ -43793,7 +43793,7 @@ function Safari() {
                     var themes = [];
                     for (var e in contestThemes) {
                         if (e !== "none" && safari.isInTheme(info.num, e)) {
-                            themes.push(themeName(contestThemes[e]));
+                            themes.push(themeName(e));
                         }
                     }
                     if (themes.length > 0) {
