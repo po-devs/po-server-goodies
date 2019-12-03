@@ -43718,13 +43718,13 @@ function Safari() {
                         }
                     }
                     if (se.length > 0) {
-                        efmsg += " Weaknesses: " + se.join(",");
+                        efmsg += " Weaknesses: " + se.join(" ");
                     }
                     if (nve.length > 0) {
-                        efmsg += " Resists: " + nve.join(",");
+                        efmsg += ", Resists: " + nve.join(" ");
                     }
                     if (im.length > 0) {
-                        efmsg += " Immune: " + im.join(",");
+                        efmsg += ", Immune: " + im.join(" ");
                     }
                 }
                 safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
@@ -46661,9 +46661,9 @@ function Safari() {
             if (command === "checktrivia" || command === "showtrivia") {
                 var out, data, approved, mon, hit = false;
                 if (commandData && commandData.length > 0) {
-                    mon = getInputPokemon(mon).num;
-                    if (triviaData.hasOwnProperty(commandData+"")) {
-                        data = triviaData[commandData+""];
+                    mon = getInputPokemon(commandData[0]).num;
+                    if (triviaData.hasOwnProperty(mon+"")) {
+                        data = triviaData[mon+""];
                         for (var i in data) {
                             approved = data[i];
                             hit = true;
@@ -46676,7 +46676,6 @@ function Safari() {
                     return true;
                 }
                 for (var a in triviaData) {
-                    mon = triviaData[a];
                     hit = false;
                     if (triviaData.hasOwnProperty(a)) {
                         data = triviaData[a];
