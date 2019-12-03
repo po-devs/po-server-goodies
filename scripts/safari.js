@@ -2053,7 +2053,7 @@ function Safari() {
             }), "or");
         }
         if (obj in contestThemes) {
-            return contestThemes[obj].name;
+            return currentThemeName(obj);
         }
         return "Default";
     }
@@ -41355,7 +41355,7 @@ function Safari() {
     this.checkNewWeek = function() {
         var today = getDay(now()) - 3;
         var week = Math.floor(today/7);
-        currentDay = ((today + 3) % 7) + 1;
+        currentDay = ((today) % 7) + 1;
         if (week != permObj.get("currentWeek")) {
             this.renewLeague();
             //this.pyrBonusMons();
@@ -47763,7 +47763,7 @@ function Safari() {
         wildSpirit = false;
         var currentGame = null;
 
-        currentDay = ((getDay(now())) % 7) + 1;
+        currentDay = ((getDay(now()) - 3) % 7) + 1;
 
         if (!safari.hasOwnProperty("events")) {
             safari.events = {
