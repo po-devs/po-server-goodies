@@ -249,6 +249,7 @@ function Safari() {
             "Contest Champion": {},
             "Photographer": {}
         },
+        dexOptional: ["stats", "effectiveness", "trivia"],
         volleyballRecords: {
             spikes: 0,
             blocks: 0,
@@ -42487,6 +42488,7 @@ function Safari() {
         var index, source;
         permObj.add("events", JSON.stringify(safari.events));
         permObj.add("marketData", JSON.stringify(marketData));
+        permObj.add("triviaData", JSON.stringify(triviaData));
         permObj.add("celebrityData", JSON.stringify(safari.celebrityData));
         permObj.add("celebrityRegion", JSON.stringify(safari.celebrityRegion));
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
@@ -43259,6 +43261,24 @@ function Safari() {
                 safari.setFavoriteBall(src, commandData);
                 return true;
             }
+            if (command === "trivia") {
+                var info = commandData.split(":");
+                if (info.length !== 2) {
+                    safaribot.sendMessage(src, "The format for this command is /trivia [pokemon]:[trivia].", safchan);
+                    return true;
+                }
+                var mon = getInputPokemon(info[0]).num;
+                if (!mon) {
+                    safaribot.sendMessage(src, "There is no such Pokémon!", safchan);
+                    return true;
+                }
+                if (!(triviaData.hasOwnProperty(mon+""))) {
+                    triviaData[mon+""] = {};
+                }
+                triviaData[mon+""][info[1]] = false;
+                safaribot.sendMessage(src, "Submitted Trivia for " + poke(mon) + ": " + info[1] + "!", safchan);
+                return true;
+            }
             if (command === "enterdata") {
                 var info = commandData.split(":");
                 var title = info[0];
@@ -43633,7 +43653,35 @@ function Safari() {
                 }
                 safaribot.sendMessage(src, poke(info.num) + " cannot learn " + moveName + ".", safchan);
                 return true;
-            };
+            }
+            if (command === "showdex" || command == "hidedex") {
+                commandData = commandData.toLowerCase();
+                if (!(["stats", "effectiveness", "trivia"].contains(commandData))) {
+                    safaribot.sendMessage(src, "Toggleable dex options are stats, effectiveness, and trivia.", safchan);
+                    return true;
+                }
+                var player = getAvatar(src);
+                if (command == "showdex") {
+                    if (player.dexOptional.contains(commandData)) {
+                        safaribot.sendMessage(src, "The dex is already showing " + commandData + " for you!", safchan);
+                        return true;
+                    }
+                    player.dexOptional.push(commandData);
+                    safaribot.sendMessage(src, "The dex will now show " + commandData + ".", safchan);
+                    safari.saveGame(player);
+                    return true;
+                }
+                if (command == "hidedex") {
+                    if (!(player.dexOptional.contains(commandData))) {
+                        safaribot.sendMessage(src, "The dex already isn't showing " + commandData + " for you!", safchan);
+                        return true;
+                    }
+                    player.dexOptional.splice(player.dexOptional.indexOf(commandData), 1);
+                    safaribot.sendMessage(src, "The dex will no longer show " + commandData + ".", safchan);
+                    safari.saveGame(player);
+                    return true;
+                }
+            }
             if (command === "bst" || command === "dex") {
                 var info = getInputPokemon(commandData);
 
@@ -43646,14 +43694,43 @@ function Safari() {
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
                 var ic = pokeInfo.icon(info.num);
-                var stats = getStatsNamed(info.num), statsmsg = [];
+                var stats = getStatsNamed(info.num), statsmsg = [], efmsg = "";
                 for (var i in stats) {
-                    statsmsg.push(i + ": " + stats[i] + "  ");
+                    statsmsg.push(i + ": " + stats[i]);
                 }
-                statsmsg = statsmsg.join("|");
-                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + ". [" + statsmsg + "]." , safchan);
+                statsmsg = statsmsg.join(" | ");
+                if (!(player.dexOptional.contains("stats"))) {
+                    statsmsg = ".";
+                } else {
+                    statsmsg = ". [" + statsmsg + "]." 
+                }
+                if (player.dexOptional.contains("effectiveness")) {
+                    var val, se = [], nve = [], im = [];
+                    for (var e in effectiveness) {
+                        val = safari.checkEffective(e, "???", type_1, type_2, false, false);
+                        if (val > 1) {
+                            se.push(typeIcon(e));
+                        } else if (val == 0) {
+                            im.push(typeIcon(e));
+                        } else if (val < 1) {
+                            nve.push(typeIcon(e));
+                        }
+                    }
+                    if (se.length > 0) {
+                        efmsg += " Weaknesses: " + se.join(",");
+                    }
+                    if (nve.length > 0) {
+                        efmsg += " Resists: " + nve.join(",");
+                    }
+                    if (im.length > 0) {
+                        efmsg += " Immune: " + im.join(",");
+                    }
+                }
+                safaribot.sendHtmlMessage(src, ic + " " + pokeInfo.species(info.num) + ". " + info.name + "'s BST is " + getBST(info.num) + statsmsg, safchan);
                 safaribot.sendHtmlMessage(src, "Type: " + (typeIcon(type_1) + (type_2 === "???" ? "" : " " + typeIcon(type_2)))+ ", Region: " + generation(info.num, true) + ", Color: " + cap(getPokeColor(info.num)) + ", Egg Group(s): " + readable(getEggGroups(info.num)) +".", safchan);
-                
+                if (efmsg !== "") {
+                    safaribot.sendHtmlMessage(src, efmsg, safchan);
+                }
                 var player = getAvatar(src);
                 if (player) {
                     if (isMega(info.num)) {
@@ -43696,6 +43773,19 @@ function Safari() {
                         safaribot.sendMessage(src, info.name + " can be found in the following " + plural(themes.length, "theme") + ": " + readable(themes, "and") + ".", safchan);
                     } else {
                         safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
+                    }
+                }
+                if (player.dexOptional.contains("trivia")) {
+                    if (triviaData.hasOwnProperty(info.num+"")) {
+                        var l = [], td = triviaData[info.num+""];
+                        for (var i in td) {
+                            if (td[i] === true) {
+                                l.push(i);
+                            }
+                        }
+                        if (l.length > 0) {
+                            safaribot.sendMessage(src, l.random(), safchan);
+                        }
                     }
                 }
                 sys.sendMessage(src, "", safchan);
@@ -46568,6 +46658,61 @@ function Safari() {
                 safaribot.sendMessage(src, "No data dump " + commandData + " found.", safchan);
                 return true;
             }
+            if (command === "checktrivia" || command === "showtrivia") {
+                var out, data, approved, mon, hit = false;
+                if (commandData && commandData.length > 0) {
+                    mon = getInputPokemon(mon).num;
+                    if (triviaData.hasOwnProperty(commandData+"")) {
+                        data = triviaData[commandData+""];
+                        for (var i in data) {
+                            approved = data[i];
+                            hit = true;
+                            safaribot.sendHtmlMessage(src, i + " " + (approved ? "" : link("/approvetrivia " + mon + ":" + i, "Approve")) + " " + link("/removetrivia " + mon + ":" + i, "Remove"), safchan);
+                        }
+                        if (!(hit)) {
+                            safaribot.sendHtmlMessage(src, "No trivia for " + poke(mon) + " found!", safchan);
+                        }
+                    }
+                    return true;
+                }
+                for (var a in triviaData) {
+                    mon = triviaData[a];
+                    hit = false;
+                    if (triviaData.hasOwnProperty(a)) {
+                        data = triviaData[a];
+                        for (var i in data) {
+                            approved = data[i];
+                            if (approved) {
+                                continue;
+                            }
+                            hit = true;
+                            safaribot.sendHtmlMessage(src, poke(parseInt(mon, 10)) + ": " + i + " " + link("/removetrivia " + mon + ":" + i, "Remove"), safchan);
+                        }
+                    }
+                    if (!(hit)) {
+                        safaribot.sendHtmlMessage(src, "No unapproved trivia found!", safchan);
+                    }
+                }
+                return true;
+            }
+            if (command === "approvetrivia") {
+                data = commandData.split(":");
+                if (data.length !== 2) {
+                    return true;
+                }
+                triviaData[data[0]][data[1]] = true;
+                safaribot.sendHtmlMessage(src, "Approved trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
+                return true;
+            }
+            if (command === "removetrivia") {
+                data = commandData.split(":");
+                if (data.length !== 2) {
+                    return true;
+                }
+                delete triviaData[data[0]][data[1]];
+                safaribot.sendHtmlMessage(src, "Removed trivia: " + poke(parseInt(data[0], 10)) + " " + data[1] + "!", safchan);
+                return true;
+            }
             if (command === "loadthemes" || command === "loadtheme") {
                 var cThemes = contestThemes;
                 var url = commandData === "*" ? (permObj.get("themesurl") || commandData) : commandData;
@@ -47543,6 +47688,7 @@ function Safari() {
         lastContests = parseFromPerm("lastContests", []);
         allowedSharedIPNames = parseFromPerm("allowedSharedIPs", []);
         marketData = parseFromPerm("marketData", {});
+        triviaData = parseFromPerm("triviaData", {});
         safari.events = parseFromPerm("events", {});
         safari.celebrityData = parseFromPerm("celebrityData", {});
         safari.celebrityRegion = parseFromPerm("celebrityRegion", "");
