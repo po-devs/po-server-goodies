@@ -46685,7 +46685,7 @@ function Safari() {
                                 continue;
                             }
                             hit = true;
-                            safaribot.sendHtmlMessage(src, poke(parseInt(mon, 10)) + ": " + i + " " + link("/removetrivia " + mon + ":" + i, "Remove"), safchan);
+                            safaribot.sendHtmlMessage(src, poke(parseInt(a, 10)) + ": " + i + " " + link("/removetrivia " + a + ":" + i, "Remove"), safchan);
                         }
                     }
                     if (!(hit)) {
