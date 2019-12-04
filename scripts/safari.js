@@ -6442,7 +6442,7 @@ function Safari() {
         if (votesResult) {
             safaribot.sendAll(votesResult, safchan);
         }
-        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + contestThemes[currentTheme].name + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
+        safaribot.sendHtmlAll("A new " + (currentTheme ? "<b>" + themeName(currentTheme) + alterMsg + "</b>-themed" : "") + " Safari contest is starting now!", safchan);
         if (currentRules && Object.keys(currentRules).length > 0) {
             safaribot.sendHtmlAll("Rules: " + this.translateRules(currentRules, true), safchan);
         }
@@ -6451,7 +6451,7 @@ function Safari() {
         if (contestBroadcast) {
             sys.sendAll("", 0);
             sys.sendAll(separator, 0);
-            safaribot.sendAll("A new " + (currentTheme ? contestThemes[currentTheme].name + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
+            safaribot.sendAll("A new " + (currentTheme ? themeName(currentTheme) + "-themed" : "") + " Safari contest is starting now at #" + defaultChannel + "!", 0);
             sys.sendAll(separator, 0);
             sys.sendAll("", 0);
         } else {
