@@ -40920,7 +40920,7 @@ function Safari() {
         if (contestCount > 0) {
             var min = Math.floor(contestCount/60);
             var sec = contestCount%60;
-            safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? contestThemes[currentTheme].name : "Default") + ".", safchan);
+            safaribot.sendMessage(src, "Current Contest's theme: " + (currentTheme ? themeName(currentTheme) : "Default") + ".", safchan);
             if (currentRules) {
                 safaribot.sendHtmlMessage(src, "Contest's Rules: " + this.translateRules(currentRules, true), safchan);
             }
@@ -48291,7 +48291,7 @@ function Safari() {
                                 }
                             }
                             player.records.contestsWon += 1;
-                            var c = currentTheme ? contestThemes[currentTheme].name : "Default";
+                            var c = currentTheme ? themeName(currentTheme) : "Default";
                             safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
                             safari.costumeEXP(player, "wincontest");
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
@@ -48309,7 +48309,7 @@ function Safari() {
                 }
 
                 contestInfo.themeId = currentTheme ? currentTheme : "none";
-                contestInfo.theme = currentTheme ? contestThemes[currentTheme].name : "Default";
+                contestInfo.theme = currentTheme ? themeName(currentTheme) : "Default";
                 contestInfo.rules = safari.translateRules(currentRules, true);
                 lastContests.push(contestInfo);
                 if (lastContests.length > 10) {
