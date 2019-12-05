@@ -7783,7 +7783,7 @@ function Safari() {
                     if (player.berries.petayaCombo >= safari.candyCostConversion(null, (evolutions[player.party[0]+""].candies))) {
                         player.berries.petayaCombo = 0;
                         player.helds[0] = -1;
-                        var evolvedId = evolutions[player.party[0]+""];
+                        var evolvedId = evolutions[player.party[0]+""].evo;
                         if (Array.isArray(evolvedId)) {
                             evolvedId = evolvedId.random();
                         }
