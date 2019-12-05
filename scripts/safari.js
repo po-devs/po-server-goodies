@@ -6100,32 +6100,40 @@ function Safari() {
                     if ((!(goldenBonus) && (contestCount <= 0))) {
                         canLegend = false;
                     }
-                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.2;
+                    var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
                     for (i = 1; i < 890; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
                         if (bst >= 600) {
                             extrabst = (bst - 600);
                             bst = 599;
-                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                            extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
                         }
                         if (this.validForTheme(i, cTheme) && bst <= statCap && chance(extrabstChance) && (bst < 600 || canLegend || (!(isLegendary(i))))) {
                             list.push(i);
                         }
                     }
                     var hitEvent = false;
-                    for (h in theme.include) {
-                        id = theme.include[h];
+                    var include = theme.include;
+                    if (theme.hasOwnProperty("day"+currentDay)) {
+                        include = include.concat(theme["day"+currentDay]);
+                    }
+                    for (h in include) {
+                        id = include[h];
                         bst = "editBST" in theme && id in theme.editBST ? theme.editBST[id] : getBST(id);
                         extrabstChance = 1;
                         if (bst > 600) {
                             extrabst = (bst - 600);
-                            bst = 600;
-                            extrabstChance = ((((125 - extrabst) * (150 - extrabst)) / (250 - extrabst)) * 0.01 * extrabstChanceModifier);
+                            bst = 599;
+                            extrabstChance = ((((125 - extrabst) * (180 - extrabst)) / (240 - extrabst)) * 0.01 * extrabstChanceModifier);
                         }
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
-                            if (isLegendary(id) && bst >= 600 && !goldenBonus) {
+                            if (isLegendary(id) && bst >= 660 && !goldenBonus) {
+                                for (i = 5; i--; ) {
+                                    list.push(id);
+                                }
+                            } else if (isLegendary(id) && bst >= 600 && !goldenBonus) {
                                 for (i = 3; i--; ) {
                                     list.push(id);
                                 }
@@ -6945,7 +6953,7 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(id, name) {
-        return (((id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id))));
+        return (((id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id)) || (contestThemes[name].hasOwnProperty("day"+currentDay) && contestThemes[name]["day"+currentDay].contains(id))));
     };
     this.getRulesMod = function(player, pokeId, rules, pColor) {
         var type_1 = type1(pokeId),
@@ -43718,7 +43726,12 @@ function Safari() {
                     return true;
                 }
 
-                var player = getAvatar(src);
+                var player = getAvatar(src), opt;
+                if (player) {
+                    opt = player.dexOptional;
+                } else {
+                    opt = [];
+                }
                 sys.sendMessage(src, "", safchan);
                 var type_1 = type1(info.num);
                 var type_2 = type2(info.num);
@@ -43728,12 +43741,12 @@ function Safari() {
                     statsmsg.push(i + ": " + stats[i]);
                 }
                 statsmsg = statsmsg.join(" | ");
-                if (!(player.dexOptional.contains("stats"))) {
+                if (!(opt.contains("stats"))) {
                     statsmsg = ".";
                 } else {
                     statsmsg = ". [" + statsmsg + "]." 
                 }
-                if (player.dexOptional.contains("effectiveness")) {
+                if (opt.contains("effectiveness")) {
                     var val, se = [], nve = [], im = [];
                     for (var e in effectiveness) {
                         val = safari.checkEffective(e, "???", type_1, type_2, false, false);
@@ -43803,7 +43816,7 @@ function Safari() {
                         safaribot.sendMessage(src, info.name + " cannot be found in any theme currently.", safchan);
                     }
                 }
-                if (player.dexOptional.contains("trivia")) {
+                if (opt.contains("trivia")) {
                     if (triviaData.hasOwnProperty(info.num+"")) {
                         var l = [], td = triviaData[info.num+""];
                         for (var i in td) {
