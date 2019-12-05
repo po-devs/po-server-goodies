@@ -1340,7 +1340,7 @@ function Safari() {
             tamato:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
             pinap:"An uncommon berry that can be used as an ingredient in bait. Allows its holder to fight better in the Battle Tower if its BST is unique on its team. Give berries with /giveitem [berry].",
             nanab:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
-            watmel:"An uncommon berry that can be used as an ingredient in bait. No known use yet. Give berries with /giveitem [berry].",
+            watmel:"An uncommon berry that can be used as an ingredient in bait. When hatching a Pokémon that shares an egg group with its holder, it increases the chance of the hatched Pokémon to be shiny. Give berries with /giveitem [berry].",
             petaya:"An uncommon berry that can be used as an ingredient in bait. Can help a Pokémon evolve when it assists in captures. Give berries with /giveitem [berry].",
             miracle:"A rare berry that can be used as an ingredient in bait. Allows its holder to survive a KO-ing move in rotation battles. Give berries with /giveitem [berry].",
             platinum:"A rare berry that can be used as an ingredient in bait. As an ingredient, it is unmatched, and it can cause the bait to attract rare Pokémon forms."
