@@ -24414,6 +24414,9 @@ function Safari() {
 
                 while (request.length < amount) {
                     var randomNum = sys.rand(1, 890);
+                    if ([862, 863, 864, 865, 866, 867].contains(randomNum)) {
+                        continue;
+                    }
                     var bst = getBST(randomNum);
                     if (randomNum in wildForms) {
                         randomNum = pokeInfo.calcForme(randomNum, sys.rand(1, wildForms[randomNum] + 1));
