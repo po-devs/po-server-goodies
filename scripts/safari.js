@@ -2973,7 +2973,7 @@ function Safari() {
         },
         "716": {
             "name": "Branch Poke",
-            "learned": [309, 310, 810, 811, 812],
+            "learned": [708, 709, 810, 811, 812],
             "type": "Grass",
             "power": 40
         },
@@ -30513,7 +30513,7 @@ function Safari() {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
         }
 
-        this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 773, 784, 66256, 66184, 66028, 66336, 131872, 197408, 393695, 309].concat(legendaries).concat(megaPokemon);
+        this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 773, 784, 66256, 66184, 66028, 66336, 131872, 197408, 393695].concat(legendaries).concat(megaPokemon);
         this.opponent = this.opponentList.random();
         this.opponentHP = 410 + 150 * level;
         this.opponentPower = 13 + 4 * level;
