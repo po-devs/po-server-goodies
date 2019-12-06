@@ -2973,7 +2973,7 @@ function Safari() {
         },
         "716": {
             "name": "Branch Poke",
-            "learned": [810, 811, 812],
+            "learned": [709. 710, 810, 811, 812],
             "type": "Grass",
             "power": 40
         },
