@@ -11534,8 +11534,9 @@ function Safari() {
             }
             break;
             case "gacha2": {
-                safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused 5 " + finishName(reward) + "s!", safchan);
-                amount = 5;
+                safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find an unused pile of " + finishName(reward) + "s!", safchan);
+                amount = Math.round(4 + (4 * Math.random()));
+                reward  = "gacha";
             }
             break;
             case "rock": {
@@ -28881,6 +28882,10 @@ function Safari() {
             this.msg(player, "Sorry, " + data + " is not a valid item!");
             return false;
         }
+        if (this.turn < 1) {
+            this.msg(player, "You can't add a " + get + " to the table yet!");
+            return false;
+        }
         var playerName = player.toLowerCase();
         player = getAvatarOff(player);
         var validItems = [];
@@ -28924,6 +28929,10 @@ function Safari() {
         }
         else {
             get = itemAlias(item.toLowerCase());
+        }
+        if (this.turn < 1) {
+            this.msg(player, "You can't use " + get + " yet!");
+            return false;
         }
         var validItems = [];
         if (this.phase == 1) {
