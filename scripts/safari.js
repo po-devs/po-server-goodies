@@ -25581,6 +25581,10 @@ function Safari() {
                     taking.push(n1.toLowerCase());
                     takingPretty.push(toColored(n1.toCorrectCase(), n1));
                 }
+                if (taking.length > 4) {
+                    safaribot.sendHtmlMessage(src, "You can only invite up to 4 friends! Use " + link("/quest baking:start:Name1,Name2,Name3,Name4", null, true) + ".", safchan);
+                    return;
+                }
                 safaribot.sendHtmlMessage(src, "You invited " + takingPretty.join(", ") + " to join you in the Kitchen to bake some baits!", safchan);
                 safaribot.sendMessage(src, "The quest will start if they accept your invitation within 1 minute!", safchan);
 
