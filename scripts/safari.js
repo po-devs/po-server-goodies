@@ -24807,7 +24807,7 @@ function Safari() {
                 if (this.photoMatchesRequest(player.photos[index], req)) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Wow, that's a great photo of a " + poke(id) + "! I think I can use this!", safchan);
                     rew = 3;
-                    rew = Math.round(1.75 * (player.photos[index].quality) - 5);
+                    rew = Math.round(1.75 * (player.photos[index].score) - 5);
                     if (this.hasCostumeSkill(player, "extraScientistSilver")) {
                         rew = Math.round(rew * (1.66 + ((this.getCostumeLevel(player)-2)/15)));
                     }
