@@ -24472,7 +24472,10 @@ function Safari() {
 
                 while (request.length < amount) {
                     var randomNum = sys.rand(1, 890);
-                    if ([862, 863, 864, 865, 866, 867].contains(randomNum)) {
+                    if (level < 2) {
+                        randomNum = sys.rand(1, 800);
+                    }
+                    if ([862, 863, 864, 865, 866, 867, 772, 773].contains(randomNum)) {
                         continue;
                     }
                     var bst = getBST(randomNum);
@@ -24497,7 +24500,7 @@ function Safari() {
 
                 var reward = 0;
                 for (e = 0; e < request.length; e++) {
-                    reward += getPrice(request[e]) * (generation(request[e]) == 8 ? 1.3 : 1);
+                    reward += getPrice(request[e]) * (generation(request[e]) == 8 ? 2 : 1);
                 }
                 var perkBonus = getPerkBonus(player, "amulet");
                 quest.requests = request;
@@ -24846,7 +24849,7 @@ function Safari() {
                 if (randomNum in wildForms) {
                     randomNum = pokeInfo.calcForme(randomNum, sys.rand(1, wildForms[randomNum] + 1));
                 }
-            } while (bst > 600 || isLegendary(randomNum));
+            } while (bst > 600 || isLegendary(randomNum) || [772, 773].contains(randomNum));
         }
 
         var bstRange = [ 175, 211, 251, 301, 351, 391, 431, 481, 511, 525, 536, 581 ], ind;
