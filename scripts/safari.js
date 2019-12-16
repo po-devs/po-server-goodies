@@ -15968,7 +15968,7 @@ function Safari() {
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "inactive": this.markInactivity(src,player,commandData); break;
-            case "active": this.markActivity(src,player); break;
+            case "reactive": this.markActivity(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
         }
         return;
