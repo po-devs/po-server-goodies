@@ -1771,14 +1771,20 @@ function Safari() {
                     return "<img src='" + resources.sprites.get(key) + "'>";
                 }
             }
-            if (shiny && pk === "66337") {// PO doesn't have the correct shiny sprite for Magearna-Pokeball
-                return "<img src='" + resources.shiny.get("801-1") + "'>";
-            }
+            
             var ret = [];
             ret += "<img src='pokemon:num=";
             ret += pk;
             if (shiny) {
-                ret += "&shiny=true";
+                // PO has Magearna's shiny sprites mixed up. The shiny sprite for Magearna is actually the shiny sprite for Magearna-Pokeball
+                // Magearna's real shiny is identical to normal Magearna (blame GameFreak)
+                if (pk === "801") {
+                    return "<img src='pokemon:num=801'>";
+                } else if (pk === "66337") {
+                    return "<img src='pokemon:num=801&shiny=true'>";
+                } else {
+                    ret += "&shiny=true";
+                }
             }
             // ret += "&gen=7'>";
             /* Start of temporary hack due to windows client bug with shiny sprites. Enable the line above and remove this block once the client can properly show shiny sprites for non-gen 7 Pokémon*/
