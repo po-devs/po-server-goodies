@@ -32305,8 +32305,9 @@ function Safari() {
         goodList = goodList.shuffle();
 
         var list = [], used = [];
-        for (var j = 0; j < 250; j++) {
+        for (var j = 0; j < 400; j++) {
             badList = badList.shuffle();
+            list = [], used = [];
             for (p = badList.length; p--; ) {
                 target = badList[p];
                 t1 = type1(target);
