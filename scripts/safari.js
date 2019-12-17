@@ -16031,7 +16031,7 @@ function Safari() {
         }
         safari.events.spiritDuelsTeams[a].activityWarned[targetNum+""] = now() + (24 * 1000 * 60 * 60);
         safaribot.sendMessage( src,target + " has been warned for their low activity, and will not be able to participate in 24 hours if they don't reactivate!",safchan );
-        safari.inboxMessage(targetPlayer, "You've been marked as inactive in spirit duels by your teammates. Type /spiritduels active to undo this!", false);
+        safari.inboxMessage(targetPlayer, "You've been marked as inactive in spirit duels by your teammates. Type /spiritduels reactive to undo this!", false);
         return;
     };
     this.ownSpiritSkills = function( src,player ) {
@@ -30061,6 +30061,9 @@ function Safari() {
         if (showChange) {
             var staminaStr = [];
             for (var n in stamina) {
+                if (stamina[n] == 0) {
+                    continue;
+                }
                 staminaStr.push(n.toCorrectCase() + " " + (stamina[n] >= 0 ? "+" + stamina[n] : stamina[n]));
             }
             if (points !== 0 || staminaStr.length > 0) {
@@ -30155,25 +30158,57 @@ function Safari() {
             reward.push("1@bright");
         } 
         if (p >= 8000) {
-            reward.push("1@mega");
+            reward.push("3@mega");
         } 
         if (p >= 7000) {
-            reward.push("1@rare");
+            reward.push("10@rare");
         } 
         if (p >= 6000) {
+            reward.push("5@pack");
+        } 
+        else if (p >= 5500) {
             reward.push("1@pack");
         } 
         if (p >= 5000) {
-            reward.push("1@egg");
+            if (p % 3 == 0) {
+                reward.push("2@golden");
+            } else {
+                reward.push("3@rare");
+            }
+        } 
+        if (p >= 4500) {
+            if (p % 3 == 0) {
+                reward.push("3@rare");
+            } else {
+                reward.push("2@golden");
+            }
+        } 
+        if (p >= 4000) {
+            if (p % 2 == 1) {
+                reward.push("1@mega");
+            } else {
+                reward.push("1@mushroom");
+            }
+        } 
+        if (p >= 3500) {
+            if (p % 2 == 0) {
+                reward.push("1@mega");
+            } else {
+                reward.push("1@mushroom");
+            }
         } 
         if (p >= 3000) {
             reward.push("1@nugget");
         } 
+        if (p >= 2500) {
+            reward.push((this.level * 5) + "@" + ["redapricorn", "ylwapricorn", "pnkapricorn"].random());
+        } 
         if (p >= 1500) {
             reward.push((this.level * 5) + "@" + ["blkapricorn", "whtapricorn", "grnapricorn", "bluapricorn"].random());
         } 
-        if (this.finishMode === "cleared"){
-            reward.push("5@gem");
+        if (this.finishMode === "cleared") {
+            reward.push("2@crystal");
+            reward.push("@mega");
         } else {
             reward.push((this.level * 2) + "@gacha");
         }
@@ -30431,7 +30466,7 @@ function Safari() {
             }
         }
 
-        var typeChances = { "Normal":7,"Fighting":9,"Flying":13,"Poison":9,"Ground":11,"Rock":9.5,"Bug":7,"Ghost":19,"Steel":25,"Fire":12,"Water":13,"Grass":7.5,"Electric":10,"Psychic":7.5,"Ice":4.5,"Dragon":16,"Dark":14,"Fairy":12 };
+        var typeChances = { "Normal":7,"Fighting":9,"Flying":13,"Poison":8,"Ground":11,"Rock":9.5,"Bug":7,"Ghost":19,"Steel":25,"Fire":13,"Water":13,"Grass":7.5,"Electric":9.5,"Psychic":6,"Ice":4.5,"Dragon":16,"Dark":12,"Fairy":16 };
         var fTypes = this.forbiddenTypes = [randomSample(typeChances)], t;
         while (fTypes.length < 2) {
             t = randomSample(typeChances);
@@ -30453,7 +30488,7 @@ function Safari() {
             }
         }
 
-        this.hordePower = [20 + level * 12, 100 + level * 25];
+        this.hordePower = [22 + level * 12, 100 + level * 24];
 
         this.treasures = {
             starpiece: { chance: 3 * level, item: "starpiece", amount: 1 },
@@ -30476,7 +30511,7 @@ function Safari() {
         }
 
         this.sendAll("");
-        this.sendAll("Room {0}-{1}: This room is infested with lots of wild Pokémon! Defeat them to pass, but <b>{2}</b>-type and <b>{3}</b>-type Pokémon are nerfed!".format(level, roomNum, typeIcon(this.forbiddenTypes[0]), typeIcon(this.forbiddenTypes[1])));
+        this.sendAll("Room {0}-{1}: This room is infested with lots of wild Pokémon! Defeat them to pass, but there is a nefarious trap to hurt <b>{2}</b>-type and <b>{3}</b>-type Pokémon!".format(level, roomNum, typeIcon(this.forbiddenTypes[0]), typeIcon(this.forbiddenTypes[1])));
         this.sendAll("Wild Pokémon: " + this.horde.map(pokeInfo.icon).join(""));
         this.sendIndividuals();
         this.sendAll("");
@@ -30491,7 +30526,7 @@ function Safari() {
     HordeRoom.prototype.postInput = function(src, commandData) {
         var p = getInputPokemon(commandData);
         var nerfed = hasType(p.id, this.forbiddenTypes[0]) ||hasType(p.id, this.forbiddenTypes[1]);
-        this.sendAll(toColor("{0} is going to use {1}{2}!".format(sys.name(src), p.name, (nerfed ? " (nerfed)" : "")), "crimson"));
+        this.sendAll(toColor("{0} is going to use {1}{2}!".format(sys.name(src), p.name, (nerfed ? " (Trap)" : "")), "crimson"));
         return true;
     };
     HordeRoom.prototype.advance = function() {
@@ -30521,9 +30556,13 @@ function Safari() {
 
                 res = calcDamage(choice, opp, playerBonus, this.hordePower, false, getCherished(choice, id));
                 lastAttacker = n + 1;
-                if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
-                    res.power[0] = Math.round(res.power[0] * 0.25);
-                    nerfed[id] = true;
+                if (hasType(choice, this.forbiddenTypes[0]) && hasType(choice, this.forbiddenTypes[1])) {
+                    res.power[0] = Math.round(res.power[0] * 1);
+                    nerfed[id] = 2;
+                }
+                else if (hasType(choice, this.forbiddenTypes[0]) || hasType(choice, this.forbiddenTypes[1])) {
+                    res.power[0] = Math.round(res.power[0] * 1);
+                    nerfed[id] = 1;
                 }
 
                 if (res.power[0] > res.power[1]) {
@@ -30548,6 +30587,19 @@ function Safari() {
             defeatedStr.push("{0}'s {1} defeated {2}".format("<b>" + p.toCorrectCase() + "</b>", "<b>" + (nerfed[p] ? toColor(poke(attackers[p]), "red") : poke(attackers[p])) + "</b>", readable(defeated[p].reverse(), "and")));
         }
 
+        for (var p in members) {
+            var id = members[p]
+            stamina[id] = 0;
+        }
+        if (Object.keys(nerfed) > 0) {
+            this.sendAll("");
+            var trapDamage = (10 * this.level), finalTrapDamage;
+            for (var a in nerfed) {
+                finalTrapDamage = trapDamage * nerfed[a];
+                this.sendAll(a + " suffered " + finalTrapDamage + " from the trap!");
+                stamina[a] = -finalTrapDamage;
+            }
+        }
         this.sendAll("");
         if (defeatedStr.length > 0) {
             this.sendAll(defeatedStr.join(" | "));
@@ -30558,7 +30610,7 @@ function Safari() {
             }
         }
         if (this.horde.length > 0) {
-            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * (this.level * 30)), c;
+            var averageDamage = Math.ceil((this.horde.length / this.startingSize) * ((this.level + 2) * 28)), c;
             for (p in members) {
                 id = members[p];
                 if (this.pyr.stamina[id] <= 0) {
@@ -30566,7 +30618,7 @@ function Safari() {
                 }
                 c = id in defeated ? defeated[id].length : 0;
                 dmg = Math.round(averageDamage * (1 - ((c / Math.max(defeatedCount, 1)) - 0.3)));
-                stamina[id] = -dmg;
+                stamina[id] -= dmg;
             }
             this.sendAll("The following Wild Pokémon haven't been defeated and attacked the players: " + readable(this.horde.map(function(x){ return toColored(poke(x), "red"); }), "and") + "!");
         }
@@ -30589,7 +30641,31 @@ function Safari() {
             this.individualmsg[p] = "Send one of your Pokémon to help: " + pyrLink(this.shortcuts[p]) + (p == pyramidRef.leader ? " | You can instead run away with " + link("/pyr flee") + " at the cost of " + (8 + 5 * level) + " stamina!" : "");
         }
 
-        this.opponentList = [149, 248, 289, 373, 376, 445, 571, 609, 635, 681, 697, 706, 773, 784, 66256, 66184, 66028, 66336, 131872, 197408, 393695].concat(legendaries).concat(megaPokemon);
+        var difficulty = 1;
+        if (chance((0.33 * level) - 0.4)) {
+            difficulty += 1;
+        }
+        if (chance((0.5 * level) - 2.75)) {
+            difficulty += 1;
+        }
+        var diffMsg = "Basic";
+        var opponents = [149, 248, 289, 373, 376, 445, 571, 635, 681, 706, 773, 784].concat(legendaries);
+        var potentialForms = [form(38), form(103), form(53), form(53, 2), form(110), form(76), form(89), form(26), form(105), form(20), form(51), 862, 863, 864, 865, 866, 867, 66256, 66184, 66028, 66336, 131872, 197408, 393695];
+        if (difficulty == 2) {
+            if (chance(0.5)) {
+                opponents = opponents.concat(megaPokemon);
+                diffMsg = "Basic or Mega";
+            } else {
+                opponents = opponents.concat(potentialForms);
+                diffMsg = "Basic or Form";
+            }
+        }
+        else if (difficulty == 3) {
+            opponents = opponents.concat(potentialForms).concat(megaPokemon);
+            diffMsg = "All-inclusive";
+        }
+
+        this.opponentList = opponents;
         this.opponent = this.opponentList.random();
         this.opponentHP = 410 + 150 * level;
         this.opponentPower = 13 + 4 * level;
@@ -30640,7 +30716,7 @@ function Safari() {
 
         this.sendAll("");
         this.sendAll("Pokémon: " + pokeInfo.sprite(0));
-        this.sendAll("Room " + level + "-" + roomNum + ": A strong Pokémon stands in your way, but it's too dark to identify them (" + readable(hints) + ")! Defeat them, unless the leader decided to flee!");
+        this.sendAll("Room " + level + "-" + roomNum + ": A strong Pokémon (" + diffMsg + ") stands in your way, but it's too dark to identify them (" + readable(hints) + ")! Defeat them, unless the leader decided to flee!");
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -31345,9 +31421,8 @@ function Safari() {
         this.trainerTeam = [];
         var num, bst = 285 + 25 * level, maxLegend = Math.floor((level-1)/3) + 1;
         var main = this.inverted ? Object.keys(effectiveness).slice(1).random() : Object.keys(effectiveness).random();
-        var mono = chance(0.15);
-        var m = mono ? 3 : 2;
-        while (this.trainerTeam.length < m) {
+        var m = 6, wildcard = 0;
+        while (this.trainerTeam.length < m - 1) {
             num = sys.rand(1, 803);
             if (getBST(num) >= bst && hasType(num, main)) {
                 if (isLegendary(num)) {
@@ -31359,21 +31434,20 @@ function Safari() {
                 this.trainerTeam.push(num);
             }
         }
-        if (!mono) {
-            while (this.trainerTeam.length < 3) {
-                num = sys.rand(1, 803);
-                if (getBST(num) >= bst) {
-                    if (isLegendary(num)) {
-                        if (maxLegend <= 0) {
-                            continue;
-                        }
-                        maxLegend--;
+        while (this.trainerTeam.length < m) {
+            num = sys.rand(1, 803);
+            if (getBST(num) >= bst) {
+                if (isLegendary(num)) {
+                    if (maxLegend <= 0) {
+                        continue;
                     }
-                    this.trainerTeam.push(num);
+                    maxLegend--;
                 }
+                wildcard = num;
+                this.trainerTeam.push(num);
             }
         }
-        this.trainerTeam = this.trainerTeam.shuffle();
+        this.trainerTeam = this.trainerTeam.shuffle().slice(0, 3);
 
         this.treasures = {
             rare: { chance: 1 * level, item: "rare", amount: 1 },
@@ -31392,6 +31466,7 @@ function Safari() {
 
         this.sendAll("");
         this.sendAll("Room {0}-{1}: {2}, {4}-type user, challenges you to a 3v3 {3}battle! You can't refuse!".format(level, roomNum, this.trainerName, this.inverted ? "<b>Inverted</b> " : "", typeIcon(main)));
+        this.sendAll("{0} has the following wildcard: {1}!".format(this.trainerName, poke(wildcard)));
         this.sendIndividuals();
         this.sendAll("");
     }
@@ -31680,22 +31755,22 @@ function Safari() {
             "water":[57,181,593],
             "boulder":[276,477,529],
             "toxic":[432,54,239],
-            "pit":[19,22,81],
+            "pit":[19,438,81],
             "ice":[498,257,503],
             "flame":[56,410,16],
-            "electric":[50,300,435],
-            "dark":[430,497,425],
-            "barrier":[100,442,523]
+            "electric":[50,324,435],
+            "dark":[572,497,425],
+            "barrier":[100,442,107]
         };
         this.hazardAbilites = {
             "plants": 181,
             "water": 33,
-            "boulder": 140,
+            "boulder": 159,
             "toxic": 81,
             "pit": 26,
-            "ice": 49,
+            "ice": 47,
             "flame": 18,
-            "electric": 159,
+            "electric": 140,
             "dark": 35,
             "barrier": 151
         };
@@ -31711,7 +31786,7 @@ function Safari() {
             "pit": "Pit",
             "ice": "Ice Pillar",
             "flame": "Flamethrower",
-            "electric": "Electric Fence",
+            "electric": "Mecha",
             "dark": "Darkness",
             "barrier": "Barrier"
         };
@@ -31723,7 +31798,7 @@ function Safari() {
             "pit": "Pits",
             "ice": "Ice Pillars",
             "flame": "Flamethrowers",
-            "electric": "Electric Fences",
+            "electric": "Mechas",
             "dark": "Darkness",
             "barrier": "Barriers"
         };
@@ -32188,7 +32263,7 @@ function Safari() {
         this.traps = {};
         for (p = 0; p < 3; p++) {
             this.traps[types.shift()] = {
-                stamina: -(15 + this.level * 3)
+                stamina: -(15 + this.level * 5)
             };
         }
         this.treasures = {};
@@ -32227,23 +32302,32 @@ function Safari() {
                 goodList.push(p);
             }
         }
-        badList = badList.shuffle();
         goodList = goodList.shuffle();
 
         var list = [], used = [];
-        for (p = badList.length; p--; ) {
-            target = badList[p];
-            t1 = type1(target);
-            t2 = type2(target);
+        for (var j = 0; j < 250; j++) {
+            badList = badList.shuffle();
+            for (p = badList.length; p--; ) {
+                target = badList[p];
+                t1 = type1(target);
+                t2 = type2(target);
 
-            if (!used.contains(t1) && (t2 === "???" || !used.contains(t2))) {
-                used.push(t1);
-                if (t2 !== "???") {
-                    used.push(t2);
+                if (!(badTypes.contains(t1) && (badTypes.contains(t2) || t2 == "???"))) {
+                    continue;
                 }
-                list.push(target);
-                if (list.length >= 2) {
-                    break;
+
+                if (!used.contains(t1) && (t2 === "???" || !used.contains(t2))) {
+                    used.push(t1);
+                    if (t2 !== "???") {
+                        used.push(t2);
+                    }
+                    list.push(target);
+                    if (list.length >= 2) {
+                        if (used.length >= 3) {
+                            break;
+                        }
+                        continue;
+                    }
                 }
             }
         }
@@ -43310,6 +43394,43 @@ function Safari() {
                     currentEvent.watchEvent(src);
                 } else {
                     safari.watchBattle(src, commandData);
+                }
+                return true;
+            }
+            if (command === "watchpyr") {
+                if (commandData === "*") {
+                    safaribot.sendMessage(src, "Type which player's pyramid to watch or unwatch with /watchpyr [name]!", safchan);
+                } else {
+                    var user = getAvatar(src);
+                    var player = getAvatarOff(commandData);
+                    if (!(player)) {
+                        safaribot.sendMessage(src, "No player named " + commandData + " found!", safchan);
+                        return true;
+                    }
+                    var getPyramid = false;
+                    for (var a in currentPyramids) {
+                        if (currentPyramids[a].isInPyramid(player.id)) {
+                            getPyramid = currentPyramids[a];
+                        }
+                    }
+                    if (!(getPyramid)) {
+                        safaribot.sendMessage(src, player.id + " is not in the pyramid!", safchan);
+                        return true;
+                    }
+                    if (getPyramid.isInPyramid(user.id)) {
+                        safaribot.sendMessage(src, "You can't watch this pyramid because you are in it!", safchan);
+                        return true;
+                    }
+                    if (getPyramid.viewers.contains(user.id)) {
+                        safaribot.sendMessage(src, "You are now watching " + player.id + "'s pyramid run!", safchan);
+                        getPyramid.viewers.push(user.id);
+                        return true;
+                    }
+                    else {
+                        safaribot.sendMessage(src, "You are no longer watching " + player.id + "'s pyramid run!", safchan);
+                        getPyramid.viewers.splice(getPyramid.viewers.indexOf(user.id), 1);
+                        return true;
+                    }
                 }
                 return true;
             }
