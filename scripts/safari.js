@@ -29890,7 +29890,7 @@ function Safari() {
         this.parties[p2.id] = p2.party.slice(0, 3);
         this.parties[p3.id] = p3.party.slice(0, 3);
 
-        this.bannedHazard = this.parties[p1.id][2];
+        this.bannedHazard = pokeInfo.species(parseInt(this.parties[p1.id][2], 10));
         this.bannedHazard = ["plants", "water", "boulder", "toxic", "pit", "ice", "flame", "electric", "dark", "barrier"][this.bannedHazard % 10];
 
         this.sendToViewers("");
@@ -32305,8 +32305,9 @@ function Safari() {
         goodList = goodList.shuffle();
 
         var list = [], used = [];
-        for (var j = 0; j < 250; j++) {
+        for (var j = 0; j < 400; j++) {
             badList = badList.shuffle();
+            list = [], used = [];
             for (p = badList.length; p--; ) {
                 target = badList[p];
                 t1 = type1(target);
@@ -43421,7 +43422,7 @@ function Safari() {
                         safaribot.sendMessage(src, "You can't watch this pyramid because you are in it!", safchan);
                         return true;
                     }
-                    if (getPyramid.viewers.contains(user.id)) {
+                    if (!(getPyramid.viewers.contains(user.id))) {
                         safaribot.sendMessage(src, "You are now watching " + player.id + "'s pyramid run!", safchan);
                         getPyramid.viewers.push(user.id);
                         return true;
