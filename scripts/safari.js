@@ -30591,13 +30591,13 @@ function Safari() {
             var id = members[p]
             stamina[id] = 0;
         }
-        if (Object.keys(nerfed) > 0) {
+        if (Object.keys(nerfed).length > 0) {
             this.sendAll("");
             var trapDamage = (10 * this.level), finalTrapDamage;
             for (var a in nerfed) {
                 finalTrapDamage = trapDamage * nerfed[a];
                 this.sendAll(a + " suffered " + finalTrapDamage + " from the trap!");
-                stamina[a] = -finalTrapDamage;
+                stamina[a] = -1 * finalTrapDamage;
             }
         }
         this.sendAll("");
