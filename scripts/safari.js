@@ -30177,7 +30177,7 @@ function Safari() {
             }
         } 
         if (p >= 4500) {
-            if (p % 3 !== 0) {
+            if (p % 3 == 0) {
                 reward.push("@golden");
             } else {
                 reward.push("2@rare");
