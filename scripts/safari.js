@@ -30170,17 +30170,17 @@ function Safari() {
             reward.push("1@pack");
         } 
         if (p >= 5000) {
-            if (p % 3 == 0) {
-                reward.push("2@golden");
+            if (p % 2 == 0) {
+                reward.push("1@mega");
             } else {
-                reward.push("3@rare");
+                reward.push("1@mushroom");
             }
         } 
         if (p >= 4500) {
             if (p % 3 == 0) {
-                reward.push("3@rare");
+                reward.push("@golden");
             } else {
-                reward.push("2@golden");
+                reward.push("2@rare");
             }
         } 
         if (p >= 4000) {
@@ -30191,10 +30191,10 @@ function Safari() {
             }
         } 
         if (p >= 3500) {
-            if (p % 2 == 0) {
-                reward.push("1@mega");
+            if (p % 3 == 0) {
+                reward.push("2@rare");
             } else {
-                reward.push("1@mushroom");
+                reward.push("@golden");
             }
         } 
         if (p >= 3000) {
