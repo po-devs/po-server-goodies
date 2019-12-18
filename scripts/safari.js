@@ -15901,6 +15901,11 @@ function Safari() {
                 if (!player) {
                     continue;
                 }
+                if (teams[t].activityWarned.hasOwnProperty(members[p]+"")) {
+                    if (n > teams[t].activityWarned[members[p]+""]) {
+                        continue;
+                    }
+                }
                 g = giveStuff(player, toStuffObj(rew));
                 safari.saveGame(player);
             }
@@ -15970,16 +15975,16 @@ function Safari() {
                 if (n > safari.events.spiritDuelsTeams[0].activityWarned[army1init[a]+""]) {
                     continue;
                 }
-                army1.push(army1init[a]);
             }
+            army1.push(army1init[a]);
         }
         for (var a in army2init) {
             if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army2init[a]+"")) {
                 if (n > safari.events.spiritDuelsTeams[0].activityWarned[army2init[a]+""]) {
                     continue;
                 }
-                army2.push(army2init[a]);
             }
+            army2.push(army2init[a]);
         }
         if (army1.length < 2) {
             army1 = army1init;
