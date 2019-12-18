@@ -15961,18 +15961,37 @@ function Safari() {
         safari.events.spiritDuelsViewers = [];
         var team1 = [], team2 = [];
         var p1 = safari.events.spiritDuelsTeams[0].name + ": ", p2 = safari.events.spiritDuelsTeams[1].name + ": ";
-        var army1 = safari.events.spiritDuelsTeams[0].players;
-        var army2 = safari.events.spiritDuelsTeams[1].players;
+        var army1init = safari.events.spiritDuelsTeams[0].players;
+        var army2init = safari.events.spiritDuelsTeams[1].players;
+        var army1 = [];
+        var army2 = [];
+        for (var a in army1init) {
+            if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army1init[a]+"")) {
+                if (n > safari.events.spiritDuelsTeams[0].activityWarned[army1init[a]+""]) {
+                    continue;
+                }
+                army1.push(army1init[a]);
+            }
+        }
+        for (var a in army2init) {
+            if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army2init[a]+"")) {
+                if (n > safari.events.spiritDuelsTeams[0].activityWarned[army2init[a]+""]) {
+                    continue;
+                }
+                army2.push(army2init[a]);
+            }
+        }
+        if (army1.length < 2) {
+            army1 = army1init;
+        }
+        if (army2.length < 2) {
+            army2 = army2init;
+        }
         var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
 
         var p, j, n = now();
         for (var a in army1) {
-            if (safari.events.spiritDuelsTeams[0].activityWarned.hasOwnProperty(army1[a]+"")) {
-                if (n > safari.events.spiritDuelsTeams[0].activityWarned[army1[a]+""]) {
-                    continue;
-                }
-            }
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer1; i++) {
@@ -15991,11 +16010,6 @@ function Safari() {
             }
         }
         for (var a in army2) {
-            if (safari.events.spiritDuelsTeams[1].activityWarned.hasOwnProperty(army2[a]+"")) {
-                if (n > safari.events.spiritDuelsTeams[1].activityWarned[army2[a]+""]) {
-                    continue;
-                }
-            }
             p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
             for (var i = 0; i < enlistPerPlayer2; i++) {
@@ -16397,7 +16411,7 @@ function Safari() {
             safaribot.sendMessage( src,"You are not on a team!",safchan );
             return;
         }
-        if (Object.keys(safari.events.spiritDuelsTeams[a].activityWarned).contains(player.idnum+"")) {
+        if (!(Object.keys(safari.events.spiritDuelsTeams[a].activityWarned).contains(player.idnum+""))) {
             safaribot.sendMessage( src,"You are not activity warned!",safchan );
             return;
         }
