@@ -32226,7 +32226,7 @@ function Safari() {
             "barrier":[100,442,107]
         };
         this.hazardAbilites = {
-            "plants": 181,
+            "plants": 180,
             "water": 33,
             "boulder": 159,
             "toxic": 81,
