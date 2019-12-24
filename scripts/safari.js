@@ -15892,6 +15892,7 @@ function Safari() {
                 rew += ("," + amt + "@nugget");
             }
             members = teams[t].players;
+            var n = now();
             for (var p in members) {
                 s = idnumList.get(members[p]);
                 if (!(s)) {
