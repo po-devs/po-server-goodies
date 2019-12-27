@@ -29385,14 +29385,13 @@ function Safari() {
                     validItemsReadable.push(link("/bak fetch:" + validItems[i], itemAlias(validItems[i], false, true), false, this.phase == 1 ? bakingData.apricorns[validItems[i]].color : bakingData.berries[validItems[i]].color));
                 }
                 if (this.phase == 1 || this.phase == 2) {
-                    this.msg(player, "Items on the table (you can add up to two to the bowl):");
-                    this.msg(player, tableReadable.join(", "))
                     if (this.turn < 6) {
-                        this.msg(player, "")
-                        this.msg(player, "Or you can add the following to the table:");
+                        this.msg(player, "You can add the following to the table:");
                         this.msg(player, validItemsReadable.join(", "));
                         this.msg(player, "");
                     }
+                    this.msg(player, "Items on the table (you can add up to two to the bowl):");
+                    this.msg(player, tableReadable.join(", "))
                     if (this.turn == 6) {
                         this.msg(player, "<b>This is the last turn of the phase!</b>")
                     } else if (this.phase == 2 && this.needsBlending > 15) {
