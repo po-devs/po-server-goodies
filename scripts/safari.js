@@ -21,6 +21,7 @@ function Safari() {
     var wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
     var separator = "*** *********************************************************** ***";
     var lastCheckedRepo = 0;
+    var scriptHashCode = null;
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var saveBackupFile1 = "scriptdata/safari/savesBackup1.txt";
@@ -8234,7 +8235,7 @@ function Safari() {
             var active = player.party[0];
             var activeNum = parseInt(active, 10);
             var activeSpecies = evolutions.hasOwnProperty(activeNum+"") ? activeNum : pokeInfo.species(activeNum);
-            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies] !== -1) {
+            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies].evo !== -1) {
                 if (player.helds[0] == 9) {
                     player.berries.petayaCombo++;
                     var activeShiny = pokeInfo.shiny(active);
@@ -47110,14 +47111,19 @@ function Safari() {
                     safaribot.sendMessage(src, "Please wait " + timeLeftString(lastCheckedRepo + 60000) + " before checking if the update is ready again!", safchan);
                     return true;
                 }
-                var url = Config.base_url + "scripts/safari.js";
-                var resp = sys.synchronousWebCall(url);
-                if (hashCode(resp) === hashCode(sys.getFileContent("scripts/safari.js"))) {
-                    safaribot.sendMessage(src, "The web repository for Safari is the same as the local version! Nothing will be changed by updating.", safchan);
-                } else {
-                    safaribot.sendHtmlMessage(src, "The web repository for Safari has refreshed! <b>Safari is ready to be updated!</b>", safchan);
-                }
                 lastCheckedRepo = now();
+                safaribot.sendMessage(src, "Getting Safari script from the web repository . . .", safchan);
+                if (scriptHashCode === null) {
+                    scriptHashCode = hashCode(sys.getFileContent("scripts/safari.js"));
+                }
+                sys.webCall(Config.base_url + "scripts/safari.js", function(resp) {
+                    if (hashCode(resp) === scriptHashCode) {
+                        safaribot.sendMessage(src, "The web repository for Safari is the same as the local version! Nothing will be changed by updating.", safchan);
+                    } else {
+                        safaribot.sendHtmlMessage(src, "The web repository for Safari has refreshed! <b>Safari is ready to be updated!</b><ping/>", safchan);
+                    }
+                    lastCheckedRepo = now();
+                });
                 return true;
             }
             if (command === "updatefile") {
