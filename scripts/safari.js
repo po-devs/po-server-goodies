@@ -20,6 +20,7 @@ function Safari() {
     var openedMessage = "<font color='#3daa68'><timestamp/><b>±Attendant:</b></font> <b>Welcome to the Safari Zone! You can catch all the Pokémon you want in the park! We'll call you on the PA when you run out of time or an update is needed!</b>";
     var wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
     var separator = "*** *********************************************************** ***";
+    var lastCheckedRepo = 0;
 
     var saveFiles = "scriptdata/safarisaves.txt";
     var saveBackupFile1 = "scriptdata/safari/savesBackup1.txt";
@@ -1143,7 +1144,7 @@ function Safari() {
         inver: {
             icon: 387, name: "inver", fullName: "Inver", aliases: ["inver"], acqReq: 25, record: "catchInvert", acqReq2: 15, record2: "catchInkay",
             effect: "A master in type matchups. Possesses a mystical power that inverts type effectiveness, making super effective moves not very effective, and vice versa.",
-            noAcq: "Catch {0} more Pokémon with an Inver ball and {1} more Inkay",
+            noAcq: "Catch {0} more Pokémon with an Inver Ball and {1} more Inkay",
             expTypes: ["daycareplay", "wincontest", "catch"],
             skills: {
             }
@@ -3823,7 +3824,7 @@ function Safari() {
             "types": ["Fire", "Ghost"],
             "name": "Blacephalon",
             "stats": [53, 127, 53, 151, 79, 107],
-            "abilities": [  ],
+            "abilities": [ "Beast Boost" ],
             "tier": "SM OU",
             "height": 1.8,
             "weight": 13,
@@ -5494,19 +5495,19 @@ function Safari() {
         if (isMega(pokeNum) && num !== 0) {
             return 0;
         }
-        if (ultraPokes.hasOwnProperty(num+"")) {
-            if (!(ultraPokes[num+""].hasOwnProperty("abilities"))) {
+        if (ultraPokes.hasOwnProperty(pokeNum+"")) {
+            if (!(ultraPokes[pokeNum + ""].hasOwnProperty("abilities"))) {
                 return 0;
             }
-            var abilities = ultraPokes[num + ""].abilities.map(function(a) { return abilityNum(a); });
+            var abilities = ultraPokes[pokeNum + ""].abilities.map(function(a) { return abilitynum(a); });
             if (num < abilities.length && num >= 0) {
                 return abilities[num];
             } else {
                 return 0;
             }
         }
-        if (updatedAbilities.hasOwnProperty(num + "")) {
-            var abilities = updatedAbilities[num + ""];
+        if (updatedAbilities.hasOwnProperty(pokeNum + "")) {
+            var abilities = updatedAbilities[pokeNum + ""];
             if (num < abilities.length && num >= 0) {
                 return abilities[num];
             } else {
@@ -8230,18 +8231,28 @@ function Safari() {
             if (isRare(currentPokemon) || ball === "master") {
                 sys.appendToFile(mythLog, now() + "|||" + poke(currentPokemon) + (poke(currentDisplay) != poke(currentPokemon) ? " (disguised as "+ poke(currentDisplay) +")" : "") + "::caught::" + name + "'s " + finishName(ball) + (contestCount > 0 ? " during " + an(themeName(currentTheme)) + " contest" : "") + "\n");
             }
-            if (evolutions.hasOwnProperty(parseInt(player.party[0], 10) + "")) {
+            var active = player.party[0];
+            var activeNum = parseInt(active, 10);
+            var activeSpecies = evolutions.hasOwnProperty(activeNum+"") ? activeNum : pokeInfo.species(activeNum);
+            if (evolutions.hasOwnProperty(activeSpecies) && evolutions[activeSpecies] !== -1) {
                 if (player.helds[0] == 9) {
                     player.berries.petayaCombo++;
-                    if (player.berries.petayaCombo >= safari.candyCostConversion(null, (evolutions[player.party[0]+""].candies))) {
+                    var activeShiny = pokeInfo.shiny(active);
+                    var evoData = evolutions[activeSpecies];
+                    var candiesRequired = Math.floor((evoData.candies || 300) * (activeShiny ? 1.25 : 1));
+                    var discountRate = player.costume === "breeder" ? costumeData.breeder.rate : 1;
+                    candiesRequired = Math.floor(candiesRequired * discountRate);
+                    candiesRequired = this.candyCostConversion(player, candiesRequired);
+                    if (player.berries.petayaCombo >= candiesRequired) {
                         player.berries.petayaCombo = 0;
                         player.helds[0] = -1;
-                        var evolvedId = evolutions[player.party[0]+""].evo;
-                        if (Array.isArray(evolvedId)) {
-                            evolvedId = evolvedId.random();
-                        }
-                        safaribot.sendMessage(src, "Your " + player.party[0] + " ate its Petaya Berry and evolved!", safchan);
-                        safari.evolvePokemon(src, getInputPokemon(poke(player.party[0])), evolvedId, "evolved into", false, false);
+                        var evolveTo = getPossibleEvo(active);
+                        var evolvedId = activeShiny ? "" + evolveTo : evolveTo;
+                        this.missionProgress(player, "evolve", active, 1, {});
+                        var activeName = poke(active);
+                        this.evolvePokemon(src, { num: activeNum, id: active, shiny: activeShiny, name: activeName, input: (activeShiny ? "*" : "") + pokePlain(activeNum), type: "poke" }, evolvedId, "evolved into", false, false);
+                        this.logLostCommand(sys.name(src), "evolve " + activeName, "evolved into " + poke(evolvedId));
+                        safaribot.sendMessage(src, "Your " + activeName + " ate its Petaya Berry and evolved!", safchan);
                     }
                 }
             }
@@ -8420,24 +8431,21 @@ function Safari() {
     this.checkSimilarity = function(poke1, poke2, colorOverride) {
         var out = 1;
         var userColor = colorOverride ? colorOverride : getPokeColor(poke1);
-        if (hasType(type1(poke1), poke2)) {
+        if (hasType(poke2, type1(poke1))) {
             out = Math.max(2, out + 0.5);
-            if (hasType(type2(poke1), poke2) && sys.pokeType2(poke1) === "???") {
+            if (hasType(poke2, type2(poke1)) && type2(poke1) === "???") {
                 out = Math.max(2, out + 2);
-            } else if (hasType(type2(poke1), poke2)) {
+            } else if (hasType(poke2, type2(poke1))) {
                 out = Math.max(out + 2, 4);
             }
         }
-        else if (hasType(type2(poke1), poke2) && sys.pokeType2(poke1) !== "???") {
+        else if (hasType(poke2, type2(poke1)) && type2(poke1) !== "???") {
             out = Math.max(2, out + 0.5);
         }
-        var ab = [];
-        ab.push(getPokeAbility(poke1, 0));
-        ab.push(getPokeAbility(poke1, 1));
-        ab.push(getPokeAbility(poke1, 2));
-        for (var a in ab) {
-            if (ab[a] && canHaveAbility(poke2, ab[a])) {
-                out = Math.max(6, out + 1);
+        var ab = [getPokeAbility(poke2, 0), getPokeAbility(poke2, 1), getPokeAbility(poke2, 2)].filter(function (a) { return a !== 0; });
+        for (var i = 0; i < ab.length; i++) {
+            if (canHaveAbility(poke1, ab[i])) {
+                out = Math.max(6, out + (3 / ab.length));
             }
         }
         if (userColor === getPokeColor(poke2)) {
@@ -43235,6 +43243,19 @@ function Safari() {
         sys.sendHtmlAll(closedMessage, safchan);
         runUpdate();
     }
+    // Stolen from https://stackoverflow.com/questions/6122571/simple-non-secure-hash-function-for-javascript
+    function hashCode(string) { // Used to check if the local Safari script is the same as the one in the GitHub repository
+        var hash = 0;
+        if (typeof string !== "string" || string.length == 0) {
+            return hash;
+        }
+        for (var i = 0; i < string.length; i++) {
+            var c = string.charCodeAt(i);
+            hash = ((hash << 5) - hash) + c;
+            hash = hash & hash;
+        }
+        return hash;
+    }
 
     /* Help & Commands */
     this["help-string"] = ["safari: To know the safari commands"];
@@ -47082,6 +47103,21 @@ function Safari() {
                     needsUpdating = true;
                     checkUpdate(); //in case it can go right away
                 }
+                return true;
+            }
+            if (command === "isupdateready") {
+                if (now() - lastCheckedRepo < 60000) {
+                    safaribot.sendMessage(src, "Please wait " + timeLeftString(lastCheckedRepo + 60000) + " before checking if the update is ready again!", safchan);
+                    return true;
+                }
+                var url = Config.base_url + "scripts/safari.js";
+                var resp = sys.synchronousWebCall(url);
+                if (hashCode(resp) === hashCode(sys.getFileContent("scripts/safari.js"))) {
+                    safaribot.sendMessage(src, "The web repository for Safari is the same as the local version! Nothing will be changed by updating.", safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, "The web repository for Safari has refreshed! <b>Safari is ready to be updated!</b>", safchan);
+                }
+                lastCheckedRepo = now();
                 return true;
             }
             if (command === "updatefile") {
