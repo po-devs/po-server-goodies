@@ -7429,7 +7429,7 @@ function Safari() {
                 safaribot.sendMessage(src, "Your " + poke(player.party[0]) + " ate its Pecha Berry and weakened the nerf!", safchan)
             }
             if (player.berries.pecha) {
-                val = (val + RULES_NERF) * 0.5;
+                val = (val + 1) * 0.5;
             }
         }
 
@@ -49171,10 +49171,11 @@ function Safari() {
                 for (var e = 0; e < needsPechaCleared.length; e++) {
                     var p = getAvatarOff(needsPechaCleared[e]);
                     if (p) {
-                        p.berryEffect.pecha = false;
+                        p.berries.pecha = false;
                         safari.saveGame(p);
                     }
                 }
+                needsPechaCleared = [];
 
                 //Check daily rewards after a contest so players won't need to relog to get their reward when date changes
                 var onChannel = sys.playersOfChannel(safchan),
