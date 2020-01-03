@@ -6678,7 +6678,7 @@ function Safari() {
                 }
             }
 
-            if (!ignoreForms && num in wildForms) {
+            if (!ignoreForms && !dexNum && num in wildForms) {
                 var pickedForm = sys.rand(0, wildForms[num] + 1);
                 num = pokeInfo.calcForme(num, pickedForm);
             }
@@ -29417,7 +29417,7 @@ function Safari() {
             return false;
         }
         if (this.turn < 1) {
-            this.msg(player, "You can't add a " + itemAlias(get, false, true) + " to the table yet!");
+            this.msg(player, "You can't add " + an(itemAlias(get, false, true)) + " to the table yet!");
             return false;
         }
         var playerName = player.toLowerCase();
@@ -29452,7 +29452,7 @@ function Safari() {
         player.balls[get] -= 1;
         this.tableNext.push(get);
         safari.saveGame(player);
-        this.msgAll(playerName.toCorrectCase() + " is adding a " + itemAlias(get, false, true) + " to the table!");
+        this.msgAll(playerName.toCorrectCase() + " is adding " + an(itemAlias(get, false, true)) + " to the table!");
         this.playersActions[playerName.toLowerCase()] = "add";
         return true;
     };
