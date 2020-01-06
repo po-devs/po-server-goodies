@@ -902,7 +902,7 @@ function Safari() {
             battery: {name: "battery", fullName: "Cell Battery", type: "perk", icon: 241, price: 2000, bonusRate: 2, maxRate: 20, aliases:["battery", "cellbattery", "cell battery", "cell"], tradable: true},
             eviolite: {name: "eviolite", fullName: "Eviolite", type: "perk", icon: 233, price: 2000, bonusRate: 8, maxRate: 80, threshold: 420, aliases:["eviolite"], tradable: true},
             lens: {name: "lens", fullName: "Zoom Lens", type: "perk", icon: 41, price: 30000, cooldown: 16000, bonusRate: 1, maxRate: 10, threshold: 2000, aliases:["lens", "zoom lens", "zoom", "zoomlens"], tradable: false },
-            box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 120, aliases:["box", "boxes"], tradable: false},
+            box: {name: "box", fullName: "Box", type: "perk", icon: 175, price: [0, 0, 0, 0, 100000, 200000, 400000, 600000, 800000, 1000000], bonusRate: 96, aliases:["box", "boxes"], tradable: false},
 
             //Valuables
             pearl: {name: "pearl", fullName: "Pearl", type: "valuables", icon: 111, price: 500, aliases:["pearl"], tradable: true},
@@ -9507,7 +9507,7 @@ function Safari() {
         var out = "";
         var list = player.cherished;
 
-        var label = "Cherished (" + player.cherished.length + "/120)";
+        var label = "Cherished (" + player.cherished.length + "/96)";
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
@@ -24864,7 +24864,7 @@ function Safari() {
                 }
                 var diff = data[1].toLowerCase();
 
-                var level = 1, includeGalar = false;
+                var level = 1;
                 switch (diff) {
                     case "easy":
                     case "[easy]":
@@ -24878,11 +24878,6 @@ function Safari() {
                     case "hard":
                     case "[hard]":
                         level = 2;
-                    break;
-                    case "galar":
-                    case "[galar]":
-                        level = 2;
-                        includeGalar = true;
                     break;
                     case "epic":
                     case "[epic]":
@@ -24899,15 +24894,15 @@ function Safari() {
 
                 var request = [];
                 var difficultBonus = [2.4, 3.3, 4.8, 10, 20][level];
-                var minBST = [175, 320, 485, 500, 520][level];
+                var minBST = [175, 320, 440, 480, 520][level];
                 var maxBST = [320, 460, 599, 600, 750][level];
                 var amount = [3, 4, 5, 5, 9][level];
                 var deadlineDays = 2;
 
                 while (request.length < amount) {
-                    var randomNum = sys.rand(1, 800);
-                    if (includeGalar) {
-                        randomNum = sys.rand(1, 890);
+                    var randomNum = sys.rand(1, 890);
+                    if (level < 2) {
+                        randomNum = sys.rand(1, 800);
                     }
                     if ([862, 863, 864, 865, 866, 867, 772, 773].contains(randomNum)) {
                         continue;
