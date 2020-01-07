@@ -481,6 +481,7 @@ function Safari() {
         lastSold: {},
         flashme: false,
         locked: false,
+        smallBox: false,
         altlog: [],
         tradeban: 0,
         truesalt: 0,
@@ -1153,7 +1154,7 @@ function Safari() {
     
         //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 50, record: fullyPlayedContests, rate: 0.01, thresh1: 5, thresh2: 8, thresh3: 13, effect: "A master in endurance. Even after playing in the Safari Zone all day, extensive training allows a quick and alert response when a wild Pokémon appears.", noAcq: "{0}"},
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
-        //sightseer: {icon: 816, name: "sightseer", fullName: "Sightseer", aliases: ["sightseer"], acqReq: 8, record: "rareHatched", acqReq2: 512, record2: "goldenBaitUsed", rate: 0.05, effect: "A world class traveler. Figured how to bait Shiny Pokemon more effectively after exploring the planet several times.", noAcq: "Match ${0} more rare Pokémon from eggs and use ${1} more Golden Bait" }
+        //sightseer: {icon: 816, name: "sightseer", fullName: "Sightseer", aliases: ["sightseer"], acqReq: 8, record: "rareHatched", acqReq2: 512, record2: "goldenBaitUsed", rate: 0.05, effect: "A master in tourism. Figured how to bait Shiny Pokemon more effectively after exploring the planet several times.", noAcq: "Match ${0} more rare Pokémon from eggs and use ${1} more Golden Bait" }
         
         };
 
@@ -8921,15 +8922,16 @@ function Safari() {
                 case "off":
                     player.cherishOff = true;
                     safaribot.sendMessage(src, "Now hiding Cherished message on successful catch.", safchan);
-                    return;
+                    break;
                 case "on":
                     player.cherishOff = false;
                     safaribot.sendMessage(src, "Now allowing Cherished message on successful catch.", safchan);
-                    return;
+                    break;
+                default: 
+                    safaribot.sendMessage(src, "Type /cherishmsg on or type /cherishmsg off to toggle the Cherished message on successful catch.", safchan);
             }
         }
         this.saveGame(player);
-        return;
     }
     this.viewPlayer = function(src, data, textOnly) {
         var player = getAvatar(src);
@@ -9495,7 +9497,7 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label, shopLink);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
@@ -9522,15 +9524,15 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
         }
         return out;
     };
-    this.listPokemon = function(list, title) {
-        var out = "", normal = [], count = 0, rowSize = 12, e;
+    this.listPokemon = function(list, title, small) {
+        var out = "", normal = [], count = 0, rowSize = small ? 6 : 12, e;
         for (e in list) {
             normal.push(pokeInfo.icon(list[e], true));
         }
@@ -9805,7 +9807,7 @@ function Safari() {
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(list, "Pokémon " + readable(title) + " (" + list.length + ")", shopLink), safchan);
         } else {
-            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")"), safchan);
+            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")", player.smallBox), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
@@ -12041,7 +12043,7 @@ function Safari() {
             default:
                 if (chance(0.05)) {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
-                    sys.sendMessage(src, "±Hint: " + safariHints.random(), safchan);
+                    sys.sendHtmlMessage(src, "±Hint: " + safariHints.random(), safchan);
                 }
                 else {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
@@ -13776,9 +13778,15 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
             return;
         }
-        if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
+        if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
             var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
             safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+            return;
+        }
+        
+        if (isRare(id) && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon") {
+            var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":IACKNOWLEDGETHATIAMSELLINGARAREPOKEMON";
+            safaribot.sendHtmlMessage(src, "Are you sure that you want to sell your <b>" + info.name + "</b> for $" + addComma(price) + "? If really want to do this, type " + link(confirmCommand) + ".", safchan);
             return;
         }
 
@@ -16400,6 +16408,7 @@ function Safari() {
         var player = getAvatar(src);
         if (!safari.events.spiritDuelsEnabled) {
             safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
+            return;
         }
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
@@ -16414,7 +16423,6 @@ function Safari() {
             case "reactive": this.markActivity(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
         }
-        return;
     };
     this.markActivity = function( src,player ) {
         var army, named, index, passed = false;
@@ -16599,7 +16607,7 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
@@ -24848,9 +24856,9 @@ function Safari() {
                     }
                     safaribot.sendHtmlMessage(src, trainerSprite + "Collector: My requests are organized into different levels:", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 175 and 320. Reward is 2.4x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 440 and 599. Reward is 4.8x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 480 and 600, with one of them being a Legendary. Reward is 10x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 480. Reward is 3.3x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 470 and 599. Reward is 4.8x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 600, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Insane", "Insane") + " - For crazy people.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
@@ -26657,7 +26665,7 @@ function Safari() {
             recipes["exp up"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
         }
         else {
-            if (recipes.expup) {
+            if (recipes["exp up"]) {
                 delete recipes["exp up"];
             }
         }
@@ -36475,7 +36483,7 @@ function Safari() {
                 this.removePokemon(src, pokemon.id);
                 this.daycarePokemon.push(p);
                 this.saveGame(player);
-                daycarebot.sendMessage(src, "Your " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + " has been added to the Daycare! Enjoy your stay, "  + poke(pokemon.id) + "!", safchan);
+                daycarebot.sendMessage(src, "Your " + poke(pokemon.id) + " has been added to the Daycare! Enjoy your stay, "  + poke(pokemon.id) + "!", safchan);
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Dropped off " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + "|||Into " + place + "\n");
                 safari.saveDaycare();
                 return true;
@@ -43478,7 +43486,7 @@ function Safari() {
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/quest: To view available quests.",
             "/mission: To view your daily missions.",
-            "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them.",
+            "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them. Use /smallbox to toggle an option to use a narrower box width.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
             "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
@@ -43852,6 +43860,13 @@ function Safari() {
             }
             if (command === "cherishmsg") {
                 safari.cherishVisible(src, commandData);
+                return true;
+            }
+            if (command === "smallbox") {
+                var player = getAvatar(src);
+                player.smallBox = player.smallBox ? false : true;
+                safaribot.sendMessage(src, "You will now see a " + (player.smallBox ? "narrower" : "regular-sized") + " Pokémon box.", safchan);
+                return true;
             }
             if (command === "bag" || command === "bagt") {
                 safari.viewItems(src, command === "bagt", commandData);
@@ -47117,7 +47132,7 @@ function Safari() {
                     return true;
                 }
                 lastCheckedRepo = now();
-                safaribot.sendMessage(src, "Getting Safari script from the web repository . . .", safchan);
+                safaribot.sendMessage(src, "Getting Safari script from the web repository...", safchan);
                 if (scriptHashCode === null) {
                     scriptHashCode = hashCode(sys.getFileContent("scripts/safari.js"));
                 }
@@ -48682,7 +48697,7 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + (typeof currentPokemon === "string" ? "Shiny " : "") + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
+                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
             }
         }
         return false;
