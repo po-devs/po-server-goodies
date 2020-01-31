@@ -15,7 +15,7 @@ var nonFlashing = require("utilities.js").non_flashing;
 var html_escape = require("utilities.js").html_escape;
 
 function Mafia(mafiachan) {
-    this.version = "2018-06-29";
+    this.version = "2020-01-28";
     var mafia = this;
     var defaultThemeName = "default"; //lowercased so it doesn't use the theme in the code (why is it there to begin with?)
     
@@ -9132,6 +9132,23 @@ function Mafia(mafiachan) {
             }
             mess.push("");
             dump(src, mess, channel);
+            return;
+        }
+        if (command === "themedump" || command === "dumptheme") {
+            if (commandData === noPlayer) {
+                mafiabot.sendMessage(src, "Please specify a theme!", mafiachan);
+                return;
+            }
+            var name = this.getThemeName(commandData);
+            if (name === false) {
+                mafiabot.sendMessage(src, "The theme '" + commandData + "' does not exist!", mafiachan);
+                return;
+            }
+            name = name.replace("/", "").toLowerCase();
+            var json = sys.getFileContent("scriptdata/mafiathemes/theme_" + name);
+            var fileName = sys.time() + "-" + name + ".json";
+            sys.writeToFile("usage_stats/formatted/team/" + fileName, json);
+            normalbot.sendMessage(src, "The raw theme can be found here: http://server.pokemon-online.eu/team/" + fileName, channel);
             return;
         }
 
