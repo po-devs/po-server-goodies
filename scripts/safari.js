@@ -481,6 +481,7 @@ function Safari() {
         lastSold: {},
         flashme: false,
         locked: false,
+        smallBox: false,
         altlog: [],
         tradeban: 0,
         truesalt: 0,
@@ -1153,7 +1154,7 @@ function Safari() {
     
         //triathlete: {icon: 361, name: "triathlete", fullName: "Triathlete", aliases: ["triathlete"], acqReq: 50, record: fullyPlayedContests, rate: 0.01, thresh1: 5, thresh2: 8, thresh3: 13, effect: "A master in endurance. Even after playing in the Safari Zone all day, extensive training allows a quick and alert response when a wild Pokémon appears.", noAcq: "{0}"},
         //guitarist: {icon: 428, name: "guitarist", fullName: "Guitarist", aliases: ["guitarist"], acqReq: 30, record: "gemsUsed", rate: 5, effect: "A master in melody. ", noAcq: "Use {0} more Ampere Gems"},
-        //sightseer: {icon: 816, name: "sightseer", fullName: "Sightseer", aliases: ["sightseer"], acqReq: 8, record: "rareHatched", acqReq2: 512, record2: "goldenBaitUsed", rate: 0.05, effect: "A world class traveler. Figured how to bait Shiny Pokemon more effectively after exploring the planet several times.", noAcq: "Match ${0} more rare Pokémon from eggs and use ${1} more Golden Bait" }
+        //sightseer: {icon: 816, name: "sightseer", fullName: "Sightseer", aliases: ["sightseer"], acqReq: 8, record: "rareHatched", acqReq2: 512, record2: "goldenBaitUsed", rate: 0.05, effect: "A master in tourism. Figured how to bait Shiny Pokemon more effectively after exploring the planet several times.", noAcq: "Match ${0} more rare Pokémon from eggs and use ${1} more Golden Bait" }
         
         };
 
@@ -8921,15 +8922,16 @@ function Safari() {
                 case "off":
                     player.cherishOff = true;
                     safaribot.sendMessage(src, "Now hiding Cherished message on successful catch.", safchan);
-                    return;
+                    break;
                 case "on":
                     player.cherishOff = false;
                     safaribot.sendMessage(src, "Now allowing Cherished message on successful catch.", safchan);
-                    return;
+                    break;
+                default: 
+                    safaribot.sendMessage(src, "Type /cherishmsg on or type /cherishmsg off to toggle the Cherished message on successful catch.", safchan);
             }
         }
         this.saveGame(player);
-        return;
     }
     this.viewPlayer = function(src, data, textOnly) {
         var player = getAvatar(src);
@@ -9495,7 +9497,7 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label, shopLink);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
@@ -9522,15 +9524,15 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
         }
         return out;
     };
-    this.listPokemon = function(list, title) {
-        var out = "", normal = [], count = 0, rowSize = 12, e;
+    this.listPokemon = function(list, title, small) {
+        var out = "", normal = [], count = 0, rowSize = small ? 6 : 12, e;
         for (e in list) {
             normal.push(pokeInfo.icon(list[e], true));
         }
@@ -9805,7 +9807,7 @@ function Safari() {
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(list, "Pokémon " + readable(title) + " (" + list.length + ")", shopLink), safchan);
         } else {
-            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")"), safchan);
+            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")", player.smallBox), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
@@ -12041,7 +12043,7 @@ function Safari() {
             default:
                 if (chance(0.05)) {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it!", safchan);
-                    sys.sendMessage(src, "±Hint: " + safariHints.random(), safchan);
+                    sys.sendHtmlMessage(src, "±Hint: " + safariHints.random(), safchan);
                 }
                 else {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
@@ -13776,9 +13778,15 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
             return;
         }
-        if (input.length < 2 || input[1].toLowerCase() !== "confirm") {
+        if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
             var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
             safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+            return;
+        }
+        
+        if (isRare(id) && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon") {
+            var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":IACKNOWLEDGETHATIAMSELLINGARAREPOKEMON";
+            safaribot.sendHtmlMessage(src, "Are you sure that you want to sell your <b>" + info.name + "</b> for $" + addComma(price) + "? If really want to do this, type " + link(confirmCommand) + ".", safchan);
             return;
         }
 
@@ -16400,6 +16408,7 @@ function Safari() {
         var player = getAvatar(src);
         if (!safari.events.spiritDuelsEnabled) {
             safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
+            return;
         }
         switch (command) {
             case "box": this.showSpiritBox(src,player,false,false); break;
@@ -16414,7 +16423,6 @@ function Safari() {
             case "reactive": this.markActivity(src,player); break;
             default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
         }
-        return;
     };
     this.markActivity = function( src,player ) {
         var army, named, index, passed = false;
@@ -16599,7 +16607,7 @@ function Safari() {
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
-            out += this.listPokemon(list, label);
+            out += this.listPokemon(list, label, player.smallBox);
             if (isAndroid) {
                 out += "<br />";
             }
@@ -24848,9 +24856,9 @@ function Safari() {
                     }
                     safaribot.sendHtmlMessage(src, trainerSprite + "Collector: My requests are organized into different levels:", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Easy", "Easy") + " - Three Pokémon with BST between 175 and 320. Reward is 2.4x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 460. Reward is 3.3x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 440 and 599. Reward is 4.8x their price.", safchan);
-                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 480 and 600, with one of them being a Legendary. Reward is 10x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Normal", "Normal") + " - Four Pokémon with BST between 320 and 480. Reward is 3.3x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Hard", "Hard") + " - Five Pokémon with BST between 470 and 599. Reward is 4.8x their price.", safchan);
+                    safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Epic", "Epic") + " - Six Pokémon with BST between 500 and 600, with one of them being a Legendary. Reward is 10x their price.", safchan);
                     safaribot.sendHtmlMessage(src, "Collector: " + link("/quest collector:start:Insane", "Insane") + " - For crazy people.", safchan);
                     sys.sendMessage(src, "", safchan);
             break;
@@ -26657,7 +26665,7 @@ function Safari() {
             recipes["exp up"] = {ingredients: ing, reward: "@expup", immediate: true, failChance: 0, cooldown: 6}
         }
         else {
-            if (recipes.expup) {
+            if (recipes["exp up"]) {
                 delete recipes["exp up"];
             }
         }
@@ -36189,7 +36197,8 @@ function Safari() {
             case "view": this.printDayCare(src, c2); break;
             case "interact": this.dayCareInteract(src, player, c2, c3); break;
             case "help": this.dayCareHelp(src); break;
-            default: daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", and " + link("/dc help", "Help") + "!", safchan);
+            case "berry": this.dayCarePlantBerry(src, player, cdata.slice(1).join("")); break;
+            default: daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", " + link("/dc berry:", "Berry") + ", and " + link("/dc help", "Help") + "!", safchan);
         }
     };
     this.dayCareHelp = function(src) {
@@ -36301,15 +36310,27 @@ function Safari() {
                     this.saveGame(player);
                 }
             }
-            var m = "";
+            if (isOwner && canPlay && pokemon.berry !== undefined && pokemon.berry !== null) {
+                if (pokemon.berry.hasOwnProperty("time") && pokemon.berry.time < now()) {
+                    daycarebot.sendMessage(src, poke(pokemon.id) + " grew some berries for you!", safchan);
+                    var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
+                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);  
+                    pokemon.berry = null;
+                    this.saveGame(player);
+                }
+            }
+            var m = [];
             if (canPlay) {
-                m += "«" + link("/daycare interact:" + pokemon.uid + ":play", "Play") + "»";
+                m.push("«" + link("/daycare interact:" + pokemon.uid + ":play", "Play") + "»");
             }
             if (pokemon.hunger > 2 && player.balls.pokeblock > 0) {
-                m += " «" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + "»";
+                m.push("«" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + "»");
             }
-            if (m !== "") {
-                daycarebot.sendHtmlMessage(src, m, safchan);
+            if (pokemon.berry === undefined || pokemon.berry === null) {
+                m.push("«" + link("/daycare berry", "Berry") + "»");
+            }
+            if (m.length > 0) {
+                daycarebot.sendHtmlMessage(src, m.join(" "), safchan);
             }
             return true;
         }
@@ -36463,7 +36484,8 @@ function Safari() {
                     playhearts: 0,
                     hunger: 3,
                     canMax: true,
-                    uid: -1
+                    uid: -1,
+                    berry: null
                 };
                 p.toHolding = now() + 60 * 60 * 1000 * 24 * 14; //2 weeks
                 p.uid = this.getUniqueDayCareId();
@@ -36475,7 +36497,7 @@ function Safari() {
                 this.removePokemon(src, pokemon.id);
                 this.daycarePokemon.push(p);
                 this.saveGame(player);
-                daycarebot.sendMessage(src, "Your " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + " has been added to the Daycare! Enjoy your stay, "  + poke(pokemon.id) + "!", safchan);
+                daycarebot.sendMessage(src, "Your " + poke(pokemon.id) + " has been added to the Daycare! Enjoy your stay, "  + poke(pokemon.id) + "!", safchan);
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Daycare|||Dropped off " + (p.shiny ? "Shiny " : "") + poke(pokemon.id) + "|||Into " + place + "\n");
                 safari.saveDaycare();
                 return true;
@@ -36511,14 +36533,19 @@ function Safari() {
         }
         if (player.pokemon.length >= getPerkBonus(player, "box")) {
             daycarebot.sendMessage(src, "Your boxes are full! Clear your boxes or buy a new one to retrieve your Pokémon!", safchan);
-            return;
+            return false;
         }
 
         for (var t = 0; t < this.daycarePokemon.length; t++) {
-            if (this.daycarePokemon[t].ownernum === player.idnum && this.daycarePokemon[t].id === pokemon.id) {
-                var mon = this.daycarePokemon[t].id;
-                if (this.daycarePokemon[t].shiny) {
+            var dcpoke = this.daycarePokemon[t];
+            if (dcpoke.ownernum === player.idnum && dcpoke.id === pokemon.id) {
+                var mon = dcpoke.id;
+                if (dcpoke.shiny) {
                     mon = mon + "";
+                }
+                if (dcpoke.berry !== undefined && dcpoke.berry !== null && cdata[cdata.length - 1].toLowerCase() !== "confirm") {
+                    daycarebot.sendHtmlMessage(src, "Your " + poke(mon) + " is busy growing berries! If you take it back now, the berry you gave it will be lost forever! If you are sure you want to do this, type " + link("/daycare retrieve:" + poke(dcpoke.id) + ":confirm", false, true) + "!", safchan);
+                    return false;
                 }
                 player.pokemon.push(mon);
                 daycarebot.sendMessage(src, "You retrieved " + poke(mon) + " from the Daycare!", safchan);
@@ -36531,6 +36558,141 @@ function Safari() {
         }
         daycarebot.sendMessage(src, "You don't have any " + poke(pokemon.id) + " in the Daycare!", safchan);
         return false;
+    };
+    this.getDayCareBerryHarvestData = function(poke, berry) {
+        var amt = 1, t = 86400000;
+        switch (berry) {
+            case "oran":
+            case "pecha":
+            case "razz":
+            case "bluk":
+            case "leppa":
+                amt = 5;
+                t = 21600000; // 6 hours
+                break;
+            case "tamato":
+            case "pinap":
+            case "nanab":
+            case "petaya":
+            case "watmel":
+                amt = 3;
+                t = 43200000; // 12 hours
+                break;
+            case "miracle":
+            case "platinum":
+                amt = 2;
+                t = 259200000; // 72 hours
+                break;
+            default:
+                amt = 2;
+        }
+        if (hasType(poke, "Grass")) {
+            amt = Math.floor(amt * 1.35);
+        }
+        if (hasType(poke, "Ground")) {
+            amt = Math.floor(amt * 1.35);
+        }
+        if (hasType(poke, "Water")) {
+            t = Math.floor(t * 0.8);
+        }
+        if (canHaveAbility(poke, abilitynum("Ripen"))) {
+            amt = Math.floor(amt * 1.5);
+            t = Math.floor(t * 0.75);
+        }
+        if (canHaveAbility(poke, abilitynum("Harvest"))) {
+            amt = Math.floor(amt * 1.8);
+        }
+        if (canHaveAbility(poke, abilitynum("Gluttony"))) {
+            amt = Math.floor(amt * 0.7);
+            t = Math.floor(t * 0.4);
+        }
+        if (canHaveAbility(poke, abilitynum("Cheek Pouch"))) {
+            amt = Math.floor(amt * 0.8);
+            t = Math.floor(t * 0.45);
+        }
+        return {
+            amount: amt,
+            time: now() + t
+        };
+    };
+    this.dayCarePlantBerry = function(src, player, data) {
+        var pokesList = [];
+        for (var t in this.daycarePokemon) {
+            if (this.daycarePokemon[t].ownernum === player.idnum) {
+                pokesList.push(this.daycarePokemon[t]);
+            }
+        }
+        if (pokesList.length === 0) {
+            daycarebot.sendHtmlMessage(src, "You do not have any Pokémon in the Daycare! Type " + link("/daycare dropoff:", false, true) + " to add one!", safchan);
+            return false;
+        }
+        if (data === "") {
+            var gardeners = [];
+            for (var i = 0; i < pokesList.length; i++) {
+                pokemon = pokesList[i];
+                if (pokemon.berry !== undefined && pokemon.berry !== null) {
+                    gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
+                    break;
+                }
+            }
+            if (gardeners.length === 0) {
+                daycarebot.sendHtmlMessage(src, "None of your Pokémon are growing berries! Type " + link("/daycare berry:", "/daycare berry:[berry]", true) + " to give your Pokémon a berry!", safchan);
+            } else {
+                for (var i = 0; i < gardeners.length; i++) {
+                    var gData = gardeners[i];
+                    var pokeName = gData[0];
+                    var pokemon = gData[1];
+                    if (pokemon.berry.time > now()) {
+                        daycarebot.sendMessage(src, "Come back for your " + pokeName + "'s" + plural("", itemAlias(pokemon.berry.name, false, true)) + " in about " + timeLeftString(pokemon.berry.time) + "!", safchan);
+                    } else {
+                        daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
+                        var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
+                        daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
+                        pokemon.berry = null;
+                        this.saveGame(player);
+                        safari.saveDaycare();
+                    }
+                }
+            }
+            return false;
+        }
+        var berryName = itemAlias(data, true, true);
+        if (typeof berryName !== "string" || berryName.indexOf(" ") === -1 || berryName.slice(berryName.lastIndexOf(" ") + 1) !== "Berry") {
+            daycarebot.sendHtmlMessage(src, berryName + " is not a berry! Type " + link("/daycare berry:", "/daycare berry:[berry]", true) + " to give your Pokémon a berry!", safchan);
+            return false;
+        }
+        var berry = itemAlias(data, false, false);
+        if (player.balls[berry] < 1) {
+            daycarebot.sendMessage(src, "Sorry, but it doesn't appear that you have any" + plural("", berryName) + "!", safchan);
+            return false;
+        }
+        if (berry === "miracle" || berry === "platinum") {
+            daycarebot.sendMessage(src, "Sorry, but that berry is too precious to keep in the Daycare! Our staff cannot guard it from theft!", safchan);
+            return false;
+        }
+        var gardener = null, pokemon = null;
+        for (var i = 0; i < pokesList.length; i++) {
+            pokemon = pokesList[i];
+            if (pokemon.berry === undefined || pokemon.berry === null) {
+                var harvest = this.getDayCareBerryHarvestData(pokemon.id, berry);
+                pokemon.berry = {
+                    name: berry,
+                    amount: harvest.amount,
+                    time: harvest.time
+                };
+                gardener = (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
+                break;
+            }
+        }
+        if (gardener !== null) {
+            player.balls[berry] -= 1;
+            daycarebot.sendMessage(src, "You gave " + an(berryName) + " to your " + gardener + "! Your berries should be ready to harvest in about " + timeLeftString(pokemon.berry.time) + ".", safchan);
+            this.saveGame(player);
+            safari.saveDaycare();
+        } else {
+            daycarebot.sendMessage(src, "Sorry, but your all your Pokémon are already busy growing berries!", safchan);
+        }
+        return gardener !== null;
     };
     this.getUniqueDayCareId = function() {
         var i = 0, j = this.daycarePokemon.length;
@@ -37501,7 +37663,14 @@ function Safari() {
                 ret += "<td align=center width=42 height=32" + (bg ? " style='background-color:" + bg + ";'" : "") + ">";
                 if (rows.hasOwnProperty(place)) {
                     inp = parseInt(rows[place].mon, 10);
-                    ret += "<img src='icon:" + inp + "' title='" + rows[place].owner.toCorrectCase() + " (" + poke(inp) + ")'" + (bg ? " style='background:" + bg + "'" : "") + ">";
+                    if (ultraPokes.hasOwnProperty(inp+"")) {
+                        var species = pokeInfo.species(inp), form = pokeInfo.forme(inp);
+                        var key = species + (form > 0 ? "-" + form : "");
+                        ret += "<img src='" + resources.icons.get(key);
+                    } else {
+                        ret += "<img src='icon:" + inp;
+                    }
+                    ret += "' title='" + rows[place].owner.toCorrectCase() + " (" + poke(inp) + ")'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                     ret += "<p" + (false ? " style='background:" + bg + "' " : "") + ">" + link("/daycare interact:" + rows[place].id, "Check", false, bg === "#2366ed" ? "#B0E2FF" : null) + "</p>";
                 } else {
                     if (features.hasOwnProperty(place)) {
@@ -43478,7 +43647,7 @@ function Safari() {
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/quest: To view available quests.",
             "/mission: To view your daily missions.",
-            "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them.",
+            "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them. Use /smallbox to toggle an option to use a narrower box width.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
             "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
@@ -43852,6 +44021,13 @@ function Safari() {
             }
             if (command === "cherishmsg") {
                 safari.cherishVisible(src, commandData);
+                return true;
+            }
+            if (command === "smallbox") {
+                var player = getAvatar(src);
+                player.smallBox = player.smallBox ? false : true;
+                safaribot.sendMessage(src, "You will now see a " + (player.smallBox ? "narrower" : "regular-sized") + " Pokémon box.", safchan);
+                return true;
             }
             if (command === "bag" || command === "bagt") {
                 safari.viewItems(src, command === "bagt", commandData);
@@ -47117,7 +47293,7 @@ function Safari() {
                     return true;
                 }
                 lastCheckedRepo = now();
-                safaribot.sendMessage(src, "Getting Safari script from the web repository . . .", safchan);
+                safaribot.sendMessage(src, "Getting Safari script from the web repository...", safchan);
                 if (scriptHashCode === null) {
                     scriptHashCode = hashCode(sys.getFileContent("scripts/safari.js"));
                 }
@@ -48682,7 +48858,7 @@ function Safari() {
             this.showNextContest(src);
             sys.sendMessage(src, "*** ******************************************** ***", safchan);
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
-                sys.sendHtmlMessage(src, "There's a wild " + (typeof currentPokemon === "string" ? "Shiny " : "") + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
+                sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
             }
         }
         return false;
