@@ -518,6 +518,7 @@ function Safari() {
         },
         cherished: [],
         freebaits: 0,
+        celebrityRegion: "kanto",
         shop: {},
         quests: {
             collector: {
@@ -1340,7 +1341,7 @@ function Safari() {
             //easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use easteregg, /use easteregg:10, /use easteregg:100, and /use easteregg:1000. Don't open until Easter!",
             candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
             lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
-            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run."
+            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!"
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -12514,8 +12515,22 @@ function Safari() {
                 safaribot.sendMessage(src, "You already can challenge the Celebrities for a reward!", safchan);
                 return;
             }
+            var cd = data.split(":"), cd2 = null;
+            if (cd.length > 1) {
+                cd2 = cd[1];
+            }
+            if (cd2) {
+                if (["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].indexOf(cd2) == -1) {
+                    safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, and Galar are valid.)", safchan);
+                    return;
+                }
+                player.celebrityRegion = cd2;
+            } else {
+                player.celebrityRegion = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
+            }
             player.firstCelebrityRun = true;
             player.balls.celebrityTicket -= 1;
+            safaribot.sendMessage(src, "You can now challenge the celebrities of " + cap(player.celebrityRegion) + " for a reward!", safchan);
             safaribot.sendMessage(src, itemsLeft(player, "celebrityTicket"), safchan);
             this.saveGame(player);
             return;
@@ -14631,6 +14646,7 @@ function Safari() {
                 this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
             }
             player.freebaits = 5;
+            player.celebrityRegion = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
 
             reward = {};
             for (e = player.secretBase.length; e--; ) {
@@ -27001,11 +27017,11 @@ function Safari() {
         if (opt !== "start") {
             sys.sendMessage(src, "", safchan);
             safaribot.sendHtmlMessage(src, "Announcer: Welcome to Celebrity Battles! I am your host, the Announcer!", safchan);
-            safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the region! Win prizes on your first attempt daily!", safchan);
+            safaribot.sendMessage(src, "Announcer: Fight famous trainers from across the " + cap(player.celebrityRegion) + " region! Win prizes on your first attempt daily!", safchan);
             safaribot.sendMessage(src, "Announcer: You must fight all  of the trainers in succession. No backing out once you're in!", safchan);
             safaribot.sendHtmlMessage(src, "Type " + link("/quest celebrity:start") + " to begin your challenge!", safchan);
             if (player.firstCelebrityRun) {
-                safaribot.sendHtmlMessage(src, "As this is your first Celebrity Challenge for the day, you are eligible to win prizes!", safchan);
+                safaribot.sendHtmlMessage(src, "Let me check your registration... Yep! You are eligible to win prizes!", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -27097,8 +27113,8 @@ function Safari() {
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
-                        ["pearl", 3],
-                        ["gem", 1],
+                        [["pearl", 3], ["bigpearl", 1]],
+                        [["gacha", 5], ["gem", 1]],
                         ["stardust", 1],
                         ["bigpearl", 3],
                         ["pack", 1],
@@ -27112,13 +27128,13 @@ function Safari() {
                     ][args.index]; break;
                     case 1: reward = [
                         ["dew", 5],
-                        ["gacha", 5],
+                        [["gacha", 5], ["pearl", 9]],
                         ["stardust", 4],
                         ["dew", 8],
                         ["nugget", 1],
                         ["pack", 2],
                         ["dew", 12],
-                        ["nugget", 3],
+                        [["nugget", 3] ["mega", 1]],
                         ["pack", 5],
                         ["mega", 2],
                         ["dew", 40],
@@ -27127,7 +27143,7 @@ function Safari() {
                     ][args.index]; break;
                     case 2: reward = [
                         ["gacha", 5],
-                        ["gacha", 8],
+                        [["gacha", 8], ["bigpearl", 3]],
                         ["dew", 8],
                         ["pack", 1],
                         ["dew", 15],
@@ -27213,13 +27229,16 @@ function Safari() {
                     safaribot.sendMessage(sys.id(viewers[e]), "Announcer: " + name + " has defeated " + next + " trainer(s)! (Difficulty: " + level + ").", safchan);
                 }
                 if (player.firstCelebrityRun) {
+                    if (Array.isArray(reward[0])) {
+                        reward = reward.random();
+                    }
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
                     player.balls[reward[0]] += reward[1];
                     rewardCapCheck(player, reward[0], 0, true);
                     safari.saveGame(player);
                 }
                 if (extraArgs.turn && extraArgs.turn >= 2) {
-                    safari.addToCelebrityLeaderboard(args.name, safari.celebrityRegion, args.difficulty, true);
+                    safari.addToCelebrityLeaderboard(args.name, player.celebrityRegion, args.difficulty, true);
                 }
                 
                 if (next >= 13) {
@@ -27229,7 +27248,7 @@ function Safari() {
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
                     sys.sendAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
-                    var description = "Cleared " + safari.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + "(" + new Date(now()).toUTCString() + ")";
+                    var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + "(" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258][args.difficulty+1];
                     safari.awardMedal(
                         player,
@@ -27344,7 +27363,7 @@ function Safari() {
                 }
 
                 if (extraArgs.turn && extraArgs.turn >= 3) {
-                    safari.addToCelebrityLeaderboard(args.name, safari.celebrityRegion, args.difficulty, false);
+                    safari.addToCelebrityLeaderboard(args.name, player.celebrityRegion, args.difficulty, false);
                 }
 
                 if (args.difficulty < 0 && player.records.pokesCaught > 2000 && extraArgs.turn && extraArgs.turn >= 3) {
@@ -27361,7 +27380,7 @@ function Safari() {
             }
         };
 
-        var celebs = safari.getCelebrities(JSON.parse(JSON.stringify(safari.celebrityData[safari.celebrityRegion])), difficulty);
+        var celebs = safari.getCelebrities(JSON.parse(JSON.stringify(safari.celebrityData[player.celebrityRegion])), difficulty);
         var j = 0;
         while (celebs.gym[0].party2) {
             celebs.gym.shuffle();
@@ -27399,7 +27418,7 @@ function Safari() {
     };
     this.addToCelebrityLeaderboard = function(leader, region, difficulty, won) {
         if (!celebrityPKs.hasOwnProperty(region)) {
-            celebrityPKs[safari.celebrityRegion] = {};
+            celebrityPKs[player.celebrityRegion] = {};
         }
         if (!celebrityPKs[region].hasOwnProperty("total")) {
             celebrityPKs[region].total = {};
