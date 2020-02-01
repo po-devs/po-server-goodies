@@ -27418,7 +27418,7 @@ function Safari() {
     };
     this.addToCelebrityLeaderboard = function(leader, region, difficulty, won) {
         if (!celebrityPKs.hasOwnProperty(region)) {
-            celebrityPKs[player.celebrityRegion] = {};
+            celebrityPKs[region] = {};
         }
         if (!celebrityPKs[region].hasOwnProperty("total")) {
             celebrityPKs[region].total = {};
