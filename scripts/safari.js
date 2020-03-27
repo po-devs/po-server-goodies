@@ -9178,11 +9178,8 @@ function Safari() {
             if (getItem > -1) {
                 safari.heldItem(player, getItem, true);
             }
-            player.party.splice(player.party.indexOf(id), 1);
             player.helds.splice(player.party.indexOf(id), 1);
-            if (getItem > -1) {
-                safari.heldItem(player, getItem, true);
-            }
+            player.party.splice(player.party.indexOf(id), 1);
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
