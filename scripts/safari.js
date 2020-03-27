@@ -9175,6 +9175,9 @@ function Safari() {
                 player.berries.petayaCombo = 0;
             }
             var getItem = player.helds[player.party.indexOf(id)];
+            if (getItem > -1) {
+                safari.heldItem(player, getItem, true);
+            }
             player.party.splice(player.party.indexOf(id), 1);
             player.helds.splice(player.party.indexOf(id), 1);
             if (getItem > -1) {
@@ -27115,8 +27118,8 @@ function Safari() {
                         ["dew", 2],
                         [["pearl", 3], ["bigpearl", 1]],
                         [["gacha", 5], ["gem", 1]],
-                        ["stardust", 1],
-                        ["bigpearl", 3],
+                        [["stardust", 1], ["golden", 1]],
+                        [["bigpearl", 3], ["silver", 20]],
                         ["pack", 1],
                         ["dew", 8],
                         ["nugget", 1],
@@ -27129,12 +27132,12 @@ function Safari() {
                     case 1: reward = [
                         ["dew", 5],
                         [["gacha", 5], ["pearl", 9]],
-                        ["stardust", 4],
+                        [["silver", 35], ["stardust", 4]],
                         ["dew", 8],
                         ["nugget", 1],
-                        ["pack", 2],
+                        [["pack", 2], ["mega", 1]],
                         ["dew", 12],
-                        [["nugget", 3] ["mega", 1]],
+                        [["nugget", 3], ["mega", 2]],
                         ["pack", 5],
                         ["mega", 2],
                         ["dew", 40],
@@ -27145,7 +27148,7 @@ function Safari() {
                         ["gacha", 5],
                         [["gacha", 8], ["bigpearl", 3]],
                         ["dew", 8],
-                        ["pack", 1],
+                        [["pack", 2], ["miracle", 1]],
                         ["dew", 15],
                         ["nugget", 1],
                         ["pack", 3],
@@ -27160,7 +27163,7 @@ function Safari() {
                         ["pearl", 10],
                         ["bigpearl", 10],
                         ["dew", 20],
-                        ["pack", 5],
+                        [["pack", 5] ["miracle", 2]],
                         ["dew", 40],
                         ["nugget", 2],
                         ["pack", 10],
@@ -27174,7 +27177,7 @@ function Safari() {
                     case 4: reward = [
                         ["nugget", 1],
                         ["pack", 5],
-                        ["dew", 10],
+                        ["platinum", 1],
                         ["bignugget", 1],
                         ["dew", 100],
                         ["pack", 75],
@@ -27477,7 +27480,7 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.33 : 0);
+            currentTrainer.powerBoost = ((trainer.power - 1.075) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
             chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
             if (ind >= 5) {
                 chal++;
@@ -27892,13 +27895,13 @@ function Safari() {
                 var next = args.index + 1;
                 if (next === gym.trainers.length) {
                     var reward = [
-                        ["gem", 2],
-                        ["redapricorn", 11],
-                        ["gacha", 10],
-                        ["dust", 80],
-                        ["golden", 2],
+                        [["gem", 2], ["gacha", 10]],
+                        [["redapricorn", 25], ["grnapricorn", 25]],
+                        [["golden", 2], ["silver", 15]],
+                        [["rare", 3], ["gem", 5]],
+                        ["miracle", 1],
                         ["fragment", 1],
-                        ["pack", 1]
+                        ["platinum", 1]
                     ][player.quests.league.badges.length];
 
                     //mission stuff
@@ -27934,6 +27937,10 @@ function Safari() {
                         l.push(player.party[p]);
                     }
                     safari.missionProgress(player, "gymLeader", 1, 1, {mono: n, region: m});
+
+                    if (Array.isArray(reward[0])) {
+                        reward = reward.random();
+                    }
                     
                     safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Congratulations, " + name + "! For clearing the " + gym.name + " Gym, I award you the " + gym.badge + "!", safchan);
                     safaribot.sendHtmlMessage(id, "League Guide: We also reward you with " + plural(reward[1], reward[0]) + "!", safchan);
@@ -42104,7 +42111,7 @@ function Safari() {
                     i = sys.rand(0, 9);
                     trainer.party[i] = trainer.party[i] + "";
                 }
-                trainer.powerBoost = 0.1 + t*0.04;
+                trainer.powerBoost = 0.0975 + t*0.0385;
                 trainers.push(trainer);
                 baseName.push(n);
             }
@@ -42202,7 +42209,7 @@ function Safari() {
                 name: name,
                 desc: "Elite Four NPC",
                 party: party.shuffle(),
-                powerBoost: 0.19 + 0.03*(elite.length)
+                powerBoost: 0.1825 + 0.0285*(elite.length)
             });
         }
         if (eliteStrongCounterPicks.length > 0) {
