@@ -19159,13 +19159,15 @@ function Safari() {
             if (this.tagBattle && (!this.oneOnTwo)) {
                 this.sendToViewers(this.name3 + "'s Team: " + opponentInfo(this.team3), null, [this.name3.toLowerCase()]);
             }
-            if (this.select) {
+            if (this.select || this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0 || this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
                 var m = "";
-                if (this.npcItems.hyper && this.npcItems.hyper > 0) {
-                    m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
-                }
-                if (this.npcItems.full && this.npcItems.full > 0) {
-                    m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
+                if (this.select && this.npcItems) {
+                    if (this.npcItems.hyper && this.npcItems.hyper > 0) {
+                        m += toColor("Hyper Potion: " + this.npcItems.hyper + " ", "purple");
+                    }
+                    if (this.npcItems.full && this.npcItems.full > 0) {
+                        m += toColor("Full Restore: " + this.npcItems.full + " ", "purple");
+                    }
                 }
                 if (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0) {
                     if (m !== "") {
@@ -20048,7 +20050,7 @@ function Safari() {
                 var dmg, typeMultiplier;
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((150 * 95) / this.getStatValue(poke1, "sdef"));
-                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke1.id), type2(poke1.id));
+                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke1.id), type2(poke1.id), null);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
@@ -20062,7 +20064,7 @@ function Safari() {
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((150 * 95) / this.getStatValue(poke2, "sdef"));
-                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke2.id), type2(poke2.id));
+                    typeMultiplier = safari.checkEffective("Fairy", "???", type1(poke2.id), type2(poke2.id), null);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.lightscreen > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
@@ -20092,7 +20094,7 @@ function Safari() {
                 }
                 if (poke1 && (poke1.hp > 0) && (!(poke1.protect))) {
                     dmg = ((150 * pow) / this.getStatValue(poke1, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", type1(poke1.id), type2(poke1.id), (this.select.inverted ? true : false), this.select, this.select2);
+                    typeMultiplier = safari.checkEffective(type, "???", type1(poke1.id), type2(poke1.id), null, (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side1Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke1.hp) {
                         dmg = poke1.hp;
@@ -20111,7 +20113,7 @@ function Safari() {
 
                 if (poke2 && (poke2.hp > 0) && (!(poke2.protect))) {
                     dmg = ((150 * pow) / this.getStatValue(poke2, "def"));
-                    typeMultiplier = safari.checkEffective(type, "???", type1(poke2.id), type2(poke2.id), (this.select.inverted ? true : false), this.select, this.select2);
+                    typeMultiplier = safari.checkEffective(type, "???", type1(poke2.id), type2(poke2.id), null, (this.select.inverted ? true : false), this.select, this.select2);
                     dmg = Math.round(dmg * typeMultiplier * (this.side2Field.reflect > 0 ? 0.5 : 1) * (0.85 + (Math.random() * 0.15)));
                     if (dmg > poke2.hp) {
                         dmg = poke2.hp;
@@ -27477,8 +27479,8 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.075) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.014 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
-            chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? 7 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1.072) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.012 : 0)) + ((difficulty < 1 ? -0.014 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
+            chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
             }
@@ -42108,7 +42110,7 @@ function Safari() {
                     i = sys.rand(0, 9);
                     trainer.party[i] = trainer.party[i] + "";
                 }
-                trainer.powerBoost = 0.0975 + t*0.0385;
+                trainer.powerBoost = 0.095 + t*0.0375;
                 trainers.push(trainer);
                 baseName.push(n);
             }
@@ -42206,7 +42208,7 @@ function Safari() {
                 name: name,
                 desc: "Elite Four NPC",
                 party: party.shuffle(),
-                powerBoost: 0.1825 + 0.0285*(elite.length)
+                powerBoost: 0.1775 + 0.0275*(elite.length)
             });
         }
         if (eliteStrongCounterPicks.length > 0) {
