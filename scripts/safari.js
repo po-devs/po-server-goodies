@@ -10764,9 +10764,13 @@ function Safari() {
         }
     };
     this.pendingNotifications = function() {
-        var p, data, currentTime = now(), out = "", hold, hold2;
+        var p, data, currentTime = now(), out = "", hold, hold2, name;
         for (var s in recentPlayers) {
-            p = getAvatarOff(idnumList.get(s));
+            name = idnumList.get(s);
+            if (!(name)) {
+                continue;
+            }
+            p = getAvatarOff(name);
             if ((!p) || (!(p.notificationData))) {
                 continue;
             }
@@ -44774,7 +44778,7 @@ function Safari() {
         permObj.add("dumps", JSON.stringify(safari.dataDumps));
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
         permObj.add("celebrityPKs", JSON.stringify(celebrityPKs));
-        permObj.add("currentPlayers", JSON.stringify(currentPlayers));
+        permObj.add("recentPlayers", JSON.stringify(recentPlayers));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
