@@ -27016,6 +27016,7 @@ function Safari() {
 
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
+                player.notificationData.towerWaiting = true;
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
