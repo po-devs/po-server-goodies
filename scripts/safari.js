@@ -8898,10 +8898,6 @@ function Safari() {
         }
 
         var name = sys.name(src);
-        if (!suppress && !bypass) {
-            var mess = "[Track] " + name + " is using /pokeblock" + " " + data + " (Time since last wild/trick: " + ((now() - lastWild)/1000) + " seconds)";
-            this.trackMessage(mess, player);
-        }
         if (cantBecause(src, reason, ["item", "auction", "battle", "event", "pyramid"])) {
             return;
         }
@@ -30186,7 +30182,7 @@ function Safari() {
         //Shows notifications, frequently used quests, finder/gacha if available
         var player = getAvatar(src);
         var line1 = "";
-        var os = sys.os(id);
+        var os = sys.os(sys.id(player.id));
         line1 += costumeSprite(player, os) + " ";
         for (var i = 0; i < player.party.length; i++) {
             line += pokeInfo.icon(player.party[i]) + " ";
