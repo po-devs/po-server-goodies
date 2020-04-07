@@ -8922,7 +8922,7 @@ function Safari() {
         safaribot.sendMessage(src, "You threw a Pokéblock! You now have " + plural(player.balls.pokeblock, "Pokéblock") + "!", safchan);
         this.saveGame(player);
 
-        safaribot.sendHtmlMessage(toColor(sys.name(src) + " is feeding the " + poke(currentWild) + " a Pokéblock!"), "#438ed9");
+        safaribot.sendHtmlMessage(toColor(sys.name(src) + " is feeding the " + poke(currentPokemon) + " a Pokéblock!"), "#438ed9");
         currentThrows = getMaxThrows(num, amount, shiny, throwAttempts);
     };
 
