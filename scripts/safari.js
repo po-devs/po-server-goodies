@@ -30245,7 +30245,7 @@ function Safari() {
         sys.send(src, "", safchan);
     };
     this.organizeRecentQuests = function(player) {
-        var out = [], item;
+        var out = [], item, everyQuest = ["arena", "tower", "collector", "pyramid", "celebrity", "daycare", "missions", "journal", "monger", "wonder trade", "league", "baking", "alchemist", "arborist", "scientist"];
         for (var i = 20; i > 1; i--) {
             for (var j = 0; j < everyQuest.length; j++) {
                 item = everyQuest[j];
