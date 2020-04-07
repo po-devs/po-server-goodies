@@ -10716,7 +10716,7 @@ function Safari() {
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<b>Your Notifications: </b>", safchan);
         for (var e = 0; e < box.length; e++) {
-            safaribot.sendHtmlMessage(src, ((!(box[e].seen)) ? toColor(box[e].msg, "blue") : box[e].msg), safchan);
+            safaribot.sendHtmlMessage(src, ((!(box[e].seen)) ? toColor(box[e].msg, "#fc8403") : box[e].msg), safchan);
             box[e].seen = true;
         }
         player.notificationData.daycareWaiting = true;
@@ -10799,7 +10799,7 @@ function Safari() {
                     this.notification(p, out, "Tower");
                 }
             }
-            if (data.daycarePlay && data.daycareWaiting) {
+            if (data.daycarePlay) {
                 if (chance(0.75)) {
                     continue;
                 }
@@ -37624,6 +37624,9 @@ function Safari() {
         }
 
         safari.toRecentQuests(player, "daycare");
+        if (player.notificationData) {
+            player.notificationData.daycareWaiting = true;
+        }
 
         if (mode == "") {
             var m = "";
