@@ -38371,7 +38371,7 @@ function Safari() {
                 continue;
             }
             player.notificationData.daycarePoke = pk.id;
-            player.notificationData.daycareWaiting = (pokemon.meter > 5 ? true : false);
+            player.notificationData.daycareWaiting = (pk.meter > 5 ? true : false);
             player.notificationData.daycareHungry = (pk.hunger > 12 ? true : false);
             safari.saveGame(player);
         }
