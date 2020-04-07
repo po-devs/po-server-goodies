@@ -10764,10 +10764,19 @@ function Safari() {
         }
     };
     this.pendingNotifications = function() {
-        var p, data, currentTime = now(), out = "", hold, hold2, name;
+        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now());
+        var players = sys.playersOfChannel(safchan);
+        for (var pid in players) {
+            var player = getAvatar(players[pid]);
+            id = player.idnum;
+            recentPlayers[id+""] = currentDay;
+        }
         for (var s in recentPlayers) {
             name = idnumList.get(s);
             if (!(name) || name == undefined) {
+                continue;
+            }
+            if (typeof name !== "string") {
                 continue;
             }
             p = getAvatarOff(name);
@@ -15524,7 +15533,7 @@ function Safari() {
             player.consecutiveLogins += days;
             player.lastLogin = today;
             var logins = player.consecutiveLogins;
-            recentPlayers[player.idnum] = today;
+            recentPlayers[player.idnum+""] = today;
 
             var hasMaster = player.balls.master >= getCap("master");
 
