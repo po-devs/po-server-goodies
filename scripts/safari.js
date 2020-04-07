@@ -10769,6 +10769,9 @@ function Safari() {
         var players = sys.playersOfChannel(safchan);
         for (var pid in players) {
             var player = getAvatar(players[pid]);
+            if (!(player)) {
+                continue;
+            }
             id = player.idnum;
             recentPlayers[id+""] = currentDay;
         }
@@ -26213,7 +26216,7 @@ function Safari() {
                     payout = Math.floor(payout * costumeData.pokefan.rate);
                     costumed = true;
                 }
-                safari.toRecentQuests(player, "celebrity");
+                safari.toRecentQuests(player, "collector");
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: So you will help me? Great! Then bring me " + readable(request.map(findLink), "and") + ", and I will pay you $" + addComma(payout) + " for them!" + (costumed ? "<i>[Note: Without PokeFan Costume only $" + addComma(quest.reward) + " is paid.]</i>" : ""), safchan);
                 safaribot.sendMessage(src, "Collector: But please don't take too long! If you take more than " + (deadlineDays * 24) + " hours, I may buy them from someone else!", safchan);
                 sys.sendMessage(src, "", safchan);
