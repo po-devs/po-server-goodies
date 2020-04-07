@@ -10767,7 +10767,7 @@ function Safari() {
         var p, data, currentTime = now(), out = "", hold, hold2, name;
         for (var s in recentPlayers) {
             name = idnumList.get(s);
-            if (!(name)) {
+            if (!(name) || name == undefined) {
                 continue;
             }
             p = getAvatarOff(name);
@@ -14150,7 +14150,7 @@ function Safari() {
         
         safaribot.sendMessage(src, target.toCorrectCase() + " will receive the following message in their inbox: [" + sys.name(src) + "] " + msg, safchan);
         var tId = sys.id(target);
-        safari.notification(tId, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox") + ".", "Mail");
+        safari.notification(targetPlayer, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox") + ".", "Mail");
         /*if (tId && sys.isInChannel(tId, safchan)) {
             safaribot.sendHtmlMessage(tId, "You received a mail from " +  toColor(sys.name(src), "red") + ". To read it, type " + link("/inbox") + ".", safchan);
         }*/
@@ -50596,10 +50596,10 @@ function Safari() {
             safari.pendingNotifications();
         }
         if (contestCooldown === 60 * 10) {
-            safari.pendingNotifications();
             if (dayCareEnabled) {
                 safari.dayCareStep(0);
             }
+            safari.pendingNotifications();
         }
 
         if (contestCount > 0) {
