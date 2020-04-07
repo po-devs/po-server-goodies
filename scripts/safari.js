@@ -686,6 +686,7 @@ function Safari() {
             lastTowerParty: [],
             daycarePoke: 0,
             daycareWaiting: false,
+            daycarePlay: false,
             daycareHungry: false
         },
         inbox: [],
@@ -10719,7 +10720,6 @@ function Safari() {
             safaribot.sendHtmlMessage(src, ((!(box[e].seen)) ? toColor(box[e].msg, "blue") : box[e].msg), safchan);
             box[e].seen = true;
         }
-        player.notificationData.daycareWaiting = true;
         sys.sendMessage(src, "", safchan);
         player.notificationSources = [];
         this.saveGame(player);
@@ -10799,11 +10799,11 @@ function Safari() {
                     this.notification(p, out, "Tower");
                 }
             }
-            if (data.daycarePlay && data.daycareWaiting) {
+            if (data.daycareWaiting) {
                 if (chance(0.75)) {
                     continue;
                 }
-                data.daycarePlay = false;
+                data.daycareWaiting = false;
                 if (data.daycareHungry) {
                     out = "Your " + poke(data.daycarePoke) + " is hungry! Go visit the " + link("/daycare", "Daycare") + " to feed it!";
                     data.daycareHungry = false;
@@ -14268,7 +14268,7 @@ function Safari() {
         "catchwater": "Catch Water Pokémon",
         "clonepoke": "Clone Pokémon",
         "catchhighbst": "Catch Pokémon with BST 540 or higher",
-        "catchlowbst": "Catch Pokémon with BST 270 or lower",
+        "catchlowbst": "Catch Pokémon with BST 240 or lower",
         "wintour": "Event Tournament",
         "fighttower": "Fight the Battle Tower",
         "findrare": "Find Rare Items with Itemfinder",
