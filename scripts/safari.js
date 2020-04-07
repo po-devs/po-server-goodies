@@ -10772,7 +10772,7 @@ function Safari() {
             recentPlayers[id+""] = currentDay;
         }
         for (var s in recentPlayers) {
-            name = idnumList.get(s);
+            name = idnumList.get(parseInt(s, 10));
             if (!(name) || name == undefined) {
                 continue;
             }
@@ -27897,7 +27897,7 @@ function Safari() {
                 sys.appendToFile(mythLog, now() + "|||" + readable(lostRare) + "::have been given to the Arborist by " + sys.name(src) + "::\n");
             }
         }
-        safari.toRecentQuests(player, "celebrity");
+        safari.toRecentQuests(player, "arborist");
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arborist|||Gave " + translateStuff(rec.ingredients) + "|||Received " + readable(rew.gained) + "\n");
         this.saveGame(player);
     };
@@ -30263,6 +30263,9 @@ function Safari() {
                 }
                 if (countDuplicates(player.recentQuests, item) >= i) {
                     out.push(item);
+                }
+                if (out.length > 7) {
+                    break;
                 }
             }
         }
