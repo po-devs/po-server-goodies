@@ -8923,7 +8923,7 @@ function Safari() {
         this.saveGame(player);
 
         safaribot.sendHtmlMessage(src, toColor(sys.name(src) + " is feeding the " + poke(currentPokemon) + " a Pokéblock!", "#438ed9"), safchan);
-        currentThrows = getMaxThrows(num, amount, shiny, throwAttempts);
+        currentThrows = getMaxThrows(currentPokemon, amount, shiny, throwAttempts);
     };
 
     /* Photos */
