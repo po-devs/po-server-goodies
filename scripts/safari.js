@@ -30234,7 +30234,7 @@ function Safari() {
         }
         line5 += "»";
         line5 = link("/notifications", line5);
-        sys.send(src, "", safchan);
+        sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, line1, safchan);
         safaribot.sendHtmlMessage(src, line2, safchan);
         safaribot.sendHtmlMessage(src, line3, safchan);
@@ -30242,7 +30242,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, line4, safchan);
         }
         safaribot.sendHtmlMessage(src, line5, safchan);
-        sys.send(src, "", safchan);
+        sys.sendMessage(src, "", safchan);
     };
     this.organizeRecentQuests = function(player) {
         var out = [], item, everyQuest = ["arena", "tower", "collector", "pyramid", "celebrity", "daycare", "missions", "journal", "monger", "wonder trade", "league", "baking", "alchemist", "arborist", "scientist"];
