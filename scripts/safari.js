@@ -38362,7 +38362,7 @@ function Safari() {
             }
             this.getNewDayCareActivity(this.daycarePokemon[t]);
 
-            var name = idnumList.get(safari.events.spiritDuelsSignups[p]);
+            var name = idnumList.get(pk.ownernum);
             var player = getAvatarOff(name);
             if (!(player)) {
                 continue;
@@ -50839,7 +50839,7 @@ function Safari() {
                 else {
                     safari.dayCareStep(1);
                 }
-                //safari.pendingNotifications();
+                safari.pendingNotifications();
                 if (safari.events.spiritDuelsEnabled) {
                     if (safari.events.spiritDuelsBattling) {
                         safari.events.currentSpiritDuel = true;
