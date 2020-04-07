@@ -15856,7 +15856,7 @@ function Safari() {
         if (clearedAny) {
             safaribot.sendMessage(src, "You now have " + plural(player.records.missionPoints, "mission point") + "!", safchan);
         }
-        player.toRecentQuests(player, "missions");
+        safari.toRecentQuests(player, "missions");
         sys.sendMessage(src, "", safchan);
     };
     this.renewMissions = function(player) {
@@ -30190,7 +30190,7 @@ function Safari() {
         var os = sys.os(sys.id(player.id));
         line1 += costumeSprite(player, os) + " ";
         for (var i = 0; i < player.party.length; i++) {
-            line += pokeInfo.icon(player.party[i]) + " ";
+            line1 += pokeInfo.icon(player.party[i]) + " ";
         }
         var line2 = "";
         if (player.costume !== "none") {
