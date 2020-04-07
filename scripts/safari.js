@@ -686,7 +686,6 @@ function Safari() {
             lastTowerParty: [],
             daycarePoke: 0,
             daycareWaiting: false,
-            daycarePlay: false,
             daycareHungry: false
         },
         inbox: [],
@@ -38372,11 +38371,8 @@ function Safari() {
                 continue;
             }
             player.notificationData.daycarePoke = pk.id;
-            if (player.notificationData.daycareWaiting) {
-                player.notificationData.daycareWaiting = false;
-                player.notificationData.daycarePlay = (pk.meter > 5 ? true : false);
-                player.notificationData.daycareHungry = (pk.hunger > 12 ? true : false);
-            }
+            player.notificationData.daycareWaiting = (pk.meter > 5 ? true : false);
+            player.notificationData.daycareHungry = (pk.hunger > 12 ? true : false);
             safari.saveGame(player);
         }
     };
