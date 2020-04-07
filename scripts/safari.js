@@ -38367,6 +38367,9 @@ function Safari() {
             if (!(player)) {
                 continue;
             }
+            if (!(player.notificationData)) {
+                continue;
+            }
             player.notificationData.daycarePoke = pk.id;
             player.notificationData.daycareWaiting = (pokemon.meter > 5 ? true : false);
             player.notificationData.daycareHungry = (pk.hunger > 12 ? true : false);
