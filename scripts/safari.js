@@ -37687,7 +37687,6 @@ function Safari() {
                     daycarebot.sendMessage(src, "Huh? What's this? " + poke(pokemon.id) + " is holding an item!", safchan);
                     var g = giveStuff(player, toStuffObj(getItem));
                     daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#FF1493"), safchan);
-                    this.saveGame(player);
                 }
             }
             if (isOwner && canPlay && pokemon.berry !== undefined && pokemon.berry !== null) {
@@ -37696,7 +37695,6 @@ function Safari() {
                     var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
                     daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);  
                     pokemon.berry = null;
-                    this.saveGame(player);
                 }
             }
             var m = [];
@@ -37712,6 +37710,7 @@ function Safari() {
             if (m.length > 0) {
                 daycarebot.sendHtmlMessage(src, m.join(" "), safchan);
             }
+            this.saveGame(player);
             return true;
         }
         else if (mode == "feed") {
