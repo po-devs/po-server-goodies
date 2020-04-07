@@ -50839,7 +50839,7 @@ function Safari() {
                 else {
                     safari.dayCareStep(1);
                 }
-                safari.pendingNotifications();
+                //safari.pendingNotifications();
                 if (safari.events.spiritDuelsEnabled) {
                     if (safari.events.spiritDuelsBattling) {
                         safari.events.currentSpiritDuel = true;
