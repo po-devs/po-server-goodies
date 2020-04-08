@@ -10108,7 +10108,6 @@ function Safari() {
                 finalTitleMsg += " or ";
             }
         }
-        finalTitle = finalTitle.join()
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", shopLink), safchan);
         } else {
