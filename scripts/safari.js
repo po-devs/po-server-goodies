@@ -26394,6 +26394,7 @@ function Safari() {
                 quest.reward = 0;
                 quest.requests = [];
                 quest.cooldown = now() + Math.round(hours(3) * (1 - safari.getFortune(player, "questcd", 0, "collector")));
+                player.notificationData.collectorWaiting = true;
                 quest.deadline = 0;
                 this.saveGame(player);
             break;
@@ -26417,6 +26418,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Collector: Oh, you don't want to help me anymore? It's a shame, but I understand. Come back later if you change your mind!", safchan);
                 quest.reward = 0;
                 quest.cooldown = now() + hours(1);
+                player.notificationData.collectorWaiting = true;
                 quest.requests = [];
                 quest.deadline = null;
                 this.saveGame(player);
