@@ -10100,6 +10100,7 @@ function Safari() {
             finalList = finalList.concat(current);
             finalTitle.push(title);
             title = [];
+            current = player.pokemon.concat();
         }
         finalTitleMsg = "";
         for (var i = 0; i < finalTitle.length; i++) {
@@ -10108,6 +10109,7 @@ function Safari() {
                 finalTitleMsg += " or ";
             }
         }
+        finalList = removeDuplicates(finalList);
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", shopLink), safchan);
         } else {
@@ -16272,6 +16274,8 @@ function Safari() {
                 spiritDuelsData: {},
                 hiddenQuizEnabled: false,
                 hiddenQuizData: {}
+                towerTroubleEnabled: false,
+                towerTroubleData: {}
             };
         }
         switch (what) {
@@ -16304,6 +16308,11 @@ function Safari() {
                 safari.events.hiddenQuizEnabled = (enable ? true : false);
                 safaribot.sendMessage(src,"Event Hidden Quiz " + (enable ? "enabled" : "disabled") + "!" );
                 break;
+            case "tt":
+            case "towertrouble":
+                safari.events.towerTroubleEnabled = (enable ? true : false);
+                safaribot.sendMessage(src,"Event Tower Trouble " + (enable ? "enabled" : "disabled") + "!" );
+                break;
         }
     }
     /* Bonus Login */
@@ -16325,7 +16334,7 @@ function Safari() {
             player.bonusLogin.index = 0;
             player.bonusLogin.name = safari.events.bonusLoginName
         }
-        if (player.bonusLogin.index > safari.events.bonusLoginRewards.length) {
+        if (player.bonusLogin.index >= safari.events.bonusLoginRewards.length) {
             return;
         }
         if (safari.events.bonusLoginColor) {
@@ -16339,6 +16348,28 @@ function Safari() {
         safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " Event, you " + g + "! Thanks for playing!</background>", safchan);
         player.bonusLogin.index++;
         return true;
+    };
+    this.bonusLoginPrint = function(src) {
+        var player = getAvatar(src);
+        if (!player)  {
+            return;
+        }
+        if (!safari.events.bonusLoginEnabled)  {
+            safaribot.sendHtmlMessage(src, "No Bonus Login even is currently running!", safchan);
+            return;
+        }
+        if (player.bonusLogin.index >= safari.events.bonusLoginRewards.length) {
+            safaribot.sendHtmlMessage(src, "You've collected all the Bonus Login rewards from " + player.bonusLogin.name + "!", safchan);
+            return;
+        }
+        var amt = safari.events.bonusLoginRewards.length - player.bonusLogin.index;
+        if (safari.events.bonusLoginColor) {
+            bg = safari.events.bonusLoginColor;
+        }
+        else {
+            bg = "#ffd800";
+        }
+        safaribot.sendHtmlMessage(src, "<background color='"+bg+"'>Bonus Login: " + player.bonusLogin.name + ". Log in every day for a reward " + amt + " more times!</background>", safchan);
     }
     /* Trials */
     this.assignTrials = function(src,player) {
@@ -30331,6 +30362,9 @@ function Safari() {
         if (safari.events.hiddenQuizEnabled) {
             line4 += " " + link("/nextquiz", "«Hidden Quiz»");
         }
+        if (safari.events.bonusLoginEnabled) {
+            line4 += " " + link("/bonuslogin", "«Bonus Login»");
+        }
         var line5 = "«Notifications";
         var amt = this.countUnseenNotifications(player);
         if (amt > 0) {
@@ -43845,7 +43879,7 @@ function Safari() {
                     player.medalRecords[w].first++;
                     player.medalRecords[w].stayfirst = true;
                 }
-                if (p.pos >= 3) {
+                if (p.pos <= 3) {
                     player.medalRecords[w].topthree++;
                     player.medalRecords[w].staytopthree = true;
                 }
@@ -45342,6 +45376,10 @@ function Safari() {
             }
             if (command === "spiritskill" || command === "spiritskills") {
                 safari.chooseSpiritSkill(src, commandData);
+                return true;
+            }
+            if (command === "bonuslogin" || command === "blogin") {
+                safari.bonusLoginPrint(src);
                 return true;
             }
             if (command === "photo") {
@@ -49897,6 +49935,15 @@ function Safari() {
                 safari.safariEvents( src,"hiddenquiz",false );
                 return true;
             }
+            if (command === "enablett") {
+                safari.safariEvents( src,"towertrouble",true );
+                safari.quizEventInitialize();
+                return true;
+            }
+            if (command === "disablett") {
+                safari.safariEvents( src,"towertrouble",false );
+                return true;
+            }
             if (command === "releasetrial") {
                 var info = commandData.indexOf("::") > -1 ? commandData.split("::") : commandData.split(":");
                 safari.releaseTrial( src,getAvatarOff(info[0]),parseInt(info[1]) );
@@ -50410,6 +50457,7 @@ function Safari() {
             if (currentPokemon && (!(currentTheme && contestThemes[currentTheme].disguises))) {
                 sys.sendHtmlMessage(src, "There's a wild " + poke(currentDisplay) + "! Type " + link("/catch") + " to catch it!", safchan);
             }
+            sys.sendHtmlMessage(src, link("/dashboard", "«Dashboard»"), safchan);
         }
         return false;
     };
