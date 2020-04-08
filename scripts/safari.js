@@ -10769,7 +10769,6 @@ function Safari() {
         var amt = this.countUnseenNotifications(player);
         if (amt > 0) {
             safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications", "«Notifications»"), safchan);
-            sys.sendHtmlMessage(src, "<ping/>", safchan);
         }
     };
     this.pendingNotifications = function() {
