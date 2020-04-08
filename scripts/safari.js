@@ -10097,14 +10097,22 @@ function Safari() {
 
                 current = list.concat();
             }
-            finalList.concat(list);
-            list = [];
+            finalList = finalList.concat(current);
             finalTitle.push(title);
+            title = [];
         }
+        finalTitleMsg = "";
+        for (var i = 0; i < finalTitle.length; i++) {
+            finalTitleMsg += readable(finalTitle[i]);
+            if (i !== finalTitle.length - 1) {
+                finalTitleMsg += " or ";
+            }
+        }
+        finalTitle = finalTitle.join()
         if (textOnly) {
-            sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + readable(title) + " (" + finalList.length + ")", shopLink), safchan);
+            sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", shopLink), safchan);
         } else {
-            sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + readable(title) + " (" + finalList.length + ")", player.smallBox), safchan);
+            sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", player.smallBox), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
