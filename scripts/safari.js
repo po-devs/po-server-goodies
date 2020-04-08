@@ -686,7 +686,11 @@ function Safari() {
             lastTowerParty: [],
             daycarePoke: 0,
             daycareWaiting: false,
-            daycareHungry: false
+            daycareHungry: false,
+            collectorWaiting: false,
+            leagueWaiting: false,
+            lastLeagueParty: [],
+            missionWaiting: true
         },
         inbox: [],
         unreadInbox: [],
@@ -10755,6 +10759,9 @@ function Safari() {
         if (mute) {
             return;
         }
+        this.notificationPing();
+    };
+    this.notificationPing = function(player) {
         var src = sys.id(player.id);
         if (!validPlayers("self", src)) {
             return;
@@ -10799,7 +10806,28 @@ function Safari() {
                         }
                         out += " Load your last used Battle Tower party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
-                    this.notification(p, out, "Tower");
+                    this.notification(p, out, "Tower", true);
+                }
+            }
+            if (data.leagueWaiting) {
+                if (p.quests.league.cooldown < currentTime) {
+                    data.leagueWaiting = false;
+                    out = "You are able to fight the " + link("/quest league", "Pokémon League") + " again!";
+                    if (data.lastLeagueParty.length > 0) {
+                        hold = [];
+                        for (var i = 0; i < data.lastLeagueParty.length; i++) {
+                            hold.push(poke(data.lastLeagueParty[i]));
+                        }
+                        out += " Load your last used League party? " + link("/qload " + hold.join(","), readable(hold, "and"));
+                    }
+                    this.notification(p, out, "League", true);
+                }
+            }
+            if (data.collectorWaiting) {
+                if (p.quests.collector.cooldown < currentTime) {
+                    data.collectorWaiting = false;
+                    out = "The " + link("/quest collector", "Collector") + " has finished organize his collection! He's ready to request new Pokémon!";
+                    this.notification(p, out, "Collector", true);
                 }
             }
             if (data.daycarePlay) {
@@ -10813,8 +10841,24 @@ function Safari() {
                 } else {
                     out = "Your " + poke(data.daycarePoke) + " wants to play! Go visit the " + link("/daycare", "Daycare") + " to play with it!";
                 }
-                this.notification(p, out, "Daycare");
+                this.notification(p, out, "Daycare", true);
             }
+            var m, hit = 0;
+            if (chance(0.22) && data.missionWaiting) {
+                for (var e = 0; e < player.missions.length; e++) {
+                    m = player.missions[e];
+                    if (m.count >= m.goal && canReceiveStuff(player, m.reward).result) {
+                        hit++;
+                    }
+                }
+                if (hit > 0) {
+                    out = "You can receive rewards from " + hit + " cleared " + link("/missions", "Missions") + "!";
+                    this.notification(p, out, "Missions", true);
+                    data.missionWaiting = false;
+                }
+            }
+            this.notificationPing(p);
+            safari.saveGame(player);
         }
     };
     this.viewInbox = function(src) {
@@ -15870,7 +15914,9 @@ function Safari() {
             safaribot.sendMessage(src, "You now have " + plural(player.records.missionPoints, "mission point") + "!", safchan);
         }
         safari.toRecentQuests(player, "missions");
+        player.notificationData.missionWaiting = true;
         sys.sendMessage(src, "", safchan);
+        safari.saveGame(player);
     };
     this.renewMissions = function(player) {
         var today = player.lastLogin, missions = player.missions, e, m;
@@ -29263,7 +29309,10 @@ function Safari() {
         var battle = new Battle2(src, npc, {
             cantWatch: true
         });
-        safari.toRecentQuests(player, "league")
+        safari.toRecentQuests(player, "league");
+        player.notificationData.leagueWaiting = true;
+        player.notificationData.lastLeagueParty = [].concat(player.party);
+        safari.saveGame(player);
         currentBattles.push(battle);
     };
     this.fightElite = function(src) {
@@ -50609,17 +50658,20 @@ function Safari() {
         SESSION.global().safariBaitCooldown = baitCooldown;
         SESSION.global().safariReleaseCooldown = releaseCooldown;
 
-        if (contestCooldown === 60 * 17) {
-            safari.updateMarket();
-            if (safari.events.hiddenQuizEnabled && safari.events.hiddenQuizData.nextQuiz < now()) {
-                safari.startQuizEvent();
-            }
+        if (contestCooldown === 60 * 19) {
             if (dayCareEnabled) {
                 safari.dayCareStep(0);
             }
             safari.pendingNotifications();
         }
-        if (contestCooldown === 60 * 10) {
+        if (contestCooldown === 60 * 13) {
+            safari.updateMarket();
+            if (safari.events.hiddenQuizEnabled && safari.events.hiddenQuizData.nextQuiz < now()) {
+                safari.startQuizEvent();
+            }
+            safari.pendingNotifications();
+        }
+        if (contestCooldown === 60 * 7) {
             if (dayCareEnabled) {
                 safari.dayCareStep(0);
             }
