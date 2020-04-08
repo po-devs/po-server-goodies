@@ -10776,7 +10776,7 @@ function Safari() {
         }
     };
     this.pendingNotifications = function() {
-        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now());
+        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now()), m, hold;
         var players = sys.playersOfChannel(safchan);
         for (var pid in players) {
             var player = getAvatar(players[pid]);
@@ -10844,11 +10844,11 @@ function Safari() {
                 }
                 this.notification(p, out, "Daycare", true);
             }
-            var m, hit = 0;
             if (chance(0.22) && data.missionWaiting) {
+                hit = 0;
                 for (var e = 0; e < p.missions.length; e++) {
                     m = p.missions[e];
-                    if (m.count >= m.goal && canReceiveStuff(p, m.reward).result) {
+                    if (m.count >= m.goal && canReceiveStuff(p, m.reward).result && (!(m.finished))) {
                         hit++;
                     }
                 }
@@ -17369,7 +17369,7 @@ function Safari() {
             safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
             canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
             player.spiritDuels.skillChoices = canLearn;
-            this.showSpiritSkill( sys.id(player.id),player );
+            this.showSpiritSkill(sys.id(player.id),player);
         }
         this.saveGame(player);
         return;
@@ -17432,7 +17432,7 @@ function Safari() {
             default: 
                 var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
                 m += ("[" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
-                safaribot.sendMessage(src, m, safchan);
+                safaribot.sendHtmlMessage(src, m, safchan);
         }
     };
     this.markActivity = function( src,player ) {
@@ -17591,10 +17591,13 @@ function Safari() {
             hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
             hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
             hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
-            for (var i = 0; i < enlistPerPlayer1; i++) {
+            for (var i = 0; i < hold; i++) {
                 out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
                 j++;
                 if (j >= p.spiritDuels.box.length) {
+                    if (enlistPerPlayer1 < 5) {
+                        continue;
+                    }
                     j = 0;
                 }
             }
