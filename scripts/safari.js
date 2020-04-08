@@ -16273,7 +16273,7 @@ function Safari() {
                 spiritDuelsEnabled: false,
                 spiritDuelsData: {},
                 hiddenQuizEnabled: false,
-                hiddenQuizData: {}
+                hiddenQuizData: {},
                 towerTroubleEnabled: false,
                 towerTroubleData: {}
             };
