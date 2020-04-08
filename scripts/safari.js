@@ -16624,7 +16624,7 @@ function Safari() {
         }
         return;
     };
-    this.loadDuels = function( src,data ) {
+    this.loadDuels = function(src,data) {
         //Just loads the data
         var m;
         safari.events.spiritDuelsTeams = [];
@@ -16648,7 +16648,7 @@ function Safari() {
             {rank: "Officer Trainee", exp: 6000},
             {rank: "Secretary Officer", exp: 10000},
             {rank: "Squadron Leader", exp: 15000},
-            {rank: "Field Lieutenant", exp: 21000},
+            {rank: "Field Lieutenant", exp: 22000},
             {rank: "Commander", exp: 30000},
             {rank: "Vice Admiral", exp: 35000},
             {rank: "Admin", exp: 40000},
@@ -16866,27 +16866,18 @@ function Safari() {
     };
     this.spiritDuelsPrizes = function( teams ) {
         var g = "", i = teams.length, r, rew, amt, apri, members, s, player, g = "";
-        var prizes = {
-            "0": "2@mega,@bright,30@dew",
-            "1": "2@mega,25@dew",
-            "2": "@mega,20@dew",
-            "3": "@mega,15@dew",
-            "4": "15@dew",
-            "5": "10@dew",
-            "6": "5@dew"
-        }
         var j = 0;
         var round = (7 - teams.length);
         for (var t in teams) {
-            g = prizes[i+""];
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
             amt = Math.round((((j) * 1.8) + (9 - teams.length))/2);
-            rareamt = Math.round((((j) * 2.4) + (8 - teams.length))/2);
+            amt2 = Math.round((((j) * 1.5) + (5 - teams.length)));
+            rareamt = Math.round((((j) * 2.7) + (10 - teams.length))/2);
             rew = ("" + rareamt + "@rare");
             apri = ["redapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"].random();
             if (r >= 50) {
-                rew += ("," + ((((round * 2) + 5)) * j) + "@dew");
+                rew += ("," + ((5 + round) * (j + round)) + "@dew");
             }
             if (round >= 1 && round < 3) {
                 rew += ("," + amt + "@pearl");
@@ -16903,15 +16894,15 @@ function Safari() {
                 rew += ("," + (10 * amt) + "@" + apri);
             }
             if (round >= 4) {
-                rew += ("," + amt + "@mega");
-                rew += ("," + (2 * amt) + "@pearl");
+                rew += ("," + amt2 + "@mega");
+                rew += ("," + (2 * amt2) + "@pearl");
             }
             if (round >= 5) {
-                rew += ("," + amt + "@mega");
-                rew += ("," + (2 * amt) + "@pearl");
+                rew += ("," + amt2 + "@mega");
+                rew += ("," + (2 * amt2) + "@pearl");
             }
             if (round >= 6) {
-                rew += ("," + amt + "@nugget");
+                rew += ("," + amt2 + "@nugget");
             }
             members = teams[t].players;
             var n = now();
@@ -16982,7 +16973,6 @@ function Safari() {
             safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle();
         }
         sendAll("Next Spirit Duel: " + safari.events.spiritDuelsTeams[0].name + " vs " + safari.events.spiritDuelsTeams[1].name + "!", true);
-        //Add some print or something to say which teams are up
     };
     this.startSpiritDuel = function() {
         //Creates horde v horde battle
@@ -17018,11 +17008,15 @@ function Safari() {
         var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
         var enlistPerPlayer2 = (army2.length >= 6 ? 3 : (army2.length >= 5 ? 4 : (army2.length >= 4 ? 5 : 6)));
 
-        var p, j, n = now();
+        var p, j, n = now(), hold = 0;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
-            for (var i = 0; i < enlistPerPlayer1; i++) {
+            hold = parseInt(enlistPerPlayer1, 10);
+            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < hold; i++) {
                 team1.push({
                     mon: p.spiritDuels.box[j],
                     owner: p,
@@ -17034,13 +17028,20 @@ function Safari() {
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     j = 0;
+                    if (enlistPerPlayer1 < 5) {
+                        continue;
+                    }
                 }
             }
         }
         for (var a in army2) {
             p = getAvatarOff(idnumList.get(army2[a]));
             j = 0;
-            for (var i = 0; i < enlistPerPlayer2; i++) {
+            hold = parseInt(enlistPerPlayer2, 10);
+            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
+            for (var i = 0; i < hold; i++) {
                 team2.push({
                     mon: p.spiritDuels.box[j],
                     owner: p,
@@ -17052,6 +17053,9 @@ function Safari() {
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     j = 0;
+                    if (enlistPerPlayer2 < 5) {
+                        continue;
+                    }
                 }
             }
         }
@@ -17131,7 +17135,7 @@ function Safari() {
                     }
                 }
             }
-            this.spiritDuelsMessage( team1fighters );
+            this.spiritDuelsMessage(team1fighters);
             for (var a in team2) {
                 team2[a].rate = (team2[a].won / team2[a].fought);
                 if (team2[a].alive) {
@@ -17146,7 +17150,7 @@ function Safari() {
                     }
                 }
             }
-            this.spiritDuelsMessage( team2fighters );
+            this.spiritDuelsMessage(team2fighters);
             if (!victory1 && !victory2 && step >= 27) {
                 safari.events.spiritDuelsTeams[0].won += 0.5;
                 safari.events.spiritDuelsTeams[1].won += 0.5;
@@ -17155,8 +17159,8 @@ function Safari() {
                 safari.events.spiritDuelsTeams[0].rate = (safari.events.spiritDuelsTeams[0].won / safari.events.spiritDuelsTeams[0].fought);
                 safari.events.spiritDuelsTeams[1].rate = (safari.events.spiritDuelsTeams[1].won / safari.events.spiritDuelsTeams[1].fought);
                 safari.events.spiritDuelsViewers = [];
-                sendAll( "The Spirit Duel ended in a draw!!");
-                safari.events.spiritDuelsLog.unshift( safari.events.spiritDuelsTeams[0].name + " " + safari.events.spiritDuelsTeams[1].name + " tied!" );
+                sendAll("The Spirit Duel ended in a draw!");
+                safari.events.spiritDuelsLog.unshift(safari.events.spiritDuelsTeams[0].name + " " + safari.events.spiritDuelsTeams[1].name + " tied!");
                 safari.prepareNextSpiritDuel();
                 return true;
             }
@@ -17164,6 +17168,7 @@ function Safari() {
                 var w;
                 if (victory1 && victory2) {
                     //This shouldn't happen
+                    w = "Glithced (Please contact a Safari Admin)";
                 }
                 else if (victory1) {
                     safari.events.spiritDuelsTeams[0].won++;
@@ -17329,11 +17334,14 @@ function Safari() {
         //Also increases their EXP
         var id = parseInt(mon, 10), exp;
         player.spiritDuels.box.push(id);
-        exp = (getBST(id));
+        exp = Math.round((getBST(id) + Math.max(getBST(id) - 300, 0)) * 0.75);
         for (var s in player.spiritDuels.skills) {
             if (player.spiritDuels.skills[s].type === "exp") {
                 exp *= player.spiritDuels.skills[s].val;
             }
+        }
+        if (isLegendary(id)) {
+            exp *= 4;
         }
         player.spiritDuels.exp += exp;
         var expNeeded;
@@ -17342,7 +17350,7 @@ function Safari() {
             case "Ensign": expNeeded = 6000; break;
             case "Officer Trainee": expNeeded = 10000; break;
             case "Secretary Officer": expNeeded = 15000; break;
-            case "Squadron Leader": expNeeded = 21000; break;
+            case "Squadron Leader": expNeeded = 22000; break;
             case "Field Lieutenant": expNeeded = 30000; break;
             case "Commander": expNeeded = 35000; break;
             case "Vice Admiral": expNeeded = 40000; break;
@@ -17421,7 +17429,10 @@ function Safari() {
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
             case "inactive": this.markInactivity(src,player,commandData); break;
             case "reactive": this.markActivity(src,player); break;
-            default: safaribot.sendMessage( src,"You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "! [Valid commands are box, boxt, active, join, history, party, skill, and watch!]",safchan );
+            default: 
+                var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
+                m += ("[" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                safaribot.sendMessage(src, m, safchan);
         }
     };
     this.markActivity = function( src,player ) {
@@ -17572,9 +17583,14 @@ function Safari() {
             return;
         }
         var enlistPerPlayer1 = (army1.length >= 6 ? 3 : (army1.length >= 5 ? 4 : (army1.length >= 4 ? 5 : 6)));
+        var hold = 0;
         for (var a in army1) {
             p = getAvatarOff(idnumList.get(army1[a]));
             j = 0;
+            hold = parseInt(enlistPerPlayer1, 10);
+            hold += (p.spiritDuels.rank >= 3 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 7 ? 1 : 0);
+            hold += (p.spiritDuels.rank >= 9 ? 1 : 0);
             for (var i = 0; i < enlistPerPlayer1; i++) {
                 out += ("" + poke(p.spiritDuels.box[j]) + " (" + p.id + ") ");
                 j++;
@@ -17583,7 +17599,7 @@ function Safari() {
                 }
             }
         }
-        safaribot.sendMessage( src,"Your team (" + name + ") 's Spirit Duel Party: ",safchan );
+        safaribot.sendMessage( src,"Your team (" + name + ")'s Spirit Duel Party: ",safchan );
         safaribot.sendMessage( src,out,safchan );
         return;
     };
@@ -17628,12 +17644,12 @@ function Safari() {
             a = getInputPokemon(a);
             x = player.spiritDuels.box.indexOf(a.num);
             if (x === -1) {
-                safaribot.sendMessage( src,"You don't have any Spirit Pokémon " + poke(a.name) + "!",safchan );
+                safaribot.sendMessage(src, "You don't have any Spirit Pokémon " + poke(a.name) + "!", safchan);
                 continue;
             }
             player.spiritDuels.box.splice(x, 1);
             player.spiritDuels.box.unshift(a.num);
-            safaribot.sendMessage( src,"You added " + a.name + " to the lead of your Spirit Team!",safchan );
+            safaribot.sendMessage(src, "You added " + a.name + " to the lead of your Spirit Team!", safchan);
         }
         this.saveGame(player);
     };
@@ -50906,7 +50922,7 @@ function Safari() {
                 else {
                     safari.dayCareStep(1);
                 }
-                //safari.pendingNotifications();
+                safari.pendingNotifications();
                 if (safari.events.spiritDuelsEnabled) {
                     if (safari.events.spiritDuelsBattling) {
                         safari.events.currentSpiritDuel = true;
