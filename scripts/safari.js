@@ -10862,7 +10862,7 @@ function Safari() {
                 }
             }
             this.notificationPing(p);
-            safari.saveGame(player);
+            safari.saveGame(p);
         }
     };
     this.viewInbox = function(src) {
