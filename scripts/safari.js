@@ -10834,10 +10834,7 @@ function Safari() {
                     this.notification(p, out, "Collector", true);
                 }
             }
-            if (data.daycarePlay) {
-                if (chance(0.75)) {
-                    continue;
-                }
+            if (data.daycarePlay && chance(0.25)) {
                 data.daycarePlay = false;
                 if (data.daycareHungry) {
                     out = "Your " + poke(data.daycarePoke) + " is hungry! Go visit the " + link("/daycare", "Daycare") + " to feed it!";
