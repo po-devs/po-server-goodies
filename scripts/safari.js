@@ -10849,9 +10849,9 @@ function Safari() {
             }
             var m, hit = 0;
             if (chance(0.22) && data.missionWaiting) {
-                for (var e = 0; e < player.missions.length; e++) {
-                    m = player.missions[e];
-                    if (m.count >= m.goal && canReceiveStuff(player, m.reward).result) {
+                for (var e = 0; e < p.missions.length; e++) {
+                    m = p.missions[e];
+                    if (m.count >= m.goal && canReceiveStuff(p, m.reward).result) {
                         hit++;
                     }
                 }
