@@ -10060,6 +10060,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
             safaribot.sendMessage(src, "For Shiny, CanEvolve, FinalForm and CanMega: No additional parameter required.", safchan);
             safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
+            safaribot.sendMessage(src, "To look for any of more than one parameter, use || (e.g.: '/find type steel || color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -10068,35 +10069,42 @@ function Safari() {
             return;
         }
 
-        var multi = commandData.split("&&");
-        var str, info, crit, val, m, def, title = [], list, current = player.pokemon.concat();
+        var sets = commandData.split("||");
+        var multi;
+        var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
         var spacedVal = ["move","learn","canlearn"];
 
-        for (m = 0; m < multi.length; m++) {
+        for (var i = 0; i < sets.length; i++) {
+            multi = sets[i].split("&&");
+            for (m = 0; m < multi.length; m++) {
+                list = [];
+                str = multi[m].trim();
+                info = str.split(":");
+                crit = "abc", val = "1";
+                if (info.length < 2) {
+                    info = str.split(" ");
+                }
+
+                crit = info[0].toLowerCase();
+                
+                val = info.length > 1 ? (spacedVal.contains(crit) ? info.slice(1).join(" ") : info[1]).toLowerCase() : "asc";
+
+                def = applyFilterCriteria(src, info, crit, val, list, current, str, player.pokemon);
+                if (!def) {
+                    return;
+                }
+                title.push(def);
+
+                current = list.concat();
+            }
+            finalList.concat(list);
             list = [];
-            str = multi[m].trim();
-            info = str.split(":");
-            crit = "abc", val = "1";
-            if (info.length < 2) {
-                info = str.split(" ");
-            }
-
-            crit = info[0].toLowerCase();
-            
-            val = info.length > 1 ? (spacedVal.contains(crit) ? info.slice(1).join(" ") : info[1]).toLowerCase() : "asc";
-
-            def = applyFilterCriteria(src, info, crit, val, list, current, str, player.pokemon);
-            if (!def) {
-                return;
-            }
-            title.push(def);
-
-            current = list.concat();
+            finalTitle.push(title);
         }
         if (textOnly) {
-            sys.sendHtmlMessage(src, this.listPokemonText(list, "Pokémon " + readable(title) + " (" + list.length + ")", shopLink), safchan);
+            sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + readable(title) + " (" + finalList.length + ")", shopLink), safchan);
         } else {
-            sys.sendHtmlMessage(src, this.listPokemon(list, "Pokémon " + readable(title) + " (" + list.length + ")", player.smallBox), safchan);
+            sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + readable(title) + " (" + finalList.length + ")", player.smallBox), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
@@ -17431,7 +17439,7 @@ function Safari() {
             case "reactive": this.markActivity(src,player); break;
             default: 
                 var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
-                m += ("[" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
         }
     };
@@ -17952,6 +17960,11 @@ function Safari() {
         var ev = new Quiz(null, rew[0], rew[1], rew[2], true, true);
         currentEvent = ev;
         safari.flashPlayers();
+    };
+
+    /* Tower Trouble */
+    this.towerTroubleRequirements = function(src, str) {
+        return;
     };
 
     /* Max Raid */
