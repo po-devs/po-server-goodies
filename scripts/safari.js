@@ -10762,7 +10762,7 @@ function Safari() {
         if (mute) {
             return;
         }
-        this.notificationPing();
+        this.notificationPing(player);
     };
     this.notificationPing = function(player) {
         var src = sys.id(player.id);
