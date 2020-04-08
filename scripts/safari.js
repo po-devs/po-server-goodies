@@ -10742,6 +10742,9 @@ function Safari() {
         if (!player.hasOwnProperty("notifications")) {
             player.notifications = [];
         }
+        if (!player.hasOwnProperty("notificationSources")) {
+            player.notificationSources = [];
+        }
         player.notifications.push(
             {
                 msg: message + " --- [" + d + "]",
