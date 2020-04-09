@@ -1068,6 +1068,36 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         normalbot.sendMessage(src, commandData[0] + " is not a valid tier.", channel);
         return;
     }
+    if (command == "addsafari" && SESSION.channels(sys.channelId("Safari")).isChannelAdmin(src)) {
+        var POglobal = SESSION.global();
+        var bind_chan = channel;
+        var md = "safari";
+        updateModule("safari", function(module) {
+            POglobal.plugins.push(module);
+            module.source = md;
+            try {
+                module.init();
+                sys.sendMessage(src, "±Plugins: Module " + md + " updated!", bind_chan);
+            } catch(e) {
+                sys.sendMessage(src, "±Plugins: Module " + md + "'s init function failed: " + e, bind_chan);
+            }
+        });
+        normalbot.sendMessage(src, "Downloading module " + md + "!", channel);
+        return;
+    }
+    if (command == "removesafari" && SESSION.channels(sys.channelId("Safari")).isChannelAdmin(src)) {
+        var POglobal = SESSION.global();
+        var md = "safari";
+        for (var i = 0; i < POglobal.plugins.length; ++i) {
+            if (md == POglobal.plugins[i].source) {
+                normalbot.sendMessage(src, "Module " + POglobal.plugins[i].source + " removed!", channel);
+                POglobal.plugins.splice(i,1);
+                return;
+            }
+        }
+        normalbot.sendMessage(src, "Module not found, can not remove.", channel);
+        return;
+    }
     if (command === "invitespec") {
         if (tar === undefined) {
             normalbot.sendMessage(src, "Choose a valid target to watch your battle!");
