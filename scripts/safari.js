@@ -16803,7 +16803,7 @@ function Safari() {
                 {type: "move", target: "Earthquake", val: 32, desc: "Spirits that can know Earthquake receive a fighting advantage."},
                 {type: "move", target: "Calm Mind", val: 32, desc: "Spirits that can know Calm Mind receive a fighting advantage."},
                 {type: "move", target: "Taunt", val: 32, desc: "Spirits that can know Taunt receive a fighting advantage."},
-                {type: "attack", target: "", val: 12, desc: "Spirits with high Attack stat receive a fighting advantage."},
+                {type: "attack", target: "", val: 12, scaling: true, desc: "Spirits with high Attack stat receive a fighting advantage."},
                 {type: "catch", target: "cooldown", val: 1.17, desc: "Catch cooldown on Spirit Balls reduced slightly."}
             ],
             "Vice Admiral": [
@@ -16813,7 +16813,7 @@ function Safari() {
                 {type: "move", target: "Stored Power", val: 34, desc: "Spirits that can know Stored Power receive a fighting advantage."},
                 {type: "move", target: "Charge Beam", val: 34, desc: "Spirits that can know Charge Beam receive a fighting advantage."},
                 {type: "catch", target: "rate", val: 1.4, desc: "Catch rate with Spirit Balls raised."},
-                {type: "spattack", target: "", val: 14, desc: "Spirits with high Special Attack stat receive a fighting advantage."},
+                {type: "spattack", target: "", val: 14, scaling: true, desc: "Spirits with high Special Attack stat receive a fighting advantage."},
                 {type: "catch", target: "cooldown", val: 1.24, desc: "Catch cooldown on Spirit Balls reduced slightly."}
             ],
             "Admin": [
@@ -16822,7 +16822,7 @@ function Safari() {
                 {type: "move", target: "Giga Drain", val: 35, desc: "Spirits that can know Giga Drain receive a fighting advantage."},
                 {type: "move", target: "Hurricane", val: 35, desc: "Spirits that can know Hurricane receive a fighting advantage."},
                 {type: "move", target: "Power Gem", val: 35, desc: "Spirits that can know Power Gem receive a fighting advantage."},
-                {type: "speed", target: "", val: 16, desc: "Spirits with high Speed stat receive a fighting advantage."},
+                {type: "speed", target: "", val: 16, scaling: true, desc: "Spirits with high Speed stat receive a fighting advantage."},
                 {type: "catch", target: "cooldown", val: 1.35, desc: "Catch cooldown on Spirit Balls reduced."}
             ],
             "Supreme Master": [
@@ -17459,7 +17459,7 @@ function Safari() {
         safaribot.sendMessage(src, msg, safchan);
         for (var s in player.spiritDuels.skillChoices) {
             skill = player.spiritDuels.skillChoices[s];
-            safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + "", safchan);
+            safaribot.sendMessage(src, "[" + letters[i] + "] " + skill.desc + " (+" + skill.val + ")", safchan);
             i++;
         }
     };
@@ -17576,7 +17576,7 @@ function Safari() {
         }
         safaribot.sendMessage(src, "You have the following Spirit Skills:", safchan);
         for (var s in player.spiritDuels.skills) {
-            safaribot.sendMessage(src, player.spiritDuels.skills[s].desc, safchan);
+            safaribot.sendMessage(src, player.spiritDuels.skills[s].desc + " (+" + player.spiritDuels.skills[s].val + (player.spiritDuels.skills[s].scaling ? " scaling up to 2x." : "") + ")", safchan);
         }
         return;
     }
