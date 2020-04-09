@@ -18161,7 +18161,7 @@ function Safari() {
     };
     this.showTowerTroubleLeaderboard = function(src, public) {
         var ordered = Object.keys(safari.events.towerTroubleData.players).sort(function(a, b) {
-            return safari.events.towerTroubleData.players[a] - safari.events.towerTroubleData.players[b];
+            return safari.events.towerTroubleData.players[b] - safari.events.towerTroubleData.players[a];
         });
         var seekAmt = Math.min(public ? 10 : 5, ordered.length);
         if (seekAmt == 0) {
@@ -18182,8 +18182,8 @@ function Safari() {
             } else {
                 safaribot.sendMessage(src, name + ": " + safari.events.towerTroubleData.players[entry] + ".", safchan);
             }
-            return;
         }
+        return;
     };
     this.towerTroubleProgress = function(src) {
         this.showTowerTroubleLeaderboard(src, true);
