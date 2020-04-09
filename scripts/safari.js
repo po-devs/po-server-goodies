@@ -30671,7 +30671,7 @@ function Safari() {
         }
     }
     function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup, noGen7, counterMon) {
-        var out = [], p, legendCount = 0, bst, maxLoop = 2500, i = 0, countersHit = 0, atkm, defm;
+        var out = [], p, legendCount = 0, bst, maxLoop = 2500, i = 0, countersHit = 0, atkm, defm, hitCounter = false;
         size = size || 6;
         maxLegends = maxLegends || 1;
 
@@ -30695,23 +30695,30 @@ function Safari() {
                     continue;
                 }
             }
+            if (out.contains(p)) {
+                continue;
+            }
             if (counterMon && countersHit < 5 && i < maxLoop) {
                 i++;
                 atkm = safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p));
                 defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
+                hitCounter = false;
+                if (atkm * defm < 4 && (i * 0.5 < maxLoop)) {
+                    continue;
+                }
                 if (atkm * defm < 2) {
                     continue;
                 }
-                countersHit++;
-            }
-            if (out.contains(p)) {
-                continue;
+                hitCounter = true;
             }
             if (isLegendary(p)) {
                 if (legendCount >= maxLegends) {
                     continue;
                 }
                 legendCount++;
+            }
+            if (hitCounter) {
+                countersHit++;
             }
             out.push(p);
         }
