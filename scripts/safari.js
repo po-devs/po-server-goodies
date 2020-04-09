@@ -18033,7 +18033,7 @@ function Safari() {
 
     /* Tower Trouble */
     this.setTowerTroubleRequirements = function(src, commandData) {
-        var m = commandData + "";
+        var x = commandData + "";
         var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = [];
@@ -18077,8 +18077,8 @@ function Safari() {
                 "players": {}
             }
         }
-        safari.events.towerTroubleData.searchText = m;
-        safari.events.towerTroubleData.searchLink = link("/find " + m, finalTitleMsg);
+        safari.events.towerTroubleData.searchText = x;
+        safari.events.towerTroubleData.searchLink = link("/find " + x, finalTitleMsg);
 
         safaribot.sendHtmlMessage(src, "Tower Trouble requirements set to " + safari.events.towerTroubleData.searchLink + ".", safchan);
         stopQuests.tower = false;
