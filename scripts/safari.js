@@ -10092,7 +10092,7 @@ function Safari() {
             safaribot.sendMessage(src, "-Range. e.g.: /find number 1 150 (displays all Pokémon with pokédex number between 1 and 150)", safchan);
             safaribot.sendMessage(src, "For Shiny, CanEvolve, FinalForm and CanMega: No additional parameter required.", safchan);
             safaribot.sendMessage(src, "To look for more than one paramater, use && (e.g.: '/find region johto && duplicate 3' to look for Pokémon from Johto that you have 3 copies of)", safchan);
-            safaribot.sendMessage(src, "To look for any of more than one parameter, use || (e.g.: '/find type steel || color green' to look for Pokémon that's Steel type or green.)", safchan);
+            safaribot.sendMessage(src, "To look for any of more than one parameter, use or (e.g.: '/find type steel or color green' to look for Pokémon that's Steel type or green.)", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -10101,7 +10101,7 @@ function Safari() {
             return;
         }
 
-        var sets = commandData.split("||");
+        var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = player.pokemon.concat(), finalList = [];
         var spacedVal = ["move","learn","canlearn"];
@@ -18033,7 +18033,8 @@ function Safari() {
 
     /* Tower Trouble */
     this.setTowerTroubleRequirements = function(src, commandData) {
-        var sets = commandData.split("||");
+        var m = commandData + "";
+        var sets = commandData.split(" or ");
         var multi;
         var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = [];
         var spacedVal = ["move","learn","canlearn"];
@@ -18076,7 +18077,6 @@ function Safari() {
                 "players": {}
             }
         }
-        var m = sets.join("||");
         safari.events.towerTroubleData.searchText = m;
         safari.events.towerTroubleData.searchLink = link("/find " + m, finalTitleMsg);
 
@@ -18086,7 +18086,7 @@ function Safari() {
     };
     this.satisfiesTowerTrouble = function(src, party) {
         var restrictions = safari.events.towerTroubleData.searchText;
-        var sets = restrictions.split("||");
+        var sets = restrictions.split(" or ");
         var multi;
         var str, info, crit, val, m, def, list, current = player.pokemon.concat(), finalList = [];
         var spacedVal = ["move","learn","canlearn"];
