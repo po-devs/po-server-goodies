@@ -1935,6 +1935,7 @@ function Safari() {
         icon: function(p, shinyBG) {
             var p2 = p;
             var pcheck = p2%65536;
+            var uic;
             //Pumpkaboo/Gourgeist icon hack
             if (pcheck === 710 || pcheck === 711) {
                 p2 = pcheck;
@@ -1942,7 +1943,11 @@ function Safari() {
             if (ultraPokes.hasOwnProperty(p2+"")) {
                 var species = pokeInfo.species(p2), form = pokeInfo.forme(p2);
                 var key = species + (form > 0 ? "-" + form : "");
-                return '<img src="' + resources.icons.get(key) + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
+                uic = resources.icons.get(key);
+                if (!(uic)) {
+                    uic = 'icon:' + p2%65536;
+                }
+                return '<img src="' + uic + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
             }
            return '<img src="icon:' + p2 + '" title="#' + pokeInfo.readableNum(p) + " " + poke(p) + (shinyBG && pokeInfo.shiny(p) ? '" style="background:yellow"' : '"') + '>';
         },
@@ -5493,6 +5498,33 @@ function Safari() {
             "tier": "SM Ubers",
             "height": 100,
             "weight": 0
+        },
+        "131564": {
+            "types": ["Grass", "???"],
+            "name": "Shaymin-Lilac",
+            "stats": [100, 100, 100, 100, 100, 100],
+            "abilities": [ "Natural Cure" ],
+            "tier": "SM OU",
+            "height": 0.2,
+            "weight": 2.1
+        },
+        "197100": {
+            "types": ["Grass", "???"],
+            "name": "Shaymin-Sunflower",
+            "stats": [100, 100, 100, 100, 100, 100],
+            "abilities": [ "Natural Cure" ],
+            "tier": "SM OU",
+            "height": 0.2,
+            "weight": 2.1
+        },
+        "262636": {
+            "types": ["Grass", "???"],
+            "name": "Shaymin-Felicia",
+            "stats": [100, 100, 100, 100, 100, 100],
+            "abilities": [ "Natural Cure" ],
+            "tier": "SM OU",
+            "height": 0.2,
+            "weight": 2.1
         }
     };
     var ultraAbilities = {
@@ -10109,7 +10141,7 @@ function Safari() {
                 finalTitleMsg += " or ";
             }
         }
-        finalList = removeDuplicates(finalList);
+        finalList = removeDuplicates(finalList, true);
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", shopLink), safchan);
         } else {
@@ -16918,40 +16950,16 @@ function Safari() {
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
             amt = Math.round((((j) * 1.8) + (9 - teams.length))/2);
-            amt2 = Math.round((((j) * 1.5) + (5 - teams.length)));
-            rareamt = Math.round((((j) * 2.7) + (10 - teams.length))/2);
             rew = ("" + rareamt + "@rare");
             apri = ["redapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"].random();
             if (r >= 50) {
                 rew += ("," + ((5 + round) * (j + round)) + "@dew");
             }
-            if (round >= 1 && round < 3) {
-                rew += ("," + amt + "@pearl");
-                rew += ("," + amt + "@silver");
-                rew += ("," + (5 * amt) + "@" + apri);
-            }
             if (round >= 2) {
                 rew += ("," + amt + "@cookie");
             }
-            if (round >= 3) {
-                rew += ("," + amt + "@golden");
-                rew += ("," + amt + "@bigpearl");
-                rew += ("," + (2 * amt) + "@silver");
-                rew += ("," + (10 * amt) + "@" + apri);
-            }
-            if (round >= 4) {
-                rew += ("," + amt2 + "@mega");
-                rew += ("," + (2 * amt2) + "@pearl");
-            }
-            if (round >= 5) {
-                rew += ("," + amt2 + "@mega");
-                rew += ("," + (2 * amt2) + "@pearl");
-            }
-            if (round >= 6) {
-                rew += ("," + amt2 + "@nugget");
-            }
             members = teams[t].players;
-            var n = now();
+            var n = now(), finalrew = rew + "", g2, pamt, pamt2, pamt3;
             for (var p in members) {
                 s = idnumList.get(members[p]);
                 if (!(s)) {
@@ -16961,12 +16969,32 @@ function Safari() {
                 if (!player) {
                     continue;
                 }
-                if (teams[t].activityWarned.hasOwnProperty(members[p]+"")) {
-                    if (n > teams[t].activityWarned[members[p]+""]) {
-                        continue;
-                    }
+                pamt = (Math.round((((j) * 1.8) + (9 - teams.length))/2) * ((player.spiritDuels.rank + 4) * 0.15));
+                pamt2 = (Math.round((((j) * 1.2) + (10 - teams.length))/2) * ((player.spiritDuels.rank + 3) * 0.2));
+                pamt3 = Math.round(((((j) * 1.5) + (5 - teams.length))) * ((player.spiritDuels.rank + 6) * 0.08));
+                rareamt = Math.round(((((j) * 1.67) + (10 - teams.length))/2) * ((player.spiritDuels.rank + 5) * 0.2));
+                if (round >= 1) {
+                    finalrew += ("," + pamt + "@pearl");
+                    finalrew += ("," + pamt2 + "@silver");
+                    finalrew += ("," + (5 * pamt) + "@" + apri);
+                } else {
+                    finalrew += ("," + pamt2 + "@golden");
+                    finalrew += ("," + pamt + "@bigpearl");
+                    finalrew += ("," + (2 * pamt2) + "@silver");
+                    finalrew += ("," + (10 * pamt) + "@" + apri);
                 }
-                g = giveStuff(player, toStuffObj(rew));
+                if (round == 4) {
+                    finalrew += ("," + pamt3 + "@mega");
+                    finalrew += ("," + (2 * pamt2) + "@pearl");
+                }
+                if (round >= 5) {
+                    finalrew += ("," + (pamt3) + "@mega");
+                    finalrew += ("," + (5 * pamt2) + "@stardust");
+                    finalrew += ("," + pamt2 + "@nugget");
+                }
+                finalrew = rew + (rareamt + "@rare");
+                g = giveStuff(player, toStuffObj(finalrew));
+                safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + " and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
             sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (Prizes: " + g + ")", true);
@@ -17595,6 +17623,10 @@ function Safari() {
             safaribot.sendMessage( src,"You are already signed up!",safchan );
             return false;
         }
+        if (safari.events.spiritDuelsTeams.length <= 4) {
+            safaribot.sendMessage(src,"You cannot sign up for this season of Spirit Duels anymore!", safchan);
+            return false;
+        }
         safari.events.spiritDuelsSignups.push(player.idnum);
         if (!player.spiritDuels) {
             player.spiritDuels = {
@@ -17610,7 +17642,7 @@ function Safari() {
         player.balls.spirit = Math.max(player.balls.spirit, 5);
         safari.sanitize(player);
         safari.saveGame(player);
-        safaribot.sendMessage( src,"You signed up for Spirit Duels! You will join the next round as soon as it starts!",safchan );
+        safaribot.sendMessage(src, "You signed up for Spirit Duels! You will join the next round as soon as it starts!", safchan);
         return true;
     };
     this.showSpiritDuelsTeam = function(src, player) {
@@ -18044,8 +18076,9 @@ function Safari() {
                 "players": {}
             }
         }
-        safari.events.towerTroubleData.searchText = commandData;
-        safari.events.towerTroubleData.searchLink = link("/find " + commandData, finalTitleMsg);
+        var m = sets.join("||");
+        safari.events.towerTroubleData.searchText = m;
+        safari.events.towerTroubleData.searchLink = link("/find " + m, finalTitleMsg);
 
         safaribot.sendHtmlMessage(src, "Tower Trouble requirements set to " + safari.events.towerTroubleData.searchLink + ".", safchan);
         stopQuests.tower = false;
@@ -18082,7 +18115,7 @@ function Safari() {
             finalList = finalList.concat(current);
             current = player.pokemon.concat();
         }
-        finalList = removeDuplicates(finalList);
+        finalList = removeDuplicates(finalList, true);
         for (var i = 0; i < party.length; i++) {
             if (!(finalList.contains(party[i]))) {
                 return false;
@@ -18099,7 +18132,7 @@ function Safari() {
             safaribot.sendMessage( src,"Tower Trouble is not enabled!",safchan );
             return;
         }
-        switch (command) {
+        switch (commandData) {
             case "validate": 
             case "valid": 
                 if (this.satisfiesTowerTrouble(src, player.party)) {
