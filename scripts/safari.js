@@ -17458,7 +17458,6 @@ function Safari() {
         return;
     };
     this.spiritDuelsCommand = function( src,command,commandData ) {
-        //Shows them their spirit monns
         var player = getAvatar(src);
         if (!safari.events.spiritDuelsEnabled) {
             safaribot.sendMessage( src,"Spirit Duels are not enabled!",safchan );
@@ -18001,8 +18000,161 @@ function Safari() {
     };
 
     /* Tower Trouble */
-    this.towerTroubleRequirements = function(src, str) {
+    this.setTowerTroubleRequirements = function(src, commandData) {
+        var sets = commandData.split("||");
+        var multi;
+        var str, info, crit, val, m, def, title = [], finalTitle = [], list, current = [];
+        var spacedVal = ["move","learn","canlearn"];
+
+        for (var i = 0; i < sets.length; i++) {
+            multi = sets[i].split("&&");
+            for (m = 0; m < multi.length; m++) {
+                list = [];
+                str = multi[m].trim();
+                info = str.split(":");
+                crit = "abc", val = "1";
+                if (info.length < 2) {
+                    info = str.split(" ");
+                }
+
+                crit = info[0].toLowerCase();
+                
+                val = info.length > 1 ? (spacedVal.contains(crit) ? info.slice(1).join(" ") : info[1]).toLowerCase() : "asc";
+
+                def = applyFilterCriteria(src, info, crit, val, list, current, str, player.pokemon);
+                if (!def) {
+                    return;
+                }
+                title.push(def);
+            }
+            finalTitle.push(title);
+            title = [];
+        }
+        finalTitleMsg = "";
+        for (var i = 0; i < finalTitle.length; i++) {
+            finalTitleMsg += readable(finalTitle[i]);
+            if (i !== finalTitle.length - 1) {
+                finalTitleMsg += " or ";
+            }
+        }
+        if (!(safari.events.hasOwnProperty("towerTroubleData"))) {
+            safari.events.towerTroubleData = {
+                "searchText": "",
+                "searchLink": "",
+                "players": {}
+            }
+        }
+        safari.events.towerTroubleData.searchText = commandData;
+        safari.events.towerTroubleData.searchLink = link("/find " + commandData, finalTitleMsg);
+
+        safaribot.sendHtmlMessage(src, "Tower Trouble requirements set to " + safari.events.towerTroubleData.searchLink + ".", safchan);
+        stopQuests.tower = false;
         return;
+    };
+    this.satisfiesTowerTrouble = function(src, party) {
+        var restrictions = safari.events.towerTroubleData.searchText;
+        var sets = restrictions.split("||");
+        var multi;
+        var str, info, crit, val, m, def, list, current = player.pokemon.concat(), finalList = [];
+        var spacedVal = ["move","learn","canlearn"];
+
+        for (var i = 0; i < sets.length; i++) {
+            multi = sets[i].split("&&");
+            for (m = 0; m < multi.length; m++) {
+                list = [];
+                str = multi[m].trim();
+                info = str.split(":");
+                crit = "abc", val = "1";
+                if (info.length < 2) {
+                    info = str.split(" ");
+                }
+
+                crit = info[0].toLowerCase();
+                
+                val = info.length > 1 ? (spacedVal.contains(crit) ? info.slice(1).join(" ") : info[1]).toLowerCase() : "asc";
+
+                def = applyFilterCriteria(src, info, crit, val, list, current, str, player.pokemon);
+                if (!def) {
+                    return false;
+                }
+                current = list.concat();
+            }
+            finalList = finalList.concat(current);
+            current = player.pokemon.concat();
+        }
+        finalList = removeDuplicates(finalList);
+        for (var i = 0; i < party.length; i++) {
+            if (!(finalList.contains(party[i]))) {
+                return false;
+            }
+        }
+        return true;
+    };
+    this.towerTroubleCommand = function(src, commandData) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+        if (!safari.events.towerTroubleEnabled) {
+            safaribot.sendMessage( src,"Tower Trouble is not enabled!",safchan );
+            return;
+        }
+        switch (command) {
+            case "validate": 
+            case "valid": 
+                if (this.satisfiesTowerTrouble(src, player.party)) {
+                    safaribot.sendHtmlMessage(src, "Your current party is <b>valid</b> for the current Tower Trouble requirements!", safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, "Your current party is <b>NOT valid</b> for the current Tower Trouble requirements!", safchan);
+                }
+                break;
+            case "find": 
+            case "requirements": 
+                safaribot.sendHtmlAll(src, "Current requirements: " + safari.events.towerTroubleData.searchLink + ".", safchan);
+                break;
+            case "leaderboard": 
+            case "lb": 
+                this.showTowerTroubleLeaderboard(src, false);
+                break;
+            default: 
+                var m = "Tower Trouble commands are ";
+                m += ("" + link("/towertrouble validate", "Validate") + ", " + link("/towertrouble find", "Requirements") + ", " + link("/towertrouble leaderboard", "Leaderboard"));
+                safaribot.sendHtmlMessage(src, m, safchan);
+        }
+    };
+    this.showTowerTroubleLeaderboard = function(src, public) {
+        var ordered = Object.keys(safari.events.towerTroubleData.players).sort(function(a, b) {
+            return safari.events.towerTroubleData.players[a].score - safari.events.towerTroubleData.players[b].score;
+        });
+        var seekAmt = Math.min(public ? 10 : 5, ordered.length);
+        if (seekAmt == 0) {
+            safaribot.sendMessage(src, "No one ranked in this period yet!", safchan);
+            return;
+        }
+        if (public) {
+            safaribot.sendHtmlAll("Top " + seekAmt + " players in this period:", safchan);
+        } else {
+            safaribot.sendMessage(src, "Top " + seekAmt + " players in this period:", safchan);
+        }
+        var name = "", entry = "";
+        for (var i = 0; i < seekAmt; i++) {
+            name = idnumList.get(parseInt(ordered[i], 10));
+            entry = (ordered[i]+"");
+            if (public) {
+                safaribot.sendHtmlAll(name + ": " + safari.events.towerTroubleData.players[entry].score + ".", safchan);
+            } else {
+                safaribot.sendMessage(src, name + ": " + safari.events.towerTroubleData.players[entry].score + ".", safchan);
+            }
+            return;
+        }
+    };
+    this.towerTroubleProgress = function(src) {
+        this.showTowerTroubleLeaderboard(src, true);
+        safari.events.towerTroubleData.players = {};
+        safari.events.towerTroubleData.searchText = "";
+        safari.events.towerTroubleData.searchLink = "";
+        stopQuests.tower = true;
+        safaribot.sendMessage(src, "Finished the current Tower Trouble round and disabled Battle Tower. Remember to re-enable it once the next round is ready. (Use /settowertrouble [find string])", safchan);
     };
 
     /* Max Raid */
@@ -27149,6 +27301,18 @@ function Safari() {
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
                 player.notificationData.towerWaiting = true;
+                if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "" && safari.satisfiesTowerTrouble(src, player.party)) {
+                    if (!(safari.events.towerTroubleData.players.hasOwnProperty(player.idnum+""))) {
+                        safari.events.towerTroubleData.players[player.idnum+""] = 0;
+                    }
+                    if (count > safari.events.towerTroubleData.players[player.idnum+""]) {
+                        safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is now " + count + "!", safchan);
+                    }
+                    else {
+                        safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is " + safari.events.towerTroubleData.players[player.idnum+""] + "!", safchan);
+                    }
+                    safari.events.towerTroubleData.players[player.idnum+""] = Math.max(safari.events.towerTroubleData.players[player.idnum+""], count);
+                }
 
                 if (penalty) {
                     safaribot.sendMessage(src, "Due to the intense sweetness of the " + finishName("cherry") + ", you will be unable to challenge Tower for longer than normal due the resulting sugar crash!", safchan);
@@ -30364,6 +30528,9 @@ function Safari() {
         }
         if (safari.events.bonusLoginEnabled) {
             line4 += " " + link("/bonuslogin", "«Bonus Login»");
+        }
+        if (safari.events.towerTroubleEnabled) {
+            line4 += " " + link("/towertrouble", "«Tower Trouble»");
         }
         var line5 = "«Notifications";
         var amt = this.countUnseenNotifications(player);
@@ -45382,6 +45549,10 @@ function Safari() {
                 safari.bonusLoginPrint(src);
                 return true;
             }
+            if (command === "towertrouble" || command === "towertroubles") {
+                safari.towerTroubleCommand(src, commandData);
+                return true;
+            }
             if (command === "photo") {
                 safari.takePhoto(src, commandData);
                 return true;
@@ -49968,6 +50139,14 @@ function Safari() {
             }
             if (command === "startduels") {
                 safari.assignDuelsTeams();
+                return true;
+            }
+            if (command === "settowertrouble" || command === "towertrouble" ) {
+                safari.setTowerTroubleRequirements(src, commandData);
+                return true;
+            }
+            if (command === "nexttowertrouble" || command === "progresstowertrouble" ) {
+                safari.towerTroubleProgress(src);
                 return true;
             }
             if (command === "nextduels" || command === "nextduel") {
