@@ -30703,10 +30703,10 @@ function Safari() {
                 atkm = safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p));
                 defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
                 hitCounter = false;
-                if ((((atkm * 100) / defm) * 0.01) < 4 && (i * 0.5 < maxLoop)) {
+                if ((((defm * 100) / atkm) * 0.01) < 4 && (i * 0.5 < maxLoop)) {
                     continue;
                 }
-                if ((((atkm * 100) / defm) * 0.01) < 2) {
+                if ((((defm * 100) / atkm) * 0.01) < 2) {
                     continue;
                 }
                 hitCounter = true;
