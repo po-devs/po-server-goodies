@@ -18097,6 +18097,9 @@ function Safari() {
         var sets = restrictions.split(" or ");
         var multi;
         var player = getAvatar(src);
+        if (!(player)) {
+            return false;
+        }
         var str, info, crit, val, m, def, list, current = player.pokemon.concat(), finalList = [];
         var spacedVal = ["move","learn","canlearn"];
 
