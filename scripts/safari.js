@@ -1139,7 +1139,7 @@ function Safari() {
         },
         flower: {
             icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl", "flower girl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05,
-            effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Non-legendary Pokémon with a single type perform better for this trainer! Also reduces cooldown while using Mono Balls.",
+            effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Single-type Pokémon perform better for this trainer! Also reduces cooldown while using Mono Balls.",
             noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms",
             effect2: "Has higher cooldown using the itemfinder.",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
@@ -10822,12 +10822,11 @@ function Safari() {
         }
         var amt = this.countUnseenNotifications(player);
         if (amt > 0) {
-            safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications", "«Notifications»"), safchan);
-            sys.sendHtmlMessage(src, "<ping/>", safchan);
+            safaribot.sendHtmlMessage(src, "You have " + (amt > 1 ? amt : "a") + " new notification" + (amt > 1 ? "s" : "") + " from " + readable(player.notificationSources, "and") + "! " + link("/notifications", "«Notifications»") + "<ping/>", safchan);
         }
     };
     this.pendingNotifications = function() {
-        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now()), m, hold;
+        var p, data, currentTime = now(), out = "", hold, hold2, name, currentDay = getDay(now()), m, hold, hitAny = false;
         var players = sys.playersOfChannel(safchan);
         for (var pid in players) {
             var player = getAvatar(players[pid]);
@@ -10862,6 +10861,7 @@ function Safari() {
                         out += " Load your last used Battle Tower party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
                     this.notification(p, out, "Tower", true);
+                    hitAny = true;
                 }
             }
             if (data.leagueWaiting) {
@@ -10876,6 +10876,7 @@ function Safari() {
                         out += " Load your last used League party? " + link("/qload " + hold.join(","), readable(hold, "and"));
                     }
                     this.notification(p, out, "League", true);
+                    hitAny = true;
                 }
             }
             if (data.collectorWaiting) {
@@ -10883,6 +10884,7 @@ function Safari() {
                     data.collectorWaiting = false;
                     out = "The " + link("/quest collector", "Collector") + " has finished organize his collection! He's ready to request new Pokémon!";
                     this.notification(p, out, "Collector", true);
+                    hitAny = true;
                 }
             }
             if (data.daycarePlay && chance(0.25)) {
@@ -10894,6 +10896,7 @@ function Safari() {
                     out = "Your " + poke(data.daycarePoke) + " wants to play! Go visit the " + link("/daycare", "Daycare") + " to play with it!";
                 }
                 this.notification(p, out, "Daycare", true);
+                hitAny = true;
             }
             if (chance(0.22) && data.missionWaiting) {
                 hit = 0;
@@ -10907,9 +10910,12 @@ function Safari() {
                     out = "You can receive rewards from " + hit + " cleared " + link("/missions", "Missions") + "!";
                     this.notification(p, out, "Missions", true);
                     data.missionWaiting = false;
+                    hitAny = true;
                 }
             }
-            this.notificationPing(p);
+            if (hitAny) {
+                this.notificationPing(p);
+            }
             safari.saveGame(p);
         }
     };
@@ -17293,7 +17299,7 @@ function Safari() {
             active = false
             switch (data.type) {
                 case "type": 
-                    if (hasType(target, sys.type(sys.typeNum(mon)))) {
+                    if (hasType(mon, target)) {
                         active = true;
                     }
                     break;
@@ -19446,6 +19452,13 @@ function Safari() {
 
         var p1Power = res.power[0];
         var p2Power = res.power[1];
+
+        var player = getAvatarOff(name1);
+        if (player) {
+            if (player.costume && player.costume == "flower" && type2(p1Poke) == "???") {
+                p1Power += Math.round(15 * (1 + Math.random()));
+            }
+        }
 
         if ((this.pinap.contains(p1Poke))) {
             p1Power += 18;
@@ -30658,7 +30671,7 @@ function Safari() {
         }
     }
     function generateTeam(size, minBST, maxBST, maxLegends, useType, onlyEvolved, littlecup, noGen7, counterMon) {
-        var out = [], p, legendCount = 0, bst, maxLoop = 2000, i = 0, countersHit = 0, atkm, defm;
+        var out = [], p, legendCount = 0, bst, maxLoop = 2500, i = 0, countersHit = 0, atkm, defm, hitCounter = false;
         size = size || 6;
         maxLegends = maxLegends || 1;
 
@@ -30682,23 +30695,30 @@ function Safari() {
                     continue;
                 }
             }
-            if (counterMon && countersHit < 4 && i < maxLoop) {
+            if (out.contains(p)) {
+                continue;
+            }
+            if (counterMon && countersHit < 5 && i < maxLoop) {
                 i++;
                 atkm = safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p));
                 defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
+                hitCounter = false;
+                if (atkm * defm < 4 && (i * 0.5 < maxLoop)) {
+                    continue;
+                }
                 if (atkm * defm < 2) {
                     continue;
                 }
-                countersHit++;
-            }
-            if (out.contains(p)) {
-                continue;
+                hitCounter = true;
             }
             if (isLegendary(p)) {
                 if (legendCount >= maxLegends) {
                     continue;
                 }
                 legendCount++;
+            }
+            if (hitCounter) {
+                countersHit++;
             }
             out.push(p);
         }
@@ -32789,7 +32809,7 @@ function Safari() {
                 choice = attackers[id];
                 avi = getAvatarOff(id);
 
-                if ((sys.type(sys.pokeType2(choice)) === "???") && (avi.costume === "flower") && (!(isLegendary(choice)))) {
+                if ((type2(choice)) === "???" && (avi.costume === "flower")) {
                     playerBonus = [30, 120];
                     if (pyrBonusMons.contains(choice)) {
                         playerBonus = [60, 160];
@@ -33013,7 +33033,7 @@ function Safari() {
                 avi = null;
             }
 
-            if ((sys.type(sys.pokeType2(m)) === "???") && avi && (avi.costume === "flower") && (!(isLegendary(m)))) {
+            if ((type2(m) === "???") && avi && (avi.costume === "flower")) {
                 playerBonus = [35 + 15 * this.level, 100 + 20 * this.level];
             }
             else {
@@ -33144,7 +33164,7 @@ function Safari() {
             m = choices[attackerNames[p]];
             avi = getAvatarOff(attackerNames[p]);
 
-            if ((sys.type(sys.pokeType2(m)) === "???") && (avi.costume === "flower") && (!(isLegendary(m)))) {
+            if ((sys.type(type2(m)) === "???") && (avi.costume === "flower")) {
                 pow = sys.rand(150 + this.level * 15, 260 + this.level * 37);
             }
             else {
@@ -33316,7 +33336,7 @@ function Safari() {
             hints.push("Ends with '{0}'".format(cap(this.answer[this.answer.length-1])));
         }
         hints.push("One of the types is '{0}'".format(type1(this.answerId)));
-        h = sys.type(sys.pokeType2(this.answerId));
+        h = type2(this.answerId);
         if (h !== "???" && level <= 6) {
             hints.push("One of the types is '{0}'".format(h));
         }
@@ -33763,7 +33783,7 @@ function Safari() {
             m = party[p];
             opp = this.trainerTeam[p];
 
-            if ((sys.type(sys.pokeType2(m)) === "???") && (isFlowerGirl) && (!(isLegendary(m)))) {
+            if ((type2(m) === "???") && (isFlowerGirl)) {
                 playerBonus = [30, 120];
             }
             else {
@@ -33884,9 +33904,9 @@ function Safari() {
         };
         var typeChances = {"Normal":18,"Fighting":20.25,"Flying":18.25,"Poison":15.75,"Ground":19.5,"Rock":23,"Bug":20.25,"Ghost":15.5,"Steel":9.5,"Fire":16.5,"Water":17,"Grass":23,"Electric":16.25,"Psychic":21.5,"Ice":24.75,"Dragon":19,"Dark":19.5,"Fairy":16.25};
         this.bonusTypes = [randomSample(typeChances)];
-        var type2 = randomSample(typeChances);
-        if (type2 !== this.bonusTypes[0]) {
-            this.bonusTypes.push(type2);
+        var type_2 = randomSample(typeChances);
+        if (type_2 !== this.bonusTypes[0]) {
+            this.bonusTypes.push(type_2);
         }
 
         this.midmsg = "Choose a Pokémon to defend from the next attack (Defending with a Pokémon with the type" + (this.bonusTypes.length > 1 ? "s" : "") + " " + readable(this.bonusTypes.map(typeIcon), "or") + " will give bonus points!)!";
