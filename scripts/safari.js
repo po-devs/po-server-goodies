@@ -18154,13 +18154,13 @@ function Safari() {
                 break;
             default: 
                 var m = "Tower Trouble commands are ";
-                m += ("" + link("/towertrouble validate", "Validate") + ", " + link("/towertrouble find", "Requirements") + ", " + link("/towertrouble leaderboard", "Leaderboard"));
+                m += ("" + link("/towertrouble validate", "Validate") + ", " + link("/towertrouble find", "Requirements") + ", " + link("/towertrouble leaderboard", "Leaderboard") + ", " + link("/quest tower", "Tower"));
                 safaribot.sendHtmlMessage(src, m, safchan);
         }
     };
     this.showTowerTroubleLeaderboard = function(src, public) {
         var ordered = Object.keys(safari.events.towerTroubleData.players).sort(function(a, b) {
-            return safari.events.towerTroubleData.players[a].score - safari.events.towerTroubleData.players[b].score;
+            return safari.events.towerTroubleData.players[a] - safari.events.towerTroubleData.players[b];
         });
         var seekAmt = Math.min(public ? 10 : 5, ordered.length);
         if (seekAmt == 0) {
@@ -18168,18 +18168,18 @@ function Safari() {
             return;
         }
         if (public) {
-            safaribot.sendHtmlAll("Top " + seekAmt + " players in this period:", safchan);
+            safaribot.sendHtmlAll("Top " + seekAmt + " player(s) in this period:", safchan);
         } else {
-            safaribot.sendMessage(src, "Top " + seekAmt + " players in this period:", safchan);
+            safaribot.sendMessage(src, "Top " + seekAmt + " player(s) in this period:", safchan);
         }
         var name = "", entry = "";
         for (var i = 0; i < seekAmt; i++) {
             name = idnumList.get(parseInt(ordered[i], 10));
             entry = (ordered[i]+"");
             if (public) {
-                safaribot.sendHtmlAll(name + ": " + safari.events.towerTroubleData.players[entry].score + ".", safchan);
+                safaribot.sendHtmlAll(name + ": " + safari.events.towerTroubleData.players[entry] + ".", safchan);
             } else {
-                safaribot.sendMessage(src, name + ": " + safari.events.towerTroubleData.players[entry].score + ".", safchan);
+                safaribot.sendMessage(src, name + ": " + safari.events.towerTroubleData.players[entry] + ".", safchan);
             }
             return;
         }
