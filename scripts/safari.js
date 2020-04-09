@@ -10489,7 +10489,7 @@ function Safari() {
                     param = getBST(x);
                     break;
                 case "number":
-                    param = parseInt(x, 10);
+                    param = parseInt(pokeInfo.species(x), 10);
                     break;
             }
             if (mode == "equal" && param === val) {
@@ -18121,6 +18121,7 @@ function Safari() {
         finalList = removeDuplicates(finalList, true);
         for (var i = 0; i < party.length; i++) {
             if (!(finalList.contains(party[i]))) {
+                safaribot.sendHtmlMessage(src, poke(party[i]) + " does not meet the requirements.", safchan);
                 return false;
             }
         }
