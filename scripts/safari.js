@@ -10849,7 +10849,7 @@ function Safari() {
                 continue;
             }
             data = p.notificationData;
-            if (data.towerWaiting && (!(isBattling(p.id)))) {
+            if (data.towerWaiting && (!(safari.isBattling(p.id)))) {
                 if (p.quests.tower.cooldown < currentTime) {
                     data.towerWaiting = false;
                     out = "You are able to fight the " + link("/quest tower", "Battle Tower") + " again!";
@@ -10864,7 +10864,7 @@ function Safari() {
                     hitAny = true;
                 }
             }
-            if (data.leagueWaiting && (!(isBattling(p.id)))) {
+            if (data.leagueWaiting && (!(safari.isBattling(p.id)))) {
                 if (p.quests.league.cooldown < currentTime) {
                     data.leagueWaiting = false;
                     out = "You are able to fight the " + link("/quest league", "Pokémon League") + " again!";
