@@ -5864,7 +5864,7 @@ function Safari() {
         return false;
     }
     function findLink(id) {
-        return link("/findd " + poke(id), poke(id));
+        return link("/find " + poke(id), poke(id));
     }
     function typeIcon(type) {
         var text = "#fefefe";
@@ -10068,7 +10068,7 @@ function Safari() {
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
-    this.findPokemon = function(src, commandData, textOnly, shopLink, showDupes) {
+    this.findPokemon = function(src, commandData, textOnly, shopLink) {
         if (!validPlayers("self", src)) {
             return;
         }
@@ -10141,9 +10141,7 @@ function Safari() {
                 finalTitleMsg += " or ";
             }
         }
-        if (!(showDupes)) {
-            finalList = removeDuplicates(finalList, true);
-        }
+        finalList = removeDuplicates(finalList, true);
         if (textOnly) {
             sys.sendHtmlMessage(src, this.listPokemonText(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", shopLink), safchan);
         } else {
@@ -18080,7 +18078,7 @@ function Safari() {
             }
         }
         safari.events.towerTroubleData.searchText = x;
-        safari.events.towerTroubleData.searchLink = link("/find " + x, finalTitleMsg);
+        safari.events.towerTroubleData.searchLink = link("/find " + m, finalTitleMsg);
 
         safaribot.sendHtmlMessage(src, "Tower Trouble requirements set to " + safari.events.towerTroubleData.searchLink + ".", safchan);
         stopQuests.tower = false;
@@ -18090,7 +18088,6 @@ function Safari() {
         var restrictions = safari.events.towerTroubleData.searchText;
         var sets = restrictions.split(" or ");
         var multi;
-        var player = getAvatar(src);
         var str, info, crit, val, m, def, list, current = player.pokemon.concat(), finalList = [];
         var spacedVal = ["move","learn","canlearn"];
 
@@ -18146,7 +18143,7 @@ function Safari() {
                 break;
             case "find": 
             case "requirements": 
-                safaribot.sendHtmlMessage(src, "Current requirements: " + safari.events.towerTroubleData.searchLink + ".", safchan);
+                safaribot.sendHtmlAll(src, "Current requirements: " + safari.events.towerTroubleData.searchLink + ".", safchan);
                 break;
             case "leaderboard": 
             case "lb": 
@@ -26722,7 +26719,7 @@ function Safari() {
                 "Fairy": "if a {0} has magical powers"
             };
             var type = type1(id);
-            var researching = typeResearch[type].format(link("/findd " + poke(id), poke(id)));
+            var researching = typeResearch[type].format(link("/find " + poke(id), poke(id)));
             type = sys.type(sys.pokeType2(id));
             type = type === "???" ? type1(id) : type2(id);
 
@@ -27420,7 +27417,7 @@ function Safari() {
         if (opt == "help") {
             safaribot.sendHtmlMessage(src, trainerSprite + "Wonder Trade Operator: To get a trade here you simply choose one of your Pokémon, pay a small fee and then you will receive a random Pokémon immediately!", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: The fee is based on your Pokémon's BST, and you will receive a Pokémon within the same BST range.", safchan);
-            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are " + link("/findd bst 175 249", "175~249") + " ($50 fee), " + link("/findd bst 250 319", "250~319") + " ($100), " + link("/findd bst 320 389", "320~389") + " ($150), " + link("/findd bst 390 459", "390~459") + " ($300), " + link("/findd bst 460 529", "460~529") + " ($500) and " + link("/findd bst 530 599", "530~599") + " ($750).", safchan);
+            safaribot.sendHtmlMessage(src, "Wonder Trade Operator: The available BST ranges are " + link("/find bst 175 249", "175~249") + " ($50 fee), " + link("/find bst 250 319", "250~319") + " ($100), " + link("/find bst 320 389", "320~389") + " ($150), " + link("/find bst 390 459", "390~459") + " ($300), " + link("/find bst 460 529", "460~529") + " ($500) and " + link("/find bst 530 599", "530~599") + " ($750).", safchan);
             safaribot.sendMessage(src, "Wonder Trade Operator: Also be aware that you CANNOT receive legendaries from Wonder Trade!", safchan);
             sys.sendMessage(src, "", safchan);
             return;
@@ -45519,7 +45516,7 @@ function Safari() {
             return true;
         }
         //Deal with Type: Null input according to command
-        if (["find", "finds", "findt", "findd"].contains(command)) {
+        if (["find", "finds", "findt"].contains(command)) {
             commandData = typeNull(commandData, TYPE_NULL_NAME);
         } else {
             commandData = typeNull(commandData);
@@ -45989,10 +45986,6 @@ function Safari() {
             }
             if (command === "finds") {
                 safari.findPokemon(src, commandData, true, true);
-                return true;
-            }
-            if (command === "findd") {
-                safari.findPokemon(src, commandData, false, false, true);
                 return true;
             }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
