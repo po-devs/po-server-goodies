@@ -16914,7 +16914,7 @@ function Safari() {
     };
     this.assignDuelsTeams = function( src,data ) {
         //Takes everyone from signups and puts them in teams
-        removeDuplicates(safari.events.spiritDuelsSignups).shuffle();
+        safari.events.spiritDuelsSignups = removeDuplicates(safari.events.spiritDuelsSignups).shuffle();
         var i = 0, player, oldBox, name;
         for (var p in safari.events.spiritDuelsSignups) {
             name = idnumList.get(safari.events.spiritDuelsSignups[p]);
@@ -17038,6 +17038,7 @@ function Safari() {
             return a.players.length - b.players.length;
         });
         for (var t in safari.events.spiritDuelsTeams) {
+            team = safari.events.spiritDuelsTeams[t];
             team.won = 0;
             team.fought = 0;
         }
@@ -17046,9 +17047,9 @@ function Safari() {
     this.prepareNextSpiritDuel = function() {
         //Creates a matchup between two teams
         //Should use a formula that makes teams with similar records fight
-        if (chance(0.4)) {
+        if (chance(0)) {
             safari.events.spiritDuelsTeams.sort( function(a, b) {
-                return b.fought - a.fought;
+                return a.fought - b.fought;
             });
         }
         else {
