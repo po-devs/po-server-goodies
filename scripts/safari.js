@@ -880,7 +880,7 @@ function Safari() {
             
             //Other Items
             //Seasonal change. Rock icon is 206, Snowball is 334
-            rock: {name: "rock", fullName: "Snowball", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
+            rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
             golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             deluxe: {name: "deluxe", fullName: "Deluxe Bait", type: "items", icon: 8016, price: 200, successRate: 1, failCD: 0, successCD: 6, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["deluxebait", "deluxe bait", "deluxe"], tradable: false},
@@ -17048,7 +17048,7 @@ function Safari() {
         //Should use a formula that makes teams with similar records fight
         if (chance(0.4)) {
             safari.events.spiritDuelsTeams.sort( function(a, b) {
-                return a.fought - b.fought;
+                return b.fought - a.fought;
             });
         }
         else {
@@ -30539,6 +30539,9 @@ function Safari() {
         //Shows notifications, frequently used quests, finder/gacha if available
         var player = getAvatar(src);
         var line1 = "";
+        if (!(player)) {
+            return;
+        }
         var os = sys.os(sys.id(player.id));
         line1 += costumeSprite(player, os) + " ";
         for (var i = 0; i < player.party.length; i++) {
@@ -30559,6 +30562,8 @@ function Safari() {
             line2 += "   " + link("/bait", "«Bait»");
         }
         line2 += "   " + link("/info", "«Info»");
+        line2 += "   " + link("/buy", "«Buy»");
+        line2 += "   " + link("/quest", "«Quest»");
         var line3 = "<b>Recent Quests:</b>";
         var qu = this.organizeRecentQuests(player), item;
         for (var i = 0; i < qu.length; i++) {
@@ -38126,7 +38131,7 @@ function Safari() {
             }
             if (rng > 0.95) {
                 pokemon.playhearts += 8;
-                daycarebot.sendHtmlMessage(src, "You and " + name + " played a little bit, but before you knew it, you were creating a deeper bond between person and Pokémon!", safchan);
+                daycarebot.sendHtmlMessage(src, "You and " + name + " played a little bit, and before you knew it, you were creating a deeper bond between person and Pokémon!", safchan);
             }
             else if (rng > 0.85) {
                 pokemon.playhearts += 6;
