@@ -16958,7 +16958,6 @@ function Safari() {
             r = (Math.floor(teams[t].rate * 10000) / 100);
             i--;
             amt = Math.round((((j) * 1.8) + (9 - teams.length))/2);
-            rew = ("" + rareamt + "@rare");
             apri = ["redapricorn", "ylwapricorn", "grnapricorn", "pnkapricorn"].random();
             if (r >= 50) {
                 rew += ("," + ((5 + round) * (j + round)) + "@dew");
@@ -16970,6 +16969,7 @@ function Safari() {
             var n = now(), finalrew = rew + "", g2, pamt, pamt2, pamt3;
             for (var p in members) {
                 s = idnumList.get(members[p]);
+                finalrew = rew + "";
                 if (!(s)) {
                     continue;
                 }
@@ -17000,12 +17000,12 @@ function Safari() {
                     finalrew += ("," + (5 * pamt2) + "@stardust");
                     finalrew += ("," + pamt2 + "@nugget");
                 }
-                finalrew = rew + (rareamt + "@rare");
+                finalrew = (finalrew + ("," + rareamt + "@rare"));
                 g = giveStuff(player, toStuffObj(finalrew));
-                safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + " and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
+                safari.notification(player, "Your Spirit Duels team " + teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (You " + g + ").", "Spirit Duels", true);
                 safari.saveGame(player);
             }
-            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "! (Prizes: " + g + ")", true);
+            sendAll(teams[t].name + " scored " + r + "% and got #" + (i + 1) + "!", true);
             j++;
         }
         sendAll("");
