@@ -23511,6 +23511,7 @@ function Safari() {
                 out.push("The secondary effects were suppressed by the shield.");
             }
             else {
+                var defianted = false;
                 for (e = 0; e < move.nerf.length; e++) {
                     obj = move.nerf[e];
                     if (chance(obj.nerfChance)) {
@@ -23522,12 +23523,13 @@ function Safari() {
                         else {
                             out.push(tname + "'s " + this.statName(obj.nerfStat) + " " + addSign(obj.nerf) + "!");
                         }
+                        if (this.select && this.select.defiant && (isP1 || isP3) && (!defianted) && obj.nerf < 0) {
+                            out.push(tname + "'s " + this.statName("atk") + " +2!");
+                            target.boosts["atk"] += 2;
+                            target.boosts["atk"] = Math.min(6, Math.max(target.boosts["atk"], -6));
+                            defianted = true;
+                        }
                     }
-                }
-                if (this.select && this.select.defiant && (isP1 || isP3)) {
-                    out.push(tname + "'s " + this.statName("atk") + " +2!");
-                    target.boosts["atk"] += 2;
-                    target.boosts["atk"] = Math.min(6, Math.max(target.boosts["atk"], -6));
                 }
             }
         }
@@ -29058,8 +29060,8 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.069) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
-            chal = (1 + (ind/4) + (difficulty * 2) + (difficulty === 4 ? -3 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1.064) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
+            chal = Math.round(0.75 + (ind/4) + (difficulty * 1.75) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
             }
