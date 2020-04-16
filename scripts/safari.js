@@ -690,7 +690,11 @@ function Safari() {
             collectorWaiting: false,
             leagueWaiting: false,
             lastLeagueParty: [],
-            missionWaiting: true
+            missionWaiting: true,
+            arenaWaiting: false,
+            lastArenaTrainer: "",
+            lastArenaParty: [],
+            scientistWaiting: false
         },
         inbox: [],
         unreadInbox: [],
@@ -10864,6 +10868,21 @@ function Safari() {
                     hitAny = true;
                 }
             }
+            if (data.arenaWaiting && (!(safari.isBattling(p.id)))) {
+                if (p.quests.arena.cooldown < currentTime) {
+                    data.arenaWaiting = false;
+                    out = "Trainer " + link("/quest arena:" + data.lastArenaTrainer, capitalizeFirst(data.lastArenaTrainer)) + " is ready for a rematch in the " + link("/quest arena", "Arena") + "!";
+                    if (data.lastArenaParty.length > 0) {
+                        hold = [];
+                        for (var i = 0; i < data.lastArenaParty.length; i++) {
+                            hold.push(poke(data.lastArenaParty[i]));
+                        }
+                        out += " Load your last used Arena party? " + link("/qload " + hold.join(","), readable(hold, "and"));
+                    }
+                    this.notification(p, out, "Arena", true);
+                    hitAny = true;
+                }
+            }
             if (data.leagueWaiting && (!(safari.isBattling(p.id)))) {
                 if (p.quests.league.cooldown < currentTime) {
                     data.leagueWaiting = false;
@@ -18143,7 +18162,7 @@ function Safari() {
             return;
         }
         if (!safari.events.towerTroubleEnabled) {
-            safaribot.sendMessage( src,"Tower Trouble is not enabled!",safchan );
+            safaribot.sendMessage(src, "Tower Trouble is not enabled!", safchan);
             return;
         }
         switch (commandData) {
@@ -18152,7 +18171,7 @@ function Safari() {
                 if (this.satisfiesTowerTrouble(src, player.party)) {
                     safaribot.sendHtmlMessage(src, "Your current party is <b>valid</b> for the current Tower Trouble requirements!", safchan);
                 } else {
-                    safaribot.sendHtmlMessage(src, "Your current party is <b>NOT valid</b> for the current Tower Trouble requirements!", safchan);
+                    safaribot.sendHtmlMessage(src, "Your current party is " + toColor("<b>NOT valid</b>", "red") + " for the current Tower Trouble requirements!", safchan);
                 }
                 break;
             case "find": 
@@ -18164,16 +18183,20 @@ function Safari() {
                 this.showTowerTroubleLeaderboard(src, false);
                 break;
             default: 
+                safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is " + safari.events.towerTroubleData.players[player.idnum+""] + ".", safchan);
                 var m = "Tower Trouble commands are ";
                 m += ("" + link("/towertrouble validate", "Validate") + ", " + link("/towertrouble find", "Requirements") + ", " + link("/towertrouble leaderboard", "Leaderboard") + ", " + link("/quest tower", "Tower"));
                 safaribot.sendHtmlMessage(src, m, safchan);
         }
     };
-    this.showTowerTroubleLeaderboard = function(src, public) {
+    this.showTowerTroubleLeaderboard = function(src, public, final) {
         var ordered = Object.keys(safari.events.towerTroubleData.players).sort(function(a, b) {
             return safari.events.towerTroubleData.players[b] - safari.events.towerTroubleData.players[a];
         });
         var seekAmt = Math.min(public ? 10 : 5, ordered.length);
+        if (final) {
+            seekAmt = Math.min(30, ordered.length);
+        }
         if (seekAmt == 0) {
             safaribot.sendMessage(src, "No one ranked in this period yet!", safchan);
             return;
@@ -18196,12 +18219,15 @@ function Safari() {
         return;
     };
     this.towerTroubleProgress = function(src) {
-        this.showTowerTroubleLeaderboard(src, true);
+        this.showTowerTroubleLeaderboard(src, true, true);
         safari.events.towerTroubleData.players = {};
         safari.events.towerTroubleData.searchText = "";
         safari.events.towerTroubleData.searchLink = "";
         stopQuests.tower = true;
         safaribot.sendMessage(src, "Finished the current Tower Trouble round and disabled Battle Tower. Remember to re-enable it once the next round is ready. (Use /settowertrouble [find string])", safchan);
+    };
+    this.printTowerTroubleLB = function(src) {
+        this.showTowerTroubleLeaderboard(src, false, true);
     };
 
     /* Max Raid */
@@ -20084,7 +20110,7 @@ function Safari() {
             for (var e = 0; e < team.length; e++) {
                 p = team[e];
                 if (p.hp > 0) {
-                    out.push(pokeInfo.icon(p.id) + "[" + codes[e] + "] " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
+                    out.push(pokeInfo.icon(p.id) + "[" + link("/bat " + codes[e], codes[e]) + "] " + poke(p.id) + (p.hp !== p.maxhp ? " (" + self.getHPColor(p.hp, p.maxhp) + ")" : ""));
                 }
             }
             self.sendMessage(name, "Your team: " + out.join(" "));
@@ -21970,7 +21996,10 @@ function Safari() {
             }
             if (picked.length > 0) {
                 if (isP1) {
-                    this.p1PickedTeam = picked;
+                    this.p1PickedTeam = removeDuplicates(this.p1PickedTeam.concat(picked));
+                    if (this.p1PickedTeam.length > size) {
+                        this.p1PickedTeam = this.p1PickedTeam.slice(this.p1PickedTeam.length - size);
+                    }
                 } else if (isP2) {
                     this.p2PickedTeam = picked;
                 } else if (isP3) {
@@ -21993,10 +22022,21 @@ function Safari() {
                     }
                 }
                 else {
-                    if (this.p1PickedTeam.length === 3 && (this.npcBattle || this.p2PickedTeam.length === 3) && this.subturn < 6) {
+                    if (this.p1PickedTeam.length === Math.min(3, this.originalTeam1.length) && (this.npcBattle || this.p2PickedTeam.length === Math.min(3, this.originalTeam2.length)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
                         this.subturn = 6;
                     }
+                }
+            } else if (["cancel", "undo", "restart"].contains(data.toLowerCase())) {
+                this.sendMessage(name, "Repick your Pokémon for this battle! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F.");
+                if (isP1) {
+                    this.p1PickedTeam = []
+                } else if (isP2) {
+                    this.p2PickedTeam = []
+                } else if (isP3) {
+                    this.p3PickedTeam = []
+                } else if (isP4) {
+                    this.p4PickedTeam = []
                 }
             } else {
                 this.sendMessage(name, "Use /bat [Codes] to choose your Pokémon! Example: " + toColor("/bat ADF", "blue") + " to choose Pokémon with code A, D and F.");
@@ -26815,6 +26855,7 @@ function Safari() {
             safari.toRecentQuests(player, "scientist");
 
             player.balls.silver += rew;
+            player.notificationData.scientistWaiting = true;
             if (this.getFortune(player, "scientistreward", 0, null, true)) {
                 this.useFortuneCharge(player, "scientistreward", 1);
             }
@@ -26899,6 +26940,31 @@ function Safari() {
             expires: now() + hours(3) - 3 * 60 * 1000
         };
         permObj.add("scientistQuest", JSON.stringify(scientistQuest));
+
+        var onChannel = sys.playersOfChannel(safchan);
+        var player, e, amt;
+        try {
+            for (e in onChannel) {
+                player = getAvatar(onChannel[e]);
+                if (!player) {
+                    continue;
+                }
+                if (!(player.notificationData)) {
+                    continue;
+                }
+                if (!(player.notificationData.scientistWaiting)) {
+                    continue;
+                }
+                amt = countDuplicates(player.box, randomNum);
+                if (amt <= 0) {
+                    continue;
+                }
+                safari.notification(player, "The " + link("/quest scientist", "Scientist") + " is now looking for a " + poke(randomNum) + ", of which you have " + amt + "!", "Scientist");
+                player.notificationData.scientistWaiting = false;
+                safari.saveGame(player);
+            }
+        }
+        catch (err) {};
     };
     this.fightArena = function(src, data) {
         var player = getAvatar(src);
@@ -27068,12 +27134,15 @@ function Safari() {
 
         npc.postArgs.name = npc.name;
         player.money -= cost;
-        this.saveGame(player);
 
         safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: I see you paid the $" + addComma(cost) + " Entry Fee, so you can now proceed to your challenge against " + npc.name + "!", safchan);
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
         safari.toRecentQuests(player, "arena");
+        player.notificationData.lastArenaParty = [].concat(player.party);
+        player.notificationData.arenaWaiting = true;
+        player.notificationData.lastArenaTrainer = opt;
+        this.saveGame(player);
     };
     this.fightTower = function(src, data) {
         var player = getAvatar(src);
@@ -37329,7 +37398,7 @@ function Safari() {
             element = cdata[2]
         }
         if (!room) {
-            safaribot.sendHtmlMessage(src, "Challenges to your Castle are required to clear three rooms to win. Pick " + link("/castle edit:1", "1") + ", " + link("/castle edit:2", "2") + ", or " + link("/castle edit:3", "3") + " that you would like to edit.", safchan);
+            safaribot.sendHtmlMessage(src, "Challengers to your Castle are required to clear three rooms to win. Pick " + link("/castle edit:1", "1") + ", " + link("/castle edit:2", "2") + ", or " + link("/castle edit:3", "3") + " that you would like to edit.", safchan);
             safaribot.sendHtmlMessage(src, "You can also change your theme using " + link("/castle edit:theme", "Theme") + ".", safchan);
         }
         if (room == "theme") {
@@ -38328,30 +38397,32 @@ function Safari() {
             default:
                 amt = 2;
         }
+        amt = (0.5 * amt) + (0.5 * amt * Math.random());
         if (hasType(poke, "Grass")) {
-            amt = Math.floor(amt * 1.35);
+            amt = (amt * 1.35);
         }
         if (hasType(poke, "Ground")) {
-            amt = Math.floor(amt * 1.35);
+            amt = (amt * 1.35);
         }
         if (hasType(poke, "Water")) {
             t = Math.floor(t * 0.8);
         }
         if (canHaveAbility(poke, abilitynum("Ripen"))) {
-            amt = Math.floor(amt * 1.5);
+            amt = (amt * 1.5);
             t = Math.floor(t * 0.75);
         }
         if (canHaveAbility(poke, abilitynum("Harvest"))) {
-            amt = Math.floor(amt * 1.8);
+            amt = (amt * 1.8);
         }
         if (canHaveAbility(poke, abilitynum("Gluttony"))) {
-            amt = Math.floor(amt * 0.7);
+            amt = (amt * 0.7);
             t = Math.floor(t * 0.4);
         }
         if (canHaveAbility(poke, abilitynum("Cheek Pouch"))) {
-            amt = Math.floor(amt * 0.8);
+            amt = (amt * 0.8);
             t = Math.floor(t * 0.45);
         }
+        amt = Math.round(amt);
         return {
             amount: amt,
             time: now() + t
@@ -46027,6 +46098,14 @@ function Safari() {
                 safari.findPokemon(src, commandData, false, false, true);
                 return true;
             }
+            if (command === "finddt") {
+                safari.findPokemon(src, commandData, true, false, true);
+                return true;
+            }
+            if (command === "findds") {
+                safari.findPokemon(src, commandData, true, true, true);
+                return true;
+            }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
                 safari.setFavoriteBall(src, commandData);
                 return true;
@@ -50219,6 +50298,10 @@ function Safari() {
             }
             if (command === "nexttowertrouble" || command === "progresstowertrouble" ) {
                 safari.towerTroubleProgress(src);
+                return true;
+            }
+            if (command === "printtowertrouble" || command === "printtt" ) {
+                safari.printTowerTroubleLB(src);
                 return true;
             }
             if (command === "nextduels" || command === "nextduel") {
