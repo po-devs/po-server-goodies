@@ -8332,10 +8332,10 @@ function Safari() {
                 player.pokemon.push(currentPokemon);
             }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
-                var itemData = globalWildItems[currentPokemon+""];
+                var wildItemHeld = globalWildItems[currentPokemon+""];
                 var getThing, g;
-                if (chance(itemData.perc)) {
-                    getThing = itemData.item;
+                if (chance(wildItemHeld.perc)) {
+                    getThing = wildItemHeld.item;
                     g = giveStuff(player, "@" + getThing, true);
                     g = readable(g.gained);
                     sendAll("The " + pokeName + " was holding " + g + "!");
