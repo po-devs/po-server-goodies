@@ -15731,46 +15731,52 @@ function Safari() {
             var out = giveStuff(player, reward, true);
 
             safaribot.sendMessage(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
-            this.inboxMessage(player, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
+            safaribot.notification(src, "You received the following rewards for playing Safari " + (logins > 1 ? logins + "  days in a row" : "today" ) + ": " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), "Login");
             safaribot.sendMessage(src, "Your Itemfinder has been recharged to " + recharges + " charges!", safchan);
+            
+            if (safari.events.spiritDuelsEnabled) {
+                var out = giveStuff(player, toStuffObj("5@spirit"), true);
+                safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
+                this.notification(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), "Login");
+            }
+
+            safari.clearQuestNotifications(player, "Login");
             if (hasMaster && reward.hasOwnProperty("@fragment") && reward["@fragment"] > 0) {
                 safaribot.sendMessage(src, "As you try to put it away, the " + finishName("master") + " starts to glow very bright and then shatters in your hands. Sadly, all you could do was carefully grab a salvageable piece and stow it safely in your bag.", safchan);
             }
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
+                safaribot.notification(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
             }
             player.firstCelebrityRun = true;
             
             safari.trialsLogin(player);
             safari.bonusLogin(player);
-            if (safari.events.spiritDuelsEnabled) {
-                var out = giveStuff(player, toStuffObj("5@spirit"), true);
-                safaribot.sendMessage(src, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), safchan);
-                this.inboxMessage(player, "You received " + readable(out.gained) + (out.discarded.length > 0 ? " (couldn't receive " + readable(out.discarded) + " due to excess)" : ""), true);
-            }
             player.freebaits = 5;
             player.celebrityRegion = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
 
             reward = {};
-            for (e = player.secretBase.length; e--; ) {
-                temp = randomSample(decorations[player.secretBase[e].deco].drops);
-                if (temp !== "none") {
-                    temp = toStuffObj(temp);
-                    for (t in temp) {
-                        if (!reward.hasOwnProperty(t)) {
-                            reward[t] = 0;
+            if (false) {
+                for (e = player.secretBase.length; e--; ) {
+                    temp = randomSample(decorations[player.secretBase[e].deco].drops);
+                    if (temp !== "none") {
+                        temp = toStuffObj(temp);
+                        for (t in temp) {
+                            if (!reward.hasOwnProperty(t)) {
+                                reward[t] = 0;
+                            }
+                            reward[t] += temp[t];
                         }
-                        reward[t] += temp[t];
                     }
                 }
-            }
-            out = giveStuff(player, reward, true);
-            if (out.gained.length > 0) {
-                safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", safchan);
-                this.inboxMessage(player, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", true);
-            } else if (out.discarded.length > 0) {
-                safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", safchan);
-                this.inboxMessage(player, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", true);
+                out = giveStuff(player, reward, true);
+                if (out.gained.length > 0) {
+                    safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", safchan);
+                    this.inboxMessage(player, "Your Secret Base generated " + readable(out.gained) + (out.discarded.length > 0 ? " (it also generated " + readable(out.discarded) + ", which you discarded due to excess)" : "") + "!", true);
+                } else if (out.discarded.length > 0) {
+                    safaribot.sendMessage(src, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", safchan);
+                    this.inboxMessage(player, "Your Secret Base generated " + readable(out.discarded) + ", but you discarded them due to excess!", true);
+                }
             }
             if (player.burnLastUsed !== 0 && player.balls.burn > 0) {
                 var n = Math.floor((now() - player.burnLastUsed) / hours(itemData.burn.threshold));
@@ -15779,7 +15785,7 @@ function Safari() {
                     player.balls.burn -= n;
                     player.burnLastUsed = now();
                     safaribot.sendMessage(src, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", safchan);
-                    this.inboxMessage(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", true);
+                    this.notification(player, "You discarded " + plural(n, "burn") + " after noticing it was past its expiration date!", "Items");
                 }
             }
             if (safari.riceMode === true) {
@@ -16451,7 +16457,7 @@ function Safari() {
         }
         var rew = safari.events.bonusLoginRewards[player.bonusLogin.index];
         var g = giveStuff(player, toStuffObj(rew));
-        safaribot.sendHtmlMessage(sys.id(player.id), "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " Event, you " + g + "! Thanks for playing!</background>", safchan);
+        safari.notification(player, "<background color='"+bg+"'>As part of the " + player.bonusLogin.name + " Event, you " + g + "! Thanks for playing!</background>", "Bonus Login");
         player.bonusLogin.index++;
         return true;
     };
@@ -16729,7 +16735,7 @@ function Safari() {
                 if (sys.isInChannel(sys.id(player.id), safchan)) {
                     safaribot.sendHtmlMessage(src, toColor("For earning " + points + " points in the " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
                 }
-                this.inboxMessage(p, "For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!");
+                this.notification(p, "For earning " + points + " points in " + safari.events.trialsData.name + " Trials, you " + g + "!", "Trials");
             }
         }
         playerPoints.sort(function(a, b) { 
@@ -16744,7 +16750,7 @@ function Safari() {
             rew = rew.random();
             g = giveStuff(p, toStuffObj(rew));
             safaribot.sendHtmlMessage(src, toColor("For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue"), safchan);
-            this.inboxMessage(p, "For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "blue");
+            this.notificiation(p, "For placing #" + j + " in " + safari.events.trialsData.name + " Trials, you " + g + "!", "Trials");
             safaribot.sendHtmlAll(toColor("(#" + j + "): " + p.id.toCorrectCase() + " " + g + "!!", "#BA55D3"), safchan);
             j++;
             if (j >= 3) {
@@ -17596,11 +17602,10 @@ function Safari() {
             case "history": this.showSpiritDuelsLog(src,player,commandData); break;
             case "party": this.showSpiritDuelsTeam(src,player); break;
             case "skill": case "skills": this.ownSpiritSkills(src,player); break;
-            case "inactive": this.markInactivity(src,player,commandData); break;
-            case "reactive": this.markActivity(src,player); break;
+            case "teams": case "allteams": this.showEachSpiritDuelTeam(src, player); break;
             default: 
                 var m = "You are a " + player.spiritDuels.team + " " + player.spiritDuels.rankName + "!";
-                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
+                m += (" [" + link("/spiritduels join", "Join") + ", " + link("/spiritduels box", "Box") + ", " + link("/spiritduels boxt", "Box Text") + ", " + link("/spiritduels active:", "Active", true) + ", " + link("/spiritduels party", "Party") + ", " + link("/spiritduels teams", "Teams") + ", " + link("/spiritduels skill", "Skills") + ", " + link("/spiritduels history", "History") + "].");
                 safaribot.sendHtmlMessage(src, m, safchan);
         }
     };
@@ -17741,6 +17746,35 @@ function Safari() {
         safaribot.sendMessage(src, "You signed up for Spirit Duels! You will join the next round as soon as it starts!", safchan);
         return true;
     };
+    this.showEachSpiritDuelTeam = function(src, player) {
+        var out = "", name, num, teamNames = [];
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (!(safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team)) {
+                continue;
+            }
+            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
+                num = safari.events.spiritDuelsTeams[a].players[b];
+                name = idnumList.get(num);
+                teamNames.push(name);
+            }
+            safaribot.sendMessage(src, "Your team (" + name + "): " + readable(teamNames) + ".", safchan);
+            break;
+        }
+        for (var a in safari.events.spiritDuelsTeams) {
+            if (safari.events.spiritDuelsTeams[a].name == player.spiritDuels.team) {
+                continue;
+            }
+            teamNames = [];
+            for (var b = 0; b < safari.events.spiritDuelsTeams[a].players.length; b++) {
+                num = safari.events.spiritDuelsTeams[a].players[b];
+                name = idnumList.get(num);
+                teamNames.push(name);
+            }
+            safaribot.sendMessage(src, name + ": " + readable(teamNames) + ".", safchan);
+            break;
+        }
+        return;
+    };
     this.showSpiritDuelsTeam = function(src, player) {
         var army1 = null, passed = false, out = "", name = "";
         for (var a in safari.events.spiritDuelsTeams) {
@@ -17787,15 +17821,15 @@ function Safari() {
 
         var page = 1;
         if (!isNaN(page)) {
-            maxPages = Math.floor(list.length / (96)) + (list.length % 96 === 0 ? 0 : 1);
+            maxPages = Math.floor(list.length / (140)) + (list.length % 140 === 0 ? 0 : 1);
 
             if (page > maxPages) {
                 page = maxPages;
             }
-            list = list.slice(96 * (page - 1), 96 * (page - 1) + 96);
+            list = list.slice(140 * (page - 1), 140 * (page - 1) + 140);
         }
 
-        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (96) + ")";
+        var label = "Spirits (" + player.spiritDuels.box.length + "/" + (140) + ")";
         if (textOnly) {
             out += this.listPokemonText(list, label);
         } else {
