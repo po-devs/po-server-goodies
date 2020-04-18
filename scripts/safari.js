@@ -89,6 +89,8 @@ function Safari() {
     var officialVolleyballWins1 = 0;
     var officialVolleyballWins2 = 0;
 
+    var globalWildItems = {};
+
     var currentDay = 1;
 
     var ghostSprite = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADcAAAA3CAYAAACo29JGAAAKL2lDQ1BJQ0MgcHJvZmlsZQAASMedlndUVNcWh8+9d3qhzTDSGXqTLjCA9C4gHQRRGGYGGMoAwwxNbIioQEQREQFFkKCAAaOhSKyIYiEoqGAPSBBQYjCKqKhkRtZKfHl57+Xl98e939pn73P32XuftS4AJE8fLi8FlgIgmSfgB3o401eFR9Cx/QAGeIABpgAwWempvkHuwUAkLzcXerrICfyL3gwBSPy+ZejpT6eD/0/SrFS+AADIX8TmbE46S8T5Ik7KFKSK7TMipsYkihlGiZkvSlDEcmKOW+Sln30W2VHM7GQeW8TinFPZyWwx94h4e4aQI2LER8QFGVxOpohvi1gzSZjMFfFbcWwyh5kOAIoktgs4rHgRm4iYxA8OdBHxcgBwpLgvOOYLFnCyBOJDuaSkZvO5cfECui5Lj25qbc2ge3IykzgCgaE/k5XI5LPpLinJqUxeNgCLZ/4sGXFt6aIiW5paW1oamhmZflGo/7r4NyXu7SK9CvjcM4jW94ftr/xS6gBgzIpqs+sPW8x+ADq2AiB3/w+b5iEAJEV9a7/xxXlo4nmJFwhSbYyNMzMzjbgclpG4oL/rfzr8DX3xPSPxdr+Xh+7KiWUKkwR0cd1YKUkpQj49PZXJ4tAN/zzE/zjwr/NYGsiJ5fA5PFFEqGjKuLw4Ubt5bK6Am8Kjc3n/qYn/MOxPWpxrkSj1nwA1yghI3aAC5Oc+gKIQARJ5UNz13/vmgw8F4psXpjqxOPefBf37rnCJ+JHOjfsc5xIYTGcJ+RmLa+JrCdCAACQBFcgDFaABdIEhMANWwBY4AjewAviBYBAO1gIWiAfJgA8yQS7YDApAEdgF9oJKUAPqQSNoASdABzgNLoDL4Dq4Ce6AB2AEjIPnYAa8AfMQBGEhMkSB5CFVSAsygMwgBmQPuUE+UCAUDkVDcRAPEkK50BaoCCqFKqFaqBH6FjoFXYCuQgPQPWgUmoJ+hd7DCEyCqbAyrA0bwwzYCfaGg+E1cBycBufA+fBOuAKug4/B7fAF+Dp8Bx6Bn8OzCECICA1RQwwRBuKC+CERSCzCRzYghUg5Uoe0IF1IL3ILGUGmkXcoDIqCoqMMUbYoT1QIioVKQ21AFaMqUUdR7age1C3UKGoG9QlNRiuhDdA2aC/0KnQcOhNdgC5HN6Db0JfQd9Dj6DcYDIaG0cFYYTwx4ZgEzDpMMeYAphVzHjOAGcPMYrFYeawB1g7rh2ViBdgC7H7sMew57CB2HPsWR8Sp4sxw7rgIHA+XhyvHNeHO4gZxE7h5vBReC2+D98Oz8dn4Enw9vgt/Az+OnydIE3QIdoRgQgJhM6GC0EK4RHhIeEUkEtWJ1sQAIpe4iVhBPE68QhwlviPJkPRJLqRIkpC0k3SEdJ50j/SKTCZrkx3JEWQBeSe5kXyR/Jj8VoIiYSThJcGW2ChRJdEuMSjxQhIvqSXpJLlWMkeyXPKk5A3JaSm8lLaUixRTaoNUldQpqWGpWWmKtKm0n3SydLF0k/RV6UkZrIy2jJsMWyZf5rDMRZkxCkLRoLhQWJQtlHrKJco4FUPVoXpRE6hF1G+o/dQZWRnZZbKhslmyVbJnZEdoCE2b5kVLopXQTtCGaO+XKC9xWsJZsmNJy5LBJXNyinKOchy5QrlWuTty7+Xp8m7yifK75TvkHymgFPQVAhQyFQ4qXFKYVqQq2iqyFAsVTyjeV4KV9JUCldYpHVbqU5pVVlH2UE5V3q98UXlahabiqJKgUqZyVmVKlaJqr8pVLVM9p/qMLkt3oifRK+g99Bk1JTVPNaFarVq/2ry6jnqIep56q/ojDYIGQyNWo0yjW2NGU1XTVzNXs1nzvhZei6EVr7VPq1drTltHO0x7m3aH9qSOnI6XTo5Os85DXbKug26abp3ubT2MHkMvUe+A3k19WN9CP16/Sv+GAWxgacA1OGAwsBS91Hopb2nd0mFDkqGTYYZhs+GoEc3IxyjPqMPohbGmcYTxbuNe408mFiZJJvUmD0xlTFeY5pl2mf5qpm/GMqsyu21ONnc332jeaf5ymcEyzrKDy+5aUCx8LbZZdFt8tLSy5Fu2WE5ZaVpFW1VbDTOoDH9GMeOKNdra2Xqj9WnrdzaWNgKbEza/2BraJto22U4u11nOWV6/fMxO3Y5pV2s3Yk+3j7Y/ZD/ioObAdKhzeOKo4ch2bHCccNJzSnA65vTC2cSZ79zmPOdi47Le5bwr4urhWuja7ybjFuJW6fbYXd09zr3ZfcbDwmOdx3lPtKe3527PYS9lL5ZXo9fMCqsV61f0eJO8g7wrvZ/46Pvwfbp8Yd8Vvnt8H67UWslb2eEH/Lz89vg98tfxT/P/PgAT4B9QFfA00DQwN7A3iBIUFdQU9CbYObgk+EGIbogwpDtUMjQytDF0Lsw1rDRsZJXxqvWrrocrhHPDOyOwEaERDRGzq91W7109HmkRWRA5tEZnTdaaq2sV1iatPRMlGcWMOhmNjg6Lbor+wPRj1jFnY7xiqmNmWC6sfaznbEd2GXuKY8cp5UzE2sWWxk7G2cXtiZuKd4gvj5/munAruS8TPBNqEuYS/RKPJC4khSW1JuOSo5NP8WR4ibyeFJWUrJSBVIPUgtSRNJu0vWkzfG9+QzqUvia9U0AV/Uz1CXWFW4WjGfYZVRlvM0MzT2ZJZ/Gy+rL1s3dkT+S453y9DrWOta47Vy13c+7oeqf1tRugDTEbujdqbMzfOL7JY9PRzYTNiZt/yDPJK817vSVsS1e+cv6m/LGtHlubCyQK+AXD22y31WxHbedu799hvmP/jk+F7MJrRSZF5UUfilnF174y/ariq4WdsTv7SyxLDu7C7OLtGtrtsPtoqXRpTunYHt897WX0ssKy13uj9l4tX1Zes4+wT7hvpMKnonO/5v5d+z9UxlfeqXKuaq1Wqt5RPXeAfWDwoOPBlhrlmqKa94e4h+7WetS212nXlR/GHM44/LQ+tL73a8bXjQ0KDUUNH4/wjowcDTza02jV2Nik1FTSDDcLm6eORR67+Y3rN50thi21rbTWouPguPD4s2+jvx064X2i+yTjZMt3Wt9Vt1HaCtuh9uz2mY74jpHO8M6BUytOdXfZdrV9b/T9kdNqp6vOyJ4pOUs4m3924VzOudnzqeenL8RdGOuO6n5wcdXF2z0BPf2XvC9duex++WKvU++5K3ZXTl+1uXrqGuNax3XL6+19Fn1tP1j80NZv2d9+w+pG503rm10DywfODjoMXrjleuvyba/b1++svDMwFDJ0dzhyeOQu++7kvaR7L+9n3J9/sOkh+mHhI6lH5Y+VHtf9qPdj64jlyJlR19G+J0FPHoyxxp7/lP7Th/H8p+Sn5ROqE42TZpOnp9ynbj5b/Wz8eerz+emCn6V/rn6h++K7Xxx/6ZtZNTP+kv9y4dfiV/Kvjrxe9rp71n/28ZvkN/NzhW/l3x59x3jX+z7s/cR85gfsh4qPeh+7Pnl/eriQvLDwG/eE8/vMO7xsAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4wkdAiclYSKc8wAAHrhJREFUaN7FmneUVdXZ/z97n3Lr3CnAwAAjShVb7L7Jq9GY15JYYk0WdpoRFQvN3hBFyiAgiEhRBCVqLLFHo8ESY7BrFBVQ6sCUO3PL3HtP3fv3xxlQY/L7vWv98q53r3XWOfece8/d3/3s5/l+n2dvwb+hrV69mtfffJtFC+czfcZMrr/2mt3PFi5ajON5+K6DFwTEDBM7FscyDfYZNohjjzsBgLtmzOLIo4/gyP/4KQ+vfoRzR5zD/3prmnv37utfnnomACtXPSznLVho/WbseeL/9fu7Zs6y7lt8v7Hrs9YagMXLl/1/9038/75g2oy76NOjnk1bNzNk0CDR0tKanDJ5UmnX80dWPtzQkm0fUC511VQ8P562LZWuqi1UV6fbz7/wgr/v+t7sprnJPn17Os8/uUYd8uNhrP3LWh574vH/HXDX3XAjdjzGbTfdFFlwzhzzy42b9P0L54eP/u7Ro3a0tkwIFXWGYfZAyjqBSGkV2KEWWuuwrPygoLRqkYJ8zx51T4waOXIJwKIlS6xxY8f6ABeeez4rHl75v2e5BfctopLvMr7q3KmPGLLvYblc7jVh2n5tXY90JlMrq6qSIhaLY1smWgh0qHFdF8ctUegqU+oqqFy2w5ECXVubGTvywotW33b7NFOqMLzx5pu1EIInnniCM888838e3C233s5tt97ERaPH8uCyJQDMnLUwBuXHFfKU/gP2LAzYY0CirrbWSqaSxCwbYZoYQiCEQAtQQUgYKlzfodxVoTOfUzt37Chu/uab6ljcfL9PLP5fZ48amXt49WrOHTGC5559jpNPOZnnnn2ek0856X8G3OGHHMXa999k4qRraJo9gwlXTzb+48jDq9Z/seGtVFXVvvsdcEClX7/+iZqaauKxJJZtYRgSQ4CQAgHo7qChlCYMFH4Q4DgO+XyB1vYW54vP18W78rn2+vpex5977jkf/vWtt+WPj/yJevmllzn+xONZuephzj/v3H9vVLzt1tsAuOGGm6NAMu3OKoA77pj+6bwF9+q3/rrW27S1WWdzXbrsBtpXWgc6akr/sCmtdai19pTWJTfUnfkuvaV5p/7wk8/8h1at1k1z5mb/8uZfBlx+5RUx7WsB8Kc/vfo/F/avveb6CNjtd6YAZs6c/WHTnLn69Tff9jZva9a5QklX3FB7Kuq4+g6wf3YOuw8/jADmCmW9fWeL/uDjT4MHVqwMm+6eux3gtmnTUrv68NZf3v73A7tj2h1RyJ7dFAOYO3fejDvvvEs//+If/Q1fb9Kd+aIuu772Aq2DMLJaqLUOu4EG3wETaq2DbssGSmsv0NoLtS5XfN2ZL+pvtmzXb7+zNli4aLGeO3/eywC333GHDfCTI4/673d6zrz5zJk3P+r4nIiQZzXN+d558eL7o8+zmgTAgyse+tG0aXeUHnrk4fCjj/+ud7ZmdVfJ1Y6vtOsr7YcRQD/sBqG6AXff85XWftB9DiNwjh/qshvoYtnVre0d+ouvvtYvvvRKOGfO3PKCRYuOA5g5u0l8+MHHLF6yFIDfP/XU986rVv8uoqV5C2iat+BbkEsfeEDMapojmubOFQCz5nwf4B+eeWr3d++cPn1J05y7w1dfe119/c1W3ZHr0uWKryteoP1AaTdQkTW8UPuB1t6uz76KjkBrP1DacUNdcQPteIEuO7523ECXyl7kf1ub9fsffKwfXLFSz5w1e/ef33BL5POPP/kEAE898wwAL72yhrnz7xH3LVm+O0iaz7/4Ah9+8LE5ZuTIYNfNWU1N5uQJE4KZs5uYPHECK5c/wmt/egOARfcu3rOtvfWEPRrrZW1NDbGYjWEIFAqpDYJAfRuDhUCoEIQArUALhNSoQOP5Ppl04nuzqFhyUEphGhLLtkkk4vTu04f2bNtRc+bOP2LCVVf87aD9DmTV6t9x9hln8sTTT3L6qafy/MsvGiced0zYHYxpmnuP2bO6JjBP+sUvAYI/v/lG3w/e+/CQ6kzynTGjx7Y1zbk7PnHC1c7MWU0U3A4GDhogAN2Zz54ZTyYbe/bsRSqdxLKsCIvW6DBEC4nQgNCgJWgNMvpbKcBzfUCQSSd477332LplCxpNbU0tPzv2WDwvIJcvYFsWsViMmkyGmkx1j1yu81Tgb4899ThHHHY4Tz/7NKedchpvvvO2edR//CTQWsfmzp//8+ra2s2jLrjgswn3zEZ88fkX5ouvvHxuuVxeEo/HQz9UbZJw8pRJkx+dNbvJnDxpYtDYdyDjJ1/G5KsmyKlTpy3r3bv+ogN+dKDu27evSKXS2PEYBgKkRKDRgOg2nyAibqEh1ArblHiexzkjRvC3tWvp6MgihCCeSHLwQQdy8y23cPTRP6OtrQ3P9ch2ZPX6r74UW7dvf23o4H3OOPXUE/K7LP3Sqy/KE3/+C/Xy63887NP31y1LVWWGooWSQi1LYEyUf3jumSFupfJg44CB3r777W/tsUdjg9bijuWLlveYPGliMKdprtja/DVJmRBz5y8cZNvWiTU1tSQScSGlREiBIQShUnieg9YaofVuda/R3aQdErNsOjo72KOxkT+/vgbf98lU15CpriFm27z73vuccfqZ/OWt16mrqwMpiNmWSKerVNy2jv3mm3XDFiy4RwA899yzLL3vQQHw2Yfr7kwkkvsOHLSXsc/w4UhhXB7axkkynkheL6SksaF3vCZTbdT36k06lezfks/+J0CpUgbADx1RLOYaYrFYn0wmHViGhZSCmBWjUCzwx5eeZ/Wqh3nt1ZeRhoGUAqXC3WBDpbAswZXjx3d32iYIfDzXxfMcgsAnnUri+y5TplxLR7admGWDkKRSyQAkTsmp+ejTjwXAps3bxO8ffzR8cMWqQ4WUP+3XtyHMVFWZiYQdz1RX4XrOVGkacnAiFieeiIt0VZq62hqztrZnLJlKngPQkS9rgKsnTNCWaaalIUml0koaEikNKk6Z666Zwq9//Wsuu/xSTj31V8ycMZ1YzEZIidYKhSYes/n8s8959913sUwTz/MwDAM7ZmOZNlprAj8gk8nwyccf8dGHHwIaw5SYpi2FgEQ6vd+EKXfpP7/2urz8snEaIAi8w9OptKjv02BUpzNYtqVNQ2AI4jKRSHxuWiYx21JxO0a6qopevXqSjCf2e/7VV+oOP/hH1pZtmwWge/bsMVhrMExLGkIiBHzw/rusWLGCqnSampoabNvmnnvuYf1X67FMK5qaSmHbJi+/8kdyuRxoTTwep6GhgeHDhzNo4EBqa2sRhiQZj1NxHNqybYQqRAoDKZCmaeG6zjHr3n3dWrdunbly1eoYgGmav+zdp5/Vq1dPacdiSCFBAcg2advWM6DxvCA0TINkPEGfhn66tr7Hvu07WkaOGHG2/9e337O11oZT8QdLQKKFNgRhqHE9B4D63vXsv//+1NXWYJom7dlsFEG1ptv9cBwH0Z0dVKWr6NuvLwP32oshQ4fQr18/0skUWkSBSIcKpXQUbYUUpiHRWu+1PdduBijr/PNGuKt/9/j4ZKbqpAF7DtC2HUOYBoRhWC6XEYj3ZWtr9hOAfLGgwjBEGAY1tTVi0F5DnFQ6M/vhRx6bJg1dvXPrNqlVMFApjQZBCIYUNPbfk8GDh9DcvJOtW7dSKJXp06cP++4znFCpbmCKIFQcsP+PSKWrENIgFo8jhYHruoQqxDBNEskEpmWBgEQqiSENhJRIlDBNS3l+MGDHpk26JlOdXPXIo2Okac4fNHBoua6uTti2hfJ9Cl3l0PEcTNt4Vvap7+kEQdDa0Z5NuK6rUYpYLEZ97/r4PvvsU6qurb0hVOKdt9//+Hw7kegZRUAEUuEHIcOGDePueXMZOnxvpJQceMCBrFj5MLFEEsepoHUEsFjs4vgTf0Hfvg1YtoXvefiBR6lcIteZx/d9lNIUC0UOOuhg9hm+H9IQhGGIFgJpSEDHjzzm2J9rIV+OJ1NLhu09vKuhoXcybscJgxDX9ejItgqtNY7jfG4eevhhrS+88OLjhUL+skI+p6rSacOM2STiCSzDTCUSKW/79ua92rJty8JAufG4jURH5IUmXyhw/HEncOSRR1HMFaiurSaRTFHIF5CmRCsFCLSGMAiYevs0Tjj+OIYO25tstoOuYgmNplKpYNoW2WwH11x7DYMHDybb0RFNSw2GlFIppRTy2b79+rHnngPdmup02jQtwsDH933KxYJqz3bGVKheGdB/QFEOHTI0TMQTb5ZKXbS1tRnFYhEdhEgB8USc2upqe8BeA/TQIcN0LBGPSSlROgoSoltidWQ70CFU19WhlaCzoxPQhEF3UqoUGigUS/z0p0ez5o03+eqrr9i8eRNt2Q7a2rPk8kU+//vfWXDvAsaMHksul0MphRACpTWGIZFCmgMHDWLwkKG6Z8+6WCyWxJCC0A+oVLpozWapOF3EErHXTjz5xLwEMG35VuCrT7Pt7RQLRSqVLkI/AASmaZFOJEV9rx4iGY93S63IcBqB0BphSILAw6k4eL6HlAZaAVpFZK4BpRAISl0lBg8aQq4zy9Rp0+nfv5HGPfbgnPPOp1gscuqpp1HsKkUG06AjHwctsC2Lfg19yKSSwrZtJJrA96lUKuRyBTrb2qXreK1KqWcgUn2MHjlmezyVeCzb3k5r6w6KxRKOWyH0PYTQGIZBzLaxbJtQa7oD2rc1CqUJFaBDtFKEoY9SAWEQEIbREQQBSvkEYUA8FqOlJcuYiy7krTf+zFuvr2HW9Gls3bYDKQVSim5f1SA0UoAWCsu2iFtgmCYGoMKAilOhUMjR3t5Ka2cbsZj9zm9GnLMFwHzq909z+lmnsf+w4b//23trL23esbMhU12DbVlIKZFSAAJpmKAUUojukYRQKaSW2KaBEALTsrAtCyGIikG7OIDuxEDvrrySyQzAcT3as51orTENg8bGflTKFRAChUaryOpKawQSQxpApHx836NcqVAqFGhvz9Kycydu2XX7D+p3byoe71q2/AFhnn7WaSxdutz62XHHfrFs+YMLtm/dMq2urjawTdsypEQiEIaBbStc10VKEyF0ZDatEcC9ixay4asv6d9/D5KpOEqDLQRxy0LakVIxTSvyUynwwxDP9VBhAErhdftvsauLHc3NDBo8hJGjRoPQ3UlFxI1BGKA1eK5LgKCrmKetPUtbW6vetq1ZNzT0fv7Xv/n1H6dOnWqOHjUyME88+jjGjBnlT59+V3z0qIvunDVr9oiN678ealvxQBrC1FpjxWykyFAs5Eml04Cx2xdM06Z///7ccvNN/7aSxr2L7sO2bCpOBY1GSIlhmrgVB8/zKZW6UGFItq2dtrZW1m/Y4CSScXnxxRef++nnH8emXHWTe/PNN2OOuvISXnr9FX5yzNHOtDtuT0yePGn/W2+7tbJ+w3qN1FIrJWOJJIZh0tHRSV1dD6TQSMNAa0W5XOLMs86mf2M/Jk2cwqeffARS0MdOcGAyRR8ZJUE+gu3KoU5YVGFhCxDa4G2vxLpKERWEDBoylEULF3DIoUdQLBRQSiGljLJq06LiVMjlc+Q7OnE9j5aWHXz15fqK53mJww87bL8jjz46uOG668J4RrBq1cOYhVwOgM8//pgh+/+0MmXSJCtT0/Mnbc3bPtgoBIEf6Ew6JYIwpFwqYdpWxFuq2+GloGVnC4cefDhPPvkk7dl2rpw8if0+a+OkzBB2+F24KiREsbeuYGMT0yYxYdPTjHNoosLiYQVmzp7DgP59qa6pob29Hdu2QevI37pJPFCK5q3b6SoWKHYV+GbTljCXzyf6NTZeevzxx3228pFH5VdffakBQhVEAW/JsqWMHT2GadNuYe99DhP1pb+zZnNwejGfe7yupk727ddPSWnIjRs3cvDBB1Hfuw9V1dXEbTsqJQiB63kIwAtCBIrmMXMZomtQcRM/CFBSsFOXqNIWaWFiSRMzUJTcCl2zziJR3xPLsJBoLNsGIo4MAp98Pk+2vZ1PPvqI+t59SCZstXnbDtnZkaW6rnr29ddcN3nlI48Y559zTgiwaNF9jBt3SUQFY0ePASCWqOGsM07WazaH8uYbb3wyEUv+ojXb3vLlunVy6/atQSZThTRNRHfoU0qhlSIIQqQQ+EGI0orPPv07lheSqa8n09BAr8Y96Ns4gL69G+nfbw/q++9Jbd9+1DT0w5YWGz74JALi+2gBQRgShN+KbkOaGIZJOlPFjh07gi/Wb5RtLS1eqip97XVTrr1m7vz51vnnnBPOXxBVvMaNu4TdPLerTZ54NXfdNYObb7whHD9+vDF12tSXe9T2PKjkOG8hpJlIVSnTtDAMEyEkSilCpbqTTj86ey7a90nJGKRTiFQKnU6jEgmEaaDicXRVCl2Vhqo0lh3DdgI83ycIfTzPJ/ADtA6jrACNlBLTNEmn08qwDLNUKn1uxu2jb77xxhmXXnWVuOqKK/xZTbO54vLLvxeYvgdu+oyZXNu9KnrPPfeEJ559qrjhyqt3zps39ygD/Xk8bst4LKZ3BROlFZ4f4Pv+7qw6CBSe42KZJkYmiUynkekUIpXAsuOYiQQylUImE4hMGqsqiXYCPNfBc33CICAIfAIvIn+tQQiNbds6FktKy7TWz5o546B0wlh7663TxI8P2jeMDDOJufPn/Wtw110zZff1PXPnc9JPj0dkEvr+xUuGKSH7JBJJJY1vi0CBH6ICnzAIu0c+JAhdtFKRdZNJRCaNSCcQySR2KolIp5CpBCJThahKIWIxCEOCblCe50WDpQK0iqa+6C5pxONWaBpm38VLF+9z0023q/o+dWxtbt3d56uuuPJfg/tuG3/VFXSVixKgJduyT8w06xKxWGAYlkBAGChCFeL5Hq7nEvgenu8ReFFHQxEg4jYinUSkkpBKkqitwUqlIJXsvp8AA3yi1R7f8wj8SOEHXthtOY1AIwxT2LG4Mm0rVcgVhwKUSxV5w/U3ctvU2/4pBvNfgXv00Ud54803NEDMsk82LYtEImEYhoFAoFSA73oEYYAf+IShIgxDlBBgSspxEJZEJOxd61aYqajgg5QgQHoBYVzgJQyU7+PrSFMaYQhKobSNbZtowDAkMTsmpRSYpnkK8FixUNRLH1jOmJGj/imGf2q5tR98yDNPP8M+++7fLZCN06qqMq4ZixlSSpTSeF5kKcdxcT0vGvUgQIcBWBY7pUuYK6JLFbQfyaxIAWt0GKDLDmGhSKkzj5OyCcIQ1/NwXQ/H9XBdF9/38b0AHWoMIbEs26iqqvbCMDxZa21sb+7QWzdt4PkXXvnvgVv58CMcfvBBnPSrU4zLxl2iHnjgwSvdwK2pqak1LdNECgjCgMD3cV0H13XwHBfXdQk8j9DzMerSfGN7VL74mrC1HdXageosoLIFVC6PasujWjsIN25jXakFq6YKFYYoFUTvcys4rovvufiBj0YhRCTBMpmMoRSZ+xYvHb90yXy95157Gyf98jju616s+ZfgFi5cSL9+/QF44nePAbCjpWVEz5peOpFKGKZpoYDA93EqFVzXizrT7XN+EOCHAXWhSfiLA1jTuR73oy9Q7W3oliw624lu7YTWNoKvt/L5R2vZcHgvqnr2QHvBbhpwXRfPc6k4lQigH6IA0zSIJ+JGbXWN7uhsGwHwwotPa4BePXrQdPfd3wO3e//Ho48/xsiLRnLIIQczfL/9xPLly9TSZcsvLZdLF/du6CvramsjZa8VjuNQcbqt5kXhOwzCbtLVGKZBxkqRPaAHW7ZsovLuesKOHOUdOyns3Enz+g18qHaw8bRh1B24NylPEMiIxIMg7M4BQ1DdotmQmIbRLR4g0KEs5Ar9Tjn1V8Wm2U1vX3jxWCGEZMqkidyz8F5efOH5H66JL168mN/+9rfRktVTT/b4cv2Gl5PpzMEDBw7U1ZmMMAwL363Q1dVFuVzC96PQvWttQBoC24ph2TamlIRaU5I+fnse/5NNmG0lVMKC/fthNfTEjseJVxQqZuBVXDzf2616pGliWxaJeIJUVZpkMoVp2gShR6HQpTdv+kZ0ZNs/qarOHDv+ssuy0W6lRVw2btwPF/wfffwxfnP2r3nl1T+J/zr253Lx/feP6szl7t9rz710n4Y+IhZLoMOQrq4uurq6cCplPM8jDCMyl1IihcCyY8TjceLxGLZlo0KFMAXCMsCQUemg4hEqjdSaUGsqlTKu43S/L1qJ0lpgWSbxZIJ0Ik26Kk08mUIIgee5tLS26m++/loYhrgino4t6t2zQZ11xhlq5erVnD9ixLdU8PgTj/O3d98B4MP3PzDeeO3PViKdmVhTW0d1TS2mGUNoheO5VMrlqDOui+e4KDQqDBHCwLIMpDQIVYDWNtKQxOPxKG0RUT1ESNApC600nu/hlcqosJvnfJ9QKVQYrfEF3TyHFhimgWlZWFYMwzSoqammpq4HHW0t1x0+9JCHly5fmtfdGcRTT/+B00/7VTfPhYLZdzVx772LjEsvHRfMnTvvCsfzh/Wu7+mnEknLkJEorpTKlCsVKo6D5zoEfkgYBCjdXaVSFhqNYZoEtkJ1p0SWbWNZJiIqtxAGIY7nECpNGEYlA89z8Xwfz3FBClSoMC2TMAhBgGlE0TJdJTENi1gsJnrX9wqK+VzDe598PGPFQyvHDt93Pwvw813FaFpu/WYLjXvtwRO/f1I8+NBK4/TTTu3b3Ny8uW//xlL//o2pZCIGQlDqKpLrzNFVLFIuV6g4FVQQ4AXB7tqiFbNJJ1MkU2ky1RnS6TSpdArbsrFsCyFkdxYR4LgO5XKZYrFIMZ+PprpTwQu+lV2mYWCYFslkglQqRXWmmuqaOpKpBEKA47g072gub92yJdm7b8MRoy+8cO3yhx4yR11wQbB46VLMxn2GAPDe+x/En33mqcqhhx38WDyeKNfV1CYNU0Y7fRyHXC5PsVCgUCziVBxczws9t6K8QKFViG1awvQ8Q4Wh0IBpRdPItEykEAhpIGVU/98ltdyKQ7lUpqvcRVexC8/3lOO6yvd9LaXEkFKYli19z5FRRVpFlSYUsXgcBFSlq5LJZFVX8/btf9Na9xBC5P68Zo342THHaJOKy40332xOmzq1cteMmbd0dGQP7dvQqLVQwnVcKiqkmM/T2dFJqVKiUiqX29rbzVxnpx0EnhGEUSksDAPS6XRQ36uXJ6RICCmEEJHIDpXG9gOklCgUvuNRqVTozOeirDpf9HfubPGz2bZkoLSMVmk0Sitsy6Rnzz6lOqWNIPDjXrcaSmeqMMzIDTI1Ven21hZ127Q7HgJOPumkk6TWWhv3L1nK5EkTVWdnrs8jjzyysLF/Y9y0jZghTNxKmXyuk46OrM515pwNG9aHG77emOjKF/2y465sa2td5gfBi57rPi9N8xuU2r+ltS2VzWaDeCzuCEOaoReKUPn43QK7UixRLHVRzBfI5bLexo0by+vWrUt4vmupkJdLlfJ95WLxD4VS8UUEbwZBaOYL+aFbtmw2K+WKYxiG5/me9H1P+n6UZrkVD8MQYUtLy57HHHVk+5o1a94rdZWi8urEKycZTfNmhzdcd+OoLds2zRk2dHjcNIi5gaKQz+lt25vD9vZ2t099/eZUOnX+X9/54LNPP3nP/S5Haq3F7dPvTG7ftLVRoVbtaG4eXpVMWb0aGszqTLVIJuIIIfEDj2KxoNuzed3W0uxV1/YwBu6554296xvu+/GxRzsH7zvc+4f3Wuece4Hdr0/9z7du2zarrbW1IV1Xk+zXq7esrqkRtm2jtdZbt2/zQ189s3LVirPPOP1M88mnngjEjdffxLQ7b2f+vAX2FVde7rmurjn99JMfdRzXRJM0LaNr8OBBXy5cuHCSEML5r+NPMOvr6uSXGzeqdDyuDdsmFotTKnWJTCop8sWSfvPN1wOtdWz8FVdf17xty+GO58UksloJJYTCV0Jn99pjQHDEEUcsu/CiC58BOPGXJ9h+yVPpulpdyuVxAo/auhraW7OyR10P+dzzz7q7dtJOmjD5ui/Wf3VUV7Fga63DeDxh79HQOH/piiVPjRk1NrN0+ZLC6JGjo9G5ZvJ1ANw+9Q7rH63xXR06atTo5JVXXSEA3n51LQBBUe/evjtpyhTGjhkrxo69OPmP6ZTW2tZaJ75bhQY47NAjEnOa5lpzZs1h+YOrALh/2QreXhu9/+nnnuWQI/6TayZNlhecf0ESsP5VmnbB+RclAM475/zoxt1zo61Rt98e7e167PGnxMknn2LtUi+DBw8xf3vJJeZ3O3X5+PEAnHbKaUyfMQOAeQsWcPbZZ/Pjw4/cDXb0mIvNs8862/pHmbfv/j8yx10yzpo1c9Zu4X7Oeedx1dUTALj++hsZf2WUVV96+eWMvPCi7w4Sl/z2UuP008+wuoW/OP74E6zRF42RAKMuiix22bjLdu3Gu+57m6d3XT+w/MHvjcytt97Cb86NpM3ESRN/MHLXXHsNr6x5kSvHX/mDZ9OnTWfGjOmsWPHgD5698NIfAXj+qed+8GzCVVcB8J+HHMJtt976f61UXz4uGvTzzo0s938AXZHNUCtG3QwAAAAASUVORK5CYII=";
@@ -241,7 +243,8 @@ function Safari() {
             "rares": {
                 "rate": 0,
                 "list": []
-            }
+            },
+            "inedible": 0
         },
         aviData: {
             "style": "f",
@@ -981,7 +984,9 @@ function Safari() {
             starpiece: {name: "starpiece", fullName: "Star Piece", type: "valuables", icon: 134, price: 3000, aliases:["starpiece", "star piece"], tradable: true},
             nugget: {name: "nugget", fullName: "Nugget", type: "valuables", icon: 108, price: 4000, aliases:["nugget"], tradable: true},
             bignugget: {name: "bignugget", fullName: "Big Nugget", type: "valuables", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], tradable: true},
-            cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "shard", "cometshard"], tradable: true}
+            cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "cshard", "cometshard"], tradable: true},
+            moonshard: {name: "moonshard", fullName: "Moon Shard", type: "valuables", icon: 271, price: 3000, aliases:["moonshard", "moon", "mshard"], tradable: true},
+            sunshard: {name: "sunshard", fullName: "Sun Shard", type: "valuables", icon: 271, price: 3000, aliases:["sunshard", "sun", "sshard"], tradable: true}
         };
     };
 
@@ -1266,7 +1271,9 @@ function Safari() {
         bait:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAKtSURBVEhL7ZQ/T5NRFMZ/tKVCkYpAJYIULKHyR4ImgJGJaEwYDNHFOBkHw+Bg4lfQz+BmGFxMdNDEyTjIICwOCBFNDCB/BKHQQimFIm/B57aQlNJWwuTAL3lyz9ue95x7zzn35Zh/kbe7HoZmKV/6InVKTmmPAWkraR6dV9LHpElA2kmRRzoSZqcmWIBnxHjJn4T9hDj9CvxBuicVsKTfe6QD2HfXTDz2wsObKs21GoqWm3AEHfKPUUSJSlsgjxnptbTKI6X8lLDSsO2u6XT6Cuipc9HVUQyXVfmSOShUQF8hNM1CwxDUf9bzhH7fJKh3NpOv7idbkwO9FXiunIJiJZgahhddEFXw3ndQ0woxhVvXfiNK/FQvROGOFnOefaQnMDV/29dMWXtrm628tJS89QUGhkeZmLaw4lBbDacdWhvbsDucjA0NcncUwlbmBOklMqPnKXZgi8z/ZHbsK7+mp2k8X82Ndh/dHT4u+X3k2+3kx9dxbkdxKFmuWc/WA6LhIKuhBSzLwlNRhbfJT03LBSoqvbjdbqzYmnxCxKzknGYjawKDy+XC7/djr/RrltSElutw1k9dvZ9IJML45AxzEdjOkSF9TGul+xc1E5vbaqK1xfpKgPIT2snCOMx+h5XfjI6MMLW4RmBZtddE9as3usam/t8SUVLImMCr4E4dPU/Xasuxjc3aIBxaYjkohYKJ4MHFHUJhmJSPhgy5HypBidRwEqpcFvZ87cwmj/hGjNXVGOFwUksqiwk+vwE6E9MwKFcNMJMmSCpZ78FVTVOjDFU/I7pf/JD6E0+ckRaT5n6yJShT2fv0Z485YreU+ul8L2nz+jowqArdkmlusgp7kFwjrENwzhhV8FyObmMbFuCBmmq+O2bXu4fITK4EqbyRTH/2uC2tJM1j/m/gL3sX4DsdYIE/AAAAAElFTkSuQmCC",
         golden:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAL0SURBVEhL7ZTLaxNRFMa/mUyaNmkeNU1faqWthmotKkWwdSOCCAq1bgRxIYhuuhAUwZUbd/4BrhQ3LgRdKLrxgdiFqQsRfFAK9mEfSWxSU5OmaWaSzIzfTVoaY9KqKxf+4Ms9c+eeOfee+Sb4z0ZIK+Pv0EVZqfdUH1VFrRKgsoXw77lPvSqEiFJmkXxUWTY6gdjpIxHcHPS5Njll+fSNSPzoZZfXv6tBzqkmhp9PYOQpYrkMznHZY7G2GMvKWI5LO1qUwbOHa7r6e+oce1tlJWvLWEZdqsPiNqR2U4IlpGHo5TLUJVw0DbxmzmIhdQ15ZSylb2er0t+9zXro2D47jnQ7YOPKXM5A7+4atCkK6hc1eL5r8BkKbBJizNEKqT9TqUXRa2ccvuN8uN/pxHQcGJtLIWcY8Dc74fFwQTSFWCKDcBK4cjeOZNo8xbwHhfQ1Sgvke/7i+lbvnoEm2dPhgCJL0ANB6MEcoLOnLRIkZhmd9UjnZISfRXDw6gwWlvSyBUpbJKzna7HLsjOWgnUqDimsQmlrhW1/B2wHOqD422HxOGGtrUJ1rYI6NwtWajQpe8uq8MaiCnxLA6oBuL1Ac1NBdXSk2wFkDJhJFZrBk5nCqeUpX7uWYhHY+MOeQ6byVm+kGDdSbP7ypyg+c9SNPyzwZmQRo+NZRKa5O/GG9QRnw1SQ4vVsHPPTWYRCvOLlOs8vX+DDhInJGRXR2SWkxpZgRuaAxFe6nGK8PJHEPO9NB9P4OEH78uVXovRDowHR6apWNtfZYLHLJhzcgsx/IF3LIJvUoMY0xKeSmAqpGAtlERjTMT6XGdYNPGHuVP4pRVT8Dk50O3y926vQ42dVGr+W3hTHpe3Zljh3buLtZA733okZNFDzIiilUgGv3Srdof36rTzjhT4P7FWFpaLdtwIJJOku7no4nTUHOCW+ZNrtVyoVEPRSW0Tgb7DeliXJJWLBl4XMeS2b/98Rux7KT1ZgvQLFPKTE+1nlJEX//OffB/gBN6gIBPq9GlYAAAAASUVORK5CYII=",
         deluxe:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAALiIAAC4iAari3ZIAAALnSURBVEhL7ZVLSFRhFMf/18YZcRgznUk0MjCawtdIQpBkiZS0kHYFEdQyqFWUuM11QbQNWkQLQTGjkh5E2kBJpOkI5jscyde8ncl5OXO//nfuDDTm+GjVwj/87j3fvfc7h+983zkXu9pKUvK+XeWTGvKJmImJpDRKnKr572oggiiOO5J2iotkZ5JnUSfPwGEsgINDB+rh5VXACBduIIxu2sq4lZixwm+6ExP/UFbyvqEkXYVW0leZrkkaU0sRTFfzmKJpvjiHQuihwzJtZfyBrOAxrw9JmjIGcH9BRTBaVIPcJjTWaHHKCByL8MUYcFgLVLqB6nGg4jNwlM+Kl+HnW19i8nbkGUCHf6JBKPIOm0TPWYjbpWo67udCPC+DeF0L0UEeaSBq1X3oVWdnUCrnsuu0Ix7sCcsxbyKAvOYSkflWEZiwCMcoxPt6iKHjEHNNhSLcdkFMntCK8/kbB0hPURRTkoSbV66P66xv7ukiDjWloflWrPV+hfRMg9yuMlSZK1GQvxcaIaCLxaDdQ0cZDnxagCwznFIZOtu7HJGZj30Ij74CYjZER98hPumDbDdCdltgOnAEhv1F0OTkILy8jIAsYy3pY70ybnLoJWmfAQJ3gK4i5GiqYairh6H5MqTScuwrt8BQXIyFwUFMcRW/kvPWK2OAMTtgm+Ch8FnhnxvGmn0EmGABW58CP77BOdCPaZsNNn7rYQ1HM5wfZm9DtZQI6LNXgfBIHO6fMrJCQcQ8TqwuzmN1aRF2rxcL/ig8c8AMvxvhFruAWc59orpQlSlAHZtOYTwEvTTFguM6pXAEEd8q/B6VpWAMLjp2s9iGOIFxvrOUlR71NuEhqc2aXUcJ+0szDQvRJB6lK0AmCZOGEHCJt06Sps0C5LFgG7nEbmWZZ8ihxGNVVqLkI65SHuXO0FRqPU1btWulayodFAeBW9nAScVWxHQ8YLfoTw5fkL+cK9rJ/+AuURaSUhvpU81d/b8CfgP1NCLta2jYiQAAAABJRU5ErkJggg==",
-        pokeblock:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACw4AAAsOAUC+4UEAAAToSURBVEhLtVRLbBtVFD3z88zY43jsOHHTOG7SfKhoWtImhQBddNks2FQChESREIuKNUJICAmVDRIblqgS6g6x6AIJofKTEP0IlUKqflIoaVTUpvnasRPb8/G8+XBnnExCYZsjvZk3b94959773r1cEATYTfCb713DrgvEKeI4jp4f8idP/iqJYjbNKUwXkO4VVeUwBP4VRdEm5WRKbDRtf32jdt+wrYtuy77hMfNu4PrzaC6ZmqY5ly5dckO+mHdrMjU1Jed7+sYKPcVjsqK94HL8i3KqK6f3jSR5qYO3ywb8lo21moGGIqMiBqitPnSs8sOm77k/sGb9D7exPOMatWv3rny/TLwRcSzw2htvTYw9d+LjYqn/WIfelRFTWaw7EhaaDAu3/kL97jzklARTkNDs6IDVuwdM4GHbFox6FWZ1ldlriw9ZefHbzOqN83ev/3wz5I3PoMVrb7uF0ROrqYHMEpdDxeFhMQ+MhhWIsLs6UensQr3Yh3o+j4YfoGIyLJoBFlwNS4leqZw5OFTNHXqT8fJHm7TbERx//Z311uTpjOEGUAUBOUWALosQAx51q4XA99GdlPHYcomUoUFrhu3AtBhc5sJ3/ZAONMHQzLnW7NWvlZA3Fhh59b3g0eFTcGkj73EQKTaJ56MBIUCC59CnJPC46aC20QQjct8L4If2JI6QP6SSeIzMnMNfl78Kb82OFJGnDm0kGzAysiiSuuOhajNUTRcrBsPtqoWVpg3LsuF6HmTWQt7YgOIwcFsCEW30iBALePRXYw76WwYygRtvCW0iJ2nB9sgByn1oJvoMA24Dx+wy8swIUxHtjzyMrNqIBThaK7keTiUYJgITCuXyX/A232TCkVWanMnV18GbBp3PNmEksONzW4A8bFE6FudWkV5eQ941IURxP4Gt0Mgg4CRUlByaShJBQgQySWB/J5Ci+SZigbyeQPeADr+7A9kEjwK5LNNfng43qvKYmByktYaq4k5PD24PDaJ+oATuaAnK+F7IR2hOt20LsUAhK2PkUAHKRB/8oTw692XRX9LQu0dFPpeArklI09BoqHkN8kAB/pEhuBP7gdEedAoMB+/NIu22yIctb3YIhImTVBFSfyeEo/tQeLoLo4NpjO9PYiLlYky0MDak4eBTOnoPFNA1UkC2qEPOKuAFDsUHj5BdLFO0dEabjCFigbAeokyEKVFIiAotTTnKrlTQ+2AJe+8/Qr8uoljQ0JFVoYbOEHFIwNENWe/J4++J0ah9BK5jtVl3CPi2fUei01cFETL1G5ETACoqzFUQUKPj7BYksV2A7c7bRkggEml1eB8asgP1+ndlgVnvt//ujMDe+KB54/KCykzoxNKRSEAN77Zhg3ktyM8PgkuQ6LZJlAqRUqtWl5H+6cul9LVvPk3OzZxOgZ1v76A9W61i4syZpG66U4lU6l0lk3u2e3Scyw4egF934FBJtDJpOKKPpq9gjgJrhpVfK8O7dcWVFma/EKrLn1N7/DM1P1+fnp6mZtDmjQXCsMfHxyWtOJriA6NgNmovK3rnS3sOjx9K94+oQmkYgaKhFkiYrdZh3ps2pVtXfxfXFj+TGf/jb8efqeHs2bhw/lfgCfCTk5O653kljksoSKcuCkktGwiibzD3GgzjE2F95Zebw8NVXLgQ1/kW/iOwW9g+sV0B8A+ESjQpudvRVgAAAABJRU5ErkJggg=="
+        pokeblock:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAACw4AAAsOAUC+4UEAAAToSURBVEhLtVRLbBtVFD3z88zY43jsOHHTOG7SfKhoWtImhQBddNks2FQChESREIuKNUJICAmVDRIblqgS6g6x6AIJofKTEP0IlUKqflIoaVTUpvnasRPb8/G8+XBnnExCYZsjvZk3b94959773r1cEATYTfCb713DrgvEKeI4jp4f8idP/iqJYjbNKUwXkO4VVeUwBP4VRdEm5WRKbDRtf32jdt+wrYtuy77hMfNu4PrzaC6ZmqY5ly5dckO+mHdrMjU1Jed7+sYKPcVjsqK94HL8i3KqK6f3jSR5qYO3ywb8lo21moGGIqMiBqitPnSs8sOm77k/sGb9D7exPOMatWv3rny/TLwRcSzw2htvTYw9d+LjYqn/WIfelRFTWaw7EhaaDAu3/kL97jzklARTkNDs6IDVuwdM4GHbFox6FWZ1ldlriw9ZefHbzOqN83ev/3wz5I3PoMVrb7uF0ROrqYHMEpdDxeFhMQ+MhhWIsLs6UensQr3Yh3o+j4YfoGIyLJoBFlwNS4leqZw5OFTNHXqT8fJHm7TbERx//Z311uTpjOEGUAUBOUWALosQAx51q4XA99GdlPHYcomUoUFrhu3AtBhc5sJ3/ZAONMHQzLnW7NWvlZA3Fhh59b3g0eFTcGkj73EQKTaJ56MBIUCC59CnJPC46aC20QQjct8L4If2JI6QP6SSeIzMnMNfl78Kb82OFJGnDm0kGzAysiiSuuOhajNUTRcrBsPtqoWVpg3LsuF6HmTWQt7YgOIwcFsCEW30iBALePRXYw76WwYygRtvCW0iJ2nB9sgByn1oJvoMA24Dx+wy8swIUxHtjzyMrNqIBThaK7keTiUYJgITCuXyX/A232TCkVWanMnV18GbBp3PNmEksONzW4A8bFE6FudWkV5eQ941IURxP4Gt0Mgg4CRUlByaShJBQgQySWB/J5Ci+SZigbyeQPeADr+7A9kEjwK5LNNfng43qvKYmByktYaq4k5PD24PDaJ+oATuaAnK+F7IR2hOt20LsUAhK2PkUAHKRB/8oTw692XRX9LQu0dFPpeArklI09BoqHkN8kAB/pEhuBP7gdEedAoMB+/NIu22yIctb3YIhImTVBFSfyeEo/tQeLoLo4NpjO9PYiLlYky0MDak4eBTOnoPFNA1UkC2qEPOKuAFDsUHj5BdLFO0dEabjCFigbAeokyEKVFIiAotTTnKrlTQ+2AJe+8/Qr8uoljQ0JFVoYbOEHFIwNENWe/J4++J0ah9BK5jtVl3CPi2fUei01cFETL1G5ETACoqzFUQUKPj7BYksV2A7c7bRkggEml1eB8asgP1+ndlgVnvt//ujMDe+KB54/KCykzoxNKRSEAN77Zhg3ktyM8PgkuQ6LZJlAqRUqtWl5H+6cul9LVvPk3OzZxOgZ1v76A9W61i4syZpG66U4lU6l0lk3u2e3Scyw4egF934FBJtDJpOKKPpq9gjgJrhpVfK8O7dcWVFma/EKrLn1N7/DM1P1+fnp6mZtDmjQXCsMfHxyWtOJriA6NgNmovK3rnS3sOjx9K94+oQmkYgaKhFkiYrdZh3ps2pVtXfxfXFj+TGf/jb8efqeHs2bhw/lfgCfCTk5O653kljksoSKcuCkktGwiibzD3GgzjE2F95Zebw8NVXLgQ1/kW/iOwW9g+sV0B8A+ESjQpudvRVgAAAABJRU5ErkJggg==",
+        moonshard:"data:image/png;base64,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",
+        sunshard:"data:image/png;base64,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"
     };
     var base64costumes = {
         rocket: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFYAAABWCAMAAABiiJHFAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6QzAzQUIwNkRDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6QzAzQUIwNkVDOTVFMTFFNTlGMTZCRDZGRUJDNjRENjciPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpDMDNBQjA2QkM5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpDMDNBQjA2Q0M5NUUxMUU1OUYxNkJENkZFQkM2NEQ2NyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PnEdDvwAAABgUExURdZfRmh5e0JOTygtLqOtt/zm411sbTtFR+XUz3qGh4KVldfLyJinqmF5hVQ0LjM9P/He2m5DO7uwrZ5SRJqSj25+ga24usrAv42dn+p7ZlJfYL7G0bCloN7j7EVUVQAAAF8gpikAAAAgdFJOU/////////////////////////////////////////8AXFwb7QAABTJJREFUeNrsmOlyozoQRrVgCQG2AFvAaBz5/d9yuoVYxOIFz/1za76qVJxKcmhard7I4z8R+Yf9h/2/YjlzFuQYk/xvYbW2gvYSQlgn2V/AcimMUsZ4KBjsmHNS8++wXAuVKeAqOgpMdpzzL7DcqU5RYbJshkVZ/YL7DKtF1lH46sDgGCvYC+4TrKNZJihA11QhtX7qYPKEqoxQCF1SqbCIfcbdxUpqhFMeuqYyrZ9z97BSgAPB3hWT+tjVL7hknwoRS9eaUz/GWkql2ISCB0bqPncHK4x121A3g+rdMCM7PgDHvobum7uNZcLZLShbUvfM3cWKJdOumfvmbmO1syJmOrkJ/czah3RiEKbvHeanvoWMCHkVxZ4gP44E4PIVAKR5+HwwbtHeGRK+ZF/O5PiQI7dszgWH+GgzU+4azD+QGMObcmnnsSZmCYEfyrfOvyqjUcIZcuLRfGtzBaWQdhRDOKTHxeU9ghVlbs6uS5IOzyqkA8ms45oq64PhCFaldW1dkSSF+d0Y7pigKiuSQlHX/BSdEvyQb29lfbu5pAFzf34KZjqVoIqC6t8/8LROH6q8qmxVLdq8bZKfU8dN0hWem1DuH6CO9QkivYPyMs3b/CeTJgkqoMkpjmMfNTihzU+nU5nWN3NrUIDz39u2MQexolZ1Wp68yjJN8zxvQXme4ufaHm2W1O1e16dJJSrFJ4Fn6uOt3a02t/IUq0Qs2Hv7omO83UW9wNZ5iian9Lu2WSzMvdcpKjffYeV94YTWY2/fzg62XjoXVLNvsQ89HVsfCml6F99POjA/tJ6Zp21b3/M0V/L7AcoXCZWXJVwGuM1p2r409Q1sXx+1A17pL1jtvh/3oI7JUCpV7gPrzvjXWGxxXcByS7EPe1kcX2L7Mm41n5dwLVGvStl+VyPtMH7MGpwBC8Kx+tM+QQco1lpf2MdORM71EdY3HGaiwuw8ciOq/KBZ4kxbQ+mcio2j3KB+gOU2U8yaBbXvSFfktztGoHad6meniDr0unOxt9tmmPRBfiZbUQN6pv0YXmBxzIc5X7Bt6ATvj3KXG2M19VRsN91rsf2ONMZahUsJA43cMDu8g93gknjYh0k/M/S5B0bJ/dEkwjqjPqAupt9dbL+bCjHAXnvhySxFojXK7BbI7UOD0GVL126ASZxdfSp0m1h/zS4VSMs1dkiWAU2i1cQ8vcjFoV+q65X8QpGL7BPQHDu4eollcXqRen44VSD2InqFhVSKq81hPzZiuYjTy9xaVv2KVbEoXXorGc4tuOJBg0l8XiOVza2dsKS3+hqwfD7A4gpC+InQWTJe2yi54HFMIdZjybWqpL6MWB1P3JyF1YZVRUGGhIh5QE5UjofLIuwF6lf4WA3YwJW9uZ4rTDJgtYWwmsV/OA05ZMBLj4X/rrwT/PP11Pb0lc35nYktmiRg7RCwISKXtYsjrBojDHyAhz51af75+HJwbAJnFo+1wvplAVjAPDVeJ8ALXgn5NYbYVS/qLh+XJc4yitMQ6VsiSAYCOq0+E+jHFnbSlS+TC+fjsWibZR06gQuYZZumMxhTDNuCF1hyWecsrkesAZEHM0VRNE0BGdHbG14u5lbBzsrzr5eNZkn3ntD2DCLWZgUYm2TmfBbwi+GvY+zFG4lN2OQGvtEKw/8zjy2EzhK0FX+CSNCPfezojmqvtcPdk8c2irMiUMFcLaeGeelc/+qX67W6POsYufDYgnEHRcFjz3z648hcjs6t+Fs7MEhmArAUoiNQz7MMv/ZCxd/ZA3r9EWAAv0eboM/sqZQAAAAASUVORK5CYII="
@@ -1523,7 +1530,9 @@ function Safari() {
             easteregg: "A colorful ovaloid with surprising goodies inside. Can be used with /use easteregg, /use easteregg:10, /use easteregg:100, and /use easteregg:1000. Don't open until Easter!",
             //candybag: "A basket full of goodies. Can be used with /use candybag, /use candybag:10, /use candybag:100, and /use candybag:1000. Don't open until Halloween!",
             lucky: "Coins used to bet on which Celebrity you think will win the tournament.",
-            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!"
+            celebrityTicket: "A ticket to battle the Celebrities. It can be used with /use celebrityticket to make your next challenge a reward run, and /use celebrityticket:[region] to pick a region to challenge next!",
+            moonshard:"Scientists are still figuring out what these rocks may be useful for!",
+            sunshard:"Scientists are still figuring out what these rocks may be useful for!"
         };
         perkHelp = {
             amulet: "When holding this charm, " + itemData.amulet.bonusRate * 100 + "% more money is obtained when selling a Pokémon to the store (Max Rate: " + itemData.amulet.maxRate * 100 + "%). Obtained from Gachapon.",
@@ -8320,6 +8329,16 @@ function Safari() {
             } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
+            if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
+                var itemData = globalWildItems[currentPokemon+""];
+                var getThing, g;
+                if (chance(itemData.perc)) {
+                    getThing = itemData.item;
+                    g = giveStuff(player, "@" + getThing, true);
+                    g = readable(g.gained);
+                    sendAll("The " + pokeName + " was holding " + g + "!");
+                }
+            }
             if (currentRules && currentRules.berries) {
                 var berry = currentRules && currentRules.berries ? currentRules.berries : [];
                 if (berry.length > 0) {
@@ -9902,7 +9921,7 @@ function Safari() {
         var line7 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "gem",  "stick", "rock", "lucky", "easteregg"];
         var line8 = ["mega", "spray", "burn", "form", "mail", "celebrityTicket", "crystal", "scale", "mushroom", "brush", "philosopher", "ash", "soda", "cookie"];
 
-        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities"].indexOf(search) === -1) {
+        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
         }
         var out = "";
@@ -10791,6 +10810,16 @@ function Safari() {
             }
         }
         return out;
+    };
+    this.clearQuestNotifications = function(player, source) {
+        var out = 0, box = player.notifications;
+        for (var e = 0; e < box.length; e++) {
+            if (!(box[e].seen)) {
+                if (box[e].source == source) {
+                    box[e].seen = true;
+                }
+            }
+        }
     };
     this.notification = function(player, message, fromWhere, mute) {
         var d = new Date().toUTCString();
@@ -11960,7 +11989,9 @@ function Safari() {
 
         var perkBonus = getPerkBonus(player, "honey");
         if (chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
-            safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
+            if (!(deluxe)) {
+                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
+            }
             if (golden) {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
             } else if (deluxe) {
@@ -11995,6 +12026,13 @@ function Safari() {
                 } else {
                     if (deluxe) {
                         var mon = 0, val = (100 * Math.random());
+                        if (player.deluxeBait.inedible > 0) {
+                            if (chance(player.deluxeBait.inedible)) {
+                                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
+                                return;
+                            }
+                        }
+                        safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
                         if (val < (player.deluxeBait.rares.rate)) {
                             mon = player.deluxeBait.rares.list.random();
                         } else if (val < (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate)) {
@@ -12901,7 +12939,7 @@ function Safari() {
         var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
             var type = type1(parseInt(player.party[0], 10));
-            if (chance(0.015) && (chance((this.getCostumeLevel(player) - 2)/20))) {
+            if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/20))) {
                 switch (type) {
                     case "Normal": reward = "crystal"; break;
                     case "Grass": reward = "mushroom"; break;
@@ -12910,12 +12948,12 @@ function Safari() {
                     case "Ice": reward = "scarf"; break;
                     case "Electric": reward = "recharge2"; break;
                     case "Dragon": reward = "cometshard"; break;
-                    case "Fairy": reward = "rare"; break;
+                    case "Fairy": reward = "rare2"; break;
                     case "Psychic": reward = "gacha2"; break;
                     case "Dark": reward = "gacha2"; break;
                     case "Bug": reward = "honey"; break;
                     case "Poison": reward = "mushroom"; break;
-                    case "Flying": reward = "rare"; break;
+                    case "Flying": reward = "rare2"; break;
                     case "Rock": reward = "nugget"; break;
                     case "Ground": reward = "eviolite"; break;
                     case "Steel": reward = "crown"; break;
@@ -12944,6 +12982,13 @@ function Safari() {
             reward = reward !== "nothing" ? (Math.random() < 0.4 ? "rock" : "nothing") : reward;
         }
         switch (reward) {
+            case "rare2": {
+                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 " + an(finishName(reward)) + " behind a bigger than average bush!</b>", safchan);
+                this.costumeEXP(player, "findrare");
+                reward = "rare";
+                amt = 2;
+            }
+            break;
             case "rare": {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found " + an(finishName(reward)) + " behind a bush!</b>", safchan);
                 this.costumeEXP(player, "findrare");
@@ -16716,10 +16761,10 @@ function Safari() {
                 src = sys.id(player.id);
                 p = getAvatarOff(player.id);
                 if (p && p.spiritDuels) {
-                    p.spiritDuels.rank = 0;
-                    p.spiritDuels.rankName = "Grunt";
+                    p.spiritDuels.rank = -1;
+                    p.spiritDuels.rankName = "Zoomer";
                     p.spiritDuels.team = "None";
-                    p.spiritDuels.exp = 0;
+                    p.spiritDuels.exp = -2000;
                     p.spiritDuels.box = [];
                     p.spiritDuels.skills = [];
                     p.spiritDuels.skillChoices = {};
@@ -16934,6 +16979,7 @@ function Safari() {
     this.assignDuelsTeams = function( src,data ) {
         //Takes everyone from signups and puts them in teams
         safari.events.spiritDuelsSignups = removeDuplicates(safari.events.spiritDuelsSignups).shuffle();
+        var sgnf = [];
         var i = 0, player, oldBox, name;
         for (var p in safari.events.spiritDuelsSignups) {
             name = idnumList.get(safari.events.spiritDuelsSignups[p]);
@@ -16949,6 +16995,21 @@ function Safari() {
             else {
                 oldBox = [19];
             }
+            if (player.spiritDuels.rank < 0) {
+                safari.notification(player, "You could not be assigned to a team because you are still a Zoomer!", "Spirit Duels");
+                continue;
+            }
+            sgnf.push({
+                "name": name,
+                "exp": parseInt(player.spiritDuels.exp, 10)
+            })
+        }
+        sgnf = sgnf.shuffle();
+        sgnf = sgnf.sort(function(a, b) {
+            return a.exp - b.exp;
+        });
+        for (var p = 0; p < sgnf.length; p++) {
+            player = getAvatarOff(sgnf[p].name)
             safari.events.spiritDuelsTeams[i].players.push(player.idnum);
             player.spiritDuels = {
                 rank: 0,
@@ -17050,9 +17111,11 @@ function Safari() {
             var t = idnumList.get(safari.events.spiritDuelsTeams[0].players[p]);
             player = getAvatarOff(t);
             safari.events.spiritDuelsSignups.push(player.idnum);
+            safari.events.spiritDuelsSignupsRanked[player.idnum+""] = player.spiritDuels.exp;
         }
         safari.events.spiritDuelsTeams[0].alive = false;
         safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.slice(1);
+        safari.events.spiritDuelsTeams = safari.events.spiritDuelsTeams.shuffle();
         safari.events.spiritDuelsTeams.sort( function(a, b) {
             return a.players.length - b.players.length;
         });
@@ -17131,7 +17194,7 @@ function Safari() {
                 if (j >= p.spiritDuels.box.length) {
                     j = 0;
                     if (enlistPerPlayer1 < 5) {
-                        continue;
+                        break;
                     }
                 }
             }
@@ -17156,7 +17219,7 @@ function Safari() {
                 if (j >= p.spiritDuels.box.length) {
                     j = 0;
                     if (enlistPerPlayer2 < 5) {
-                        continue;
+                        break;
                     }
                 }
             }
@@ -17448,6 +17511,7 @@ function Safari() {
         player.spiritDuels.exp += exp;
         var expNeeded;
         switch (player.spiritDuels.rankName) {
+            case "Zoomer": expNeeded = 0; break;
             case "Grunt": expNeeded = 2000; break;
             case "Ensign": expNeeded = 6000; break;
             case "Officer Trainee": expNeeded = 10000; break;
@@ -17469,9 +17533,11 @@ function Safari() {
             player.spiritDuels.rank++;
             player.spiritDuels.rankName = safari.events.spiritDuelsRanks[nextLevel];
             safaribot.sendMessage(sys.id(player.id), "You leveled up and became a " + player.spiritDuels.rankName + "!", safchan);
-            canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
-            player.spiritDuels.skillChoices = canLearn;
-            this.showSpiritSkill(sys.id(player.id),player);
+            if (player.spiritDuels.rank > 0) {
+                canLearn = JSON.parse(JSON.stringify(safari.events.spiritDuelsSkills))[player.spiritDuels.rankName].shuffle().slice(0, 3);
+                player.spiritDuels.skillChoices = canLearn;
+                this.showSpiritSkill(sys.id(player.id),player);
+            }
         }
         this.saveGame(player);
         return;
@@ -17661,10 +17727,10 @@ function Safari() {
                 box: []
             }
         }
-        player.spiritDuels.rank = 0;
-        player.spiritDuels.rankName = "Grunt";
+        player.spiritDuels.rank = -1;
+        player.spiritDuels.rankName = "Zoomer";
         player.spiritDuels.team = "Unemployed";
-        player.spiritDuels.exp = 0;
+        player.spiritDuels.exp = -2000;
         player.spiritDuels.skills = [];
         player.spiritDuels.skillChoices = {};
         player.balls.spirit = Math.max(player.balls.spirit, 5);
@@ -17701,7 +17767,7 @@ function Safari() {
                 j++;
                 if (j >= p.spiritDuels.box.length) {
                     if (enlistPerPlayer1 < 5) {
-                        continue;
+                        break;
                     }
                     j = 0;
                 }
@@ -19145,7 +19211,7 @@ function Safari() {
             challengeRequests2.push(input);
 
             safaribot.sendMessage(src, "You and " + ally.toCorrectCase() + " challenged " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
-            safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
+            safaribot.sendMessage(sys.id(ally), name.toCorrectCase() + " wants to team up with you to battle " + opp1.toCorrectCase() + " and " + opp2.toCorrectCase() + " in a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp1), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp2.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendMessage(sys.id(opp2), name.toCorrectCase() + " and " + ally.toCorrectCase() + " challenged you and " + opp1.toCorrectCase() + " to a Tag Battle!", safchan);
             safaribot.sendHtmlMessage(sys.id(ally), "Type " + link("/challenge3 accept") + " to accept or " + link("/challenge3 abort") + " to reject!", safchan);
@@ -19926,7 +19992,7 @@ function Safari() {
 
             this.biasNPC = player2.bias;
         } else {
-            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, player2.cherished);
+            this.team2 = this.originalTeam2 = this.buildTeam(this.name2, player2.party, player2.cherished, player2.helds);
         }
         
         if (opt) {
@@ -22001,11 +22067,20 @@ function Safari() {
                         this.p1PickedTeam = this.p1PickedTeam.slice(this.p1PickedTeam.length - size);
                     }
                 } else if (isP2) {
-                    this.p2PickedTeam = picked;
+                    this.p2PickedTeam = removeDuplicates(this.p2PickedTeam.concat(picked));
+                    if (this.p2PickedTeam.length > size) {
+                        this.p2PickedTeam = this.p2PickedTeam.slice(this.p2PickedTeam.length - size);
+                    }
                 } else if (isP3) {
-                    this.p3PickedTeam = picked;
+                    this.p3PickedTeam = removeDuplicates(this.p3PickedTeam.concat(picked));
+                    if (this.p3PickedTeam.length > size) {
+                        this.p3PickedTeam = this.p3PickedTeam.slice(this.p3PickedTeam.length - size);
+                    }
                 } else if (isP4) {
-                    this.p4PickedTeam = picked;
+                    this.p4PickedTeam = removeDuplicates(this.p4PickedTeam.concat(picked));
+                    if (this.p4PickedTeam.length > size) {
+                        this.p4PickedTeam = this.p4PickedTeam.slice(this.p4PickedTeam.length - size);
+                    }
                 }
                 this.sendMessage(name, "You have chosen " + readable(picked.map(function(x) { return poke(team[x].id); })) + " for this battle!");
                 
@@ -23667,9 +23742,9 @@ function Safari() {
                 } else {
                     held = helds[t];
                 }
-                if (h == 1) {
+                if (parseInt(held, 10) == 1) {
                     held = "oran";
-                } else if (h == 11) {
+                } else if (parseInt(held, 10) == 11) {
                     held = "miracle";
                 }
             }
@@ -26572,6 +26647,7 @@ function Safari() {
                 quest.requests = request;
                 quest.reward = Math.round(reward * (difficultBonus + perkBonus));
                 quest.deadline = now() + hours(deadlineDays * 24);
+                safari.clearQuestNotifications(player, "Collector");
                 this.saveGame(player);
 
 
@@ -26704,6 +26780,7 @@ function Safari() {
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Collector|||Gave " + readable(quest.requests.map(poke)) + "|||Received $" + addComma(payout) + kept + theft + "\n");
                 player.records.collectorEarnings += payout;
                 player.records.collectorGiven += quest.requests.length;
+                safari.clearQuestNotifications(player, "Collector");
                 this.missionProgress(player, "collector", quest.requests.join(","), 1, { price: payout, amount: quest.requests.length });
                 this.addToMonthlyLeaderboards(player.id, "collectorEarnings", payout);
                 quest.reward = 0;
@@ -26759,6 +26836,11 @@ function Safari() {
             return;
         }
 
+        var codeResearch = {
+            "sunshard": "We're discovering ways this could be used to unlock potential abilities within certain Pokémon!",
+            "moonshard": "We're discovering ways this could be used to activate the abilities that Pokémon have unlocked!"
+        };
+
         if (!data[0]) {
             //Feel free to change these messages and the ones below if you get a better idea
             var typeResearch = {
@@ -26811,6 +26893,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Pick a photo that has Great or better quality with " + link("/quest scientist:photo:", null, true) + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -26904,7 +26987,10 @@ function Safari() {
             else {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that photo.", safchan);
             }
-        } else {
+        } else if (codeResearch.hasOwnProperty(data[0].toLowerCase())) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: " + codeResearch[data[0].toLowerCase()], safchan);
+        }
+        else {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that.", safchan);
         }
     };
@@ -27141,6 +27227,7 @@ function Safari() {
         safari.toRecentQuests(player, "arena");
         player.notificationData.lastArenaParty = [].concat(player.party);
         player.notificationData.arenaWaiting = true;
+        safari.clearQuestNotifications(player, "Arena");
         player.notificationData.lastArenaTrainer = opt;
         this.saveGame(player);
     };
@@ -27426,6 +27513,7 @@ function Safari() {
                 safari.missionProgress(player, "tower", count, 1, {mono: m, unique: u, lowBST: passed});
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
                 player.notificationData.towerWaiting = true;
+                safari.clearQuestNotifications(player, "Tower");
                 if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "" && safari.satisfiesTowerTrouble(src, player.party)) {
                     if (!(safari.events.towerTroubleData.players.hasOwnProperty(player.idnum+""))) {
                         safari.events.towerTroubleData.players[player.idnum+""] = 0;
@@ -29674,6 +29762,7 @@ function Safari() {
         safari.toRecentQuests(player, "league");
         player.notificationData.leagueWaiting = true;
         player.notificationData.lastLeagueParty = [].concat(player.party);
+        safari.clearQuestNotifications(player, "League");
         safari.saveGame(player);
         currentBattles.push(battle);
     };
@@ -30783,7 +30872,7 @@ function Safari() {
                 atkm = safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p));
                 defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
                 hitCounter = false;
-                if ((((defm * 100) / atkm) * 0.01) < 4 && (i * 0.5 < maxLoop)) {
+                if (((((defm * 100) / atkm) * 0.01) < 4 && (i * 0.5 < maxLoop)) && (chance(0.65))) {
                     continue;
                 }
                 if ((((defm * 100) / atkm) * 0.01) < 2) {
@@ -32121,6 +32210,11 @@ function Safari() {
             }
             player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 3.5)) * 0.06) - player.deluxeBait.rares.rate, 0.1);
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
+            if (aggregateScore < 95) {
+                player.deluxeBait.inedible = Math.min(((100 - aggregateScore) * 0.01) + 0.01, 0.5);
+            } else {
+                player.deluxeBait.inedible = 0;
+            }
             g = giveStuff(player, toStuffObj(amtGiven + "@deluxe"));
             safari.saveGame(player);
 
@@ -32129,6 +32223,9 @@ function Safari() {
             this.msg(player.id, "- Commons (" + toFixed(player.deluxeBait.commons.rate, 3) + "%): " + player.deluxeBait.commons.list.map(function(x) { return poke(x); }).join(", "));
             this.msg(player.id, "- Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "));
             this.msg(player.id, "- Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "));
+            if (player.deluxeBait.inedible > 0) {
+                this.msg(player.id, "- Somewhat inedible (" + toFixed(player.deluxeBait.inedible, 5) + "%)");
+            }
         }
         this.finished = true;
         this.msgAll("");
@@ -38058,6 +38155,7 @@ function Safari() {
         safari.toRecentQuests(player, "daycare");
         if (player.notificationData) {
             player.notificationData.daycareWaiting = true;
+            safari.clearQuestNotifications(player, "Daycare");
         }
 
         if (mode == "") {
@@ -45235,6 +45333,7 @@ function Safari() {
         permObj.add("dumps2", JSON.stringify(safari.dataDumps2));
         permObj.add("celebrityPKs", JSON.stringify(celebrityPKs));
         permObj.add("recentPlayers", JSON.stringify(recentPlayers));
+        permObj.add("globalWildItems", JSON.stringify(globalWildItems));
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
                 source = POglobal.plugins[i].source;
@@ -45719,7 +45818,9 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "You don't have any Deluxe Baits to sell!", safchan);
                     return true;
                 }
-                var cost = amt * 200;
+                var value = player.deluxeBait.rares.rate || 0.01;
+                value = Math.round(25 + ((value + 0.5) * 10) + (Math.max((value + 1.5) * 7)));
+                var cost = amt * value;
                 if (commandData !== "confirm") {
                     safaribot.sendHtmlMessage(src, "You can sell your " + plural(amt, "Deluxe Bait") + " for a total of $" + cost + "!", safchan);
                     safaribot.sendHtmlMessage(src, "Type " + link("/selldeluxe confirm", false, true) + " to confirm it.", safchan);
@@ -50057,6 +50158,32 @@ function Safari() {
                 }
                 return true;
             }
+            if (command === "loadwilditems" || command === "loadwilditem") {
+                var data = globalWildItems ? data : {};
+                var url = commandData === "*" ? (permObj.get("wilditemsurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading Wild Items from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            data = JSON.parse(resp);
+                            permObj.add("wilditemsurl", url);
+                            globalWildItems = data;
+                            safaribot.sendMessage(src, "Wild Items successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            safaribot.sendMessage(src, "Couldn't load Wild Items from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    trialsData = cThemes;
+                    safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
             if (command === "loadspiritduels" || command === "loadspiritduel") {
                 var cThemes = {};
                 var url = commandData === "*" ? (permObj.get("duelsurl") || commandData) : commandData;
@@ -50658,6 +50785,7 @@ function Safari() {
         safari.dataDumps = parseFromPerm("dumps", {});
         safari.dataDumps2 = parseFromPerm("dumps2", {});
         recentPlayers = parseFromPerm("recentPlayers", {});
+        globalWildItems = parseFromPerm("globalWildItems", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
