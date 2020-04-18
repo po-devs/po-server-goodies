@@ -222,6 +222,8 @@ function Safari() {
             platinum: 0,
             deluxe: 0,
             lucky: 0,
+            moonshard: 0,
+            sunshard: 0,
             dummy: 0,
             dummy2: 0,
             dummy3: 0
@@ -9918,7 +9920,7 @@ function Safari() {
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew", "materia", "fragment"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
         var line6 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "cherry", "fossil", "coupon", "egg", "bright"];
-        var line7 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "gem",  "stick", "rock", "lucky", "easteregg"];
+        var line7 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "moonshard", "sunshard", "gem",  "stick", "rock", "lucky", "easteregg"];
         var line8 = ["mega", "spray", "burn", "form", "mail", "celebrityTicket", "crystal", "scale", "mushroom", "brush", "philosopher", "ash", "soda", "cookie"];
 
         if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
@@ -18076,7 +18078,7 @@ function Safari() {
     this.getQuizPrizes = function(src) {
         var rew = [];
         if ((safari.events.hiddenQuizData.currentID + 1) % 100 === 50) {
-            rew = ["@bignugget,@crystal,@mega", "@nugget,@cookie,@rare", "@stardust,@gacha,@dust"]
+            rew = ["@cometshard,5@cookie,3@rare", "@nugget,@cookie,@rare", "@stardust,@gacha,@dust"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 100 === 0) {
             rew = ["@scale,@spray,@prima", "@cherry,@ampere,@pack", "@silver,@egg,@safari"]
@@ -18084,11 +18086,17 @@ function Safari() {
         else if ((safari.events.hiddenQuizData.currentID + 1) % 31 === 0) {
             rew = ["5@mega", "2@mega", "5@rare"]
         }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 55 === 0) {
+            rew = ["3@entry", "@entry", "@pearl"]
+        }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 24 === 0) {
             rew = ["2@mushroom", "6@cookie", "@soda"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 43 === 0) {
             rew = ["2@crystal", "2@ampere", "2@silver"]
+        }
+        else if ((safari.events.hiddenQuizData.currentID + 1) % 20 === 0) {
+            rew = ["@entry", "3@rare", "@rare"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 10 === 0) {
             rew = ["10@rare", "3@rare", "@rare"]
@@ -18097,19 +18105,19 @@ function Safari() {
             rew = ["3@golden", "@golden", "2@silver"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 1) {
-            rew = ["@mega", "@rare", "100@dust"]
+            rew = ["@mega", "@rare", "150@dust"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 2) {
             rew = ["25@hdew", "4@egg", "@egg"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 3) {
-            rew = ["35@easteregg", "7@easteregg", "@easteregg"]
+            rew = ["5@stardust", "@bigpearl", "@pearl"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 6 === 4) {
             rew = ["@mega", "2@stardust", "3@pearl"]
         }
         else {
-            rew = ["25@easteregg", "5@easteregg", "2@easteregg"]
+            rew = ["3@rare", "@rare", "100@dust"]
         }
         if (src) {
             var out = ("1st: " + translateStuff(rew[0]) + ", 2nd: " + translateStuff(rew[1]) + ", 3rd: " + translateStuff(rew[2]));
