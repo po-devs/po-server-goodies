@@ -8983,7 +8983,7 @@ function Safari() {
         safaribot.sendMessage(src, "You threw a Pokéblock! You now have " + plural(player.balls.pokeblock, "Pokéblock") + "!", safchan);
         this.saveGame(player);
 
-        safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentPokemon) + " a Pokéblock!", "#438ed9"), safchan);
+        safaribot.sendHtmlAll(toColor(sys.name(src) + " is feeding the " + poke(currentDisplay) + " a Pokéblock!", "#438ed9"), safchan);
         currentThrows = getMaxThrows(currentPokemon, currentPokemonCount, (typeof currentPokemon == "string" ? true : false), throwAttempts);
     };
 
@@ -18371,9 +18371,25 @@ function Safari() {
             out.type2 = type2(id);
             out.proc = 50;
             out.name = poke(id);
+            return out;
         }
-        for (var j = 0; j < 3; j++) {
-
+        var j = 0, k = 0; nextMon;
+        while (this.maxRaid.raidMons.length < 3) {
+            nextMon = this.maxRaid.weeklyMons.random();
+            k = 0;
+            while (this.maxRaid.raidMons.contains(nextMon)) {
+                nextMon = this.maxRaid.weeklyMons.random();
+                k++;
+                if (k > 1000) {
+                    break;
+                }
+            }
+            j++;
+            if (j > 100) {
+                break;
+            }
+            var newMon = newRaidMon(nextMon);
+            this.maxRaid.raidMons.push(newMon);
         }
     };
     this.createPlayerRaider = function(id, owner) {
@@ -18384,7 +18400,7 @@ function Safari() {
         out.atk = Math.round(Math.max(getStatsNamed(id)["Attack"], getStatsNamed(id)["Special Attack"]) * 2.35);
         out.def = Math.round(Math.max(getStatsNamed(id)["Defense"], getStatsNamed(id)["Special Defense"]) * 2.35);
         out.support = Math.round((Math.min(getStatsNamed(id)["Defense"], getStatsNamed(id)["Special Defense"]) + Math.min(getStatsNamed(id)["Attack"], getStatsNamed(id)["Special Attack"])) * 1.55);
-        out.speed = getStatsNamed(id)["Speed"] * 5;
+        out.speed = getStatsNamed(id)["Speed"] * 4;
         out.boosts = {
             "atk": 0,
             "def": 0,
@@ -18498,6 +18514,8 @@ function Safari() {
             raider = this.maxRaid.playerMons[i];
             raider.supportStat = raider.support + raider.boosts.spt;
             raider.moves = this.generateRaiderMoves(raider);
+            raider.selected = 0;
+            raider.targeted = 0;
         }
     };
     this.raiderUseMove = function(mon) {
@@ -19433,7 +19451,7 @@ function Safari() {
         }
         
     };
-    this.watchBattle = function(src, data) {
+    this.watchBattle = function(src, data, soft) {
         var name = sys.name(src);
         for (b in currentBattles) {
             battle = currentBattles[b];
@@ -19441,7 +19459,7 @@ function Safari() {
                 continue;
             }
             if (data.toLowerCase() == battle.name1.toLowerCase() || data.toLowerCase() == battle.name2.toLowerCase()) {
-                if (battle.cantWatch && !SESSION.channels(safchan).isChannelAdmin(src)) {
+                if (battle.cantWatch && (!SESSION.channels(safchan).isChannelAdmin(src) || (soft))) {
                     safaribot.sendMessage(src, "You cannot watch/unwatch this battle!", safchan);
                     return;
                 }
@@ -26935,7 +26953,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Pick a photo that has Great or better quality with " + link("/quest scientist:photo:", null, true) + ".", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
+            safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + " or " + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -46124,6 +46142,10 @@ function Safari() {
                 } else {
                     safari.watchBattle(src, commandData);
                 }
+                return true;
+            }
+            if (command === "softwatch") {
+                safari.watchBattle(src, commandData, true);
                 return true;
             }
             if (command === "watchpyr") {
