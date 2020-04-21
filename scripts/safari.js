@@ -38654,19 +38654,18 @@ function Safari() {
     };
     this.dayCarePlantBerry = function(src, player, data) {
         var pokesList = [];
+        data = data.split(":");
+        var mon = data[0], hitMon = null;
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
                 pokesList.push(this.daycarePokemon[t]);
             }
+            if (getInputPokemon(mon).num == this.daycarePokemon[t].id) {
+                hitMon = this.daycarePokemon[t];
+            }
         }
         if (pokesList.length === 0) {
             daycarebot.sendHtmlMessage(src, "You do not have any Pokémon in the Daycare! Type " + link("/daycare dropoff:", false, true) + " to add one!", safchan);
-            return false;
-        }
-        data = data.split(":");
-        var mon = data[0];
-        if (!(pokesList.contains(poke(getInputPokemon(mon).num)))) {
-            daycarebot.sendHtmlMessage(src, "You do not have any Pokémon " + mon + " in the Daycare! Type " + link("/daycare dropoff:" + mon, false, true) + " to add one!", safchan);
             return false;
         }
         var gardeners = [];
@@ -38676,29 +38675,32 @@ function Safari() {
                 gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
             }
         }
-        if (gardeners.length === 0) {
-            daycarebot.sendHtmlMessage(src, "None of your Pokémon are growing berries! Type " + link("/daycare berry:", "/daycare berry:[pokemon]:[berry]", true) + " to give your Pokémon a berry!", safchan);
-            return false;
-        } else {
-            for (var i = 0; i < gardeners.length; i++) {
-                var gData = gardeners[i];
-                var pokeName = gData[0];
-                var pokemon = gData[1];
-                if (pokemon.berry.time > now()) {
-                    daycarebot.sendMessage(src, "Come back for your " + pokeName + "'s" + plural("", itemAlias(pokemon.berry.name, false, true)) + " in about " + timeLeftString(pokemon.berry.time) + "!", safchan);
-                } else {
-                    daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
-                    var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
-                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
-                    pokemon.berry = null;
-                    this.saveGame(player);
-                    safari.saveDaycare();
+        if (hitMon === null) {
+            if (gardeners.length === 0) {
+                daycarebot.sendHtmlMessage(src, "None of your Pokémon are growing berries! Type " + link("/daycare berry:", "/daycare berry:[pokemon]:[berry]", true) + " to give your Pokémon a berry!", safchan);
+                return false;
+            } else {
+                for (var i = 0; i < gardeners.length; i++) {
+                    var gData = gardeners[i];
+                    var pokeName = gData[0];
+                    var pokemon = gData[1];
+                    if (pokemon.berry.time > now()) {
+                        daycarebot.sendMessage(src, "Come back for your " + pokeName + "'s" + plural("", itemAlias(pokemon.berry.name, false, true)) + " in about " + timeLeftString(pokemon.berry.time) + "!", safchan);
+                    } else {
+                        daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
+                        var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
+                        daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
+                        pokemon.berry = null;
+                        this.saveGame(player);
+                        safari.saveDaycare();
+                    }
                 }
             }
+            return false;
         }
-        mon = poke(getInputPokemon(mon).num);
+        mon = poke(hitMon.id + (hitMon.shiny ? "" : 0));
         if (data.length < 1) {
-            daycarebot.sendHtmlMessage(src, "Which berry would you like your Pokémon to grow?", safchan);
+            daycarebot.sendHtmlMessage(src, "Which berry would you like your Pokémon to grow? " + link("/daycare berry:" + mon + ":", "/daycare berry:[pokemon]:[berry]", true), safchan);
             return false;
         }
         var berryName = itemAlias(data[1], true, true);
@@ -38716,18 +38718,15 @@ function Safari() {
             return false;
         }
         var gardener = null, pokemon = null;
-        for (var i = 0; i < pokesList.length; i++) {
-            pokemon = pokesList[i];
-            if ((pokemon.berry === undefined || pokemon.berry === null) && (poke(pokemon.id) == mon)) {
-                var harvest = this.getDayCareBerryHarvestData(pokemon.id, berry);
-                pokemon.berry = {
-                    name: berry,
-                    amount: harvest.amount,
-                    time: harvest.time
-                };
-                gardener = (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
-                break;
-            }
+        pokemon = hitMon;
+        if ((pokemon.berry === undefined || pokemon.berry === null) && (poke(pokemon.id) == mon)) {
+            var harvest = this.getDayCareBerryHarvestData(pokemon.id, berry);
+            pokemon.berry = {
+                name: berry,
+                amount: harvest.amount,
+                time: harvest.time
+            };
+            gardener = (pokemon.shiny ? "Shiny " : "") + poke(pokemon.id);
         }
         if (gardener !== null) {
             player.balls[berry] -= 1;
@@ -47963,7 +47962,7 @@ function Safari() {
                 return true;
             }
             if (command === "forcedaycarestep") {
-                safari.dayCareStep(src, parseInt(commandData, 10));
+                safari.forceDayCareStep(src, parseInt(commandData, 10));
                 return true;
             }
             if (command === "daycarefeature") {
