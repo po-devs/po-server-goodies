@@ -38753,7 +38753,7 @@ function Safari() {
         }
         return i;
     };
-    this.getDayCareItem = function(id, hearts) {
+    this.getDayCareItem = function(id, hearts, area) {
         var failChance;
         if (hearts < 100) {
             failChance = ((300 - hearts) * 0.33) * 0.01;
@@ -38921,6 +38921,26 @@ function Safari() {
             }
             apcamount = (chance(0.5) ? 2 : 1);
             hdewamount = 5;
+        }
+        if (area == "grotto") {
+            if (box["grnapricorn"]) {
+                box["grnapricorn"] += 2;
+                box["grnapricorn"] *= 2;
+            }
+        }
+        if (area == "jungle") {
+            if (!box["hdew"]) {
+                box["hdew"] = 0;
+            }
+            box["hdew"] += 5;
+            box["hdew"] *= 1.2;
+        }
+        if (area == "beach") {
+            if (!box["pearl"]) {
+                box["pearl"] = 0;
+            }
+            box["pearl"] += 2;
+            box["pearl"] *= 1.5;
         }
         if (hasType(id, "Grass")) {
             apcamount = Math.floor(apcamount * (1 + Math.random()));
