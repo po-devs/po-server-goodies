@@ -39739,13 +39739,13 @@ function Safari() {
                 }
             }
             else if (c === "water") {
-                if (((chance(0.01) && (chance(0.15))) || (full && chance(0.2) && chance(0.01))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 4)) {
+                if (((chance(0.01) && (chance(0.5))) || (full && chance(0.01))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 4)) {
                     this.daycareRegions.jungle[t] = "";
                 }
-                else if ((chance(0.02) || (full && chance(0.1))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 3)) {
+                else if ((chance(0.02) || (full && chance(0.2))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 3)) {
                     this.daycareRegions.jungle[t] = "";
                 }
-                else if ((chance(0.05) || (full && chance(0.08))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 2)) {
+                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 2)) {
                     this.daycareRegions.jungle[t] = "";
                 }
                 else {
@@ -39784,7 +39784,7 @@ function Safari() {
                 }
                 if (featureCount.water < maxFeaturesJungle.water) {
                     var amt = countDuplicates(this.getNearbyFeatures2(t, "jungle"), "water");
-                    if ((amt < 6 || (amt < 7 && chance(0.5))) && (amt >= 2)) {
+                    if (amt < 6 || (amt < 7 && chance(0.5))) {
                         if ((this.getNearbyFeatures(t, "jungle").contains("water") && (chance(0.6) && full)) || (chance(0.01))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
