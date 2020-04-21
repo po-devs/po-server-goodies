@@ -38486,7 +38486,7 @@ function Safari() {
             return false;
         }
         if (myPokes.contains(pokemon.num)) {
-            daycarebot.sendMessage(src, "You already a " + poke(pokemon.num) + " in the Daycare! Try adding another Pokémon!", safchan);
+            daycarebot.sendMessage(src, "You already have a " + poke(pokemon.num) + " in the Daycare! Try adding another Pokémon!", safchan);
             return false;
         }
         if (isMega(pokemon.num)) {
