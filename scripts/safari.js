@@ -38663,42 +38663,50 @@ function Safari() {
             daycarebot.sendHtmlMessage(src, "You do not have any Pokémon in the Daycare! Type " + link("/daycare dropoff:", false, true) + " to add one!", safchan);
             return false;
         }
-        if (data === "") {
-            var gardeners = [];
-            for (var i = 0; i < pokesList.length; i++) {
-                pokemon = pokesList[i];
-                if (pokemon.berry !== undefined && pokemon.berry !== null) {
-                    gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
-                    break;
-                }
-            }
-            if (gardeners.length === 0) {
-                daycarebot.sendHtmlMessage(src, "None of your Pokémon are growing berries! Type " + link("/daycare berry:", "/daycare berry:[berry]", true) + " to give your Pokémon a berry!", safchan);
-            } else {
-                for (var i = 0; i < gardeners.length; i++) {
-                    var gData = gardeners[i];
-                    var pokeName = gData[0];
-                    var pokemon = gData[1];
-                    if (pokemon.berry.time > now()) {
-                        daycarebot.sendMessage(src, "Come back for your " + pokeName + "'s" + plural("", itemAlias(pokemon.berry.name, false, true)) + " in about " + timeLeftString(pokemon.berry.time) + "!", safchan);
-                    } else {
-                        daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
-                        var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
-                        daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
-                        pokemon.berry = null;
-                        this.saveGame(player);
-                        safari.saveDaycare();
-                    }
-                }
-            }
+        data = data.split(":");
+        var mon = data[0];
+        if (!(pokesList.contains(poke(getInputPokemon(mon).num)))) {
+            daycarebot.sendHtmlMessage(src, "You do not have any Pokémon " + mon + " in the Daycare! Type " + link("/daycare dropoff:" + mon, false, true) + " to add one!", safchan);
             return false;
         }
-        var berryName = itemAlias(data, true, true);
+        var gardeners = [];
+        for (var i = 0; i < pokesList.length; i++) {
+            pokemon = pokesList[i];
+            if (pokemon.berry !== undefined && pokemon.berry !== null && getInputPokemon(mon).num == getInputPokemon(pokesList[i].id).num) {
+                gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
+            }
+        }
+        if (gardeners.length === 0) {
+            daycarebot.sendHtmlMessage(src, "None of your Pokémon are growing berries! Type " + link("/daycare berry:", "/daycare berry:[pokemon]:[berry]", true) + " to give your Pokémon a berry!", safchan);
+            return false;
+        } else {
+            for (var i = 0; i < gardeners.length; i++) {
+                var gData = gardeners[i];
+                var pokeName = gData[0];
+                var pokemon = gData[1];
+                if (pokemon.berry.time > now()) {
+                    daycarebot.sendMessage(src, "Come back for your " + pokeName + "'s" + plural("", itemAlias(pokemon.berry.name, false, true)) + " in about " + timeLeftString(pokemon.berry.time) + "!", safchan);
+                } else {
+                    daycarebot.sendMessage(src, pokeName + " grew some berries for you!", safchan);
+                    var g = giveStuff(player, toStuffObj(pokemon.berry.amount + "@" + pokemon.berry.name));
+                    daycarebot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "#228B22"), safchan);                        
+                    pokemon.berry = null;
+                    this.saveGame(player);
+                    safari.saveDaycare();
+                }
+            }
+        }
+        mon = poke(getInputPokemon(mon).num);
+        if (data.length < 1) {
+            daycarebot.sendHtmlMessage(src, "Which berry would you like your Pokémon to grow?", safchan);
+            return false;
+        }
+        var berryName = itemAlias(data[1], true, true);
         if (typeof berryName !== "string" || berryName.indexOf(" ") === -1 || berryName.slice(berryName.lastIndexOf(" ") + 1) !== "Berry") {
-            daycarebot.sendHtmlMessage(src, berryName + " is not a berry! Type " + link("/daycare berry:", "/daycare berry:[berry]", true) + " to give your Pokémon a berry!", safchan);
+            daycarebot.sendHtmlMessage(src, berryName + " is not a berry! Type " + link("/daycare berry:" + mon + ":", "/daycare berry:[pokemon]:[berry]", true) + " to give your Pokémon a berry!", safchan);
             return false;
         }
-        var berry = itemAlias(data, false, false);
+        var berry = itemAlias(data[1], false, false);
         if (player.balls[berry] < 1) {
             daycarebot.sendMessage(src, "Sorry, but it doesn't appear that you have any" + plural("", berryName) + "!", safchan);
             return false;
@@ -38710,7 +38718,7 @@ function Safari() {
         var gardener = null, pokemon = null;
         for (var i = 0; i < pokesList.length; i++) {
             pokemon = pokesList[i];
-            if (pokemon.berry === undefined || pokemon.berry === null) {
+            if ((pokemon.berry === undefined || pokemon.berry === null) && (poke(pokemon.id) == mon)) {
                 var harvest = this.getDayCareBerryHarvestData(pokemon.id, berry);
                 pokemon.berry = {
                     name: berry,
