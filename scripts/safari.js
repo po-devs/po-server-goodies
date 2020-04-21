@@ -39739,13 +39739,13 @@ function Safari() {
                 }
             }
             else if (c === "water") {
-                if (((chance(0.01) && (chance(0.5))) || (full && chance(0.01))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 4)) {
+                if (((chance(0.01) && (chance(0.5))) || (full && chance(0.01))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 4)) {
                     this.daycareRegions.jungle[t] = "";
                 }
-                else if ((chance(0.02) || (full && chance(0.2))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 3)) {
+                else if ((chance(0.02) || (full && chance(0.2))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 3)) {
                     this.daycareRegions.jungle[t] = "";
                 }
-                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 2)) {
+                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "jungle"), "lilypad") < 2)) {
                     this.daycareRegions.jungle[t] = "";
                 }
                 else {
@@ -39764,7 +39764,7 @@ function Safari() {
         for (var t in this.daycareRegions.jungle) {
             c = this.daycareRegions.jungle[t];
             if (c === "") {
-                if (featureCount.grass < maxFeaturesGrotto.grass) {
+                if (featureCount.grass < maxFeaturesJungle.grass) {
                     if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "grass") >= 3 && (chance(0.6))) {
                         this.daycareRegions.jungle[t] = "grass";
                         featureCount.grass++;
@@ -39797,7 +39797,7 @@ function Safari() {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
-                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 4 && (chance(0.33))) {
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 4 && (chance(0.38))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
