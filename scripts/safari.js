@@ -39936,7 +39936,7 @@ function Safari() {
     this.forceDayCareStep = function(src, level) {
         level = level ? level : 0;
         level = parseInt(level, 10);
-        level = Math.max(level, 2);
+        level = Math.min(level, 2);
         this.dayCareStep(level);
         daycarebot.sendMessage(src, "You forced a daycare step at level " + level + "!", safchan);
         return true;
