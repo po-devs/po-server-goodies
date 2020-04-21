@@ -38351,7 +38351,7 @@ function Safari() {
                 m.push("«" + link("/daycare interact:" + pokemon.uid + ":feed", "Feed") + "»");
             }
             if (pokemon.berry === undefined || pokemon.berry === null) {
-                m.push("«" + link("/daycare berry", "Berry") + "»");
+                m.push("«" + link("/daycare berry:" + poke(pokemon.id), "Berry") + "»");
             }
             if (m.length > 0) {
                 daycarebot.sendHtmlMessage(src, m.join(" "), safchan);
@@ -38671,7 +38671,7 @@ function Safari() {
         var gardeners = [];
         for (var i = 0; i < pokesList.length; i++) {
             pokemon = pokesList[i];
-            if (pokemon.berry !== undefined && pokemon.berry !== null && getInputPokemon(mon).num == getInputPokemon(pokesList[i].id).num) {
+            if (pokemon.berry !== undefined && pokemon.berry !== null && (getInputPokemon(mon).num == pokesList[i].id)) {
                 gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
             }
         }
@@ -39982,7 +39982,7 @@ function Safari() {
         return true;
     };
     this.getFeatureAt = function(pos, area) {
-        if (area !== "grotto") {
+        if (!(["grotto", "beach", "jungle"].contains(area))) {
             return "";
         }
         return (this.daycareRegions[area][pos] || "");
