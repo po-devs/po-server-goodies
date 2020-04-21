@@ -39659,7 +39659,7 @@ function Safari() {
         for (var t in this.daycareRegions.beach) {
             c = this.daycareRegions.beach[t];
             hold = this.getNearbyFeatures2(t, "beach");
-            if (countDuplicates(hold, "water") * 3 + countDuplicates(hold, "sand") >= 8) {
+            if (countDuplicates(hold, "water") * 6 + countDuplicates(hold, "sand") >= 8) {
                 if (c == "flowers") {
                     this.daycareRegions.beach[t] = "sandflowers";
                 }
