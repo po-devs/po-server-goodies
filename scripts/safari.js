@@ -38201,7 +38201,7 @@ function Safari() {
             case "view": this.printDayCare(src, c2); break;
             case "interact": this.dayCareInteract(src, player, c2, c3); break;
             case "help": this.dayCareHelp(src); break;
-            case "berry": this.dayCarePlantBerry(src, player, cdata.slice(1).join("")); break;
+            case "berry": this.dayCarePlantBerry(src, player, cdata.slice(1).join(":")); break;
             default: 
                 daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc berry:", "Berry") + ", and " + link("/dc help", "Help") + "!", safchan);
                 var isAtRegion = {
@@ -38660,7 +38660,7 @@ function Safari() {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
                 pokesList.push(this.daycarePokemon[t]);
             }
-            if (getInputPokemon(mon).num == this.daycarePokemon[t].id) {
+            if (parseInt(getInputPokemon(mon).num, 10) == parseInt(this.daycarePokemon[t].id, 10)) {
                 hitMon = this.daycarePokemon[t];
             }
         }
@@ -38671,7 +38671,7 @@ function Safari() {
         var gardeners = [];
         for (var i = 0; i < pokesList.length; i++) {
             pokemon = pokesList[i];
-            if (pokemon.berry !== undefined && pokemon.berry !== null && (getInputPokemon(mon).num == pokesList[i].id)) {
+            if (pokemon.berry !== undefined && pokemon.berry !== null) {
                 gardeners.push([(pokemon.shiny ? "Shiny " : "") + poke(pokemon.id), pokemon]);
             }
         }
@@ -38699,7 +38699,7 @@ function Safari() {
             return false;
         }
         mon = poke(hitMon.id + (hitMon.shiny ? "" : 0));
-        if (data.length < 1) {
+        if (data.length < 2) {
             daycarebot.sendHtmlMessage(src, "Which berry would you like your Pokémon to grow? " + link("/daycare berry:" + mon + ":", "/daycare berry:[pokemon]:[berry]", true), safchan);
             return false;
         }
