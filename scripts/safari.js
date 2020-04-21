@@ -18216,6 +18216,8 @@ function Safari() {
                 "players": {}
             }
         }
+        x = x.replace(">", "greater");
+        x = x.replace("<", "lower");
         safari.events.towerTroubleData.searchText = x;
         safari.events.towerTroubleData.searchLink = link("/find " + x, finalTitleMsg);
 
@@ -38209,13 +38211,13 @@ function Safari() {
                 };
                 for (var i = 0; i < myPokes.length; i++) {
                     if (isAtRegion.hasOwnProperty(myPokes[i].area)) {
-                        isAtRegion[myPokes[i].area].push(myPokes[i].name);
+                        isAtRegion[myPokes[i].area].push(poke(myPokes[i].id));
                     }
                 }
                 var m = "Regions: ";
-                m += link("/dc view:beach", "Beach") + " " + (isAtRegion.beach.length > 0 ? "[" + isAtRegion.beach.join(", ") + "]" : "");
-                m += link("/dc view:grotto", "Grotto") + " " + (isAtRegion.grotto.length > 0 ? "[" + isAtRegion.grotto.join(", ") + "]" : "");
-                m += link("/dc view:grotto", "Jungle") + " " + (isAtRegion.jungle.length > 0 ? "[" + isAtRegion.jungle.join(", ") + "]" : "");
+                m += link("/dc view:beach", "Beach") + " " + (isAtRegion.beach.length > 0 ? "[" + isAtRegion.beach.join(", ") + "] " : "");
+                m += link("/dc view:grotto", "Grotto") + " " + (isAtRegion.grotto.length > 0 ? "[" + isAtRegion.grotto.join(", ") + "] " : "");
+                m += link("/dc view:jungle", "Jungle") + " " + (isAtRegion.jungle.length > 0 ? "[" + isAtRegion.jungle.join(", ") + "] " : "");
                 daycarebot.sendHtmlMessage(src, m, safchan);
         }
     };
