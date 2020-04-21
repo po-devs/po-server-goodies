@@ -39982,7 +39982,7 @@ function Safari() {
         return true;
     };
     this.getFeatureAt = function(pos, area) {
-        if (area !== "grotto") {
+        if (!(["grotto", "beach", "jungle"].contains(area))) {
             return "";
         }
         return (this.daycareRegions[area][pos] || "");
