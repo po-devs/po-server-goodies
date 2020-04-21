@@ -986,9 +986,9 @@ function Safari() {
             starpiece: {name: "starpiece", fullName: "Star Piece", type: "valuables", icon: 134, price: 3000, aliases:["starpiece", "star piece"], tradable: true},
             nugget: {name: "nugget", fullName: "Nugget", type: "valuables", icon: 108, price: 4000, aliases:["nugget"], tradable: true},
             bignugget: {name: "bignugget", fullName: "Big Nugget", type: "valuables", icon: 269, price: 10000, aliases:["bignugget", "big nugget"], tradable: true},
-            cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "cshard", "cometshard"], tradable: true},
-            moonshard: {name: "moonshard", fullName: "Moon Shard", type: "valuables", icon: 271, price: 3000, aliases:["moonshard", "moon", "mshard"], tradable: true},
-            sunshard: {name: "sunshard", fullName: "Sun Shard", type: "valuables", icon: 271, price: 3000, aliases:["sunshard", "sun", "sshard"], tradable: true}
+            cometshard: {name: "cometshard", fullName: "Comet Shard", type: "valuables", icon: 271, price: 15000, aliases:["cometshard", "comet", "cshard", "comet shard"], tradable: true},
+            moonshard: {name: "moonshard", fullName: "Moon Shard", type: "valuables", icon: 271, price: 3000, aliases:["moonshard", "moon", "moon shard", "mshard"], tradable: true},
+            sunshard: {name: "sunshard", fullName: "Sun Shard", type: "valuables", icon: 271, price: 3000, aliases:["sunshard", "sun", "sun shard", "sshard"], tradable: true}
         };
     };
 
@@ -10883,6 +10883,7 @@ function Safari() {
             if ((!p) || (!(p.notificationData))) {
                 continue;
             }
+            hitAny = false;
             data = p.notificationData;
             if (data.towerWaiting && (!(safari.isBattling(p.id)))) {
                 if (p.quests.tower.cooldown < currentTime) {
@@ -10978,8 +10979,7 @@ function Safari() {
             safaribot.sendMessage(src, "Your Inbox is empty!", safchan);
             return;
         }
-        //TODO: Manage messages (clear/delete/keep as unread)
-        
+
         sys.sendMessage(src, "", safchan);
         safaribot.sendHtmlMessage(src, "<b>Your Inbox: </b>", safchan);
         for (var e = 0; e < box.length; e++) {
@@ -10999,7 +10999,7 @@ function Safari() {
         }
         player.inbox.push(msg + " --- [" + d + "]");
         player.unreadInbox.push(asRead ? false : true);
-        while (player.inbox.length > 30) {
+        while (player.inbox.length > 20) {
             player.inbox.shift();
             player.unreadInbox.shift();
         }
@@ -18093,6 +18093,9 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
         if (!player.hiddenQuiz) {
             player.hiddenQuiz = {};
         }
@@ -18354,7 +18357,7 @@ function Safari() {
             playerScores: {},
             recentPlayers: [],
             raidMons: [],
-            playerMons: []
+            playerMons: {}
         };
 
         var maxRaidMons = [];
@@ -18392,6 +18395,28 @@ function Safari() {
             this.maxRaid.raidMons.push(newMon);
         }
     };
+    this.joinMaxRaid = function(src, data) {
+        var player = getAvatar(src);
+        if (!(player)) {
+            return;
+        }
+        var idnum = player.idnum;
+        if (this.maxRaid.playerMons.hasOwnProperty(idnum+"")) {
+            //The player already has a Pokémon in max raids, don't let them put in another one.
+            safaribot.sendHtmlMessage(src, "You alread have a Pokémon in Max Raids!", safchan);
+            return;
+        }
+        var input = getInputPokemon(data);
+        if (!input.num) {
+            safaribot.sendHtmlMessage(src, "That's not a valid Pokémon!", safchan);
+            return;
+        }
+        var newMon = this.createPlayerRaider(input.num, player);
+        this.maxRaid.playerMons[idnum+""] = newMon;
+        if (!(this.maxRaid.playerScores.hasOwnProperty(idnum+""))) {
+            this.maxRaid.playerScores[idnum+""] = 0;
+        }
+    }
     this.createPlayerRaider = function(id, owner) {
         var out = {};
         out.maxhp = Math.round(getStatsNamed(id)["HP"] * 1.5) + 300;
@@ -18522,6 +18547,7 @@ function Safari() {
         var move = mon.moves[mon.selected];
         var target;
         var atkStat = mon.atk + mon.boosts.atk, defStat;
+        var dmg, eff;
         if (mon.targeted > -1) {
             target = this.maxRaid.raidMons[mon.targeted];
         } else {
@@ -18539,27 +18565,29 @@ function Safari() {
                 defStat -= target.boosts.def;
                 defStat *= 0.75;
             }
-            var dmg = move.pow + atkStat - defStat;
-            var eff = safari.checkEffective(move.type, "???", target.type1, target.type2, "???");
-            if (eff >= 2) {
-                dmg += 100;
-            }
-            if (eff >= 4) {
-                dmg += 100;
-            }
-            if (eff <= 0.5) {
-                dmg -= 100;
-            }
-            if (eff <= 0.25) {
-                dmg -= 100;
-            }
+            dmg = move.pow + atkStat - defStat;
+            eff = safari.checkEffective(move.type, "???", target.type1, target.type2, "???");
             if (move.type == mon.type1 || move.type == mon.type2) {
                 dmg += 50;
             }
+            if (eff >= 2) {
+                dmg = dmg * 1.2;
+            }
+            else if (eff >= 4) {
+                dmg = dmg * 1.4;
+            }
+            if (eff <= 0.5) {
+                dmg = dmg * 0.8;
+            }
+            else if (eff <= 0.25) {
+                dmg = dmg * 0.6;
+            }
 
             dmg = Math.max(Math.round(dmg), 0);
+            dmg = Math.min(target.hp, dmg);
             target.hp -= dmg;
             results.push("The " + target.name + " lost " + dmg + "HP!");
+            this.maxRaidScore(mon.ownernum, dmg);
 
             switch (move.effect) {
                 case "stun": 
@@ -18601,9 +18629,15 @@ function Safari() {
             mon.results = [];
             this.raiderUseMove(mon);
             if (mon.results.length > 0) {
-                this.notification(getAvatarOff(idnumList.get(mon.ownerNum)), mon.results.join(" "));
+                this.notification(getAvatarOff(idnumList.get(mon.ownerNum)), mon.results.join(" "), "Max Raid");
             }
         }
+    };
+    this.maxRaidScore = function(idnum, val) {
+        if (!(this.maxRaid.playerScores.hasOwnProperty(idnum+""))) {
+            this.maxRaid.playerScores[idnum+""] = 0;
+        }
+        this.maxRaid.playerScores[idnum+""] += val;
     };
 
     /* Celebrity Battles */
@@ -27101,7 +27135,7 @@ function Safari() {
                 if (!(player.notificationData.scientistWaiting)) {
                     continue;
                 }
-                amt = countDuplicates(player.box, randomNum);
+                amt = countDuplicates(player.pokemon, randomNum);
                 if (amt <= 0) {
                     continue;
                 }
@@ -38145,13 +38179,17 @@ function Safari() {
         if (cdata.length > 2) {
             c3 = cdata[2];
         }
+        var myPokes = [];
         for (var p in this.daycarePokemon) {
             if (this.daycarePokemon[p].area == "holding" && this.daycarePokemon[p].ownernum === player.idnum) {
                 daycarebot.sendHtmlMessage(src, "Your Pokémon " + poke(this.daycarePokemon[p].id) + " hasn't been attended to for a while, so we took it to holding!", safchan);
-                daycarebot.sendHtmlMessage(src, "To retrieve your Pokémon, use " + link("/daycare retrieve:" + poke(this.daycarePokemon[p].id)) + "!", safchan);
                 if (command !== "retrieve") {
+                    daycarebot.sendHtmlMessage(src, "To retrieve your Pokémon, use " + link("/daycare retrieve:" + poke(this.daycarePokemon[p].id)) + "!", safchan);
                     return false;
                 }
+            }
+            if (this.daycarePokemon[p].ownernum === player.idnum) {
+                myPokes.push(this.daycarePokemon[p]);
             }
         }
 
@@ -38162,7 +38200,23 @@ function Safari() {
             case "interact": this.dayCareInteract(src, player, c2, c3); break;
             case "help": this.dayCareHelp(src); break;
             case "berry": this.dayCarePlantBerry(src, player, cdata.slice(1).join("")); break;
-            default: daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc view", "View") + ", " + link("/dc berry:", "Berry") + ", and " + link("/dc help", "Help") + "!", safchan);
+            default: 
+                daycarebot.sendHtmlMessage(src, "Hey there! The commands for the Daycare are " + link("/dc dropoff:", "Dropoff", true) + ", " + link("/dc retrieve", "Retrieve") + ", " + link("/dc berry:", "Berry") + ", and " + link("/dc help", "Help") + "!", safchan);
+                var isAtRegion = {
+                    "beach": [],
+                    "grotto": [],
+                    "jungle": []
+                };
+                for (var i = 0; i < myPokes.length; i++) {
+                    if (isAtRegion.hasOwnProperty(myPokes[i].area)) {
+                        isAtRegion[myPokes[i].area].push(myPokes[i].name);
+                    }
+                }
+                var m = "Regions: ";
+                m += link("/dc view:beach", "Beach") + " " + (isAtRegion.beach.length > 0 ? "[" + isAtRegion.beach.join(", ") + "]" : "");
+                m += link("/dc view:grotto", "Grotto") + " " + (isAtRegion.grotto.length > 0 ? "[" + isAtRegion.grotto.join(", ") + "]" : "");
+                m += link("/dc view:grotto", "Jungle") + " " + (isAtRegion.jungle.length > 0 ? "[" + isAtRegion.jungle.join(", ") + "]" : "");
+                daycarebot.sendHtmlMessage(src, m, safchan);
         }
     };
     this.dayCareHelp = function(src) {
@@ -38399,11 +38453,16 @@ function Safari() {
         }
     };
     this.addToDayCare = function(src, player, cdata) {
+        var myAmt = 0, myPokes = [];
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
-                daycarebot.sendMessage(src, "You already have a Pokémon (" + poke(this.daycarePokemon[t].id) + ") in the Daycare!", safchan);
-                return false;
+                myAmt += 1;
+                myPokes.push(this.daycarePokemon[t].id);
             }
+        }
+        if (myAmt > 1) {
+            daycarebot.sendMessage(src, "You already have two Pokémon (" + poke(this.daycarePokemon[t].id) + ") in the Daycare! We cannot accept any more!", safchan);
+            return false;
         }
         if (cdata.length > 1) {
             pokemon = getInputPokemon(cdata[1]);
@@ -38422,6 +38481,10 @@ function Safari() {
         }
         if (player.party.length === 1 && player.party.contains(pokemon.id)) {
             daycarebot.sendMessage(src, "You can't drop off your only Pokémon!", safchan);
+            return false;
+        }
+        if (myPokes.contains(pokemon.num)) {
+            daycarebot.sendMessage(src, "You already a " + poke(pokemon.num) + " in the Daycare! Try adding another Pokémon!", safchan);
             return false;
         }
         if (isMega(pokemon.num)) {
@@ -38461,6 +38524,7 @@ function Safari() {
                 if (typeof pokemon.id == "string") {
                     p.shiny = true;
                 }
+                p.name = poke(p.id + (p.shiny ? "" : 0));
                 this.moveDayCarePokemon(p, p.pos);
                 safari.saveDaycare();
                 this.removePokemon(src, pokemon.id);
@@ -38681,15 +38745,11 @@ function Safari() {
         return i;
     };
     this.getDayCareItem = function(id, hearts) {
-        var failChance = 0.82;
-        if (hearts >= 100) {
-            failChance = 0.6;
-        }
-        else if (hearts >= 50) {
-            failChance = 0.7;
-        }
-        else if (hearts >= 24) {
-            failChance = 0.75;
+        var failChance;
+        if (hearts < 100) {
+            failChance = ((300 - hearts) * 0.33) * 0.01;
+        } else {
+            failChance = ((600 - hearts) * 0.12) * 0.01;
         }
         if (chance(failChance)) {
             return null;
@@ -38709,6 +38769,7 @@ function Safari() {
                 "gacha": 1,
                 "eviolite": 1,
                 "gem": 1,
+                "silver": 20,
                 "bignugget": 2,
             };
             apcamount = (chance(0.5) ? 20 : 15);
@@ -38728,6 +38789,7 @@ function Safari() {
                 "gacha": 3,
                 "eviolite": 3,
                 "gem": 2,
+                "silver": 15,
                 "bignugget": 1,
             };
             apcamount = (chance(0.5) ? 15 : 10);
@@ -38748,6 +38810,7 @@ function Safari() {
                 "gacha": 6,
                 "gem": 3,
                 "eviolite": 2,
+                "silver": 10,
                 "nugget": 2
             };
             apcamount = (chance(0.5) ? 9 : 7);
@@ -38767,6 +38830,7 @@ function Safari() {
                 "gacha": 10,
                 "gem": 9,
                 "stardust": 5,
+                "silver": 5,
                 "nugget": 3
             };
             apcamount = (chance(0.5) ? 7 : 5);
@@ -38856,32 +38920,38 @@ function Safari() {
             gachaamount++;
         }
         if (hasType(id, "Bug")) {
-            box["honey"] = 3;
+            box["honey"] = 5;
         }
         if (hasType(id, "Water")) {
-            box["water"] = 3;
+            box["water"] = 2;
             pearlamount++;
         }
         if (hasType(id, "Fire")) {
-            box["cookie"] = 3;
+            box["cookie"] = 9;
         }
         if (hasType(id, "Dragon")) {
             box["comet"] = 3;
         }
         if (hasType(id, "Ground")) {
-            box["stardust"] = 8;
+            box["stardust"] = 10;
         }
         if (hasType(id, "Rock")) {
             box["fossil"] = 2;
         }
         if (hasType(id, "Psychic")) {
-            box["pack"] = 2;
+            box["pack"] = 5;
+        }
+        if (hasType(id, "Flying")) {
+            if (!box["nugget"]) {
+                box["nugget"] = 0;
+            }
+            box["nugget"] += 2;
         }
         if (hasType(id, "Electric")) {
             box["battery"] = 3;
         }
         if (canLearnMove(id, 168)) {
-            box["silver"] = 15;
+            box["silver"] = 12;
         }
         if (canLearnMove(id, 168) && (hearts >= 100)) {
             if (!box["bignugget"]) {
@@ -39000,10 +39070,10 @@ function Safari() {
             if (inter2 == "water" && chance(0.7)) {
                 act = "splashing";
             }
-            else if (inter == "flowers" && chance(0.9)) {
+            else if ((inter == "flowers" || (inter == "sandflowers"))  && chance(0.9)) {
                 act = "flowers";
             }
-            else if (inter == "rock" && chance(0.8)) {
+            else if ((inter == "rock" || (inter == "sandgrass"))  && chance(0.8)) {
                 act = "rock";
             }
             else if (inter == "lilypad" && chance(0.75)) {
@@ -39018,7 +39088,7 @@ function Safari() {
             else if ((inter == "tree1" || inter2 == "tree2") && (chance(0.33))) {
                 act = "tree";
             }
-            else if (inter == "grass" && (chance(0.33))) {
+            else if ((inter == "grass" || (inter == "sandgrass")) && (chance(0.33))) {
                 act = "grass";
             }
             else if (chance(0.3)) {
@@ -39100,7 +39170,7 @@ function Safari() {
         }
         addh = 2 * (1 + addh) * Math.random();
         var mult = 1;
-        mult = (Math.min(((100 + pokemon.playhearts) / 130), 1) * 0.9875);
+        mult = (Math.min(((100 + pokemon.playhearts) / 135), 1) * 0.9875);
         pokemon.hearts = Math.max(Math.floor(4 * (pokemon.hearts + addh - (pokemon.hunger >= 20 ? 6 : pokemon.hunger > 15 ? 3 : 0)) * mult) * 0.25, 0);
         if (pokemon.playhearts > 0) {
             pokemon.playhearts = pokemon.playhearts - 0.07;
@@ -39170,6 +39240,26 @@ function Safari() {
             pos = this.getPosFromXY(tox, toy);
             if (this.validDayCareLocation(pokemon.id, pos, area)) {
                 if (!(area == "grotto" && tox < 4 && toy > 9)) {
+                    if (tox >= 12 && area == "grotto" && dx > 0) {
+                        pokemon.area = "jungle";
+                        tox = 1;
+                        pos = this.getPosFromXY(tox, toy);
+                    }
+                    if (tox <= 1 && area == "jungle" && dx < 0) {
+                        pokemon.area = "grotto";
+                        tox = 1;
+                        pos = this.getPosFromXY(tox, toy);
+                    }
+                    if (toy <= 1 && area == "grotto" && dy < 0) {
+                        pokemon.area = "beach";
+                        toy = 12;
+                        pos = this.getPosFromXY(tox, toy);
+                    }
+                    if (toy >= 12 && area == "beach" && dy > 0) {
+                        pokemon.area = "grotto";
+                        toy = 1;
+                        pos = this.getPosFromXY(tox, toy);
+                    }
                     this.moveDayCarePokemon(pokemon, pos);
                     return true;
                 }
@@ -39223,7 +39313,7 @@ function Safari() {
         //All the areas in the daycare are slightly changed.
         //This happens at the end of a contest, and at the end of a day cycle, with the latter being more drastic
 
-        var c;
+        var c, hold;
         var featureCount = {
             grass: 0,
             sprout: 0,
@@ -39233,8 +39323,8 @@ function Safari() {
             water: 0,
             lilypad: 0,
             flowers: 0
-        }
-        var maxFeatures = {
+        };
+        var maxFeaturesGrotto = {
             grass: 20,
             sprout: 9,
             tree: 5,
@@ -39243,13 +39333,19 @@ function Safari() {
             water: 20,
             lilypad: 4,
             flowers: 9
-        }
+        };
         if (!this.daycareRegions.grotto) {
             this.daycareRegions.grotto = {};
         }
+        if (!this.daycareRegions.beach) {
+            this.daycareRegions.beach = {};
+        }
+        if (!this.daycareRegions.jungle) {
+            this.daycareRegions.jungle = {};
+        }
         var val = "";
+        var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
         for (var i = 0; i < 12; i++) {
-            var letters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l"];
             for (var j = 0; j < letters.length; j++) {
                 val = (letters[j] + i);
                 if (!this.daycareRegions.grotto.hasOwnProperty(val)) {
@@ -39333,7 +39429,7 @@ function Safari() {
         for (var t in this.daycareRegions.grotto) {
             c = this.daycareRegions.grotto[t];
             if (c === "") {
-                if (featureCount.grass < maxFeatures.grass) {
+                if (featureCount.grass < maxFeaturesGrotto.grass) {
                     if (countDuplicates(this.getNearbyFeatures(t, "grotto"), "grass") >= 3 && (chance(0.6))) {
                         this.daycareRegions.grotto[t] = "grass";
                         featureCount.grass++;
@@ -39351,7 +39447,7 @@ function Safari() {
                         featureCount.grass++;
                     }
                 }
-                if (featureCount.water < maxFeatures.water) {
+                if (featureCount.water < maxFeaturesGrotto.water) {
                     if ((this.getNearbyFeatures(t, "grotto").contains("water") && (chance(0.5) && full)) || (chance(0.01))) {
                         this.daycareRegions.grotto[t] = "water";
                         featureCount.water++;
@@ -39369,33 +39465,33 @@ function Safari() {
                         featureCount.water++;
                     }
                 }
-                if (featureCount.rock < maxFeatures.rock) {
+                if (featureCount.rock < maxFeaturesGrotto.rock) {
                     if ((chance(0.03) || ((chance(0.08) && full)))) {
                         this.daycareRegions.grotto[t] = "rock";
                         featureCount.rock++;
                     }
                 }
-                if (featureCount.flowers < maxFeatures.flowers) {
+                if (featureCount.flowers < maxFeaturesGrotto.flowers) {
                     if (chance(0.05)) {
                         this.daycareRegions.grotto[t] = "flowers";
                         featureCount.flowers++;
                     }
                 }
-                if (featureCount.sprout < maxFeatures.sprout) {
+                if (featureCount.sprout < maxFeaturesGrotto.sprout) {
                     if (chance(0.075)) {
                         this.daycareRegions.grotto[t] = "sprout";
                         featureCount.sprout++;
                     }
                 }
             }
-            if (c === "water" && featureCount.lilypad < maxFeatures.lilypad) {
+            if (c === "water" && featureCount.lilypad < maxFeaturesGrotto.lilypad) {
                 if (chance(0.015) || (full && chance(0.04))) {
                     this.daycareRegions.grotto[t] = "lilypad";
                     featureCount.water--;
                     featureCount.lilypad++;
                 }
             }
-            else if (c === "lilypad" && featureCount.water < maxFeatures.water) {
+            else if (c === "lilypad" && featureCount.water < maxFeaturesGrotto.water) {
                 if (chance(0.05) || (full && chance(0.1))) {
                     this.daycareRegions.grotto[t] = "water";
                     featureCount.water++;
@@ -39403,7 +39499,7 @@ function Safari() {
                 }
             }
             else if (c === "sprout") {
-                if (chance(0.018) || (full && chance(0.042)) && featureCount.tree < maxFeatures.tree) {
+                if ((chance(0.018) || (full && chance(0.037))) && featureCount.tree < maxFeaturesGrotto.tree) {
                     if (chance(0.5)) {
                         this.daycareRegions.grotto[t] = "tree1";
                     }
@@ -39415,12 +39511,321 @@ function Safari() {
                 }
             }
             else if (c === "tree1" || c === "tree2") {
-                if (chance(0.01) || (full && chance(0.07)) && featureCount.bigtree < maxFeatures.bigtree) {
+                if (((chance(0.01) && (chance(0.6))) || (full && chance(0.07))) && featureCount.bigtree < maxFeaturesGrotto.bigtree) {
                     if (chance(0.5)) {
                         this.daycareRegions.grotto[t] = "bigtree";
+                        featureCount.bigtree++;
+                        featureCount.tree--;
                     }
+                }
+            }
+        }
+        featureCount = {
+            grass: 0,
+            sprout: 0,
+            tree: 0,
+            bigtree: 0,
+            rock: 0,
+            water: 0,
+            lilypad: 0,
+            flowers: 0,
+            sand: 0
+        };
+        var maxFeaturesBeach = {
+            grass: 6,
+            sprout: 0,
+            tree: 0,
+            bigtree: 0,
+            rock: 4,
+            water: 85,
+            lilypad: 0,
+            flowers: 5,
+            sand: 0
+        };
+        for (var i = 0; i < 12; i++) {
+            for (var j = 0; j < letters.length; j++) {
+                val = (letters[j] + i);
+                if ((i < 7 && j < 8) || (i < 10 && j < 5)) {
+                    this.daycareRegions.beach[val] = "water";
+                }
+                else if (!this.daycareRegions.beach.hasOwnProperty(val)) {
+                    this.daycareRegions.beach[val] = "";
+                }
+            }
+        }
+        for (var t in this.daycareRegions.beach) {
+            c = this.daycareRegions.beach[t];
+            if (c === "grass" || c == "sandgrass") {
+                if (chance(0.03) || (full && chance(0.07))) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else {
+                    featureCount.grass++;
+                }
+            }
+            else if (c === "rock" || c == "sandrock") {
+                if ((full && chance(0.09)) || (this.getNearbyFeatures(t, "beach").contains("water"))) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else {
+                    featureCount.rock++;
+                }
+            }
+            else if (c === "flowers" || c == "sandflowers") {
+                if ((full && chance(0.09)) || (this.getNearbyFeatures(t, "beach").contains("water"))) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else {
+                    featureCount.flowers++;
+                }
+            }
+            else if (c === "water") {
+                if ((chance(0.01) || (full && chance(0.02))) && (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") + countDuplicates(this.getNearbyFeatures(t, "beach"), "lilypad") < 4)) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else if ((chance(0.02) || (full && chance(0.25))) && (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") + countDuplicates(this.getNearbyFeatures(t, "beach"), "lilypad") < 3)) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") + countDuplicates(this.getNearbyFeatures(t, "beach"), "lilypad") < 2)) {
+                    this.daycareRegions.beach[t] = "";
+                }
+                else {
+                    featureCount.water++;
+                }
+            }
+        }
+        for (var t in this.daycareRegions.beach) {
+            c = this.daycareRegions.beach[t];
+            if (c === "") {
+                if (featureCount.grass < maxFeaturesBeach.grass) {
+                    if (countDuplicates(this.getNearbyFeatures(t, "beach"), "grass") >= 3 && (chance(0.6))) {
+                        this.daycareRegions.beach[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (countDuplicates(this.getNearbyFeatures(t, "beach"), "grass") >= 2 && (chance(0.4))) {
+                        this.daycareRegions.beach[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (this.getNearbyFeatures(t, "beach").contains("grass") && (chance(0.12))) {
+                        this.daycareRegions.beach[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (chance(0.01)) {
+                        this.daycareRegions.beach[t] = "grass";
+                        featureCount.grass++;
+                    }
+                }
+                if (featureCount.rock < maxFeaturesBeach.rock) {
+                    if ((chance(0.03) || ((chance(0.08) && full)))) {
+                        this.daycareRegions.beach[t] = "rock";
+                        featureCount.rock++;
+                    }
+                }
+                if (featureCount.flowers < maxFeaturesBeach.flowers) {
+                    if (chance(0.05)) {
+                        this.daycareRegions.beach[t] = "flowers";
+                        featureCount.flowers++;
+                    }
+                }
+            }
+            if (featureCount.water < maxFeaturesBeach.water) {
+                if ((this.getNearbyFeatures(t, "beach").contains("water") && (chance(0.5) && full)) || (chance(0.01))) {
+                    this.daycareRegions.beach[t] = "water";
+                    featureCount.water++;
+                }
+                else if (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") >= 2 && (chance(0.04))) {
+                    this.daycareRegions.beach[t] = "water";
+                    featureCount.water++;
+                }
+                else if (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") >= 3 && (chance(0.15))) {
+                    this.daycareRegions.beach[t] = "water";
+                    featureCount.water++;
+                }
+                else if (countDuplicates(this.getNearbyFeatures(t, "beach"), "water") >= 4 && (chance(0.25))) {
+                    this.daycareRegions.beach[t] = "water";
+                    featureCount.water++;
+                }
+            }
+        }
+        for (var t in this.daycareRegions.beach) {
+            c = this.daycareRegions.beach[t];
+            hold = this.getNearbyFeatures2(t, "beach");
+            if (countDuplicates(hold, "water") * 3 + countDuplicates(hold, "sand") >= 8) {
+                if (c == "flowers") {
+                    this.daycareRegions.beach[t] = "sandflowers";
+                }
+                else if (c == "rock") {
+                    this.daycareRegions.beach[t] = "sandrock";
+                }
+                else if (c == "grass") {
+                    this.daycareRegions.beach[t] = "sandgrass";
+                }
+                else if (c == "") {
+                    this.daycareRegions.beach[t] = "sand";
+                }
+            }
+        }
+        featureCount = {
+            grass: 0,
+            sprout: 0,
+            tree: 0,
+            bigtree: 0,
+            rock: 0,
+            water: 0,
+            lilypad: 0,
+            flowers: 0,
+            sand: 0
+        };
+        var maxFeaturesJungle = {
+            grass: 9,
+            sprout: 15,
+            tree: 15,
+            bigtree: 15,
+            rock: 0,
+            water: 24,
+            lilypad: 0,
+            flowers: 6,
+            sand: 0
+        };
+        for (var i = 0; i < 12; i++) {
+            for (var j = 0; j < letters.length; j++) {
+                val = (letters[j] + i);
+                if (!this.daycareRegions.jungle.hasOwnProperty(val)) {
+                    this.daycareRegions.jungle[val] = "";
+                }
+            }
+        }
+        for (var t in this.daycareRegions.jungle) {
+            c = this.daycareRegions.jungle[t];
+            if (c === "grass") {
+                if (chance(0.04) || (full && chance(0.08))) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
+                    featureCount.grass++;
+                }
+            }
+            else if (c === "sprout") {
+                if (chance(0.025) || (full && chance(0.05))) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
+                    featureCount.sprout++;
+                }
+            }
+            else if (c === "tree1" || c === "tree2") {
+                if (chance(0.015) || (full && chance(0.03))) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
+                    featureCount.tree++;
+                }
+            }
+            else if (c === "bigtree") {
+                if ((full && chance(0.09))) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
                     featureCount.bigtree++;
-                    featureCount.tree--;
+                }
+            }
+            else if (c === "water") {
+                if (((chance(0.01) && (chance(0.5))) || (full && chance(0.01))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 4)) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else if ((chance(0.02) || (full && chance(0.2))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 3)) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else if ((chance(0.05) || (full && chance(0.33))) && (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") + countDuplicates(this.getNearbyFeatures(t, "grotto"), "lilypad") < 2)) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
+                    featureCount.water++;
+                }
+            }
+            else if (c === "flowers") {
+                if (chance(0.01) || (full && chance(0.12))) {
+                    this.daycareRegions.jungle[t] = "";
+                }
+                else {
+                    featureCount.flowers++;
+                }
+            }
+        }
+        for (var t in this.daycareRegions.jungle) {
+            c = this.daycareRegions.jungle[t];
+            if (c === "") {
+                if (featureCount.grass < maxFeaturesGrotto.grass) {
+                    if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "grass") >= 3 && (chance(0.6))) {
+                        this.daycareRegions.jungle[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "grass") >= 2 && (chance(0.4))) {
+                        this.daycareRegions.jungle[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (this.getNearbyFeatures(t, "jungle").contains("grass") && (chance(0.12))) {
+                        this.daycareRegions.jungle[t] = "grass";
+                        featureCount.grass++;
+                    }
+                    else if (chance(0.01)) {
+                        this.daycareRegions.jungle[t] = "grass";
+                        featureCount.grass++;
+                    }
+                }
+                if (featureCount.water < maxFeaturesJungle.water) {
+                    var amt = (this.getNearbyFeatures2(t, "jungle"), "water");
+                    if (amt < 6 || (amt < 7 && chance(0.5))) {
+                        if ((this.getNearbyFeatures(t, "jungle").contains("water") && (chance(0.6) && full)) || (chance(0.01))) {
+                            this.daycareRegions.jungle[t] = "water";
+                            featureCount.water++;
+                        }
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 2 && (chance(0.04))) {
+                            this.daycareRegions.jungle[t] = "water";
+                            featureCount.water++;
+                        }
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 3 && (chance(0.18))) {
+                            this.daycareRegions.jungle[t] = "water";
+                            featureCount.water++;
+                        }
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 4 && (chance(0.33))) {
+                            this.daycareRegions.jungle[t] = "water";
+                            featureCount.water++;
+                        }
+                    }
+                }
+                if (featureCount.flowers < maxFeaturesJungle.flowers) {
+                    if (chance(0.05)) {
+                        this.daycareRegions.jungle[t] = "flowers";
+                        featureCount.flowers++;
+                    }
+                }
+                if (featureCount.sprout < maxFeaturesJungle.sprout) {
+                    if (chance(0.075)) {
+                        this.daycareRegions.jungle[t] = "sprout";
+                        featureCount.sprout++;
+                    }
+                }
+            }
+            else if (c === "sprout") {
+                if ((chance(0.018) || (full && chance(0.037))) && featureCount.tree < maxFeaturesJungle.tree) {
+                    if (chance(0.5)) {
+                        this.daycareRegions.jungle[t] = "tree1";
+                    }
+                    else {
+                        this.daycareRegions.jungle[t] = "tree2";
+                    }
+                    featureCount.tree++;
+                    featureCount.sprout--;
+                }
+            }
+            else if (c === "tree1" || c === "tree2") {
+                if (((chance(0.01) && (chance(0.6))) || (full && chance(0.07))) && featureCount.bigtree < maxFeaturesJungle.bigtree) {
+                    if (chance(0.5)) {
+                        this.daycareRegions.jungle[t] = "bigtree";
+                        featureCount.bigtree++;
+                        featureCount.tree--;
+                    }
                 }
             }
         }
@@ -39594,6 +39999,7 @@ function Safari() {
         var grassbg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA0CAYAAAD46nqNAAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAABzSURBVGgF7dKxDcAgEARBTJGU5irdg5FoYRKCJV/pNdyzvvcfF7958W3ntA7UH0owQRXQvg0mqALat8EEVUD7NpigCmjfBhNUAe3bYIIqoH0bTFAFtG+DCaqA9m0wQRXQvg0mqALat8EEVUD7NpigCmi/AaJRAz8cuAfhAAAAAElFTkSuQmCC";
         var waterbg1 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA0CAYAAAD46nqNAAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAABySURBVGgF7dKxDcAgEARBTGn0L1fj3Ei0MAnBkq/0Gu5Z7/ePi9+8+LZzWgfqDyWYoApo3wYTVAHt22CCKqB9G0xQBbRvgwmqgPZtMEEV0L4NJqgC2rfBBFVA+zaYoApo3wYTVAHt22CCKqB9G0xQBbTfQNEDa9UsWhQAAAAASUVORK5CYII=";
         var waterbg2 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA0CAYAAAD46nqNAAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAABzSURBVGgF7dKxDcAgEARBTCv05u5dg5FoYRKCJV/pNdyz3u8fF7958W3ntA7UH0owQRXQvg0mqALat8EEVUD7NpigCmjfBhNUAe3bYIIqoH0bTFAFtG+DCaqA9m0wQRXQvg0mqALat8EEVUD7NpigCmi/ARzvAt0JaswhAAAAAElFTkSuQmCC";
+        var sandbg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAA0CAYAAAD46nqNAAAEDWlDQ1BJQ0MgUHJvZmlsZQAAOI2NVV1oHFUUPrtzZyMkzlNsNIV0qD8NJQ2TVjShtLp/3d02bpZJNtoi6GT27s6Yyc44M7v9oU9FUHwx6psUxL+3gCAo9Q/bPrQvlQol2tQgKD60+INQ6Ium65k7M5lpurHeZe58853vnnvuuWfvBei5qliWkRQBFpquLRcy4nOHj4g9K5CEh6AXBqFXUR0rXalMAjZPC3e1W99Dwntf2dXd/p+tt0YdFSBxH2Kz5qgLiI8B8KdVy3YBevqRHz/qWh72Yui3MUDEL3q44WPXw3M+fo1pZuQs4tOIBVVTaoiXEI/MxfhGDPsxsNZfoE1q66ro5aJim3XdoLFw72H+n23BaIXzbcOnz5mfPoTvYVz7KzUl5+FRxEuqkp9G/Ajia219thzg25abkRE/BpDc3pqvphHvRFys2weqvp+krbWKIX7nhDbzLOItiM8358pTwdirqpPFnMF2xLc1WvLyOwTAibpbmvHHcvttU57y5+XqNZrLe3lE/Pq8eUj2fXKfOe3pfOjzhJYtB/yll5SDFcSDiH+hRkH25+L+sdxKEAMZahrlSX8ukqMOWy/jXW2m6M9LDBc31B9LFuv6gVKg/0Szi3KAr1kGq1GMjU/aLbnq6/lRxc4XfJ98hTargX++DbMJBSiYMIe9Ck1YAxFkKEAG3xbYaKmDDgYyFK0UGYpfoWYXG+fAPPI6tJnNwb7ClP7IyF+D+bjOtCpkhz6CFrIa/I6sFtNl8auFXGMTP34sNwI/JhkgEtmDz14ySfaRcTIBInmKPE32kxyyE2Tv+thKbEVePDfW/byMM1Kmm0XdObS7oGD/MypMXFPXrCwOtoYjyyn7BV29/MZfsVzpLDdRtuIZnbpXzvlf+ev8MvYr/Gqk4H/kV/G3csdazLuyTMPsbFhzd1UabQbjFvDRmcWJxR3zcfHkVw9GfpbJmeev9F08WW8uDkaslwX6avlWGU6NRKz0g/SHtCy9J30o/ca9zX3Kfc19zn3BXQKRO8ud477hLnAfc1/G9mrzGlrfexZ5GLdn6ZZrrEohI2wVHhZywjbhUWEy8icMCGNCUdiBlq3r+xafL549HQ5jH+an+1y+LlYBifuxAvRN/lVVVOlwlCkdVm9NOL5BE4wkQ2SMlDZU97hX86EilU/lUmkQUztTE6mx1EEPh7OmdqBtAvv8HdWpbrJS6tJj3n0CWdM6busNzRV3S9KTYhqvNiqWmuroiKgYhshMjmhTh9ptWhsF7970j/SbMrsPE1suR5z7DMC+P/Hs+y7ijrQAlhyAgccjbhjPygfeBTjzhNqy28EdkUh8C+DU9+z2v/oyeH791OncxHOs5y2AtTc7nb/f73TWPkD/qwBnjX8BoJ98VVBg/m8AAABxSURBVGgF7dKxDcAgEARBTKHU7WpsJFqYhGDJV3oN93zv+sfFb1582zmtA/WHEkxQBbRvgwmqgPZtMEEV0L4NJqgC2rfBBFVA+zaYoApo3wYTVAHt22CCKqB9G0xQBbRvgwmqgPZtMEEV0L4NJqgC2m9j3QObjtDy9gAAAABJRU5ErkJggg==";
         var ret = "", r, place, inp, f, g, h, bg, hold, icon;
         for (var t in props) {
             f = props[t];
@@ -39620,17 +40026,20 @@ function Safari() {
             for (var j = 0; j < r.length; j++) {
                 var place = r[j];
                 bg = null;
-                if (area == "grotto") {
+                if (["grotto", "beach", "jungle"].contains(area)) {
                     bg = "#56EC96";
                     icon = grassbg;
                 }
                 if (features.hasOwnProperty(place)) {
                     hold = this.getNearbyFeatures(place, area);
                     icon = daycareTiles[features[place]];
-                    if (features[place] == "grass") {
+                    if (features[place] == "grass" && area == "grotto") {
                        if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 0) {
                             icon = daycareTiles["grasswater"];
                        }
+                    }
+                    if (features[place] == "sandgrass" && area == "beach") {
+                        icon = daycareTiles["grasswater"];
                     }
                     if (features[place] == "water" || features[place] == "lilypad") {
                         if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 4) {
@@ -39645,6 +40054,12 @@ function Safari() {
                                 icon = waterbg1;
                             }
                         }
+                    }
+                    if (features[place] == "sand") {
+                        icon = sandbg;
+                    }
+                    if (["sand", "sandflowers", "sandrock", "sandgrass"].contains(features[place])) {
+                        bg = "#ffde70";
                     }
                 }
                 ret += "<td align=center width=42 height=32" + (bg ? " style='background-color:" + bg + ";'" : "") + ">";
