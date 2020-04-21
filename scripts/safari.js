@@ -47955,7 +47955,7 @@ function Safari() {
                 return true;
             }
             if (command === "forcedaycarestep") {
-                safari.dayCareStep(parseInt(commandData, 10));
+                safari.dayCareStep(src, parseInt(commandData, 10));
                 return true;
             }
             if (command === "daycarefeature") {
