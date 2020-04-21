@@ -38463,7 +38463,7 @@ function Safari() {
             }
         }
         if (myAmt > 1) {
-            daycarebot.sendMessage(src, "You already have two Pokémon (" + poke(this.daycarePokemon[t].id) + ") in the Daycare! We cannot accept any more!", safchan);
+            daycarebot.sendMessage(src, "You already have two Pokémon in the Daycare! We cannot accept any more!", safchan);
             return false;
         }
         if (cdata.length > 1) {
