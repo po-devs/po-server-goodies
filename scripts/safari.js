@@ -38327,7 +38327,7 @@ function Safari() {
             }
             if (pokemon.canItem && isOwner) {
                 pokemon.canItem = false;
-                var getItem = this.getDayCareItem(pokemon.id, pokemon.hearts + pokemon.playhearts);
+                var getItem = this.getDayCareItem(pokemon.id, pokemon.hearts + pokemon.playhearts, pokemon.area);
                 if (getItem) {
                     pokemon.findItem = false;
                     daycarebot.sendMessage(src, "Huh? What's this? " + poke(pokemon.id) + " is holding an item!", safchan);
