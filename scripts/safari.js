@@ -40050,6 +40050,12 @@ function Safari() {
                     if (features[place] == "sandgrass" && area == "beach") {
                         icon = daycareTiles["grasswater"];
                     }
+                    if (features[place] == "sandflowers" && area == "beach") {
+                        icon = daycareTiles["flowers"];
+                    }
+                    if (features[place] == "sandrock" && area == "beach") {
+                        icon = daycareTiles["rock"];
+                    }
                     if (features[place] == "water" || features[place] == "lilypad") {
                         if (countDuplicates(hold, "water") + countDuplicates(hold, "lilypad") > 4) {
                             bg = "#2366ed";
