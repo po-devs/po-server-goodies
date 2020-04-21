@@ -39334,10 +39334,10 @@ function Safari() {
             flowers: 0
         };
         var maxFeaturesGrotto = {
-            grass: 20,
-            sprout: 9,
-            tree: 5,
-            bigtree: 3,
+            grass: 30,
+            sprout: 14,
+            tree: 9,
+            bigtree: 6,
             rock: 4,
             water: 20,
             lilypad: 4,
@@ -39687,9 +39687,9 @@ function Safari() {
         };
         var maxFeaturesJungle = {
             grass: 9,
-            sprout: 15,
-            tree: 15,
-            bigtree: 15,
+            sprout: 28,
+            tree: 24,
+            bigtree: 20,
             rock: 0,
             water: 24,
             lilypad: 0,
@@ -39817,8 +39817,8 @@ function Safari() {
                 }
             }
             else if (c === "sprout") {
-                if ((chance(0.025) || (full && chance(0.037))) && featureCount.tree < maxFeaturesJungle.tree) {
-                    if (chance(0.5)) {
+                if ((chance(0.035) || (full && chance(0.037))) && featureCount.tree < maxFeaturesJungle.tree) {
+                    if (chance(0.85)) {
                         this.daycareRegions.jungle[t] = "tree1";
                     }
                     else {
@@ -39829,7 +39829,7 @@ function Safari() {
                 }
             }
             else if (c === "tree1" || c === "tree2") {
-                if (((chance(0.01) && (chance(0.6))) || (full && chance(0.07))) && featureCount.bigtree < maxFeaturesJungle.bigtree) {
+                if (((chance(0.01) && (chance(0.8))) || (full && chance(0.12))) && featureCount.bigtree < maxFeaturesJungle.bigtree) {
                     if (chance(0.5)) {
                         this.daycareRegions.jungle[t] = "bigtree";
                         featureCount.bigtree++;
