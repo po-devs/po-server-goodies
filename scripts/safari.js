@@ -39783,7 +39783,7 @@ function Safari() {
                     }
                 }
                 if (featureCount.water < maxFeaturesJungle.water) {
-                    var amt = (this.getNearbyFeatures2(t, "jungle"), "water");
+                    var amt = countDuplicates(this.getNearbyFeatures2(t, "jungle"), "water");
                     if (amt < 6 || (amt < 7 && chance(0.5))) {
                         if ((this.getNearbyFeatures(t, "jungle").contains("water") && (chance(0.6) && full)) || (chance(0.01))) {
                             this.daycareRegions.jungle[t] = "water";
@@ -39817,7 +39817,7 @@ function Safari() {
                 }
             }
             else if (c === "sprout") {
-                if ((chance(0.018) || (full && chance(0.037))) && featureCount.tree < maxFeaturesJungle.tree) {
+                if ((chance(0.025) || (full && chance(0.037))) && featureCount.tree < maxFeaturesJungle.tree) {
                     if (chance(0.5)) {
                         this.daycareRegions.jungle[t] = "tree1";
                     }
