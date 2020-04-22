@@ -19495,7 +19495,7 @@ function Safari() {
                 continue;
             }
             if (data.toLowerCase() == battle.name1.toLowerCase() || data.toLowerCase() == battle.name2.toLowerCase()) {
-                if (battle.cantWatch && (!SESSION.channels(safchan).isChannelAdmin(src) || (soft))) {
+                if (battle.cantWatch && ((!SESSION.channels(safchan).isChannelAdmin(src)) || (soft))) {
                     safaribot.sendMessage(src, "You cannot watch/unwatch this battle!", safchan);
                     return;
                 }
@@ -38655,7 +38655,7 @@ function Safari() {
     this.dayCarePlantBerry = function(src, player, data) {
         var pokesList = [];
         data = data.split(":");
-        var mon = data[0], hitMon = null;
+        var mon = data[0], hitMon = null, pokemon;
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
                 pokesList.push(this.daycarePokemon[t]);
@@ -38719,7 +38719,7 @@ function Safari() {
         }
         var gardener = null, pokemon = null;
         pokemon = hitMon;
-        if ((pokemon.berry === undefined || pokemon.berry === null) && (poke(pokemon.id) == mon)) {
+        if ((pokemon.berry === undefined || pokemon.berry === null)) {
             var harvest = this.getDayCareBerryHarvestData(pokemon.id, berry);
             pokemon.berry = {
                 name: berry,
