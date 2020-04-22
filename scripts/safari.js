@@ -12030,7 +12030,7 @@ function Safari() {
                         var mon = 0, val = (100 * Math.random());
                         if (player.deluxeBait.inedible > 0) {
                             if (chance(player.deluxeBait.inedible)) {
-                                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.");
+                                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out... but nothing showed up.", safchan);
                                 return;
                             }
                         }
@@ -38659,9 +38659,9 @@ function Safari() {
         for (var t in this.daycarePokemon) {
             if (this.daycarePokemon[t].ownernum === player.idnum) {
                 pokesList.push(this.daycarePokemon[t]);
-            }
-            if (parseInt(getInputPokemon(mon).num, 10) == parseInt(this.daycarePokemon[t].id, 10)) {
-                hitMon = this.daycarePokemon[t];
+                if (parseInt(getInputPokemon(mon).num, 10) == parseInt(this.daycarePokemon[t].id, 10)) {
+                    hitMon = this.daycarePokemon[t];
+                }
             }
         }
         if (pokesList.length === 0) {
