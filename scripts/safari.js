@@ -40205,24 +40205,24 @@ function Safari() {
                     }
                     if (features[place] == "gravel") {
                         icon = gravelbg;
-                        bg = "#f59a73";
+                        bg = "#D97951";
                     }
                     if (features[place] == "sand") {
                         icon = gravelbg; //fix this later maybe
                     }
                     if (features[place] == "treegravel") {
                         icon = daycareTiles["bigtree2"];
-                        bg = "#f59a73";
+                        bg = "#D97951";
                     }
                     if (features[place] == "rockgravel") {
                         icon = daycareTiles["rock2"];
-                        bg = "#f59a73";
+                        bg = "#D97951";
                     }
                     if (["sand", "sandflowers", "sandrock", "sandgrass"].contains(features[place])) {
                         bg = "#ffde70";
                     }
                     if (["gravel", "cliff1", "cliff2", "cliff3", "cliff4", "cliff5", "cliff6", "cliff7", "cliff8"].contains(features[place])) {
-                        bg = "#f59a73";
+                        bg = "#D97951";
                     }
                 }
                 ret += "<td align=center width=42 height=32" + (bg ? " style='background-color:" + bg + ";'" : "") + ">";
