@@ -15746,7 +15746,7 @@ function Safari() {
             }
             if (logins % 32 === 30) {
                 safaribot.sendHtmlMessage(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", safchan);
-                safaribot.notification(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
+                safari.notification(src, "Tip: Logging in tomorrow will reward you with " + an(finishName("master")) + "!", "Login");
             }
             player.firstCelebrityRun = true;
             
