@@ -39363,7 +39363,7 @@ function Safari() {
             return false;
         }
         if (["cliff1","cliff2","cliff3","cliff4","cliff5","cliff6","cliff7","cliff8"].contains(feat)) {
-            continue;
+            return false;
         }
         if (feat == "tree1") {
             return false;
