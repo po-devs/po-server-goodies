@@ -20173,22 +20173,22 @@ function Safari() {
         if (this.select) {
             if (this.select.sandstorm) {
                 this.weather = "Sand";
-                this.weatherTimer = 5;
+                this.weatherTimer = 256;
             } else if (this.select.sandstorm3) {
                 this.weather = "Sand";
                 this.weatherTimer = 256;
             } else if (this.select.rain) {
                 this.weather = "Rain";
-                this.weatherTimer = 5;
+                this.weatherTimer = 256;
             } else if (this.select.rain) {
                 this.weather = "Rain";
-                this.weatherTimer = 8;
+                this.weatherTimer = 256;
             } else if (this.select.sun) {
                 this.weather = "Sun";
-                this.weatherTimer = 5;
+                this.weatherTimer = 256;
             } else if (this.select.sun2) {
                 this.weather = "Sun";
-                this.weatherTimer = 8;
+                this.weatherTimer = 256;
             } else if (this.select.hail) {
                 this.weather = "Hail";
                 this.weatherTimer = 256;
@@ -23241,6 +23241,31 @@ function Safari() {
                         out.push(name + "'s " + self.statName("satk") + " +1!");
                     }
                 }
+                if (self.select) {
+                    if (self.select.noncritexhaust) {
+                        if (!(self.crit)) {
+                            if (move.category == "physical") {
+                                user.boosts["atk"] -= 1;
+                                user.boosts["atk"] = Math.min(6, Math.max(user.boosts["atk"], -6));
+                                out.push(name + "'s " + self.statName("atk") + " -1!");
+                            }
+                            if (move.category == "special") {
+                                user.boosts["satk"] -= 1;
+                                user.boosts["satk"] = Math.min(6, Math.max(user.boosts["atk"], -6));
+                                out.push(name + "'s " + self.statName("satk") + " -1!");
+                            }
+                        } else {
+                            if (move.category == "physical" && user.boosts["atk"] < 0) {
+                                user.boosts["atk"] = Math.max(user.boosts["atk"], 0);
+                                out.push(name + "'s " + self.statName("atk") + " nerfs removed!");
+                            }
+                            if (move.category == "special" && user.boosts["satk"] < 0) {
+                                user.boosts["satk"] = Math.max(user.boosts["satk"], 0);
+                                out.push(name + "'s " + self.statName("satk") + " nerfs removed!");
+                            }
+                        }
+                    }
+                }
                 if (self.select2 && (!fainted)) {
                     if (self.select2.brawler && (isP2 || isP4) && move.category === "physical") {
                         var stat = ["atk", "def", "spe", "satk", "sdef"].random();
@@ -23334,6 +23359,13 @@ function Safari() {
                     if (self.select.frenzy) {
                         user.hp = Math.min(user.maxhp, Math.floor(user.hp + (0.25 * user.maxhp)));
                         out.push(name + "'s HP regenerated a little!");
+                    }
+                    if (self.select.faintTrap) {
+                        user.boosts["def"] -= 1;
+                        user.boosts["def"] = Math.min(6, Math.max(user.boosts["def"], -6));
+                        user.boosts["sdef"] -= 1;
+                        user.boosts["sdef"] = Math.min(6, Math.max(user.boosts["sdef"], -6));
+                        out.push(name + "'s defenses were cut!");
                     }
                 }
                 if (fainted && self.select) {
@@ -25151,6 +25183,9 @@ function Safari() {
                 c += 20;
                 if (bias.critical) {
                     c += 60;
+                }
+                if (this.select && this.select.noncritexhaust) {
+                    c += 75 * move.critical;
                 }
             }
             if (move.recoil && val >= 0) {
@@ -37700,6 +37735,7 @@ function Safari() {
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
             case "criticalDouble": m = "Critical hits do increased damage."; break;
+            case "noncritexhaust": m = "Attacking stat lowered, while landing a critical hit removes nerfs in the attacking stat."; break;
             case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
             case "sabotage": m = "Landing super-effective attacks causes you to be sabotaged by the foe's fanclub."; break;
             case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
@@ -37736,6 +37772,7 @@ function Safari() {
             case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
             case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
             case "grudge": m = "KO-ing a Pokémon damages the Pokémon that gave the final blow."; break;
+            case "frenzy": m = "KO-ing a Pokémon weakens the defenses of the Pokémon that gave the final blow."; break;
             case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
             case "poweruppunch": m = "Foe's Pokémon power up when using Physical Attacks."; break;
             case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
