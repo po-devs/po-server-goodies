@@ -27640,7 +27640,7 @@ function Safari() {
             if (i >= player.helds.length) {
                 continue;
             }
-            if (player.helds[i] != 7) {
+            if (parseInt(player.helds[i], 10) != 7) {
                 continue;
             }
             for (var e = 0; e < player.party.length; e++) {
@@ -32320,7 +32320,7 @@ function Safari() {
             this.msg(player.id, "- Uncommons (" + toFixed(player.deluxeBait.uncommons.rate, 3) + "%): " + player.deluxeBait.uncommons.list.map(function(x) { return poke(x); }).join(", "));
             this.msg(player.id, "- Rares (" + toFixed(player.deluxeBait.rares.rate, 5) + "%): " + player.deluxeBait.rares.list.map(function(x) { return poke(x); }).join(", "));
             if (player.deluxeBait.inedible > 0) {
-                this.msg(player.id, "- Somewhat inedible (" + toFixed(player.deluxeBait.inedible, 5) + "%)");
+                this.msg(player.id, "- Somewhat inedible (" + toFixed(player.deluxeBait.inedible * 100, 5) + "%)");
             }
         }
         this.finished = true;
