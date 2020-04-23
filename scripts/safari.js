@@ -39777,7 +39777,7 @@ function Safari() {
             tree: 24,
             bigtree: 20,
             rock: 0,
-            water: 24,
+            water: 40,
             lilypad: 0,
             flowers: 6,
             sand: 0
@@ -39878,20 +39878,20 @@ function Safari() {
                 }
                 if (featureCount.water < maxFeaturesJungle.water) {
                     var amt = countDuplicates(this.getNearbyFeatures2(t, "jungle"), "water");
-                    if ((amt < 6 || (amt < 7 && chance(0.5))) && (amt >= 2)) {
-                        if ((this.getNearbyFeatures(t, "jungle").contains("water") && (chance(0.6) && full)) || (chance(0.01))) {
+                    if (((((amt < 6 || (amt < 7 && chance(0.5)))) && chance(0.5)) || amt < 5) && (((amt >= 1) && (chance(0.25)) || amt >= 2))) {
+                        if ((this.getNearbyFeatures(t, "jungle").contains("water") && (chance(0.8) && full)) || (chance(0.02))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
-                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 2 && (chance(0.04))) {
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 2 && (chance(0.06))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
-                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 3 && (chance(0.18))) {
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 3 && (chance(0.23))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
-                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 4 && (chance(0.38))) {
+                        else if (countDuplicates(this.getNearbyFeatures(t, "jungle"), "water") >= 4 && (chance(0.45))) {
                             this.daycareRegions.jungle[t] = "water";
                             featureCount.water++;
                         }
