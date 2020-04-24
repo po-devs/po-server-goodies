@@ -24443,10 +24443,18 @@ function Safari() {
                 effChance.reflect *= 1.5;
             }
             if (bias.lightscreen) {
-                effChance.reflect *= 1.5;
+                effChance.lightscreen *= 1.5;
             }
             if (bias.paralyze || bias.poison || bias.freeze || bias.burn || bias.sleep) {
                 effChance.status *= 1.5;
+            }
+        }
+        if (this.select) {
+            if (this.select.specBan) {
+                effChance.lightscreen = 0;
+            }
+            if (this.select.physBan) {
+                effChance.reflect = 0;
             }
         }
         try {
