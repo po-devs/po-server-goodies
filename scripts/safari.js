@@ -23365,7 +23365,9 @@ function Safari() {
                         user.boosts["def"] = Math.min(6, Math.max(user.boosts["def"], -6));
                         user.boosts["sdef"] -= 1;
                         user.boosts["sdef"] = Math.min(6, Math.max(user.boosts["sdef"], -6));
-                        out.push(name + "'s defenses were cut!");
+                        user.boosts["spe"] -= 1;
+                        user.boosts["spe"] = Math.min(6, Math.max(user.boosts["spe"], -6));
+                        out.push(name + "'s defenses and speed were cut!");
                     }
                 }
                 if (fainted && self.select) {
@@ -37772,7 +37774,7 @@ function Safari() {
             case "speedcrit": m = "Pokémon with a speed advantage score critical hits more easily."; break;
             case "frenzy": m = "KO-ing a Pokémon restores HP to the Pokémon that gave the final blow."; break;
             case "grudge": m = "KO-ing a Pokémon damages the Pokémon that gave the final blow."; break;
-            case "frenzy": m = "KO-ing a Pokémon weakens the defenses of the Pokémon that gave the final blow."; break;
+            case "faintTrap": m = "KO-ing a Pokémon weakens the defenses and speed of the Pokémon that gave the final blow."; break;
             case "naturalcure": m = "Grass and Water-type moves cure the user's status."; break;
             case "poweruppunch": m = "Foe's Pokémon power up when using Physical Attacks."; break;
             case "chargebeam": m = "Foe's Pokémon power up when using Special Attacks."; break;
