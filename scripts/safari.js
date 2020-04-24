@@ -24700,6 +24700,12 @@ function Safari() {
             case "buff":
                 buff = {};
                 buff.buffStat = ["atk", "def", "satk", "sdef", "spe"].random();
+                if (this.select && this.select.physBan) {
+                    buff.buffStat = ["satk", "sdef", "spe"].random();
+                }
+                if (this.select && this.select.specBan) {
+                    buff.buffStat = ["atk", "def", "spe"].random();
+                }
                 if (buff.buffStat == "sdef" && ((this.select && this.select.singlespecialstat) || (this.select2 && this.select2.singlespecialstat))) {
                     buff.buffStat = "satk";
                 }
