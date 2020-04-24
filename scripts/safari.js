@@ -22537,7 +22537,7 @@ function Safari() {
             }
         }
         var helped = (user.helped ? 1.5 : 1);
-        var screen = ((!crit) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
+        var screen = ((!crit) && (!move.brickBreak) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
         
         var bonus = 1;
         if (this.select) {
