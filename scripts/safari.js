@@ -14898,7 +14898,7 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        var list = data.split(","), trySell, p, out = [], cashout;
+        var list = data.split(","), trySell, p, out = [], cashout = 0;
         for (var i = 0; i < list.length; i++) {
             p = parseInt(list[i], 10);
             if (isLegendary(p)) {
