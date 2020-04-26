@@ -10174,6 +10174,21 @@ function Safari() {
         } else {
             sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", player.smallBox), safchan);
         }
+        if (shopLink) {
+            safaribot.sendHtmlMessage(src, "Sell all of these Pokémon at once? (This command will not sell Shinies or Legendaries)", safchan);
+            var toTurbo = [], p;
+            for (var i = 0; i < finalList.length; i++) {
+                p = finalList[i];
+                if (typeof p == "string") {
+                    continue;
+                }
+                if (isLegendary(p)) {
+                    continue;
+                }
+                toTurbo.push(p+"");
+            }
+            safaribot.sendHtmlMessage(src, link("/turbosell " + toTurbo.join(","), "«Sell All»"), safchan);
+        }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
         var noparam = ["shiny", "canevolve", "finalform", "canmega"], def;
@@ -13616,13 +13631,17 @@ function Safari() {
                 cd2 = cd[1];
             }
             if (cd2) {
-                if (["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].indexOf(cd2) == -1) {
+                if (["kanto", "johto", "hoenn", "sinnoh", "unova", "galar", "random"].indexOf(cd2) == -1) {
                     safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, and Galar are valid.)", safchan);
                     return;
                 }
+                if (cd2 == "random") {
+                    cd2 = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
+                }
                 player.celebrityRegion = cd2;
             } else {
-                player.celebrityRegion = ["kanto", "johto", "hoenn", "sinnoh", "unova", "galar"].random();
+                safaribot.sendMessage(src, "You must select a valid region to challenge next! (Kanto, Johto, Hoenn, Sinnoh, Unova, Galar, or Random are valid.)", safchan);
+                return;
             }
             player.firstCelebrityRun = true;
             player.balls.celebrityTicket -= 1;
@@ -14866,7 +14885,35 @@ function Safari() {
 
         this.saveGame(player);
     };
-    this.sellPokemon = function(src, data) {
+    this.turbosellPokemon = function(src, data) {
+        if (data === "*") {
+            safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
+            return;
+        }
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        var reason = "sell a Pokémon";
+        if (cantBecause(src, reason, ["tutorial"])) {
+            return;
+        }
+        var player = getAvatar(src);
+        var list = data.split(","), trySell, p, out = [], cashout;
+        for (var i = 0; i < list.length; i++) {
+            p = parseInt(list[i], 10);
+            if (isLegendary(p)) {
+                continue;
+            }
+            trySell = this.sellPokemon(src, p, true);
+            if (trySell) {
+                out.push(poke(p));
+                cashout += trySell;
+            }
+        }
+        safaribot.sendHtmlMessage(src, "You sold your " + readable(out, "and") + " for a total of $" + addComma(cashout) + "!", safchan)
+        this.saveGame(player);
+    };
+    this.sellPokemon = function(src, data, automated) {
         if (data === "*") {
             safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
             return;
@@ -14893,28 +14940,30 @@ function Safari() {
         
         if (player.tradeBlacklist.contains(info.input)) {
             safaribot.sendHtmlMessage(src, "You cannot sell " + info.name + " because it's in your Tradeblocked list. If you really wish to sell it, use /tradeblock to remove it from your tradeblock list.", safchan);
-            return;
+            return false;
         }
-        if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
-            var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
-            return;
-        }
-        
-        if (isRare(id) && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon") {
-            var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":IACKNOWLEDGETHATIAMSELLINGARAREPOKEMON";
-            safaribot.sendHtmlMessage(src, "Are you sure that you want to sell your <b>" + info.name + "</b> for $" + addComma(price) + "? If really want to do this, type " + link(confirmCommand) + ".", safchan);
-            return;
+        if (!(automated)) {
+            if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
+                var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
+                safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+                return;
+            }
+
+            if (isRare(id) && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon") {
+                var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":IACKNOWLEDGETHATIAMSELLINGARAREPOKEMON";
+                safaribot.sendHtmlMessage(src, "Are you sure that you want to sell your <b>" + info.name + "</b> for $" + addComma(price) + "? If really want to do this, type " + link(confirmCommand) + ".", safchan);
+                return;
+            }
         }
 
         var restrictions = ["contest", "auction", "battle", "event", "pyramid", "tutorial"];
         //Allow selling of pokemon that are not the lead if the rest of the party doesn't matter at that point
         if (player.party[0] === id && countRepeated(player.pokemon, id) === 1) {
             safaribot.sendHtmlMessage(src, "You can't sell your active Pokémon!", safchan);
-            return;
+            return false;
         }
         if (cantBecause(src, reason, restrictions)) {
-            return;
+            return false;
         }
 
         player.money += price;
@@ -14923,7 +14972,9 @@ function Safari() {
         }
         player.records.pokeSoldEarnings += price;
 
-        safaribot.sendMessage(src, "You sold your " + info.name + " for $" + addComma(price) + "! You now have $" + addComma(player.money) + ".", safchan);
+        if (!(automated)) {
+            safaribot.sendMessage(src, "You sold your " + info.name + " for $" + addComma(price) + "! You now have $" + addComma(player.money) + ".", safchan);
+        }
 
         var theft = "";
         if (player.costume === "rocket" && chance(costumeData.rocket.rate2)) {
@@ -14952,6 +15003,9 @@ function Safari() {
         this.logLostCommand(sys.name(src), "sell " + data, theft);
         if (isRare(id)) {
             sys.appendToFile(mythLog, now() + "|||" + poke(id) + "::was sold to the NPC by " + sys.name(src) + "::\n");
+        }
+        if (automated) {
+            return price;
         }
         this.saveGame(player);
     };
@@ -27661,17 +27715,19 @@ function Safari() {
                 safari.costumeEXP(player, "fighttower", 4 + (count * 3));
                 player.notificationData.towerWaiting = true;
                 safari.clearQuestNotifications(player, "Tower");
-                if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "" && safari.satisfiesTowerTrouble(src, player.party)) {
+                if (safari.events.towerTroubleEnabled && safari.events.towerTroubleData.searchText !== "") {
                     if (!(safari.events.towerTroubleData.players.hasOwnProperty(player.idnum+""))) {
                         safari.events.towerTroubleData.players[player.idnum+""] = 0;
                     }
                     if (count > safari.events.towerTroubleData.players[player.idnum+""]) {
-                        safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is now " + count + "!", safchan);
+                        if (safari.satisfiesTowerTrouble(src, player.party)) {
+                            safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is now " + count + "!", safchan);
+                            safari.events.towerTroubleData.players[player.idnum+""] = Math.max(safari.events.towerTroubleData.players[player.idnum+""], count);
+                        }
                     }
                     else {
                         safaribot.sendHtmlMessage(src, "Your Tower Trouble high score is " + safari.events.towerTroubleData.players[player.idnum+""] + "!", safchan);
                     }
-                    safari.events.towerTroubleData.players[player.idnum+""] = Math.max(safari.events.towerTroubleData.players[player.idnum+""], count);
                 }
 
                 if (penalty) {
@@ -46901,6 +46957,10 @@ function Safari() {
             }
             if (command === "findds") {
                 safari.findPokemon(src, commandData, true, true, true);
+                return true;
+            }
+            if (command === "turbosell") {
+                safari.turbosellPokemon(src, commandData);
                 return true;
             }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
