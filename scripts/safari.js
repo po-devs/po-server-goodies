@@ -14910,7 +14910,9 @@ function Safari() {
                 cashout += trySell;
             }
         }
-        safaribot.sendHtmlMessage(src, "You sold your " + readable(out, "and") + " for a total of $" + addComma(cashout) + "!", safchan)
+        if (out.length > 0) {
+            safaribot.sendHtmlMessage(src, "You sold your " + readable(out, "and") + " for a total of $" + addComma(cashout) + "!", safchan);
+        }
         this.saveGame(player);
     };
     this.sellPokemon = function(src, data, automated) {
