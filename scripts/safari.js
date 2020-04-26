@@ -14904,7 +14904,7 @@ function Safari() {
             if (isLegendary(p)) {
                 continue;
             }
-            trySell = this.sellPokemon(src, p, true);
+            trySell = this.sellPokemon(src, poke(p), true);
             if (trySell) {
                 out.push(poke(p));
                 cashout += trySell;
