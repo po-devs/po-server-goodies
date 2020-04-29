@@ -18415,7 +18415,13 @@ function Safari() {
             playerScores: {},
             recentPlayers: [],
             raidMons: [],
-            playerMons: {}
+            playerMons: {},
+            playerKOs: {},
+            teamKOs: {
+                green: 0,
+                red: 0,
+                blue: 0
+            }
         };
 
         var maxRaidMons = [];
@@ -18432,6 +18438,10 @@ function Safari() {
             out.type2 = type2(id);
             out.proc = 50;
             out.name = poke(id);
+            out.boosts = {
+                "atk": 0,
+                "def": 0
+            };
             return out;
         }
         var j = 0, k = 0; nextMon;
@@ -18474,6 +18484,31 @@ function Safari() {
         if (!(this.maxRaid.playerScores.hasOwnProperty(idnum+""))) {
             this.maxRaid.playerScores[idnum+""] = 0;
         }
+        if (!(this.maxRaid.playerKOs.hasOwnProperty(idnum+""))) {
+            this.maxRaid.playerKOs[idnum+""] = 0;
+        }
+        if (this.maxRaid.teams.green.contains(idnum+"")) {
+            this.maxRaid.playerMons[idnum+""].team = "green";
+            return;
+        }
+        if (this.maxRaid.teams.red.contains(idnum+"")) {
+            this.maxRaid.playerMons[idnum+""].team = "red";
+            return;
+        }
+        if (this.maxRaid.teams.blue.contains(idnum+"")) {
+            this.maxRaid.playerMons[idnum+""].team = "blue";
+            return;
+        }
+        if (chance(0.33)) {
+            this.maxRaid.playerMons[idnum+""].team = "green";
+            this.maxRaid.teams.green.push(idnum+"");
+        } else if (chance(0.5)) {
+            this.maxRaid.playerMons[idnum+""].team = "red";
+            this.maxRaid.teams.red.push(idnum+"");
+        } else {
+            this.maxRaid.playerMons[idnum+""].team = "blue";
+            this.maxRaid.teams.blue.push(idnum+"");
+        }
     }
     this.createPlayerRaider = function(id, owner) {
         var out = {};
@@ -18489,7 +18524,7 @@ function Safari() {
             "def": 0,
             "spe": 0,
             "spt": 0
-        }
+        };
         out.type1 = type1(id);
         out.type2 = type2(id);
         out.attackMovesAmt = 2;
@@ -18597,8 +18632,8 @@ function Safari() {
             raider = this.maxRaid.playerMons[i];
             raider.supportStat = raider.support + raider.boosts.spt;
             raider.moves = this.generateRaiderMoves(raider);
-            raider.selected = 0;
-            raider.targeted = 0;
+            raider.selected = -1;
+            raider.targeted = -1;
         }
     };
     this.raiderUseMove = function(mon) {
@@ -18644,8 +18679,21 @@ function Safari() {
             dmg = Math.max(Math.round(dmg), 0);
             dmg = Math.min(target.hp, dmg);
             target.hp -= dmg;
-            results.push("The " + target.name + " lost " + dmg + "HP!");
+            mon.results.push("The " + target.name + " lost " + dmg + "HP!");
+            var score = dmg;
             this.maxRaidScore(mon.ownernum, dmg);
+            if (target.hp <= 0) {
+                mon.results.push("The " + target.name + " fainted!");
+                this.maxRaidScore(mon.ownernum, 50 + (20 * this.maxRaid.playerKOs[mon.ownernum+""])); //Each consecutive KO raises the amount of points you get for a KO.
+                this.maxRaid.playerKOs[mon.ownernum+""] += 1;
+
+                var team = this.maxRaid.teams[mon.team];
+                for (var i = 0; i < team.length; i++) {
+                    this.maxRaidScore(team[i], 10 + (5 * this.maxRaid.teamKOs[team])); //For each consecutive KO by any team member, the points gained for team KOs increases.
+                    this.maxRaid.teamKOs[team] += 1;
+                }
+                return;
+            }
 
             switch (move.effect) {
                 case "stun": 
@@ -18672,6 +18720,7 @@ function Safari() {
         }
     };
     this.processMaxRaidTurn = function() {
+        //Every 4 hours, once standardized
         var mon;
         for (var i = 0; i < this.maxRaid.playerMons.length; i++) {
             mon = this.maxRaid.playerMons[i];
@@ -18696,6 +18745,49 @@ function Safari() {
             this.maxRaid.playerScores[idnum+""] = 0;
         }
         this.maxRaid.playerScores[idnum+""] += val;
+    };
+    this.viewMaxRaid = function(src) {
+        var out = [], info, e, p, b;
+        
+        var showBoosts = function(user) {
+            var mp = [], val;
+            for (var e in user.boosts) {
+                val = user.boosts[e];
+                if (val !== 0) {
+                    mp.push(toColor(addSign(val) + " " + e.toUpperCase(), (val > 0 ? "darkgreen" : "red")));
+                }
+            }
+            return mp.join(", ");
+        };
+        //TODO: Show current field condition(s) here
+        for (e = 0; e < this.maxRaid.raidMons.length; e++) {
+            p = this.maxRaid.raidMons[e];
+            if (p.hp === 0) {
+                continue;
+            }
+            info = [getHPColor(p.hp, p.maxhp)];
+            b = showBoosts(p);
+            if (b) {
+                info.push(b);
+            }
+            info.push(toColor("Proc: " + p.proc, "#fc9003"));
+            out.push(pokeInfo.icon(p.id) + info.join(" / "));
+        }
+        safaribot.sendHtmlMessage(src, out.join(" || ", safchan));
+        out = [];
+        for (e = 0; e < this.maxRaid.playerMons.length; e++) {
+            p = this.maxRaid.playerMons[e];
+            if (p.hp === 0) {
+                continue;
+            }
+            info = [getHPColor(p.hp, p.maxhp)];
+            b = showBoosts(p);
+            if (b) {
+                info.push(b);
+            } //TODO: Indicate which team (green/red/blue) they are on
+            out.push(pokeInfo.icon(p.id) + info.join(" / "));
+        }
+        safaribot.sendHtmlMessage(src, out.join(" || ", safchan)); //TODO: Add link for you to be able to click on the move select screen for any Pokémon you control
     };
 
     /* Celebrity Battles */
@@ -23307,7 +23399,7 @@ function Safari() {
                             }
                             if (move.category == "special") {
                                 user.boosts["satk"] -= 1;
-                                user.boosts["satk"] = Math.min(6, Math.max(user.boosts["atk"], -6));
+                                user.boosts["satk"] = Math.min(6, Math.max(user.boosts["satk"], -6));
                                 out.push(name + "'s " + self.statName("satk") + " -1!");
                             }
                         } else {
@@ -23391,10 +23483,6 @@ function Safari() {
                     }
                     if ((self.select.psyDrop || (self.select2 && self.select2.psyDrop)) && move.type === "Psychic" && chance(0.5)) {
                         if (self.select.singlespecialstat) {
-                            target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
-                            out.push(tname + "'s Special -1!");
-                        }
-                        if (self.select2 && self.select2.singlespecialstat) {
                             target.boosts["satk"] = Math.min(6, Math.max(target.boosts["satk"] - 1, -6));
                             out.push(tname + "'s Special -1!");
                         }
@@ -23975,6 +24063,8 @@ function Safari() {
                 priority: this.getMoveSet(p, "priority"),
                 restore: this.getMoveSet(p, "restore"),
                 burnout: this.getMoveSet(p, "burnout"),
+                buffMoves: this.getBuffValues(p),
+                nerfMoves: this.getNerfValues(p),
                 biteTypes: this.getBiteTypes(p),
                 ability: this.getAbilitySet(p),
                 item: {},
@@ -24339,9 +24429,9 @@ function Safari() {
                 if (isP4) {
                     bias = this.biasNPC2;
                 }
-                var screenUp = (((isP2 || isP4) && (this.side1Field.reflect || this.side2Field.lightscreen)) || ((!(isP2 || isP4)) && (this.side2Field.reflect || this.side1Field.lightscreen)));
+                var screenSide = (isP1 || isP3 ? 1 : 2);
                 var pokeTypes = [type1(move.owner), type2(move.owner)];
-                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, move.category, move.type, pokeTypes, screenUp, used);
+                eff = this.generateMoveEffect(data, amt * boost, damaging, bias, data.drain, data.recoil, data.critical, data.priority, data.restore, data.burnout, data.buffMoves, data.nerfMoves, move.category, move.type, pokeTypes, screenSide, used);
                 if (eff.type !== "none") {
                     for (p in eff) {
                         if (["target"].contains(p)) {
@@ -24419,7 +24509,7 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, category, type, pokeTypes, screenUp, used) {
+    Battle2.prototype.generateMoveEffect = function(user, factor, damaging, bias, drain, recoil, critical, priority, restore, burnout, buffValues, nerfValues, category, type, pokeTypes, screenSide, used) {
         var effChance;
         if (damaging) {
             effChance = {
@@ -24446,9 +24536,12 @@ function Safari() {
                 refresh: 2,
                 buff: 6,
                 nerf: 5,
-                reflect: 0.5,
-                lightscreen: 0.5
+                reflect: 0.45,
+                lightscreen: 0.45
             };
+        }
+        if (effChance.restore == 2 && restore > 0) {
+            effChance.restore = 2.1;
         }
         if (damaging && user.movepowers[type] && (user.movepowers[type] >= 140)) {
             effChance.recharge = 2;
@@ -24464,14 +24557,40 @@ function Safari() {
             effChance.followMe = 0.85;
             effChance.buff = 4;
             effChance.nerf = 3;
-            effChance.reflect = 1;
-            effChance.lightscreen = 1;
+            effChance.reflect = 0.85;
+            effChance.lightscreen = 0.85;
         }
+        var screenUp = (((screenSide == 2) && (this.side1Field.reflect > 0 || this.side2Field.lightscreen) > 0) || ((screenSide == 1) && (this.side2Field.reflect > 0 || this.side2Field.lightscreen > 0)));
         if (screenUp && type == "Fighting") {
             effChance.brickBreak = 1;
             if (pokeTypes.contains("Fighting")) {
                 effChance.brickBreak = 2;
             }
+        }
+        else if (screenUp && type == "Psychic") {
+            if (canLearnMove(user.id, 665)) {
+                effChance.brickBreak = 1;
+            }
+        }
+        if (!(damaging)) {
+            if (canLearnMove(user.id, 115)) {
+                effChance.reflect += 0.15;
+            }
+            if (canLearnMove(user.id, 113)) {
+                effChance.lightscreen += 0.15;
+            }
+        }
+        if (screenSide == 1 && (this.side1Field.reflect > 0)) {
+                effChance.reflect = 0;
+        }
+        if (screenSide == 2 && (this.side2Field.reflect > 0)) {
+                effChance.reflect = 0;
+        }
+        if (screenSide == 1 && (this.side1Field.lightscreen > 0)) {
+                effChance.lightscreen = 0;
+        }
+        if (screenSide == 2 && (this.side2Field.lightscreen > 0)) {
+                effChance.lightscreen = 0;
         }
         if (bias) {
             if (bias.recoil) {
@@ -24703,7 +24822,7 @@ function Safari() {
                 if (factor < -0.275) {
                     return out;
                 }
-                val = factor > 0 ? ((Math.round(16 * (Math.random() + 1) * (Math.random() + 1) * critical * Math.max(critical * 1.75 * Math.random(), 1) * (factor + 0.85)))/3) : ((Math.random() + 0.25) * critical * (6*(1+factor)) / 4);
+                val = factor > 0 ? ((Math.round(16 * (Math.random() + 1) * (Math.random() + 1) * critical * Math.max(critical * 1.8 * Math.random(), 1) * (factor + 0.85)))/3) : ((Math.random() + 0.28) * critical * (6*(1+factor)) / 4);
                 if (val <= 0.01) {
                     return out;
                 }
@@ -24778,9 +24897,9 @@ function Safari() {
                 }
                 if (factor > 0) {
                     val = randomSample({
-                        "1": 8,
+                        "1": 10,
                         "2": 4 * (1+factor/3),
-                        "3": 1 * (1+factor)
+                        "3": 1 * (0.85+factor)
                     });
                 } else {
                     val = randomSample({
@@ -24793,7 +24912,12 @@ function Safari() {
                 }
                 val = parseInt(val, 10);
                 if (this.select && this.select.psychicterrain && hasType(user.id, "Psychic") && val > 0) {
-                    val = Math.min(Math.floor(val * (2 * (0.5 + Math.random()))), 3);
+                    val = Math.min(Math.floor(val * (1.75 * (0.5 + Math.random()))), 3);
+                }
+                if (buffValues[buff.buffStat] > 0 && val > 0) {
+                    if (chance(buffValues[buff.buffStat] * 0.15)) {
+                        val += 1;
+                    }
                 }
                 buff.buff = parseInt(val, 10);
                 if (damaging) {
@@ -24814,6 +24938,12 @@ function Safari() {
             case "nerf":
                 nerf = {};
                 nerf.nerfStat = ["atk", "def", "satk", "sdef", "spe"].random();
+                if (this.select && this.select.physBan) {
+                    nerf.nerfStat = ["satk", "sdef", "spe"].random();
+                }
+                if (this.select && this.select.specBan) {
+                    nerf.nerfStat = ["atk", "def", "spe"].random();
+                }
                 if (used.contains("nerf" + nerf.nerfStat)) {
                     return out;
                 }
@@ -24822,9 +24952,9 @@ function Safari() {
                 }
                 if (factor > 0) {
                     val = randomSample({
-                        "-1": 8,
+                        "-1": 10,
                         "-2": 4 * (1+factor/3),
-                        "-3": 1 * (1+factor)
+                        "-3": 1 * (0.85+factor)
                     });
                 } else {
                     val = randomSample({
@@ -24834,6 +24964,12 @@ function Safari() {
                         "-1": 2,
                         "-2": 1
                     });
+                }
+                val = parseInt(val, 10);
+                if (nerfValues[nerf.nerfStat] > 0 && val < 0) {
+                    if (chance(nerfValues[nerf.nerfStat] * 0.15)) {
+                        val -= 1;
+                    }
                 }
                 nerf.nerf = parseInt(val, 10);
                 if (damaging) {
@@ -24845,7 +24981,7 @@ function Safari() {
                 } else {
                     nerf.nerfChance = 1;
                 }
-                if (nerf.nerfChance <= 0.01) {
+                if (nerf.nerfChance <= 0.04) {
                     return out;
                 }
                 out.nerf = nerf;
@@ -25438,6 +25574,125 @@ function Safari() {
         out = 8 * (Math.min(((val + 1)/16), 0.5));
         if (val === 0) {
             return 0.1;
+        }
+        return out;
+    };
+    Battle2.prototype.getBuffValues = function(id) {
+        var num = parseInt(id, 10), m, out = {
+            "atk": 0,
+            "def": 0,
+            "satk": 0,
+            "sdef": 0,
+            "spe": 0
+        };
+        if (canLearnMove(pokeInfo.species(num), 339)) {
+            out["atk"] = 1;
+            out["def"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 347)) {
+            out["satk"] = 1;
+            out["sdef"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 322)) {
+            out["def"] = 1;
+            out["sdef"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 74)) {
+            out["atk"] = 1;
+            out["satk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 349)) {
+            out["atk"] = 1;
+            out["spe"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 483)) {
+            out["satk"] = 1;
+            out["sdef"] = 1;
+            out["spe"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 336)) {
+            out["atk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 14)) {
+            out["atk"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 106)) {
+            out["def"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 334)) {
+            out["def"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 151)) {
+            out["def"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 508)) {
+            out["satk"] = 1;
+            out["spe"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 417)) {
+            out["satk"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 294)) {
+            out["satk"] = 3;
+        }
+        if (canLearnMove(pokeInfo.species(num), 133)) {
+            out["sdef"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 97)) {
+            out["spe"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 397)) {
+            out["spe"] = 2;
+        }
+        return out;
+    };
+    Battle2.prototype.getNerfValues = function(id) {
+        var num = parseInt(id, 10), m, out = {
+            "atk": 0,
+            "def": 0,
+            "satk": 0,
+            "sdef": 0,
+            "spe": 0
+        };
+        if (canLearnMove(pokeInfo.species(num), 600)) {
+            out["atk"] = 1;
+            out["satk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 45)) {
+            out["atk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 560)) {
+            out["atk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 204)) {
+            out["atk"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 297)) {
+            out["atk"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 43)) {
+            out["def"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 103)) {
+            out["def"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 555)) {
+            out["satk"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 445)) {
+            out["satk"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 718)) {
+            out["sdef"] = 1;
+        }
+        if (canLearnMove(pokeInfo.species(num), 313)) {
+            out["sdef"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 178)) {
+            out["spe"] = 2;
+        }
+        if (canLearnMove(pokeInfo.species(num), 81)) {
+            out["spe"] = 2;
         }
         return out;
     };
@@ -29837,10 +30092,10 @@ function Safari() {
                 var next = args.index + 1;
                 if (next === gym.trainers.length) {
                     var reward = [
-                        [["gem", 2], ["gacha", 10]],
+                        [["pearl", 5], ["gacha", 10]],
                         [["redapricorn", 25], ["grnapricorn", 25]],
                         [["golden", 2], ["silver", 15]],
-                        [["rare", 3], ["gem", 5]],
+                        ["celebrityTicket", 1],
                         ["miracle", 1],
                         ["fragment", 1],
                         ["platinum", 1]
