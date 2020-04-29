@@ -13003,7 +13003,7 @@ function Safari() {
                 safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 " + an(finishName(reward)) + " behind a bigger than average bush!</b>", safchan);
                 this.costumeEXP(player, "findrare");
                 reward = "rare";
-                amt = 2;
+                amount = 2;
             }
             break;
             case "rare": {
@@ -13018,7 +13018,7 @@ function Safari() {
             break;
             case "recharge2": {
                 reward = "permfinder";
-                amount = 8 + this.getFortune(player, "findershock", 0);
+                amount = 10 + this.getFortune(player, "findershock", 0);
                 showMsg = false;
                 safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
                 safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
@@ -22306,25 +22306,29 @@ function Safari() {
             }
             if (picked.length > 0) {
                 if (isP1) {
-                    this.p1PickedTeam = removeDuplicates(this.p1PickedTeam.concat(picked));
+                    this.p1PickedTeam = this.p1PickedTeam.concat(picked);
                     if (this.p1PickedTeam.length > size) {
                         this.p1PickedTeam = this.p1PickedTeam.slice(this.p1PickedTeam.length - size);
                     }
+                    this.p1PickedTeam = (this.p1PickedTeam);
                 } else if (isP2) {
-                    this.p2PickedTeam = removeDuplicates(this.p2PickedTeam.concat(picked));
+                    this.p2PickedTeam = this.p2PickedTeam.concat(picked);
                     if (this.p2PickedTeam.length > size) {
                         this.p2PickedTeam = this.p2PickedTeam.slice(this.p2PickedTeam.length - size);
                     }
+                    this.p2PickedTeam = removeDuplicates(this.p1PickedTeam);
                 } else if (isP3) {
-                    this.p3PickedTeam = removeDuplicates(this.p3PickedTeam.concat(picked));
+                    this.p3PickedTeam = (this.p3PickedTeam.concat(picked));
                     if (this.p3PickedTeam.length > size) {
                         this.p3PickedTeam = this.p3PickedTeam.slice(this.p3PickedTeam.length - size);
                     }
+                    this.p3PickedTeam = removeDuplicates(this.p1PickedTeam);
                 } else if (isP4) {
-                    this.p4PickedTeam = removeDuplicates(this.p4PickedTeam.concat(picked));
+                    this.p4PickedTeam = (this.p4PickedTeam.concat(picked));
                     if (this.p4PickedTeam.length > size) {
                         this.p4PickedTeam = this.p4PickedTeam.slice(this.p4PickedTeam.length - size);
                     }
+                    this.p4PickedTeam = removeDuplicates(this.p1PickedTeam);
                 }
                 this.sendMessage(name, "You have chosen " + readable(picked.map(function(x) { return poke(team[x].id); })) + " for this battle!");
                 
@@ -24919,6 +24923,7 @@ function Safari() {
                         val += 1;
                     }
                 }
+                val = Math.min(val, 3);
                 buff.buff = parseInt(val, 10);
                 if (damaging) {
                     if (factor > 0 || (factor < 0 && buff.buff < 0)) {
@@ -24966,6 +24971,7 @@ function Safari() {
                     });
                 }
                 val = parseInt(val, 10);
+                val = Math.max(val, -3);
                 if (nerfValues[nerf.nerfStat] > 0 && val < 0) {
                     if (chance(nerfValues[nerf.nerfStat] * 0.15)) {
                         val -= 1;
