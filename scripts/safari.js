@@ -22310,7 +22310,7 @@ function Safari() {
                     if (this.p1PickedTeam.length > size) {
                         this.p1PickedTeam = this.p1PickedTeam.slice(this.p1PickedTeam.length - size);
                     }
-                    this.p1PickedTeam = (this.p1PickedTeam);
+                    this.p1PickedTeam = removeDuplicates(this.p1PickedTeam);
                 } else if (isP2) {
                     this.p2PickedTeam = this.p2PickedTeam.concat(picked);
                     if (this.p2PickedTeam.length > size) {
