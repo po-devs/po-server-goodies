@@ -20659,7 +20659,7 @@ function Safari() {
                 var fillTeam = function(picked, team, size) {
                     var out = picked.concat();
                     var rest = [0, 1, 2, 3, 4, 5].filter(function(x) {
-                        return !out.contains(x) && team.length > x && team[x].hp > 0;
+                        return ((!out.contains(x) && (!out.contains(x+""))) && team.length > x && team[x].hp > 0);
                     }).shuffle();
                     while (out.length < size && rest.length) {
                         out.push(rest.shift());
@@ -22316,19 +22316,19 @@ function Safari() {
                     if (this.p2PickedTeam.length > size) {
                         this.p2PickedTeam = this.p2PickedTeam.slice(this.p2PickedTeam.length - size);
                     }
-                    this.p2PickedTeam = removeDuplicates(this.p1PickedTeam);
+                    this.p2PickedTeam = removeDuplicates(this.p2PickedTeam);
                 } else if (isP3) {
                     this.p3PickedTeam = (this.p3PickedTeam.concat(picked));
                     if (this.p3PickedTeam.length > size) {
                         this.p3PickedTeam = this.p3PickedTeam.slice(this.p3PickedTeam.length - size);
                     }
-                    this.p3PickedTeam = removeDuplicates(this.p1PickedTeam);
+                    this.p3PickedTeam = removeDuplicates(this.p3PickedTeam);
                 } else if (isP4) {
                     this.p4PickedTeam = (this.p4PickedTeam.concat(picked));
                     if (this.p4PickedTeam.length > size) {
                         this.p4PickedTeam = this.p4PickedTeam.slice(this.p4PickedTeam.length - size);
                     }
-                    this.p4PickedTeam = removeDuplicates(this.p1PickedTeam);
+                    this.p4PickedTeam = removeDuplicates(this.p4PickedTeam);
                 }
                 this.sendMessage(name, "You have chosen " + readable(picked.map(function(x) { return poke(team[x].id); })) + " for this battle!");
                 
