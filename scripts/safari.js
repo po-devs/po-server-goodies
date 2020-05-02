@@ -10801,6 +10801,9 @@ function Safari() {
         for (var e = player.pokeskillsArr.length - 1; e >= 0; e--) {
             info = player.pokeskillsArr[e];
             for (var d in info) {
+                if (d == "id") {
+                    continue;
+                }
                 info2 = info[d];
                 if (info2.expiration <= currentTime) {
                     info2.active = false;
@@ -29022,6 +29025,7 @@ function Safari() {
                                     } else {
                                         toWrite = player.pokeskillsArr.length;
                                         player.pokeskillsArr.push({
+                                            "id": mon.num,
                                             "a": {
                                                 "active": false,
                                                 "expiration": 0,
@@ -29060,6 +29064,7 @@ function Safari() {
                                     } else {
                                         toWrite = player.pokeskillsArr.length;
                                         player.pokeskillsArr.push({
+                                            "id": mon.num,
                                             "a": {
                                                 "active": false,
                                                 "expiration": 0,
