@@ -711,6 +711,19 @@ function Safari() {
             desc: null,
             deadline: 0,
             limit: 0
+        },
+        pokeskills: {
+            /*
+                example
+                "25": {
+                    "a": {
+                        "active": true,
+                        "expiration": [int],
+                        "level": 3,
+                        "effect": [str]
+                    }
+                }
+            */
         }
     };
 
@@ -1294,7 +1307,8 @@ function Safari() {
         celebrity: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAGYktHRAAAAAAAAPlDu38AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAIySURBVHic7VctlKNADA6rkJVI1lWOHImsRCI5xzlWHe4411OH3FNbiURWIpFI3FWOrMT15hs6lJ9tly28t/febd7Lg2Qy+ZJMMqXG6XSij6QH+mD6DOBqDzz++LIo0J/vL9Mr8PTzNjjLD6ch37J3zYWOoAW0VjTiCYHMCuAQ71rgV4M7r8Fu8QDgNPbcSQ5h954gHpYEvyeIf/seQBau41ApjqO1MLZbHhLssW9KFSZXAE7BjIkRKGTosR4wb/5FhHsgiZrsu+RvavXc7ceDjTVOYSsH+2f1zPKcwq1v/Pr2Mq8CAADwa+A6KA2qn3f3wFpcQIQQvay1PCSt1+BdO/j7/fT1fRWwY99A+SJ/1QMJ44x8i/WrI2Xou6DYh/3wM6sJkTkcg3fhhhzHJjdNKE2iliFDj/XWdm/OH0NdhS6tRE51ue/pIEPfpSnZXw2gsupeEEVVNdVISzoUF/DhO9ZBsJ8CfnMMs7p/IQnRKCzLpEiOp+9d+gDAW5lx16YbAH6O7x5DgAPwmEVKTtOKuGy6SlZcM2ToFZjDVICL/hbobJFZ+Ryod854y+qmlHqsoxG71ZkVgCc/MNBgNt+054tsC1FSIuddM2R+Hk3YwR77vAkfKG/2gHaCM0aZzex8y7GCHJdTnhUy/aYKtRuQ563VEajjcmxjdg/AiXZ0+fxpwEHqKeU398yZguE0FGE0WuPJdtT9i0zB8GICCG6+cH00NEO+Bn73/4LPv2b/TQB/AZGta/TPiHWYAAAAAElFTkSuQmCC",
         journal: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QkXACELuedkbQAAAB1pVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVBkLmUHAAAALVBMVEUAAAAAAAAvLi9GLUZJSU1KKRJxSC2LZjGQcUiRU2qwxuDPlm/u7vf3z7b///+TrKvBAAAAAXRSTlMAQObYZgAAAAFiS0dEDm+9ME8AAADrSURBVCjPY2DADpiUlJRQ+CouLi7IIkpAvouTAqoCZCUQPkKAyQUqIICiwslJSQGhQkVFRRshoOIEAnu1lbbBXaWira19dzdcgCFbae/evXdvJ8EFGNW23b17NzsJbguD9h7tu5tOb0I4nW2P7N2LpxMQAox7gVpuCyD5ThoosBHZ+4W5u6+JKyAJtAumCVYgCYhHNK6SaC1EKCiXEJ0Z2FgOV8JUppg6M0woHS4gnciYahwmIAa3R3ajGFAgUfoi3F0CYqHGoYmMCJcxioUqhSYiuZRRKVUpTAlFQFFQCEUgVACMEUAQiokBAKcRQwoZaIiAAAAAAElFTkSuQmCC",
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC",
-        baking: "data:image/png;base64,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"
+        baking: "data:image/png;base64,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",
+        idol: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QAIABgAFL1MG+DAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5AUBFwog6bVmlgAAACZpVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOV5F9bAAADzklEQVRYw+2XX2hbdRTHP5mdZFGsoctY3Zx58GUxaR1JCaQ0TbaXOERKhJWwDbOtD1aWIWGla9gm64NF3epDxL4s0mn9E5A0lOEKHaSLLqWsZbaJrT6IoWwV22JapnfSrrs+9N5LsnYuN7aC6Hm5957zze+c3/d3ft/8fvC//ddNU8qPjH6vuJY/2x1TPV5ZKYnNxxofBhHVFqJRk1xvs+BxukgvzHB7bKIgvqPahKV8G/3JQXIj6aKLKFuP5MCKrxo8Thf9EhvFFLGpWAZ2VJvYCOymYmd/e2yC9MIMmUgUj9OFx+lSMPJ3JhJVGNLbLA9t1pKbMBOJ4gsGChLnmy8Y4PPOMHqbZX0YkGcPkBtJ4wsGqN26E4D0wgytZXdoLbtDemEGgNqtO/EFA+RG0vljmNalB+QEAP3JQXoqtij+noot9CcHCzDArPT85W8XIM8e4Eysh8Re6ypMYq+VM7EeZJ3IjaQNUkgoqYB8+mW7PncLgOlryVV42SdjZLHS2yz3jH7vEyU3Yf7s+5ODXD/aik6nY37CWYAzNZ9HEARqP3rnwW24DNwraQkkRSv4Btgden0VVvZZP/n0wTHuS0WoZyA/uWyL2asMHdq/yj90aD+L2asAWMq3KTtDUkONKgbyBaRtPAGg7O+TR4KM9V1R1l1e+7G+K5w8EmT08EFFM6SxtG3jCQ2gVcVAtjtWkBzg4vQS7DuA9dTbcKqLJvvzK/7m83IyfNL/hdSI2kwkutRR5Qa4X3QBEm1i/swvTi8p8dFQCIDfnsoB0LzvAABNz2wG4HJd4+zLX0cdwKLE8rLaJhTbxhN0VLnR2yyc/fKaEphKpTDY7RjsdmpOXKDmxAUMdjuvTn+Px+mio8rNaChkyESis8Cz2e7Ycik6oOmocrPng7fWDM4ODwMwNzDA3MAAzt5L+IIBOTkA72d/jV6ua5wq6UAiN6HeZuHm8XPMT/SReKOTXQ4HU6kUuxyOla13+jQAOp0OgF6XS8G4PwzytOmVRx56NI9SwJvHzwEw2dXC7ub3MIfbufTzH2sO9lqlls2aZT57TKCyvk59AWvJryw+2e4Y9d/0sl2r47uhYSr2WOj86gYA73rr+f3uvLL9zMcayX77A5nAWY3qJfiLEy9Gv5fnmg4rvu3aFep9t+4C0NDQgNHvBeBJ64tFFaDG9EANIE52tYiTXS2iOdwumsPtoiAIoiAIIiAa/V6bhMUcbi/fiLvEC3IBgBOojMfjYjweFyXt0G3YvUCyn14a/lF+TwGPvxn/OD8u/BM3qi9kpcy7kIj8G+1P0GOYn/wsWwkAAAAASUVORK5CYII="
     };
     var base64acetrainer = {
         "f": {
@@ -2172,7 +2186,7 @@ function Safari() {
     };
     
     /* Misc Variables */
-    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false, "baking": false };
+    var stopQuests = {"collector": false, "scientist": false, "arena": false, "wonder": false, "tower": false, "pyramid": false, "alchemist": false, "arborist": false, "decoration": false, "league": false, "celebrity": false, "journal": false, "monger": false, "baking": false, "idol": false };
     var tradeRequests = {};
     var challengeRequests = {};
     var challengeRequests2 = [];
@@ -14635,8 +14649,8 @@ function Safari() {
             case "catchhighbst": exp = 20 + Math.floor((val - 540)*0.75); break;
             case "clonepoke": exp = 20 * val; break;
             case "daycareplay": exp = 5; break;
-            case "fighttower": exp = val;
-            case "arenasilver": exp = (2 * (3 + val + (val > 3 ? (val - 3) : 0) + (val > 6 ? (2 * (val - 6)) : 0)));
+            case "fighttower": exp = (2 * (5 + val + (val > 10 ? (val - 10) : 0) + (val > 15 ? (2 * (val - 15)) : 0))); break;
+            case "arenasilver": exp = (2 * (3 + val + (val > 3 ? (val - 3) : 0) + (val > 6 ? (2 * (val - 6)) : 0))); break;
             case "bait": exp = 3; break;
             case "findrare": exp = 66; break;
             case "wincontest": exp = 150; break;
@@ -14671,6 +14685,7 @@ function Safari() {
         if (!player.costumeInfo[cos].skills) {
             player.costumeInfo[cos].skills = [];
         }
+        exp = Math.round(exp);
         player.costumeInfo[cos].exp += exp;
 
         for (var i = 0; i < 20; i++) {
@@ -28711,6 +28726,202 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
         }
     };
+    this.idolQuest = function(src, data) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "start a quest", ["tutorial"])) {
+            return;
+        }
+        var trainerSprite = '<img src="' + base64trainers.idol + '">';
+        if (stopQuests.idol) {
+            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! The show's on hold. Come back another time!", safchan);
+            return;
+        }
+        var d1 = (data.length > 0 ? data[0] : "*");
+        switch (d1) {
+            case "*":
+            case "":
+            case "help":
+            case null:
+                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: I bet you're wondering how to use some secret moves!", safchan);
+                safaribot.sendHtmlMessage(src, "Idol: Well, I'm an expert when it comes to identifying the talents of Pokémon.", safchan);
+                safaribot.sendHtmlMessage(src, "Idol: With a little help from my cousin, I can help the right Pokémon learn incredible new abilities!", safchan);
+                safaribot.sendHtmlMessage(src, "Idol: Type " + link("/quest idol:alchemist") + " to see what I'm talking about.", safchan);
+                return;
+            case "alchemist":
+                var d2 = (data.length > 1 ? data[1] : "*");
+                var usable = [];
+                for (var i = 0; i < player.party.length; i++) {
+                    if (skillData.hasOwnProperty(player.party[i]+"")) {
+                        usable.push(parseInt(player.party[i]+""), 10);
+                    }
+                }
+                usable = removeDuplicates(usable, true);
+                var alchemistSprite = '<img src="' + base64trainers.alchemist + '">';
+                switch (d2) {
+                    case "*":
+                        if (usable.length > 0) {
+                            usable = usable.map(function(x) {
+                                return " " + link("/quest idol:alchemist:" + x, poke(x));
+                            }),
+                            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Yep, I see you brought some interesting Pokémon today. Let's see what we can do, hehehe...", safchan);
+                            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's what I was thinking! So, " + player.id.toCorrectCase() + ", which Pokémon should we help?", safchan);
+                            safaribot.sendHtmlMessage(src, usable.join(", "), safchan);
+                            return;
+                        }
+                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: In this magical world, some Pokémon stand out with natural flair!", safchan);
+                        safaribot.sendHtmlMessage(src, "Idol: Their abilities transend what you would ever imagine was possible! That is, until you understand the power of Sun Shard and Moon Shards.", safchan);
+                        safaribot.sendHtmlMessage(src, "Idol: Magical abilities within each Pokémon respond to the Shards' powers, causing them to awaken!", safchan);
+                        safaribot.sendHtmlMessage(src, "Idol: Of course, I'm not the one who works with magical stones all the time. That's why my cousin is here!", safchan);
+                        safaribot.sendHtmlMessage(src, "Idol: ...? Wait, where is she? Don't tell me she fell asleep again... " + link("/quest idol:alchemist:next", "«Next»") + ".", safchan);
+                        return;
+                    case "next":
+                        var c = ["Norman", "Cynthia", "Sabrina", "Jasmine", "Bruno", "Champion Alder"].random();
+                        safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Zzz... hmm? Oh, yes, I am here. I'm totally not asleep.", safchan);
+                        safaribot.sendHtmlMessage(src,  "Alchemist: I'm just... <i>*yawn*</i>... a bit tired from staying up all night making potions. You will not believe how quickly that " + c + " can go through them!", safchan);
+                        safaribot.sendHtmlMessage(src,  "Alchemist: So, I understand you want to know how to unlock special abilities in your Pokémon, eh? Sorry, buddy, but there's no Pokémon with you that I can help.", safchan);
+                        safaribot.sendHtmlMessage(src,  trainerSprite + "Idol: In the meantime, you're free to browse my notes if you wish. Just type " + link("/quest idol:alchemist:", false, true) + " and then the Pokémon you want to look up.", safchan);
+                        return;
+                    case "party":
+                        //Show them each PokéSkill in their party
+                        safaribot.sendHtmlMessage(src,  trainerSprite + "", safchan);
+                        return;
+                    default:
+                        var mon = getInputPokemon(d2);
+                        if (!mon || (!(mon.num))) {
+                            safaribot.sendHtmlMessage(src, alchemistSprite + "Alchemist: Uh... what's a " + d2 + "? How am I supposed to help you with a Pokémon that doesn't exist?.", safchan);
+                            return;
+                        }
+                        if (skillData.hasOwnProperty(mon.num+"")) {
+                            var sData = skillData[mon.num+""];
+                            var d3 = (data.length > 2 ? data[2] : "*");
+                            var playerData = null;
+                            if (player.pokeskills.hasOwnProperty(mon.num+"")) {
+                                playerData = player.pokeskills[mon.num+""];
+                            }
+                            function getSkillData(sData, playerData, d3, tryIndex) {
+                                var skillIndex = tryIndex ? tryIndex : 0, cost = 0, val = 0, nextVal = 0, active = false, level = 0;
+                                if (playerData) {
+                                    if (playerData.hasOwnProperty(d3)) {
+                                        if (playerData[d3].level) {
+                                            skillIndex = playerData[d3].level;
+                                            level = skillIndex;
+                                        }
+                                        active = playerData[d3].active;
+                                    }
+                                }
+                                if (skillIndex >= sData[d3].amt.length) {
+                                    cost = null;
+                                    val = null;
+                                } else {
+                                    cost = [1, 2, 4, 8][skillIndex] * sData[d3].unlockCost; //How many sun shards it costs to unlock this
+                                    if (skillIndex === sData[d3].amt.length) {
+                                        nextVal = sData[d3].amt[skillIndex-1]; //Numerical boost assigned to this skill
+                                    } else {
+                                        nextVal = sData[d3].amt[skillIndex];
+                                    }
+                                    if (skillIndex > 0) {
+                                        val = sData[d3].amt[skillIndex - 1]; //Numerical boost assigned to this skill
+                                    }
+                                }
+                                useCost = sData[d3].activateCost;
+                                duration = sData[d3].duration;
+                                return {
+                                    cost: cost,
+                                    useCost: useCost,
+                                    val: val,
+                                    nextVal: nextVal,
+                                    active: active,
+                                    level,
+                                    duration: duration
+                                }
+                            }
+                            if (usable.contains(mon.num)) {
+                                var hitAny = false;
+                                if (!(["a", "b"].contains(d3))) {
+                                    d3 = "*";
+                                }
+                                if (d3 == "*") {
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You want to unlock the abilities within " + mon.name + "?", safchan);
+                                    safaribot.sendHtmlMessage(src, "Idol: Which ability should we look at?", safchan);
+                                    var m;
+                                    function skillTextMore(sData, playerData, letter) {
+                                        var m;
+                                        var info = getSkillData(sData, playerData, letter, 0);
+                                        m = poke(mon.num) + "'s '" + sData[letter].effectHelp.format(info.val) + " ";
+                                        m += link("/quest idol:alchemist:" + d2 + ":" + letter + "*", "«More»", false);
+                                        return m;
+                                    }
+                                    if (sData.hasOwnProperty("a")) {
+                                        m = skillTextMore(sData, playerData, "a");
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                    }
+                                    if (sData.hasOwnProperty("b")) {
+                                        m = skillTextMore(sData, playerData, "b");
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                    }
+                                    return;
+                                }
+                                var info = getSkillData(sData, playerData, d3, 0);
+                                var d4 = (data.length > 3 ? data[3] : "*");
+                                if (d4 == "*") {
+                                    if (info.cost) {
+                                        var m = "Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' [" + info.cost + " " + finishName("sunshard") + "] ";
+                                        m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "unlock", "«Unlock»", true);
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                        hitAny = true;
+                                    }
+                                    if ((!(info.active)) && info.level > 0) {
+                                        var m = "Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) [" + info.useCost + " " + finishName("moonshard") + "] ";
+                                        m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "activate", "«Activate»", true);
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                        hitAny = true;
+                                    } else if (info.level > 0) {
+                                        var m = poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' is active for another " + timeLeftString(playerData[d3].expiration) + "!";
+                                    }
+                                } else if (d4 == "unlock") {
+                                    //Unlock the skill for the player
+                                    //TODO: add text and price check
+                                    return;
+                                    if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
+                                        player.pokeskills[mon.num+""] = {};
+                                    }
+                                    if (!player.pokeskills[mon.num].hasOwnProperty(d3)) {
+                                        player.pokeskills[mon.num+""][d3] = {
+                                            "active": false,
+                                            "expiration": 0,
+                                            "level": 0,
+                                            "effect": ""
+                                        };
+                                    }
+                                    if (player.pokeskills[mon.num+""][d3].level >= sData[d3].amt.length) {
+                                        //Already finished unlocking, cannot anymore
+                                        return;
+                                    }
+                                    this.saveGame(player);
+                                } else if (d4 == "activate") {
+                                    //Activate the skill for the player
+                                    //TODO: add text and price check
+                                    return;
+                                    if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
+                                        player.pokeskills[mon.num+""] = {};
+                                    }
+                                    if (!player.pokeskills[mon.num].hasOwnProperty(d3)) {
+                                        player.pokeskills[mon.num+""][d3] = {
+                                            "active": false,
+                                            "expiration": 0,
+                                            "level": 0,
+                                            "effect": ""
+                                        };
+                                    }
+                                    player.pokeskills[mon.num+""][d3].active = true;
+                                    player.pokeskills[mon.num+""][d3].expiration = now() + (info.duration * 60 * 60);
+                                    this.saveGame(player);
+                                }
+                            }
+                        }
+                }
+        }
+    };
     this.arboristQuest = function(src, data) {
         var player = getAvatar(src);
         if (cantBecause(src, "start a quest", ["tutorial"])) {
@@ -28953,7 +29164,7 @@ function Safari() {
         }
 
         if (!canMake) {
-            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Wait-a-secon'. That ain't enough materials! (Progress: " + progress.join(", ") + ")", safchan);
+            safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Um, that's just not enough materials... (Progress: " + progress.join(", ") + ")", safchan);
             return;
         }
 
@@ -29340,7 +29551,7 @@ function Safari() {
                         [["pack", 3], ["mega", 1]],
                         ["dew", 12],
                         [["nugget", 3], ["mega", 2]],
-                        ["pack", 5],
+                        [["pack", 5], ["pearl", 30]],
                         ["mega", 2],
                         ["dew", 40],
                         ["pack", 50],
@@ -51200,6 +51411,32 @@ function Safari() {
                 } catch (err) {
                     trialsData = cThemes;
                     safaribot.sendMessage(src, "Couldn't load Trials from " + url + "! Error: " + err, safchan);
+                }
+                return true;
+            }
+            if (command === "loadpokeskills" || command === "loadpokeskill") {
+                var data = skillData ? data : {};
+                var url = commandData === "*" ? (permObj.get("pokeskillsurl") || commandData) : commandData;
+                if (url === "*") {
+                    safaribot.sendMessage(src, "Please type a valid URL!", safchan);
+                    return true;
+                }
+                safaribot.sendMessage(src, "Loading Pokémon Skills from " + url + "!", safchan);
+                try {
+                    sys.webCall(url, function (resp) {
+                        try {
+                            data = JSON.parse(resp);
+                            permObj.add("pokeskillsurl", url);
+                            globalWildItems = data;
+                            safaribot.sendMessage(src, "Pokéskills successfully loaded!", safchan);
+                            safari.sanitizeAll();
+                        } catch (error) {
+                            safaribot.sendMessage(src, "Couldn't load Pokéskills from " + url + "! Error: " + error, safchan);
+                        }
+                    });
+                } catch (err) {
+                    skillData = data;
+                    safaribot.sendMessage(src, "Couldn't load Pokéskills from " + url + "! Error: " + err, safchan);
                 }
                 return true;
             }
