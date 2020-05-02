@@ -28922,7 +28922,7 @@ function Safari() {
                             var d3 = (data.length > 2 ? data[2] : "*");
                             var playerData = null, dataIndex = -1;
                             for (var i = 0; i < player.pokeskillsArr.length; i++) {
-                                if (player.pokeskillsArr[i].id+"" == mon.num+"") {
+                                if (player.pokeskillsArr[i].id+"" !== mon.num+"") {
                                     continue;
                                 }
                                 dataIndex = i;
