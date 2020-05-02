@@ -10791,6 +10791,24 @@ function Safari() {
             }
         }
     };
+    this.tickPokeSkills = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+        var currentTime = now(), info, info2;
+        for (var e in player.pokeskills) {
+            info = player.pokeskills[e];
+            for (var d in info) {
+                info2 = info[d];
+                if (info2.expiration <= currentTime) {
+                    info2.active = false;
+                    safaribot.sendHtmlMessage(src, "Your " + poke(parseInt(e, 10)) + "'s " + cap(d) + " skill wore off and will need to be renewed by " + link("/quest idol:alchemist", "the Idol") + "!", safchan);
+                    this.saveGame(player);
+                }
+            }
+        }
+    };
     this.setFavoriteBall = function(src, commandData) {
         if (!validPlayers("self", src)) {
             return;
@@ -28826,6 +28844,8 @@ function Safari() {
                                     }
                                     if (skillIndex > 0) {
                                         val = sData[d3].amt[skillIndex - 1]; //Numerical boost assigned to this skill
+                                    } else if (skillIndex == 0) {
+                                        val = sData[d3].amt[skillIndex]; //Numerical boost assigned to this skill
                                     }
                                 }
                                 useCost = sData[d3].activateCost;
@@ -28851,7 +28871,7 @@ function Safari() {
                                     var m;
                                     var info = getSkillData(sData, playerData, letter, 0);
                                     m = poke(mon.num) + "'s '" + sData[letter].effectHelp.format(info.val) + " ";
-                                    m += link("/quest idol:alchemist:" + d2 + ":" + letter + "*", "«More»", false);
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + letter + ":*", "«More»", false);
                                     return m;
                                 }
                                 if (sData.hasOwnProperty("a")) {
@@ -28864,18 +28884,22 @@ function Safari() {
                                 }
                                 return;
                             }
+                            if (!(sData.hasOwnProperty(d3))) {
+                                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That's not a skill this Pokémon has, unfortunately!", safchan);
+                                return;
+                            }
                             var info = getSkillData(sData, playerData, d3, 0);
                             var d4 = (data.length > 3 ? data[3] : "*");
                             if (d4 == "*") {
                                 if (info.cost) {
                                     var m = "Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' [" + info.cost + " " + finishName("sunshard") + "] ";
-                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "unlock", "«Unlock»", true);
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":unlock", "«Unlock»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
                                 }
                                 if ((!(info.active)) && info.level > 0) {
                                     var m = "Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) [" + info.useCost + " " + finishName("moonshard") + "] ";
-                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "activate", "«Activate»", true);
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":activate", "«Activate»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
                                 } else if (info.level > 0) {
@@ -28885,12 +28909,14 @@ function Safari() {
                                 var hitAny = false;
                                 if (d4 == "unlock") {
                                     //Unlock the skill for the player
-                                    //TODO: add text and price check
-                                    return;
+                                    if (player.balls.sunshard < info.cost) {
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.cost + " Sun Shards to do this and you only have " + player.balls.sunshard + " !", safchan);
+                                        return;
+                                    }
                                     if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
                                         player.pokeskills[mon.num+""] = {};
                                     }
-                                    if (!player.pokeskills[mon.num].hasOwnProperty(d3)) {
+                                    if (!player.pokeskills[mon.num+""].hasOwnProperty(d3)) {
                                         player.pokeskills[mon.num+""][d3] = {
                                             "active": false,
                                             "expiration": 0,
@@ -28899,14 +28925,19 @@ function Safari() {
                                         };
                                     }
                                     if (player.pokeskills[mon.num+""][d3].level >= sData[d3].amt.length) {
-                                        //Already finished unlocking, cannot anymore
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Looks like you've already finished unlocking this little guy's ability here!", safchan);
                                         return;
                                     }
+                                    player.balls.sunshard -= info.cost;
+                                    player.pokeskills[mon.num+""][d3].level += 1;
+                                    player.pokeskills[mon.num+""][d3].effect = sData[d3].effect;
                                     this.saveGame(player);
                                 } else if (d4 == "activate") {
                                     //Activate the skill for the player
-                                    //TODO: add text and price check
-                                    return;
+                                    if (player.balls.moonshard < info.useCost) {
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.useCost + " Moon Shards to do this and you only have " + player.balls.moonshard + " !", safchan);
+                                        return;
+                                    }
                                     if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
                                         player.pokeskills[mon.num+""] = {};
                                     }
@@ -28918,6 +28949,11 @@ function Safari() {
                                             "effect": ""
                                         };
                                     }
+                                    if (player.pokeskills[mon.num+""][d3].active) {
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Looks like that skill's already active!", safchan);
+                                        return;
+                                    }
+                                    player.balls.moonshard -= info.useCost;
                                     player.pokeskills[mon.num+""][d3].active = true;
                                     player.pokeskills[mon.num+""][d3].expiration = now() + (info.duration * 60 * 60);
                                     this.saveGame(player);
