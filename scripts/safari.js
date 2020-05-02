@@ -20292,7 +20292,7 @@ function Safari() {
                         plc = pokskl[this.team1[i].id+""];
                         if (plc.hasOwnProperty("a")) {
                             if (plc.a.active) {
-                                this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.b.val];
+                                this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.a.val];
                             }
                         }
                         if (plc.hasOwnProperty("b")) {
