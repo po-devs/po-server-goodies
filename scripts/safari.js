@@ -20282,7 +20282,8 @@ function Safari() {
             }
         }
         this.skills = {
-            "1": {}
+            "1": {},
+            "2": {}
         };
         if (!(this.fullNPC)) {
             if (player1.hasOwnProperty("pokeskills")) {
@@ -22750,7 +22751,9 @@ function Safari() {
         
         var bonus = 1;
         bonus *= (isP1 && this.skills["1"].expertBelt && this.skills["1"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["1"].expertBelt[1] * 0.01) : 1);
+        bonus *= (isP2 && this.skills["2"].expertBelt && this.skills["2"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["2"].expertBelt[1] * 0.01) : 1);
         bonus *= ((isP2 || isP4) && this.skills["1"].solidRock && this.skills["1"].solidRock[0] == (target.id + "") && typeMultiplier > 1 ? (1 - this.skills["1"].solidRock[1] * 0.01) : 1);
+        bonus *= ((isP1 || isP3) && this.skills["2"].solidRock && this.skills["2"].solidRock[0] == (target.id + "") && typeMultiplier > 1 ? (1 - this.skills["2"].solidRock[1] * 0.01) : 1);
         if (this.select) {
             bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
@@ -23374,24 +23377,32 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    if (isP1 && self.skills["1"].hasOwnProperty("drainHelp") && self.skills["1"].drainHelp && self.skills["1"].drainHelp[0] == user.id + "") {
-                        var amt2 = Math.floor(self.skills["1"].drainHelp[1] * amt * 0.01);
-                        for (var i = 0; i < self.team1.length; i++) {
-                            if (self.team1[i] == user || self.team1[i].hp <= 0) {
-                                continue;
-                            }
-                            if (amt2 > 0) {
-                                placeholder = self.team1[i].hp;
-                                self.team1[i].hp += amt2;
-                                if (self.team1[i].hp > self.team1[i].maxhp) {
-                                    self.team1[i].hp = self.team1[i].maxhp;
+                    function drainHelp(num, self) {
+                        var team = [self.team1, self.team2][num-1];
+                        if (self.skills[num+""].hasOwnProperty("drainHelp") && self.skills[num+""].drainHelp && self.skills[num+""].drainHelp[0] == user.id + "") {
+                            var amt2 = Math.floor(self.skills[num+""].drainHelp[1] * amt * 0.01);
+                            for (var i = 0; i < team.length; i++) {
+                                if (team[i] == user || team[i].hp <= 0) {
+                                    continue;
                                 }
-                                placeholder = (self.team1[i].hp - placeholder);
-                                if (placeholder > 0) {
-                                    out.push(poke(self.team1[i].id) + " restored " + placeholder + " HP!");
+                                if (amt2 > 0) {
+                                    placeholder = team[i].hp;
+                                    team[i].hp += amt2;
+                                    if (team[i].hp > team[i].maxhp) {
+                                        team[i].hp = team[i].maxhp;
+                                    }
+                                    placeholder = (team[i].hp - placeholder);
+                                    if (placeholder > 0) {
+                                        out.push(poke(team[i].id) + " restored " + placeholder + " HP!");
+                                    }
                                 }
                             }
                         }
+                    }
+                    if (isP1) {
+                        drainHelp(1, self);
+                    } else if (isP2) {
+                        drainHelp(2, self);
                     }
                 }
                 if (move.recoil) {
