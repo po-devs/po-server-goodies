@@ -28998,13 +28998,13 @@ function Safari() {
                             var d4 = (data.length > 3 ? data[3] : "*");
                             if (d4 == "*") {
                                 if (info.cost) {
-                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' </i>" + toColor("[" + info.cost + " " + finishName("sunshard") + "] ", "orange") + "?";
+                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' </i>" + toColor("[" + info.cost + " " + finishName("sunshard") + "]", "orange") + "?";
                                     m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":unlock", "«Unlock»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
                                 }
                                 if ((!(info.active)) && info.level > 0) {
-                                    var m = "<i>Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) </i>" + toColor("[" + info.useCost + " " + finishName("moonshard") + "] ", "blue") + "?";
+                                    var m = "<i>Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) </i>" + toColor("[" + info.useCost + " " + finishName("moonshard") + "]", "blue") + "?";
                                     m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":activate", "«Activate»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
