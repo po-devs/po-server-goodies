@@ -20281,6 +20281,24 @@ function Safari() {
                 }
             }
         }
+        this.skills = {
+            "1": {}
+        };
+        if (!(this.fullNPC)) {
+            if (player1.hasOwnProperty(pokeskills)) {
+                var pokskl = player1.pokeskills, plc;
+                for (var i = 0; i < this.team1.length; i++) {
+                    if (pokskl.hasOwnProperty(this.team1[i].id+"")) {
+                        plc = pokskl[this.team1[i].id+""];
+                        if (plc.hasOwnProperty("b")) {
+                            if (plc.b.active) {
+                                this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
+                            }
+                        }
+                    }
+                } (pokskl.hasOwnProperty())
+            }
+        }
 
         var player3, player4;
         this.team3 = [];
@@ -23340,13 +23358,33 @@ function Safari() {
                 }
                 if (move.drain) {
                     var placeholder = user.hp;
-                    user.hp += Math.floor(dmg * move.drain);
+                    var amt = dmg * move.drain;
+                    user.hp += Math.floor(amt);
                     if (user.hp > user.maxhp) {
                         user.hp = user.maxhp;
                     }
                     placeholder = (user.hp - placeholder);
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
+                    }
+                    if (isP1 && this.skills["1"].drainHelp &&  this.skills["1"].drainHelp[0] == user.id + "") {
+                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt);
+                        for (var i = 0; i < this.team1.length; i++) {
+                            if (this.team1[i] == user || this.team1[i].hp <= 0) {
+                                continue;
+                            }
+                            if (amt2 > 0) {
+                                placeholder = this.team1[i].hp;
+                                this.team1[i].hp += amt2;
+                                if (this.team1[i].hp > this.team1[i].maxhp) {
+                                    this.team1[i].hp = this.team1[i].maxhp;
+                                }
+                                placeholder = (this.team1[i].hp - placeholder);
+                                if (placeholder > 0) {
+                                    out.push(poke(this.team1[i].id) + " restored " + placeholder + " HP!");
+                                }
+                            }
+                        }
                     }
                 }
                 if (move.recoil) {
@@ -28924,6 +28962,7 @@ function Safari() {
                                             "active": false,
                                             "expiration": 0,
                                             "level": 0,
+                                            "val": 0,
                                             "effect": ""
                                         };
                                     }
@@ -28933,6 +28972,7 @@ function Safari() {
                                     }
                                     player.balls.sunshard -= info.cost;
                                     player.pokeskills[mon.num+""][d3].level += 1;
+                                    player.pokeskills[mon.num+""][d3].val = sData[d3].val;
                                     player.pokeskills[mon.num+""][d3].effect = sData[d3].effect;
                                     this.saveGame(player);
                                 } else if (d4 == "activate") {
@@ -28949,6 +28989,7 @@ function Safari() {
                                             "active": false,
                                             "expiration": 0,
                                             "level": 0,
+                                            "val": 0,
                                             "effect": ""
                                         };
                                     }
