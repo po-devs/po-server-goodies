@@ -28840,50 +28840,50 @@ function Safari() {
                                     duration: duration
                                 }
                             }
-                            if (usable.contains(mon.num)) {
-                                var hitAny = false;
-                                if (!(["a", "b"].contains(d3))) {
-                                    d3 = "*";
-                                }
-                                if (d3 == "*") {
-                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You want to unlock the abilities within " + mon.name + "?", safchan);
-                                    safaribot.sendHtmlMessage(src, "Idol: Which ability should we look at?", safchan);
+                            if (!(["a", "b"].contains(d3))) {
+                                d3 = "*";
+                            }
+                            if (d3 == "*") {
+                                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You want to unlock the abilities within " + mon.name + "?", safchan);
+                                safaribot.sendHtmlMessage(src, "Idol: Which ability should we look at?", safchan);
+                                var m;
+                                function skillTextMore(sData, playerData, letter) {
                                     var m;
-                                    function skillTextMore(sData, playerData, letter) {
-                                        var m;
-                                        var info = getSkillData(sData, playerData, letter, 0);
-                                        m = poke(mon.num) + "'s '" + sData[letter].effectHelp.format(info.val) + " ";
-                                        m += link("/quest idol:alchemist:" + d2 + ":" + letter + "*", "«More»", false);
-                                        return m;
-                                    }
-                                    if (sData.hasOwnProperty("a")) {
-                                        m = skillTextMore(sData, playerData, "a");
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
-                                    }
-                                    if (sData.hasOwnProperty("b")) {
-                                        m = skillTextMore(sData, playerData, "b");
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
-                                    }
-                                    return;
+                                    var info = getSkillData(sData, playerData, letter, 0);
+                                    m = poke(mon.num) + "'s '" + sData[letter].effectHelp.format(info.val) + " ";
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + letter + "*", "«More»", false);
+                                    return m;
                                 }
-                                var info = getSkillData(sData, playerData, d3, 0);
-                                var d4 = (data.length > 3 ? data[3] : "*");
-                                if (d4 == "*") {
-                                    if (info.cost) {
-                                        var m = "Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' [" + info.cost + " " + finishName("sunshard") + "] ";
-                                        m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "unlock", "«Unlock»", true);
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
-                                        hitAny = true;
-                                    }
-                                    if ((!(info.active)) && info.level > 0) {
-                                        var m = "Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) [" + info.useCost + " " + finishName("moonshard") + "] ";
-                                        m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "activate", "«Activate»", true);
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
-                                        hitAny = true;
-                                    } else if (info.level > 0) {
-                                        var m = poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' is active for another " + timeLeftString(playerData[d3].expiration) + "!";
-                                    }
-                                } else if (d4 == "unlock") {
+                                if (sData.hasOwnProperty("a")) {
+                                    m = skillTextMore(sData, playerData, "a");
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                }
+                                if (sData.hasOwnProperty("b")) {
+                                    m = skillTextMore(sData, playerData, "b");
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                }
+                                return;
+                            }
+                            var info = getSkillData(sData, playerData, d3, 0);
+                            var d4 = (data.length > 3 ? data[3] : "*");
+                            if (d4 == "*") {
+                                if (info.cost) {
+                                    var m = "Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' [" + info.cost + " " + finishName("sunshard") + "] ";
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "unlock", "«Unlock»", true);
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                    hitAny = true;
+                                }
+                                if ((!(info.active)) && info.level > 0) {
+                                    var m = "Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) [" + info.useCost + " " + finishName("moonshard") + "] ";
+                                    m += link("/quest idol:alchemist:" + d2 + ":" + d3 + "activate", "«Activate»", true);
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
+                                    hitAny = true;
+                                } else if (info.level > 0) {
+                                    var m = poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' is active for another " + timeLeftString(playerData[d3].expiration) + "!";
+                                }
+                            } else if (usable.contains(mon.num)) {
+                                var hitAny = false;
+                                if (d4 == "unlock") {
                                     //Unlock the skill for the player
                                     //TODO: add text and price check
                                     return;
@@ -28921,8 +28921,12 @@ function Safari() {
                                     player.pokeskills[mon.num+""][d3].active = true;
                                     player.pokeskills[mon.num+""][d3].expiration = now() + (info.duration * 60 * 60);
                                     this.saveGame(player);
+                                } else {
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Use acivate or unlock or I don't know what you're talking about!", safchan);
                                 }
                             }
+                        } else {
+                            safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! That Pokémon does not have any unlockable skills at the moment!", safchan);
                         }
                 }
         }
@@ -51433,7 +51437,7 @@ function Safari() {
                         try {
                             data = JSON.parse(resp);
                             permObj.add("pokeskillsurl", url);
-                            globalWildItems = data;
+                            skillData = data;
                             safaribot.sendMessage(src, "Pokéskills successfully loaded!", safchan);
                             safari.sanitizeAll();
                         } catch (error) {
