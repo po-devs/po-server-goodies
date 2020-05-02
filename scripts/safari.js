@@ -20290,6 +20290,11 @@ function Safari() {
                 for (var i = 0; i < this.team1.length; i++) {
                     if (pokskl.hasOwnProperty(this.team1[i].id+"")) {
                         plc = pokskl[this.team1[i].id+""];
+                        if (plc.hasOwnProperty("a")) {
+                            if (plc.a.active) {
+                                this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.b.val];
+                            }
+                        }
                         if (plc.hasOwnProperty("b")) {
                             if (plc.b.active) {
                                 this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
@@ -22744,6 +22749,8 @@ function Safari() {
         var screen = ((!crit) && (!move.brickBreak) && ((targetSide === 1 && this.side1Field.reflect > 0 && move.category === "physical") || (targetSide === 2 && this.side2Field.reflect > 0 && move.category === "physical") || (targetSide === 1 && this.side1Field.lightscreen > 0 && move.category === "special") || (targetSide === 2 && this.side2Field.lightscreen > 0 && move.category === "special")));
         
         var bonus = 1;
+        bonus *= (isP1 && this.skills["1"].expertBelt && this.skills["1"].expertBelt[0] == (user.id + "") && typeMultiplier > 1 ? (1 + this.skills["1"].expertBelt[1] * 0.01) : 1);
+        bonus *= ((isP2 || isP4) && this.skills["1"].solidRock && this.skills["1"].solidRock[0] == (target.id + "") && typeMultiplier > 1 ? (1 - this.skills["1"].solidRock[1] * 0.01) : 1);
         if (this.select) {
             bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
@@ -23368,7 +23375,7 @@ function Safari() {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
                     if (isP1 && this.skills["1"].drainHelp &&  this.skills["1"].drainHelp[0] == user.id + "") {
-                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt);
+                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt * 0.01);
                         for (var i = 0; i < this.team1.length; i++) {
                             if (this.team1[i] == user || this.team1[i].hp <= 0) {
                                 continue;
@@ -23835,19 +23842,28 @@ function Safari() {
                         if (move.status == "sleep" && this.select && this.select.extendedSleep) {
                             target.conditionDuration++;
                         }
-                        if (move.status == "poison" && (hasType(user.id, "Poison"))) {
-                            target.badlyPoisoned = 1;
-                            out.push(tname + " got badly poisoned!");
+                        var surpressed = false;
+                        if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
+                            if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
+                                out.push(tname + " was veiled from the poison!");
+                                surpressed = true;
+                            }
                         }
-                        else {
-                            var conditionVerb = {
-                                sleep: "fell asleep",
-                                paralyzed: "was paralyzed",
-                                burn: "got burned",
-                                freeze: "was frozen solid",
-                                poison: "got poisoned"
-                            };
-                            out.push(tname + " " + conditionVerb[move.status] + "!");
+                        if (!surpressed) {
+                            if (move.status == "poison" && (hasType(user.id, "Poison"))) {
+                                target.badlyPoisoned = 1;
+                                out.push(tname + " got badly poisoned!");
+                            }
+                            else {
+                                var conditionVerb = {
+                                    sleep: "fell asleep",
+                                    paralyzed: "was paralyzed",
+                                    burn: "got burned",
+                                    freeze: "was frozen solid",
+                                    poison: "got poisoned"
+                                };
+                                out.push(tname + " " + conditionVerb[move.status] + "!");
+                            }
                         }
                     }
                 } else {
@@ -26919,7 +26935,7 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : ""), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : "[Available]"), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
