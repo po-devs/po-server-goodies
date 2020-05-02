@@ -23374,21 +23374,21 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    if (isP1 && this.skills["1"].drainHelp &&  this.skills["1"].drainHelp[0] == user.id + "") {
-                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt * 0.01);
-                        for (var i = 0; i < this.team1.length; i++) {
-                            if (this.team1[i] == user || this.team1[i].hp <= 0) {
+                    if (isP1 && self.skills["1"].hasOwnProperty("drainHelp") && self.skills["1"].drainHelp && self.skills["1"].drainHelp[0] == user.id + "") {
+                        var amt2 = Math.floor(self.skills["1"].drainHelp[1] * amt * 0.01);
+                        for (var i = 0; i < self.team1.length; i++) {
+                            if (self.team1[i] == user || self.team1[i].hp <= 0) {
                                 continue;
                             }
                             if (amt2 > 0) {
-                                placeholder = this.team1[i].hp;
-                                this.team1[i].hp += amt2;
-                                if (this.team1[i].hp > this.team1[i].maxhp) {
-                                    this.team1[i].hp = this.team1[i].maxhp;
+                                placeholder = self.team1[i].hp;
+                                self.team1[i].hp += amt2;
+                                if (self.team1[i].hp > self.team1[i].maxhp) {
+                                    self.team1[i].hp = self.team1[i].maxhp;
                                 }
-                                placeholder = (this.team1[i].hp - placeholder);
+                                placeholder = (self.team1[i].hp - placeholder);
                                 if (placeholder > 0) {
-                                    out.push(poke(this.team1[i].id) + " restored " + placeholder + " HP!");
+                                    out.push(poke(self.team1[i].id) + " restored " + placeholder + " HP!");
                                 }
                             }
                         }
