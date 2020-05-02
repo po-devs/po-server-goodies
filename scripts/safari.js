@@ -28831,7 +28831,7 @@ function Safari() {
                                     val: val,
                                     nextVal: nextVal,
                                     active: active,
-                                    level,
+                                    level: level,
                                     duration: duration
                                 }
                             }
