@@ -31727,7 +31727,7 @@ function Safari() {
             }
             if (counterMon && countersHit < 5 && i < maxLoop) {
                 i++;
-                atkm = safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p));
+                atkm = Math.max(safari.checkEffective(type1(counterMon), type2(counterMon), type1(p), type2(p)), 0.01);
                 defm = safari.checkEffective(type1(p), type2(p), type1(counterMon), type2(counterMon));
                 hitCounter = false;
                 if (((((defm * 100) / atkm) * 0.01) < 4 && (i * 0.5 < maxLoop)) && (chance(0.65))) {
