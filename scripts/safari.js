@@ -20285,7 +20285,7 @@ function Safari() {
             "1": {}
         };
         if (!(this.fullNPC)) {
-            if (player1.hasOwnProperty(pokeskills)) {
+            if (player1.hasOwnProperty("pokeskills")) {
                 var pokskl = player1.pokeskills, plc;
                 for (var i = 0; i < this.team1.length; i++) {
                     if (pokskl.hasOwnProperty(this.team1[i].id+"")) {
@@ -28992,6 +28992,7 @@ function Safari() {
                                     player.pokeskills[mon.num+""][d3].level += 1;
                                     player.pokeskills[mon.num+""][d3].val = sData[d3].val;
                                     player.pokeskills[mon.num+""][d3].effect = sData[d3].effect;
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You unlocked the skill: " + sData[d3].effectHelp.format(info.nextVal) + "!", safchan);
                                     this.saveGame(player);
                                 } else if (d4 == "activate") {
                                     //Activate the skill for the player
@@ -29018,6 +29019,7 @@ function Safari() {
                                     player.balls.moonshard -= info.useCost;
                                     player.pokeskills[mon.num+""][d3].active = true;
                                     player.pokeskills[mon.num+""][d3].expiration = now() + (info.duration * 60 * 60);
+                                    safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You activated the skill: " + sData[d3].effectHelp.format(info.val) + "!", safchan);
                                     this.saveGame(player);
                                 } else {
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Use acivate or unlock or I don't know what you're talking about!", safchan);
