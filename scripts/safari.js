@@ -26942,6 +26942,10 @@ function Safari() {
             case "ggbo":
                 this.bakingQuest(src, args);
             break;
+            case "idol":
+            case "hatsune miku":
+                this.idolQuest(src, args);
+            break;
             default:
                 safaribot.sendMessage(src, "This is not a valid quest!", safchan);
         }
