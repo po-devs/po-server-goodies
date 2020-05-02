@@ -20295,11 +20295,6 @@ function Safari() {
                                 this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
                             }
                         }
-                        if (plc.hasOwnProperty("a")) {
-                            if (plc.b.active) {
-                                this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
-                            }
-                        }
                     }
                 } (pokskl.hasOwnProperty())
             }
