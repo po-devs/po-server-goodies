@@ -713,7 +713,7 @@ function Safari() {
             deadline: 0,
             limit: 0
         },
-        pokeskills: {
+        pokeskills: [
             /*
                 example
                 "25": {
@@ -725,7 +725,7 @@ function Safari() {
                     }
                 }
             */
-        }
+        ]
     };
 
     /* Item Variables */
@@ -10797,7 +10797,7 @@ function Safari() {
             return;
         }
         var currentTime = now(), info, info2;
-        for (var e in player.pokeskills) {
+        for (var e = player.pokeskills.length - 1; e >= 0; e--) {
             info = player.pokeskills[e];
             for (var d in info) {
                 info2 = info[d];
@@ -20288,9 +20288,13 @@ function Safari() {
         if (!(this.fullNPC)) {
             if (player1.hasOwnProperty("pokeskills")) {
                 var pokskl = player1.pokeskills, plc;
-                for (var i = 0; i < this.team1.length; i++) {
-                    if (pokskl.hasOwnProperty(this.team1[i].id+"")) {
-                        plc = pokskl[this.team1[i].id+""];
+                for (var j = 0; j < player1.pokeskills.length; j++) {
+                    pokskl = player1.pokeskills[j];
+                    for (var i = 0; i < this.team1.length; i++) {
+                        if (pokskl.id+"" !== this.team1[i].id+"") {
+                            continue;
+                        }
+                        plc = pokskl;
                         if (plc.hasOwnProperty("a")) {
                             if (plc.a.active) {
                                 this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.a.val];
@@ -20301,8 +20305,32 @@ function Safari() {
                                 this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
                             }
                         }
-                    }
-                } (pokskl.hasOwnProperty())
+                    } 
+                }
+            }
+        }
+        if (!(this.npcBattle)) {
+            if (player2.hasOwnProperty("pokeskills")) {
+                var pokskl = player2.pokeskills, plc;
+                for (var j = 0; j < player2.pokeskills.length; j++) {
+                    pokskl = player2.pokeskills[j];
+                    for (var i = 0; i < this.team2.length; i++) {
+                        if (pokskl.id+"" !== this.team2[i].id+"") {
+                            continue;
+                        }
+                        plc = pokskl;
+                        if (plc.hasOwnProperty("a")) {
+                            if (plc.a.active) {
+                                this.skills["2"][plc.a.effect] = [this.team2[i].id+"", plc.a.val];
+                            }
+                        }
+                        if (plc.hasOwnProperty("b")) {
+                            if (plc.b.active) {
+                                this.skills["2"][plc.b.effect] = [this.team2[i].id+"", plc.b.val];
+                            }
+                        }
+                    } 
+                }
             }
         }
 
@@ -23377,10 +23405,10 @@ function Safari() {
                     if (placeholder > 0) {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
-                    function drainHelp(num, self) {
+                    function drainHelp(num, self, amt) {
                         var team = [self.team1, self.team2][num-1];
-                        if (self.skills[num+""].hasOwnProperty("drainHelp") && self.skills[num+""].drainHelp && self.skills[num+""].drainHelp[0] == user.id + "") {
-                            var amt2 = Math.floor(self.skills[num+""].drainHelp[1] * amt * 0.01);
+                        if (self.skills[num+""].hasOwnProperty("drainHelp") && self.skills[num+""].drainHelp && self.skills[num+""].drainHelp[0] == (user.id + "")) {
+                            var amt2 = Math.ceil(self.skills[num+""].drainHelp[1] * amt * 0.01);
                             for (var i = 0; i < team.length; i++) {
                                 if (team[i] == user || team[i].hp <= 0) {
                                     continue;
@@ -28888,8 +28916,12 @@ function Safari() {
                         if (skillData.hasOwnProperty(mon.num+"")) {
                             var sData = skillData[mon.num+""];
                             var d3 = (data.length > 2 ? data[2] : "*");
-                            var playerData = null;
-                            if (player.pokeskills.hasOwnProperty(mon.num+"")) {
+                            var playerData = null, dataIndex = -1;
+                            for (var i = 0; i < player.pokeskills.length; i++) {
+                                if (player.pokeskills[i].id+"" == mon.num+"") {
+                                    continue;
+                                }
+                                dataIndex = i;
                                 playerData = player.pokeskills[mon.num+""];
                             }
                             function getSkillData(sData, playerData, d3, tryIndex) {
@@ -28983,26 +29015,36 @@ function Safari() {
                                         safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.cost + " Sun Shards to do this and you only have " + player.balls.sunshard + "!", safchan);
                                         return;
                                     }
-                                    if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
-                                        player.pokeskills[mon.num+""] = {};
+                                    var toWrite = null;
+                                    if (dataIndex > -1) {
+                                        toWrite = player.pokeskills[dataIndex];
+                                    } else {
+                                        toWrite = player.pokeskills.length;
+                                        player.pokeskills.push({
+                                            "a": {
+                                                "active": false,
+                                                "expiration": 0,
+                                                "level": 0,
+                                                "val": 0,
+                                                "effect": ""
+                                            },
+                                            "b": {
+                                                "active": false,
+                                                "expiration": 0,
+                                                "level": 0,
+                                                "val": 0,
+                                                "effect": ""
+                                            }
+                                        });
                                     }
-                                    if (!player.pokeskills[mon.num+""].hasOwnProperty(d3)) {
-                                        player.pokeskills[mon.num+""][d3] = {
-                                            "active": false,
-                                            "expiration": 0,
-                                            "level": 0,
-                                            "val": 0,
-                                            "effect": ""
-                                        };
-                                    }
-                                    if (player.pokeskills[mon.num+""][d3].level >= sData[d3].amt.length) {
+                                    if (toWrite[d3].level >= sData[d3].amt.length) {
                                         safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Looks like you've already finished unlocking this little guy's ability here!", safchan);
                                         return;
                                     }
                                     player.balls.sunshard -= info.cost;
-                                    player.pokeskills[mon.num+""][d3].level += 1;
-                                    player.pokeskills[mon.num+""][d3].val = sData[d3].val;
-                                    player.pokeskills[mon.num+""][d3].effect = sData[d3].effect;
+                                    player.pokeskills[toWrite][d3].level += 1;
+                                    player.pokeskills[toWrite][d3].val = info.val;
+                                    player.pokeskills[toWrite][d3].effect = sData[d3].effect;
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You unlocked the skill: " + sData[d3].effectHelp.format(info.nextVal) + "!", safchan);
                                     this.saveGame(player);
                                 } else if (d4 == "activate") {
@@ -29011,25 +29053,35 @@ function Safari() {
                                         safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.useCost + " Moon Shards to do this and you only have " + player.balls.moonshard + "!", safchan);
                                         return;
                                     }
-                                    if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
-                                        player.pokeskills[mon.num+""] = {};
+                                    var toWrite = null;
+                                    if (dataIndex > -1) {
+                                        toWrite = player.pokeskills[dataIndex];
+                                    } else {
+                                        toWrite = player.pokeskills.length;
+                                        player.pokeskills.push({
+                                            "a": {
+                                                "active": false,
+                                                "expiration": 0,
+                                                "level": 0,
+                                                "val": 0,
+                                                "effect": ""
+                                            },
+                                            "b": {
+                                                "active": false,
+                                                "expiration": 0,
+                                                "level": 0,
+                                                "val": 0,
+                                                "effect": ""
+                                            }
+                                        });
                                     }
-                                    if (!player.pokeskills[mon.num].hasOwnProperty(d3)) {
-                                        player.pokeskills[mon.num+""][d3] = {
-                                            "active": false,
-                                            "expiration": 0,
-                                            "level": 0,
-                                            "val": 0,
-                                            "effect": ""
-                                        };
-                                    }
-                                    if (player.pokeskills[mon.num+""][d3].active) {
+                                    if (player.pokeskills[toWrite][d3].active) {
                                         safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Looks like that skill's already active!", safchan);
                                         return;
                                     }
                                     player.balls.moonshard -= info.useCost;
-                                    player.pokeskills[mon.num+""][d3].active = true;
-                                    player.pokeskills[mon.num+""][d3].expiration = now() + (info.duration * 60 * 60);
+                                    player.pokeskills[toWrite][d3].active = true;
+                                    player.pokeskills[toWrite][d3].expiration = now() + (info.duration * 60 * 60 * 1000);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You activated the skill: " + sData[d3].effectHelp.format(info.val) + "!", safchan);
                                     this.saveGame(player);
                                 } else {
