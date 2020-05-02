@@ -90,6 +90,7 @@ function Safari() {
     var officialVolleyballWins2 = 0;
 
     var globalWildItems = {};
+    var skillData = {};
 
     var currentDay = 1;
 
@@ -46559,6 +46560,7 @@ function Safari() {
         permObj.add("celebrityPKs", JSON.stringify(celebrityPKs));
         permObj.add("recentPlayers", JSON.stringify(recentPlayers));
         permObj.add("globalWildItems", JSON.stringify(globalWildItems));
+        permObj.add("skillData", JSON.stringify(skillData));
         safari.saveDaycare();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
@@ -51393,7 +51395,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadwilditems" || command === "loadwilditem") {
-                var data = globalWildItems ? data : {};
+                var data = globalWildItems ? globalWildItems : {};
                 var url = commandData === "*" ? (permObj.get("wilditemsurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
@@ -51419,7 +51421,7 @@ function Safari() {
                 return true;
             }
             if (command === "loadpokeskills" || command === "loadpokeskill") {
-                var data = skillData ? data : {};
+                var data = skillData ? skillData : {};
                 var url = commandData === "*" ? (permObj.get("pokeskillsurl") || commandData) : commandData;
                 if (url === "*") {
                     safaribot.sendMessage(src, "Please type a valid URL!", safchan);
@@ -52046,6 +52048,7 @@ function Safari() {
         safari.dataDumps2 = parseFromPerm("dumps2", {});
         recentPlayers = parseFromPerm("recentPlayers", {});
         globalWildItems = parseFromPerm("globalWildItems", {});
+        skillData = parseFromPerm("skillData", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
