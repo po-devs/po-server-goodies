@@ -26919,6 +26919,8 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : ""), safchan);
+            
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
             sys.sendMessage(src, "", safchan);
@@ -28933,13 +28935,13 @@ function Safari() {
                             var d4 = (data.length > 3 ? data[3] : "*");
                             if (d4 == "*") {
                                 if (info.cost) {
-                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' " + toColor("[" + info.cost + " " + finishName("sunshard") + "] ", "orange") + "?</i>";
+                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' </i>" + toColor("[" + info.cost + " " + finishName("sunshard") + "] ", "orange") + "?";
                                     m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":unlock", "«Unlock»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
                                 }
                                 if ((!(info.active)) && info.level > 0) {
-                                    var m = "<i>Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) " + toColor("[" + info.useCost + " " + finishName("moonshard") + "] ", "blue") + "?</i>";
+                                    var m = "<i>Use " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.val) + "' (Duration: " + info.duration + " hours) </i>" + toColor("[" + info.useCost + " " + finishName("moonshard") + "] ", "blue") + "?";
                                     m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":activate", "«Activate»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
@@ -28951,7 +28953,7 @@ function Safari() {
                                 if (d4 == "unlock") {
                                     //Unlock the skill for the player
                                     if (player.balls.sunshard < info.cost) {
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.cost + " Sun Shards to do this and you only have " + player.balls.sunshard + " !", safchan);
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.cost + " Sun Shards to do this and you only have " + player.balls.sunshard + "!", safchan);
                                         return;
                                     }
                                     if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
@@ -28978,7 +28980,7 @@ function Safari() {
                                 } else if (d4 == "activate") {
                                     //Activate the skill for the player
                                     if (player.balls.moonshard < info.useCost) {
-                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.useCost + " Moon Shards to do this and you only have " + player.balls.moonshard + " !", safchan);
+                                        safaribot.sendHtmlMessage(src, trainerSprite + "Idol: So, my cousin's going to need " + info.useCost + " Moon Shards to do this and you only have " + player.balls.moonshard + "!", safchan);
                                         return;
                                     }
                                     if (!player.pokeskills.hasOwnProperty(mon.num+"")) {
@@ -29004,6 +29006,8 @@ function Safari() {
                                 } else {
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Use acivate or unlock or I don't know what you're talking about!", safchan);
                                 }
+                            } else {
+                                safaribot.sendHtmlMessage(src, trainerSprite + "Idol: That Pokémon isn't in your party, so I can't help you there!", safchan);
                             }
                         } else {
                             safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Sorry! That Pokémon does not have any unlockable skills at the moment!", safchan);
