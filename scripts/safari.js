@@ -29042,7 +29042,7 @@ function Safari() {
                                             }
                                         });
                                     }
-                                    if (toWrite[d3].level >= sData[d3].amt.length) {
+                                    if (player.pokeskillsArr[toWrite][d3].level >= sData[d3].amt.length) {
                                         safaribot.sendHtmlMessage(src, trainerSprite + "Idol: Looks like you've already finished unlocking this little guy's ability here!", safchan);
                                         return;
                                     }
