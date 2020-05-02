@@ -20293,12 +20293,12 @@ function Safari() {
             if (player1.hasOwnProperty("pokeskillsArr")) {
                 var pokskl = player1.pokeskillsArr, plc;
                 for (var j = 0; j < player1.pokeskillsArr.length; j++) {
-                    pokskl = player1.pokeskillsArr[j];
+                    plc = player1.pokeskillsArr[j];
                     for (var i = 0; i < this.team1.length; i++) {
-                        if (pokskl.id+"" !== this.team1[i].id+"") {
+                        if (plc.id+"" !== this.team1[i].id+"") {
                             continue;
                         }
-                        plc = pokskl;
+                        safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), "Found skills for " + this.team1[i].id, safchan);
                         if (plc.hasOwnProperty("a")) {
                             if (plc.a.active) {
                                 this.skills["1"][plc.a.effect] = [this.team1[i].id+"", plc.a.val];
@@ -20307,6 +20307,7 @@ function Safari() {
                         if (plc.hasOwnProperty("b")) {
                             if (plc.b.active) {
                                 this.skills["1"][plc.b.effect] = [this.team1[i].id+"", plc.b.val];
+                                safaribot.sendHtmlMessage(sys.id("Miki Sayaka"), plc.b.effect + ": " + this.team1[i].id+"" + " / " + plc.b.val, safchan);
                             }
                         }
                     } 
@@ -26978,7 +26979,7 @@ function Safari() {
 
             safaribot.sendHtmlMessage(src, "-" + link("/quest baking", "Baking") + " " + (quest.baking.cooldown > n ? "[Available in " + timeLeftString(quest.baking.cooldown) + "]" : "[Available]") + (stopQuests.baking ? " <b>[Disabled]</b>" : ""), safchan);
             
-            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : "[Available]"), safchan);
+            safaribot.sendHtmlMessage(src, "-" + link("/quest idol", "Idol") + (stopQuests.idol ? " <b>[Disabled]</b>" : " [Available]"), safchan);
             
             sys.sendMessage(src, "", safchan);
             safaribot.sendMessage(src, "For more information, type /quest [name] (example: /quest collector).", safchan);
@@ -28926,7 +28927,7 @@ function Safari() {
                                     continue;
                                 }
                                 dataIndex = i;
-                                playerData = player.pokeskillsArr[mon.num+""];
+                                playerData = player.pokeskillsArr[i];
                             }
                             function getSkillData(sData, playerData, d3, tryIndex) {
                                 var skillIndex = tryIndex ? tryIndex : 0, cost = 0, val = 0, nextVal = 0, active = false, level = 0;
