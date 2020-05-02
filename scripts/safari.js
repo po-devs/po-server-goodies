@@ -23375,7 +23375,7 @@ function Safari() {
                         out.push(name + " restored " + placeholder + " HP!");
                     }
                     if (isP1 && this.skills["1"].drainHelp &&  this.skills["1"].drainHelp[0] == user.id + "") {
-                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt * 0.01);
+                        var amt2 = Math.floor(this.skills["1"].drainHelp[1] * amt);
                         for (var i = 0; i < this.team1.length; i++) {
                             if (this.team1[i] == user || this.team1[i].hp <= 0) {
                                 continue;
@@ -23842,14 +23842,14 @@ function Safari() {
                         if (move.status == "sleep" && this.select && this.select.extendedSleep) {
                             target.conditionDuration++;
                         }
-                        var supressed = false;
+                        var surpressed = false;
                         if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
                             if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
                                 out.push(tname + " was veiled from the poison!");
-                                supressed = true;
+                                surpressed = true;
                             }
                         }
-                        if (!supressed) {
+                        if (!surpressed) {
                             if (move.status == "poison" && (hasType(user.id, "Poison"))) {
                                 target.badlyPoisoned = 1;
                                 out.push(tname + " got badly poisoned!");
