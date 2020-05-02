@@ -29021,11 +29021,11 @@ function Safari() {
                                     }
                                     var toWrite = null;
                                     if (dataIndex > -1) {
-                                        toWrite = player.pokeskillsArr[dataIndex];
+                                        toWrite = dataIndex;
                                     } else {
                                         toWrite = player.pokeskillsArr.length;
                                         player.pokeskillsArr.push({
-                                            "id": mon.num,
+                                            "id": mon.num+"",
                                             "a": {
                                                 "active": false,
                                                 "expiration": 0,
@@ -29060,11 +29060,11 @@ function Safari() {
                                     }
                                     var toWrite = null;
                                     if (dataIndex > -1) {
-                                        toWrite = player.pokeskillsArr[dataIndex];
+                                        toWrite = dataIndex;
                                     } else {
                                         toWrite = player.pokeskillsArr.length;
                                         player.pokeskillsArr.push({
-                                            "id": mon.num,
+                                            "id": mon.num+"",
                                             "a": {
                                                 "active": false,
                                                 "expiration": 0,
