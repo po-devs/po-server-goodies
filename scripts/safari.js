@@ -23842,14 +23842,14 @@ function Safari() {
                         if (move.status == "sleep" && this.select && this.select.extendedSleep) {
                             target.conditionDuration++;
                         }
-                        var surpressed = false;
+                        var supressed = false;
                         if (targetSide == 1 && this.skills["1"].pastelVeil && move.status == "poison") {
                             if (this.skills["1"].pastelVeil[0] == target.id + "" || this.skills["1"].pastelVeil[1] == "Ally") {
                                 out.push(tname + " was veiled from the poison!");
-                                surpressed = true;
+                                supressed = true;
                             }
                         }
-                        if (!surpressed) {
+                        if (!supressed) {
                             if (move.status == "poison" && (hasType(user.id, "Poison"))) {
                                 target.badlyPoisoned = 1;
                                 out.push(tname + " got badly poisoned!");
