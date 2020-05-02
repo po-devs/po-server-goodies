@@ -44966,6 +44966,7 @@ function Safari() {
             safaribot.sendMessage(src, "Your Safari data was successfully loaded!", safchan);
             this.dailyReward(src, getDay(now()));
             this.revertMega(src);
+            this.tickPokeSkills(src);
             if (player.tutorial.inTutorial) {
                 this.progressTutorial(src);
             }
@@ -52734,6 +52735,7 @@ function Safari() {
                 for (e in onChannel) {
                     safari.dailyReward(onChannel[e], today);
                     safari.revertMega(onChannel[e]);
+                    safari.tickPokeSkills(onChannel[e]);
                 }
                 safari.updateLeaderboards();
                 rawPlayers.save();
