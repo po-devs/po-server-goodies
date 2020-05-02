@@ -10805,7 +10805,7 @@ function Safari() {
                     continue;
                 }
                 info2 = info[d];
-                if (info2.expiration <= currentTime) {
+                if (info2.expiration <= currentTime && info2.active) {
                     info2.active = false;
                     safaribot.sendHtmlMessage(src, "Your " + poke(parseInt(e, 10)) + "'s " + cap(d) + " skill wore off and will need to be renewed by " + link("/quest idol:alchemist", "the Idol") + "!", safchan);
                     this.saveGame(player);
