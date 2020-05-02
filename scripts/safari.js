@@ -28895,7 +28895,7 @@ function Safari() {
                             var d4 = (data.length > 3 ? data[3] : "*");
                             if (d4 == "*") {
                                 if (info.cost) {
-                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' " toColor("[" + info.cost + " " + finishName("sunshard") + "] ", "orange") + "?</i>";
+                                    var m = "<i>Learn " + poke(mon.num) + "'s '" + sData[d3].effectHelp.format(info.nextVal) + "' " + toColor("[" + info.cost + " " + finishName("sunshard") + "] ", "orange") + "?</i>";
                                     m += link("/quest idol:alchemist:" + d2 + ":" + d3 + ":unlock", "«Unlock»", true);
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: " + m, safchan);
                                     hitAny = true;
