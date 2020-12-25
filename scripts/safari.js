@@ -6016,12 +6016,11 @@ function Safari() {
         var evoData = evolutions[species];
         var possibleEvo = evoData.evo, evolveTo;
         if (Array.isArray(possibleEvo)) {
-            if (data) {
-                if (possibleEvo.contains(getInputPokemon(data).num)) {
-                    evolveTo = getInputPokemon(data).num;
-                } else {
-                    evolveTo = evoData.evo[sys.rand(0, possibleEvo.length)];
-                }
+            if (data && possibleEvo.contains(getInputPokemon(data).num)) {
+                evolveTo = getInputPokemon(data).num;
+            }
+            else {
+                evolveTo = evoData.evo[sys.rand(0, possibleEvo.length)];
             }
         }
         else {
