@@ -948,7 +948,7 @@ function Safari() {
             cookie: {name: "cookie", fullName: "Fortune Cookie", type: "consumable", icon: 88, price: 5000, aliases: ["cookie", "fortune cookie", "fortunecookie", "fortune"], tradable: false},
             easteregg: {name: "easteregg", fullName: "Easter Egg", type: "consumable", icon: 88, price: 5000, aliases: ["egg", "easter egg", "easteregg", "easter", "rainbowegg"], tradable: false, cap: 9999},
             //candybag: {name: "candybag", fullName: "Candy Bag", type: "consumable", icon: 88, price: 5000, aliases: ["bag", "candy bag", "candybag", "halloween", "treat", "treats"], tradable: false, cap: 9999},
-            celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: false},
+            celebrityTicket: {name: "celebrityTicket", fullName: "Celebrity Ticket", type: "consumable", icon: 132, price: 5000, aliases: ["celebrityticket", "celebrity ticket", "celebrity"], tradable: true},
             lucky: {name: "lucky", fullName: "Lucky Coin", type: "valuables", icon: 272, price: 0, aliases: ["lucky", "luckycoin", "lucky coin", "luckycoins"], tradable: false},
 
             //Alchemy related items
@@ -51981,7 +51981,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                     return true;
                 }
-                var item = info[1].toLowerCase();
+                var item = info[1];
                 if (!data.hasOwnProperty(item)) {
                     safaribot.sendMessage(src, "Invalid " + cap(type) + "!", safchan);
                     return true;
