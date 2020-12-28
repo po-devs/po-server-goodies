@@ -7082,7 +7082,7 @@ function Safari() {
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
-                    for (i = 1; i < 891; i++) {
+                    for (i = 1; i < 899; i++) {
                         bst = getBST(i);
                         if (this.validForTheme(i, cTheme) && bst <= statCap && bst >= statMin) {
                             list.push(i);
@@ -7111,7 +7111,7 @@ function Safari() {
                         canLegend = false;
                     }
                     var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
-                    for (i = 1; i < 891; i++) {
+                    for (i = 1; i < 899; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
                         if (bst >= 600) {
@@ -31939,11 +31939,11 @@ function Safari() {
         return;
     };
     function generateName() {
-        var part1 = sys.rand(1, 891), part2, name2, out,
+        var part1 = sys.rand(1, 899), part2, name2, out,
             name1 = pokePlain(part1);
 
         do {
-            part2 = sys.rand(1, 891);
+            part2 = sys.rand(1, 899);
             name2 = pokePlain(part2);
 
             out = name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2));
