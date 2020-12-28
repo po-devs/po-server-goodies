@@ -30353,7 +30353,7 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.064) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
+            currentTrainer.powerBoost = ((trainer.power - 1.07) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
             chal = Math.round(0.75 + (ind/4) + (difficulty * 1.75) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
