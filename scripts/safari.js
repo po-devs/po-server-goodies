@@ -13317,7 +13317,7 @@ function Safari() {
             case "rare2": {
                 reward = "rare";
                 amount = 2;
-                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 " + an(finishName(reward)) + " behind a bigger than average bush!</b>", safchan);
+                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 Rare Candies behind a bigger than average bush!</b>", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
@@ -13327,7 +13327,7 @@ function Safari() {
             }
             break;
             case "crystal": {
-                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found a " + an(finishName(reward)) + " with their itemfinder!</b>", safchan);
+                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their itemfinder!</b>", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
