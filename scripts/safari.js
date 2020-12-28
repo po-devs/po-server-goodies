@@ -18496,7 +18496,7 @@ function Safari() {
             rew = ["5@mega", "2@mega", "5@rare"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 55 === 0) {
-            rew = ["3@entry", "@entry", "@pearl"]
+            rew = ["5@pearl", "3@pearl", "@pearl"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 24 === 0) {
             rew = ["2@mushroom", "6@cookie", "@soda"]
@@ -18505,7 +18505,7 @@ function Safari() {
             rew = ["2@crystal", "2@ampere", "2@silver"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 20 === 0) {
-            rew = ["@entry", "3@rare", "@rare"]
+            rew = ["3@pearl", "3@rare", "@rare"]
         }
         else if ((safari.events.hiddenQuizData.currentID + 1) % 10 === 0) {
             rew = ["10@rare", "3@rare", "@rare"]
