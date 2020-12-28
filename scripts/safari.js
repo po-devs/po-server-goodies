@@ -13315,10 +13315,10 @@ function Safari() {
         }
         switch (reward) {
             case "rare2": {
-                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 " + an(finishName(reward)) + " behind a bigger than average bush!</b>", safchan);
-                this.costumeEXP(player, "findrare");
                 reward = "rare";
                 amount = 2;
+                safaribot.sendHtmlAll("<b>Beep. Beep. BEEP! " + sys.name(src) + " found 2 " + an(finishName(reward)) + " behind a bigger than average bush!</b>", safchan);
+                this.costumeEXP(player, "findrare");
             }
             break;
             case "rare": {
