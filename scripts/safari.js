@@ -3763,74 +3763,74 @@ function Safari() {
         "741": {
             "name": "Wicked Blow",
             "learned": [892],
-            "type": "Dark"
+            "type": "Dark",
             "power": 160
         },
         "742": {
             "name": "Surging Strikes",
             "learned": [66428],
-            "type": "Water"
+            "type": "Water",
             "power": 150 
         },
         "743": {
             "name": "Freezing Glare",
             "learned": [65680],
-            "type": "Psychic"
+            "type": "Psychic",
             "power": 90
         },
         "744": {
             "name": "Thunderous Kick",
             "learned": [65681],
-            "type": "Fighting"
+            "type": "Fighting",
             "power": 90
         },
         "745": {
             "name": "Fiery Wrath",
             "learned": [65682],
-            "type": "Dark"
+            "type": "Dark",
             "power": 90
         },
         "746": {
             "name": "Thunder Cage",
             "learned": [894],
-            "type": "Electric"
+            "type": "Electric",
             "power": 80
         },
         "747": {
             "name": "Dragon Energy",
             "learned": [895],
-            "type": "Dragon"
+            "type": "Dragon",
             "power": 150
         },
         "748": {
             "name": "Glacial Lance",
             "learned": [66434],
-            "type": "Ice"
+            "type": "Ice",
             "power": 130
         },
         "749": {
             "name": "Astral Barrage",
             "learned": [131970],
-            "type": "Ghost"
+            "type": "Ghost",
             "power": 120
         },
         "750": {
             "name": "Shell Side Arm",
             "learned": [65616],
-            "type": "Poison"
+            "type": "Poison",
             "power": 90
         },
         "751": {
             "name": "Eerie Spell",
             "learned": [65735],
-            "type": "Psychic"
+            "type": "Psychic",
             "power": 80
         }
         /* template
         "": {
             "name": "",
             "learned": [],
-            "type": ""
+            "type": "",
             "power": 0
         }
         */
