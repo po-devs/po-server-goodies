@@ -13132,10 +13132,10 @@ function Safari() {
                 555-3 --> 554-1
                 */
                 if ([2, 3].contains(forme)) { // Galarian Darmanitan or Galarian Darmanitan-Zen
-                    evoData = pokeInfo.calcForme(evoData, 1); // Galarian Darumaka
+                    evoData = pokeInfo.calcForme(554, 1); // Galarian Darumaka
                 }
                 else {
-                    evoData = pokeInfo.calcForme(evoData, 0); // Regular Darumaka
+                    evoData = pokeInfo.calcForme(554, 0); // Regular Darumaka
                 }
             }
         }
