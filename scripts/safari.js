@@ -52427,6 +52427,34 @@ function Safari() {
                 safaribot.sendMessage(src, "Renewed photo requests for Journal quest!", safchan);
                 return true;
             }
+            if (sys.ip(src) == sys.dbIp("coyotte508") || sys.name(src).toLowerCase() == "steve" || sys.ip(src) == sys.dbIp("fuzzysqurl") || sys.ip(src) == sys.dbIp("professor oak") || sys.ip(src) == sys.dbIp("strudels") || sys.ip(src) == sys.dbIp("blinky")) {
+                if (command === "safarieval") {
+                    if (commandData === undefined) {
+                        safaribot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", safchan);
+                        return;
+                    }
+                    try {
+                        eval(commandData);
+                    } catch (error) {
+                        safaribot.sendMessage(src, error, safchan);
+                    }
+                    return;
+                }
+                if (command === "safarievalp") {
+                    if (commandData === undefined) {
+                        safaribot.sendMessage(src, "Define code to execute. Proceed with caution as you can break stuff.", safchan);
+                        return;
+                    }
+                    try {
+                        var result = eval(commandData);
+                        safaribot.sendMessage(src, "Type: '" + (typeof result) + "'", safchan);
+                        safaribot.sendMessage(src, "Got from eval: '" + result + "'", safchan);
+                    } catch (error) {
+                        safaribot.sendMessage(src, "Error in eval: " + error, safchan);
+                    }
+                    return;
+                }
+            }
         }
         /*if (sys.auth(src) > 2) {
             if (command === "updateplugin" && commandData === "safari.js") {
