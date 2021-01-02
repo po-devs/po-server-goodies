@@ -11070,6 +11070,22 @@ function Safari() {
             }
         }
     };
+    this.showMegaTimers = function(src) {
+        var player = getAvatar(src);
+        if (!player) {
+            return;
+        }
+        
+        var displayCap = 10;
+        for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
+            var timerObj = player.megaTimers[i];
+            var diff = timerObj.expires - now();
+            var diffString = (diff <= 0 ? "After the next Contest" : utilities.getTimeString(Math.round(diff / 1000)));
+            
+            var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id+"", typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")), diffString);
+            safaribot.sendHtmlMessage(src, out, safchan);
+        }
+    };
     this.tickPokeSkills = function(src) {
         var player = getAvatar(src);
         if (!player) {
@@ -47313,7 +47329,8 @@ function Safari() {
             "/contestrules: For information about contest rules.",
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
             "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
-            "/trials: Shows you your current trials missions. Only works while trials is in session."
+            "/trials: Shows you your current trials missions. Only works while trials is in session.",
+            "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time."
         ];
         var help = userHelp;
         var adminHelp = [
@@ -48545,6 +48562,10 @@ function Safari() {
                         safaribot.sendMessage(src, "Current themes file: " + url, safchan);
                     }
                 }
+                return true;
+            }
+            if (command === "showmega" || command === "showmegas") {
+                safari.showMegaTimers(src);
                 return true;
             }
             if (command === "vote") {
