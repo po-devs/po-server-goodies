@@ -27510,9 +27510,10 @@ function Safari() {
                 if (level >= 3) {
                     var legend = 0;
                     var legendNeeded = (level == 3 ? 1 : 3);
+                    var excludedLegends = ["Phione", "Meltan", "Cosmog", "Cosmoem", "Kubfu", "Urshifu-Single-Strike", "Urshifu-Rapid-Strike", "Calyrex"].map(function(e) { return getPokeNum(e) });
                     for (var i = 0; i < legendNeeded; i++) {
                         legend = 0;
-                        while (((level == 3) && (legend == 0 || getBST(legend) > 600)) || legend === sys.pokeNum("Phione") || legend === getPokeNum("Meltan") || legend === sys.pokeNum("Cosmoem") || legend === sys.pokeNum("Cosmog") || legend === 0) {
+                        while (((level == 3) && (legend == 0 || getBST(legend) > 600)) || legend === 0 || excludedLegends.contains(legend)) {
                             legend = legendaries.random();
                         }
                         request.push(legend);
