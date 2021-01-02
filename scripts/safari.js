@@ -6311,6 +6311,17 @@ function Safari() {
             if (pokePlain(tempForme).toLowerCase() !== "missingno") {
                 evolveTo = tempForme;
             }
+            /*
+            Custom logic for Galarian Darumaka and Galarian Darmanitan as their forme numbers don't match
+            Intended result:
+                554-1 --> 555-2 i.e 131627 (Galarian Darumaka --> Galarian Darmanitan)
+            Actual result:
+                554-1 --> 555-3 i.e 131627-1 (Galarian Darumaka --> Galarian Darmanitan-Zen)
+            Hence, we override this behaviour by forcing 131627
+            */
+            if (num === 66090) {
+                evolveTo = 131627;
+            }
         }
         return evolveTo;
     }
@@ -13125,11 +13136,18 @@ function Safari() {
             }
             if ([554, 66090].contains(evoData)) {
                 /* 
-                Special case for Darumaka and Darmanitan, whose forme numbers don't match.
-                555 --> 554
-                555-1 --> 554
-                555-2 --> 554-1
-                555-3 --> 554-1
+                Custom logic for the Darumakas and Darmanitans, whose forme numbers don't match.
+                Intended result:
+                    555 --> 554
+                    555-1 --> 554 (Darmanitan-Zen --> Darumaka)
+                    555-2 --> 554-1 (Galarian Darmanitan --> Galarian Darumaka)
+                    555-3 --> 554-1 (Galarian Darmanitan-Zen --> Galarian Darumaka)
+                Actual result:
+                    555 --> 554
+                    555-1 --> 554-1 (Darmanitan-Zen --> Galarian Darumaka)
+                    555-2 --> 554-2 (Galarian Darmanitan --> (554-2 does not exist, defaults to 554) Regular Darumaka)
+                    555-3 --> 554-3 (Galarian Darmanitan-Zen --> (554-3 does not exist, defaults to 554) Regular Darumaka)
+                Hence, we override this behaviour so that either Galarian Darmanitan devolves into Galarian Darumaka, and either Darmanitan devolves into regular Darumaka
                 */
                 if ([2, 3].contains(forme)) { // Galarian Darmanitan or Galarian Darmanitan-Zen
                     evoData = pokeInfo.calcForme(554, 1); // Galarian Darumaka
