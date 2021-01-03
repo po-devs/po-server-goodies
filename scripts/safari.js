@@ -13438,6 +13438,7 @@ function Safari() {
             }
             break;
             case "gacha2": {
+                reward = "gacha";
                 safaribot.sendMessage(src, "Beeeep. You're led to a nearby garbage can by your Itemfinder. You decide to dig around anyway and find a pile of unused " + finishName(reward) + "s!", safchan);
                 amount = Math.round(4 + (4 * Math.random()));
                 reward  = "gacha";
@@ -46886,7 +46887,7 @@ function Safari() {
         player.balls.rare += rareamt;
         player.balls.pack += packamt;
         player.balls.mega += megaamt;
-        rew = (megaamt > 0 ? plural(megaamt, "mega") : "") + ", " + (rareamt > 0 ? plural(rareamt, "rare") : "") + ", " + (packamt > 0 ? plural(packamt, "pack") : "");
+        rew = (megaamt > 0 ? plural(megaamt, "mega") + ", " : "") + (rareamt > 0 ? plural(rareamt, "rare") + ", " : "") + (packamt > 0 ? plural(packamt, "pack") : "");
         
         this.missionProgress(player, "cross", "tours", 1, {});
         if (placing === 1) {
