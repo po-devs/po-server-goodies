@@ -46889,7 +46889,9 @@ function Safari() {
         player.balls.pack += packamt;
         player.balls.mega += megaamt;
         
-        rew = [(megaamt > 0 ? plural(megaamt, "mega") : ""), (rareamt > 0 ? plural(rareamt, "rare") : ""), (packamt > 0 ? plural(packamt, "pack") : "")].join(", ");
+        rew = [(megaamt > 0 ? plural(megaamt, "mega") : ""), (rareamt > 0 ? plural(rareamt, "rare") : ""), (packamt > 0 ? plural(packamt, "pack") : "")]
+                .filter(Boolean)
+                .join(", ");
 
         this.missionProgress(player, "cross", "tours", 1, {});
         if (placing === 1) {
