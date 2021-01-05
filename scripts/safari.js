@@ -931,7 +931,7 @@ function Safari() {
             mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
             crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
-            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: false },
+            mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: true },
             brush: {name: "brush", fullName: "Photo Brush", type: "consumable", icon: 175, price: 3000, aliases: ["brush", "photo brush", "photobrush"], tradable: false },
             pokeblock: {name: "pokeblock", fullName: "Pokéblock", type: "consumable", icon: 53, price: 3000, aliases: ["block", "poke brush", "pokeblock", "noms"], tradable: false},
 
@@ -46859,21 +46859,25 @@ function Safari() {
         if (!player) {
             return;
         }
-        var rew, rareamt = 0, packamt = 0, megaamt = 0;
+        var rew, mushamt = 0, rareamt = 0, packamt = 0, megaamt = 0;
         switch (placing) {
             case 1:
-                rareamt = 5;
-                packamt = 1;
+                mushamt = 3;
+                rareamt = 8;
+                packamt = 3;
                 megaamt = 1;
                 this.costumeEXP(player, "wintour", 1);
             break;
             case 2:
-                rareamt = 3;
-                packamt = 1;
+                mushamt = 2;
+                rareamt = 5;
+                packamt = 2;
                 this.costumeEXP(player, "wintour", 2);
             break;
             case 3:
+                mushamt = 1;
                 rareamt = 2;
+                packamt = 1;
                 this.costumeEXP(player, "wintour", 3);
             break;
             default:
@@ -46886,10 +46890,11 @@ function Safari() {
             megaamt++;
         }
         player.balls.rare += rareamt;
+        player.balls.mushroom += mushamt;
         player.balls.pack += packamt;
         player.balls.mega += megaamt;
         
-        rew = [(megaamt > 0 ? plural(megaamt, "mega") : ""), (rareamt > 0 ? plural(rareamt, "rare") : ""), (packamt > 0 ? plural(packamt, "pack") : "")]
+        rew = [(megaamt > 0 ? plural(megaamt, "mega") : ""), (mushamt > 0 ? plural(mushamt, "mushroom") : ""), (rareamt > 0 ? plural(rareamt, "rare") : ""), (packamt > 0 ? plural(packamt, "pack") : "")]
                 .filter(Boolean)
                 .join(", ");
 
