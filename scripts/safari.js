@@ -14094,7 +14094,7 @@ function Safari() {
             if (sys.rand(0, itemData.bright.legendaryChance) < 1) {
                 do {
                     id = legendaries.random();
-                } while (getBST(id) > 600);
+                } while (getBST(id) > 600 || [892, 898].contains(id));
             } else {
                 do {
                     id = sys.rand(1, highestDexNum);
