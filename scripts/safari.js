@@ -13624,11 +13624,24 @@ function Safari() {
                 case "bait": amount = 10; break;
                 case "gacha": amount = 10; break;
                 case "silver": amount = 8; break;
+                case "silver2": amount = 84; reward = "silver"; break;
                 case "bluapricorn": case "grnapricorn": case "pnkapricorn": amount = 20; break;
             }
             safaribot.sendMessage(src, "You excitedly open your " + finishName("pack") + " to reveal " + plural(amount, reward) + "!", safchan);
             if (reward === "mega") {
                 safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("mega")) + " in their " + finishName("pack") + "!</b>", safchan);
+            }
+            if (reward === "bignugget") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("bignugget")) + " in their " + finishName("pack") + "!</b>", safchan);
+            }
+            if (reward === "water") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("water")) + " in their " + finishName("pack") + "!</b>", safchan);
+            }
+            if (reward === "celebrityTicket") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("celebrityTicket")) + " in their " + finishName("pack") + "!</b>", safchan);
+            }
+            if (reward === "spray") {
+                safaribot.sendHtmlAll("<b>Wow! " + sys.name(src) + " found " + an(finishName("spray")) + " in their " + finishName("pack") + "!</b>", safchan);
             }
             rewardCapCheck(player, reward, amount);
             player.balls.pack -= 1;
@@ -30039,19 +30052,19 @@ function Safari() {
                 var reward;
                 switch (args.difficulty) {
                     case -1: reward = [
-                        ["gacha", 2],
+                        ["gacha", 4],
                         ["egg", 1],
                         ["gem", 1],
-                        ["gacha", 5],
+                        ["gacha", 6],
                         ["pack", 1],
                         ["rare", 1],
-                        ["pack", 2],
-                        ["rare", 2],
                         ["eviolite", 1],
-                        ["gem", 3],
-                        ["pack", 4],
+                        ["rare", 2],
+                        ["egg", 3],
+                        ["gem", 2],
+                        ["pack", 3],
                         ["stardust", 3],
-                        ["pack", 8]
+                        ["pack", 5]
                     ][args.index]; break;
                     case 0: reward = [
                         ["dew", 2],
@@ -30059,13 +30072,13 @@ function Safari() {
                         [["gacha", 5], ["gem", 1]],
                         [["stardust", 1], ["golden", 1]],
                         [["bigpearl", 3], ["silver", 20]],
-                        ["pack", 1],
+                        ["pack", 2],
                         ["dew", 8],
                         ["nugget", 1],
+                        ["golden", 2],
                         ["mega", 1],
-                        ["nugget", 2],
-                        ["dew", 20],
-                        ["pack", 30],
+                        ["pack", 20],
+                        ["nugget", 5],
                         ["ash", 1]
                     ][args.index]; break;
                     case 1: reward = [
@@ -30073,26 +30086,26 @@ function Safari() {
                         [["gacha", 5], ["pearl", 9]],
                         [["silver", 35], ["stardust", 4]],
                         ["dew", 8],
+                        [["pack", 3], ["gem", 3]],
                         ["nugget", 1],
-                        [["pack", 3], ["mega", 1]],
-                        ["dew", 12],
-                        [["nugget", 3], ["mega", 2]],
-                        [["pack", 5], ["pearl", 30]],
-                        ["mega", 2],
-                        ["dew", 40],
-                        ["pack", 50],
+                        [["pearl", 40], ["dew", 40]],
+                        ["golden", 5],
+                        [["nugget", 5], ["mega", 2]],
+                        ["pack", 30],
+                        ["nugget", 10],
+                        ["ldew", 1],
                         ["ash", 3]
                     ][args.index]; break;
                     case 2: reward = [
                         ["gacha", 5],
-                        [["gacha", 8], ["bigpearl", 3]],
-                        ["dew", 8],
-                        [["pack", 5], ["miracle", 1]],
-                        ["dew", 15],
-                        ["nugget", 1],
-                        [["pack", 10], ["miracle", 2]],
+                        [["silver", 8], ["bigpearl", 3]],
+                        ["golden", 1],
+                        ["pack", 5],
+                        [["dew", 42], ["bigpearl", 10]],
+                        [["nugget", 1], ["pack", 15]],
+                        ["miracle", 2],
                         ["bignugget", 1],
-                        ["dew", 25],
+                        ["nugget", 10],
                         ["mega", 3],
                         ["ldew", 2],
                         ["ldew", 5],
@@ -30121,9 +30134,9 @@ function Safari() {
                         ["dew", 100],
                         ["platinum", 2],
                         ["bignugget", 5],
-                        ["dew", 80],
+                        ["pack", 50],
                         ["bright", 5],
-                        ["pack", 100],
+                        ["pack", 500],
                         ["ldew", 20],
                         ["ldew", 50],
                         ["ash", 81]
@@ -30420,8 +30433,8 @@ function Safari() {
                 currentTrainer.sprite += trainer.sprite3;
             }
             var ind = (trainer.elite ? eliteindex : index);
-            currentTrainer.powerBoost = ((trainer.power - 1.07) + ((difficulty - 3)/12) + ((difficulty > 1 ? 0.005 : 0)) + ((difficulty < 1 ? -0.015 : 0)) + (ind/40) + (trainer.elite ? 0.05 : 0)) + (difficulty < 0 ? -0.32 : 0);
-            chal = Math.round(0.75 + (ind/4) + (difficulty * 1.75) + (difficulty === 4 ? -3 : 0));
+            currentTrainer.powerBoost = ((trainer.power - 1.07) + ((difficulty - 3)/15) + ((difficulty > 1 ? 0.0025 : 0)) + ((difficulty < 1 ? -0.01 : 0)) + (ind/40) + (trainer.elite ? 0.037 : 0)) + (difficulty < 0 ? -0.27 : 0);
+            chal = Math.round(0.75 + (ind/4) + (difficulty * 1.66) + (difficulty === 4 ? -3 : 0));
             if (ind >= 5) {
                 chal++;
             }
@@ -30432,7 +30445,7 @@ function Safari() {
                 chal++;
             }
             if (ind >= 12) {
-                chal += 2;
+                chal += 1.5;
             }
             currentTrainer.party = [];
             partyStrength = 0;
