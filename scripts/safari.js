@@ -51462,7 +51462,7 @@ function Safari() {
                     return true;
                 }
                 for (var e in data) {
-                    if (allItems.indexOf(e) !== -1 || e === "wild" || e === "nothing" || e === "recharge" || e === "silver2") {
+                    if (allItems.indexOf(e) !== -1 || e === "wild" || e === "nothing" || e === "recharge" || e == "silver2") {
                         continue;
                     }
                     safaribot.sendMessage(src, e + " is not a valid item!", safchan);
