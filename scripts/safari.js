@@ -37620,6 +37620,10 @@ function Safari() {
     Quiz.prototype.finish = function() {
         var ordered = Object.keys(this.points);
         var pts = this.points;
+        var self = this;
+        ordered = ordered.sort(function(a, b) {
+            return self.finalAnswerSpeeds[a] - self.finalAnswerSpeeds[b];
+        });
         ordered = ordered.sort(function(a, b) {
             return pts[b] - pts[a];
         });
@@ -37642,9 +37646,15 @@ function Safari() {
             return;
         }
 
+		/*
         var winner = ordered.filter(function(x) { return pts[x] === bestScores[0]; });
         var runnerup = ordered.filter(function(x) { return pts[x] === bestScores[1]; });
         var thirdplace = ordered.filter(function(x) { return pts[x] === bestScores[2]; });
+        */
+        
+        var winner = ordered[0];
+        var runnerup = ordered[1];
+        var thirdplace = ordered[2];
 
         var toCC = function(x) {
             return x.toCorrectCase();
