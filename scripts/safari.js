@@ -5694,7 +5694,7 @@ function Safari() {
             "weight": 70,
             "moves": [movenum("Bind"), movenum("Scratch"), movenum("Leer"), movenum("Vine Whip"), movenum("Growth"), movenum("Fury Swipes"), movenum("Scary Face"), movenum("Grass Knot"), movenum("Bite"), movenum("U-turn"), movenum("Swagger"), movenum("Energy Ball"), movenum("Synthesis"), movenum("Hammer Arm"), movenum("Thrash"), movenum("Power Whip"), movenum("Jungle Healing"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Beam"), movenum("Solar Blade"), movenum("Dig"), movenum("Rest"), movenum("Rock Slide"), movenum("Thief"), movenum("Snore"), movenum("Protect"), movenum("Giga Drain"), movenum("Sunny Day"), movenum("Facade"), movenum("Swift"), movenum("Revenge"), movenum("Brick Break"), movenum("Rock Tomb"), movenum("Bullet Seed"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Fling"), movenum("Drain Punch"), movenum("Round"), movenum("Acrobatics"), movenum("Snarl"), movenum("Grassy Terrain"), movenum("Brutal Swing"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Low Kick"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Encore"), movenum("Iron Tail"), movenum("Crunch"), movenum("Taunt"), movenum("Superpower"), movenum("Hyper Voice"), movenum("Bulk Up"), movenum("Close Combat"), movenum("Dark Pulse"), movenum("Seed Bomb"), movenum("Nasty Plot"), movenum("Darkest Lariat"), movenum("Throat Chop")]
         },
-        "66428": {
+        "66429": {
             "types": ["Dark", "Grass"],
             "name": "Zarude-Dada",
             "stats": [105, 120, 105, 70, 95, 105],
