@@ -52257,7 +52257,7 @@ function Safari() {
                 }
                 out += "50@oran:50@pecha:50@razz:50@bluk:50@leppa:12@tomato:12@pinap:12@petaya:12@watmel:12@nanab:@miracle:@platinum";
                 var rec = {
-                    cooldown: data.cooldown,
+                    cooldown: 17,
                     reward: toStuffObj('4129637'),
                     ingredients: toStuffObj(out),
                     failChance: 0,
