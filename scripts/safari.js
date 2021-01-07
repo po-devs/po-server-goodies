@@ -52310,6 +52310,15 @@ function Safari() {
                 safari.endTrials();
                 return true;
             }
+            if (command === "cakenums") {
+                var out = "";
+                for (var i = 0; i < 63; i++) {
+                	out += (869 + (i * 65536));
+                	out += ", ";
+                }
+				safaribot.sendMessage(src, out, safchan);
+                return true;
+            }
             if (command === "addcake") {
                 var out = "";
                 for (var i = 0; i < 63; i++) {
