@@ -13048,6 +13048,9 @@ function Safari() {
         
         
         var evolveTo = getPossibleEvo(id, chooseEvo);
+        if (evolveTo == 869) {
+        	evolveTo = 869 + ((Math.floor(Math.random() * 62)) * 65536);
+        }
         var evolvedId = shiny ? "" + evolveTo : evolveTo;
 
         player.balls.rare -= candiesRequired;
