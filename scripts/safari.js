@@ -7387,10 +7387,6 @@ function Safari() {
             var onChannel = sys.playersOfChannel(safchan);
             for (var e in onChannel) {
                 ballMacro(onChannel[e]);
-                
-                if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    getAvatar(onChannel[e]).cooldowns.ball = 0;
-                }
             }
             preparationPhase = sys.rand(5, 8);
             preparationThrows = {};
@@ -21125,9 +21121,9 @@ function Safari() {
         if (this.phase === "preview") {
             this.subturn++;
             if (this.fullNPC && this.subturn >= 2) {
-                this.subturn = 9;
+                this.subturn = 8;
             }
-            if (this.subturn === 9) {
+            if (this.subturn === 8) {
                 this.phase = "battle";
                 this.turn++;
                 
@@ -22851,19 +22847,19 @@ function Safari() {
                 if (this.tagBattle && this.oneOnTwo) {
                     if (this.p1PickedTeam.length === 4 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 8;
+                        this.subturn = 6;
                     }
                 }
                 else if (this.tagBattle) {
                     if (this.p1PickedTeam.length === 2 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p3PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 8;
+                        this.subturn = 6;
                     }
                 }
                 else {
                     if (this.p1PickedTeam.length === Math.min(3, this.originalTeam1.length) && (this.npcBattle || this.p2PickedTeam.length === Math.min(3, this.originalTeam2.length)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 8;
+                        this.subturn = 6;
                     }
                 }
             } else if (["cancel", "undo", "restart"].contains(data.toLowerCase())) {
@@ -52313,6 +52309,33 @@ function Safari() {
             }
             if (command === "finishtrials") {
                 safari.endTrials();
+                return true;
+            }
+            if (command === "cakenums") {
+                var out = "";
+                for (var i = 0; i < 63; i++) {
+                	out += (869 + (i * 65536));
+                	out += ", ";
+                }
+                safaribot.sendMessage(src, out, safchan);
+                return true;
+            }
+            if (command === "addcake") {
+                var out = "";
+                for (var i = 0; i < 63; i++) {
+                	out += (869 + (i * 65536));
+                	out += ":";
+                }
+                out += "50@oran:50@pecha:50@razz:50@bluk:50@leppa:12@tamato:12@pinap:12@petaya:12@watmel:12@nanab:@miracle:@platinum";
+                var rec = {
+                    cooldown: 17,
+                    reward: toStuffObj('4129637'),
+                    ingredients: toStuffObj(out),
+                    failChance: 0,
+                    transmutation: true,
+                    immediate: false
+                };
+                recipeData["ultra cake"] = rec;
                 return true;
             }
             if (command === "startduels") {
