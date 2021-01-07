@@ -52313,7 +52313,7 @@ function Safari() {
                 	out += (869 + (i * 65536));
                 	out += ":";
                 }
-                out += "50@oran:50@pecha:50@razz:50@bluk:50@leppa:12@tomato:12@pinap:12@petaya:12@watmel:12@nanab:@miracle:@platinum";
+                out += "50@oran:50@pecha:50@razz:50@bluk:50@leppa:12@tamato:12@pinap:12@petaya:12@watmel:12@nanab:@miracle:@platinum";
                 var rec = {
                     cooldown: 17,
                     reward: toStuffObj('4129637'),
