@@ -21107,9 +21107,9 @@ function Safari() {
         if (this.phase === "preview") {
             this.subturn++;
             if (this.fullNPC && this.subturn >= 2) {
-                this.subturn = 7;
+                this.subturn = 9;
             }
-            if (this.subturn === 7) {
+            if (this.subturn === 9) {
                 this.phase = "battle";
                 this.turn++;
                 
@@ -21340,6 +21340,25 @@ function Safari() {
                     }
                 }
             }
+            for (var x in this.skills) {
+				if (this.turn == 0 && this.skills[x].hasOwnProperty("Finale")) {
+					var hit = false;
+					for (i = 0; i < this.team1.length; i++) {
+						if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
+							hit = true;
+							break;
+						}
+					}
+					if (hit) {
+						for (i = 0; i < this.team1.length; i++) {
+							if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
+								continue;
+							}
+							team1[i].hp = Math.min(team1[i].maxhp, team1[i].hp + (team1[i].maxhp * 0.01 * this.skills[x]["Finale"][1]));
+						}
+					}
+				}
+			}
             this.turn++;
             this.subturn = 0;
             this.p1MoveCodes = {};
@@ -22792,19 +22811,19 @@ function Safari() {
                 if (this.tagBattle && this.oneOnTwo) {
                     if (this.p1PickedTeam.length === 4 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
                 else if (this.tagBattle) {
                     if (this.p1PickedTeam.length === 2 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p3PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
                 else {
                     if (this.p1PickedTeam.length === Math.min(3, this.originalTeam1.length) && (this.npcBattle || this.p2PickedTeam.length === Math.min(3, this.originalTeam2.length)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
             } else if (["cancel", "undo", "restart"].contains(data.toLowerCase())) {
