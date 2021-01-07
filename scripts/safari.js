@@ -37740,9 +37740,9 @@ function Safari() {
         var thirdplace = ordered.filter(function(x) { return pts[x] === bestScores[2]; });
         */
         
-        var winner = [ordered[0]];
-        var runnerup = [ordered[1]];
-        var thirdplace = [ordered[2]];
+        var winner = ordered[0] !== undefined ? [ordered[0]] : [];
+        var runnerup = ordered[1] !== undefined ? [ordered[1]] : [];
+        var thirdplace = ordered[2] !== undefined ? [ordered[2]] : [];
 
         var toCC = function(x) {
             return x.toCorrectCase();
