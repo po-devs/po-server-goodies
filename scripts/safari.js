@@ -20431,6 +20431,8 @@ function Safari() {
         this.side1Field = {
             "spikes": 0,
             "stealthrock": false,
+            "stealthicicles": false,
+            "stealththunder": false,
             "toxicspikes": false,
             "dynamicweb": false,
             "quicksand": false,
@@ -20440,6 +20442,8 @@ function Safari() {
         this.side2Field = {
             "spikes": 0,
             "stealthrock": false,
+            "stealthicicles": false,
+            "stealththunder": false,
             "toxicspikes": false,
             "dynamicweb": false,
             "quicksand": false,
@@ -20493,6 +20497,12 @@ function Safari() {
             }
             if (this.select.stealthrock) {
                 this.side1Field.stealthrock = true;
+            }
+            if (this.select.stealththunder) {
+                this.side1Field.stealththunder = true;
+            }
+            if (this.select.stealthicicles) {
+                this.side1Field.stealthicicles = true;
             }
             if (this.select.toxicspikes) {
                 this.side1Field.toxicspikes = true;
@@ -22222,6 +22232,28 @@ function Safari() {
                             if (dmgPerc > 0) {
                                 user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
                                 this.sendToViewers(toColor(name + " is hurt by the Stealth Rock!", sColor));
+                            }
+                        }
+                    }
+                    if (this.side1Field.stealththunder && (isP1 || isP3)) {
+                        if (!user.lastPlayed2) {
+                            var dmgPerc = 0.08;
+                            var mult = safari.checkEffective("Electric", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            dmgPerc *= mult;
+                            if (dmgPerc > 0) {
+                                user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
+                                this.sendToViewers(toColor(name + " is hurt by the Stealth Thunder!", sColor));
+                            }
+                        }
+                    }
+                    if (this.side1Field.stealthicicles && (isP1 || isP3)) {
+                        if (!user.lastPlayed2) {
+                            var dmgPerc = 0.08;
+                            var mult = safari.checkEffective("Ice", "???", type1(user.id), type2(user.id), null, this.select.inverted, this.select, this.select2);
+                            dmgPerc *= mult;
+                            if (dmgPerc > 0) {
+                                user.hp = Math.max(Math.floor(user.hp - (dmgPerc * user.maxhp)), 1);
+                                this.sendToViewers(toColor(name + " is hurt by the Stealth Icicles!", sColor));
                             }
                         }
                     }
@@ -30628,7 +30660,12 @@ function Safari() {
                 }
             }
             if (trainer.forcedEffect) {
-                currentTrainer.select[trainer.forcedEffect] = true;
+            	if (Array.isArray(trainer.forcedEffect)) {
+					currentTrainer.select[trainer.forcedEffect.random()] = true;
+            	}
+                else {
+                	currentTrainer.select[trainer.forcedEffect] = true;
+				}
             }
             currentTrainer.bias = trainer.bias;
             if (trainer.bias2) {
@@ -38842,6 +38879,8 @@ function Safari() {
             case "spikes": m = "The battle begins with one layer of spikes on challenger's side of the field."; break;
             case "hazardsetter": m = "The foe sets up a layer of Spikes every 5 turns."; break;
             case "stealthrock": m = "The battle begins with Stealth Rock on challenger's side of the field."; break;
+            case "stealththunder": m = "The battle begins with Stealth Thunder on challenger's side of the field."; break;
+            case "stealthicicles": m = "The battle begins with Stealth Icicles on challenger's side of the field."; break;
             case "toxicspikes": m = "The battle begins with one layer of Toxic Spikes on challenger's side of the field."; break;
             case "dynamicWeb": m = "The battle begins with a stat reducing Web on challenger's side of the field."; break;
             case "quickSand": m = "The battle begins with Quicksand on challenger's side of the field."; break;
