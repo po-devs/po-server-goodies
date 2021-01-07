@@ -5342,7 +5342,7 @@ function Safari() {
         },
         "4129637": {
             "types": ["Fairy", "???"],
-            "name": "Alcremie-Ultra Cake",
+            "name": "Alcremie-Finalé",
             "stats": [130, 65, 85, 125, 137, 58],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
             "tier": "SM Ubers",
@@ -52247,6 +52247,24 @@ function Safari() {
             }
             if (command === "finishtrials") {
                 safari.endTrials();
+                return true;
+            }
+            if (command === "addcake") {
+                var out = "";
+                for (var i = 0; i < 63; i++) {
+                	out += (869 + (i * 65536));
+                	out += ":";
+                }
+                out += "50@oran:50@pecha:50@razz:50@bluk:50@leppa:12@tomato:12@pinap:12@petaya:12@watmel:12@nanab:@miracle:@platinum";
+                var rec = {
+                    cooldown: data.cooldown,
+                    reward: toStuffObj('4129637'),
+                    ingredients: out,
+                    failChance: 0,
+                    transmutation: true,
+                    immediate: false
+                };
+                recipeData["Ultra Cake"] = rec;
                 return true;
             }
             if (command === "startduels") {
