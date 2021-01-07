@@ -5340,6 +5340,15 @@ function Safari() {
             "height": 0.3,
             "weight": 0.5
         },
+        "4129637": {
+            "types": ["Fairy", "???"],
+            "name": "Alcremie-Ultra Cake",
+            "stats": [130, 65, 85, 125, 137, 58],
+            "abilities": [ "Sweet Veil", "Aroma Veil" ],
+            "tier": "SM Ubers",
+            "height": 69.1,
+            "weight": 420.7
+        },
         "870": {
             "types": ["Fighting", "???"],
             "name": "Falinks",
@@ -37695,7 +37704,7 @@ function Safari() {
             }
         }
         
-        if (runnerup.length > 0 && bestScores[1] > 0) {
+        if (runnerup.length > 0) {
             safaribot.sendHtmlAll(runnerupName + " got the second place and received " + this.rewardName2 + "!", safchan);
             for (p = 0; p < runnerup.length; p++) {
                 id = runnerup[p];
@@ -37714,7 +37723,7 @@ function Safari() {
             }
         }
         
-        if (this.thirdPrize && this.reward3 && bestScores[2] > 0) {
+        if (this.thirdPrize && this.reward3) {
             if (thirdplace.length > 0) {
                 safaribot.sendHtmlAll(thirdplaceName + " got the third place and received " + this.rewardName3 + "!", safchan);
                 for (p = 0; p < thirdplace.length; p++) {
