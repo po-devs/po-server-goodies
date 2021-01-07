@@ -52259,7 +52259,7 @@ function Safari() {
                 var rec = {
                     cooldown: data.cooldown,
                     reward: toStuffObj('4129637'),
-                    ingredients: out,
+                    ingredients: toStuffObj(out),
                     failChance: 0,
                     transmutation: true,
                     immediate: false
