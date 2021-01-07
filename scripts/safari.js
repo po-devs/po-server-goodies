@@ -3092,6 +3092,7 @@ function Safari() {
         var shiny = false, id, num, name;
         info = info.replace(/flabebe|flabébe|flabebé/gi, "flabébé").toLowerCase();
         info = info.replace(/pokédex|pokedex/gi, "pokédex").toLowerCase();
+        info = info.replace(/alcremie-finale/gi, "alcremie-finalé").toLowerCase();
         
         if ((info.length > 1 && (info[0] == "*" || info[info.length-1] == "*")) || info.indexOf("shiny ") === 0) {
             shiny = true;
@@ -52316,7 +52317,7 @@ function Safari() {
                 	out += (869 + (i * 65536));
                 	out += ", ";
                 }
-				safaribot.sendMessage(src, out, safchan);
+                safaribot.sendMessage(src, out, safchan);
                 return true;
             }
             if (command === "addcake") {
@@ -52334,7 +52335,7 @@ function Safari() {
                     transmutation: true,
                     immediate: false
                 };
-                recipeData["Ultra Cake"] = rec;
+                recipeData["ultra cake"] = rec;
                 return true;
             }
             if (command === "startduels") {
