@@ -5346,7 +5346,7 @@ function Safari() {
         "4129637": {
             "types": ["Fairy", "???"],
             "name": "Alcremie-Finalé",
-            "stats": [130, 65, 85, 125, 137, 58],
+            "stats": [130, 65, 85, 115, 127, 58],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
             "tier": "SM Ubers",
             "height": 69.1,
