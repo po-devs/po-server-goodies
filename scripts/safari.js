@@ -10521,7 +10521,7 @@ function Safari() {
                 }
                 toTurbo.push(p+"");
             }
-            safaribot.sendHtmlMessage(src, link("/turbosell " + toTurbo.join(","), "«Sell All»"), safchan);
+            safaribot.sendHtmlMessage(src, link("/turbosell " + toTurbo.join(",") + ":confirm", "«Sell All»"), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
@@ -15312,13 +15312,27 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        var list = data.split(","), trySell, p, out = [], cashout = 0;
+        
+        data = typeNull(data);
+        
+        var split = data.split(":");
+        var confirmed = true;
+        
+        if (split.length < 2 || split[1].toLowerCase() !== "confirm") {
+            confirmed = false;
+        }
+        
+        var list = split[0].split(","), trySell, p, out = [], cashout = 0;
         for (var i = 0; i < list.length; i++) {
-            p = parseInt(list[i], 10);
+            p = getInputPokemon(list[i]).id;
+            
+            if (!p) {
+                continue;
+            }
             if (isLegendary(p)) {
                 continue;
             }
-            trySell = this.sellPokemon(src, poke(p), true);
+            trySell = this.sellPokemon(src, poke(p), confirmed);
             if (trySell) {
                 out.push(poke(p));
                 cashout += trySell;
@@ -15362,13 +15376,13 @@ function Safari() {
             if (input.length < 2 || (input[1].toLowerCase() !== "confirm" && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon")) {
                 var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":confirm";
                 safaribot.sendHtmlMessage(src, "You can sell your " + info.name + " for $" + addComma(price) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
-                return;
+                return false;
             }
 
             if (isRare(id) && input[1].toLowerCase() !== "iacknowledgethatiamsellingararepokemon") {
                 var confirmCommand = "/sell " + (shiny ? "*":"") + pokePlain(id) + ":IACKNOWLEDGETHATIAMSELLINGARAREPOKEMON";
                 safaribot.sendHtmlMessage(src, "Are you sure that you want to sell your <b>" + info.name + "</b> for $" + addComma(price) + "? If really want to do this, type " + link(confirmCommand) + ".", safchan);
-                return;
+                return false;
             }
         }
 
@@ -47441,6 +47455,8 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type.",
             "/sell: To sell one of your Pokémon.",
+            "/turbosell: To sell off multiple Pokémon at once.",
+            "/multisell: To easily sell off multiple Pokémon of the SAME SPECIES at once.",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /trade off.",
