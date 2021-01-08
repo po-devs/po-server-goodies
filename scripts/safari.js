@@ -890,7 +890,7 @@ function Safari() {
             level: {name: "level", fullName: "Level Ball", type: "ball", icon: 310, price: 500, ballBonus: 1, bonusRate: 0.4, maxBonus: 3, cooldown: 10000, aliases:["levelball", "level", "level ball"], tradable: true},
             quick: {name: "quick", fullName: "Quick Ball", type: "ball", icon: 326, price: 500, ballBonus: 1.1, bonusRate: 3, cooldown: 12000, aliases:["quickball", "quick", "quick ball"], tradable: true},
             luxury: {name: "luxury", fullName: "Luxury Ball", type: "ball", icon: 324, price: 500, ballBonus: 1.25, cooldown: 10000, aliases:["luxuryball", "luxury", "luxury ball"], tradable: true},
-            premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: false},
+            premier: {name: "premier", fullName: "Premier Ball", type: "ball", icon: 318, price: 500, ballBonus: 1.5, bonusRate: 3, maxBonus: 4, cooldown: 10000, aliases:["premierball", "premier", "premier ball"], tradable: true},
             spy: {name: "spy", fullName: "Spy Ball", type: "ball", icon: 312, price: 500, ballBonus: 1.5, bonusRate: 0.25, cooldown: 16000, aliases:["spyball", "spy", "spy ball"], tradable: true},
             clone: {name: "clone", fullName: "Clone Ball", type: "ball", icon: 320, price: 500, ballBonus: 1, bonusRate: 0.05, cooldown: 12000, aliases:["cloneball", "clone", "clone ball"], tradable: true},
             mono: {name: "mono", fullName: "Mono Ball", type: "ball", icon: 327, price: 321, ballBonus: 1, bonusRate: 2, cooldown: 9000, aliases:["monoball", "mono", "mono ball"], tradable: true},
@@ -6004,7 +6004,7 @@ function Safari() {
             if (typeof moves === "undefined" || moves.length === 0) {
                 if (getInputPokemon(""+id).name === "Missingno") {
                     moves = [33]; // Tackle
-                    safaribot.sendMessageAll("No moves found in fetchNum with parameter: " + num, staffchannel);
+                    safaribot.sendAll("No moves found in fetchNum with parameter: " + num, staffchannel);
                 }
                 else
                     moves = fetchMoves(species);
@@ -18540,7 +18540,7 @@ function Safari() {
         for (var i = playerPoints.length; i--;) {
             //p = getAvatarOff(playerPoints[i].id);
             if (public) {
-                safaribot.sendMessageAll("#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
+                safaribot.sendAll("#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             } else {
                 safaribot.sendMessage(src, "#" + j + ": " + playerPoints[i].id + " (" + playerPoints[i].points + ")", safchan);
             }
