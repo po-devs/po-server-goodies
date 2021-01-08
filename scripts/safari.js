@@ -15319,7 +15319,7 @@ function Safari() {
         var confirmed = true;
         var info, sellNum, maxCount;
         
-        if (split.length < 2 || isNaN(split[1])) {
+        if (split.length < 2 || !split[1] || isNaN(split[1])) {
             safaribot.sendMessage(src, "Please enter a valid number of that Pokémon to sell.", safchan);
             return;
         }
@@ -15350,7 +15350,7 @@ function Safari() {
         var totalPayment = 0; // only for unconfirmed
         for (var i = 0; i < sellNum; i++) {
             if (confirmed)
-                safari.sellPokemon(src, info.name, true);
+                safari.sellPokemon(src, info.name + ":confirm");
             else { // simulate sales and output the total payment
                 var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
                 totalPayment += getPrice(info.num, info.shiny, perkBonus);
