@@ -10784,7 +10784,7 @@ function Safari() {
                     list.push(x);
                 }
             });
-            return "that can mega evolve";
+            return "that can Mega Evolve";
         }
         else if (crit == "region") {
             val = cap(val.toLowerCase());
@@ -13236,7 +13236,7 @@ function Safari() {
 
         var species = pokeInfo.species(num);
         if (!(species in megaEvolutions) || isMega(num)) {
-            safaribot.sendMessage(src, "This Pokémon cannot mega evolve!", safchan);
+            safaribot.sendMessage(src, "This Pokémon cannot Mega Evolve!", safchan);
             return;
         }
         if (info.input in player.shop) {
@@ -15350,20 +15350,26 @@ function Safari() {
             return;
         }
         
-        var totalPayment = 0; // only for unconfirmed
+        var totalPayment = 0, trySell;
         for (var i = 0; i < sellNum; i++) {
-            if (confirmed)
-                safari.sellPokemon(src, info.name + (info.shiny ? "*" : "") + (isRare(info.id) ? ":iacknowledgethatiamsellingararepokemon":":confirm"));
+            if (confirmed) {
+                trySell = safari.sellPokemon(src, info.name + (info.shiny ? "*" : ""), true);
+                if (trySell) {
+                    totalPayment += trySell;
+                }
+            }
             else { // simulate sales and output the total payment
                 var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
                 totalPayment += getPrice(info.num, info.shiny, perkBonus);
-            }   
+            }
         }
         
-        if (!confirmed) {
+        if (confirmed && totalPayment > 0) {
+            safaribot.sendMessage(src, "You sold your {0} {1} for a total of ${2}!".format(sellNum, info.name, addComma(totalPayment)), safchan);
+        }
+        else {
             var confirmCommand = "/turbosell " + (info.shiny ? "*":"") + pokePlain(info.id) + ":" + sellNum + ":confirm";
-            safaribot.sendHtmlMessage(src, "You can sell your " + sellNum + " " + info.name + " for $" + addComma(totalPayment) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
-            return;
+            safaribot.sendHtmlMessage(src, "You can sell your {0} {1} for ${2}. To confirm it, type {3}.".format(sellNum, info.name, addComma(totalPayment), link(confirmCommand)), safchan);
         }
     };
     this.multiSellPokemon = function(src, data) {
@@ -47552,7 +47558,7 @@ function Safari() {
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/evolve: Use a Candy Dusts to evolve a Pokémon*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
-            "/megastone: Use a Mega Stone to mega evolve a Pokémon*.",
+            "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
             //seasonal change
@@ -48698,7 +48704,7 @@ function Safari() {
                     }
                 }
                 if (!isMega(info.num) && species in megaEvolutions) {
-                    safaribot.sendMessage(src, info.name + " can mega evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
+                    safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
                 }
                 if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
                     var themes = [];
@@ -53195,7 +53201,7 @@ function Safari() {
             }
 
             sys.sendAll(separator, safchan);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all Pokéballs you need!", safchan);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes! Prepare your active Pokémon and all the Poké Balls you need!", safchan);
             for (n = 0; n < rulesDesc.length; n++) {
                 safaribot.sendHtmlAll(" --- " + rulesDesc[n], safchan);
             }
@@ -53206,7 +53212,7 @@ function Safari() {
 
             sys.sendAll("", 0);
             sys.sendAll(separator, 0);
-            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all Pokéballs you need!", 0);
+            safaribot.sendAll("A new " + (nextTheme !== "none" ? themeName(nextTheme) + "-themed" : "") + " Safari contest will start in 3 minutes at #" + defaultChannel + "! Prepare your active Pokémon and all the Poké Balls you need!", 0);
             sys.sendAll(separator, 0);
             sys.sendAll("", 0);
             safari.flashPlayers();
