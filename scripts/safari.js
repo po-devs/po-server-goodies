@@ -6002,7 +6002,12 @@ function Safari() {
         } else {
             moves = pokedex.getAllMoves(id);
             if (typeof moves === "undefined" || moves.length === 0) {
-                moves = fetchMoves(species);
+                if (getInputPokemon(""+id).name === "Missingno") {
+                    moves = [33]; // Tackle
+                    safaribot.sendMessageAll("No moves found in fetchNum with parameter: " + num, staffchannel);
+                }
+                else
+                    moves = fetchMoves(species);
             }
         }
         
