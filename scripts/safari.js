@@ -22935,19 +22935,19 @@ function Safari() {
                 if (this.tagBattle && this.oneOnTwo) {
                     if (this.p1PickedTeam.length === 4 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
                 else if (this.tagBattle) {
                     if (this.p1PickedTeam.length === 2 && (this.npcBattle || (this.p2PickedTeam.length === 2 && this.p3PickedTeam.length === 2 && this.p4PickedTeam.length === 2)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
                 else {
                     if (this.p1PickedTeam.length === Math.min(3, this.originalTeam1.length) && (this.npcBattle || this.p2PickedTeam.length === Math.min(3, this.originalTeam2.length)) && this.subturn < 6) {
                         this.sendToViewers(toColor("All players picked their Pokémon!", "crimson"));
-                        this.subturn = 6;
+                        this.subturn = 8;
                     }
                 }
             } else if (["cancel", "undo", "restart"].contains(data.toLowerCase())) {
