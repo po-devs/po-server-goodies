@@ -21127,9 +21127,9 @@ function Safari() {
         if (this.phase === "preview") {
             this.subturn++;
             if (this.fullNPC && this.subturn >= 2) {
-                this.subturn = 8;
+                this.subturn = 10;
             }
-            if (this.subturn === 8) {
+            if (this.subturn === 10) {
                 this.phase = "battle";
                 this.turn++;
                 
@@ -21216,6 +21216,7 @@ function Safari() {
                 }
                 
                 this.sendToViewers("Preparations complete, battle will start soon!");
+                this.subturn = 8;
             }
             return;
         }
@@ -21809,7 +21810,7 @@ function Safari() {
                         for (var a in this.team1) {
                             if (this.team1[a].mustRecharge) {
                                 poke1 = this.team1[a];
-                                move1 = {"isRecharged": true, "priority": 0};
+                                move1 = {"isRecharged": true, "priority": 0, "ownerId": a};
                                 break;
                             }
                         }
