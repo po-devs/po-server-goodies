@@ -15336,16 +15336,16 @@ function Safari() {
         }
         
         maxCount = countRepeated(player.pokemon, info.id);
-        if (player.party[0] === infoid) { // if is lead pokemon, that copy can't be sold, so reduce by 1
+        
+        if (player.party[0] === info.id) { // if is lead pokemon, that copy can't be sold, so reduce by 1
             maxCount -= 1;
         }
-        
-        sellNum = Math.min(maxCount, sellNum);
-        
-        if (sellNum === 0) {
+        if (maxCount <= 0) {
             safaribot.sendMessage(src, "You do not have any " + info.name + " eligible for sale right now.", safchan);
             return;
         }
+        
+        sellNum = Math.min(maxCount, sellNum);
         
         var totalPayment = 0; // only for unconfirmed
         for (var i = 0; i < sellNum; i++) {
