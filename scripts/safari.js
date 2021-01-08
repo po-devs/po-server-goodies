@@ -15345,12 +15345,16 @@ function Safari() {
             return;
         }
         
-        sellNum = Math.min(maxCount, sellNum);
+        if (sellNum > maxCount) {
+            safaribot.sendMessage(src, "You only have " + maxCount + " " + info.name + " eligible for sale right now.", safchan);
+            return;
+        }
         
         var totalPayment = 0; // only for unconfirmed
         for (var i = 0; i < sellNum; i++) {
-            if (confirmed)
-                safari.sellPokemon(src, info.name + ":confirm");
+            if (confirmed && !safari.sellPokemon(src, info.name + (info.shiny ? "*":"") + ":confirm")) {
+                break;
+            }
             else { // simulate sales and output the total payment
                 var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
                 totalPayment += getPrice(info.num, info.shiny, perkBonus);
