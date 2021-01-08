@@ -15353,7 +15353,7 @@ function Safari() {
         var totalPayment = 0; // only for unconfirmed
         for (var i = 0; i < sellNum; i++) {
             if (confirmed)
-                safari.sellPokemon(src, info.name + (info.shiny ? "*:iacknowledgethatiamsellingararepokemon":":confirm"));
+                safari.sellPokemon(src, info.name + (info.shiny ? "*" : "") + (isRare(info.id) ? ":iacknowledgethatiamsellingararepokemon":":confirm"));
             else { // simulate sales and output the total payment
                 var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
                 totalPayment += getPrice(info.num, info.shiny, perkBonus);
