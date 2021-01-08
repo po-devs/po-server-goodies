@@ -15363,7 +15363,7 @@ function Safari() {
             return;
         }
     };
-    this.multisellPokemon = function(src, data) {
+    this.multiSellPokemon = function(src, data) {
         if (data === "*") {
             safaribot.sendMessage(src, "To multisell Pokémon, use /multisell [name1],[name2],[name3]... to check their prices, and /multisell [name1],[name2],[name3]:confirm to sell them.", safchan);
             return;
@@ -48157,7 +48157,11 @@ function Safari() {
                 return true;
             }
             if (command === "multisell") {
-                safari.multisellPokemon(src, commandData);
+                safari.multiSellPokemon(src, commandData);
+                return true;
+            }
+            if (command === "turbosell") {
+                safari.turboSellPokemon(src, commandData);
                 return true;
             }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
