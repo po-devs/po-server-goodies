@@ -10521,7 +10521,7 @@ function Safari() {
                 }
                 toTurbo.push(p+"");
             }
-            safaribot.sendHtmlMessage(src, link("/turbosell " + toTurbo.join(",") + ":confirm", "«Sell All»"), safchan);
+            safaribot.sendHtmlMessage(src, link("/multisell " + toTurbo.join(",") + ":confirm", "«Sell All»"), safchan);
         }
     };
     function applyFilterCriteria(src, info, crit, val, list, current, commandData, box) {
@@ -15299,16 +15299,79 @@ function Safari() {
 
         this.saveGame(player);
     };
-    this.turbosellPokemon = function(src, data) {
+    this.turboSellPokemon = function(src, data) {
         if (data === "*") {
-            safaribot.sendMessage(src, "To sell a Pokémon, use /sell [name] to check its price, and /sell [name]:confirm to sell it.", safchan);
+            safaribot.sendMessage(src, "To turbosell Pokémon, use /turbosell [name]:[amount] to check their price, and /turbosell [name]:[amount]:confirm to sell them.", safchan);
             return;
         }
         if (!validPlayers("self", src)) {
             return;
         }
-        var reason = "sell a Pokémon";
-        if (cantBecause(src, reason, ["tutorial"])) {
+        if (cantBecause(src, "sell a Pokémon", ["tutorial"])) {
+            return;
+        }
+        
+        var player = getAvatar(src);
+        
+        data = typeNull(data);
+        
+        var split = data.split(":");
+        var confirmed = true;
+        var info, sellNum, maxCount;
+        
+        if (split.length < 2 || isNaN(split[1])) {
+            safaribot.sendMessage(src, "Please enter a valid number of that Pokémon to sell.", safchan);
+            return;
+        }
+        if (split.length < 3 || split[2].toLowerCase() !== "confirm") {
+            confirmed = false;
+        }
+        
+        info = getInputPokemon(split[0]);
+        sellNum = Math.max(1, parseInt(split[1], 10));
+        
+        if (!info.id) {
+            safaribot.sendMessage(src, split[0] + " is not a valid Pokémon!", safchan);
+            return;
+        }
+        
+        maxCount = countRepeated(player.pokemon, info.id);
+        if (player.party[0] === infoid) { // if is lead pokemon, that copy can't be sold, so reduce by 1
+            maxCount -= 1;
+        }
+        
+        sellNum = Math.min(maxCount, sellNum);
+        
+        if (sellNum === 0) {
+            safaribot.sendMessage(src, "You do not have any " + info.name + " eligible for sale right now.", safchan);
+            return;
+        }
+        
+        var totalPayment = 0; // only for unconfirmed
+        for (var i = 0; i < sellNum; i++) {
+            if (confirmed)
+                safari.sellPokemon(src, info.name, true);
+            else { // simulate sales and output the total payment
+                var perkBonus = 1 + getPerkBonus(player, "amulet") + safari.getFortune(player, "amulet", 0, null, true);
+                totalPayment += getPrice(info.num, info.shiny, perkBonus);
+            }   
+        }
+        
+        if (!confirmed) {
+            var confirmCommand = "/turbosell " + (info.shiny ? "*":"") + pokePlain(info.id) + ":" + sellNum + ":confirm";
+            safaribot.sendHtmlMessage(src, "You can sell your " + sellNum + " " + info.name + " for $" + addComma(totalPayment) + ". To confirm it, type " + link(confirmCommand) + ".", safchan);
+            return;
+        }
+    };
+    this.multisellPokemon = function(src, data) {
+        if (data === "*") {
+            safaribot.sendMessage(src, "To multisell Pokémon, use /multisell [name1],[name2],[name3]... to check their prices, and /multisell [name1],[name2],[name3]:confirm to sell them.", safchan);
+            return;
+        }
+        if (!validPlayers("self", src)) {
+            return;
+        }
+        if (cantBecause(src, "sell a Pokémon", ["tutorial"])) {
             return;
         }
         var player = getAvatar(src);
@@ -15327,6 +15390,7 @@ function Safari() {
             p = getInputPokemon(list[i]).id;
             
             if (!p) {
+                safaribot.sendMessage(src, list[i] + " is not a valid Pokémon!", safchan);
                 continue;
             }
             if (isLegendary(p)) {
@@ -47455,8 +47519,8 @@ function Safari() {
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type.",
             "/sell: To sell one of your Pokémon.",
-            "/turbosell: To sell off multiple Pokémon at once.",
-            "/multisell: To easily sell off multiple Pokémon of the SAME SPECIES at once.",
+            "/multisell: To sell off multiple Pokémon at once.",
+            "/turbosell: To easily sell off multiple Pokémon of the SAME SPECIES at once.",
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /trade off.",
@@ -48092,8 +48156,8 @@ function Safari() {
                 safari.findPokemon(src, commandData, true, true, true);
                 return true;
             }
-            if (command === "turbosell") {
-                safari.turbosellPokemon(src, commandData);
+            if (command === "multisell") {
+                safari.multisellPokemon(src, commandData);
                 return true;
             }
             if (command === "favorite" || command === "favoriteball" || command === "favourite" || command === "favouriteball") {
