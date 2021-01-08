@@ -30481,7 +30481,7 @@ function Safari() {
 
                 if (args.difficulty < 0 && player.records.pokesCaught > 2000 && extraArgs.turn && extraArgs.turn >= 3) {
                     sys.sendAll("", safchan);
-                    safaribot.sendHtmlAll("<b> Hahahaha! " + player.id + " just lost to " + args.name + " on Easy! Everyone make fun of them with " + link("/rock " + player.id) + "!</b> " + m, safchan);
+                    safaribot.sendHtmlAll("<b> Hahahaha! " + player.id.toCorrectCase() + " just lost to " + args.name + " on Easy! Everyone make fun of them with " + link("/rock " + player.id) + "!</b>", safchan);
                     sys.sendAll("", safchan);
                 }
 
