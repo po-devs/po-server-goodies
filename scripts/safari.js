@@ -48706,8 +48706,8 @@ function Safari() {
                         safaribot.sendMessage(src, info.name + " requires " + plural(candiesRequired, "rare") + " to evolve into " + (Array.isArray(evo) ? readable(evo.map(poke), "or") : poke(evo)) + (conditionals.length > 0 ? " (" + conditionals.join(", ") + ")" : "") + ". ", safchan);
                     }
                 }
-                if (!isMega(info.num) && species in megaEvolutions) {
-                    safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[species].map(poke), "or") + ". ", safchan);
+                if (!isMega(info.num) && info.num in megaEvolutions) {
+                    safaribot.sendMessage(src, info.name + " can Mega Evolve into " + readable(megaEvolutions[info.num].map(poke), "or") + ". ", safchan);
                 }
                 if (isLegendary(info.num) || SESSION.channels(safchan).isChannelOwner(src)) {
                     var themes = [];
