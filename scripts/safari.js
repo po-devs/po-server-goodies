@@ -13440,12 +13440,12 @@ function Safari() {
             }
             break;
             case "crown": {
-                safaribot.sendMessage(src, "<b>BEEP! BEEPBEEP! Boop!?</b> Your Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", safchan);
+                safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Boop!?</b> Your Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
             case "scarf": {
-                safaribot.sendMessage(src, "<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> Your Itemfinder led you to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find!", safchan);
+                safaribot.sendHtmlMessage(src, "<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> Your Itemfinder led you to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find!", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
@@ -13456,12 +13456,12 @@ function Safari() {
             }
             break;
             case "eviolite": {
-                safaribot.sendMessage(src, "<b>!PEEB !PEEB</b> Another trainer approaches you while you are looking for items and snickers: <i>\"You have it on backwards.\"</i> You correct the position, turn around, and find a sizeable chunk of " + finishName("eviolite") + " on the ground.", safchan);
+                safaribot.sendHtmlMessage(src, "<b>!PEEB !PEEB</b> Another trainer approaches you while you are looking for items and snickers: <i>\"You have it on backwards.\"</i> You correct the position, turn around, and find a sizeable chunk of " + finishName("eviolite") + " on the ground.", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
             case "honey": {
-                safaribot.sendMessage(src, "<b>BEE! BEE! BEE!</b> You stumbled upon a beehive while using your Itemfinder. Before running off to avoid the swarm, you managed to steal a glob of " + finishName("honey") + "!", safchan);
+                safaribot.sendHtmlMessage(src, "<b>BEE! BEE! BEE!</b> You stumbled upon a beehive while using your Itemfinder. Before running off to avoid the swarm, you managed to steal a glob of " + finishName("honey") + "!", safchan);
                 safari.missionProgress(player,"findHoney",0,1,{});
                 this.costumeEXP(player, "findrare");
             }
