@@ -12898,7 +12898,7 @@ function Safari() {
             case "scarf":
             case "battery": {
                 amount = 1;
-                sendAll("<b>Sweet! " + sys.name(src) + " just won " + an(finishName(reward)) + " from Gachapon!</b>", true);
+                //sendAll("<b>Sweet! " + sys.name(src) + " just won " + an(finishName(reward)) + " from Gachapon!</b>", true);
                 safaribot.sendMessage(src, "You received " + an(finishName(reward)) + ".", safchan);
             }
             break;
@@ -13440,12 +13440,12 @@ function Safari() {
             }
             break;
             case "crown": {
-                sendAll("<b>BEEP! BEEPBEEP! Boop!?</b> " + sys.name(src) + "'s Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", true);
+                safaribot.sendMessage(src, "<b>BEEP! BEEPBEEP! Boop!?</b> Your Itemfinder locates an old treasure chest full of ancient relics. Upon picking them up, they crumble into dust except for a single " + finishName("crown") + ".", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
             case "scarf": {
-                sendAll("<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> " + sys.name(src) + "'s Itemfinder led them to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find, " + sys.name(src) + "!", true);
+                safaribot.sendMessage(src, "<b>BEEP! BEEPBEEP! Beeeeeeeeeep!</b> Your Itemfinder led you to a thrift store! <i>New sale: Silk Scarf (only $0)</i> it said! Nice find!", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
@@ -13456,12 +13456,12 @@ function Safari() {
             }
             break;
             case "eviolite": {
-                sendAll("<b>!PEEB !PEEB</b> Another trainer approaches " + sys.name(src) + " as they are looking for items and snickers: <i>\"You have it on backwards.\"</i> " + sys.name(src) + " corrects the position, turns around, and finds a sizeable chunk of " + finishName("eviolite") + " on the ground.", true);
+                safaribot.sendMessage(src, "<b>!PEEB !PEEB</b> Another trainer approaches you while you are looking for items and snickers: <i>\"You have it on backwards.\"</i> You correct the position, turn around, and find a sizeable chunk of " + finishName("eviolite") + " on the ground.", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
             case "honey": {
-                sendAll("<b>BEE! BEE! BEE!</b> " + sys.name(src) + " stumbled upon a beehive while using their Itemfinder. Before running off to avoid the swarm, " + sys.name(src) + " managed to steal a glob of " + finishName("honey") + "!", true);
+                safaribot.sendMessage(src, "<b>BEE! BEE! BEE!</b> You stumbled upon a beehive while using your Itemfinder. Before running off to avoid the swarm, you managed to steal a glob of " + finishName("honey") + "!", safchan);
                 safari.missionProgress(player,"findHoney",0,1,{});
                 this.costumeEXP(player, "findrare");
             }
