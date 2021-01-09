@@ -21308,7 +21308,7 @@ function Safari() {
                 }
                 
                 this.sendToViewers("Preparations complete, battle will start soon!");
-                this.subturn = 8;
+                this.subturn = 6;
             }
             return;
         }
