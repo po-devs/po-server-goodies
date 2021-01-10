@@ -23308,6 +23308,7 @@ function Safari() {
         if (this.select) {
             bonus *= ((isP2 || isP4) && (this.select.boostType.contains(move.type)) ? 1.3 : 1);
             bonus *= ((isP1 || isP3) && (this.select.solidRock) && (typeMultiplier > 1) ? 0.75 : 1);
+            bonus *= ((isP2 || isP4) && (this.select.expertBelt) && (typeMultiplier > 1) ? 1.2 : 1);
             bonus *= ((isP1 || isP3) && (this.select.heatproof) && (move.type === "Fire") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.thickFat) && (move.type === "Fire" || move.type == "Ice") ? 0.5 : 1);
             bonus *= ((isP1 || isP3) && (this.select.furcoat) && (move.category === "physical") ? 0.5 : 1);
@@ -23973,6 +23974,9 @@ function Safari() {
                 if (move.recharge) {
                     if (user.hp > 0) {
                         user.mustRecharge = true;
+                        if (target.hp <= 0 && self.select && self.select.hyperBeamGlitch) {
+                        	user.mustRecharge = false;
+                        }
                     }
                 }
                 if (self.select) {
@@ -25099,6 +25103,9 @@ function Safari() {
                         }
                         if (["recharge"].contains(p)) {
                             move.power = (145 + (5 * (Math.round(3 * Math.random()))));
+                            if (this.select && this.select.hyperBeamGlitch) {
+                            	move.power += 30;
+                            }
                         }
                         else if (["burnout"].contains(p)) {
                             if (eff[p] === 2) {
@@ -25199,6 +25206,9 @@ function Safari() {
         }
         if (damaging && user.movepowers[type] && (user.movepowers[type] >= 140)) {
             effChance.recharge = 2;
+            if (this.select && this.select.hyperBeamGlitch) {
+            	effChance.recharge = 2.4;
+            }
         }
         if (damaging && this.tagBattle) {
             effChance.targetAll = 1.75;
@@ -39001,10 +39011,12 @@ function Safari() {
             case "genesisshield": m = "The foe's team is surrounded with a Genesis Shield."; break;
             case "shellArmor": m = "Critical hits cannot occur."; break;
             case "criticalDouble": m = "Critical hits do increased damage."; break;
+            case "hyperBeamGlitch": m = "Recharge moves are stronger, and do not require recharge if they score a KO."; break;
             case "noncritexhaust": m = "Attacking stat lowered, while landing a critical hit removes nerfs in the attacking stat."; break;
             case "boostDrain": m = "Drain moves restore a greater amount of HP."; break;
             case "sabotage": m = "Landing super-effective attacks causes you to be sabotaged by the foe's fanclub."; break;
             case "solidRock": m = "The foe's Pokémon are slightly resistant to super-effective attacks."; break;
+            case "expertBelt": m = "The foe's Pokémon are stronger when using super-effective attacks."; break;
             case "hugePower": m = "One of the foe's Pokémon has their attack stat doubled."; break;
             case "researcher": m = "The foe's Pokémon have their stats doubled."; break;
             case "hpboost": m = "Foe's Pokémon have a greater amount of HP."; break;
