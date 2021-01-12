@@ -32327,7 +32327,7 @@ function Safari() {
             "grnapricorn": {
                 "texture": 5,
                 "bulk": 2,
-                "taste": 2,
+                "taste": 3,
                 "acidity": 4,
                 "dryness": 0,
                 "flavor": "Bitter",
@@ -32547,7 +32547,7 @@ function Safari() {
                 "viscosity": 2,
                 "rich": 0,
                 "scent": 0,
-                "quality": -1,
+                "quality": 0,
                 "flavor": "None",
                 "color": "#A1A1A1",
                 "description": "Moomoo Milk helps keep thick recipes under control!"
