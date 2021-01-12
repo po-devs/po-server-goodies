@@ -14796,6 +14796,7 @@ function Safari() {
             t = type2(active) !== "???" ? type2(active) : t;
         }
         else {
+            t = player.monoSecondary ? (type2(active) !== "???" ? type2(active) : t) : t;
             var toSend = "Your {0} is configured to use your Pokémon's {1} type{2}! Currently using <b>{3}</b>'s {4}, you can swap settings by using {5}!".format(finishName("mono"), toColor((player.monoSecondary ? "secondary" : "main"), "blue"), (player.monoSecondary ? " (only if the Pokémon has two types)" : ""), poke(active), typeIcon(t), (player.monoSecondary ? link("/mono 1") : link("/mono 2")));
             safaribot.sendHtmlMessage(src, toSend, safchan);
             return;
