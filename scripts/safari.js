@@ -11129,7 +11129,7 @@ function Safari() {
         for (var i = 0; i < Math.min(player.megaTimers.length, displayCap); i++) {
             var timerObj = player.megaTimers[i];
             var diff = timerObj.expires - now();
-            var diffString = (diff <= 0 ? "After the next Contest" : utilities.getTimeString(Math.round(diff / 1000)));
+            var diffString = (diff <= 0 ? (currentTheme ? "After this Contest" : "After the next Contest") : utilities.getTimeString(Math.round(diff / 1000)));
             
             var out = "{0} <b>{1}</b>: {2}".format(pokeInfo.icon(timerObj.id, typeof timerObj.id === "string"), getInputPokemon(timerObj.id + (typeof timerObj.id === "string" ? "*" : "")).name, diffString);
             safaribot.sendHtmlMessage(src, out, safchan);
