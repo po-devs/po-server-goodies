@@ -33155,9 +33155,9 @@ function Safari() {
 
         var judgeScore = 0;
         if (this.judges.contains("Totodile")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Salt")) {
-                judgeScore += 1;
+                judgeScore += 2.2;
                 this.msgAll("Totodile appreciates the inclusion of Salty taste.");
             }
             if (this.needsThick > 100) {
@@ -33172,26 +33172,30 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Pachirisu")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Umami")) {
-                judgeScore += 1;
+                judgeScore += 2.2;
                 this.msgAll("Pachirisu appreciates the inclusion of Umami taste.");
             }
             if (this.needsSweet > 100) {
                 judgeScore -= 1;
             }
-            else if (this.needsSweet < 75) {
+            else if (this.needsSweet < 25) {
                 judgeScore += 1;
                 this.msgAll("Pachirisu is happy that it's sweet enough.");
+            }
+            else if (this.needsSweet < 75) {
+                judgeScore += 0.5;
+                this.msgAll("Pachirisu is satisfied that it's sweet enough.");
             }
             judgeScore = Math.min(judgeScore, 5);
             this.msgAll("Pachirisu's review: <b>" + judgeStars(judgeScore) + "/5</b> stars!");
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Galarian Meowth")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Kokumi")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Galarian Meowth appreciates the inclusion of Kokumi taste.");
             }
             if (this.needsScent > 100) {
@@ -33206,9 +33210,9 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Chespin")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Sour")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Chespin appreciates the inclusion of Sour taste.");
             }
             if (this.needsScent > 100) {
@@ -33223,9 +33227,9 @@ function Safari() {
             aggregateScore += judgeScore * 4;
         }
         if (this.judges.contains("Fennekin")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Tart")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Fennekin appreciates the inclusion of Tart taste.");
             }
             if (this.needsScent > 100) {
@@ -33240,9 +33244,9 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Pineco")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Citrus")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Pineco appreciates the inclusion of Citrus taste.");
             }
             if (Object.keys(this.flavors).length == 1) {
@@ -33257,7 +33261,7 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Drilbur")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Spicy")) {
                 judgeScore += 2;
                 this.msgAll("Drilbur appreciates the inclusion of Spicy taste.");
@@ -33277,9 +33281,9 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Rookidee")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Savory")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Rookidee appreciates the inclusion of Savory taste.");
             }
             if (this.acidityTotal < 12) {
@@ -33297,19 +33301,22 @@ function Safari() {
             aggregateScore += judgeScore * 5;
         }
         if (this.judges.contains("Makuhita")) {
-            judgeScore = Math.round(balance * 0.03 * 100) * 0.01;
+            judgeScore = Math.round(balance * 0.025 * 100) * 0.01;
             if (this.flavors.hasOwnProperty("Bitter")) {
-                judgeScore += 2;
+                judgeScore += 2.2;
                 this.msgAll("Makuhita appreciates the inclusion of Bitter taste.");
             }
             if (this.milkUsed < 1) {
-                judgeScore -= 0.65;
-            }
-            if (this.milkUsed < 4) {
                 judgeScore -= 1;
             }
+            if (this.milkUsed < 3) {
+                judgeScore -= 0.75;
+            }
             if (this.milkUsed > 6) {
-                judgeScore += 2;
+                judgeScore += 2.5;
+                this.msgAll("Makuhita is very pleased with the amount of Moomoo Milk used.");
+            } else if (this.milkUsed > 4) {
+                judgeScore += 1.2;
                 this.msgAll("Makuhita is pleased with the amount of Moomoo Milk used.");
             }
             judgeScore = Math.min(judgeScore, 5);
@@ -33431,14 +33438,14 @@ function Safari() {
                 }
                 if ((legendaries.contains(mon.num)) || ultraBeasts.contains(mon.num)) {
                     if (bst >= 650) {
-                        if (chance((aggregateScore - 275) * 0.007)) {
+                        if (chance((aggregateScore - 276) * 0.007)) {
                             eggval = 20;
                         } else {
                             continue;
                         }
                     }
                     else if (bst >= 590) {
-                        if (chance((aggregateScore - 115) * 0.003)) {
+                        if (chance((aggregateScore - 118) * 0.003)) {
                             eggval = 25;
                         } else {
                             continue;
@@ -33476,7 +33483,7 @@ function Safari() {
                         case "Citrus": target = ["Bug", "Normal"]; break;
                     }
                     if (target.contains(type1(mon.num)) || target.contains(type2(mon.num))) {
-                        flavorval += 0.5 + (Math.random() * this.flavors[f]);
+                        flavorval += 0.55 + ((Math.random() + 0.1) * this.flavors[f]);
                     }
                 }
                 if (flavorval > 3) {
@@ -33573,7 +33580,7 @@ function Safari() {
             if (loop > 500) {
                 break;
             }
-            var get = sys.rand(1, 891);
+            var get = sys.rand(1, 898);
             bst = getBST(get);
             if (bst < 361 && (!(legendaries.contains(get)))) {
                 out.commons.list.push(get);
@@ -33615,14 +33622,14 @@ function Safari() {
             player.deluxeBait.uncommons.list = [].concat(out.uncommons.list);
             player.deluxeBait.rares.list = [].concat(out.rares.list);
 
-            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 1.75)) * 0.016) - 2, 0.01);
+            player.deluxeBait.rares.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 1.75)) * 0.0158) - 2, 0.01);
             if (player.deluxeBait.rares.list.length <= 0) {
                 player.deluxeBait.rares.rate = 0;
             }
-            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 3.5)) * 0.06) - player.deluxeBait.rares.rate, 0.1);
+            player.deluxeBait.uncommons.rate = Math.max(((aggregateScore - (bakeScores[this.players[p].toLowerCase()] * 3.5)) * 0.059) - player.deluxeBait.rares.rate, 0.1);
             player.deluxeBait.commons.rate = 100 - (player.deluxeBait.uncommons.rate + player.deluxeBait.rares.rate);
-            if (aggregateScore < 95) {
-                player.deluxeBait.inedible = Math.min(((100 - aggregateScore) * 0.01) + 0.01, 0.5);
+            if (aggregateScore < 96) {
+                player.deluxeBait.inedible = Math.min(((100 - aggregateScore) * 0.01) + 0.01, 0.45);
             } else {
                 player.deluxeBait.inedible = 0;
             }
