@@ -7129,8 +7129,8 @@ function Safari() {
                         if (this.validForTheme(i, cTheme) && bst <= statCap && bst >= statMin) {
                             list.push(i);
                         }
-                        if (this.validForTheme(i, cTheme) && (pokeInfo.species(i) in megaEvolutions)) {
-                            var possibleEvo = megaEvolutions[pokeInfo.species(i)];
+                        if (this.validForTheme(i, cTheme) && (i in megaEvolutions)) {
+                            var possibleEvo = megaEvolutions[i];
                             var evolveTo = possibleEvo[sys.rand(0, possibleEvo.length)];
                             if ((getBST(evolveTo)) <= statCap) {
                                 list.push(evolveTo);
@@ -10786,7 +10786,7 @@ function Safari() {
         }
         else if (crit == "canmega") {
             current.forEach(function(x){
-                if (!isMega(x) && pokeInfo.species(x) in megaEvolutions) {
+                if (!isMega(x) && x in megaEvolutions) {
                     list.push(x);
                 }
             });
