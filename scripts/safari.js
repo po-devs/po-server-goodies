@@ -14788,10 +14788,10 @@ function Safari() {
         var t = type1(active);
         data = data.toLowerCase();
         
-        if (["1", "1st", "one", "first"].contains(data)) {
+        if (["1", "1st", "one", "first", "main"].contains(data)) {
             player.monoSecondary = false;
         }
-        else if (["2", "2nd", "two", "second"].contains(data)) {
+        else if (["2", "2nd", "two", "second", "secondary"].contains(data)) {
             player.monoSecondary = true;
             t = type2(active) !== "???" ? type2(active) : t;
         }
