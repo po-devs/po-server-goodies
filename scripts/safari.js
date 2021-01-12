@@ -10169,7 +10169,7 @@ function Safari() {
         var perBox = itemData.box.bonusRate;
         if (isNaN(page) && typeof num === "string" && num.toLowerCase() !== "all") {
             page = 1;
-        } 
+        }
         if (!isNaN(page) && num != "all") {
             maxPages = Math.floor(list.length / (perBox)) + (list.length % perBox === 0 ? 0 : 1);
 
@@ -14783,10 +14783,25 @@ function Safari() {
         if (cantBecause(src, "set your " + finishName("mono") + " type", ["wild"])) {
             return;
         }
-        player.monoSecondary = ["2", "2nd", "two", "true", "yes"].contains(data.toLowerCase()) ? true : false;
+
         var active = player.party[0];
-        var t = player.monoSecondary && type2(active) !== "???" ? type2(active) : type1(active);
-        safaribot.sendHtmlMessage(src, "Your " + finishName("mono") + " will always use your Pokémon's " + toColor((player.monoSecondary ? "secondary" : "main"), "blue") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "! Currently using <b>" + poke(active) + "</b>'s " + typeIcon(t) + "!", safchan);
+        var t = type1(active);
+        data = data.toLowerCase();
+        
+        if (["1", "1st", "one", "first"].contains(data)) {
+            player.monoSecondary = false;
+        }
+        else if (["2", "2nd", "two", "second"].contains(data)) {
+            player.monoSecondary = true;
+            t = type2(active) !== "???" ? type2(active) : t;
+        }
+        else {
+            var toSend = "Your {0} is currently using your Pokémon's {1} type{2}! Currently using <b>{3}</b>'s {4}, you can swap settings by using {5}!".format(finishName("mono"), toColor((player.monoSecondary ? "secondary" : "main"), "blue"), (player.monoSecondary ? " (only if the Pokémon has two types)" : ""), poke(active), typeIcon(t), (player.monoSecondary ? link("/mono 1") : link("/mono 2")));
+            safaribot.sendHtmlMessage(src, toSend, safchan);
+            return;
+        }
+        
+        safaribot.sendHtmlMessage(src, "Your " + finishName("mono") + " will now always use your Pokémon's " + toColor((player.monoSecondary ? "secondary" : "main"), "blue") + " type" + (player.monoSecondary ? " (only if the Pokémon has two types)" : "") + "! Currently using <b>" + poke(active) + "</b>'s " + typeIcon(t) + "!", safchan);
         this.saveGame(player);
     };
     this.randomFortune = function() {
@@ -47549,7 +47564,7 @@ function Safari() {
             "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
-            "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type.",
+            "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/sell: To sell one of your Pokémon.",
             "/multisell: To sell off multiple Pokémon at once.",
             "/turbosell: To easily sell off multiple Pokémon of the SAME SPECIES at once.",
