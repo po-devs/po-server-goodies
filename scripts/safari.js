@@ -8675,16 +8675,18 @@ function Safari() {
                 player.pokemon.push(currentPokemon);
             }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
-                var wildItemHeld = globalWildItems[currentPokemon+""];
-                var getThing, g;
-                if (chance(wildItemHeld.perc)) {
-                    getThing = wildItemHeld.item;
-                    if (getThing[0] !== "$") {
-                        getThing = "@" + getThing;
+                var wildItemHeldList = globalWildItems[currentPokemon+""];
+                var gained = [];
+                for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
+                    var itemObj = wildItemHeldList[i];
+                    var item = itemObj.item, perc = itemObj.perc;
+                    
+                    if (chance(perc)) {
+                        gained.push(giveStuff(player, item, true).gained);
                     }
-                    g = giveStuff(player, getThing, true);
-                    g = readable(g.gained);
-                    sendAll("The " + pokeName + " was holding " + g + "!");
+                }
+                if (gained.length > 0) {
+                    sendAll("The {0} was holding {1}!".format(pokeName, readable(gained)));
                 }
             }
             if (currentRules && currentRules.berries) {
@@ -41470,6 +41472,7 @@ function Safari() {
     };
     this.printDayCare = function(src, area) {
         var p, mon;
+        var player = getAvatar(src);
         var rows = {}, features = {}, name;
         area = area || "grotto";
         var props = [
@@ -41507,7 +41510,12 @@ function Safari() {
             p = this.daycarePokemon[t];
             mon = parseInt(p.id, 10);
             if (p.area === area) {
-                rows[p.pos] = {mon: mon, owner: p.owner, id: p.uid};
+                if (rows[p.pos] && rows[p.pos].id === player.idnum) { // if there's already a mon on this spot and the mon is your own
+                    continue; // skip over it so your own mon doesn't get overwritten
+                }
+                else {
+                    rows[p.pos] = {mon: mon, owner: p.owner, id: p.uid};
+                }
             }
         }
         ret += "<table cellspacing='0'>";
@@ -41577,9 +41585,6 @@ function Safari() {
                 }
                 ret += "<td align=center width=42 height=32" + (bg ? " style='background-color:" + bg + ";'" : "") + ">";
                 if (rows.hasOwnProperty(place)) {
-                    if (ownMons.contains(place)) { // if your own mon has already been printed on this space, don't let any other mons/features overlap with it
-                        continue;
-                    }
                     inp = parseInt(rows[place].mon, 10);
                     if (ultraPokes.hasOwnProperty(inp+"")) {
                         var species = pokeInfo.species(inp), form = pokeInfo.forme(inp);
@@ -41589,11 +41594,8 @@ function Safari() {
                         ret += "<img src='icon:" + inp;
                     }
                     
-                    var isOwnMon = rows[place].owner.toCorrectCase() === sys.name(src) || getAvatar(src).altlog.contains(rows[place].owner.toLowerCase());
-                    
-                    if (isOwnMon) {
-                        ownMons.push(place);
-                    }
+                    var isOwnMon = rows[place].id === player.idnum;
+
                     ret += "' title='" + rows[place].owner.toCorrectCase() + " (" + poke(inp) + ")'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                     ret += "<p" + (false ? " style='background:" + bg + "' " : "") + ">" + link("/daycare interact:" + rows[place].id, (isOwnMon ? "Check*" : "Check"), false, bg === "#2366ed" ? "#B0E2FF" : null) + "</p>";
                 } else {
