@@ -8677,10 +8677,19 @@ function Safari() {
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var gained = [];
+                var customItems = {
+                    "moneyset": ["$" + (10 * Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
+                    "moneyset2": ["$" + (10 * sys.rand(10, 21) * sys.rand(10, 26))],
+                    "apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
+                    "dewset": ["@dew", "@hdew"]
+                };
                 for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = wildItemHeldList[i];
                     var item = itemObj.item, perc = itemObj.perc;
                     
+                    if (item in customItems) {
+                        item = customItems[item].random();
+                    }
                     if (chance(perc)) {
                         gained.push(giveStuff(player, item, true).gained);
                     }
@@ -30030,18 +30039,46 @@ function Safari() {
                 eligible = {"555": {"cost": 8, "forms": [form(555, 3)]}}
             }
             else {
-                eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673] }, "412": { "cost": 1, "forms": [412, 65948, 131484] }, "422": { "cost": 1, "forms": [422, 65958] }, "423": { "cost": 1, "forms": [423, 65959] }, "550": { "cost": 1, "forms": [550, 66086] }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193] }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194] }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850] }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813] }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815] }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318] }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319] }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349] }, "745": { "cost": 1, "forms": [745, 66281] }, "351": { "cost": 2, "forms": [351, 65887, 131423, 262495] }, "413": { "cost": 2, "forms": [413, 65949, 131485] }, "421": { "cost": 2, "forms": [421, 65957] }, "676": { "cost": 2, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500] }, "19": { "cost": 3, "forms": [19, 65555] }, "20": { "cost": 3, "forms": [20, 65556] }, "25": { "cost": 3, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457] }, "26": { "cost": 3, "forms": [26, 65562] }, "27": { "cost": 3, "forms": [27, 65563] }, "28": { "cost": 3, "forms": [28, 65564] }, "37": { "cost": 3, "forms": [37, 65573] }, "38": { "cost": 3, "forms": [38, 65574] }, "50": { "cost": 3, "forms": [50, 65586] }, "51": { "cost": 3, "forms": [51, 65587] }, "52": { "cost": 3, "forms": [52, 65588, form(52, 2)] }, "53": { "cost": 3, "forms": [53, 65589, form(53, 2)] }, "74": { "cost": 3, "forms": [74, 65610] }, "75": { "cost": 3, "forms": [75, 65611] }, "76": { "cost": 3, "forms": [76, 65612] }, "88": { "cost": 3, "forms": [88, 65624] }, "89": { "cost": 3, "forms": [89, 65625] }, "103": { "cost": 3, "forms": [103, 65639] }, "105": { "cost": 3, "forms": [105, 65641] }, "670": { "cost": 3, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 3, "forms": [678, 66214] }, "681": { "cost": 3, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 4, "forms": [746, 66282] }, "774": { "cost": 4, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526] }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 8, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 8, "forms": [492, 66028] }, "555": { "cost": 8, "forms": [555, 66091, form(555, 2)] }, "648": { "cost": 8, "forms": [648, 66184] }, "773": { "cost": 8, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [66254, 718, 131790], "rotate": true }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 4, "forms": [form(77, 1)]}, "78": {"cost": 4, "forms": [form(78, 1)]}, "263": {"cost": 4, "forms": [form(263, 1)]}, "264": {"cost": 4, "forms": [form(264, 1)]}, "562": {"cost": 4, "forms": [form(562, 1)]}, "122": {"cost": 4, "forms": [form(122, 1)]}, "109": {"cost": 4, "forms": [form(109, 1)]}, "110": {"cost": 4, "forms": [form(110, 1)]}, "222": {"cost": 4, "forms": [form(222, 1)]} };
+                eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673] }, "412": { "cost": 1, "forms": [412, 65948, 131484] }, "422": { "cost": 1, "forms": [422, 65958] }, "423": { "cost": 1, "forms": [423, 65959] }, "550": { "cost": 1, "forms": [550, 66086] }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193] }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194] }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850] }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813] }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815] }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318] }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319] }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349] }, "745": { "cost": 1, "forms": [745, 66281] }, "351": { "cost": 2, "forms": [351, 65887, 131423, 262495] }, "413": { "cost": 2, "forms": [413, 65949, 131485] }, "421": { "cost": 2, "forms": [421, 65957] }, "676": { "cost": 2, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500] }, "19": { "cost": 3, "forms": [19, 65555] }, "20": { "cost": 3, "forms": [20, 65556] }, "25": { "cost": 3, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457] }, "26": { "cost": 3, "forms": [26, 65562] }, "27": { "cost": 3, "forms": [27, 65563] }, "28": { "cost": 3, "forms": [28, 65564] }, "37": { "cost": 3, "forms": [37, 65573] }, "38": { "cost": 3, "forms": [38, 65574] }, "50": { "cost": 3, "forms": [50, 65586] }, "51": { "cost": 3, "forms": [51, 65587] }, "52": { "cost": 3, "forms": [52, 65588, form(52, 2)] }, "53": { "cost": 3, "forms": [53, 65589, form(53, 2)] }, "74": { "cost": 3, "forms": [74, 65610] }, "75": { "cost": 3, "forms": [75, 65611] }, "76": { "cost": 3, "forms": [76, 65612] }, "88": { "cost": 3, "forms": [88, 65624] }, "89": { "cost": 3, "forms": [89, 65625] }, "103": { "cost": 3, "forms": [103, 65639] }, "105": { "cost": 3, "forms": [105, 65641] }, "670": { "cost": 3, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 3, "forms": [678, 66214] }, "681": { "cost": 3, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 4, "forms": [746, 66282] }, "774": { "cost": 4, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526] }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 8, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 8, "forms": [492, 66028] }, "555": { "cost": 8, "forms": [555, 66091, form(555, 2)] }, "648": { "cost": 8, "forms": [648, 66184] }, "773": { "cost": 8, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [66254, 718, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 4, "forms": [form(77, 1)]}, "78": {"cost": 4, "forms": [form(78, 1)]}, "263": {"cost": 4, "forms": [form(263, 1)]}, "264": {"cost": 4, "forms": [form(264, 1)]}, "562": {"cost": 4, "forms": [form(562, 1)]}, "122": {"cost": 4, "forms": [form(122, 1)]}, "109": {"cost": 4, "forms": [form(109, 1)]}, "110": {"cost": 4, "forms": [form(110, 1)]}, "222": {"cost": 4, "forms": [form(222, 1)]} };
             }
             if (!eligible.hasOwnProperty(base)) {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Doesn't look like I can transform this Pokémon into anything!", safchan);
                 return;
             }
             var morph = eligible[base];
-            var confirmation = data.length > 1 && ["confirm", "finish"].contains(data[1].toLowerCase());
+            var into = data.length > 1 ? data[1].toLowerCase() : "";
+
+            var formatPossibleTransmutations = function() {
+                return readable(morph.forms.filter(function(e) {
+                    return e !== info.num;
+                }).map(function(e) {
+                    return link("/quest alchemist:philosopher:{0}:{1}".format(info.name, e), info.name);
+                }));
+            };
+            if (!into) {
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: I can transform that " + info.name + " into " + formatPossibleTransmutations() + " I think!", safchan);
+                return;
+            }
+            else {
+                into = getInputPokemon(into);
+                if (!into.num) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: I can transform that " + info.name + " into " + formatPossibleTransmutations() + " I think!", safchan);
+                    return;
+                }
+                else if (!morph.forms.contains(into.num)) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: I can't transform " + info.name + " into " + into.name + " ya big ol' badonkadonk!", safchan);
+                    return;
+                }
+                else if (into.num === info.num) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Death.", safchan);
+                    return;
+                }
+            }
+            var confirmation = data.length > 2 && ["confirm", "finish"].contains(data[2].toLowerCase());
             var cost = morph.cost + (info.shiny ? 1 : 0);
             
             if (!confirmation) {
-                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " I guess I will need " + plural(cost, "philosopher") + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
+                safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Hmm... To transform that " + info.name + " into " +  into.name + " I guess I will need " + plural(cost, "philosopher") + "! If you got them all, use " + link("/quest alchemist:philosopher:" + info.input + ":" + into.input + ":finish", null, true) + " and I will begin the transmutation right away!", safchan);
                 return;
             } else {
                 if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
@@ -30054,15 +30091,9 @@ function Safari() {
                 if (!canLosePokemon(src, info.input, "give")) {
                     return;
                 }
-                var result;
-                if (morph.rotate) {
-                    result = morph.forms[morph.forms.indexOf(info.num) + 1] || morph.forms[0];
-                }
-                else {
-                    do {
-                        result = morph.forms.random();
-                    } while (result === info.num);
-                }
+                
+                var result = into.num;
+
                 if (info.shiny) {
                     result = result + "";
                 }
