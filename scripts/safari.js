@@ -41510,11 +41510,11 @@ function Safari() {
             p = this.daycarePokemon[t];
             mon = parseInt(p.id, 10);
             if (p.area === area) {
-                if (rows[p.pos] && rows[p.pos].id === player.idnum) { // if there's already a mon on this spot and the mon is your own
+                if (rows[p.pos] && rows[p.pos].ownernum === player.idnum) { // if there's already a mon on this spot and the mon is your own
                     continue; // skip over it so your own mon doesn't get overwritten
                 }
                 else {
-                    rows[p.pos] = {mon: mon, owner: p.owner, id: p.uid};
+                    rows[p.pos] = {mon: mon, owner: p.owner, ownernum: p.ownernum, id: p.uid};
                 }
             }
         }
@@ -41594,7 +41594,7 @@ function Safari() {
                         ret += "<img src='icon:" + inp;
                     }
                     
-                    var isOwnMon = rows[place].id === player.idnum;
+                    var isOwnMon = rows[place].ownernum === player.idnum;
 
                     ret += "' title='" + rows[place].owner.toCorrectCase() + " (" + poke(inp) + ")'" + (bg ? " style='background:" + bg + "'" : "") + ">";
                     ret += "<p" + (false ? " style='background:" + bg + "' " : "") + ">" + link("/daycare interact:" + rows[place].id, (isOwnMon ? "Check*" : "Check"), false, bg === "#2366ed" ? "#B0E2FF" : null) + "</p>";
