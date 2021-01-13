@@ -7397,7 +7397,10 @@ function Safari() {
                 ballMacro(onChannel[e]);
                 
                 if (wildEvent) { // if an Event spawns, reset ball cooldown so everyone can attempt a throw
-                    getAvatar(onChannel[e]).cooldowns.ball = 0;
+                    var p = getAvatar(onChannel[e]);
+                    if (!p)
+                        continue;
+                    p.cooldowns.ball = 0;
                 }
             }
             preparationPhase = sys.rand(5, 8);
@@ -8676,7 +8679,10 @@ function Safari() {
                 var getThing, g;
                 if (chance(wildItemHeld.perc)) {
                     getThing = wildItemHeld.item;
-                    g = giveStuff(player, "@" + getThing, true);
+                    if (getThing[0] !== "$") {
+                        getThing = "@" + getThing;
+                    }
+                    g = giveStuff(player, getThing, true);
                     g = readable(g.gained);
                     sendAll("The " + pokeName + " was holding " + g + "!");
                 }
