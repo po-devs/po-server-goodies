@@ -30085,7 +30085,7 @@ function Safari() {
                     return;
                 }
                 if (player.balls.philosopher < cost) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Did you listen to what I said? I can't transform " + info.name + " without " + plural(cost, "philosopher") + ", so don't use " + link("/quest alchemist:philosopher:" + info.input + ":finish", null, true) + " until you got them all!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Did you listen to what I said? I can't transform " + info.name + " without " + plural(cost, "philosopher") + ", so don't use " + link("/quest alchemist:philosopher:" + info.input + ":" + into.input + ":finish", null, true) + " until you got them all!", safchan);
                     return;
                 }
                 if (!canLosePokemon(src, info.input, "give")) {
