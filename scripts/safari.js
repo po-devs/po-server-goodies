@@ -14851,9 +14851,9 @@ function Safari() {
             // .replace(/{Time}/gi, utilities.getTimeString((res.deadline * 60 - now())/1000))
             .replace(/{Time}/gi, utilities.getTimeString((res.deadline - now()+10)/1000))
             .replace(/{Limit}/gi, res.limit)
-            .replace(/{Item}/gi, finishName(res.prop))
-            .replace(/{Type}/gi, cap(res.prop))
-            .replace(/{Quest}/gi, cap(res.prop));
+            .replace(/{Item}/gi, finishName(res.prop || ""))
+            .replace(/{Type}/gi, cap(res.prop || ""))
+            .replace(/{Quest}/gi, cap(res.prop || ""));
             
         return out;
     };
