@@ -30052,7 +30052,7 @@ function Safari() {
                 return readable(morph.forms.filter(function(e) {
                     return e !== info.num;
                 }).map(function(e) {
-                    return link("/quest alchemist:philosopher:{0}:{1}".format(info.name, e), info.name);
+                    return link("/quest alchemist:philosopher:{0}:{1}".format(info.name, e), getInputPokemon(e + "").name);
                 }));
             };
             if (!into) {
@@ -30102,7 +30102,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Alright, you brought the " + info.name + " and the " + plural(cost, "philosopher") + ", so let's start this!", safchan);
                 player.balls.philosopher -= cost;
                 this.updateShop(player, "philosopher");
-                this.evolvePokemon(src, info, result, "was transmutated into");
+                this.evolvePokemon(src, info, result, "was transmuted into");
                 safaribot.sendHtmlMessage(src, "Alchemist: We did it! Your " + info.name + " is now a " + poke(result) + "!", safchan);
                 player.records.philosopherTransmutations += 1;
                 player.records.philosopherTransmutationsCost += cost;
