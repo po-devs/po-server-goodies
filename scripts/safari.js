@@ -14845,19 +14845,15 @@ function Safari() {
         }
         return res;
     };
-    this.fortuneDescription = function(res) {
-        var item = res.prop && res.proptype === "item" ? finishName(res.prop) : "";
-        var type = res.prop && res.proptype === "type" ? cap(res.prop) : "";
-        var quest = res.prop && res.proptype === "quest" ? cap(res.prop) : "";
-        
+    this.fortuneDescription = function(res) { 
         var out = res.desc.replace(/{Percent}/gi, Math.round(res.val*100) + "%")
             .replace(/{Value}/gi, res.val)
             // .replace(/{Time}/gi, utilities.getTimeString((res.deadline * 60 - now())/1000))
             .replace(/{Time}/gi, utilities.getTimeString((res.deadline - now()+10)/1000))
             .replace(/{Limit}/gi, res.limit)
-            .replace(/{Item}/gi, item)
-            .replace(/{Type}/gi, type)
-            .replace(/{Quest}/gi, quest);
+            .replace(/{Item}/gi, finishName(res.prop))
+            .replace(/{Type}/gi, cap(res.prop))
+            .replace(/{Quest}/gi, cap(res.prop));
             
         return out;
     };
