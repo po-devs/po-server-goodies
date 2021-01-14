@@ -1501,7 +1501,7 @@ function Safari() {
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         
         //specials
-        "GuardianDiety": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
+        "GuardianDeity": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
     };
     
     function getCrystalEffect(num) {
@@ -7147,7 +7147,7 @@ function Safari() {
                     statMin = [480, 450, 420, 380, 320, 0][safari.events.spiritDuelsTeams.length - 2];
                     statCap -= (25 * sys.rand(0, 1));
                     shiny = false;
-                    for (i = 1; i < 899; i++) {
+                    for (i = 1; i < highestDexNum; i++) {
                         bst = getBST(i);
                         if (this.validForTheme(i, cTheme) && bst <= statCap && bst >= statMin) {
                             list.push(i);
@@ -7176,7 +7176,7 @@ function Safari() {
                         canLegend = false;
                     }
                     var list = [], bst, extrabst = 0, extrabstChance = 1, h, i, id, extrabstChanceModifier = 0.22;
-                    for (i = 1; i < 899; i++) {
+                    for (i = 1; i < highestDexNum; i++) {
                         bst = "editBST" in theme && i in theme.editBST ? theme.editBST[i] : getBST(i);
                         extrabstChance = 1;
                         if (bst >= 600) {
@@ -7262,7 +7262,7 @@ function Safari() {
                         }
 
                     do {
-                        num = sys.rand(1, 803);
+                        num = sys.rand(1, highestDexNum);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         if (bst <= statCap) {
                             var typeBonus = this.checkEffective(atk1, atk2, type1(num), type2(num), false, player.costume === "inver");
@@ -7281,7 +7281,7 @@ function Safari() {
                     if (!found) {
                         if (list.length === 0) {
                             do {
-                                num = sys.rand(1, 803);
+                                num = sys.rand(1, highestDexNum);
                                 bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                                 pokeId = poke(num + (shiny ? "" : 0));
                             } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
@@ -7292,7 +7292,7 @@ function Safari() {
                     pokeId = poke(num + (shiny ? "" : 0));
                 } else {
                     do {
-                        num = sys.rand(1, 803);
+                        num = sys.rand(1, highestDexNum);
                         bst = defTheme.hasOwnProperty("editBST") && defTheme.editBST.hasOwnProperty(""+num) ? defTheme.editBST[""+num] : getBST(num);
                         pokeId = poke(num + (shiny ? "" : 0));
                     } while (!pokeId || bst > statCap || (isLegendary(pokeId) && bst >= 600));
@@ -7338,7 +7338,7 @@ function Safari() {
             } else {
                 disguise = [132, 151, 570, 571].contains(num);
                 if (disguise && chance(0.6)) {
-                    appearance = sys.rand(1,803);
+                    appearance = sys.rand(1,highestDexNum);
                     if (shiny) {
                         multiplier = 5;
                     }
@@ -8045,7 +8045,7 @@ function Safari() {
         return false;
     };
     this.isInTheme = function(id, name) {
-        return (((id < 803 || contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id)) || (contestThemes[name].hasOwnProperty("day"+currentDay) && contestThemes[name]["day"+currentDay].contains(id))));
+        return (((contestThemes[name].include.contains(id)) && this.validForTheme(id, name)) || (contestThemes[name].alter && contestThemes[name].alter.contains(id)) || ((contestThemes[name].morning && contestThemes[name].morning.contains(id)) ||(contestThemes[name].night && contestThemes[name].night.contains(id)) ||(contestThemes[name].afternoon && contestThemes[name].afternoon.contains(id)) ||(contestThemes[name].evening && contestThemes[name].evening.contains(id)) || (contestThemes[name].hasOwnProperty("day"+currentDay) && contestThemes[name]["day"+currentDay].contains(id))));
     };
     this.getRulesMod = function(player, pokeId, rules, pColor) {
         var type_1 = type1(pokeId),
@@ -14502,21 +14502,21 @@ function Safari() {
             switch (evType) {
                 case "factionwar":
                 case "invertedwar":
-                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, 803));
-                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, 803));
+                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, highestDexNum));
+                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, highestDexNum));
                     
                     while (extra1.toLowerCase() === extra2.toLowerCase()) {
-                        extra2 = sys.pokemon(sys.rand(1, 803));
+                        extra2 = sys.pokemon(sys.rand(1, highestDexNum));
                     }
                     
                     ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1]);
                 break;
                 case "volleyball":
-                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, 803));
-                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, 803));
+                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, highestDexNum));
+                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, highestDexNum));
                     
                     while (extra1.toLowerCase() === extra2.toLowerCase()) {
-                        extra2 = sys.pokemon(sys.rand(1, 803));
+                        extra2 = sys.pokemon(sys.rand(1, highestDexNum));
                     }
 
                     if (extra1 == "official") {
@@ -27778,7 +27778,7 @@ function Safari() {
                 }
                 var diff = data[1].toLowerCase();
 
-                var level = 1, includeGalar = false;
+                var level = 1;
                 switch (diff) {
                     case "easy":
                     case "[easy]":
@@ -27792,11 +27792,6 @@ function Safari() {
                     case "hard":
                     case "[hard]":
                         level = 2;
-                    break;
-                    case "galar":
-                    case "[galar]":
-                        level = 2;
-                        includeGalar = true;
                     break;
                     case "epic":
                     case "[epic]":
@@ -27819,10 +27814,8 @@ function Safari() {
                 var deadlineDays = 2;
 
                 while (request.length < amount) {
-                    var randomNum = sys.rand(1, 800);
-                    if (includeGalar) {
-                        randomNum = sys.rand(1, 898);
-                    }
+                    var randomNum = sys.rand(1, highestDexNum);
+
                     if ([862, 863, 864, 865, 866, 867, 772, 773].contains(randomNum)) {
                         continue;
                     }
@@ -28211,7 +28204,7 @@ function Safari() {
         }
         if (!randomNum) {
             do {
-                randomNum = sys.rand(1, 799);
+                randomNum = sys.rand(1, highestDexNum);
                 bst = getBST(randomNum);
                 if (randomNum in wildForms) {
                     randomNum = pokeInfo.calcForme(randomNum, sys.rand(1, wildForms[randomNum] + 1));
@@ -28888,7 +28881,7 @@ function Safari() {
         // Kills spawns that aren't supposed to appear in the wild due to edited BST
         var defTheme = contestThemes.hasOwnProperty("none") ? contestThemes.none : {"name":"Default","types":[],"excludeTypes":[],"include":[],"exclude":[],"editBST":{},"floorBST":300,"ceilBST":600,"icon":0};
         do {
-            receivedId = sys.rand(1, 803);
+            receivedId = sys.rand(1, highestDexNum);
             if (receivedId in wildForms && chance(0.5)) {
                 pickedForm = sys.rand(1, wildForms[receivedId] + 1);
                 receivedId = pokeInfo.calcForme(receivedId, pickedForm);
@@ -32347,7 +32340,7 @@ function Safari() {
     }
     function getRandomWord() {
         if (chance(0.33)) {
-            return pokePlain(sys.rand(1, 803));
+            return pokePlain(sys.rand(1, highestDexNum));
         } else if (chance(0.5)) {
             return sys.move(sys.rand(1, 702)).split(/[\-\s]/).random();
         } else {
@@ -34427,7 +34420,7 @@ function Safari() {
         var size = this.startingSize = 8 + level * 2, p;
         var minBST = 130 + 50 * level;
         while (this.horde.length < size) {
-            p = sys.rand(1, 803);
+            p = sys.rand(1, highestDexNum);
             if (!isLegendary(p) && getBST(p) >= minBST) {
                 this.horde.push(p);
             }
@@ -34972,7 +34965,7 @@ function Safari() {
 
         var hints;
         if (this.answerType === "name") {
-            this.answerId = sys.rand(1, 803);
+            this.answerId = sys.rand(1, highestDexNum);
             this.answer = poke(this.answerId);
             hints = this.writeHints(level);
         } else if (this.answerType === "move") {
@@ -35144,7 +35137,7 @@ function Safari() {
 
         var canLearn = [];
         var cantLearn = [];
-        for (var i = 1; i < 803; i++) {
+        for (var i = 1; i < highestDexNum; i++) {
             if (canLearnMove(i, this.answerId)) {
                 if (i !== 235) {
                     canLearn.push(pokePlain(i));
@@ -35390,7 +35383,7 @@ function Safari() {
         var main = this.inverted ? Object.keys(effectiveness).slice(1).random() : Object.keys(effectiveness).random();
         var m = 6, wildcard = 0;
         while (this.trainerTeam.length < m - 1) {
-            num = sys.rand(1, 803);
+            num = sys.rand(1, highestDexNum);
             if (getBST(num) >= bst && hasType(num, main)) {
                 if (isLegendary(num)) {
                     if (maxLegend <= 0) {
@@ -35402,7 +35395,7 @@ function Safari() {
             }
         }
         while (this.trainerTeam.length < m) {
-            num = sys.rand(1, 803);
+            num = sys.rand(1, highestDexNum);
             if (getBST(num) >= bst) {
                 if (isLegendary(num)) {
                     if (maxLegend <= 0) {
@@ -35561,7 +35554,7 @@ function Safari() {
         }
 
         do {
-            this.opponent = sys.rand(1, 803);
+            this.opponent = sys.rand(1, highestDexNum);
         } while ([10, 11, 13, 14, 129, 132, 201, 202, 265, 266, 268, 360, 374, 401, 412, 602, 664, 665, 771, 789, 790].contains(this.opponent));
 
         var moves = fetchMoves(this.opponent), damaging = [], m;
@@ -36258,7 +36251,7 @@ function Safari() {
         }
 
         var target, t1, t2, badTypes = Object.keys(this.traps), goodTypes = Object.keys(this.treasures), badList = [], goodList = [];
-        for (p = 1; p < 803; p++) {
+        for (p = 1; p < highestDexNum; p++) {
             t1 = type1(p);
             t2 = type2(p);
             if (badTypes.contains(t1) && (t2 === "???" || badTypes.contains(t2))) {
@@ -38143,7 +38136,7 @@ function Safari() {
             }
         }
         while (Object.keys(this.runners).length < 6) {
-            r = pokePlain(sys.rand(1, 803));
+            r = pokePlain(sys.rand(1, highestDexNum));
             if (!(r in this.runners)) {
                 this.runners[r] = 0;
             }
@@ -38656,7 +38649,7 @@ function Safari() {
             this.cooldowns[n] = 0;
         }
         do {
-            n = sys.rand(1, 803);
+            n = sys.rand(1, highestDexNum);
             if (!this.remainingNumbers.contains(n)) {
                 this.remainingNumbers.push(n);
             }
@@ -46183,7 +46176,7 @@ function Safari() {
             }
             
             while (party.length < 12) {
-                i = sys.rand(1, 803);
+                i = sys.rand(1, highestDexNum);
                 if (eliteCounterPicks && eliteCounterPicks.length > 0 && chance(0.5) && chance(eliteCounterPicks.length * 0.05)) {
                     i = eliteCounterPicks.random();
                 } 
@@ -46224,7 +46217,7 @@ function Safari() {
         var i = 0, cap = 0, min = 360;
         var exempt = [145, 257, 260, 384, 681, 635, 699, 801];
         for (var loop = 1000; loop > 0; loop--) {
-            i = sys.rand(1, 803);
+            i = sys.rand(1, highestDexNum);
             cap = Math.max(480 + (140 * Math.random()), 480 + (140 * Math.random()));
             if (exempt.contains(i) || getBST(i) > cap || getBST(i) < min) {
                 continue;
@@ -49206,13 +49199,13 @@ function Safari() {
                         return true;
                     }
 
-                    var name1 = param.length > 1 && param[1] ? param[1] : pokePlain(sys.rand(1, 803));
+                    var name1 = param.length > 1 && param[1] ? param[1] : pokePlain(sys.rand(1, highestDexNum));
                     var name2;
                     if (param.length > 2 && param[2]) {
                         name2 = param[2];
                     } else {
                         do {
-                            name2 = pokePlain(sys.rand(1, 803));
+                            name2 = pokePlain(sys.rand(1, highestDexNum));
                         } while (name1 === name2);
                     }
 
@@ -49634,7 +49627,7 @@ function Safari() {
                     input = getInputPokemon(info[1]);
                 }
                 if (!input || !input.num) {
-                    input = getInputPokemon(sys.rand(1, 803) + "");
+                    input = getInputPokemon(sys.rand(1, highestDexNum) + "");
                 }
                 var amt = 1;
                 if (info.length > 2) {
