@@ -8676,10 +8676,10 @@ function Safari() {
             }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
-                var gained = [];
+                var gained = [], discarded = [];
                 var customItems = {
                     "@moneyset": ["$" + (10 * Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
-                    "@moneyset2": ["$" + (10 * sys.rand(10, 21) * sys.rand(10, 26))],
+                    "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
                     "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
                     "@dewset": ["@dew", "@hdew"]
                 };
@@ -8691,11 +8691,20 @@ function Safari() {
                         item = customItems[item].random();
                     }
                     if (chance(perc)) {
-                        gained.push(giveStuff(player, item, true).gained);
+                        var stuff = giveStuff(player, item, true);
+                        gained = gained.concat(stuff.gained);
+                        
+                        if (stuff.discarded.length > 0) {
+                            gained = gained.concat(stuff.discarded);
+                            discarded = discarded.concat(stuff.discarded);
+                        }
                     }
                 }
                 if (gained.length > 0) {
                     sendAll("The {0} was holding {1}!".format(pokeName, readable(gained)));
+                }
+                if (discarded.length > 0) {
+                    sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(sys.name(src), readable(discarded)));
                 }
             }
             if (currentRules && currentRules.berries) {
