@@ -15007,12 +15007,8 @@ function Safari() {
     this.showCostumeSkills = function(src, commandData) {
         var player = getAvatar(src);
         var cos = player.costume;
-        if (player.costumeInfo.hasOwnProperty(commandData.toLowerCase)) {
+        if (commandData && player.costumeInfo.hasOwnProperty(commandData.toLowerCase())) {
             cos = commandData.toLowerCase();
-        }
-        else if (!player.costumeInfo[cos]) {
-            safaribot.sendHtmlMessage(src, "Your costume is " + cos + ".", safchan);
-            return;
         }
         if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
@@ -15022,7 +15018,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
             return;
         }
-        var lev = this.getCostumeLevel(player);
+        var lev = this.getCostumeLevel(player, cos);
         var nextexp = (lev < 20 ? " (" + (lev * 100 - player.costumeInfo[cos].exp) + " EXP until next level)" : "");
         if (lev >= 20) {
             nextexp = " [Max]";
@@ -15037,8 +15033,8 @@ function Safari() {
         safaribot.sendHtmlMessage(src, skills.length > 0 ? ("Skills: <i>" + skills.join(", ") + "</i>.") : ("No skills gained on this costume yet."), safchan);
         return true;
     };
-    this.getCostumeLevel = function(player) {
-        var cos = player.costume;
+    this.getCostumeLevel = function(player, costume) {
+        var cos = costume || player.costume;
         if (!player.costumeInfo) {
             return 1;
         }
