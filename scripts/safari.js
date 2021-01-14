@@ -15014,7 +15014,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
             return;
         }
-        if (!player.costumeInfo[cos].exp) {
+        if (isNaN(player.costumeInfo[cos].exp)) {
             safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
             return;
         }
