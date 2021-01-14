@@ -8734,7 +8734,7 @@ function Safari() {
                     sendAll("The {0} was holding {1}!".format(pokeName, readable(gained)));
                 }
                 if (discarded.length > 0) {
-                    sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(sys.name(src), readable(discarded)));
+                    sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(ball === "spy" ? "the stealthy person" : sys.name(src), readable(discarded)));
                 }
             }
             if (currentRules && currentRules.berries) {
