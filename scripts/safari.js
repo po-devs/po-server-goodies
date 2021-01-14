@@ -7126,7 +7126,7 @@ function Safari() {
         }
         
         var cType = {effect:"none"};
-        if (player && player.zcrystalUser) {
+        if (player && player.zcrystalUser && (player.zcrystalUser !== {})) {
 			cType = getCrystalEffect(player.zcrystalUser);
 			crystalEffect = player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] ? zCrystalData[cType] : { effect: "none" };
 		}
@@ -9815,7 +9815,7 @@ function Safari() {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
             }
-            if (player.zcrystalUser) {
+            if (player.zcrystalUser && player.zcrystalUser !== {}) {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
             }
@@ -14630,7 +14630,7 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
                 safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing a ball any ball except Master Ball.", safchan);
-                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active), "red") + " and its main type is " + toColor(type, "red") + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
+                safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active), "red") + ", and it can activate " + zCrystalData[type].name + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
                 safaribot.sendMessage(src, "Your lead Pokémon will also have increased damage output in Rotation Battle quests like Celebrity and League, although this will clear the Z-Crystal's effect.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
