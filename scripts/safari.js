@@ -11389,7 +11389,7 @@ function Safari() {
             if (data.collectorWaiting) {
                 if (p.quests.collector.cooldown < currentTime) {
                     data.collectorWaiting = false;
-                    out = "The " + link("/quest collector", "Collector") + " has finished organize his collection! He's ready to request new Pokémon!";
+                    out = "The " + link("/quest collector", "Collector") + " has finished organizing his collection! He's ready to request new Pokémon!";
                     this.notification(p, out, "Collector", true);
                     hitAny = true;
                 }
