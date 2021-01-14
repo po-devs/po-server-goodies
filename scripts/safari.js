@@ -15011,11 +15011,11 @@ function Safari() {
             cos = commandData.toLowerCase();
         }
         if (!player.costumeInfo[cos]) {
-            safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
+            safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
             return;
         }
         if (!player.costumeInfo[cos].exp) {
-            safaribot.sendHtmlMessage(src, "That's not a valid costume!", safchan);
+            safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
             return;
         }
         var lev = this.getCostumeLevel(player, cos);
