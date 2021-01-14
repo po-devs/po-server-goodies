@@ -8678,10 +8678,10 @@ function Safari() {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
                 var gained = [];
                 var customItems = {
-                    "moneyset": ["$" + (10 * Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
-                    "moneyset2": ["$" + (10 * sys.rand(10, 21) * sys.rand(10, 26))],
-                    "apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
-                    "dewset": ["@dew", "@hdew"]
+                    "@moneyset": ["$" + (10 * Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
+                    "@moneyset2": ["$" + (10 * sys.rand(10, 21) * sys.rand(10, 26))],
+                    "@apricornset": ["@blkapricorn", "@whtapricorn", "@pnkapricorn", "@ylwapricorn", "@bluapricorn", "@redapricorn", "@grnapricorn"],
+                    "@dewset": ["@dew", "@hdew"]
                 };
                 for (var i = 0; i < wildItemHeldList.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = wildItemHeldList[i];
