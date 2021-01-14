@@ -1501,19 +1501,19 @@ function Safari() {
         "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
         
         //specials
-        "GuardianDiety": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
+    	"GuardianDiety": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
     };
     
     function getCrystalEffect(num) {
-        for (var x in zCrystalData) {
-            if (!(zCrystalData[x].special)) {
-                continue;
-            }
-            if (zCrystalData[x].special.contains(num)) {
-                return x;
-            }
-        }
-        return type1(num);
+    	for (var x in zCrystalData) {
+    		if (!(zCrystalData[x].special)) {
+    			continue;
+    		}
+    		if (zCrystalData[x].special.contains(num)) {
+    			return x;
+    		}
+    	}
+    	return type1(num);
     };
 
     var itemHelp, perkHelp, ballHelp, berryHelp;
@@ -7127,10 +7127,10 @@ function Safari() {
         
         var cType = {effect:"none"};
         if (player && player.zcrystalUser) {
-            cType = getCrystalEffect(player.zcrystalUser);
-            crystalEffect = player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] ? zCrystalData[cType] : { effect: "none" };
-        }
-        
+			cType = getCrystalEffect(player.zcrystalUser);
+			crystalEffect = player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] ? zCrystalData[cType] : { effect: "none" };
+		}
+		
         if (dexNum) {
             //Forced spawn of a specific mon
             num = parseInt(dexNum, 10);
@@ -9815,7 +9815,7 @@ function Safari() {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
             }
-            if (!isNaN(player.zcrystalUser)) {
+            if (player.zcrystalUser) {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
             }
@@ -21522,24 +21522,24 @@ function Safari() {
                 }
             }
             for (var x in this.skills) {
-                if (this.turn == 0 && this.skills[x].hasOwnProperty("Finale")) {
-                    var hit = false;
-                    for (i = 0; i < this.team1.length; i++) {
-                        if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
-                            hit = true;
-                            break;
-                        }
-                    }
-                    if (hit) {
-                        for (i = 0; i < this.team1.length; i++) {
-                            if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
-                                continue;
-                            }
-                            team1[i].hp = Math.min(team1[i].maxhp, team1[i].hp + (team1[i].maxhp * 0.01 * this.skills[x]["Finale"][1]));
-                        }
-                    }
-                }
-            }
+				if (this.turn == 0 && this.skills[x].hasOwnProperty("Finale")) {
+					var hit = false;
+					for (i = 0; i < this.team1.length; i++) {
+						if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
+							hit = true;
+							break;
+						}
+					}
+					if (hit) {
+						for (i = 0; i < this.team1.length; i++) {
+							if (team1[i].id + '' == this.skills[x]["Finale"][0] + '') {
+								continue;
+							}
+							team1[i].hp = Math.min(team1[i].maxhp, team1[i].hp + (team1[i].maxhp * 0.01 * this.skills[x]["Finale"][1]));
+						}
+					}
+				}
+			}
             this.turn++;
             this.subturn = 0;
             this.p1MoveCodes = {};
@@ -24045,7 +24045,7 @@ function Safari() {
                     if (user.hp > 0) {
                         user.mustRecharge = true;
                         if (target.hp <= 0 && self.select && self.select.hyperBeamGlitch) {
-                            user.mustRecharge = false;
+                        	user.mustRecharge = false;
                         }
                     }
                 }
@@ -24806,9 +24806,9 @@ function Safari() {
                 info.types.Normal = Math.round(info.types.Normal/4);
             }
             if (zCrystalUser && p == zCrystalUser) {
-                var buffValue = getCrystalEffect(p).npcBuff || defaultCrystalBuff;
-                info.crystal = buffValue;
-                zCrystalUser = false; //only applies to first found Pokémon of a species to avoid duplicating
+            	var buffValue = getCrystalEffect(p).npcBuff || defaultCrystalBuff;
+            	info.crystal = buffValue;
+            	zCrystalUser = false; //only applies to first found Pokémon of a species to avoid duplicating
             }
             out.push(info);
         }
@@ -25181,7 +25181,7 @@ function Safari() {
                         if (["recharge"].contains(p)) {
                             move.power = (145 + (5 * (Math.round(3 * Math.random()))));
                             if (this.select && this.select.hyperBeamGlitch) {
-                                move.power += 30;
+                            	move.power += 30;
                             }
                         }
                         else if (["burnout"].contains(p)) {
@@ -25284,7 +25284,7 @@ function Safari() {
         if (damaging && user.movepowers[type] && (user.movepowers[type] >= 140)) {
             effChance.recharge = 2;
             if (this.select && this.select.hyperBeamGlitch) {
-                effChance.recharge = 2.4;
+            	effChance.recharge = 2.4;
             }
         }
         if (damaging && this.tagBattle) {
@@ -30488,7 +30488,7 @@ function Safari() {
                         }
                     );
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                        player.zcrystalUser = false; //remove crystal effect after battle
+                    	player.zcrystalUser = false; //remove crystal effect after battle
                     }
                     safari.saveGame(player);
                     return;
@@ -30598,7 +30598,7 @@ function Safari() {
                 if (extraArgs.turn && extraArgs.turn >= 3) {
                     safari.addToCelebrityLeaderboard(args.name, player.celebrityRegion, args.difficulty, false);
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                        player.zcrystalUser = false; //remove crystal effect after battle
+                    	player.zcrystalUser = false; //remove crystal effect after battle
                     }
                 }
 
@@ -30881,12 +30881,12 @@ function Safari() {
                 }
             }
             if (trainer.forcedEffect) {
-                if (Array.isArray(trainer.forcedEffect)) {
-                    currentTrainer.select[trainer.forcedEffect.random()] = true;
-                }
+            	if (Array.isArray(trainer.forcedEffect)) {
+					currentTrainer.select[trainer.forcedEffect.random()] = true;
+            	}
                 else {
-                    currentTrainer.select[trainer.forcedEffect] = true;
-                }
+                	currentTrainer.select[trainer.forcedEffect] = true;
+				}
             }
             currentTrainer.bias = trainer.bias;
             if (trainer.bias2) {
@@ -31186,7 +31186,7 @@ function Safari() {
                     rewardCapCheck(player, reward[0], reward[1], true);
                     
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                        player.zcrystalUser = false; //remove crystal effect after battle
+                    	player.zcrystalUser = false; //remove crystal effect after battle
                     }
                     
                     player.quests.league.badges.push(gym.badge.toLowerCase());
@@ -31243,9 +31243,9 @@ function Safari() {
                 if (safari.getFortune(player, "leagueheal", 0, null, true)) {
                     safari.useFortuneCharge(player, "leagueheal", 1);
                 }                
-                if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                    player.zcrystalUser = false; //remove crystal effect after battle
-                }
+				if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+					player.zcrystalUser = false; //remove crystal effect after battle
+				}
                 player.records.gymsLost += 1;
                 player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
@@ -31309,7 +31309,7 @@ function Safari() {
                         }
                     );
                     if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                        player.zcrystalUser = false; //remove crystal effect after battle
+                    	player.zcrystalUser = false; //remove crystal effect after battle
                     }
                     safari.saveGame(player);
                     sys.sendAll("", safchan);
@@ -31363,9 +31363,9 @@ function Safari() {
                 if (safari.getFortune(player, "eliteheal", 0, null, true)) {
                     safari.useFortuneCharge(player, "eliteheal", 1);
                 }
-                if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
-                    player.zcrystalUser = false; //remove crystal effect after battle
-                }
+				if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+					player.zcrystalUser = false; //remove crystal effect after battle
+				}
                 player.quests.league.eliteCurrentUsed = true;
                 player.quests.league.eliteCurrent = false;
                 player.records.eliteLost += 1;
@@ -37965,7 +37965,7 @@ function Safari() {
             return;
         }
 
-        /*
+		/*
         var winner = ordered.filter(function(x) { return pts[x] === bestScores[0]; });
         var runnerup = ordered.filter(function(x) { return pts[x] === bestScores[1]; });
         var thirdplace = ordered.filter(function(x) { return pts[x] === bestScores[2]; });
