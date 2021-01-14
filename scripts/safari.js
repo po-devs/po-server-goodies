@@ -910,7 +910,7 @@ function Safari() {
             //Seasonal change. Rock icon is 206, Snowball is 334
             rock: {name: "rock", fullName: "Rock", type: "items", icon: 206, price: 50, successRate: 0.65, bounceRate: 0.1, targetCD: 7000, bounceCD: 11000, throwCD: 15000,  aliases:["rock", "rocks", "snow", "snowball", "snowballs"], tradable: false, cap: 9999},
             bait: {name: "bait", fullName: "Bait", type: "items", icon: 8017, price: 129, successRate: 0.4, failCD: 13, successCD: 70, aliases:["bait"], tradable: false},
-            golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 30, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
+            golden: {name: "golden", fullName: "Golden Bait", type: "items", icon: 8016, price: 750, successRate: 0.75, failCD: 20, successCD: 25, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["goldenbait", "golden bait", "golden"], tradable: false},
             deluxe: {name: "deluxe", fullName: "Deluxe Bait", type: "items", icon: 8016, price: 200, successRate: 1, failCD: 0, successCD: 6, minBstBonus: 10, bstBonus: 8, shinyBonus: 0, aliases:["deluxebait", "deluxe bait", "deluxe"], tradable: false},
             gacha: {name: "gacha", fullName: "Gachapon Ticket", type: "items", icon: 132, price: 218, cooldown: 9000, aliases:["gacha", "gachapon", "gachapon ticket", "gachaponticket"], tradable: false},
             spray: {name: "spray", fullName: "Devolution Spray", type: "items", icon: 137, price: 5000, aliases:["spray", "devolution", "devolution spray", "devolutionspray"], tradable: true},
@@ -1479,6 +1479,7 @@ function Safari() {
         { name: "crown", val: {"0.01": 4, "0.02": 3, "0.03": 2, "0.04": 1}, deadline: [30, 60], interval: 3, desc: "You will receive {Percent} more money when pawning valuables for {Time}" },
         { name: "discount", val: {"0.02": 4, "0.03": 3, "0.04": 2, "0.05": 1}, deadline: [10, 30], interval: 2, desc: "Items from /buy will be {Percent} cheaper for {Time} (except for Silver Coin items)" }
     ];
+    var defaultCrystalBuff = 0.06;
     var zCrystalData = {
         "Normal" : { name: "Normalium Z", effect: "evolution", chance: 0.12, description: "have a {0}% chance to automatically evolve a Pokémon caught" },
         "Fairy" : { name: "Fairium Z", effect: "evolution", chance: 0.12, description: "have a {0}% chance to automatically evolve a Pokémon caught" },
@@ -1497,7 +1498,22 @@ function Safari() {
         "Water" : { name: "Waterium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
         "Ice" : { name: "Icium Z", effect: "fisherman", chance: 0.85, description: "have a {0}% chance to retrieve the ball you threw if it fails to catch" },
         "Dragon" : { name: "Dragonium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
-        "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" }
+        "Dark" : { name: "Darkinium Z", effect: "clone", chance: 0.09, description: "have a {0}% chance to clone a Pokémon caught" },
+        
+        //specials
+    	"GuardianDiety": { name: "Guardian of Alola", special: [785, 786, 787, 788], effect: "golden", chance: 1, npcBuff: 0.12, description: "increase the likelihood of high BST Pokémon appearing from Golden Baits " },
+    };
+    
+    function getCrystalEffect(num) {
+    	for (var x in zCrystalData) {
+    		if (!(zCrystalData[x].special)) {
+    			continue;
+    		}
+    		if (zCrystalData[x].special.contains(num)) {
+    			return x;
+    		}
+    	}
+    	return type1(num);
     };
 
     var itemHelp, perkHelp, ballHelp, berryHelp;
@@ -7108,6 +7124,13 @@ function Safari() {
         if (makeShiny) {
             shiny = true;
         }
+        
+        var cType = {effect:"none"};
+        if (player && player.zcrystalUser) {
+			cType = getCrystalEffect(player.zcrystalUser);
+			crystalEffect = player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] ? zCrystalData[cType] : { effect: "none" };
+		}
+		
         if (dexNum) {
             //Forced spawn of a specific mon
             num = parseInt(dexNum, 10);
@@ -7148,7 +7171,7 @@ function Safari() {
                     }
                 }
                 else {
-                    statCap = sys.rand(300, 601 + (goldenBonus ? itemData.golden.bstBonus : 0));
+                    statCap = sys.rand(300, 601 + (goldenBonus ? (itemData.golden.bstBonus + crystalEffect == "golden" ? 2 : 0) : 0));
                     if ((!(goldenBonus) && (contestCount <= 0))) {
                         canLegend = false;
                     }
@@ -7181,6 +7204,11 @@ function Safari() {
                         }
                         if (this.validForTheme(id, cTheme) && bst <= statCap && chance(extrabstChance) && list.indexOf(id) === -1) {
                             list.push(id);
+                            if (isLegendary(id) && bst >= 670 && !goldenBonus) {
+                                for (i = 5; i--; ) {
+                                    list.push(id);
+                                }
+                            }
                             if (isLegendary(id) && bst >= 660 && !goldenBonus) {
                                 for (i = 5; i--; ) {
                                     list.push(id);
@@ -7221,9 +7249,9 @@ function Safari() {
             }
             else {
                 var defTheme = contestThemes.hasOwnProperty("none") ? contestThemes.none : {"name":"Default","types":[],"excludeTypes":[],"include":[],"exclude":[],"editBST":{},"floorBST":300,"ceilBST":600,"icon":0};
-                var maxRoll = bstLimit || 601 + (goldenBonus ? itemData.golden.bstBonus : 0);
+                var maxRoll = bstLimit || 601 + (goldenBonus ? (itemData.golden.bstBonus + (crystalEffect == "golden" ? 2 : 0)) : 0);
                 var bst;
-                statCap = sys.rand(300 + (goldenBonus ? itemData.golden.minBstBonus : 0), maxRoll);
+                statCap = sys.rand(300 + (goldenBonus ? (itemData.golden.minBstBonus + (crystalEffect == "golden" ? 15 : 0)) : 0), maxRoll);
                 if (leader) {
                     var list = [], loops = 0, found = false,
                         atk1 = type1(leader),
@@ -9772,19 +9800,24 @@ function Safari() {
         var player = getAvatar(src);
         if (data === "*") {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
+            var n = now();
             safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
-            if (player.fortune.deadline > now() || player.fortune.limit > 0) {
+            if (player.fortune.deadline > n || player.fortune.limit > 0) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("cookie") + "'s Effect:</b> \"" + this.fortuneDescription(player.fortune) + "\"!", safchan);
             }
-            if (player.scaleDeadline >= now()) {
+            if (player.scaleDeadline >= n) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("scale") + "'s Color:</b> " + cap(player.scaleColor) + " for the next " + timeLeftString(player.scaleDeadline) + "!", safchan);
             }
-            if (player.mushroomDeadline >= now()) {
+            if (player.mushroomDeadline >= n) {
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("mushroom") + "'s Theme:</b> " + themeName(player.mushroomTheme) + " for the next " + timeLeftString(player.mushroomDeadline) + "!", safchan);
             }
-            if (player.zcrystalDeadline >= now()) {
-                var type = type1(player.zcrystalUser);
+            if (player.zcrystalDeadline >= n && player.zcrystalUser) {
+                var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
+            }
+            if (player.zcrystalUser) {
+                var type = getCrystalEffect(player.zcrystalUser);
+                safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
             }
             sys.sendMessage(src, "", safchan);
             return;
@@ -13386,7 +13419,7 @@ function Safari() {
         var reward = chance(finderMissRate) ? "nothing" : randomSample(finderItems);
         if (reward == "nothing" && safari.hasCostumeSkill(player, "finderBasedOnLead")) {
             var type = type1(parseInt(player.party[0], 10));
-            if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/20))) {
+            if (chance(0.01) && (chance((this.getCostumeLevel(player) - 2)/30))) {
                 switch (type) {
                     case "Normal": reward = "crystal"; break;
                     case "Grass": reward = "mushroom"; break;
@@ -14591,13 +14624,14 @@ function Safari() {
         }
         if (item === "crystal") {
             var active = player.party[0];
-            var type = type1(active);
+            var type = getCrystalEffect(active);
             var buffDesc = zCrystalData[type].description.format(zCrystalData[type].chance * 100);
             if (info.target !== "confirm") {
                 sys.sendMessage(src, "", safchan);
                 safaribot.sendMessage(src, "When using " + an(finishName("crystal")) + ", you will receive a bonus based on your Active Pokémon's primary type (use /bst to check the Pokémon's first type).", safchan);
                 safaribot.sendMessage(src, "The bonus will work for " + plural(itemData.crystal.duration, "minute") + ", but only while the Pokémon that used the Z-Crystal on is your active Pokémon. The effects occur when throwing a ball any ball except Master Ball.", safchan);
                 safaribot.sendHtmlMessage(src, "Your active Pokémon is " + toColor(poke(active), "red") + " and its main type is " + toColor(type, "red") + ". If you use a Z-Crystal, you will " + toColor(buffDesc +" for " + plural(itemData.crystal.duration, "minute"), "red") + ". To use the Z-Crystal, type " + link("/use Z-Crystal:confirm") + ". ", safchan);
+                safaribot.sendMessage(src, "Your lead Pokémon will also have increased damage output in Rotation Battle quests like Celebrity and League, although this will clear the Z-Crystal's effect.", safchan);
                 sys.sendMessage(src, "", safchan);
                 return;
             }
@@ -15201,7 +15235,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "You " + g + "!", safchan);
                     }
                     if (c == "pokefanPack") {
-                        if (chance(1/64)) {
+                        if (chance(1/32)) {
                             g = giveStuff(player, toStuffObj("@bright"));
                         }
                         else {
@@ -20773,7 +20807,7 @@ function Safari() {
         if (this.fullNPC) {
             this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party);
         } else {
-            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished, player1.helds);
+            this.team1 = this.originalTeam1 = this.buildTeam(this.name1, player1.party, player1.cherished, player1.helds, player1.zCrystalUser);
         }
         if (isNPC) {
             this.name2 = player2.name;
@@ -23418,7 +23452,7 @@ function Safari() {
         }
 
         var tname = target.owner + "'s " + poke(target.id);
-        var dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * bonus * rng * 0.84 * helped);
+        var dmg = Math.round(dmg * typeMultiplier * (stab ? 1.5 : 1) * (crit ? 1.5 : 1) * (burn ? 0.5 : 1) * (screen ? 0.5 : 1) * (user.crystal + 1) * bonus * rng * 0.84 * helped);
         this.crit = crit;
         return dmg;
     };
@@ -24694,9 +24728,10 @@ function Safari() {
         }
         return out;
     };
-    Battle2.prototype.buildTeam = function(owner, team, cherished, helds) {
+    Battle2.prototype.buildTeam = function(owner, team, cherished, helds, zCrystalUser) {
         var out = [], t, p, h = "", stats, info, held;
         var boost = (this.npcBattle && owner === this.name2 ? this.powerBoost : 0) + 1;
+        zCrystalUser = (this.npcBattle && owner === this.name1 ? zCrystalUser : false);
         var ch = 0;
 
         var getStat = function(val) {
@@ -24763,11 +24798,17 @@ function Safari() {
                 ability: this.getAbilitySet(p),
                 item: {},
                 berry: held,
+                crystal: 0,
                 index: t,
                 moves: []
             };
             if (info.types.Normal) {
                 info.types.Normal = Math.round(info.types.Normal/4);
+            }
+            if (zCrystalUser && p == zCrystalUser) {
+            	var buffValue = getCrystalEffect(p).npcBuff || defaultCrystalBuff;
+            	info.crystal = buffValue;
+            	zCrystalUser = false; //only applies to first found Pokémon of a species to avoid duplicating
             }
             out.push(info);
         }
@@ -27849,7 +27890,7 @@ function Safari() {
                     return;
                 }
                 //Tutorial blocked earlier
-                if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "finish this quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
 
@@ -28074,7 +28115,7 @@ function Safari() {
                 return;
             }
             //Tutorial blocked earlier
-            if (cantBecause(src, "finish this quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+            if (cantBecause(src, "finish this quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
             
@@ -28325,7 +28366,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: Sorry, we need to clean out the stadium before we can host more battles. Please return at a later point in time!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -28432,7 +28473,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Tower Clerk: You want to challenge the Battle Tower again already? Please take a rest while our trainers are preparing their teams, you will be able to challenge again in " + timeLeftString(player.quests.tower.cooldown) + "!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (opt !== "start") {
@@ -29208,7 +29249,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Pyramid Guide: Sorry, it seems the Pharaoh's Curse is preventing access to the Pyramid right now. Please return at a later point in time!", safchan);
                     return;
                 }
-                if (cantBecause(src, "start a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "start a Pyramid quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 if (pyramidRequests.hasOwnProperty(player.id)) {
@@ -29267,7 +29308,7 @@ function Safari() {
                     safaribot.sendMessage(src, "You can only enter the Pyramid after you catch " + (4 - player.records.pokesCaught) + " more Pokémon!", safchan);
                     return;
                 }
-                if (cantBecause(src, "join a Pyramid quest", ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+                if (cantBecause(src, "join a Pyramid quest", ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
                     return;
                 }
                 var invites = [];
@@ -30236,7 +30277,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, "Announcer: Sorry, all the celebrities are out playing golf right now. Try coming back later!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 0) {
@@ -30446,6 +30487,9 @@ function Safari() {
                             icon: ic
                         }
                     );
+                    if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+                    	player.zcrystalUser = false; //remove crystal effect after battle
+                    }
                     safari.saveGame(player);
                     return;
                 }
@@ -30553,6 +30597,9 @@ function Safari() {
 
                 if (extraArgs.turn && extraArgs.turn >= 3) {
                     safari.addToCelebrityLeaderboard(args.name, player.celebrityRegion, args.difficulty, false);
+                    if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+                    	player.zcrystalUser = false; //remove crystal effect after battle
+                    }
                 }
 
                 if (args.difficulty < 0 && player.records.pokesCaught > 2000 && extraArgs.turn && extraArgs.turn >= 3) {
@@ -30985,7 +31032,7 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but the Elite Four is currently attending to an important event at the Pokémon League Headquarters!", safchan);
                 return;
             }
-            if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+            if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
                 return;
             }
             if (contestCooldown <= 35) {
@@ -31053,7 +31100,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: I'm terribly sorry, but all gyms are currently closed due to an important event at the Pokémon League Headquarters!", safchan);
             return;
         }
-        if (cantBecause(src, reason, ["wild", "contest", "auction", "battle", "event", "pyramid", "baking"])) {
+        if (cantBecause(src, reason, ["contest", "auction", "battle", "event", "pyramid", "baking"])) {
             return;
         }
         if (contestCooldown <= 35) {
@@ -31138,6 +31185,10 @@ function Safari() {
                     safaribot.sendHtmlMessage(id, "League Guide: We also reward you with " + plural(reward[1], reward[0]) + "!", safchan);
                     rewardCapCheck(player, reward[0], reward[1], true);
                     
+                    if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+                    	player.zcrystalUser = false; //remove crystal effect after battle
+                    }
+                    
                     player.quests.league.badges.push(gym.badge.toLowerCase());
                     player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
                     
@@ -31191,7 +31242,10 @@ function Safari() {
                 
                 if (safari.getFortune(player, "leagueheal", 0, null, true)) {
                     safari.useFortuneCharge(player, "leagueheal", 1);
-                }
+                }                
+				if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+					player.zcrystalUser = false; //remove crystal effect after battle
+				}
                 player.records.gymsLost += 1;
                 player.quests.league.cooldown = now() + Math.round(hours(2) * (1 - safari.getFortune(player, "questcd", 0, "league")));
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||League|||Challenged " + args.gym.name + " Gym with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
@@ -31254,6 +31308,9 @@ function Safari() {
                             icon: 248
                         }
                     );
+                    if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+                    	player.zcrystalUser = false; //remove crystal effect after battle
+                    }
                     safari.saveGame(player);
                     sys.sendAll("", safchan);
                     safaribot.sendHtmlAll("<b>" + name + " has defeated the Elite Four! Congratulations!</b>", safchan);
@@ -31306,6 +31363,9 @@ function Safari() {
                 if (safari.getFortune(player, "eliteheal", 0, null, true)) {
                     safari.useFortuneCharge(player, "eliteheal", 1);
                 }
+				if (player.zcrystalUser && (player.party.indexOf(player.zcrystalUser) > -1 || player.party.indexOf(player.zcrystalUser+"")) > -1) {
+					player.zcrystalUser = false; //remove crystal effect after battle
+				}
                 player.quests.league.eliteCurrentUsed = true;
                 player.quests.league.eliteCurrent = false;
                 player.records.eliteLost += 1;
