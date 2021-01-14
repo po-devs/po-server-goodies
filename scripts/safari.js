@@ -8379,15 +8379,17 @@ function Safari() {
 
         var tiers = ["SM LC", "SM PU", "SM NU", "SM LU", "SM UU", "SM OU", "SM Ubers"];
         var tierChance = 0.02;
-        if (ultraPokes.hasOwnProperty(wild+"")) {
-            tierChance = catchTierChance[ultraPokes[wild+""].tier];
-        }
+
         for (var x = 0; x < tiers.length; x++) {
             if (sys.isPokeBannedFromTier && !sys.isPokeBannedFromTier(wild, tiers[x])) {
                 tierChance = catchTierChance[x];
                 break;
             }
         }
+        if (ultraPokes.hasOwnProperty(wild+"")) {
+            tierChance = catchTierChance[tiers.indexOf(ultraPokes[wild+""].tier)] || 0.02;
+        }
+        
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
         var noDailyBonusForms = [328350, 66015, 197087, 131551, 262623, 328159, 66091, 66282, 131730, 66310, 131846, 197382, 262918, 328454, 393990, 459526];
