@@ -15023,7 +15023,7 @@ function Safari() {
                 skills.push(costumeSkillInfo[player.costumeInfo[cos].skills[c]]);
             }
         }
-        safaribot.sendHtmlMessage(src, "Skills: <i>" + skills.join(", ") + "</i>.", safchan);
+        safaribot.sendHtmlMessage(src, skills.length > 0 ? ("Skills: <i>" + skills.join(", ") + "</i>.") : ("No skills gained on this costume yet."), safchan);
         return true;
     };
     this.getCostumeLevel = function(player) {
@@ -30029,7 +30029,7 @@ function Safari() {
         var opt = data.length > 0 ? data[0].toLowerCase() : "*";
         var trainerSprite = '<img src="' + base64trainers.alchemist + '">';
         
-        var info = getInputPokemon(opt);
+        var info = getInputPokemon(opt.replace("%25", "%")); // zygarde-10% gets html_escaped into -10%25
         if (!info.num) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Y'see, the " + finishName("philosopher") + " is a legendary artifact with heavenly transmutation powers! They say it can even transform life itself!", safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: So that's the thing, I'm eager to play around with those things. With those I believe I can completely reshape some Pokémon! If you have some, use " + link("/quest alchemist:philosopher:Pokémon", null, true) + " and I will see if I can change their form!", safchan);
@@ -30060,7 +30060,7 @@ function Safari() {
                 return;
             }
             else {
-                into = getInputPokemon(into);
+                into = getInputPokemon(into.replace("%25", "%"));
                 if (!into.num) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: I can transform that " + info.name + " into " + formatPossibleTransmutations() + " I think!", safchan);
                     return;
@@ -47632,6 +47632,7 @@ function Safari() {
             "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
             "/changecostume [costume]: To change your costume to a new one. Can also use /dressup [costume].",
+            "/showcostumeskills: To show detailed information about your current costume, such as its current skills and level.",
             "/inbox: To read the messages you received while offline.",
             "/base: To view another player's Secret Base.",
             "/editbase [decoration]։[Coordinate X]։[Coordinate Y]: To edit your Secret Base. Use /decorations to check what you can decorate it with.",
