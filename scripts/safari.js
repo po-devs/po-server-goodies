@@ -3937,7 +3937,7 @@ function Safari() {
             "name": "Galarian Rapidash",
             "stats": [65, 100, 70, 80, 80, 105],
             "abilities": [ "Run Away", "Pastel Veil", "Anticipation" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.7,
             "weight": 80,
             "moves": [ 97, 502, 213, 226, 34, 340, 347, 204, 93, 563, 529, 203, 263, 565, 248, 416, 45, 361, 505, 624, 63, 286, 231, 67, 478, 224, 599, 573, 6, 579, 182, 60, 94, 633, 427, 98, 156, 496, 214, 661, 173, 23, 500, 164, 129, 14, 33, 39, 36, 634, 433, 528, 472, 428, 174, 630 ] 
@@ -3957,7 +3957,7 @@ function Safari() {
             "name": "Galarian Weezing",
             "stats": [65, 90, 120, 85, 70, 60],
             "abilities": [ "Levitate", "Neutralizing Gas", "Misty Surge" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 3, 
             "weight": 16,
             "moves": [ 312, 583, 372, 213, 584, 664, 499, 399, 563, 432, 194, 458, 203, 153, 263, 565, 126, 53, 416, 360, 114, 257, 63, 262, 599, 315, 371, 579, 139, 182, 240, 156, 496, 103, 120, 247, 214, 124, 188, 482, 123, 108, 173, 721, 164, 241, 33, 269, 168, 87, 85, 92, 390, 253, 607, 474, 261, 472, 192 ]
@@ -3967,7 +3967,7 @@ function Safari() {
             "name": "Galarian Mr. Mime",
             "stats": [50, 65, 65, 90, 90, 100],
             "abilities": [ "Vital Spirit", "Screen Cleaner", "Ice Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.4,
             "weight": 56.8,
             "moves": [ 502, 213, 419, 226, 59, 34, 280, 347, 204, 109, 93, 383, 563, 24, 409, 227, 203, 412, 263, 252, 374, 411, 492, 568, 248, 416, 447, 385, 258, 270, 63, 95, 58, 8, 420, 333, 196, 334, 113, 478, 25, 5, 118, 102, 243, 599, 417, 371, 1, 471, 384, 182, 60, 94, 633, 473, 240, 229, 278, 115, 156, 272, 496, 219, 103, 247, 285, 214, 173, 76, 666, 500, 164, 389, 241, 269, 298, 168, 87, 85, 86, 321, 271, 433, 253, 472, 428 ]
@@ -3977,7 +3977,7 @@ function Safari() {
             "name": "Galarian Corsola",
             "stats": [60, 55, 100, 65, 100, 30],
             "abilities": [ "Weak Armor", "Cursed Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.6, 
             "weight": 0.5,
             "moves": [ 133, 246, 310, 213, 59, 34, 362, 523, 347, 109, 174, 194, 91, 50, 414, 89, 203, 263, 202, 288, 258, 106, 114, 457, 506, 56, 58, 333, 196, 334, 113, 668, 243, 267, 101, 408, 182, 94, 240, 115, 156, 350, 157, 317, 496, 219, 201, 503, 103, 120, 247, 214, 173, 180, 446, 666, 444, 650, 164, 241, 57, 33, 634, 352, 250, 261 ]
@@ -3987,7 +3987,7 @@ function Safari() {
             "name": "Galarian Zigzagoon",
             "stats": [38, 30, 41, 30, 41, 60],
             "abilities": [ "Pickup", "Gluttony", "Quick Feet" ],
-            "tier": "SM OU",
+            "tier": "SM LC",
             "height": 0.4,
             "weight": 17.5,
             "moves": [ 372, 213, 560, 59, 34, 68, 91, 38, 203, 263, 313, 374, 447, 441, 29, 270, 304, 58, 196, 231, 282, 43, 122, 341, 600, 371, 42, 182, 501, 240, 156, 514, 496, 28, 184, 103, 402, 247, 214, 555, 173, 164, 241, 57, 129, 33, 36, 269, 168, 87, 85, 86, 271, 250, 526 ]
@@ -3997,7 +3997,7 @@ function Safari() {
             "name": "Galarian Linoone",
             "stats": [78, 70, 61, 50, 61, 100],
             "abilities": [ "Pickup", "Gluttony", "Quick Feet" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.5,
             "weight": 32.5,
             "moves": [ 372, 213, 560, 59, 707, 34, 68, 91, 38, 203, 263, 313, 374, 154, 416, 447, 441, 29, 270, 468, 63, 304, 58, 196, 231, 43, 122, 341, 400, 371, 42, 182, 240, 156, 514, 496, 28, 184, 103, 402, 247, 421, 214, 555, 173, 666, 164, 241, 57, 129, 415, 33, 36, 269, 168, 634, 87, 85, 86, 271, 250, 526, 541 ]
@@ -4053,7 +4053,7 @@ function Safari() {
             "name": "Galarian Darmanitan",
             "stats": [105, 140, 55, 30, 55, 95],
             "abilities": [ "Gorilla Tactics", "Zen Mode" ],
-            "tier": "SM OU",
+            "tier": "SM Ubers",
             "height": 1.7,
             "weight": 120,
             "moves": [ 213, 419, 187, 44, 59, 707, 34, 280, 339, 523, 91, 89, 227, 203, 263, 126, 424, 7, 83, 53, 394, 374, 411, 116, 416, 447, 360, 29, 257, 63, 58, 423, 8, 556, 334, 442, 25, 5, 315, 371, 181, 182, 94, 156, 179, 157, 317, 496, 214, 173, 76, 444, 164, 241, 276, 33, 269, 168, 37, 253, 369, 261, 526, 428, 52, 326 ]
@@ -4063,7 +4063,7 @@ function Safari() {
             "name": "Galarian Darmanitan-Zen",
             "stats": [105, 160, 55, 30, 55, 135],
             "abilities": [ "Zen Mode" ],
-            "tier": "SM OU",
+            "tier": "SM Ubers",
             "height": 1.7,
             "weight": 120,
             "moves": [ 213, 419, 187, 44, 59, 707, 34, 280, 339, 523, 91, 89, 227, 203, 263, 126, 424, 7, 83, 53, 394, 374, 411, 116, 416, 447, 360, 29, 257, 63, 58, 423, 8, 556, 334, 442, 25, 5, 315, 371, 181, 182, 94, 156, 179, 157, 317, 496, 214, 173, 76, 444, 164, 241, 276, 33, 269, 168, 37, 253, 369, 261, 526, 428, 52, 326 ]
@@ -4083,7 +4083,7 @@ function Safari() {
             "name": "Galarian Stunfisk",
             "stats": [109, 81, 99, 66, 84, 32],
             "abilities": [ "Mimicry" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.7,
             "weight": 20.5,
             "moves": [ 310, 213, 20, 340, 523, 68, 242, 174, 91, 414, 89, 203, 263, 90, 175, 430, 492, 423, 334, 232, 319, 330, 341, 189, 220, 371, 182, 240, 513, 156, 279, 157, 317, 496, 201, 503, 103, 214, 188, 482, 710, 173, 180, 446, 727, 666, 444, 164, 389, 57, 33, 86, 253, 55, 281 ]
@@ -4093,7 +4093,7 @@ function Safari() {
             "name": "Lycanroc-Dusk",
             "stats": [75, 117, 65, 55, 65, 110],
             "abilities": [ "Tough Claws" ],
-            "tier": "SM LU",
+            "tier": "SM UU",
             "height": 0.8,
             "weight": 25,
             "moves": [ 632, 213, 44, 280, 339, 585, 68, 343, 242, 104, 529, 414, 497, 283, 263, 218, 237, 336, 304, 334, 442, 231, 387, 43, 316, 200, 182, 156, 216, 46, 431, 397, 157, 88, 317, 496, 28, 184, 214, 555, 173, 446, 666, 444, 164, 207, 14, 33, 269, 37, 92, 428 ]
@@ -4130,7 +4130,7 @@ function Safari() {
             "name": "Poipole",
             "stats": [67, 73, 67, 73, 67, 73],
             "abilities": [ "Beast Boost" ],
-            "tier": "SM Ubers",
+            "tier": "SM PU",
             "height": 0.6,
             "weight": 1.8,
             "moves": [ 51, 204, 585, 343, 406, 497, 263, 591, 218, 31, 380, 45, 441, 270, 237, 231, 417, 64, 398, 182, 156, 216, 496, 324, 214, 188, 482, 289, 173, 164, 92, 253, 607, 474 ]
@@ -4150,7 +4150,7 @@ function Safari() {
             "name": "Stakataka",
             "stats": [61, 131, 211, 53, 101, 13],
             "abilities": [ "Beast Boost" ],
-            "tier": "SM NU",
+            "tier": "SM LU",
             "height": 5.5,
             "weight": 820,
             "moves": [ 502, 475, 117, 20, 335, 664, 523, 38, 89, 263, 430, 218, 416, 356, 360, 237, 571, 334, 442, 113, 277, 478, 393, 182, 278, 115, 156, 216, 350, 397, 157, 88, 317, 272, 496, 219, 201, 285, 214, 479, 173, 446, 666, 444, 164, 276, 33, 36, 477, 92, 433, 469, 472, 428 ]
@@ -4170,7 +4170,7 @@ function Safari() {
             "name": "Zeraora",
             "stats": [88, 112, 75, 102, 80, 143],
             "abilities": [ "Volt Absorb" ],
-            "tier": "SM Ubers",
+            "tier": "SM UU",
             "height": 1.5,
             "weight": 44.5,
             "moves": [ 512, 332, 97, 372, 396, 299, 340, 280, 664, 339, 347, 268, 370, 585, 435, 104, 409, 530, 497, 588, 486, 527, 283, 203, 263, 252, 206, 7, 374, 411, 264, 218, 154, 416, 447, 270, 237, 468, 63, 231, 282, 636, 67, 490, 25, 5, 200, 6, 703, 579, 602, 182, 98, 501, 156, 216, 279, 179, 496, 184, 10, 351, 163, 214, 555, 289, 173, 209, 164, 276, 129, 269, 634, 87, 85, 9, 86, 92, 521, 528, 526 ]
@@ -4180,7 +4180,7 @@ function Safari() {
             "name": "Meltan",
             "stats": [46, 65, 65, 55, 35, 34],
             "abilities": [ "Magnet Pull" ],
-            "tier": "SM Ubers",
+            "tier": "SM PU",
             "height": 0.2,
             "weight": 8,
             "moves": [ 151, 203, 263, 430, 360, 106, 29, 334, 182, 156, 496, 214, 173, 727, 164, 39, 85, 84, 86, 92 ]
@@ -4190,7 +4190,7 @@ function Safari() {
             "name": "Melmetal",
             "stats": [135, 143, 143, 80, 65, 34],
             "abilities": [ "Iron Fist" ],
-            "tier": "SM Ubers",
+            "tier": "SM OU",
             "height": 2.5,
             "weight": 800,
             "moves": [ 151, 707, 34, 280, 664, 643, 435, 705, 223, 89, 588, 203, 263, 430, 416, 360, 106, 29, 484, 624, 63, 58, 8, 334, 442, 25, 5, 182, 156, 157, 317, 496, 120, 214, 173, 76, 727, 164, 276, 39, 87, 85, 9, 84, 86, 92 ]
@@ -4208,6 +4208,7 @@ function Safari() {
         "811": {
             "name": "Thwackey",
             "stats": [70, 85, 70, 55, 60, 80],
+            "tier": "SM PU",
             "abilities": ["Overgrow", "Grassy Surge"],
             "types": ["Grass", "???"],
             "height": 0.7,
@@ -4217,6 +4218,7 @@ function Safari() {
         "812": {
             "name": "Rillaboom",
             "stats": [100, 125, 90, 60, 70, 85 ],
+            "tier": "SM OU",
             "abilities": ["Overgrow", "Grassy Surge"],
             "types": ["Grass", "???"],
             "height": 2.1,
@@ -4226,6 +4228,7 @@ function Safari() {
         "813": {
             "name": "Scorbunny",
             "stats": [ 50, 71, 40, 40, 40, 69 ],
+            "tier": "SM LC",
             "abilities": [ "Blaze", "Libero" ],
             "types": [ "Fire", "???" ],
             "height": 0.3,
@@ -4235,6 +4238,7 @@ function Safari() {
         "814": {
             "name": "Raboot",
             "stats": [ 65, 86, 60, 55, 60, 94 ],
+            "tier": "SM PU",
             "abilities": [ "Blaze", "Libero" ],
             "types": [ "Fire", "???" ],
             "height": 0.6,
@@ -4244,6 +4248,7 @@ function Safari() {
         "815": {
             "name": "Cinderace",
             "stats": [ 80, 116, 75, 65, 75, 119 ],
+            "tier": "SM OU",
             "abilities": [ "Blaze", "Libero" ],
             "types": [ "Fire", "???" ],
             "height": 1.4,
@@ -4253,6 +4258,7 @@ function Safari() {
         "816": {
             "name": "Sobble",
             "stats": [ 50, 40, 40, 70, 40, 70 ],
+            "tier": "SM LC",
             "abilities": [ "Torrent", "Sniper" ],
             "types": [ "Water", "???" ],
             "height": 0.3,
@@ -4262,6 +4268,7 @@ function Safari() {
         "817": {
             "name": "Drizzile",
             "stats": [ 65, 60, 55, 95, 55, 90 ],
+            "tier": "SM PU",
             "abilities": [ "Torrent", "Sniper" ],
             "types": [ "Water", "???" ],
             "height": 0.7,
@@ -4271,6 +4278,7 @@ function Safari() {
         "818": {
             "name": "Inteleon",
             "stats": [ 70, 85, 65, 125, 65, 120 ],
+            "tier": "SM NU",
             "abilities": [ "Torrent", "Sniper" ],
             "types": [ "Water", "???" ],
             "height": 1.9,
@@ -4280,6 +4288,7 @@ function Safari() {
         "819": {
             "name": "Skwovet",
             "stats": [ 70, 55, 55, 35, 35, 25 ],
+            "tier": "SM LC",
             "abilities": [ "Cheek Pouch", "Gluttony" ],
             "types": [ "Normal", "???" ],
             "height": 0.3,
@@ -4289,6 +4298,7 @@ function Safari() {
         "820": {
             "name": "Greedent",
             "stats": [ 120, 95, 95, 55, 75, 20 ],
+            "tier": "SM PU",
             "abilities": [ "Cheek Pouch", "Gluttony" ],
             "types": [ "Normal", "???" ],
             "height": 0.6,
@@ -4298,6 +4308,7 @@ function Safari() {
         "821": {
             "name": "Rookidee",
             "stats": [ 38, 47, 35, 33, 35, 57 ],
+            "tier": "SM LC",
             "abilities": [ "Keen Eye", "Unnerve", "Big Pecks" ],
             "types": [ "Flying", "???" ],
             "height": 0.2,
@@ -4307,6 +4318,7 @@ function Safari() {
         "822": {
             "name": "Corvisquire",
             "stats": [ 68, 67, 55, 43, 55, 77 ],
+            "tier": "SM PU",
             "abilities": [ "Keen Eye", "Unnerve", "Big Pecks" ],
             "types": [ "Flying", "???" ],
             "height": 0.8,
@@ -4316,6 +4328,7 @@ function Safari() {
         "823": {
             "name": "Corviknight",
             "stats": [ 98, 87, 105, 53, 85, 67 ],
+            "tier": "SM OU",
             "abilities": [ "Pressure", "Unnerve", "Mirror Armor" ],
             "types": [ "Flying", "Steel" ],
             "height": 2.2,
@@ -4325,6 +4338,7 @@ function Safari() {
         "824": {
             "name": "Blipbug",
             "stats": [ 25, 20, 20, 25, 45, 45 ],
+            "tier": "SM LC",
             "abilities": [ "Swarm", "Compound Eyes", "Telepathy" ],
             "types": [ "Bug", "???" ],
             "height": 4,
@@ -4334,6 +4348,7 @@ function Safari() {
         "825": {
             "name": "Dottler",
             "stats": [ 50, 35, 80, 50, 90, 30 ],
+            "tier": "SM PU",
             "abilities": [ "Swarm", "Compound Eyes", "Telepathy" ],
             "types": [ "Bug", "Psychic" ],
             "height": 0.4,
@@ -4343,6 +4358,7 @@ function Safari() {
         "826": {
             "name": "Orbeetle",
             "stats": [ 60, 45, 110, 80, 120, 90 ],
+            "tier": "SM PU",
             "abilities": [ "Swarm", "Frisk", "Telepathy" ],
             "types": [ "Bug", "Psychic" ],
             "height": 0.4,
@@ -4352,6 +4368,7 @@ function Safari() {
         "827": {
             "name": "Nickit",
             "stats": [ 40, 28, 28, 47, 52, 50 ],
+            "tier": "SM LC",
             "abilities": [ "Run Away", "Unburden", "Stakeout" ],
             "types": [ "Dark", "???" ],
             "height": 0.6,
@@ -4361,6 +4378,7 @@ function Safari() {
         "828": {
             "name": "Thievul",
             "stats": [ 70, 58, 58, 87, 92, 90 ],
+            "tier": "SM PU",
             "abilities": [ "Run Away", "Unburden", "Stakeout" ],
             "types": [ "Dark", "???" ],
             "height": 1.2,
@@ -4370,6 +4388,7 @@ function Safari() {
         "829": {
             "name": "Gossifleur",
             "stats": [ 40, 40, 60, 40, 60, 10 ],
+            "tier": "SM LC",
             "abilities": [ "Cotton Down", "Regenerator", "Effect Spore" ],
             "types": [ "Grass", "???" ],
             "height": 0.4,
@@ -4379,6 +4398,7 @@ function Safari() {
         "830": {
             "name": "Eldegoss",
             "stats": [ 60, 50, 90, 80, 120, 60 ],
+            "tier": "SM PU",
             "abilities": [ "Cotton Down", "Regenerator", "Effect Spore" ],
             "types": [ "Grass", "???" ],
             "height": 0.5,
@@ -4388,6 +4408,7 @@ function Safari() {
         "831": {
             "name": "Wooloo",
             "stats": [ 42, 40, 55, 40, 45, 48 ],
+            "tier": "SM LC",
             "abilities": [ "Fluffy", "Run Away", "Bulletproof" ],
             "types": [ "Normal", "???" ],
             "height": 0.6,
@@ -4397,6 +4418,7 @@ function Safari() {
         "832": {
             "name": "Dubwool",
             "stats": [ 72, 80, 100, 60, 90, 88 ],
+            "tier": "SM PU",
             "abilities": [ "Fluffy", "Run Away", "Bulletproof" ],
             "types": [ "Normal", "???" ],
             "height": 1.3,
@@ -4418,7 +4440,7 @@ function Safari() {
             "name": "Drednaw",
             "stats": [90, 115, 90, 48, 68, 74],
             "abilities": [ "Strong Jaw", "Shell Armor", "Swift Swim" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1,
             "weight": 115.5,
             "moves": [ 372, 213, 44, 59, 707, 34, 523, 68, 242, 91, 291, 414, 89, 203, 263, 206, 416, 29, 457, 624, 56, 63, 58, 423, 334, 231, 730, 668, 224, 330, 341, 371, 398, 182, 240, 534, 156, 279, 350, 397, 157, 317, 496, 201, 328, 503, 184, 214, 661, 173, 446, 666, 444, 164, 276, 57, 14, 33, 634, 127, 55, 250, 525, 380, 130 ]
@@ -4438,7 +4460,7 @@ function Safari() {
             "name": "Boltund",
             "stats": [69, 90, 60, 90, 60, 121],
             "abilities": [ "Strong Jaw", "Competitive" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1,
             "weight": 34,
             "moves": [ 97, 213, 44, 339, 268, 204, 242, 91, 587, 588, 589, 486, 203, 263, 424, 116, 416, 270, 63, 304, 575, 579, 182, 665, 156, 46, 496, 214, 555, 173, 209, 164, 129, 33, 39, 87, 85, 422, 86, 253, 521, 528, 435, 38, 488, 336, 28 ]
@@ -4458,7 +4480,7 @@ function Safari() {
             "name": "Carkol",
             "stats": [80, 60, 90, 60, 70, 50],
             "abilities": [ "Steam Engine", "Flame Body", "Flash Fire" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.1,
             "weight": 78,
             "moves": [ 246, 213, 707, 659, 91, 203, 263, 126, 83, 488, 53, 394, 360, 535, 257, 484, 624, 510, 334, 442, 315, 182, 229, 115, 156, 350, 397, 157, 317, 496, 201, 328, 503, 120, 214, 479, 108, 173, 191, 446, 444, 164, 33, 261, 335, 153, 189 ] 
@@ -4468,7 +4490,7 @@ function Safari() {
             "name": "Coalossal",
             "stats": [110, 80, 120, 80, 90, 30],
             "abilities": [ "Steam Engine", "Flame Body", "Flash Fire" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 2.8,
             "weight": 310.5,
             "moves": [ 246, 213, 707, 34, 523, 659, 91, 414, 89, 203, 263, 126, 7, 83, 488, 53, 394, 416, 360, 535, 257, 484, 624, 63, 510, 334, 442, 25, 5, 315, 182, 229, 115, 156, 350, 397, 157, 317, 496, 201, 328, 503, 120, 214, 479, 108, 173, 76, 191, 446, 444, 164, 33, 732, 261, 335, 153, 189 ]
@@ -4488,7 +4510,7 @@ function Safari() {
             "name": "Flapple",
             "stats": [70, 110, 80, 95, 60, 70],
             "abilities": [ "Ripen", "Gluttony", "Hustle" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 1,
             "moves": [ 491, 512, 403, 310, 213, 331, 225, 434, 349, 406, 407, 203, 412, 263, 19, 116, 202, 416, 447, 719, 74, 484, 63, 334, 73, 200, 182, 278, 156, 496, 184, 402, 214, 173, 76, 164, 241, 239, 369, 17, 110, 111, 205, 389 ]
@@ -4498,7 +4520,7 @@ function Safari() {
             "name": "Appletun",
             "stats": [110, 85, 80, 100, 80, 30],
             "abilities": [ "Ripen", "Gluttony", "Thick Fat" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.4,
             "weight": 13,
             "moves": [ 133, 718, 310, 213, 707, 34, 523, 331, 174, 434, 406, 89, 203, 412, 263, 202, 416, 447, 74, 360, 29, 484, 624, 63, 334, 73, 113, 200, 371, 182, 105, 278, 115, 156, 496, 219, 402, 214, 173, 76, 23, 164, 241, 276, 230, 110, 111, 205, 389 ]
@@ -4518,7 +4540,7 @@ function Safari() {
             "name": "Sandaconda",
             "stats": [72, 107, 125, 65, 70, 71],
             "abilities": [ "Sand Spit", "Shed Skin", "Sand Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 3.8,
             "weight": 65.5,
             "moves": [ 213, 707, 664, 523, 489, 91, 529, 414, 89, 203, 263, 424, 416, 137, 29, 624, 542, 63, 334, 442, 107, 341, 200, 182, 156, 350, 157, 317, 496, 28, 201, 328, 103, 130, 21, 214, 173, 446, 444, 164, 35, 428, 584, 407, 387, 189, 342 ]
@@ -4528,7 +4550,7 @@ function Safari() {
             "name": "Cramorant",
             "stats": [70, 85, 55, 85, 95, 85],
             "abilities": [ "Gulp Missle" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.8,
             "weight": 18,
             "moves": [ 332, 97, 403, 133, 392, 372, 213, 584, 59, 413, 432, 291, 65, 203, 263, 297, 19, 31, 416, 542, 56, 63, 58, 196, 668, 64, 365, 182, 240, 156, 179, 355, 496, 503, 214, 173, 255, 211, 254, 164, 276, 57, 256, 168, 37, 634, 253, 55, 311, 250 ]
@@ -4538,7 +4560,7 @@ function Safari() {
             "name": "Cramorant-Gulping",
             "stats": [70, 85, 55, 85, 95, 85],
             "abilities": [ "Gulp Missle" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.8,
             "weight": 18
         },
@@ -4547,7 +4569,7 @@ function Safari() {
             "name": "Cramorant-Gorging",
             "stats": [70, 85, 55, 85, 95, 85],
             "abilities": [ "Gulp Missle" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.8,
             "weight": 18
         },
@@ -4586,7 +4608,7 @@ function Safari() {
             "name": "Toxtricity",
             "stats": [75, 98, 70, 114, 70, 75],
             "abilities": [ "Punk Rock", "Plus", "Technician" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.6,
             "weight": 40,
             "moves": [ 51, 491, 213, 584, 561, 268, 435, 409, 587, 486, 227, 203, 263, 7, 175, 374, 416, 45, 441, 506, 63, 304, 43, 25, 5, 574, 575, 717, 371, 398, 182, 156, 496, 184, 103, 508, 351, 214, 188, 482, 555, 173, 209, 500, 164, 207, 129, 269, 671, 634, 87, 85, 9, 84, 86, 92, 253, 474, 521, 528, 283, 319, 602 ]
@@ -4596,7 +4618,7 @@ function Safari() {
             "name": "Toxtricity-Low Key",
             "stats": [75, 98, 70, 114, 70, 75],
             "abilities": [ "Punk Rock", "Minus", "Technician" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.6,
             "weight": 40,
             "moves": [ 51, 491, 213, 584, 561, 268, 435, 409, 587, 486, 227, 203, 263, 7, 175, 374, 416, 45, 441, 506, 63, 304, 43, 597, 25, 5, 574, 575, 717, 371, 398, 182, 156, 496, 184, 103, 351, 214, 188, 482, 555, 173, 209, 500, 164, 207, 129, 269, 671, 634, 87, 85, 9, 84, 86, 92, 253, 607, 521, 528, 283, 319, 602 ]
@@ -4616,7 +4638,7 @@ function Safari() {
             "name": "Centiskorch",
             "stats": [100, 115, 65, 90, 90, 65],
             "abilities": [ "Flash Fire", "White Smoke", "Flame Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 3,
             "weight": 120,
             "moves": [ 213, 44, 664, 450, 405, 659, 489, 242, 52, 203, 263, 126, 424, 657, 83, 53, 172, 394, 416, 535, 257, 63, 517, 141, 656, 573, 315, 438, 182, 156, 496, 503, 21, 214, 108, 173, 76, 164, 241, 422, 474, 261, 35, 404, 111, 282, 205, 522 ] 
@@ -4636,7 +4658,7 @@ function Safari() {
             "name": "Grapploct",
             "stats": [80, 118, 90, 70, 80, 42],
             "abilities": [ "Limber", "Technician" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.6,
             "weight": 39,
             "moves": [ 213, 20, 34, 280, 362, 664, 339, 370, 197, 91, 291, 409, 203, 263, 364, 411, 416, 56, 63, 8, 43, 668, 5, 330, 341, 190, 736, 371, 182, 156, 514, 279, 179, 249, 496, 184, 214, 173, 666, 66, 164, 276, 57, 269, 606, 127, 250, 526, 509, 220, 602, 69, 487, 389 ] 
@@ -4656,7 +4678,7 @@ function Safari() {
             "name": "Polteageist",
             "stats": [60, 65, 65, 134, 114, 70],
             "abilities": [ "Weak Armor", "Cursed Body" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 0.2,
             "weight": 0.4,
             "moves": [ 502, 312, 583, 310, 226, 174, 399, 203, 263, 492, 202, 416, 506, 63, 286, 113, 72, 262, 118, 417, 371, 578, 182, 94, 473, 115, 156, 496, 120, 247, 504, 214, 173, 500, 650, 164, 389, 735, 271, 261, 110, 472 ]
@@ -4676,7 +4698,7 @@ function Safari() {
             "name": "Hattrem",
             "stats": [57, 40, 65, 86, 73, 49],
             "abilities": [ "Healer", "Anticipation", "Magic Bounce" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.6,
             "weight": 4.8,
             "moves": [ 312, 213, 226, 664, 347, 204, 93, 399, 563, 586, 564, 203, 263, 202, 361, 505, 270, 286, 722, 113, 345, 573, 580, 579, 182, 60, 94, 473, 156, 496, 219, 285, 214, 173, 500, 164, 86, 495, 583, 575, 511 ]
@@ -4686,7 +4708,7 @@ function Safari() {
             "name": "Hatterene",
             "stats": [57, 90, 95, 136, 103, 29],
             "abilities": [ "Healer", "Anticipation", "Magic Bounce" ],
-            "tier": "SM OU",
+            "tier": "SM UU",
             "height": 2.1,
             "weight": 5.1,
             "moves": [ 312, 213, 226, 664, 347, 204, 93, 399, 563, 586, 564, 203, 263, 248, 202, 416, 385, 361, 505, 270, 63, 286, 722, 113, 345, 733, 478, 573, 580, 579, 384, 438, 182, 60, 94, 427, 473, 156, 496, 219, 247, 421, 285, 214, 173, 500, 164, 14, 86, 433, 472, 495, 583, 575, 511 ]
@@ -4706,7 +4728,7 @@ function Safari() {
             "name": "Morgrem",
             "stats": [65, 60, 45, 75, 55, 70],
             "abilities": [ "Prankster", "Frisk", "Pickpocket" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.8,
             "weight": 12.5,
             "moves": [ 372, 213, 44, 585, 399, 563, 564, 409, 203, 263, 252, 313, 724, 260, 492, 141, 113, 67, 25, 5, 118, 417, 579, 182, 115, 156, 514, 279, 496, 421, 214, 173, 164, 389, 207, 269, 168, 634, 86, 259, 271, 253 ]
@@ -4716,7 +4738,7 @@ function Safari() {
             "name": "Grimmsnarl",
             "stats": [95, 120, 65, 95, 75, 60],
             "abilities": [ "Prankster", "Frisk", "Pickpocket" ],
-            "tier": "SM OU",
+            "tier": "SM UU",
             "height": 1.5,
             "weight": 61,
             "moves": [ 372, 213, 44, 707, 34, 280, 339, 585, 242, 643, 399, 563, 564, 409, 203, 263, 252, 313, 724, 7, 260, 411, 116, 492, 416, 359, 63, 8, 141, 113, 67, 490, 25, 5, 118, 417, 579, 384, 602, 438, 182, 115, 156, 514, 279, 496, 184, 421, 214, 173, 720, 666, 164, 389, 276, 207, 269, 168, 634, 9, 86, 259, 271, 253, 472 ] 
@@ -4726,7 +4748,7 @@ function Safari() {
             "name": "Obstagoon",
             "stats": [93, 90, 101, 60, 81, 95],
             "abilities": [ "Reckless", "Guts", "Defiant" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.6,
             "weight": 46,
             "moves": [ 372, 213, 560, 59, 707, 34, 280, 339, 370, 68, 238, 440, 91, 38, 203, 263, 313, 7, 374, 116, 154, 416, 447, 441, 29, 270, 468, 63, 304, 58, 8, 196, 334, 231, 43, 122, 67, 25, 5, 341, 400, 723, 371, 42, 182, 240, 156, 514, 279, 179, 496, 28, 184, 103, 402, 247, 421, 214, 555, 173, 666, 66, 164, 241, 57, 129, 415, 33, 36, 269, 168, 634, 87, 85, 9, 86, 271, 250, 526, 404, 541 ] 
@@ -4736,7 +4758,7 @@ function Safari() {
             "name": "Perrserker",
             "stats": [70, 110, 100, 50, 60, 50],
             "abilities": [ "Battle Armor", "Tough Claws", "Steely Spirit" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.8,
             "weight": 28,
             "moves": [ 133, 372, 213, 226, 34, 370, 242, 399, 91, 203, 263, 252, 374, 492, 154, 416, 45, 441, 360, 484, 468, 63, 304, 334, 442, 231, 368, 232, 319, 417, 371, 6, 579, 182, 240, 156, 514, 496, 10, 103, 402, 247, 421, 163, 214, 173, 727, 164, 241, 207, 14, 269, 168, 37, 634, 87, 85, 253, 369, 526, 174, 197, 192 ]
@@ -4746,7 +4768,7 @@ function Safari() {
             "name": "Cursola",
             "stats": [60, 95, 50, 145, 130, 30],
             "abilities": [ "Weak Armor", "Perish Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1,
             "weight": 0.4,
             "moves": [ 133, 246, 310, 213, 59, 34, 362, 523, 347, 174, 91, 50, 414, 89, 203, 263, 202, 416, 288, 258, 106, 506, 56, 63, 58, 333, 196, 334, 141, 113, 668, 243, 101, 195, 42, 408, 182, 94, 240, 115, 156, 279, 350, 157, 317, 496, 219, 201, 503, 103, 120, 247, 214, 173, 180, 446, 666, 444, 650, 164, 241, 57, 33, 634, 250, 261, 722, 55 ]
@@ -4756,7 +4778,7 @@ function Safari() {
             "name": "Sirfetch'd",
             "stats": [62, 135, 95, 68, 82, 65],
             "abilities": [ "Steadfast", "Scrappy" ],
-            "tier": "SM OU",
+            "tier": "SM NU",
             "height": 0.8,
             "weight": 117,
             "moves": [ 372, 213, 34, 413, 280, 664, 370, 432, 197, 203, 263, 515, 646, 116, 210, 270, 334, 282, 348, 43, 725, 64, 398, 182, 156, 514, 279, 249, 496, 28, 21, 214, 173, 630, 211, 164, 241, 276, 14, 634, 526, 636 ]
@@ -4766,7 +4788,7 @@ function Safari() {
             "name": "Mr. Rime",
             "stats": [80, 85, 75, 110, 100, 70],
             "abilities": [ "Tangled Feet", "Screen Cleaner", "Ice Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.5,
             "weight": 58.2,
             "moves": [ 495, 502, 213, 419, 226, 59, 335, 34, 280, 347, 204, 93, 383, 563, 24, 409, 227, 203, 412, 263, 313, 374, 411, 492, 568, 248, 416, 447, 385, 258, 270, 63, 95, 58, 8, 420, 333, 196, 334, 113, 478, 25, 5, 118, 102, 243, 599, 417, 371, 1, 384, 182, 60, 94, 633, 473, 240, 229, 278, 115, 156, 272, 496, 219, 103, 247, 285, 303, 214, 173, 76, 666, 500, 164, 389, 241, 269, 298, 168, 87, 85, 86, 271, 433, 253, 472, 428, 174, 223, 573, 192 ]
@@ -4776,7 +4798,7 @@ function Safari() {
             "name": "Runerigus",
             "stats": [58, 95, 145, 50, 105, 30],
             "abilities": [ "Wandering Spirit" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.6,
             "weight": 66.6,
             "moves": [ 502, 133, 310, 213, 707, 664, 523, 347, 562, 174, 399, 194, 50, 406, 414, 89, 203, 412, 263, 313, 416, 447, 470, 385, 114, 506, 63, 286, 334, 212, 417, 101, 371, 578, 471, 384, 182, 94, 240, 156, 279, 350, 157, 317, 496, 219, 201, 328, 184, 247, 421, 285, 21, 214, 173, 446, 444, 164, 269, 168, 390, 271, 433, 261, 472, 428 ] 
@@ -4796,7 +4818,7 @@ function Safari() {
             "name": "Alcremie",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5,
             "moves": [ 151, 312, 583, 213, 347, 204, 563, 708, 564, 409, 227, 203, 412, 494, 263, 313, 374, 202, 416, 270, 63, 286, 113, 345, 478, 118, 599, 573, 579, 182, 94, 473, 105, 156, 496, 219, 214, 173, 76, 500, 164, 186, 230, 33, 161, 472, 560, 387 ]
@@ -4806,7 +4828,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4815,7 +4837,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4824,7 +4846,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4833,7 +4855,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4842,7 +4864,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4851,7 +4873,7 @@ function Safari() {
             "name": "Alcremie-Vanilla Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4860,7 +4882,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4869,7 +4891,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4878,7 +4900,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4887,7 +4909,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4896,7 +4918,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4905,7 +4927,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4914,7 +4936,7 @@ function Safari() {
             "name": "Alcremie-Ruby Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4923,7 +4945,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4932,7 +4954,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4941,7 +4963,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4950,7 +4972,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4959,7 +4981,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4968,7 +4990,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4977,7 +4999,7 @@ function Safari() {
             "name": "Alcremie-Matcha Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4986,7 +5008,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -4995,7 +5017,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5004,7 +5026,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5013,7 +5035,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5022,7 +5044,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5031,7 +5053,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5040,7 +5062,7 @@ function Safari() {
             "name": "Alcremie-Mint Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5049,7 +5071,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5058,7 +5080,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5067,7 +5089,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5076,7 +5098,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5085,7 +5107,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5094,7 +5116,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5103,7 +5125,7 @@ function Safari() {
             "name": "Alcremie-Lemon Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5112,7 +5134,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5121,7 +5143,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5130,7 +5152,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5139,7 +5161,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5148,7 +5170,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5157,7 +5179,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5166,7 +5188,7 @@ function Safari() {
             "name": "Alcremie-Salted Cream Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5175,7 +5197,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5184,7 +5206,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5193,7 +5215,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5202,7 +5224,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5211,7 +5233,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5220,7 +5242,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5229,7 +5251,7 @@ function Safari() {
             "name": "Alcremie-Ruby Swirl Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5238,7 +5260,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5247,7 +5269,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5256,7 +5278,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5265,7 +5287,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5274,7 +5296,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5283,7 +5305,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5292,7 +5314,7 @@ function Safari() {
             "name": "Alcremie-Caramel Swirl Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5301,7 +5323,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Strawberry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5310,7 +5332,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Berry",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5319,7 +5341,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Love",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5328,7 +5350,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Star",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5337,7 +5359,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Clover",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5346,7 +5368,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Flower",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5355,7 +5377,7 @@ function Safari() {
             "name": "Alcremie-Rainbow Swirl Ribbon",
             "stats": [65, 60, 75, 110, 121, 64],
             "abilities": [ "Sweet Veil", "Aroma Veil" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 0.5
         },
@@ -5373,7 +5395,7 @@ function Safari() {
             "name": "Falinks",
             "stats": [65, 100, 100, 70, 60, 75],
             "abilities": [ "Battle Armor", "Defiant" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 3,
             "weight": 62,
             "moves": [ 97, 372, 251, 280, 339, 370, 68, 203, 263, 206, 646, 411, 116, 416, 29, 270, 63, 334, 442, 224, 731, 371, 398, 182, 156, 514, 279, 179, 157, 249, 317, 496, 103, 214, 661, 173, 164, 276, 14, 33, 634, 428 ]
@@ -5383,7 +5405,7 @@ function Safari() {
             "name": "Pincurchin",
             "stats": [48, 101, 95, 91, 85, 15],
             "abilities": [ "Lightning Rod", "Electric Surge" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3, 
             "weight": 1, 
             "moves": [ 367, 372, 213, 362, 61, 268, 174, 435, 588, 203, 263, 31, 506, 56, 668, 262, 330, 371, 64, 42, 398, 182, 240, 105, 156, 179, 496, 503, 120, 214, 173, 209, 191, 164, 389, 57, 634, 87, 85, 84, 86, 390, 607, 474, 55, 672 ]
@@ -5403,7 +5425,7 @@ function Safari() {
             "name": "Frosmoth",
             "stats": [70, 65, 60, 125, 90, 65],
             "abilities": [ "Shield Dust", "Ice Scales" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.3,
             "weight": 42,
             "moves": [ 512, 403, 213, 62, 635, 419, 59, 405, 347, 563, 432, 203, 263, 297, 202, 416, 258, 270, 542, 63, 58, 333, 196, 286, 571, 141, 113, 54, 579, 181, 182, 483, 115, 156, 496, 219, 214, 173, 522, 78, 164, 366, 369, 311, 469, 450, 565, 243 ]
@@ -5413,7 +5435,7 @@ function Safari() {
             "name": "Stonjourner",
             "stats": [100, 125, 135, 20, 20, 70],
             "abilities": [ "Power Spot" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 2.5,
             "weight": 520,
             "moves": [ 246, 372, 213, 335, 707, 34, 664, 523, 174, 414, 89, 203, 263, 416, 356, 535, 484, 63, 286, 334, 25, 182, 156, 350, 397, 157, 88, 317, 496, 219, 201, 328, 120, 214, 173, 446, 23, 666, 444, 164, 276, 469, 472 ]
@@ -5423,7 +5445,7 @@ function Safari() {
             "name": "Eiscue",
             "stats": [75, 80, 110, 65, 90, 50],
             "abilities": [ "Ice Face" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.4,
             "weight": 89,
             "moves": [ 97, 133, 392, 213, 635, 419, 187, 59, 362, 291, 38, 203, 263, 568, 258, 29, 457, 56, 58, 8, 556, 333, 196, 334, 442, 668, 54, 181, 182, 115, 156, 179, 496, 214, 173, 487, 164, 57, 33, 127, 311, 250, 428 ]
@@ -5433,7 +5455,7 @@ function Safari() {
             "name": "Eiscue-Noice",
             "stats": [75, 80, 70, 65, 50, 130],
             "abilities": [ "Ice Face" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.4,
             "weight": 89
         },
@@ -5442,7 +5464,7 @@ function Safari() {
             "name": "Indeedee",
             "stats": [60, 65, 55, 105, 95, 95],
             "abilities": [ "Inner Focus", "Synchronize", "Psychic Surge" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 0.9,
             "weight": 28,
             "moves": [ 495, 502, 312, 213, 347, 563, 586, 564, 409, 227, 203, 412, 326, 263, 252, 248, 270, 304, 286, 387, 345, 478, 118, 573, 6, 580, 579, 471, 384, 182, 60, 94, 633, 244, 473, 156, 496, 247, 214, 173, 500, 164, 129, 161, 271, 433, 472, 428 ]
@@ -5452,7 +5474,7 @@ function Safari() {
             "name": "Indeedee-F",
             "stats": [70, 55, 65, 95, 105, 85],
             "abilities": [ "Own Tempo", "Synchronize", "Psychic Surge" ],
-            "tier": "SM OU",
+            "tier": "SM NU",
             "height": 0.9,
             "weight": 28,
             "moves": [ 502, 312, 213, 226, 347, 563, 586, 564, 409, 203, 412, 263, 252, 266, 248, 470, 385, 361, 505, 270, 304, 286, 113, 345, 118, 573, 6, 580, 579, 182, 60, 94, 633, 375, 244, 473, 115, 156, 496, 219, 247, 214, 173, 500, 164, 129, 271, 428 ]
@@ -5462,7 +5484,7 @@ function Safari() {
             "name": "Morpeko",
             "stats": [58, 95, 58, 70, 58, 97],
             "abilities": [ "Hunger Switch" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 3,
             "moves": [ 97, 372, 213, 714, 44, 280, 331, 268, 242, 399, 588, 486, 527, 203, 263, 252, 313, 424, 260, 374, 492, 423, 43, 417, 200, 600, 371, 658, 182, 665, 511, 98, 229, 156, 279, 496, 184, 402, 214, 555, 173, 209, 666, 164, 162, 207, 129, 39, 269, 168, 37, 87, 85, 422, 9, 84, 86, 321, 259, 253, 521, 528 ]
@@ -5472,7 +5494,7 @@ function Safari() {
             "name": "Morpeko-Hangry",
             "stats": [58, 95, 58, 70, 58, 97],
             "abilities": [ "Hunger Switch" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 0.3,
             "weight": 3
         },
@@ -5491,7 +5513,7 @@ function Safari() {
             "name": "Copperajah",
             "stats": [122, 130, 69, 80, 69, 30],
             "abilities": [ "Sheer Force", "Heavy Metal" ],
-            "tier": "SM OU",
+            "tier": "SM NU",
             "height": 3,
             "weight": 650,
             "moves": [ 213, 707, 34, 280, 664, 523, 91, 414, 89, 203, 263, 430, 374, 416, 45, 535, 484, 624, 63, 334, 442, 25, 341, 200, 371, 579, 438, 182, 156, 279, 350, 157, 249, 317, 205, 496, 184, 103, 214, 555, 173, 446, 727, 23, 666, 444, 70, 164, 276, 33, 269, 526, 428, 584, 174, 111, 38, 90, 21, 207, 18 ]
@@ -5511,7 +5533,7 @@ function Safari() {
             "name": "Arctozolt",
             "stats": [90, 100, 90, 90, 80, 55],
             "abilities": [ "Volt Absorb", "Static", "Slush Rush" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 2.3,
             "weight": 215,
             "moves": [ 246, 419, 59, 34, 737, 523, 268, 435, 497, 486, 203, 263, 568, 416, 258, 56, 63, 304, 58, 423, 556, 333, 196, 231, 67, 25, 5, 371, 365, 181, 182, 240, 156, 350, 157, 317, 496, 21, 214, 173, 666, 444, 164, 57, 269, 87, 85, 422, 9, 84, 86, 528 ]
@@ -5521,7 +5543,7 @@ function Safari() {
             "name": "Dracovish",
             "stats": [90, 90, 100, 70, 80, 75],
             "abilities": [ "Water Absorb", "Strong Jaw", "Sand Rush" ],
-            "tier": "SM OU",
+            "tier": "SM Ubers",
             "height": 2.3, 
             "weight": 215,
             "moves": [ 246, 44, 34, 362, 664, 523, 242, 291, 434, 225, 406, 407, 414, 89, 203, 263, 738, 416, 56, 63, 423, 442, 141, 668, 67, 25, 200, 182, 665, 240, 156, 350, 157, 317, 496, 503, 214, 173, 23, 666, 444, 164, 162, 57, 33, 127, 55, 250, 428 ]
@@ -5531,7 +5553,7 @@ function Safari() {
             "name": "Arctovish",
             "stats": [90, 90, 100, 80, 90, 55],
             "abilities": [ "Water Absorb", "Ice Body", "Slush Rush" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 2,
             "weight": 175,
             "moves": [ 246, 635, 419, 44, 59, 34, 362, 242, 291, 203, 263, 738, 568, 416, 258, 56, 63, 58, 423, 556, 333, 196, 334, 442, 668, 181, 182, 665, 240, 156, 350, 157, 317, 496, 214, 173, 444, 164, 162, 57, 127, 55, 250, 428 ]
@@ -5541,7 +5563,7 @@ function Safari() {
             "name": "Duraludon",
             "stats": [70, 95, 115, 120, 50, 85],
             "abilities": [ "Light Metal", "Heavy Metal", "Stalwart" ],
-            "tier": "SM OU",
+            "tier": "SM NU",
             "height": 1.8,
             "weight": 40,
             "moves": [ 213, 707, 34, 715, 280, 399, 434, 337, 406, 525, 203, 263, 430, 492, 416, 360, 484, 468, 63, 334, 442, 636, 43, 113, 368, 232, 319, 243, 400, 200, 182, 115, 156, 157, 249, 317, 496, 184, 103, 163, 214, 555, 173, 76, 446, 727, 666, 444, 164, 14, 87, 85, 86 ]
@@ -5561,7 +5583,7 @@ function Safari() {
             "name": "Drakloak",
             "stats": [68, 80, 50, 60, 50, 102],
             "abilities": [ "Clear Body", "Infiltrator", "Cursed Body" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.4,
             "weight": 11,
             "moves": [ 512, 97, 502, 372, 310, 213, 226, 251, 44, 715, 362, 291, 38, 458, 434, 349, 406, 407, 203, 263, 126, 53, 270, 506, 56, 571, 387, 199, 200, 578, 182, 665, 98, 156, 496, 503, 247, 214, 173, 211, 164, 57, 129, 36, 168, 87, 85, 86, 369, 261, 109, 174, 50, 104, 525, 288, 389 ]
@@ -5677,7 +5699,7 @@ function Safari() {
             "name": "Galarian Slowbro",
             "stats": [95, 100, 95, 100, 70, 30],
             "abilities": [ "Quick Draw", "Own Tempo" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.6,
             "weight": 70.5,
             "moves": [movenum("Shell Side Arm"), movenum("Withdraw"), movenum("Tackle"), movenum("Curse"), movenum("Growl"), movenum("Acid"), movenum("Yawn"), movenum("Confusion"), movenum("Disable"), movenum("Water Pulse"), movenum("Headbutt"), movenum("Zen Headbutt"), movenum("Amnesia"), movenum("Surf"), movenum("Slack Off"), movenum("Psychic"), movenum("Psych Up"), movenum("Rain Dance"), movenum("Heal Pulse"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Pay Day"), movenum("Ice Punch"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Thunder Wave"), movenum("Dig"), movenum("Light Screen"), movenum("Safeguard"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Icy Wind"), movenum("Attract"), movenum("Sunny Day"), movenum("Hail"), movenum("Whirlpool"), movenum("Facade"), movenum("Swift"), movenum("Brick Break"), movenum("Imprison"), movenum("Dive"), movenum("Weather Ball"), movenum("Mud Shot"), movenum("Brine"), movenum("Fling"), movenum("Drain Punch"), movenum("Avalanche"), movenum("Trick Room"), movenum("Wonder Room"), movenum("Venoshock"), movenum("Round"), movenum("Bulldoze"), movenum("Razor Shell"), movenum("Psychic Terrain"), movenum("Brutal Swing"), movenum("Body Slam"), movenum("Flamethrower"), movenum("Hydro Pump"), movenum("Ice Beam"), movenum("Blizzard"), movenum("Earthquake"), movenum("Fire Blast"), movenum("Tri Attack"), movenum("Substitute"), movenum("Sludge Bomb"), movenum("Psyshock"), movenum("Endure"), movenum("Sleep Talk"), movenum("Iron Tail"), movenum("Shadow Ball"), movenum("Future Sight"), movenum("Trick"), movenum("Skill Swap"), movenum("Muddy Water"), movenum("Iron Defense"), movenum("Calm Mind"), movenum("Poison Jab"), movenum("Focus Blast"), movenum("Nasty Plot"), movenum("Grass Knot"), movenum("Sludge Wave"), movenum("Foul Play"), movenum("Stored Power"), movenum("Scald"), movenum("Liquidation"), movenum("Belch"), movenum("Belly Drum"), movenum("Block"), movenum("Stomp")]
@@ -5687,7 +5709,7 @@ function Safari() {
             "name": "Kubfu",
             "stats": [60, 90, 60, 53, 50, 72],
             "abilities": [ "Inner Focus" ],
-            "tier": "SM NU",
+            "tier": "SM PU",
             "height": 0.6,
             "weight": 12,
             "moves": [movenum("Rock Smash"), movenum("Leer"), movenum("Endure"), movenum("Focus Energy"), movenum("Aerial Ace"), movenum("Scary Face"), movenum("Headbutt"), movenum("Brick Break"), movenum("Detect"), movenum("Bulk Up"), movenum("Iron Head"), movenum("Dynamic Punch"), movenum("Counter"), movenum("Close Combat"), movenum("Focus Punch"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Fire Punch"), movenum("Ice Punch"), movenum("Thunder Punch"), movenum("Dig"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Attract"), movenum("Facade"), movenum("Helping Hand"), movenum("Revenge"), movenum("U-turn"), movenum("Low Sweep"), movenum("Round"), movenum("Acrobatics"), movenum("Retaliate"), movenum("Body Slam"), movenum("Low Kick"), movenum("Substitute"), movenum("Reversal"), movenum("Sleep Talk"), movenum("Superpower"), movenum("Zen Headbutt"), movenum("Work Up")]
@@ -5697,7 +5719,7 @@ function Safari() {
             "name": "Urshifu-Single-Strike",
             "stats": [100, 130, 100, 63, 60, 97],
             "abilities": [ "Unseen Fist" ],
-            "tier": "SM OU",
+            "tier": "SM Ubers",
             "height": 1.9,
             "weight": 105,
             "moves": [movenum("Wicked Blow"), movenum("Sucker Punch"), movenum("Rock Smash"), movenum("Leer"), movenum("Endure"), movenum("Focus Energy"), movenum("Aerial Ace"), movenum("Scary Face"), movenum("Headbutt"), movenum("Brick Break"), movenum("Detect"), movenum("Bulk Up"), movenum("Iron Head"), movenum("Dynamic Punch"), movenum("Counter"), movenum("Close Combat"), movenum("Focus Punch"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Fire Punch"), movenum("Ice Punch"), movenum("Thunder Punch"), movenum("Giga Impact"), movenum("Dig"), movenum("Rest"), movenum("Rock Slide"), movenum("Snore"), movenum("Protect"), movenum("Attract"), movenum("Beat Up"), movenum("Facade"), movenum("Swift"), movenum("Helping Hand"), movenum("Revenge"), movenum("Rock Tomb"), movenum("U-turn"), movenum("Payback"), movenum("Assurance"), movenum("Fling"), movenum("Drain Punch"), movenum("Low Sweep"), movenum("Round"), movenum("Acrobatics"), movenum("Retaliate"), movenum("Snarl"), movenum("False Swipe"), movenum("Body Slam"), movenum("Low Kick"), movenum("Substitute"), movenum("Reversal"), movenum("Sleep Talk"), movenum("Crunch"), movenum("Taunt"), movenum("Superpower"), movenum("Iron Defense"), movenum("Aura Sphere"), movenum("Poison Jab"), movenum("Dark Pulse"), movenum("Focus Blast"), movenum("Zen Headbutt"), movenum("Stone Edge"), movenum("Foul Play"), movenum("Work Up"), movenum("Darkest Lariat"), movenum("Throat Chop"), movenum("Body Press")]
@@ -5717,7 +5739,7 @@ function Safari() {
             "name": "Zarude",
             "stats": [105, 120, 105, 70, 95, 105],
             "abilities": [ "Leaf Guard" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.8,
             "weight": 70,
             "moves": [movenum("Bind"), movenum("Scratch"), movenum("Leer"), movenum("Vine Whip"), movenum("Growth"), movenum("Fury Swipes"), movenum("Scary Face"), movenum("Grass Knot"), movenum("Bite"), movenum("U-turn"), movenum("Swagger"), movenum("Energy Ball"), movenum("Synthesis"), movenum("Hammer Arm"), movenum("Thrash"), movenum("Power Whip"), movenum("Jungle Healing"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Beam"), movenum("Solar Blade"), movenum("Dig"), movenum("Rest"), movenum("Rock Slide"), movenum("Thief"), movenum("Snore"), movenum("Protect"), movenum("Giga Drain"), movenum("Sunny Day"), movenum("Facade"), movenum("Swift"), movenum("Revenge"), movenum("Brick Break"), movenum("Rock Tomb"), movenum("Bullet Seed"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Fling"), movenum("Drain Punch"), movenum("Round"), movenum("Acrobatics"), movenum("Snarl"), movenum("Grassy Terrain"), movenum("Brutal Swing"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Low Kick"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Encore"), movenum("Iron Tail"), movenum("Crunch"), movenum("Taunt"), movenum("Superpower"), movenum("Hyper Voice"), movenum("Bulk Up"), movenum("Close Combat"), movenum("Dark Pulse"), movenum("Seed Bomb"), movenum("Nasty Plot"), movenum("Darkest Lariat"), movenum("Throat Chop")]
@@ -5727,7 +5749,7 @@ function Safari() {
             "name": "Zarude-Dada",
             "stats": [105, 120, 105, 70, 95, 105],
             "abilities": [ "Leaf Guard" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 1.8,
             "weight": 70,
             "moves": [movenum("Bind"), movenum("Scratch"), movenum("Leer"), movenum("Vine Whip"), movenum("Growth"), movenum("Fury Swipes"), movenum("Scary Face"), movenum("Grass Knot"), movenum("Bite"), movenum("U-turn"), movenum("Swagger"), movenum("Energy Ball"), movenum("Synthesis"), movenum("Hammer Arm"), movenum("Thrash"), movenum("Power Whip"), movenum("Jungle Healing"), movenum("Mega Punch"), movenum("Mega Kick"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Beam"), movenum("Solar Blade"), movenum("Dig"), movenum("Rest"), movenum("Rock Slide"), movenum("Thief"), movenum("Snore"), movenum("Protect"), movenum("Giga Drain"), movenum("Sunny Day"), movenum("Facade"), movenum("Swift"), movenum("Revenge"), movenum("Brick Break"), movenum("Rock Tomb"), movenum("Bullet Seed"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Fling"), movenum("Drain Punch"), movenum("Round"), movenum("Acrobatics"), movenum("Snarl"), movenum("Grassy Terrain"), movenum("Brutal Swing"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Low Kick"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Encore"), movenum("Iron Tail"), movenum("Crunch"), movenum("Taunt"), movenum("Superpower"), movenum("Hyper Voice"), movenum("Bulk Up"), movenum("Close Combat"), movenum("Dark Pulse"), movenum("Seed Bomb"), movenum("Nasty Plot"), movenum("Darkest Lariat"), movenum("Throat Chop")]
@@ -5747,7 +5769,7 @@ function Safari() {
             "name": "Galarian Articuno",
             "stats": [90, 85, 85, 125, 100, 95],
             "abilities": [ "Competitive" ],
-            "tier": "SM OU",
+            "tier": "SM NU",
             "height": 1.7,
             "weight": 50.9,
             "moves": [movenum("Gust"), movenum("Psycho Shift"), movenum("Confusion"), movenum("Reflect"), movenum("Hypnosis"), movenum("Agility"), movenum("Ancient Power"), movenum("Tailwind"), movenum("Psycho Cut"), movenum("Recover"), movenum("Freezing Glare"), movenum("Dream Eater"), movenum("Hurricane"), movenum("Mind Reader"), movenum("Future Sight"), movenum("Trick Room"), movenum("Fly"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Light Screen"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Scary Face"), movenum("Steel Wing"), movenum("Facade"), movenum("Swift"), movenum("Imprison"), movenum("U-turn"), movenum("Power Swap"), movenum("Guard Swap"), movenum("Round"), movenum("Air Slash"), movenum("Psychic"), movenum("Substitute"), movenum("Psyshock"), movenum("Endure"), movenum("Sleep Talk"), movenum("Shadow Ball"), movenum("Skill Swap"), movenum("Hyper Voice"), movenum("Calm Mind"), movenum("Brave Bird"), movenum("Stored Power"), movenum("Ally Switch")]
@@ -5767,7 +5789,7 @@ function Safari() {
             "name": "Galarian Moltres",
             "stats": [90, 85, 90, 100, 125, 90],
             "abilities": [ "Berserk" ],
-            "tier": "SM OU",
+            "tier": "SM UU",
             "height": 2.0,
             "weight": 66.0,
             "moves": [movenum("Gust"), movenum("Leer"), movenum("Payback"), movenum("Safeguard"), movenum("Wing Attack"), movenum("Agility"), movenum("Ancient Power"), movenum("Sucker Punch"), movenum("Air Slash"), movenum("After You"), movenum("Fiery Wrath"), movenum("Nasty Plot"), movenum("Hurricane"), movenum("Endure"), movenum("Memento"), movenum("Sky Attack"), movenum("Fly"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Scary Face"), movenum("Steel Wing"), movenum("Facade"), movenum("Swift"), movenum("Imprison"), movenum("U-turn"), movenum("Assurance"), movenum("Round"), movenum("Hex"), movenum("Snarl"), movenum("Substitute"), movenum("Sleep Talk"), movenum("Shadow Ball"), movenum("Taunt"), movenum("Hyper Voice"), movenum("Dark Pulse"), movenum("Brave Bird"), movenum("Foul Play")]
@@ -5787,7 +5809,7 @@ function Safari() {
             "name": "Regidrago",
             "stats": [200, 100, 50, 100, 50, 80],
             "abilities": [ "Dragon's Maw" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 2.1,
             "weight": 200,
             "moves": [movenum("Twister"), movenum("Vise Grip"), movenum("Bite"), movenum("Ancient Power"), movenum("Dragon Breath"), movenum("Focus Energy"), movenum("Crunch"), movenum("Dragon Claw"), movenum("Hammer Arm"), movenum("Dragon Dance"), movenum("Thrash"), movenum("Laser Focus"), movenum("Dragon Energy"), movenum("Hyper Beam"), movenum("Explosion"), movenum("Giga Impact"), movenum("Light Screen"), movenum("Reflect"), movenum("Self-Destruct"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Facade"), movenum("Thunder Fang"), movenum("Fire Fang"), movenum("Round"), movenum("Breaking Swipe"), movenum("Body Slam"), movenum("Substitute"), movenum("Reversal"), movenum("Outrage"), movenum("Endure"), movenum("Sleep Talk"), movenum("Dragon Pulse"), movenum("Draco Meteor")]
@@ -5797,7 +5819,7 @@ function Safari() {
             "name": "Glastrier",
             "stats": [100, 145, 130, 65, 110, 30],
             "abilities": [ "Chilling Neigh" ],
-            "tier": "SM OU",
+            "tier": "SM LU",
             "height": 2.2,
             "weight": 800,
             "moves": [movenum("Tackle"), movenum("Tail Whip"), movenum("Double Kick"), movenum("Avalanche"), movenum("Stomp"), movenum("Torment"), movenum("Mist"), movenum("Icicle Crash"), movenum("Take Down"), movenum("Iron Defense"), movenum("Thrash"), movenum("Taunt"), movenum("Double-Edge"), movenum("Swords Dance"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Scary Face"), movenum("Icy Wind"), movenum("Hail"), movenum("Facade"), movenum("Icicle Spear"), movenum("Mud Shot"), movenum("Payback"), movenum("Assurance"), movenum("Round"), movenum("Bulldoze"), movenum("Snarl"), movenum("Smart Strike"), movenum("Stomping Tantrum"), movenum("Body Slam"), movenum("Ice Beam"), movenum("Blizzard"), movenum("Substitute"), movenum("Outrage"), movenum("Endure"), movenum("Sleep Talk"), movenum("Megahorn"), movenum("Crunch"), movenum("Uproar"), movenum("Superpower"), movenum("Close Combat"), movenum("Heavy Slam"), movenum("High Horsepower"), movenum("Throat Chop"), movenum("Body Press")]
@@ -5817,7 +5839,7 @@ function Safari() {
             "name": "Calyrex",
             "stats": [100, 80, 80, 80, 80, 80],
             "abilities": [ "Unnerve" ],
-            "tier": "SM OU",
+            "tier": "SM PU",
             "height": 1.1,
             "weight": 7.7,
             "moves": [movenum("Pound"), movenum("Mega Drain"), movenum("Confusion"), movenum("Growth"), movenum("Life Dew"), movenum("Giga Drain"), movenum("Psyshock"), movenum("Helping Hand"), movenum("Aromatherapy"), movenum("Energy Ball"), movenum("Psychic"), movenum("Leech Seed"), movenum("Heal Pulse"), movenum("Solar Beam"), movenum("Future Sight"), movenum("Agility"), movenum("Pay Day"), movenum("Hyper Beam"), movenum("Giga Impact"), movenum("Magical Leaf"), movenum("Solar Blade"), movenum("Light Screen"), movenum("Reflect"), movenum("Safeguard"), movenum("Rest"), movenum("Snore"), movenum("Protect"), movenum("Sunny Day"), movenum("Facade"), movenum("Swift"), movenum("Imprison"), movenum("Bullet Seed"), movenum("Power Swap"), movenum("Guard Swap"), movenum("Speed Swap"), movenum("Trick Room"), movenum("Wonder Room"), movenum("Magic Room"), movenum("Round"), movenum("Draining Kiss"), movenum("Grassy Terrain"), movenum("Psychic Terrain"), movenum("Body Slam"), movenum("Metronome"), movenum("Tri Attack"), movenum("Substitute"), movenum("Endure"), movenum("Sleep Talk"), movenum("Baton Pass"), movenum("Encore"), movenum("Trick"), movenum("Skill Swap"), movenum("Calm Mind"), movenum("Seed Bomb"), movenum("Zen Headbutt"), movenum("Leaf Storm"), movenum("Grass Knot"), movenum("Stored Power"), movenum("Ally Switch"), movenum("Pollen Puff")]
@@ -12480,7 +12502,7 @@ function Safari() {
             }
             else {
                 var p = player.nextSpawn;
-                if (p.pokemon.num) {
+                if (p.pokemon.num && !deluxe) {
                     safari.createWild(p.pokemon.num, p.pokemon.shiny, p.amt, null, null, player, p.disguise);
                     p.pokemon = p.disguise = {};
                     p.amt = 1;
