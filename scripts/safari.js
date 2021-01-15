@@ -15601,15 +15601,16 @@ function Safari() {
         }
 
         var last = player.lastSold;
-        if (player.lastSold.price > player.money) {
+        
+        if (!last.price) {
+            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon at this time.", safchan);
+            return;
+        }
+        if (last.price > player.money) {
             safaribot.sendMessage(src, "You cannot get your last sold Pokémon back because you used the money you earned from selling your last Pokémon!", safchan);
             return;
         }
 
-        if (!player.lastSold.price) {
-            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon at this time.", safchan);
-            return;
-        }
         player.records.pokeSoldEarnings -= player.lastSold.price;
         player.money -= player.lastSold.price;
         var get = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
