@@ -7126,7 +7126,7 @@ function Safari() {
         }
         
         var cType = {effect:"none"};
-        if (player && player.zcrystalUser && (player.zcrystalUser !== {})) {
+        if (player && player.zcrystalUser && !isNaN(player.zcrystalUser)) {
             cType = getCrystalEffect(player.zcrystalUser);
             crystalEffect = player.zcrystalDeadline >= now() && player.zcrystalUser === player.party[0] ? zCrystalData[cType] : { effect: "none" };
         }
@@ -9815,7 +9815,7 @@ function Safari() {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>Current " + finishName("crystal") + "'s Effect:</b> You will " + zCrystalData[type].description.format(zCrystalData[type].chance * 100) + " for the next " + timeLeftString(player.zcrystalDeadline) + " (only if " + poke(player.zcrystalUser) + " is your active Pokémon)!", safchan);
             }
-            if (player.zcrystalUser && player.zcrystalUser !== {}) {
+            if (player.zcrystalUser && !isNaN(player.zcrystalUser)) {
                 var type = getCrystalEffect(player.zcrystalUser);
                 safaribot.sendHtmlMessage(src, "<b>" + poke(player.zcrystalUser) + "</b> will deal " + (100 * (zCrystalData[type].npcBuff || defaultCrystalBuff)) + "% more damage in the next NPC rotation battle quest you enter.", safchan);
             }
@@ -15599,10 +15599,6 @@ function Safari() {
             safaribot.sendMessage(src, "Team Rocket members are not allowed to undo their wicked ways! You must change costumes to undo selling a Pokémon!", safchan);
             return;
         }
-        if (player.lastSold === {}) {
-            safaribot.sendMessage(src, "You cannot unsell your last sold Pokémon!", safchan);
-            return;
-        }
 
         var last = player.lastSold;
         if (player.lastSold.price > player.money) {
@@ -18184,7 +18180,7 @@ function Safari() {
         //Shows them their spirit monns
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         msg = "Choose one of these skills with /spiritskill [letter]!";
-        if (player.spiritDuels.skillChoices === {}) {
+        if (Object.keys(player.spiritDuels.skillChoices).length === 0) {
             safaribot.sendMessage(src, "You have no skills to learn!", safchan);
             return;
         }
@@ -18198,7 +18194,7 @@ function Safari() {
     this.chooseSpiritSkill = function( src,commandData ) {
         var skill, msg = "", letters = ["a", "b", "c"], i = 0;
         var player = getAvatar(src);
-        if (player.spiritDuels.skillChoices === {}) {
+        if (Object.keys(player.spiritDuels.skillChoices).length === 0) {
             return;
         }
         if (letters.indexOf(commandData) === -1) {
@@ -18301,7 +18297,7 @@ function Safari() {
         return;
     };
     this.ownSpiritSkills = function( src,player ) {
-        if (player.spiritDuels.skills === {}) {
+        if (Object.keys(player.spiritDuels.skills).length === 0) {
             safaribot.sendMessage(src, "You have no Spirit Skills!", safchan);
             return;
         }
