@@ -30675,32 +30675,38 @@ function Safari() {
 
                 switch (args.difficulty) {
                     case -1:
-                        if (monthlyLeaderboards["celebrityScoreEasy"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreEasy"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index) // if player is not on lb yet and defeated at least 1, or if lb record less than current score
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index);
                         player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
-                        if (monthlyLeaderboards["celebrityScore"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScore"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index);
                         player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
-                        if (monthlyLeaderboards["celebrityScoreHard"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreHard"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", args.index);
                         player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
-                        if (monthlyLeaderboards["celebrityScoreExpert"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreExpert"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", args.index);
                         player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
-                        if (monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", args.index);
                         player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
-                        if (monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id) < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id);
+                        if ((val === undefined && args.index > 0) || val < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", args.index);
                         player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
