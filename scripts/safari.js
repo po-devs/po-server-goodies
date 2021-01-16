@@ -30660,27 +30660,27 @@ function Safari() {
                 switch (args.difficulty) {
                     case -1:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index);
-                        player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 1;
+                        player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index);
                     break;
                     case 0:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index);
-                        player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 1;
+                        player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", args.index);
-                        player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 1;
+                        player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", args.index);
-                        player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 1;
+                        player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", args.index);
-                        player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 1;
+                        player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", args.index);
-                        player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 1;
+                        player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
                     default:
                     break;
