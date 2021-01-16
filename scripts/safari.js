@@ -488,7 +488,13 @@ function Safari() {
             crystalsUsed: 0,
             photosRetouched: 0,
             missionPoints: 0,
-            missionCleared: 0
+            missionCleared: 0,
+            celebrityScore: 0,
+            celebrityScoreEasy: 0,
+            celebrityScoreHard: 0,
+            celebrityScoreExpert: 0,
+            celebrityScoreSuperExpert: 0,
+            celebrityScoreAbyssal: 0
         },
         photos: [],
         hideLB: [],
@@ -1687,7 +1693,12 @@ function Safari() {
         salt: { desc: "by saltiest players", alts: ["salt", "salty"], alias: "salt" },
         pokesStolen: { desc: "by Pokémon stolen from NPCs", alts: ["stolen", "pokesstolen"], alias: "stolen" },
         // topQuizScore: { desc: "by best score in Quiz", alts: ["quiz", "score", "quizscore", "quiz score", "topquizscore"], alias: "quiz" },
-        celebrityScore: { desc: "by best Celebrity score", alts: ["celebrity", "celebrityscore", "celebrity score", "celeb"], alias: "celebrity" },
+        celebrityScore: { desc: "by best Normal Celebrity score", alts: ["celebrity", "celebrityscore", "celebrity score", "celeb", "celebrity normal", "celebrityscore normal", "celebrity score normal", "celeb normal"], alias: "celebrity" },
+        celebrityScoreEasy: { desc: "by best Easy Celebrity score", alts: ["celebrity easy", "celebrityscore easy", "celebrity score easy", "celeb easy"], alias: "celebrity easy" },
+        celebrityScoreHard: { desc: "by best Hard Celebrity score", alts: ["celebrity hard", "celebrityscore hard", "celebrity score hard", "celeb hard"], alias: "celebrity hard" },
+        celebrityScoreExpert: { desc: "by best Expert Celebrity score", alts: ["celebrity expert", "celebrityscore expert", "celebrity score expert", "celeb expert"], alias: "celebrity expert" },
+        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score", alts: ["celebrity super expert", "celebrityscore super expert", "celebrity score super expert", "celeb super expert"], alias: "celebrity super expert" },
+        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score", alts: ["celebrity abyssal", "celebrityscore abyssal", "celebrity score abyssal", "celeb abyssal"], alias: "celebrity abyssal" },
         pyramidScore: { desc: "by best Pyramid score", alts: ["pyramid", "pyramidscore", "pyramid score", "pyr"], alias: "pyramid" },
         // pyramidTotalScore: { desc: "by total Pyramid points", alts: ["pyramidtotal", "pyramid total", "pyramidtotalscore"], alias: "pyramid total" },
         pyramidFinished: { desc: "by cleared Pyramid runs", alts: ["pyramidfinished", "pyramid finished"], alias: "pyramid finished" },
@@ -1703,7 +1714,12 @@ function Safari() {
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
         journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
         pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: false },
-        celebrityScore: { desc: "by best Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly"], alias: "celebrity weekly", lastAlias: "celebrity last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Celebrity score during the last week", reward: true }
+        celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
+        celebrityScoreEasy: { desc: "by best Easy Celebrity score this week", alts: ["celebrity easy weekly", "celebrityscore easy weekly", "celebrity score easy weekly", "celeb easy weekly"], alias: "celebrity easy weekly", lastAlias: "celebrity easy last", file: "scriptdata/safari/weeklyCelebrityScoreEasy.txt", lastDesc: "by best Easy Celebrity score during the last week", reward: false },
+        celebrityScoreHard: { desc: "by best Hard Celebrity score this week", alts: ["celebrity hard weekly", "celebrityscore hard weekly", "celebrity score hard weekly", "celeb hard weekly"], alias: "celebrity hard weekly", lastAlias: "celebrity hard last", file: "scriptdata/safari/weeklyCelebrityScoreHard.txt", lastDesc: "by best Hard Celebrity score during the last week", reward: true },
+        celebrityScoreExpert: { desc: "by best Expert Celebrity score this week", alts: ["celebrity expert weekly", "celebrityscore expert weekly", "celebrity score expert weekly", "celeb expert weekly"], alias: "celebrity expert weekly", lastAlias: "celebrity expert last", file: "scriptdata/safari/weeklyCelebrityScoreExpert.txt", lastDesc: "by best Expert Celebrity score during the last week", reward: true },
+        celebrityScoreSuperExpert: { desc: "by best Super Expert Celebrity score this week", alts: ["celebrity super expert weekly", "celebrityscore super expert weekly", "celebrity score super expert weekly", "celeb super expert weekly"], alias: "celebrity super expert weekly", lastAlias: "celebrity super expert last", file: "scriptdata/safari/weeklyCelebrityScoreSuperExpert.txt", lastDesc: "by best Super Expert Celebrity score during the last week", reward: true },
+        celebrityScoreAbyssal: { desc: "by best Abyssal Celebrity score this week", alts: ["celebrity abyssal weekly", "celebrityscore abyssal weekly", "celebrity score abyssal weekly", "celeb abyssal weekly"], alias: "celebrity abyssal weekly", lastAlias: "celebrity abyssal last", file: "scriptdata/safari/weeklyCelebrityScoreAbyssal.txt", lastDesc: "by best Abyssal Celebrity score during the last week", reward: true }
     };
 
     /* Contest Variables */
@@ -30624,7 +30640,34 @@ function Safari() {
                     sys.sendAll("", safchan);
                 }
 
-                safari.addToMonthlyLeaderboards(player.id, "celebrityScore", 1);
+                switch (args.difficulty) {
+                    case -1:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", 1);
+                        player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index + 1) || 1;
+                    break;
+                    case 0:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScore", 1);
+                        player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index + 1) || 1;
+                    break;
+                    case 1:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", 1);
+                        player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index + 1) || 1;
+                    break;
+                    case 2:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", 1);
+                        player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index + 1) || 1;
+                    break;
+                    case 3:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", 1);
+                        player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index + 1) || 1;
+                    break;
+                    case 4:
+                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", 1);
+                        player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index + 1) || 1;
+                    break;
+                    default:
+                    break;
+                }
                 
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity Difficulty: " + args.difficulty + "|||Challenged Celebrities with " + readable(player.party.map(poke)) + "|||Defeated on " + getOrdinal(args.index+1) + " battle by " + args.name + "\n");
                 player.firstCelebrityRun = false;
@@ -45908,6 +45951,24 @@ function Safari() {
                         case "baseValue":
                             player.value = data.baseValue || 0;
                         break;
+                        case "celebrityScore":
+                            player.value = data.records.celebrityScore || 0;
+                        break;
+                        case "celebrityScoreEasy":
+                            player.value = data.records.celebrityScoreEasy || 0;
+                        break;
+                        case "celebrityScoreHard":
+                            player.value = data.records.celebrityScoreHard || 0;
+                        break;
+                        case "celebrityScoreExpert":
+                            player.value = data.records.celebrityScoreExpert || 0;
+                        break;
+                        case "celebrityScoreSuperExpert":
+                            player.value = data.records.celebrityScoreSuperExpert || 0;
+                        break;
+                        case "celebrityScoreAbyssal":
+                            player.value = data.records.celebrityScoreAbyssal || 0;
+                        break;
                         default:
                             player.value = "records" in data ? (data.records[i] || 0 ): 0;
                         break;
@@ -46341,7 +46402,7 @@ function Safari() {
     this.awardMonthlyMedals = function(data) {
         var p, lb, e, player, m, n, w = "", r = "", ic = -1;
         var dateMonth = new Date().getUTCMonth();
-        var dateYear = 2019;
+        var dateYear = 2021; // oh my god
         var date = "(" + dateMonth + " " + dateYear + ")";
         for (var i in data) {
             lb = data[i];
@@ -48512,7 +48573,7 @@ function Safari() {
             if (command === "leaderboard" || command == "lb") {
                 var rec = commandData.toLowerCase(), e;
 
-                if (rec === "list" || rec === "ls") {
+                if (!rec || rec === "list" || rec === "ls") {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
                     for (e in leaderboardTypes) {
