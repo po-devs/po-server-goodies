@@ -30555,7 +30555,7 @@ function Safari() {
                     else {
                         trainer = celebs.gym[next];
                     }
-                    trainer.desc = "Celebrity NPC";
+                    trainer.desc = level + " Celebrity NPC";
 
                     if (extraArgs.loseMsg) {
                         var m = extraArgs.loseMsg.replace("{Name}", name).replace("{Next}", trainer.name);
@@ -30700,14 +30700,14 @@ function Safari() {
 
         var npc = celebs.gym[0];
         npc.postBattle = postBattle;
-        var heal;
+        var heal, desc;
         switch (difficulty) {
-            case -1: heal = 0.25; break;
-            case 0: heal = 0.2; break;
-            case 1: heal = 0.18; break;
-            case 2: heal = 0.16; break;
-            case 3: heal = 0.14; break;
-            case 4: heal = 0; break;
+            case -1: heal = 0.25; desc = "Easy"; break;
+            case 0: heal = 0.2; desc = "Normal"; break;
+            case 1: heal = 0.18; desc = "Hard"; break;
+            case 2: heal = 0.16; desc = "Expert"; break;
+            case 3: heal = 0.14; desc = "Super Expert"; break;
+            case 4: heal = 0; desc = "Abyssal"; break;
         }
         
         npc.postArgs = {
@@ -30718,6 +30718,7 @@ function Safari() {
             celebs: celebs
         };
 
+        npc.desc = desc + " Celebrity NPC";
         safaribot.sendHtmlMessage(src, "Announcer: Looking for fame, are you? Please enjoy your first battle against " + npc.name + "!!", safchan);
         var battle = new Battle2(src, npc, {
             cantWatch: false
