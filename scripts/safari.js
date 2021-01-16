@@ -14972,7 +14972,7 @@ function Safari() {
         player.fortune.limit -= (amt || 1);
         
         if (player.fortune.limit === 0) {
-            safaribot.sendHtmlMessage(sys.id(player.id), "<b>Your Fortune Cookie effect expired!</b>", safchan);
+            safaribot.sendHtmlMessage(sys.id(player.id), "<b>Your Fortune Cookie effect has now been fully used up!</b>", safchan);
         }
     };
     this.isMatchingFortune = function(fortune, type, prop) {
