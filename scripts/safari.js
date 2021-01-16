@@ -46355,7 +46355,7 @@ function Safari() {
             for (e in monthlyLeaderboards) {
                 lbInfo = monthlyLeaderboardTypes[e];
                 if (lbInfo.reward) {
-                    this.leaderboardRewards(leaderboards[e+"Weekly"], lbInfo, ["celebrityScore", "celebrityScoreHard", "celebrityScoreExpert", "celebrityScoreSuperExpert", "celebrityScoreAbyssal"].contains(e));
+                    this.leaderboardRewards(leaderboards[e+"Weekly"], lbInfo, e);
                 }
                 old[e + "Last"] = JSON.parse(JSON.stringify(leaderboards[e + "Weekly"]));
                 monthlyLeaderboards[e].clear();
@@ -47458,7 +47458,7 @@ function Safari() {
         }
         sys.appendToFile(crossLog, now() + "|||Hangman|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
-    this.leaderboardRewards = function(lb, lbInfo, isCeleb) {
+    this.leaderboardRewards = function(lb, lbInfo, lbName) {
         if (lb.length === 0) {
             return;
         }
@@ -47469,44 +47469,45 @@ function Safari() {
             if (p.pos > 10) {
                 break;
             }
-            if (isCeleb) {
-                switch (p.pos) { // placeholder rewards
-                    case 1:
-                        first.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "3@crystal,3@pack,15@golden,30@silver";
-                        break;
-                    case 2:
-                        second.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "1@crystal,3@pack,10@golden,20@silver";
-                        break;
-                    case 3:
-                        third.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "2@pack,8@golden,10@silver";
-                        break;
-                    default:
-                        rest.push(p.pos + ". " + p.fullName);
-                        winners[p.name] = "1@pack,5@golden,5@silver";
-                }
+            
+            var prizes;
+            
+            switch (lbName) {
+                case "celebrityScore":
+                    prizes = [];
+                    break;
+                case "celebrityScoreHard":
+                    prizes = [];
+                    break;
+                case "celebrityScoreExpert":
+                    prizes = [];
+                    break;
+                case "celebrityScoreSuperExpert":
+                    prizes = [];
+                    break;
+                case "celebrityScoreAbyssal":
+                    prizes = [];
+                    break;
+                default:
+                    prizes = ["3@crystal,3@pack,15@golden,30@silver", "1@crystal,3@pack,10@golden,20@silver", "2@pack,8@golden,10@silver", "1@pack,5@golden,5@silver"];
+                    break;
             }
-            else {
-                switch (p.pos) {
-                    case 1:
-                        first.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "3@crystal,3@pack,15@golden,30@silver";
-                        break;
-                    case 2:
-                        second.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "1@crystal,3@pack,10@golden,20@silver";
-                        break;
-                    case 3:
-                        third.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                        winners[p.name] = "2@pack,8@golden,10@silver";
-                        break;
-                    default:
-                        rest.push(p.pos + ". " + p.fullName);
-                        winners[p.name] = "1@pack,5@golden,5@silver";
-                }
+
+            switch (p.pos) {
+                case 1:
+                    first.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                    break;
+                case 2:
+                    second.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                    break;
+                case 3:
+                    third.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                    break;
+                default:
+                    rest.push(p.pos + ". " + p.fullName);
             }
+            
+            winners[p.name] = prizes[(p.pos <= 3 ? p.pos-1 : 3)];
         }
         
         safaribot.sendHtmlAll(toColor("<b>Top 10 players " + lbInfo.desc + ":</b>", "red"), safchan);
