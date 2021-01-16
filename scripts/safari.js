@@ -47474,19 +47474,19 @@ function Safari() {
             
             switch (lbName) {
                 case "celebrityScore":
-                    prizes = [];
+                    prizes = ["2@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden", "@rock"];
                     break;
                 case "celebrityScoreHard":
-                    prizes = [];
+                    prizes = ["3@pebble,8@pack,2@mega,3@crystal,12@golden", "4@pack,1@mega,2@crystal,8@golden", "2@pack,@crystal,4@golden", "@rock"];
                     break;
                 case "celebrityScoreExpert":
-                    prizes = [];
+                    prizes = ["4@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden", "@rock"];
                     break;
                 case "celebrityScoreSuperExpert":
-                    prizes = [];
+                    prizes = ["5@pebble,1@ldew,8@pack,2@mega,5@crystal,16@golden", "4@pack,1@mega,3@crystal,10@golden", "2@pack,2@crystal,6@golden", "@rock"];
                     break;
                 case "celebrityScoreAbyssal":
-                    prizes = [];
+                    prizes = ["1@pebble,5@pack", "3@pack", "1@pack", "@rock"];
                     break;
                 default:
                     prizes = ["3@crystal,3@pack,15@golden,30@silver", "1@crystal,3@pack,10@golden,20@silver", "2@pack,8@golden,10@silver", "1@pack,5@golden,5@silver"];
