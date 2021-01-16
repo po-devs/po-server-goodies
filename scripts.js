@@ -2210,7 +2210,7 @@ afterChatMessage : function(src, message, chan)
     }
     if (!poChannel.ignorecaps && this.isMCaps(message) && userMayGetPunished && !capsday) {
         user.caps += 3;
-        var maxCaps = channel == sys.channelId("Trivia") ? 12 : 9;
+        var maxCaps = 18;
         if (user.caps >= maxCaps && !user.mute.active) {
 
             if (user.capsmutes === undefined)
