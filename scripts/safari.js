@@ -46337,9 +46337,8 @@ function Safari() {
             for (e in monthlyLeaderboards) {
                 lbInfo = monthlyLeaderboardTypes[e];
                 if (lbInfo.reward) {
-                    this.leaderboardRewards(leaderboards[e+"Weekly"], lbInfo);
+                    this.leaderboardRewards(leaderboards[e+"Weekly"], lbInfo, ["celebrityScore", "celebrityScoreHard", "celebrityScoreExpert", "celebrityScoreSuperExpert", "celebrityScoreAbyssal"].contains(e));
                 }
-                
                 old[e + "Last"] = JSON.parse(JSON.stringify(leaderboards[e + "Weekly"]));
                 monthlyLeaderboards[e].clear();
             }
@@ -47441,32 +47440,54 @@ function Safari() {
         }
         sys.appendToFile(crossLog, now() + "|||Hangman|||" + name.toCorrectCase() + "|||" + rew + "\n");
     };
-    this.leaderboardRewards = function(lb, lbInfo) {
+    this.leaderboardRewards = function(lb, lbInfo, isCeleb) {
         if (lb.length === 0) {
             return;
         }
+
         var first = [], second = [], third = [], rest = [], winners = {}, e, p, out, rew;
         for (e = 0; e < lb.length; e++) {
             p = lb[e];
             if (p.pos > 10) {
                 break;
             }
-            switch (p.pos) {
-                case 1:
-                    first.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                    winners[p.name] = "3@crystal,3@pack,15@golden,30@silver";
-                    break;
-                case 2:
-                    second.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                    winners[p.name] = "1@crystal,3@pack,10@golden,20@silver";
-                    break;
-                case 3:
-                    third.push(toColor("<b>" + p.fullName + "</b>", p.color));
-                    winners[p.name] = "2@pack,8@golden,10@silver";
-                    break;
-                default:
-                    rest.push(p.pos + ". " + p.fullName);
-                    winners[p.name] = "1@pack,5@golden,5@silver";
+            if (isCeleb) {
+                switch (p.pos) { // placeholder rewards
+                    case 1:
+                        first.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "3@crystal,3@pack,15@golden,30@silver";
+                        break;
+                    case 2:
+                        second.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "1@crystal,3@pack,10@golden,20@silver";
+                        break;
+                    case 3:
+                        third.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "2@pack,8@golden,10@silver";
+                        break;
+                    default:
+                        rest.push(p.pos + ". " + p.fullName);
+                        winners[p.name] = "1@pack,5@golden,5@silver";
+                }
+            }
+            else {
+                switch (p.pos) {
+                    case 1:
+                        first.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "3@crystal,3@pack,15@golden,30@silver";
+                        break;
+                    case 2:
+                        second.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "1@crystal,3@pack,10@golden,20@silver";
+                        break;
+                    case 3:
+                        third.push(toColor("<b>" + p.fullName + "</b>", p.color));
+                        winners[p.name] = "2@pack,8@golden,10@silver";
+                        break;
+                    default:
+                        rest.push(p.pos + ". " + p.fullName);
+                        winners[p.name] = "1@pack,5@golden,5@silver";
+                }
             }
         }
         
@@ -48573,7 +48594,7 @@ function Safari() {
             if (command === "leaderboard" || command == "lb") {
                 var rec = commandData.toLowerCase(), e;
 
-                if (!rec || rec === "list" || rec === "ls") {
+                if (!rec || rec === "*" || rec === "list" || rec === "ls") {
                     sys.sendMessage(src, "", safchan);
                     safaribot.sendMessage(src, "Existing leaderboards (type /lb [type] for the list): ", safchan);
                     for (e in leaderboardTypes) {
