@@ -10076,7 +10076,7 @@ function Safari() {
                 return;
             }
 
-            var toLoad = player.savedParties[num];
+            var toLoad = player.savedParties[num].slice(0);
 
             for (var p = toLoad.length - 1; p >= 0; p--) {
                 id = toLoad[p];
