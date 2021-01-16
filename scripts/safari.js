@@ -48436,11 +48436,11 @@ function Safari() {
                 safari.findPokemon(src, commandData, true, true, true);
                 return true;
             }
-            if (command === "multisell") {
+            if (command === "multisell" || command === "msell") {
                 safari.multiSellPokemon(src, commandData);
                 return true;
             }
-            if (command === "turbosell") {
+            if (command === "turbosell" || command === "tsell") {
                 safari.turboSellPokemon(src, commandData);
                 return true;
             }
