@@ -9810,10 +9810,23 @@ function Safari() {
             }
         }
         if (hit == null) {
-            safaribot.sendHtmlMessage(sys.id(player.id), "No such item!", safchan);
+            safaribot.sendMessage(src, "No such item!", safchan);
             return;
         }
         this.heldItem(player, hit);
+    };
+    this.takeItem = function(src) {
+        var player = getAvatar(src);
+        if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
+            return false;
+        }
+        
+        if (player.helds[0] == -1) {
+            safaribot.sendMessage(src, "Your lead Pokémon is not holding an item!", safchan);
+            return;
+        }
+        
+        this.heldItem(player, player.helds[0], true);
     };
     this.heldItem = function(player, item, taking) {
         var src = sys.id(player.id);
@@ -30659,29 +30672,36 @@ function Safari() {
                     sys.sendAll("", safchan);
                 }
 
+
                 switch (args.difficulty) {
                     case -1:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index);
+                        if (monthlyLeaderboards["celebrityScoreEasy"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index);
                         player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index);
+                        if (monthlyLeaderboards["celebrityScore"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index);
                         player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", args.index);
+                        if (monthlyLeaderboards["celebrityScoreHard"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", args.index);
                         player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", args.index);
+                        if (monthlyLeaderboards["celebrityScoreExpert"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", args.index);
                         player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", args.index);
+                        if (monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", args.index);
                         player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
-                        safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", args.index);
+                        if (monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id) < args.index)
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", args.index);
                         player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
                     default:
@@ -47853,7 +47873,9 @@ function Safari() {
             "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
             "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
             "/trials: Shows you your current trials missions. Only works while trials is in session.",
-            "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time."
+            "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time.",
+            "/giveitem [berry name]: Gives a berry to your lead Pokémon.",
+            "/takeitem: Takes the held berry from your lead Pokémon."
         ];
         var help = userHelp;
         var adminHelp = [
@@ -48189,6 +48211,10 @@ function Safari() {
             }
             if (command === "giveitem") {
                 safari.giveItem(src, commandData);
+                return true;
+            }
+            if (command === "takeitem") {
+                safari.takeItem(src);
                 return true;
             }
             if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
