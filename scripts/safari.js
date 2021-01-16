@@ -14970,6 +14970,10 @@ function Safari() {
             return;
         }
         player.fortune.limit -= (amt || 1);
+        
+        if (player.fortune.limit === 0) {
+            safaribot.sendHtmlMessage(sys.id(player.id), "<b>Your Fortune Cookie effect expired!</b>", safchan);
+        }
     };
     this.isMatchingFortune = function(fortune, type, prop) {
         return fortune.name === type && (!prop || fortune.prop === prop);
@@ -53304,7 +53308,7 @@ function Safari() {
             var p = getAvatar(onChannel[e]);
             if (p && p.fortune) {
                 if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>Your Fortune Effect expired!</b>", safchan);
+                    safaribot.sendHtmlMessage(onChannel[e], "<b>Your Fortune Cookie effect expired!</b>", safchan);
                     p.fortune.deadline = 0;
                 }
             }
