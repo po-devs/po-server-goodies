@@ -30660,7 +30660,7 @@ function Safari() {
                 switch (args.difficulty) {
                     case -1:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index);
-                        player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index);
+                        player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
                         safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index);
