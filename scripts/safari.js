@@ -53299,6 +53299,16 @@ function Safari() {
         successfulBaitCount--;
         deluxeBaitCooldown--;
 
+        var onChannel = sys.playersOfChannel(safchan);
+        for (var e in onChannel) { // potentially server-intensive, but should be okay. shift to after contest w/ mega reversion & lb update if not.
+            var p = getAvatar(onChannel[e]);
+            if (p && p.fortune) {
+                if (p.fortune.deadline < now() && p.fortune.deadline > 0) {
+                    safaribot.sendHtmlMessage(src, "<b>Your Fortune Effect expired!</b>", safchan);
+                    p.fortune.deadline = 0;
+                }
+            }
+        }
         if (currentEvent && contestCooldown % currentEvent.turnLength === 0) {
             currentEvent.nextTurn();
             if (currentEvent.finished) {
