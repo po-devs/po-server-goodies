@@ -9826,7 +9826,7 @@ function Safari() {
             return;
         }
         
-        this.heldItem(player, player.helds[0], true);
+        this.heldItem(player, heldCodes[player.helds[0]], true);
     };
     this.heldItem = function(player, item, taking) {
         var src = sys.id(player.id);
