@@ -47863,7 +47863,7 @@ function Safari() {
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
-            "/evolve: Use a Candy Dusts to evolve a Pokémon*.",
+            "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
