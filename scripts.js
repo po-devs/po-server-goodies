@@ -1831,7 +1831,7 @@ beforeChatMessage: function(src, message, chan) {
 
     var throttleMsg = false;
     if (script.isOfficialChan(chan)) {
-        if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 250)
+        if ((!SESSION.channels(channel).isChannelOperator(src) && message.length > 750)
          || (!SESSION.channels(channel).isChannelAdmin(src) && message.length > 3000)) {
             throttleMsg = true;
         }
