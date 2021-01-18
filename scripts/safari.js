@@ -47852,7 +47852,7 @@ function Safari() {
             "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
             "/changecostume [costume]: To change your costume to a new one. Can also use /dressup [costume].",
-            "/showcostumeskills: To show detailed information about your current costume, such as its current skills and level.",
+            "/showcostumeskills: To show detailed information about your current costume, such as its current skills and level. Alias(es): /mycostume",
             "/inbox: To read the messages you received while offline.",
             "/base: To view another player's Secret Base.",
             "/editbase [decoration]։[Coordinate X]։[Coordinate Y]: To edit your Secret Base. Use /decorations to check what you can decorate it with.",
