@@ -24038,7 +24038,7 @@ function Safari() {
                         target.hp = 0;
                         fainted = true;
                         if (target.mustRecharge) {
-                        	target.mustRecharge = false;
+                            target.mustRecharge = false;
                         }
                         out.push("<b>" + tname + " fainted!</b>");
                         if (self.select && self.select.retaliate2) {
@@ -24108,7 +24108,7 @@ function Safari() {
                     if (user.hp <= 0) {
                         out.push("<b>" + name + " fainted!</b>");
                         if (user.mustRecharge) {
-                        	user.mustRecharge = false;
+                            user.mustRecharge = false;
                         }
                     }
                 }
@@ -47834,26 +47834,26 @@ function Safari() {
         var userHelp = [
             "",
             "*** Safari Commands ***",
-			"*** Informational Commands ***",
+            "*** Informational Commands ***",
             "/help: For a how-to-play guide.",
             "/itemhelp [item or category]: Returns information on a particular item, costume, or category. You can display the help for all items using \"/itemhelp all\" or from the following categories: \"balls\", \"items\", \"perks\", \"costumes\".",
-			"/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
-			"/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
-			"/contestrules: For information about contest rules.",
-			"/lastcontests: For information about the recent contests played.",
+            "/info: View global information like time until next contest, contest's theme, current Gachapon jackpot prize.",
+            "/eventhelp: For a explanation about events like Faction War and Pokémon Race.",
+            "/contestrules: For information about contest rules.",
+            "/lastcontests: For information about the recent contests played.",
             "/themes: View available contest themes.",
-			"/quest: To view available quests.",
+            "/quest: To view available quests.",
             "/mission: To view your daily missions.",
-			"/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
-			"/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
-			"/trials: Shows you your current trials missions. Only works while trials is in session.",
+            "/records: To view your records. Use \"/records earnings\" to show a break down of earnings by source.",
+            "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
+            "/trials: Shows you your current trials missions. Only works while trials is in session.",
             "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time.",
-			"*** Action Commands ***",
+            "*** Action Commands ***",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
-			"/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
+            "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
             "/catch [ball]: To throw a Safari Ball when a wild Pokémon appears. [ball] can be replaced with the name of any other ball you possess.",
-			"/photo: To take photos of wild Pokémon! Use /album to view your photos.",
-			"/use: To use a consumable item.",
+            "/photo: To take photos of wild Pokémon! Use /album to view your photos.",
+            "/use: To use a consumable item.",
             "/mono [1/2]: To set if you want your Mono Balls to always use your active Pokémon's primary or secondary type. Omit the command data to check your current Mono Ball configuration.",
             "/sell: To sell one of your Pokémon.",
             "/multisell: To sell off multiple Pokémon at once. Alias(es): /msell",
@@ -47861,45 +47861,45 @@ function Safari() {
             "/pawn: To sell specific items. Use /pawnall to sell all your pawnable items at once!",
             "/trade: To request a Pokémon trade with another player*. Use $200 to trade money and @luxury to trade items (use 3@luxury to trade more than 1 of that item).",
             "/tradeblock: To edit your tradeblocked list. You will instantly reject trade requests asking you for an Item/Pokémon you tradeblocked. Pokémon in this list cannot be sold with /sell. To reject all trades, use /trade off.",
-			"/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
+            "/evolve: Use a Rare Candy (or candies) to evolve a Pokémon, which will give you Candy Dusts depending on the amount of Rare Candies used*.",
             "/spray: Use a Devolution Spray to devolve a Pokémon*.",
             "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
-			"/giveitem [berry name]: Gives a berry to your lead Pokémon.",
+            "/giveitem [berry name]: Gives a berry to your lead Pokémon.",
             "/takeitem: Takes the held berry from your lead Pokémon.",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
             "/price [Item/Pokémon]: To find an online shop selling the specified Item or Pokémon.",
             "/auction: To start an auction.",
-			"/challenge: To challenge another player to a battle. Use /challenge2 for a Rotation Battle.",
-			"/forfeit: To forfeit during a normal or rotation battle.",
+            "/challenge: To challenge another player to a battle. Use /challenge2 for a Rotation Battle.",
+            "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
-			"*** Utility Commands ***",
+            "*** Utility Commands ***",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
-			"/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
+            "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
             "/sort [criteria] [ascending|descending]: To sort the order in which the Pokémon are listed on /box. Criteria are Alphabetical, Number, BST, Type and Duplicate.",
             "/bst [pokémon]: To view the BST of a Pokémon and price you can sell a Pokémon.",
             "/box [number]: To view all your caught Pokémon organized in boxes. Use /boxt for a text-only version or /boxs for a text version with links to sell them. Use /smallbox to toggle an option to use a narrower box width.",
-			"/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
+            "/favorite [ball]: Sets your favorite ball. This will be thrown automatically if you do not specify a different ball to throw.",
             "/bag: To view all money and items. Use /bagt for a text-only version.",
             "/costumes: To view your current costumes. Use /getcostume to check your records to see if you earned any new costumes!",
-			"/daycare: Displays the Daycare menu where you can deposit, retrieve, or interact with your Pokémon. You can deposit up to 2 Pokémon in the Daycare at once. Check the help button inside the command for more information. Alias(es): /dc.",
+            "/daycare: Displays the Daycare menu where you can deposit, retrieve, or interact with your Pokémon. You can deposit up to 2 Pokémon in the Daycare at once. Check the help button inside the command for more information. Alias(es): /dc.",
             "/changecostume [costume]: To change your costume to a new one. Can also use /dressup [costume].",
             "/showcostumeskills: To show detailed information about your current costume, such as its current skills and level. Alias(es): /mycostume",
             "/inbox: To read the messages you received while offline.",
-			"/flashme: Toggle whether or not you get flashed when a contest or event starts.",
+            "/flashme: Toggle whether or not you get flashed when a contest or event starts.",
             "/base: To view another player's Secret Base.",
             "/editbase [decoration]։[Coordinate X]։[Coordinate Y]: To edit your Secret Base. Use /decorations to check what you can decorate it with.",
             "/view: To view another player's party. If no player is specified, all of your data will show up. You can also use /view on or /view off to enable/disable others from viewing your party/battles. Use /viewt for a text-only version of your data (excluding party).",
             "/mail [Name]։[Message]: To send a message to another player's inbox. Requires a Mail.",
             "/changealt: To pass your Safari data to another alt.",
             //seasonal change
-			"*** Fun Commands ***",
+            "*** Fun Commands ***",
             "/rock: To throw a rock at another player.",
             "/stick: To poke another player with your stick.",
-            "/burn: To give a Burn Heal to another player.",
+            "/burn: To give a Burn Heal to another player."
             // "/hidelb [type]: To hide yourself from a specific leaderboard.",
         ];
         var help = userHelp;
