@@ -14906,7 +14906,10 @@ function Safari() {
             return;
         }
         var player = getAvatar(src);
-        if (cantBecause(src, "set your " + finishName("mono") + " type", ["wild"])) {
+        var main = ["1", "1st", "one", "first", "main"],
+            secondary = ["2", "2nd", "two", "second", "secondary"];
+        
+        if (main.concat(secondary).contains(data) && cantBecause(src, "set your " + finishName("mono") + " type", ["wild"])) {
             return;
         }
 
@@ -14914,10 +14917,10 @@ function Safari() {
         var t = type1(active);
         data = data.toLowerCase();
         
-        if (["1", "1st", "one", "first", "main"].contains(data)) {
+        if (main.contains(data)) {
             player.monoSecondary = false;
         }
-        else if (["2", "2nd", "two", "second", "secondary"].contains(data)) {
+        else if (secondary.contains(data)) {
             player.monoSecondary = true;
             t = type2(active) !== "???" ? type2(active) : t;
         }
