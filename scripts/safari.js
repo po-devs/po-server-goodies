@@ -21821,7 +21821,7 @@ function Safari() {
             if (this.tagBattle) {
                 if (!this.oneOnTwo) {
                     for (var a in this.team3) {
-                        if (this.team3[a].mustRecharge) {
+                        if (this.team3[a].mustRecharge && this.team3[a].hp > 0) {
                             this.recharge3 = true;
                             break;
                         }
@@ -21833,7 +21833,7 @@ function Safari() {
                     }
                 }
                 for (var a in this.team4) {
-                    if (this.team4[a].mustRecharge) {
+                    if (this.team4[a].mustRecharge && this.team4[a].hp > 0) {
                         this.recharge4 = true;
                         break;
                     }
@@ -22033,7 +22033,7 @@ function Safari() {
                 if (!this.player1Fainted) {
                     if (this.recharge1) {
                         for (var a in this.team1) {
-                            if (this.team1[a].mustRecharge) {
+                            if (this.team1[a].mustRecharge && this.team1[a].hp > 0) {
                                 poke1 = this.team1[a];
                                 move1 = {"isRecharged": true, "priority": 0};
                                 break;
@@ -24037,6 +24037,9 @@ function Safari() {
                     if (target.hp <= 0) {
                         target.hp = 0;
                         fainted = true;
+                        if (target.mustRecharge) {
+                        	target.mustRecharge = false;
+                        }
                         out.push("<b>" + tname + " fainted!</b>");
                         if (self.select && self.select.retaliate2) {
                             if (isP1 || isP3) {
@@ -24104,6 +24107,9 @@ function Safari() {
                     }
                     if (user.hp <= 0) {
                         out.push("<b>" + name + " fainted!</b>");
+                        if (user.mustRecharge) {
+                        	user.mustRecharge = false;
+                        }
                     }
                 }
                 if (move.recharge) {
