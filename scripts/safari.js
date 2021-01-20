@@ -31344,7 +31344,7 @@ function Safari() {
                     };
                     
                     var battle = new Battle2(id, npc, {
-                        cantWatch: true,
+                        cantWatch: false,
                         t1HP: regen
                     });
                     currentBattles.push(battle);
@@ -31383,7 +31383,7 @@ function Safari() {
 
         safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: So you are aiming for the " + gym.badge + "? Then please proceed to your first battle against " + npc.name + "!", safchan);
         var battle = new Battle2(src, npc, {
-            cantWatch: true
+            cantWatch: false
         });
         safari.toRecentQuests(player, "league");
         player.notificationData.leagueWaiting = true;
@@ -31464,7 +31464,7 @@ function Safari() {
                     
                     var battle = new Battle2(id, npc, {
                         t1HP: regen,
-                        cantWatch: true
+                        cantWatch: false
                     });
                     currentBattles.push(battle);
                     
@@ -31504,7 +31504,7 @@ function Safari() {
 
         safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Everything is ready for your Elite Four challenge! Your first battle will be against " + npc.name + "! Good Luck!", safchan);
         var battle = new Battle2(src, npc, {
-            cantWatch: true
+            cantWatch: false
         });
         currentBattles.push(battle);
     };
