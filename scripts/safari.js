@@ -1460,15 +1460,15 @@ function Safari() {
     var safariHints = [
         "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use " + link("/bag wallet") + ", " + link("/bag balls") + ", " + link("/bag apricorns") + ", " + link("/bag perks") + ", " + link("/bag pawnables") + ", and " + link("/bag rare") + " to see specific rows!",
         "Like going on adventures with your friends? Use your teamwork to clear the Pyramid! Type " + link("/quest pyramid") + " to get started!",
-        "Bored? Why not challenge the Arena! Type /quest arena:help to see the strong trainers there!",
+        "Bored? Why not challenge the Arena! Type " + link("/quest arena:help") + " to see the strong trainers there!",
         "Look where you're walking while itemfindering!",
         "Use different kinds of Pokéballs to catch different kinds of Pokémon! Type " + link("/itemhelp balls") + " to find out more!",
         "Remember to catch what you bait!",
         "Challenge your rivals with " + link("/challenge2") + "! Team up for a Tag Battle with " + link("/challenge3") + "!",
         "The gym leaders of legendary renown are waiting to battle you in " + link("/quest celebrity") + "!",
-        "... Oh, it's just an ad. \"Test your knowledge in #Trivia!\" it says.",
-        "... Oh, it's just an ad. \"Test your bluffing skills in #Mafia!\" it says.",
-        "... Oh, it's just an ad. \"Test your verbosity in #Hangman!\" it says.",
+        "... Oh, it's just an ad. \"Test your knowledge in " + link("/cjoin Trivia", "#Trivia") "!\" it says.",
+        "... Oh, it's just an ad. \"Test your bluffing skills in " + link("/cjoin Mafia", "#Mafia") + "!\" it says.",
+        "... Oh, it's just an ad. \"Test your verbosity in " + link("/cjoin Hangman", "#Hangman") + "!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
         "Logging in 31 days in a row gives you a Master Ball!"
     ];
@@ -13684,7 +13684,7 @@ function Safari() {
             default:
                 if (chance(0.05)) {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + (freefinder ? "<i>Additionally, so charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-                    sys.sendHtmlMessage(src, "±Hint: " + safariHints.random(), safchan);
+                    sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + safariHints.random(), safchan);
                 }
                 else {
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
