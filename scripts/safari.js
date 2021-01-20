@@ -1466,7 +1466,7 @@ function Safari() {
         "Remember to catch what you bait!",
         "Challenge your rivals with " + link("/challenge2") + "! Team up for a Tag Battle with " + link("/challenge3") + "!",
         "The gym leaders of legendary renown are waiting to battle you in " + link("/quest celebrity") + "!",
-        "... Oh, it's just an ad. \"Test your knowledge in " + link("/cjoin Trivia", "#Trivia") "!\" it says.",
+        "... Oh, it's just an ad. \"Test your knowledge in " + link("/cjoin Trivia", "#Trivia") + "!\" it says.",
         "... Oh, it's just an ad. \"Test your bluffing skills in " + link("/cjoin Mafia", "#Mafia") + "!\" it says.",
         "... Oh, it's just an ad. \"Test your verbosity in " + link("/cjoin Hangman", "#Hangman") + "!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
