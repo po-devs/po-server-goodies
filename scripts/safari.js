@@ -12564,7 +12564,6 @@ function Safari() {
                             mon = player.deluxeBait.commons.list.random();
                         }
                         safari.createWild(mon, null, 1, null, null, player, null, false, null);
-                        safaribot.sendMessage(src, "You have " + plural(player.balls[item], baitName) + " remaining.", safchan);
                     } else {
                         var where = player.mushroomDeadline > now() ? player.mushroomTheme : null;
                         safari.createWild(null, null, 1, null, player.party[0], player, null, (player.truesalt >= now() ? false : golden), where);
