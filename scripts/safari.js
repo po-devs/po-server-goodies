@@ -40956,11 +40956,10 @@ function Safari() {
         if (feat == "lilypad" && category == "land") {
             return false;
         }
-        for (var t in this.daycarePokemon) {
-            if (this.daycarePokemon[t].pos === pos) {
-                return false;
-            }
+        if (this.getPokemonAt(pos, area) !== undefined) {
+            return false;
         }
+        
         return true;
     };
     this.updateDayCareTiles = function(full) {
@@ -41680,6 +41679,14 @@ function Safari() {
             return "";
         }
         return (this.daycareRegions[area][pos] || "");
+    };
+    this.getPokemonAt = function(pos, area) {
+        for (var t in this.daycarePokemon) {
+            if (this.daycarePokemon[t].pos === pos && this.daycarePokemon[t].area === area) {
+                return this.daycarePokemon[t];
+            }
+        }
+        return undefined;
     };
     this.printDayCare = function(src, area) {
         var p, mon;
