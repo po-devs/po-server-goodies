@@ -30189,6 +30189,10 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Death.", safchan);
                     return;
                 }
+                else if (info.shiny && noShinySprite.contains(into.num)) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: " + into.name + " has no Shiny variation, so I can't turn your " + info.name + " into one, sorry!", safchan);
+                    return;
+                }
             }
             var confirmation = data.length > 2 && ["confirm", "finish"].contains(data[2].toLowerCase());
             var cost = morph.cost + (info.shiny ? 1 : 0);
