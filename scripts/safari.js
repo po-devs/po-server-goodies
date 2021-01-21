@@ -30176,7 +30176,7 @@ function Safari() {
                 return;
             }
             else {
-                into = getInputPokemon(into.replace("%25", "%").replace(/\*/g, ""));
+                into = getInputPokemon(into.replace("%25", "%").replace(/\*/g, "").replace(/shiny /i, ""));
                 if (!into.num) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: I can transform that " + info.name + " into " + formatPossibleTransmutations() + " I think!", safchan);
                     return;
