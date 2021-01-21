@@ -6469,6 +6469,10 @@ function Safari() {
     function costumeSprite(player, os) {
         var id = player.costume;
         var n = costumeAlias(id);
+        
+        if (id === "none") {
+            return "";
+        }
         if (isNaN(id)) {
             if (costumeData.hasOwnProperty(n)) {
                 id = costumeData[n].icon;
