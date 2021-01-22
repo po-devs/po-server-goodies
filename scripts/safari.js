@@ -13717,11 +13717,11 @@ function Safari() {
                             shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
                             otherPlayerName = otherPlayer.id.toCorrectCase();
                             
-                            dynamicHints.push("...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
+                            dynamicHints = ["...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
                                 link("/shop " + otherPlayerName, otherPlayerName + "'s shop"),
                                 an(shopItemFinish),
                                 addComma(otherPlayer.shop[shopItem].price)
-                            ));
+                            )];
                         }
                     }
                     
