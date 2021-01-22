@@ -50326,7 +50326,7 @@ function Safari() {
                     var p2 = info[2].split("::")[0];
                     var silver = p1Info[5] === "true";
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (silver ?  "$" + addComma(cost) : plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (!silver ?  "$" + addComma(cost) : plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
                 });
                 return true;
             }
