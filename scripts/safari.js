@@ -50324,9 +50324,9 @@ function Safari() {
                     var price = parseInt(p1Info[3], 10);
                     var cost = parseInt(p1Info[4], 10);
                     var p2 = info[2].split("::")[0];
-                    var silver = p1Info[5] == true;
+                    var silver = p1Info[5] === "true";
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (silver ?  "$" + addComma(cost) : addComma(cost) + " " + plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (silver ?  "$" + addComma(cost) : plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
                 });
                 return true;
             }
