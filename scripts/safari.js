@@ -11170,7 +11170,7 @@ function Safari() {
         if (commandData === "*" || commandData.toLowerCase() !== "earnings") {
             sys.sendMessage(src, "", safchan);
             sys.sendMessage(src, "*** Player Records ***", safchan);
-            sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught, percentage(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
+            sys.sendMessage(src, "±Pokémon: {0} Pokémon caught in {1} attempts ({2}). Performed {3}, {4}, and {5}. Stole {6} Pokémon from NPCs.".format(addComma(rec.pokesCaught), addComma(rec.pokesCaught+rec.pokesNotCaught), percentage(rec.pokesCaught, rec.pokesCaught+rec.pokesNotCaught), plural(rec.pokesEvolved, "Evolution"), plural(rec.megaEvolutions, "Mega Evolution"), plural(rec.pokesCloned, "Cloning"), rec.pokesStolen), safchan);
             sys.sendMessage(src, "±Bait: Used {0} and {6} with {1} ({2}) and {3} ({4}). Snagged {5} Pokémon away from other Players.".format(plural(rec.baitUsed, "bait"), plural(rec.baitAttracted, "success"), percentage(rec.baitAttracted, rec.baitUsed + rec.goldenBaitUsed), plural(rec.baitNothing, "failure"), percentage(rec.baitNothing, rec.baitUsed + rec.goldenBaitUsed), rec.notBaitedCaught, plural(rec.goldenBaitUsed, "golden")), safchan);
             var earnings = rec.pokeSoldEarnings + rec.luxuryEarnings + rec.pawnEarnings + rec.collectorEarnings + rec.rocksWalletEarned + rec.rocksWindowEarned - rec.rocksWindowLost - rec.rocksWalletLost + rec.pokeRaceEarnings + rec.pyramidMoney + rec.towerEarnings;
             var silverEarnings = rec.scientistEarnings + rec.arenaPoints + rec.pyramidSilver + rec.towerSilver + rec.pokeRaceSilver;
@@ -50324,8 +50324,9 @@ function Safari() {
                     var price = parseInt(p1Info[3], 10);
                     var cost = parseInt(p1Info[4], 10);
                     var p2 = info[2].split("::")[0];
+                    var silver = p1Info[5] == true;
 
-                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(price) + " each)" : "") + " --- (" + time + ")";
+                    return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (silver ?  "$" + addComma(cost) : addComma(cost) + plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
                 });
                 return true;
             }
