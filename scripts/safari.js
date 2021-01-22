@@ -1470,7 +1470,8 @@ function Safari() {
         "...Oh, it's just an ad. \"Test your bluffing skills in " + link("/cjoin Mafia", "#Mafia") + "!\" it says.",
         "...Oh, it's just an ad. \"Test your verbosity in " + link("/cjoin Hangman", "#Hangman") + "!\" it says.",
         "Every day you play, you can bait 5 times without experiencing the full cooldown! Isn't that neat?",  
-        "Logging in 31 days in a row gives you a Master Ball!"
+        "Logging in 31 days in a row gives you a Master Ball!",
+        "You can read about the latest Safari updates in the <a href='http://pokemon-online.eu/threads/38977/'>Safari Changelog</a>!"
     ];
     var packItems = {
         amulet: 2, crown: 2,
@@ -13686,38 +13687,43 @@ function Safari() {
             }
             break;
             default:
-                if (chance(0.05)) {
+                if (chance(0.08)) {
                     var dynamicHints = safariHints.slice(0);
-                    var otherPlayer, shopItem, shopItemFinish, otherPlayerName, playersWithValidShops;
                     
-                    playersWithValidShops = sys.playersOfChannel(safchan).filter(function(id) {
-                        var p = getAvatar(id);
-                        if (!p || Object.keys(p.shop).length === 0 || p.tradeban >= now()) // no save data, or shop is empty, or is tradebanned
+                    if (chance(0.33)) {
+                        var otherPlayer, shopItem, shopItemFinish, otherPlayerName, playersWithValidShops;
+                        
+                        playersWithValidShops = sys.playersOfChannel(safchan).filter(function(id) {
+                            var p = getAvatar(id);
+                            if (!p || Object.keys(p.shop).length === 0 || p.tradeban >= now()) // no save data, or shop is empty, or is tradebanned
+                                return false;
+                            for (var item in p.shop) {
+                                if (p.shop[item].limit > 0) // shop has at least one item still in stock
+                                    return true;
+                            }
                             return false;
-                        for (var item in p.shop) {
-                            if (p.shop[item].limit > 0) // shop has at least one item still in stock
-                                return true;
+                        }).map(function(id) {
+                            return getAvatar(id);
+                        });
+                        
+                        if (playersWithValidShops.length > 0) {
+                            otherPlayer = playersWithValidShops.random();
+                            while (!shopItem) {
+                                var playerShop = otherPlayer.shop,
+                                    randItem = Object.keys(playerShop).random();
+                                shopItem = playerShop[randItem].limit > 0 ? randItem : false;
+                            }
+                            
+                            shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
+                            otherPlayerName = otherPlayer.id.toCorrectCase();
+                            
+                            dynamicHints.push("...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
+                                link("/shop " + otherPlayerName, otherPlayerName + "'s shop"),
+                                an(shopItemFinish),
+                                addComma(otherPlayer.shop[shopItem].price)
+                            ));
                         }
-                        return false;
-                    }).map(function(id) {
-                        return getAvatar(id);
-                    });
-                    
-                    otherPlayer = playersWithValidShops.random();
-                    while (!shopItem) {
-                        var playerShop = otherPlayer.shop,
-                            randItem = Object.keys(playerShop).random();
-                        shopItem = playerShop[randItem].limit > 0 ? randItem : false;
                     }
-                    
-                    shopItemFinish = getInputPokemon(shopItem).name ? getInputPokemon(shopItem).name : finishName(shopItem.replace("@", ""));
-                    otherPlayerName = otherPlayer.id.toCorrectCase();
-                    
-                    dynamicHints.push("...Oh, it's just an ad. \"Come on over to {0}, selling {1} for only ${2}!\" it says.".format(
-                        link("/shop " + otherPlayerName, otherPlayerName + "'s shop"),
-                        an(shopItemFinish),
-                        addComma(otherPlayer.shop[shopItem].price)
-                    ));
                     
                     safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... <b>KER-BONK!</b> You walked right into a sign! ...Huh? It has a Trainer Tip written on it! " + (freefinder ? "<i>Additionally, so charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
