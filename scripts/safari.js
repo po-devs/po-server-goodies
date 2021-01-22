@@ -16175,7 +16175,7 @@ function Safari() {
                 shop[input.input].purchases[player.idnum+""] = 0;
             }
             shop[input.input].purchases[player.idnum+""] += amount;
-            sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + ":::" + isSilver + "|||" + sys.name(src) + "\n");
+            sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
         }
         if (seller) {
             if (isSilver) {
@@ -16200,7 +16200,7 @@ function Safari() {
             }
             sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
-            sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + ":::" + isSilver + "|||" + sys.name(src) + "\n");
+            sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
             if (shop[input.input].price >= 10000 || (input.type == "poke" && isRare(input.id))) {
                 sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + " bought " + plural(amount, input.input) + " from " + sys.name(sellerId) + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(shop[input.input].price) + " each)" : "") + "\n");
             }
@@ -50324,7 +50324,9 @@ function Safari() {
                     var price = parseInt(p1Info[3], 10);
                     var cost = parseInt(p1Info[4], 10);
                     var p2 = info[2].split("::")[0];
-                    var silver = p1Info[5] === "true";
+                    var silver = p1Info[5];
+                    if (silver)
+                        silver = silver.replace(/:/g, "");
 
                     return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (!silver ?  "$" + addComma(cost) : plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
                 });
