@@ -47097,7 +47097,7 @@ function Safari() {
         if (!range) {
             range = { lower: 1, upper: 10 };
         }
-        log = getArrayRange(log.reverse(), range.lower, range.upper).reverse();
+        log = getArrayRange(log.slice(0).reverse(), range.lower, range.upper).reverse();
 
         if (term) {
             var queryMode = term.indexOf("||") < term.indexOf("&&") ? "&&" : "||";
@@ -50326,7 +50326,7 @@ function Safari() {
                     var p2 = info[2].split("::")[0];
                     var silver = p1Info[5];
                     if (silver)
-                        silver = silver.replace(/:/g, "");
+                        silver = silver.replace(/:/g, "") == "true";
 
                     return p2 + " bought " + amount + "x " + item + " from " + p1 + " for " + (!silver ?  "$" + addComma(cost) : plural(cost, finishName("silver"))) + (amount > 1 ? " (" + (!silver ? "$" : "") + addComma(price) + " each)" : "") + " --- (" + time + ")";
                 });
