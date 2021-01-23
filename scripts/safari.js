@@ -8773,11 +8773,11 @@ function Safari() {
                     if (chance(perc)) {
                         var stuff = giveStuff(player, item, true);
                         gained = gained.concat(stuff.gained);
+                        lost = lost.concat(stuff.lost);
                         
                         if (stuff.discarded.length > 0) {
-                            gained = gained.concat(stuff.discarded);
+                            gained = gained.concat(stuff.discarded); // because we still want to show what the original drop and quantity is
                             discarded = discarded.concat(stuff.discarded);
-                            lost = lost.concat(stuff.lost);
                         }
                     }
                 }
