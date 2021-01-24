@@ -46147,16 +46147,19 @@ function Safari() {
                         for (var i = 0; i < data.length; i++) {
                             player = data[i];
                             if (!scoreObj.hasOwnProperty(player.value.val)) // organise them into arrays based on same score first
-                                scoreObj[player.value.val] = [player.value];
+                                scoreObj[player.value.val] = [player];
                             else
-                                scoreObj[player.value.val].push(player.value);
+                                scoreObj[player.value.val].push(player);
                         }
+                        safaribot.sendAll("scoreObj initial: " + JSON.stringify(scoreObj), staffchannel);
                         for (var key in scoreObj) {
                             scoreObj[key].sort(function(a, b) { // then sort player data within the same score by ascending time
-                                return a[secondarySortKey] - b[secondarySortKey];
+                                return a.value[secondarySortKey] - b.value[secondarySortKey];
                             });
                         }
+                        safaribot.sendAll("scoreObj after: " + JSON.stringify(scoreObj), staffchannel);
                         keySort = Object.keys(scoreObj).sort(function(a, b) { return b - a }); // then concat them back to leaderboards[e] by descending score by looping through keySort
+                        safaribot.sendAll("keySort: " + JSON.stringify(keySort), staffchannel);
                         data = [];
                         for (var i = 0; i < keySort.length; i++) {
                             data = data.concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
@@ -48840,8 +48843,10 @@ function Safari() {
                 var list = getArrayRange(leaderboards[rec], range.lower, range.upper);
                 var out = ["", "<b>" + (recName == "salt" ? "Safari Lameboards " : "Safari Leaderboards ") + desc + "</b>" + (lastLeaderboardUpdate ? " (last updated: " + lastLeaderboardUpdate + ")" : "")], selfFound = false;
                 var sign = (lbData[recName].isMoney ? "$" : "");
+                var value;
                 for (e = 0; e < list.length; e++) {
-                    out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(list[e].value));
+                    value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                    out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
                     if (list[e].name == self) {
                         selfFound = true;
                     }
@@ -48850,7 +48855,8 @@ function Safari() {
                     list = leaderboards[rec];
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
-                            var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(list[e].value);
+                            value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                            var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
                             } else {
