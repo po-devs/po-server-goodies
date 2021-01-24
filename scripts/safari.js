@@ -46153,16 +46153,16 @@ function Safari() {
                         }
                         for (var key in scoreObj) {
                             scoreObj[key].sort(function(a, b) { // then sort player data within the same score by ascending time
-                                return a.value[secondarySortKey] - b.value[secondarySortKey];
+                                return a[secondarySortKey] - b[secondarySortKey];
                             });
                         }
-                        keySort = Object.keys(scoreObj).sort(function(a, b) { return parseInt(b) - parseInt(a) }); // then concat them back to leaderboards[e] by descending score by looping through keySort
-                        leaderboards[e] = [];
+                        keySort = Object.keys(scoreObj).sort(function(a, b) { return b - a }); // then concat them back to leaderboards[e] by descending score by looping through keySort
+                        data = [];
                         for (var i = 0; i < keySort.length; i++) {
-                            leaderboards[e] = leaderboards[e].concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
+                            data = data.concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
                         }
-                        for (var i = 0; i < leaderboards[e].length; i++) { // one more pass through to assign position based on index
-                            leaderboards[e][i].pos = i + 1;
+                        for (var i = 0; i < data.length; i++) { // one more pass through to assign position based on index
+                            data[i].pos = i + 1;
                         }
                         
                     }
