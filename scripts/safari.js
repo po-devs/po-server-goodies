@@ -30745,37 +30745,37 @@ function Safari() {
                     case -1:
                         var val = monthlyLeaderboards["celebrityScoreEasy"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index) // if player is not on lb yet and defeated at least 1, or if lb record less than current score
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", {"value": args.index, "time": now()});
                         player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
                         var val = monthlyLeaderboards["celebrityScore"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScore", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScore", {"value": args.index, "time": now()});
                         player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
                         var val = monthlyLeaderboards["celebrityScoreHard"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", {"value": args.index, "time": now()});
                         player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
                         var val = monthlyLeaderboards["celebrityScoreExpert"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", {"value": args.index, "time": now()});
                         player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
                         var val = monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", {"value": args.index, "time": now()});
                         player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
                         var val = monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", {"val": args.index, "time": now()});
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", {"value": args.index, "time": now()});
                         player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
                     default:
@@ -46146,10 +46146,10 @@ function Safari() {
                         secondarySortKey = "time";
                         for (var i = 0; i < data.length; i++) {
                             player = data[i];
-                            if (!scoreObj.hasOwnProperty(player.value.val)) // organise them into arrays based on same score first
-                                scoreObj[player.value.val] = [player];
+                            if (!scoreObj.hasOwnProperty(player.value.value)) // organise them into arrays based on same score first
+                                scoreObj[player.value.value] = [player];
                             else
-                                scoreObj[player.value.val].push(player);
+                                scoreObj[player.value.value].push(player);
                         }
                         safaribot.sendAll("scoreObj initial: " + JSON.stringify(scoreObj), staffchannel);
                         for (var key in scoreObj) {
@@ -48845,7 +48845,7 @@ function Safari() {
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 var value;
                 for (e = 0; e < list.length; e++) {
-                    value = typeof list[e].value === "number" ? list[e].value : list[e].value.val;
+                    value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
                     out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
                     if (list[e].name == self) {
                         selfFound = true;
@@ -48855,7 +48855,7 @@ function Safari() {
                     list = leaderboards[rec];
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
-                            value = typeof list[e].value === "number" ? list[e].value : list[e].value.val;
+                            value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
                             var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
