@@ -46189,7 +46189,7 @@ function Safari() {
         try {
             var val = monthlyLeaderboards[record].get(name) || 0;
             
-            if (typeof val === "object") { // if record is an object, simpler to just reconstruct + pass an updated object and overwrite the old value with it rather than try to identify a key in the old object and increment it
+            if (typeof val === "object" || typeof value === "object") { // if record is an object, simpler to just reconstruct + pass an updated object and overwrite the old value with it rather than try to identify a key in the old object and increment it
                 overwrite = true;
             }
             else if (typeof val != "number") {
