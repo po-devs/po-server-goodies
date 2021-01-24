@@ -30743,38 +30743,38 @@ function Safari() {
 
                 switch (args.difficulty) {
                     case -1:
-                        var val = monthlyLeaderboards["celebrityScoreEasy"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index) // if player is not on lb yet and defeated at least 1, or if lb record less than current score
+                        var val = monthlyLeaderboards["celebrityScoreEasy"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", {"value": args.index, "time": now()});
                         player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
-                        var val = monthlyLeaderboards["celebrityScore"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index)
+                        var val = monthlyLeaderboards["celebrityScore"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScore", {"value": args.index, "time": now()});
                         player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
-                        var val = monthlyLeaderboards["celebrityScoreHard"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreHard"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", {"value": args.index, "time": now()});
                         player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
-                        var val = monthlyLeaderboards["celebrityScoreExpert"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreExpert"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", {"value": args.index, "time": now()});
                         player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
-                        var val = monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", {"value": args.index, "time": now()});
                         player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
-                        var val = monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id);
-                        if ((val === undefined && args.index > 0) || JSON.parse(val).value < args.index)
+                        var val = monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id) || '{"value":0}';
+                        if (JSON.parse(val).value < args.index)
                             safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", {"value": args.index, "time": now()});
                         player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
