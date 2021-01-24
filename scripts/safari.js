@@ -30745,37 +30745,37 @@ function Safari() {
                     case -1:
                         var val = monthlyLeaderboards["celebrityScoreEasy"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index) // if player is not on lb yet and defeated at least 1, or if lb record less than current score
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreEasy", {"val": args.index, "time": now()});
                         player.records.celebrityScoreEasy = Math.max(player.records.celebrityScoreEasy, args.index) || 0;
                     break;
                     case 0:
                         var val = monthlyLeaderboards["celebrityScore"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScore", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScore", {"val": args.index, "time": now()});
                         player.records.celebrityScore = Math.max(player.records.celebrityScore, args.index) || 0;
                     break;
                     case 1:
                         var val = monthlyLeaderboards["celebrityScoreHard"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreHard", {"val": args.index, "time": now()});
                         player.records.celebrityScoreHard = Math.max(player.records.celebrityScoreHard, args.index) || 0;
                     break;
                     case 2:
                         var val = monthlyLeaderboards["celebrityScoreExpert"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreExpert", {"val": args.index, "time": now()});
                         player.records.celebrityScoreExpert = Math.max(player.records.celebrityScoreExpert, args.index) || 0;
                     break;
                     case 3:
                         var val = monthlyLeaderboards["celebrityScoreSuperExpert"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreSuperExpert", {"val": args.index, "time": now()});
                         player.records.celebrityScoreSuperExpert = Math.max(player.records.celebrityScoreSuperExpert, args.index) || 0;
                     break;
                     case 4:
                         var val = monthlyLeaderboards["celebrityScoreAbyssal"].get(player.id);
                         if ((val === undefined && args.index > 0) || val < args.index)
-                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", args.index, true);
+                            safari.addToMonthlyLeaderboards(player.id, "celebrityScoreAbyssal", {"val": args.index, "time": now()});
                         player.records.celebrityScoreAbyssal = Math.max(player.records.celebrityScoreAbyssal, args.index) || 0;
                     break;
                     default:
@@ -46108,20 +46108,28 @@ function Safari() {
                     };
                     try {
                         player.value = monthlyLeaderboards[i].get(e) || 0;
+                        player.value = typeof player.value === "number" ? parseInt(player.value, 10) : JSON.parse(player.value);
                     }
-                    catch (err) {};
-                    if (player.value === 0 || player.value == "0") {
+                    catch (err) {
+                        safaribot.sendAll(err + " in safari.updateLeaderboards()", staffchannel);
+                    };
+                    if ((typeof player.value === "number" && player.value === 0 || (typeof player.value === "object" && Object.keys(player.value).length === 0)) {
                         continue;
                     }
-                    player.value = parseInt(player.value, 10);
                     leaderboards[i + "Weekly"].push(player);
                 }
             }
         }
+        
+        var celebrityLBs = ["celebrityScoreWeekly", "celebrityScoreEasyWeekly", "celebrityScoreHardWeekly", "celebrityScoreExpertWeekly", "celebrityScoreSuperExpertWeekly", "celebrityScoreAbyssalWeekly", "celebrityScoreLast", "celebrityScoreEasyLast", "celebrityScoreHardLast", "celebrityScoreExpertLast", "celebrityScoreSuperExpertLast", "celebrityScoreAbyssalLast"];
+        var noTies = [].concat(celebrityLBs);
+        
         var byHigherValue = function(a, b) {
             return b.value - a.value;
         };
         for (e in leaderboards) {
+            if (noTies.contains(e)) // it'll have custom sorting logic, so don't do a simple value sort
+                continue;
             leaderboards[e].sort(byHigherValue);
         }
         for (e in monthlyLeaderboardTypes) {
@@ -46130,12 +46138,33 @@ function Safari() {
         var val, prev;
         for (e in leaderboards) {
             data = leaderboards[e];
-            var isCeleb = e.indexOf("celebrityScore") === 0; // celeb leaderboards have different tiebreaking logic: if multiple players have the same score, earlier ones are placed higher
             if (data.length > 0) {
-                if (isCeleb) {
-                    // celeb lbs have already been sorted via byHigherValue() above and ties should already be in ascending chronological order due to their placements in the files before being parsed into MemoryHash
-                    for (var i = 0; i < data.length; i++) {
-                        player.pos = i + 1; // so simply assign pos in ascending order based on index
+                if (noTies.contains(e)) {
+                    var scoreObj = {}, keySort, secondarySortKey;
+                    
+                    if (celebrityLBs.contains(e)) { // can probably futureproof this if needed by directly mapping different lb names to specific secondarySortKeys and supplying a custom secondarySort function
+                        secondarySortKey = "time";
+                        for (var i = 0; i < data.length; i++) {
+                            player = data[i];
+                            if (!scoreObj.hasOwnProperty(player.value.val)) // organise them into arrays based on same score first
+                                scoreObj[player.value.val] = [player.value];
+                            else
+                                scoreObj[player.value.val].push(player.value);
+                        }
+                        for (var key in scoreObj) {
+                            scoreObj[key].sort(function(a, b) { // then sort player data within the same score by ascending time
+                                return a[secondarySortKey] - b[secondarySortKey];
+                            });
+                        }
+                        keySort = Object.keys(scoreObj).sort(function(a, b) { return b - a }); // then concat them back to leaderboards[e] by descending score by looping through keySort
+                        data = [];
+                        for (var i = 0; i < keySort.length; i++) {
+                            data = data.concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
+                        }
+                        for (var i = 0; i < data.length; i++) { // one more pass through to assign position based on index
+                            data[i].pos = i + 1;
+                        }
+                        
                     }
                 }
                 else {
@@ -46159,7 +46188,11 @@ function Safari() {
         name = name.toLowerCase();
         try {
             var val = monthlyLeaderboards[record].get(name) || 0;
-            if (typeof val != "number") {
+            
+            if (typeof val === "object") { // if record is an object, simpler to just reconstruct + pass an updated object and overwrite the old value with it rather than try to identify a key in the old object and increment it
+                overwrite = true;
+            }
+            else if (typeof val != "number") {
                 val = parseInt(val, 10);
                 if (isNaN(val)) {
                     val = 0;
@@ -46167,7 +46200,7 @@ function Safari() {
             }
             if (overwrite) {
                 monthlyLeaderboards[record].remove(name);
-                monthlyLeaderboards[record].add(name, value);
+                monthlyLeaderboards[record].add(name, typeof value === "object" ? JSON.stringify(value) : value);
             }
             else {
                 monthlyLeaderboards[record].add(name, val + value);
