@@ -27969,7 +27969,7 @@ function Safari() {
 
                 var reward = 0;
                 for (e = 0; e < request.length; e++) {
-                    reward += getPrice(request[e]) * (generation(request[e]) == 8 ? 2 : 1);
+                    reward += getPrice(request[e]);
                 }
                 var perkBonus = getPerkBonus(player, "amulet");
                 quest.requests = request;
@@ -46130,16 +46130,25 @@ function Safari() {
         var val, prev;
         for (e in leaderboards) {
             data = leaderboards[e];
+            var isCeleb = e.indexOf("celebrityScore") === 0; // celeb leaderboards have different tiebreaking logic: if multiple players have the same score, earlier ones are placed higher
             if (data.length > 0) {
-                val = data[0].value;
-                prev = 1;
-                for (i = 0; i < data.length; i++) {
-                    player = data[i];
-                    if (player.value === val) {
-                        player.pos = prev;
-                    } else {
-                        player.pos = prev = i + 1;
-                        val = player.value;
+                if (isCeleb) {
+                    // celeb lbs have already been sorted via byHigherValue() above and ties should already be in ascending chronological order due to their placements in the files before being parsed into MemoryHash
+                    for (var i = 0; i < data.length; i++) {
+                        player.pos = i + 1; // so simply assign pos in ascending order based on index
+                    }
+                }
+                else {
+                    val = data[0].value;
+                    prev = 1;
+                    for (var i = 0; i < data.length; i++) {
+                        player = data[i];
+                        if (player.value === val) {
+                            player.pos = prev;
+                        } else {
+                            player.pos = prev = i + 1;
+                            val = player.value;
+                        }
                     }
                 }
             }
@@ -50325,8 +50334,9 @@ function Safari() {
                     var p1 = p1Info[0];
                     var amount = parseInt(p1Info[1], 10);
                     var item = p1Info[2];
-                    var price = parseInt(p1Info[3], 10);
+                    //var price = parseInt(p1Info[3], 10);
                     var cost = parseInt(p1Info[4], 10);
+                    var price = cost/amount;
                     var p2 = info[2].split("::")[0];
                     var silver = p1Info[5];
                     if (silver)
