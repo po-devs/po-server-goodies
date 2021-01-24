@@ -46151,23 +46151,20 @@ function Safari() {
                             else
                                 scoreObj[player.value.value].push(player);
                         }
-                        safaribot.sendAll("scoreObj initial: " + JSON.stringify(scoreObj), staffchannel);
                         for (var key in scoreObj) {
                             scoreObj[key].sort(function(a, b) { // then sort player data within the same score by ascending time
                                 return a.value[secondarySortKey] - b.value[secondarySortKey];
                             });
                         }
-                        safaribot.sendAll("scoreObj after: " + JSON.stringify(scoreObj), staffchannel);
-                        keySort = Object.keys(scoreObj).sort(function(a, b) { return b - a }); // then concat them back to leaderboards[e] by descending score by looping through keySort
-                        safaribot.sendAll("keySort: " + JSON.stringify(keySort), staffchannel);
-                        data = [];
-                        for (var i = 0; i < keySort.length; i++) {
-                            data = data.concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
-                        }
-                        for (var i = 0; i < data.length; i++) { // one more pass through to assign position based on index
-                            data[i].pos = i + 1;
-                        }
                         
+                        keySort = Object.keys(scoreObj).sort(function(a, b) { return b - a }); // then concat them back to leaderboards[e] by descending score by looping through keySort
+                        leaderboards[e] = []; // don't use var data here since it doesn't seem to reorder the actual array in leaderboards. access leaderboards[e] directly
+                        for (var i = 0; i < keySort.length; i++) {
+                            leaderboards[e] = leaderboards[e].concat(scoreObj[keySort[i]]); // they should now be sorted by descending score, players with same score are sorted by ascending time
+                        }
+                        for (var i = 0; i < leaderboards[e].length; i++) { // one more pass through to assign position based on index
+                            leaderboards[e][i].pos = i + 1;
+                        }
                     }
                 }
                 else {
