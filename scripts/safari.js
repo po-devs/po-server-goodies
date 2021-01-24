@@ -46113,7 +46113,7 @@ function Safari() {
                     catch (err) {
                         safaribot.sendAll(err + " in safari.updateLeaderboards()", staffchannel);
                     };
-                    if ((typeof player.value === "number" && player.value === 0 || (typeof player.value === "object" && Object.keys(player.value).length === 0)) {
+                    if ((typeof player.value === "number" && player.value === 0) || (typeof player.value === "object" && Object.keys(player.value).length === 0)) {
                         continue;
                     }
                     leaderboards[i + "Weekly"].push(player);
