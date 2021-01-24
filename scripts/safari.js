@@ -48845,7 +48845,7 @@ function Safari() {
                 var sign = (lbData[recName].isMoney ? "$" : "");
                 var value;
                 for (e = 0; e < list.length; e++) {
-                    value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                    value = typeof list[e].value === "number" ? list[e].value : list[e].value.val;
                     out.push("<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value));
                     if (list[e].name == self) {
                         selfFound = true;
@@ -48855,7 +48855,7 @@ function Safari() {
                     list = leaderboards[rec];
                     for (e = 0; e < list.length; e++) {
                         if (list[e].name == self) {
-                            value = typeof list[e].value === "number" ? list[e].value : list[e].value.value;
+                            value = typeof list[e].value === "number" ? list[e].value : list[e].value.val;
                             var entry = "<b>" + (list[e].pos) + ". " + toColor(list[e].fullName + ":", list[e].color) + "</b> " + sign + addComma(value);
                             if (e < range.lower) {
                                 out.splice(2, 0, entry);
