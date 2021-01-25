@@ -50035,7 +50035,7 @@ function Safari() {
             }
             if (command === "revokemedal" || command === "revokefeather") {
                 commandData = commandData.split(":");
-                var name = commandData.pop(0);
+                var name = commandData.shift();
                 safari.removeMedal(src, name, commandData.join(":"));
                 return true;
             }
