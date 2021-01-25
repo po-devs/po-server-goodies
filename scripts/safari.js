@@ -46718,13 +46718,15 @@ function Safari() {
             safaribot.sendMessage(src, "That is not a valid color number!", safchan);
             return false
         }
-        var description = cd.slice(2);
+        var description = cd.slice(2).join(":");
         var m = {
             desc: description,
             icon: icon
         }
         this.awardMedal(player, m);
         safaribot.sendMessage(src, "You awarded " + player.id + " the medal: " + description + "!", safchan);
+        if (sys.id(cd[0]))
+            safaribot.sendMessage(sys.id(cd[0]), sys.name(src) + " awarded you with the medal: " + description + "!", safchan);
         return true;
     };
     this.changeDailyBoost = function(data) {
