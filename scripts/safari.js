@@ -16716,6 +16716,7 @@ function Safari() {
         ls.splice(index - 1, 1);
         ls.unshift(m);
         safaribot.sendMessage(src, "You featured your medal: " + m.desc + "! It will now appear on your trainer screen!", safchan);
+        this.saveGame(player);
         return true;
     };
     this.removeMedal = function(src, name, data) {
@@ -16736,17 +16737,21 @@ function Safari() {
             return;
         } 
         if (data.length < 2) {
-            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal!", safchan);
+            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal! WARNING: This will permanently delete the medal!", safchan);
             return;
         }
         if (data[1] !== "confirm") {
-            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal!", safchan);
+            safaribot.sendMessage(src, "Add 'confirm' after the ':' to confirm that you intend to discard this medal! WARNING: This will permanently delete the medal!", safchan);
             return;
         }
         m = player.medals[index - 1];
         ls = player.medals;
         ls.splice(index - 1, 1);
         safaribot.sendMessage(src, "You discarded your medal: " + m.desc + ".", safchan);
+        
+        //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
+        player.medals = player.medals.filter(function(e) { return e !== null });
+        this.saveGame(player);
         return true;
     };
     
@@ -46713,7 +46718,7 @@ function Safari() {
             safaribot.sendMessage(src, "That is not a valid color number!", safchan);
             return false
         }
-        var description = cd[2];
+        var description = cd.slice(2);
         var m = {
             desc: description,
             icon: icon
