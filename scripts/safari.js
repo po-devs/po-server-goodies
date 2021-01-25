@@ -21811,10 +21811,10 @@ function Safari() {
                         m += "||";
                     }
                     if (this.side2Field.reflect > 0) {
-                        m += toColor("Reflect ", "red");
+                        m += toColor("Reflect ({0} remaining) ".format(plural(this.side2Field.reflect, "turn")), "red");
                     }
                     if (this.side2Field.lightscreen > 0) {
-                        m += toColor("Light Screen ", "red");
+                        m += toColor("Light Screen ({0} remaining) ".format(plural(this.side2Field.lightscreen, "turn")), "red");
                     }
                 }
                 if (this.side1Field.reflect > 0 || this.side1Field.lightscreen > 0) {
@@ -21822,10 +21822,10 @@ function Safari() {
                         m += "||";
                     }
                     if (this.side1Field.reflect > 0) {
-                        m += toColor("Reflect ", "blue");
+                        m += toColor("Reflect ({0} remaining) ".format(plural(this.side1Field.reflect, "turn")), "blue");
                     }
                     if (this.side1Field.lightscreen > 0) {
-                        m += toColor("Light Screen ", "blue");
+                        m += toColor("Light Screen ({0} remaining) ".format(plural(this.side1Field.lightscreen, "turn")), "blue");
                     }
                 }
                 if (m !== "") {
