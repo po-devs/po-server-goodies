@@ -1598,7 +1598,7 @@ function Safari() {
             ultra: "A high functioning Pokéball that has a better catch rate than a Great Ball. " + cdSeconds("ultra"),
             master: "An extremely rare Pokéball that never fails to catch. " + cdSeconds("master") + " Obtained from Gachapon and Alchemist.",
             premier: "A plain Pokéball gifted to you for your patronage. It works better when a Normal-type or a single-type Pokémon is active. " + cdSeconds("premier") + " Obtained by purchasing a lot of Pokéballs from the shop and Pyramid.",
-            luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist and found with Itemfinder.",
+            luxury: "A comfortable Pokéball with an increased catch rate that is said to make one wealthy. " + cdSeconds("luxury") + " Obtained from Arborist.",
             myth: "An ancient Pokéball that ignores modern era catch modifiers. Said to be particularly effective against certain rare Pokémon. " + cdSeconds("myth") + " Obtained from Arborist.",
             quick: "A somewhat different Pokéball that tends to get better priority during throws. " + cdSeconds("quick") + " Obtained from Arborist and Pyramid.",
             level: "A slickly designed Pokéball that raises the stat levels of the lead Pokémon. " + cdSeconds("level") + " Obtained from Arborist and Pyramid.",
