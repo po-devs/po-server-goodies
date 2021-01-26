@@ -6593,7 +6593,7 @@ function Safari() {
                 }
             } else {
                 if (first) {
-                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=14>Inventory</th></tr><tr>";
+                    ret += "<table border = 1 cellpadding = 3><tr><th colspan=13>Inventory</th></tr><tr>";
                     ret += "<td valign=middle align=center colspan=2><img src='item:274' title='Money'></td>";
                 } else {
                     ret += "<tr>";
@@ -10432,31 +10432,31 @@ function Safari() {
         return out;
     };
     this.showBag = function(player, isAndroid, textOnly, search) {
-        //Manual arrays because easier to put in desired order. Max of 14 in each array or you need to change the colspan. Line1 only gets 12 due to money taking up 2 colspans
+        //Manual arrays because easier to put in desired order. Max of 13 in each array or you need to change the colspan. Line1 only gets 11 due to money taking up 2 colspans
         var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "pokeblock", "itemfinder"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
         var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
-        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn"];
+        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
         var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray", "rock", "mail", "burn", "form"]
         var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg"];
         var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
         var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "sunshard", "moonshard"];
-        var line10 = ["rare", "dust", "stick", "fossil", "coupon", "dew", "hdew", "ldew", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
+        var line10 = ["rare", "dust", "stick", "fossil", "coupon", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
 
         if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
         }
         var out = "";
         if ((search === "*") || ["wallet", "utility", "utilities"].contains(search)) {
-            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet & Utilities");
+            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet");
         }
         if ((search === "*") || ["ball", "balls"].contains(search)) {
             out += bagRow(player, line2, isAndroid, textOnly, false, "Poké Balls");
             out += bagRow(player, line3, isAndroid, textOnly, false);
         }
         if ((search === "*") || ["apricorn", "apricorns"].contains(search)) {
-            out += bagRow(player, line4, isAndroid, textOnly, false, "Apricorns");
+            out += bagRow(player, line4, isAndroid, textOnly, false, "Apricorns & Dew");
         }
         if ((search === "*") || ["berry", "berries"].contains(search)) {
             out += bagRow(player, line5, isAndroid, textOnly, false, "Berries");
