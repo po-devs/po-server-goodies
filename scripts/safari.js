@@ -9856,6 +9856,7 @@ function Safari() {
         var src = sys.id(player.id);
         if (!(heldCodes.hasOwnProperty(item+""))) {
             safaribot.sendHtmlMessage(src, "No item under " + item + " found!", safchan);
+            return;
         }
         var getItem = heldCodes[item+""];
         if (taking) {
@@ -10021,7 +10022,7 @@ function Safari() {
             }
             var getItem = player.helds[player.party.indexOf(id)];
             if (getItem > -1) {
-                safari.heldItem(player, getItem, true, player.party.indexOf(id)+1);
+                safari.heldItem(player, getItem, true, player.party.indexOf(id));
             }
             player.helds.splice(player.party.indexOf(id), 1);
             player.party.splice(player.party.indexOf(id), 1);
@@ -10159,6 +10160,9 @@ function Safari() {
             player.party = toLoad.concat();
             safaribot.sendMessage(src, "Loaded your party from slot " + (num + 1) + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
             player.berries.petayaCombo = 0;
+            while (player.party.length > player.helds.length) {
+                player.helds.push(-1);
+            }
             this.saveGame(player);
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
@@ -10212,22 +10216,18 @@ function Safari() {
             return;
         }
 
-        player.party = toLoad.concat();
         var getItem;
         for (var i in player.helds) {
             getItem = player.helds[i];
             if (getItem > -1) {
-                safari.heldItem(player, getItem, true, i+1);
+                safari.heldItem(player, getItem, true, parseInt(i));
             }
         }
+        player.party = toLoad.concat();
         player.helds = [];
-        var j = 0;
+
         while (player.party.length > player.helds.length) {
             player.helds.push(-1);
-            j++;
-            if (j > 6) {
-                break;
-            }
         }
         if (player.party[0] !== firstInParty) {
             player.berries.petayaCombo = 0;
