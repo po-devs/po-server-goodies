@@ -10433,16 +10433,16 @@ function Safari() {
     };
     this.showBag = function(player, isAndroid, textOnly, search) {
         //Manual arrays because easier to put in desired order. Max of 13 in each array or you need to change the colspan. Line1 only gets 11 due to money taking up 2 colspans
-        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "pokeblock", "itemfinder"];
+        var line1 = [/*money*/ "silver", "box", "shady", "lucky", "entry", "gacha", "pokeblock", "itemfinder", "rare", "dust"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
         var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
         var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
-        var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray", "rock", "mail", "burn", "form"]
+        var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray", "mail", "burn", "form"]
         var line7 = ["celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg"];
         var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
         var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "sunshard", "moonshard"];
-        var line10 = ["rare", "dust", "stick", "fossil", "coupon", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
+        var line10 = ["stick", "rock", "fossil", "coupon", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
 
         if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
