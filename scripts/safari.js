@@ -10158,10 +10158,15 @@ function Safari() {
             }
 
             player.party = toLoad.concat();
+            for (var i = 0; i < player.helds.length; i++) {
+                if (player.helds[i] != -1)
+                    safari.takeItem(src, i+1); // make sure to put all the items back into their bag
+            }
             safaribot.sendMessage(src, "Loaded your party from slot " + (num + 1) + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
+            player.helds = []; // reset the whole thing
             player.berries.petayaCombo = 0;
             while (player.party.length > player.helds.length) {
-                player.helds.push(-1);
+                player.helds.push(-1); // repopulate with -1 based on new party's length
             }
             this.saveGame(player);
         } else {
