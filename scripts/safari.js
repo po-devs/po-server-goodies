@@ -10230,14 +10230,6 @@ function Safari() {
             safaribot.sendMessage(src, "Couldn't load party because you don't have any of those Pokémon!", safchan);
             return;
         }
-
-        var getItem;
-        for (var i in player.helds) {
-            getItem = player.helds[i];
-            if (getItem > -1) {
-                safari.heldItem(player, getItem, true, parseInt(i));
-            }
-        }
         
         // synchronise held array and party array size
         var newSize = toLoad.concat().length;
