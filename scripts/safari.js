@@ -10084,6 +10084,9 @@ function Safari() {
 
             player.party.splice(0, 0, id);
             safaribot.sendMessage(src, "You are now using " + info.name + " as your active Pokémon!", safchan);
+            while (player.party.length > player.helds.length) {
+                player.helds.push(-1);
+            }
             player.berries.petayaCombo = 0;
             this.saveGame(player);
         } else if (action === "save") {
