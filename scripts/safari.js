@@ -9838,12 +9838,17 @@ function Safari() {
             safaribot.sendMessage(src, "Please enter a valid party position (1 to 6)!", safchan);
             return;
         }
+        
+        if (slot >= player.party.length) {
+            safaribot.sendMessage(src, "You don't have a " + getOrdinal(slot+1) + " Pokémon in your party!", safchan);
+            return;
+        }
         if (player.helds[slot] == -1) {
-            safaribot.sendMessage(src, "Your " + poke(player.party[slot]) + " at position " + slot+1 + " is not holding an item!", safchan);
+            safaribot.sendMessage(src, "Your " + poke(player.party[slot]) + " at position " + (slot+1) + " is not holding an item!", safchan);
             return;
         }
         
-        this.heldItem(player, player.helds[slot], true);
+        this.heldItem(player, player.helds[slot], true, slot);
         player.helds[slot] = -1;
         safari.saveGame(player);
     };
@@ -9855,13 +9860,13 @@ function Safari() {
         var getItem = heldCodes[item+""];
         if (taking) {
             player.balls[getItem] += 1;
-            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + " from" + poke(player.party[slot]) + " at position " + (slot+1) + "!", safchan);
         } else {
             if (player.balls[getItem] <= 0) {
                 safaribot.sendHtmlMessage(src, "You don't have any " + itemAlias(getItem, false, true) + " to give!", safchan);
                 return;
             }
-            if (slot === "*" || isNaN(slot))
+            if (!slot || isNaN(slot))
                 slot = 0;
             else
                 slot = parseInt(slot) - 1; // assumption that most players will logically input 1~6 instead of proper array index of 0~5
@@ -9870,6 +9875,11 @@ function Safari() {
                 safaribot.sendMessage(src, "Please enter a valid party position (1 to 6)!", safchan);
                 return;
             }
+            if (slot >= player.party.length) {
+                safaribot.sendMessage(src, "You don't have a " + getOrdinal(slot+1) + " Pokémon in your party!", safchan);
+                return;
+            }
+            
             if (player.helds[slot] != -1) {
                 this.heldItem(player, player.helds[slot], true);
             }
