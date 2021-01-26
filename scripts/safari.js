@@ -9818,7 +9818,7 @@ function Safari() {
         }
         var hit = null;
         for (var a in heldCodes) {
-            if (heldCodes[a+""] == item.replace(" berry", "")) {
+            if (heldCodes[a+""] == item.toLowerCase().replace(" berry", "")) {
                 hit = a;
             }
         }
@@ -10010,7 +10010,7 @@ function Safari() {
                 reason = "remove your active Pokémon";
             }
             if (cantBecause(src, reason, restrictions)) {
-                pendingActiveChanges[player.id] = "remove:" + id;
+                pendingActiveChanges[player.id] = "remove:" + info.name;
                 safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
                 return;
             }
