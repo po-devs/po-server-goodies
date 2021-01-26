@@ -1027,7 +1027,7 @@ function Safari() {
     var costumeData = {
         preschooler: {
             icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, 
-            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used." + this.rate, noAcq: "Catch your first Pokémon",
+            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             skills: {
                 preschoolerPack1: [2, 2],
@@ -9860,7 +9860,7 @@ function Safari() {
         var getItem = heldCodes[item+""];
         if (taking) {
             player.balls[getItem] += 1;
-            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + " from" + poke(player.party[slot]) + " at position " + (slot+1) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Took back the " + itemAlias(getItem, false, true) + " from " + poke(player.party[slot]) + " at position " + (slot+1) + "!", safchan);
         } else {
             if (player.balls[getItem] <= 0) {
                 safaribot.sendHtmlMessage(src, "You don't have any " + itemAlias(getItem, false, true) + " to give!", safchan);
@@ -9881,7 +9881,7 @@ function Safari() {
             }
             
             if (player.helds[slot] != -1) {
-                this.heldItem(player, player.helds[slot], true);
+                this.heldItem(player, player.helds[slot], true, slot);
             }
             player.helds[slot] = item;
             player.balls[getItem] -= 1;
