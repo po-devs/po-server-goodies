@@ -939,7 +939,7 @@ function Safari() {
             coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 58, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
             fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
             
-            mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: false },
+            mail: {name: "mail", fullName: "Mail", type: "items", icon: 214, price: 1000, aliases: ["mail"], tradable: true },
             crystal: {name: "crystal", fullName: "Z-Crystal", type: "consumable", icon: 3000, price: 10000, duration: 40, aliases: ["crystal", "z-crystal", "zcrystal", "z crystal"], tradable: false },
             scale: {name: "scale", fullName: "Prism Scale", type: "consumable", icon: 232, price: 3000, duration: 10, aliases: ["scale", "prism", "prism scale", "prismscale"], tradable: false },
             mushroom: {name: "mushroom", fullName: "Big Mushroom", type: "consumable", icon: 47, price: 3000, duration: 10, aliases: ["mushroom", "big mushroom", "bigmushroom", "tiny mushroom", "tinymushroom"], tradable: true },
@@ -10432,41 +10432,47 @@ function Safari() {
         return out;
     };
     this.showBag = function(player, isAndroid, textOnly, search) {
-        //Manual arrays because easier to put in desired order. Max of 11 in each array or you need to change the colspan. Line1 only gets 9 due to money taking up a slot
-        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "pokeblock", "itemfinder", "pack", "rare", "dust", "egg", "bright"];
+        //Manual arrays because easier to put in desired order. Max of 14 in each array or you need to change the colspan. Line1 only gets 12 due to money taking up 2 colspans
+        var line1 = [/*money*/ "silver", "box", "shady", "entry", "gacha", "bait", "golden", "deluxe", "pokeblock", "itemfinder", "rock", "mail"];
         var line2 = ["safari", "great", "ultra", "master", "myth", "luxury", "quick", "level", "love", "spy", "clone", "premier", "mono"];
-        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish", "bait", "golden", "deluxe"];
-        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn", "dew", "hdew", "ldew", "materia", "fragment"];
+        var line3 = ["lightning", "heavy", "photo", "mirror", "uturn", "inver", "spirit", "cherish"];
+        var line4 = ["whtapricorn", "blkapricorn", "redapricorn", "bluapricorn", "pnkapricorn", "grnapricorn", "ylwapricorn"];
         var line5 = ["oran", "pecha", "razz", "bluk", "leppa", "tamato", "pinap", "nanab", "watmel", "petaya", "miracle", "platinum"];
-        var line6 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens", "water", "soda", "cherry", "fossil", "coupon"];
-        var line7 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "moonshard", "sunshard", "gem",  "stick", "rock", "lucky", "easteregg"];
-        var line8 = ["mega", "spray", "burn", "form", "mail", "celebrityTicket", "crystal", "scale", "mushroom", "brush", "philosopher", "philosopherpebble", "ash", "cookie"];
+        var line6 = ["pack", "water", "soda", "cookie", "cherry", "gem", "mega", "crystal", "spray"]
+        var line7 = ["burn", "form", "celebrityTicket", "scale", "mushroom", "brush", "egg", "bright", "easteregg"];
+        var line8 = ["amulet", "soothe", "scarf", "eviolite", "crown", "honey", "battery", "lens"];
+        var line9 = ["pearl", "stardust", "bigpearl", "starpiece", "nugget", "bignugget", "cometshard", "sunshard", "moonshard"];
+        var line10 = ["rare", "dust", "stick", "fossil", "coupon", "dew", "hdew", "ldew", "materia", "fragment", "philosopher", "philosopherpebble", "ash"];
 
-        if (["wallet", "balls", "ball", "apricorn", "apricorns", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
+        if (["wallet", "utility", "utilities", "balls", "ball", "apricorn", "apricorns", "usable", "usables", "consumable", "consumables", "perk", "perks", "pawn", "pawns", "pawnable", "pawnables", "rare", "rares", "rarities", "berries", "berry"].indexOf(search) === -1) {
             search = "*";
         }
         var out = "";
-        if ((search === "*") || (search === "wallet")) {
-            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet");
+        if ((search === "*") || ["wallet", "utility", "utilities"].contains(search)) {
+            out += bagRow(player, line1, isAndroid, textOnly, true, "Wallet & Utilities");
         }
-        if ((search === "*") || (search === "balls") || (search === "ball")) {
-            out += bagRow(player, line2, isAndroid, textOnly, false, "Pokéballs");
+        if ((search === "*") || ["ball", "balls"].contains(search)) {
+            out += bagRow(player, line2, isAndroid, textOnly, false, "Poké Balls");
             out += bagRow(player, line3, isAndroid, textOnly, false);
         }
-        if ((search === "*") || (search === "apricorns") || (search === "apricorn")) {
+        if ((search === "*") || ["apricorn", "apricorns"].contains(search)) {
             out += bagRow(player, line4, isAndroid, textOnly, false, "Apricorns");
         }
-        if ((search === "*") || (search === "berry") || (search === "berries")) {
+        if ((search === "*") || ["berry", "berries"].contains(search)) {
             out += bagRow(player, line5, isAndroid, textOnly, false, "Berries");
         }
-        if ((search === "*") || (search === "perks") || (search === "perk")) {
-            out += bagRow(player, line6, isAndroid, textOnly, false, "Perks");
+        if ((search === "*") || ["usable", "usables", "consumable", "consumables"].contains(search)) {
+            out += bagRow(player, line6, isAndroid, textOnly, false, "Consumables");
+            out += bagRow(player, line7, isAndroid, textOnly, false, "Consumables");
         }
-        if ((search === "*") || (search === "pawnables") || (search === "pawnable") || (search === "pawn") || (search === "pawns")) {
-            out += bagRow(player, line7, isAndroid, textOnly, false, "Pawnables");
+        if ((search === "*") || ["perk", "perks"].contains(search)) {
+            out += bagRow(player, line8, isAndroid, textOnly, false, "Perks");
         }
-        if ((search === "*") || (search === "rare") || (search === "rarities") || (search === "rares")) {
-            out += bagRow(player, line8, isAndroid, textOnly, false, "Rarities");
+        if ((search === "*") || ["pawn", "pawns", "pawnable", "pawnables"].contains(search)) {
+            out += bagRow(player, line9, isAndroid, textOnly, false, "Pawnables");
+        }
+        if ((search === "*") || ["rare", "rares", "rarities"].contains(search)) {
+            out += bagRow(player, line10, isAndroid, textOnly, false, "Rarities");
         }
         out += (textOnly ? "" : "</table>");
         return out;
