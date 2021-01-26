@@ -7855,7 +7855,11 @@ function Safari() {
         }
         if ("rewards" in rules) {
             var rew = getRule("rewards");
-            var set = randomSample(rew.chance);
+            
+            var set;
+            do {
+                set = randomSample(rew.chance);
+            } while ((currentDay !== 1 && set === "moonshard") || (currentDay !== 7 && set === "sunshard")); // custom reward set for Sun and Moon Festival
             if (set in rew.sets) {
                 out.rewards = rew.sets[set];
             }
