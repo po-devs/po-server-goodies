@@ -10238,12 +10238,23 @@ function Safari() {
                 safari.heldItem(player, getItem, true, parseInt(i));
             }
         }
-        player.party = toLoad.concat();
-        player.helds = [];
-
-        while (player.party.length > player.helds.length) {
-            player.helds.push(-1);
+        
+        // synchronise held array and party array size
+        var newSize = toLoad.concat().length;
+        if (player.helds.length > newSize) { // if old party is larger than new party
+            for (var i = player.helds.length; i > newSize;  i--) {
+                safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+            }
+            player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
         }
+        else if (newSize > player.helds.length) { // if new party is larger than old party
+            while (player.helds.length > newSize) {
+                player.helds.push(-1); // fill in the missing -1s to match new party size
+            }
+        }
+        
+        player.party = toLoad.concat();
+
         if (player.party[0] !== firstInParty) {
             player.berries.petayaCombo = 0;
         }
