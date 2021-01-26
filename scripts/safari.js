@@ -10156,18 +10156,28 @@ function Safari() {
                 safaribot.sendMessage(src, "Your party saved in the slot " + targetId + " (" + readable(toLoad.map(poke), "and") + ") will be loaded in the next opportunity!", safchan);
                 return;
             }
-
+            
+            // synchronise held array and party array size
+            var newSize = toLoad.concat().length;
+            if (player.helds.length > newSize) { // if old party is larger than new party
+                for (var i = player.helds.length; i > newSize;  i--) {
+                    safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+                }
+                player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
+            }
+            else if (newSize > player.helds.length) { // if new party is larger than old party
+                while (player.helds.length > newSize) {
+                    player.helds.push(-1); // fill in the missing -1s to match new party size
+                }
+            }
+            
+            if (player.party[0] != toLoad.concat()[0]) { // if your new active isn't the same
+                player.berries.petayaCombo = 0; // you should lose your petaya combo
+            }
+            
             player.party = toLoad.concat();
-            for (var i = 0; i < player.helds.length; i++) {
-                if (player.helds[i] != -1)
-                    safari.takeItem(src, i+1); // make sure to put all the items back into their bag
-            }
+
             safaribot.sendMessage(src, "Loaded your party from slot " + (num + 1) + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
-            player.helds = []; // reset the whole thing
-            player.berries.petayaCombo = 0;
-            while (player.party.length > player.helds.length) {
-                player.helds.push(-1); // repopulate with -1 based on new party's length
-            }
             this.saveGame(player);
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
