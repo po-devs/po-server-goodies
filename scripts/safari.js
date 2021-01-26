@@ -10165,10 +10165,8 @@ function Safari() {
                 }
                 player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
             }
-            else if (newSize > player.helds.length) { // if new party is larger than old party
-                while (player.helds.length > newSize) {
-                    player.helds.push(-1); // fill in the missing -1s to match new party size
-                }
+            while (newSize > player.helds.length) { // if new party is larger than old party
+                player.helds.push(-1); // fill in the missing -1s to match new party size
             }
             
             if (player.party[0] != toLoad.concat()[0]) { // if your new active isn't the same
@@ -10239,10 +10237,8 @@ function Safari() {
             }
             player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
         }
-        else if (newSize > player.helds.length) { // if new party is larger than old party
-            while (player.helds.length > newSize) {
-                player.helds.push(-1); // fill in the missing -1s to match new party size
-            }
+        while (newSize > player.helds.length) { // if new party is larger than old party
+            player.helds.push(-1); // fill in the missing -1s to match new party size
         }
         
         player.party = toLoad.concat();
@@ -48420,7 +48416,7 @@ function Safari() {
             }
             if (command === "takeitemall" || command === "takeberryall") {
                 var player = getAvatar(src);
-                for (var i = 0; i < player.party.length; i++) {
+                for (var i = 0; i < player.helds.length; i++) {
                     safari.takeItem(src, i+1);
                 }
                 return true;
