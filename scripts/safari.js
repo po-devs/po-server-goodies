@@ -1027,7 +1027,7 @@ function Safari() {
     var costumeData = {
         preschooler: {
             icon: 401, name: "preschooler", fullName: "Preschooler", aliases: ["preschooler", "pre schooler"], acqReq: 1, record: "pokesCaught", rate: 1.30, thresh1: 25, thresh2: 50, thresh3: 90, changeRate: 0.1, rate2: 1.15, 
-            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases by 15% the limit of Eviolites that can be used.", noAcq: "Catch your first Pokémon",
+            effect: "A master in friendship. Strengthens the bond between a trainer and their Starter Pokémon to increase catch rate at the beginning of an adventure. Also increases the limit of Eviolites that can be used." + this.rate, noAcq: "Catch your first Pokémon",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             skills: {
                 preschoolerPack1: [2, 2],
@@ -1212,7 +1212,7 @@ function Safari() {
         },
         backpacker: {
             icon: 372, name: "backpacker", fullName: "Backpacker", aliases: ["backpacker", "back packer"], acqReq: 36, record: "wonderStarter", rate: 1.2,
-            effect: "A master in traveling. Can easily fit 20% more Honeys, Silk Scarves and Cell Batteries into the bag to benefit from its effects!",
+            effect: "A master in traveling. Can easily fit more Honey, Silk Scarves and Cell Batteries into the bag to benefit from its effects!",
             effect2: "Unsuccessful bait cooldown increased since cooking takes longer in the woods.",
             noAcq: "Obtain {0} more starters from Wonder Trade",
             expTypes: ["journal", "catchhighbst", "wincontest", "catch"],
@@ -1229,7 +1229,7 @@ function Safari() {
         },
         rich: {
             icon: 395, name: "rich", fullName: "Rich Girl", aliases: ["rich", "rich girl", "rich boy"], acqReq: 200000, record: "pawnComet", acqReq2: 50000, record2: "luxuryEarnings", rate: 1.1,
-            effect: "A master in money. Personal wealth gives the experience necessary to use 10% more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
+            effect: "A master in money. Personal wealth gives the experience necessary to use more Amulet Coins, Relic Crowns and Soothe Bells than normal people!",
             effect2: "Peasant balls (Safari Balls) are more likely to fail.",
             noAcq: "Obtain ${0} more by pawning Comet Shards and earn ${1} more from Luxury Balls",
             expTypes: ["bait", "wincontest", "findrare", "catch"],
@@ -9807,7 +9807,7 @@ function Safari() {
         "11": "miracle",
         "12": "platinum"
     };
-    this.giveItem = function(src, item) {
+    this.giveItem = function(src, item, slot) {
         var player = getAvatar(src);
         if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
             return false;
@@ -9822,23 +9822,31 @@ function Safari() {
             safaribot.sendMessage(src, "No such item!", safchan);
             return;
         }
-        this.heldItem(player, hit);
+        this.heldItem(player, hit, false, slot);
     };
-    this.takeItem = function(src) {
+    this.takeItem = function(src, slot) {
         var player = getAvatar(src);
         if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
+        if (!slot || isNaN(slot))
+            slot = 0;
+        else
+            slot = parseInt(slot) - 1; // assumption that most players will logically input 1~6 instead of proper array index of 0~5
         
-        if (player.helds[0] == -1) {
-            safaribot.sendMessage(src, "Your lead Pokémon is not holding an item!", safchan);
+        if (slot < 0 || slot > 5) {
+            safaribot.sendMessage(src, "Please enter a valid party position (1 to 6)!", safchan);
+            return;
+        }
+        if (player.helds[slot] == -1) {
+            safaribot.sendMessage(src, "Your " + poke(player.party[slot]) + " at position " + slot+1 + " is not holding an item!", safchan);
             return;
         }
         
-        this.heldItem(player, player.helds[0], true);
-        player.helds[0] = -1;
+        this.heldItem(player, player.helds[slot], true);
+        player.helds[slot] = -1;
     };
-    this.heldItem = function(player, item, taking) {
+    this.heldItem = function(player, item, taking, slot) {
         var src = sys.id(player.id);
         if (!(heldCodes.hasOwnProperty(item+""))) {
             safaribot.sendHtmlMessage(src, "No item under " + item + " found!", safchan);
@@ -9852,12 +9860,21 @@ function Safari() {
                 safaribot.sendHtmlMessage(src, "You don't have any " + itemAlias(getItem, false, true) + " to give!", safchan);
                 return;
             }
-            if (player.helds[0] != -1) {
-                this.heldItem(player, player.helds[0], true);
+            if (slot === "*" || isNaN(slot))
+                slot = 0;
+            else
+                slot = parseInt(slot) - 1; // assumption that most players will logically input 1~6 instead of proper array index of 0~5
+            
+            if (slot < 0 || slot > 5) {
+                safaribot.sendMessage(src, "Please enter a valid party position (1 to 6)!", safchan);
+                return;
             }
-            player.helds[0] = item;
+            if (player.helds[slot] != -1) {
+                this.heldItem(player, player.helds[slot], true);
+            }
+            player.helds[slot] = item;
             player.balls[getItem] -= 1;
-            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[0]) + " the " + itemAlias(getItem, false, true) + "!", safchan);
+            safaribot.sendHtmlMessage(src, "Gave " + poke(player.party[slot]) + " the " + itemAlias(getItem, false, true) + "!", safchan);
         }
         safari.saveGame(player);
     };
@@ -47982,8 +47999,10 @@ function Safari() {
             "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
-            "/giveitem [berry name]: Gives a berry to your lead Pokémon.",
-            "/takeitem: Takes the held berry from your lead Pokémon.",
+            "/giveitem [berry name]:[party slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
+            "/takeitem [party slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
+            "/giveitemall [berry name]: Gives a berry to your entire party at once.",
+            "/takeitemall: Takes the held berries from your entire party at once.",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
             "/shopadd: To add items or Pokémon to your personal shop. Use /shopremove to something from your shop, /shopclose to remove all items at once or /shopclean to remove all items out of stock.",
@@ -48350,12 +48369,30 @@ function Safari() {
                 safari.quickLoadParty(src, commandData);
                 return true;
             }
-            if (command === "giveitem") {
-                safari.giveItem(src, commandData);
+            if (command === "giveitem" || command === "giveberry") {
+                var berry, slot;
+                berry = commandData.split(":")[0];
+                slot = commandData.split(":")[1] || 0;
+                
+                safari.giveItem(src, commandData, slot);
                 return true;
             }
-            if (command === "takeitem") {
-                safari.takeItem(src);
+            if (command === "giveitemall" || command === "giveberryall") {
+                var player = getAvatar(src);
+                for (var i = 0; i < player.party.length; i++) {
+                    safari.giveItem(src, commandData, i+1);
+                }
+                return true;
+            }
+            if (command === "takeitem" || command === "takeberry") {
+                safari.takeItem(src, commandData);
+                return true;
+            }
+            if (command === "takeitemall" || command === "takeberryall") {
+                var player = getAvatar(src);
+                for (var i = 0; i < player.party.length; i++) {
+                    safari.takeItem(src, i+1);
+                }
                 return true;
             }
             if (command === "view" || command === "mydata" || command === "viewt" || command === "mydatat") {
