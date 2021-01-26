@@ -10060,11 +10060,11 @@ function Safari() {
                 }
             }
             if (player.party.indexOf(id) === -1) {
-                player.helds.unshift(-1);
                 if (player.party.length >= 6) {
-                    var getItem = player.helds.splice(5, 1)[0];
-                    if (getItem > -1) {
-                        safari.heldItem(player, getItem, true, 6);
+                    if (player.helds[5]) { // last pokemon is removed, so take their held item back
+                        safari.takeItem(src, 6); // place it into the bag
+                        player.helds.pop(); // remove the -1 from the end
+                        player.helds.unshift(-1); // put it in front
                     }
                     var removedId = player.party.splice(5, 1)[0];
                     safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
