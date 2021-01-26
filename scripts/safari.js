@@ -6453,7 +6453,7 @@ function Safari() {
     }
     function costumeAlias(name, returnGarbage, full) {
         for (var e in costumeData) {
-            if (costumeData[e].aliases.indexOf(name) !== -1) {
+            if (costumeData[e].aliases.indexOf(name.toLowerCase()) !== -1) {
                 if (full) {
                     return costumeData[e].fullName;
                 } else {
@@ -15212,8 +15212,15 @@ function Safari() {
     this.showCostumeSkills = function(src, commandData) {
         var player = getAvatar(src);
         var cos = player.costume;
-        if (commandData && player.costumeInfo.hasOwnProperty(commandData.toLowerCase())) {
-            cos = commandData.toLowerCase();
+        var noSkills = ["inver"];
+        
+        if (commandData && player.costumeInfo.hasOwnProperty(costumeAlias(commandData))) {
+            cos = costumeAlias(commandData);
+        }
+        
+        if (noSkills.contains(cos)) {
+            safaribot.sendMessage(src, "This costume has no extra skills and cannot level up!", safchan);
+            return;
         }
         if (!player.costumeInfo[cos]) {
             safaribot.sendHtmlMessage(src, "You do not have that costume!", safchan);
