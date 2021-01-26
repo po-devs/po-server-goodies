@@ -9845,6 +9845,7 @@ function Safari() {
         
         this.heldItem(player, player.helds[slot], true);
         player.helds[slot] = -1;
+        safari.saveGame(player);
     };
     this.heldItem = function(player, item, taking, slot) {
         var src = sys.id(player.id);
@@ -48374,7 +48375,7 @@ function Safari() {
                 berry = commandData.split(":")[0];
                 slot = commandData.split(":")[1] || 0;
                 
-                safari.giveItem(src, commandData, slot);
+                safari.giveItem(src, berry, slot);
                 return true;
             }
             if (command === "giveitemall" || command === "giveberryall") {
