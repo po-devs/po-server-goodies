@@ -10165,7 +10165,8 @@ function Safari() {
             var newSize = toLoad.concat().length;
             if (player.helds.length > newSize) { // if old party is larger than new party
                 for (var i = player.helds.length; i > newSize;  i--) {
-                    safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+                    if (player.helds[i-1] != -1)
+                        safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
                 }
                 player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
             }
@@ -10237,7 +10238,8 @@ function Safari() {
         var newSize = toLoad.concat().length;
         if (player.helds.length > newSize) { // if old party is larger than new party
             for (var i = player.helds.length; i > newSize;  i--) {
-                safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+                if (player.helds[i-1] != -1)
+                    safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
             }
             player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
         }
