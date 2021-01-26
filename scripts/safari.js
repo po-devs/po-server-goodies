@@ -9809,7 +9809,7 @@ function Safari() {
     };
     this.giveItem = function(src, item, slot) {
         var player = getAvatar(src);
-        if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
+        if (cantBecause(src, "give an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
         var hit = null;
