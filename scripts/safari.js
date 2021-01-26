@@ -10010,6 +10010,8 @@ function Safari() {
                 reason = "remove your active Pokémon";
             }
             if (cantBecause(src, reason, restrictions)) {
+                pendingActiveChanges[player.id] = "remove:" + id;
+                safaribot.sendMessage(src, "Your " + info.name + "will be removed from your party at the next opportunity!", safchan);
                 return;
             }
 
