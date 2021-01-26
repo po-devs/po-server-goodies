@@ -10011,7 +10011,7 @@ function Safari() {
             }
             if (cantBecause(src, reason, restrictions)) {
                 pendingActiveChanges[player.id] = "remove:" + id;
-                safaribot.sendMessage(src, "Your " + info.name + "will be removed from your party at the next opportunity!", safchan);
+                safaribot.sendMessage(src, "Your " + info.name + " will be removed from your party at the next opportunity!", safchan);
                 return;
             }
 
