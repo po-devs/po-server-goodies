@@ -9814,7 +9814,7 @@ function Safari() {
         }
         var hit = null;
         for (var a in heldCodes) {
-            if (heldCodes[a+""] == item) {
+            if (heldCodes[a+""] == item.replace(" berry", "")) {
                 hit = a;
             }
         }
@@ -10021,7 +10021,7 @@ function Safari() {
             }
             var getItem = player.helds[player.party.indexOf(id)];
             if (getItem > -1) {
-                safari.heldItem(player, getItem, true);
+                safari.heldItem(player, getItem, true, player.party.indexOf(id)+1);
             }
             player.helds.splice(player.party.indexOf(id), 1);
             player.party.splice(player.party.indexOf(id), 1);
@@ -10061,12 +10061,12 @@ function Safari() {
             if (player.party.indexOf(id) === -1) {
                 player.helds.unshift(-1);
                 if (player.party.length >= 6) {
-                    var removedId = player.party.splice(5, 1)[0];
-                    safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
                     var getItem = player.helds.splice(5, 1)[0];
                     if (getItem > -1) {
-                        safari.heldItem(player, getItem, true);
+                        safari.heldItem(player, getItem, true, 6);
                     }
+                    var removedId = player.party.splice(5, 1)[0];
+                    safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
                 }
             } else {
                 var removeInd = player.party.indexOf(id)
@@ -10158,6 +10158,7 @@ function Safari() {
 
             player.party = toLoad.concat();
             safaribot.sendMessage(src, "Loaded your party from slot " + (num + 1) + " (" + readable(player.party.map(poke), "and") + ")!", safchan);
+            player.berries.petayaCombo = 0;
             this.saveGame(player);
         } else {
             safaribot.sendMessage(src, "To modify your party, type /party add:[pokémon] or /party remove:[pokémon]. Use /party active:[pokémon] to set your party leader.", safchan);
@@ -10216,7 +10217,7 @@ function Safari() {
         for (var i in player.helds) {
             getItem = player.helds[i];
             if (getItem > -1) {
-                safari.heldItem(player, getItem, true);
+                safari.heldItem(player, getItem, true, i+1);
             }
         }
         player.helds = [];
@@ -48010,9 +48011,9 @@ function Safari() {
             "/megastone: Use a Mega Stone to Mega Evolve a Pokémon*.",
             "/gacha: Use a ticket to win a prize!",
             "/finder: Use your item finder to look for items.",
-            "/giveitem [berry name]:[party slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
-            "/takeitem [party slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
-            "/giveitemall [berry name]: Gives a berry to your entire party at once.",
+            "/giveitem [Berry Name]:[Party Slot]: Gives a berry to the Pokémon in the specified party slot (1 to 6). Party slot defaults to 1.",
+            "/takeitem [Party Slot]: Takes the held berry from the Pokémon in the specified party slot (1 to 6). Defaults to 1.",
+            "/giveitemall [Berry Name]: Gives a berry to your entire party at once.",
             "/takeitemall: Takes the held berries from your entire party at once.",
             "/buy: To buy items or Pokémon from an NPC.",
             "/shop: To buy items or Pokémon from a another player.",
