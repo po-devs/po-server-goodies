@@ -30287,7 +30287,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Alchemist: Here is a list of the Pokémon I can try to transform:", safchan);
                 }
                 for (var pk = 0; pk < page.length; pk++) {
-                    var pkName = getInputPokemon(Object.keys(eligible)[page[pk]]).name;
+                    var pkName = getInputPokemon(page[pk]).name;
                     safaribot.sendHtmlMessage(src, link("/quest philosopher:" + pkName, pkName), safchan);
                     if (pk === page.length-1) {
                         safaribot.sendHtmlMessage(src, link("/quest philosopher:page:" + (pageNum+1), "«Next»"), safchan);
