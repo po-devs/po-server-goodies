@@ -30278,9 +30278,11 @@ function Safari() {
             if (data[0] === "page") {
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(data[1])) || 0;
-                var page = Object.keys(eligible).slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
+                var keys = Object.keys(eligible);
+                var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
                 
                 if (page.length === 0) {
+                    safaribot.sendHtmlMessage(src, "Alchemist: " + link("/quest philosopher:page:0", "Check out a list of the Pokémon I can try to transform!"), safchan);
                     return;
                 }
                 else {
@@ -30290,9 +30292,14 @@ function Safari() {
                     var pkName = getInputPokemon(page[pk]).name;
                     safaribot.sendHtmlMessage(src, link("/quest philosopher:" + pkName, pkName), safchan);
                     if (pk === page.length-1) {
-                        safaribot.sendHtmlMessage(src, link("/quest philosopher:page:" + (pageNum+1), "«Next»"), safchan);
+                        var pageControls = (page.contains(keys[0]) ? "" : link("/quest philosopher:page:" + (pageNum-1), "«Previous»")) + (page.contains(keys[keys.length-1]) ? "" : " " + link("/quest philosopher:page:" + (pageNum+1), "«Next»"));
+                        if (pageControls)
+                            safaribot.sendHtmlMessage(src, pageControls, safchan);
                     }
                 }
+            }
+            else {
+                safaribot.sendHtmlMessage(src, "Alchemist: " + link("/quest philosopher:page:0", "Check out a list of the Pokémon I can try to transform!"), safchan);
             }
         } else {
             var base = pokeInfo.species(info.num), eligible;
