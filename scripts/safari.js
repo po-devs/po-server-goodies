@@ -23944,14 +23944,14 @@ function Safari() {
                     if (self.select.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Ice Shield absorbed energy!");
+                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Ice Shield sustained damage!");
+                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
                             }
@@ -23960,14 +23960,14 @@ function Safari() {
                     if (self.select.sludgeshield) {
                         if (["Poison", "Steel"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Sludge Shield absorbed energy!");
+                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Sludge Shield sustained damage!");
+                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Sludge Shield shattered!");
                             }
@@ -23976,14 +23976,14 @@ function Safari() {
                     if (self.select.metalshield) {
                         if (["Rock", "Steel"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Metal Shield absorbed energy!");
+                            out.push("The foe's Metal Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Fighting") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Metal Shield sustained damage!");
+                                out.push("The foe's Metal Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Metal Shield shattered!");
                             }
@@ -23992,14 +23992,14 @@ function Safari() {
                     if (self.select.dracoshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Draco Shield absorbed energy!");
+                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Draco Shield sustained damage!");
+                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Draco Shield shattered!");
                             }
@@ -24008,14 +24008,14 @@ function Safari() {
                     if (self.select.electroshield) {
                         if (["Electric", "Ghost"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Electro Shield absorbed energy!");
+                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Electro Shield sustained damage!");
+                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Electro Shield shattered!");
                             }
@@ -24024,14 +24024,14 @@ function Safari() {
                     if (self.select.genesisshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Genesis Shield absorbed energy!");
+                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData.shieldHP + "]");
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - dmg, 0);
+                            self.selectData.shieldHP = Math.max(self.selectData.shieldHP - sdmg, 0);
                             if (self.selectData.shieldHP > 0) {
-                                out.push("The foe's Genesis Shield sustained damage!");
+                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData.shieldHP + "]");
                             } else {
                                 out.push("The foe's Genesis Shield shattered!");
                             }
@@ -24047,14 +24047,14 @@ function Safari() {
                     if (self.select2.iceshield) {
                         if (["Water", "Ice"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Ice Shield absorbed energy!");
+                            out.push("The foe's Ice Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
                         } else {
                             if (move.type == "Fire") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Ice Shield sustained damage!");
+                                out.push("The foe's Ice Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
                             } else {
                                 out.push("The foe's Ice Shield shattered!");
                             }
@@ -24063,14 +24063,14 @@ function Safari() {
                     if (self.select2.sludgeshield) {
                         if (["Poison", "Steel"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Sludge Shield absorbed energy!");
+                            out.push("The foe's Sludge Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
                         } else {
                             if (move.type == "Water") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Sludge Shield sustained damage!");
+                                out.push("The foe's Sludge Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
                             } else {
                                 out.push("The foe's Sludge Shield shattered!");
                             }
@@ -24079,14 +24079,14 @@ function Safari() {
                     if (self.select2.dracoshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Draco Shield absorbed energy!");
+                            out.push("The foe's Draco Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
                         } else {
                             if (move.type == "Fairy") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Draco Shield sustained damage!");
+                                out.push("The foe's Draco Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
                             } else {
                                 out.push("The foe's Draco Shield shattered!");
                             }
@@ -24095,14 +24095,14 @@ function Safari() {
                     if (self.select2.electroshield) {
                         if (["Electric", "Ghost"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Electro Shield absorbed energy!");
+                            out.push("The foe's Electro Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
                         } else {
                             if (move.type == "Ground") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Electro Shield sustained damage!");
+                                out.push("The foe's Electro Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
                             } else {
                                 out.push("The foe's Electro Shield shattered!");
                             }
@@ -24111,14 +24111,14 @@ function Safari() {
                     if (self.select2.genesisshield) {
                         if (["Dragon"].contains(move.type)) {
                             self.selectData2.shieldHP += Math.floor(50 + (50 * Math.random()));
-                            out.push("The foe's Genesis Shield absorbed energy!");
+                            out.push("The foe's Genesis Shield absorbed energy! [Shield HP: " + self.selectData2.shieldHP + "]");
                         } else {
                             if (move.type == "Psychic") {
                                 sdmg *= 1.5;
                             }
-                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - dmg, 0);
+                            self.selectData2.shieldHP = Math.max(self.selectData2.shieldHP - sdmg, 0);
                             if (self.selectData2.shieldHP > 0) {
-                                out.push("The foe's Genesis Shield sustained damage!");
+                                out.push("The foe's Genesis Shield sustained damage! [Shield HP: " + self.selectData2.shieldHP + "]");
                             } else {
                                 out.push("The foe's Genesis Shield shattered!");
                             }
@@ -27852,6 +27852,7 @@ function Safari() {
                 this.celebrityMatch(src, args);
             break;
             case "journal":
+            case "journalist":
             case "the onion":
                 this.journalQuest(src, args);
             break;
