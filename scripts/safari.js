@@ -30279,7 +30279,7 @@ function Safari() {
             if (data[0] === "page") {
                 var displayLimit = 10,
                     pageNum = Math.abs(parseInt(data[1])) || 0;
-                var keys = Object.keys(eligible);
+                var keys = Object.keys(eligible).sort(function(a, b) { return parseInt(a) - parseInt(b) });
                 var page = keys.slice(pageNum * displayLimit, pageNum * displayLimit + displayLimit);
                 
                 if (page.length === 0) {
