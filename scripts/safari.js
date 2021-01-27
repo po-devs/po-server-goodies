@@ -23937,7 +23937,7 @@ function Safari() {
                 }
                 if (self.selectData && self.selectData.shieldHP > 0 && targetSide === 2) {
                     dmg = Math.ceil(dmg * 0.5);
-                    sdmg = Math.ceil(dmg * 0.5);
+                    sdmg = dmg;
                     if (self.select.genesisshield) {
                         dmg = Math.ceil(dmg * 0.75);
                     }
@@ -24040,7 +24040,7 @@ function Safari() {
                 }
                 if (self.select2 && self.selectData2 && self.selectData2.shieldHP > 0 && targetSide === 1) {
                     dmg = Math.ceil(dmg * 0.5);
-                    sdmg = Math.ceil(dmg * 0.5);
+                    sdmg = dmg;
                     if (self.select2.genesisshield) {
                         dmg = Math.ceil(dmg * 0.75);
                     }
