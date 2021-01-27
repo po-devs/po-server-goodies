@@ -30694,8 +30694,7 @@ function Safari() {
                         reward = reward.random();
                     }
                     safaribot.sendHtmlMessage(id, "Announcer: Congratulations! You earned " + plural(reward[1], reward[0]) + "!", safchan);
-                    player.balls[reward[0]] += reward[1];
-                    rewardCapCheck(player, reward[0], 0, true);
+                    rewardCapCheck(player, reward[0], reward[1], true);
                     safari.saveGame(player);
                 }
                 if (extraArgs.turn && extraArgs.turn >= 2) {
