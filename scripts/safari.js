@@ -46962,9 +46962,6 @@ function Safari() {
             }
             for (e = 0; e < lb.length; e++) {
                 p = lb[e];
-                if (p.pos > 3) {
-                    break;
-                }
                 m = {
                     desc: "",
                     icon: -1
@@ -46999,9 +46996,19 @@ function Safari() {
                     player.medalRecords[w].first++;
                     player.medalRecords[w].stayfirst = true;
                 }
+                else {
+                    player.medalRecords[w].first = 0;
+                    player.medalRecords[w].stayfirst = false;
+                }
+                
                 if (p.pos <= 3) {
                     player.medalRecords[w].topthree++;
                     player.medalRecords[w].staytopthree = true;
+                }
+                else {
+                    player.medalRecords[w].topthree = 0;
+                    player.medalRecords[w].staytopthree = false;
+                    continue;
                 }
                 
                 var awarded = [];
