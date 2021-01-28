@@ -1457,6 +1457,16 @@ function Safari() {
         hint: 15,
         blkapricorn: 30
     };
+    var economyData = { //  mostly listing the main ways i can think of that money is generated/lost/moved, there are plenty of other misc things like luxury balls, window repairs etc not listed here but can be added if desired
+        npcShop: [0, 0, 0], // placeholders, too lazy to copy 14 blank values in
+        playerShop: [0, 0, 0],
+        playerTrade: [0, 0, 0],
+        playerSell: [0, 0, 0],
+        playerPawn: [0, 0, 0],
+        collector: [0, 0, 0],
+        total: [0, 0, 0]
+    };
+
     var finderMissRate = 0.80;
     var safariHints = [
         "Did you know? Not only can you see your bag using /bag, but you can also see certain portions of it by using a more specific command! Trainers can use " + link("/bag wallet") + ", " + link("/bag balls") + ", " + link("/bag apricorns") + ", " + link("/bag perks") + ", " + link("/bag pawnables") + ", and " + link("/bag rare") + " to see specific rows!",
@@ -6881,7 +6891,7 @@ function Safari() {
         }
         return readable(out);
     }
-    function giveStuff(player, stuff, rawResult) {
+    function giveStuff(player, stuff, rawResult, isTrade) {
         var out = { gained: [], lost: [], discarded: [] }, asset, amt, total, max;
         if (!player) {
             return "nothing";
@@ -6910,6 +6920,8 @@ function Safari() {
             total = amt = stuff[s];
             if (s[0] === "$") {
                 player.money += amt;
+                if (isTrade)
+                    safari.updateEconomyData(Math.abs(amount), "playerTrade");
                 if (amt > 0) {
                     if (player.money > moneyCap) {
                         out.discarded.push("$" + (player.money - moneyCap));
@@ -8784,7 +8796,7 @@ function Safari() {
                     }
                 }
                 if (drop && gained.length > 0) { // check that there's actually an item gained so it doesn't display "x was holding -1 Item!" if the held item is negative
-                    sendAll("The {0} was holding {1}!".format(pokeName, readable(gained)));
+                    sendAll("The {0} was holding {1}!".format(pokeName, drop));
                 }
                 if (lost.length > 0) {
                     sendAll("The {0} removed {1} from {2}!".format(pokeName, readable(lost), ball === "spy" ? "the stealthy person" : sys.name(src)));
@@ -11221,6 +11233,39 @@ function Safari() {
             safaribot.sendMessage(src, "Your box was sorted by duplicates (" + (order === "desc" ? "descending" : "ascending") + ").", safchan);
         }
         this.saveGame(player);
+    };
+    this.flipEconomyDay = function() {
+        var threshold = 14; // 2 weeks
+        for (var e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                data = JSON.parse(rawPlayers.hash[e]);
+                economyData.total[0] += data.money; // this only tallies at the end of each day
+            }
+        }
+        
+        for (var key in economyData) {
+            if (economyData[key].length === threshold) {
+                economyData[key].unshift(0);
+                economyData[key] = economyData[key].slice(0, threshold);
+            }
+            else if (economyData[key].length > threshold) {
+                economyData[key] = economyData[key].slice(economyData[key].length - threshold, economyData[key].length);
+            }
+            else {
+                economyData[key].unshift(0);
+            }
+        }
+        
+        permObj.add("economicSummary", JSON.stringify(economyData));
+    };
+    this.updateEconomyData = function(amount, key) {
+        if (!economyData.hasOwnProperty(key)) {
+            return;
+        }
+        
+        economyData[key][0] += amount;
+        
+        permObj.add("economicSummary", JSON.stringify(economyData));
     };
     this.showRecords = function (src, commandData) {
         if (!validPlayers("self", src)) {
@@ -15554,6 +15599,7 @@ function Safari() {
         if (out.length > 0) {
             safaribot.sendMessage(src, "You sold " + readable(out, "and") +  " for $" + addComma(totalMoney) + "! You now have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
             this.missionProgress(player, "pawn", itemsPawned.join(","), amountPawned, { price: totalMoney });
+            safari.updateEconomyData(totalMoney, "playerPawn");
         } else {
             var remaining = remaining.length > 0 ? readable(remaining, "and") : "no pawnable item";
             safaribot.sendMessage(src, "Huh? You didn't actually sell anything... If you change your mind, I'll be happy to buy from you! You currently have " + readable(remaining, "and") + " and $" + addComma(player.money) + "!", safchan);
@@ -15735,6 +15781,8 @@ function Safari() {
         }
 
         player.money += price;
+        safari.updateEconomyData(price, "playerSell");
+        
         if (player.money > moneyCap) {
             player.money = moneyCap;
         }
@@ -15805,6 +15853,7 @@ function Safari() {
 
         player.records.pokeSoldEarnings -= player.lastSold.price;
         player.money -= player.lastSold.price;
+        safari.updateEconomyData(-player.lastSold.price, "playerSell");
         var get = (last.mon.shiny ? last.mon.id + "" : last.mon.id);
         player.pokemon.push(get);
 
@@ -16253,6 +16302,10 @@ function Safari() {
                 shop[input.input].purchases[player.idnum+""] = 0;
             }
             shop[input.input].purchases[player.idnum+""] += amount;
+            
+            if (!isSilver) {
+                safari.updateEconomyData(-cost, "npcShop");
+            }
             sys.appendToFile(shopLog, now() + "|||NPC::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
         }
         if (seller) {
@@ -16278,6 +16331,9 @@ function Safari() {
             }
             sys.sendMessage(sellerId, "", safchan);
             this.saveGame(seller);
+            if (!isSilver) {
+                safari.updateEconomyData(cost, "playerShop");
+            }
             sys.appendToFile(shopLog, now() + "|||" + sys.name(sellerId) + "::" + amount + "::" + input.name + "::" + shop[input.input].price + "::" + cost + "::" + isSilver + "|||" + sys.name(src) + "\n");
             if (shop[input.input].price >= 10000 || (input.type == "poke" && isRare(input.id))) {
                 sys.appendToFile(rareTradeLog, now() + "|||" + sys.name(src) + " bought " + plural(amount, input.input) + " from " + sys.name(sellerId) + " for $" + addComma(cost) + (amount > 1 ? " ($" + addComma(shop[input.input].price) + " each)" : "") + "\n");
@@ -26022,11 +26078,11 @@ function Safari() {
         var getBoostCount = function(user) {
             var c = 0, e;
             for (e in user.boosts) {
-            	if (e == "spe" && self.select && self.select.trickRoom) {            	
-					c -= user.boosts[e];
-            	} else {
-					c += user.boosts[e];
-				}
+                if (e == "spe" && self.select && self.select.trickRoom) {
+                    c -= user.boosts[e];
+                } else {
+                    c += user.boosts[e];
+                }
             }
             return c;
         };
@@ -26164,10 +26220,10 @@ function Safari() {
                         if (user.boosts[eff.buffStat] === 6) {
                             continue;
                         }
-                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {                        	
-							c -= eff.buff * 80 * eff.buffChance;
+                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {
+                            c -= eff.buff * 80 * eff.buffChance;
                         } else {
-							c += eff.buff * 80 * eff.buffChance;
+                            c += eff.buff * 80 * eff.buffChance;
                         }
                         if (bias.stats) {
                             c += eff.buff * 40 * eff.buffChance;
@@ -26176,10 +26232,10 @@ function Safari() {
                         if (user.boosts[eff.buffStat] === -6) {
                             continue;
                         }
-                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {                        	
-							c += eff.buff * 40 * eff.buffChance;
+                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {
+                            c += eff.buff * 40 * eff.buffChance;
                         } else {
-							c -= eff.buff * 40 * eff.buffChance;
+                            c -= eff.buff * 40 * eff.buffChance;
                         }
                         if (bias.stats) {
                             c -= eff.buff * 20 * eff.buffChance;
@@ -27556,7 +27612,7 @@ function Safari() {
                     requestObj[e] += inverted2[e];
                 }
 
-                var out1 = readable(giveStuff(player, requestObj, true).gained);
+                var out1 = readable(giveStuff(player, requestObj, true, true).gained);
                 var out2 = readable(giveStuff(target, offerObj, true).gained);
 
                 for (e in offerObj) {
@@ -28268,6 +28324,7 @@ function Safari() {
                 }
                 sys.sendMessage(src, "", safchan);
                 this.logLostCommand(sys.name(src), "quest collector:" + data.join(":"), "gave " + readable(quest.requests.map(poke), "and") + kept + theft);
+                safari.updateEconomyData(payout, "collector");
                 sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Collector|||Gave " + readable(quest.requests.map(poke)) + "|||Received $" + addComma(payout) + kept + theft + "\n");
                 player.records.collectorEarnings += payout;
                 player.records.collectorGiven += quest.requests.length;
@@ -47733,7 +47790,7 @@ function Safari() {
         if (this.hasCostumeSkill(player, "extraTriviaSoda")) {
             amt = Math.round(amt * (1.2 + (this.getCostumeLevel(player)/16)));
         }
-		this.costumeEXP(player, "wintrivia", amt);
+        this.costumeEXP(player, "wintrivia", amt);
         player.balls.soda += amt;
         rew = plural(amt, "soda");
         
@@ -47757,7 +47814,7 @@ function Safari() {
             if (!player) {
                 continue;
             }
-			this.costumeEXP(player, "winmafia", amt);
+            this.costumeEXP(player, "winmafia", amt);
             famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? amt * 1.5 : 1);
             player.balls.shady += famt;
             this.missionProgress(player, "cross", "mafia", 1, {});
@@ -53440,6 +53497,7 @@ function Safari() {
         finderItems = parseFromPerm("finderRates", finderItems);
         packItems = parseFromPerm("packRates", packItems);
         apricornToBallData = loadApricornRecipes();
+        economyData = parseFromPerm("economicSummary", economyData);
 
         safari.riceMode = false;
         
@@ -54154,6 +54212,7 @@ function Safari() {
                     safari.dayCareStep(2);
                     safari.checkNewMonth();
                     safari.backupSaves();
+                    safari.flipEconomyDay();
                     var mercy = parseInt(permObj.get("loginDaysDown"), 10);
                     if (mercy > 0) {
                         permObj.add("loginDaysDown", 0);
