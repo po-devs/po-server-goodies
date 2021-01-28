@@ -8761,7 +8761,7 @@ function Safari() {
             }
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
-                var gained = [], discarded = [], lost = [];
+                var drop = "", gained = [], discarded = [], lost = [];
                 var customItems = {
                     "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
                     "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
@@ -8777,16 +8777,13 @@ function Safari() {
                     }
                     if (chance(perc)) {
                         var stuff = giveStuff(player, item, true);
+                        drop = translateStuff(item);
                         gained = gained.concat(stuff.gained);
                         lost = lost.concat(stuff.lost);
-                        
-                        if (stuff.discarded.length > 0) {
-                            gained = gained.concat(stuff.discarded); // because we still want to show what the original drop and quantity is
-                            discarded = discarded.concat(stuff.discarded);
-                        }
+                        discarded = discarded.concat(stuff.discarded);
                     }
                 }
-                if (gained.length > 0) {
+                if (drop && gained.length > 0) { // check that there's actually an item gained so it doesn't display "x was holding -1 Item!" if the held item is negative
                     sendAll("The {0} was holding {1}!".format(pokeName, readable(gained)));
                 }
                 if (lost.length > 0) {
