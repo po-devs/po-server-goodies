@@ -25429,13 +25429,13 @@ function Safari() {
                                 move.power = (5 * Math.round(move.power * 1.1/5));
                             }
                         } else if (this.weather) {
-                            if (this.weather == "Rain" && data.weather.thunder && move.type == "Electric" && move.power < 95) {
+                            if (this.weather == "Rain" && this.weather.thunder && move.type == "Electric" && move.power < 95) {
                                 move.power += (5 * Math.round(Math.random() * 6));
                             }
-                            if (this.weather == "Sun" && data.weather.solar && move.type == "Grass" && move.power < 95) {
+                            if (this.weather == "Sun" && this.weather.solar && move.type == "Grass" && move.power < 95) {
                                 move.power += (5 * Math.round(Math.random() * 6));
                             }
-                            if (data.weather.weather && move.type == "Normal" && chance(0.08)) {
+                            if (this.weather.weather && move.type == "Normal" && chance(0.08)) {
                                 if (this.weather == "Rain") {
                                     move.type = "Water";
                                     move.power += (5 * Math.round(Math.random() * 6));
