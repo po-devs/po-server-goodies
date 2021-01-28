@@ -46993,7 +46993,7 @@ function Safari() {
                             topthree: 0,
                             staytopthree: false
                         }
-                    }
+                    };
                 }
                 if (p.pos === 1) {
                     player.medalRecords[w].first++;
@@ -47003,26 +47003,34 @@ function Safari() {
                     player.medalRecords[w].topthree++;
                     player.medalRecords[w].staytopthree = true;
                 }
+                
+                var awarded = [];
+                var outDesc = "";
                 if (player.medalRecords) {
                     if (player.medalRecords[w]) {
                         if (pos === 1 && player.medalRecords[w].first && player.medalRecords[w].first > 1) {
+                            outDesc = "#1 " + w + " for " + player.medalRecords[w].first + " consecutive weeks";
                             n = {
-                                desc: ("#1 " + w + " for " + player.medalRecords[w].first + " consecutive weeks " + date ),
+                                desc: (outDesc + " " date),
                                 icon: 17
                             }
                             this.awardMedal(player, n);
+                            awarded.push("<b>" + outDesc + "</b>");
                         }
                         if (pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                            outDesc = "Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
                             n = {
-                                "desc": ("Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks " + date ),
+                                "desc": (outDesc + " " + date),
                                 icon: 37
                             }
                             this.awardMedal(player, n);
+                            awarded.push("<b>" + outDesc + "</b>");
                         }
                     }
                 }
                 r = ("#" + p.pos + " ");
-                m.desc = r + w + " " + date;
+                outDesc = r + w;
+                m.desc = outDesc + " " + date;
                 switch (w) {
                     case "Best Catcher": switch (p.pos) {
                         case 1: ic = 300; break; case 2: ic = 285; break; case 3: ic = 291; break; 
@@ -47035,6 +47043,10 @@ function Safari() {
                     }
                 }
                 this.awardMedal(player, m);
+                awarded.push("<b>" + outDesc + "</b>");
+                
+                safaribot.sendHtmlAll("<b>{0}</b> was awarded the following medals: {1}! Congratulations!".format(p.name.toCorrectCase(), readable(awarded.reverse())), safchan);
+                sys.appendToFile(crossLog, now() + "|||" + w + " Weekly Leaderboard Category|||" + p.name.toCorrectCase() + "|||" + readable(awarded) + "\n");
             }
         }
         for (var e in rawPlayers.hash) {
