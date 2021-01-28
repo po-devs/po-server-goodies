@@ -23030,7 +23030,7 @@ function Safari() {
                         this.sendToViewers("The foe won't go down without a fight!");
                         remaining.boosts["atk"] += 2;
                         remaining.boosts["satk"] += 2;
-                        remaining.boosts["spe"] += (this.select.trickRoom ? : -2 : 2);
+                        remaining.boosts["spe"] += (this.select.trickRoom ? -2 : 2);
                         remaining.boosts["satk"] = Math.min(remaining.boosts["satk"], 6);
                         remaining.boosts["atk"] = Math.min(remaining.boosts["atk"], 6);
                         remaining.boosts["spe"] = Math.min(remaining.boosts["spe"], 6);
