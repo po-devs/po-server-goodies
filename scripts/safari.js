@@ -11333,8 +11333,8 @@ function Safari() {
 
         var introduced = playerSell + playerPawn + collector,
             introducedPrevious = playerSellPrevious + playerPawnPrevious + collectorPrevious,
-            lost = npcShop - questFee,
-            lostPrevious = npcShopPrevious - questFeePrevious,
+            lost = npcShop + questFee, // these are both negative and so should still be added together
+            lostPrevious = npcShopPrevious + questFeePrevious,
             exchanged = playerShop + playerTrade,
             exchangedPrevious = playerShopPrevious + playerTradePrevious;
 
