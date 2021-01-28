@@ -8287,7 +8287,7 @@ function Safari() {
             statsBonus = (userStats - wildStats) / -8000;
         }
         else {
-            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && sys.type(sys.pokeType2(player.party[0]) === "???") ? 50 : 0);
+            userStats += 0 + (ball === "level" ? 80 : 0) + (player.costume === "flower" && type2(player.party[0]) === "???" ? 50 : 0);
             userStats += (cherishBonus * 6);
             var statsBonus = (userStats - wildStats) / 8000;
         }
@@ -8733,7 +8733,7 @@ function Safari() {
                 safaribot.sendHtmlAll(team + " " + title + " " + name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their "  + ch + poke(player.party[0]), safchan);
                 wildSpirit = false;
             } else if ((ball === "mono") || (player.scaleDeadline >= now())) {
-                var stype = ball === "mono" && sys.type(sys.pokeType2(player.party[0])) !== "???" ? "pure " + (!player.monoSecondary ? type1(player.party[0]) : type2(player.party[0])) + " " : "";
+                var stype = ball === "mono" && type2(player.party[0]) !== "???" ? "pure " + (!player.monoSecondary ? type1(player.party[0]) : type2(player.party[0])) + " " : "";
                 var scolor = player.scaleDeadline >= now() ? cap(player.scaleColor) + " " : "";
                 safaribot.sendHtmlAll(name + " caught the " + revealName + " with " + an(ballName)+ " and the help of their " + ch + stype + scolor + poke(player.party[0]) + "!" + (msg ? " Some shadows shaped like the letters <b>" + msg.toUpperCase() + "</b> could be seen around the " + ballName + "!" : "") + (amt > 0 ? remaining : ""), safchan);
             } else {
@@ -11353,7 +11353,7 @@ function Safari() {
         sys.sendHtmlMessage(src, "", safchan);
         
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Introduced Into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Removed From the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lostPrevious - lost)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Removed From the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Exchanged Between Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money From Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
         
@@ -13331,7 +13331,7 @@ function Safari() {
             return;
         }
 
-        if (isTut && sys.pokemon(info.id) !== "Pikachu") {
+        if (isTut && poke(id) !== "Pikachu") {
             tutorMsg(src, "You can only evolve Pikachu during the tutorial. Please do so with " + link("/evolve Pikachu"));
             return;
         }
@@ -14812,21 +14812,21 @@ function Safari() {
             switch (evType) {
                 case "factionwar":
                 case "invertedwar":
-                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, highestDexNum));
-                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, highestDexNum));
+                    var extra1 = info.extra1 ? info.extra1 : poke(sys.rand(1, highestDexNum));
+                    var extra2 = info.extra2 ? info.extra2 : poke(sys.rand(1, highestDexNum));
                     
                     while (extra1.toLowerCase() === extra2.toLowerCase()) {
-                        extra2 = sys.pokemon(sys.rand(1, highestDexNum));
+                        extra2 = poke(sys.rand(1, highestDexNum));
                     }
                     
                     ev = new FactionWar(src, reward[0], extra1, extra2, evType == "invertedwar", reward[1]);
                 break;
                 case "volleyball":
-                    var extra1 = info.extra1 ? info.extra1 : sys.pokemon(sys.rand(1, highestDexNum));
-                    var extra2 = info.extra2 ? info.extra2 : sys.pokemon(sys.rand(1, highestDexNum));
+                    var extra1 = info.extra1 ? info.extra1 : poke(sys.rand(1, highestDexNum));
+                    var extra2 = info.extra2 ? info.extra2 : poke(sys.rand(1, highestDexNum));
                     
                     while (extra1.toLowerCase() === extra2.toLowerCase()) {
-                        extra2 = sys.pokemon(sys.rand(1, highestDexNum));
+                        extra2 = poke(sys.rand(1, highestDexNum));
                     }
 
                     if (extra1 == "official") {
@@ -28480,10 +28480,10 @@ function Safari() {
             return;
         }
 
-        var codeResearch = {
+        /*var codeResearch = {
             "sunshard": "We're discovering ways this could be used to unlock potential abilities within certain Pokémon!",
             "moonshard": "We're discovering ways this could be used to activate the abilities that Pokémon have unlocked!"
-        };
+        };*/
 
         if (!data[0]) {
             //Feel free to change these messages and the ones below if you get a better idea
@@ -28509,7 +28509,7 @@ function Safari() {
             };
             var type = type1(id);
             var researching = typeResearch[type].format(link("/findd " + poke(id), poke(id)));
-            type = sys.type(sys.pokeType2(id));
+            type = type2(id);
             type = type === "???" ? type1(id) : type2(id);
 
             typeResearch = {
@@ -32843,15 +32843,15 @@ function Safari() {
         return;
     };
     function generateName() {
-        var part1 = sys.rand(1, 899), part2, name2, out,
+        var part1 = sys.rand(1, highestDexNum), part2, name2, out,
             name1 = pokePlain(part1);
 
         do {
-            part2 = sys.rand(1, 899);
+            part2 = sys.rand(1, highestDexNum);
             name2 = pokePlain(part2);
 
             out = name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2));
-        } while (part2 == part1 || (/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || sys.pokeNum(out));
+        } while (part2 == part1 || (/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || getInputPokemon(out+"").num !== null);
 
         return out;
     }
@@ -32863,7 +32863,7 @@ function Safari() {
             name2 = getRandomWord().toLowerCase();
 
             out = cap(name1.substr(0, Math.floor(name1.length/2)) + name2.substr(Math.floor(name2.length/2)));
-        } while ((/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || sys.pokeNum(out) || sys.moveNum(out) || sys.abilityNum(out));
+        } while ((/asshole|dick|pussy|bitch|porn|nigga|cock|gay|slut|whore|cunt|penis|vagina|nigger|fuck|dildo|anus|boner|tits|condom|rape/gi.test(out)) || getInputPokemon(out+"").num !== null || sys.moveNum(out) || sys.abilityNum(out));
 
         if (out.length > 10) {
             out = out.substr(0, 10);
@@ -35735,7 +35735,7 @@ function Safari() {
                 return;
             }
             if (this.answerType === "name" && info.num !== null && !info.shiny) {
-                this.checkAnswer(info.name, sys.pokeNum(info.name));
+                this.checkAnswer(commandData, info.num);
                 return;
             }
             if (this.answerType === "move" && movenum(commandData)) {
@@ -38726,7 +38726,7 @@ function Safari() {
         }, this);
         this.icons = {};
         for (var e in this.runners) {
-            this.icons[e] = pokeInfo.icon(sys.pokeNum(e));
+            this.icons[e] = pokeInfo.icon(getInputPokemon(e).num);
         }
 
         var joinCommand = "/signup";
