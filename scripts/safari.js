@@ -11281,6 +11281,76 @@ function Safari() {
         safari.saveGame(player);
         safaribot.sendMessage(src, name.toCorrectCase() + " will now be " + (player.excludeFromEconomy ? "excluded from " : "included in ") + " economy statistics.", safchan);
     };
+    this.showEconomyData = function(src, commandData) {
+        var dayIndex;
+        switch (commandData) {
+            case "today":
+                dayIndex = 0;
+                break;
+            case "yesterday":
+                dayIndex = 1;
+                break;
+            default:
+                dayIndex = parseInt(commandData) || 0;
+                break;
+        }
+        
+        if (dayIndex < 0)
+            dayIndex = 0;
+        else if (dayIndex > 13)
+            dayIndex = 13;
+        
+        sys.sendMessage(src, "Showing Economy Data for {0}:".format(dayIndex === 0 ? "Today" : plural(dayIndex+1, "Day") + " Ago"), safchan);
+
+        var npcShop = economyData.npcShop[0],
+            playerShop = economyData.playerShop[0],
+            playerTrade = economyData.playerTrade[0],
+            playerSell = economyData.playerSell[0],
+            playerPawn = economyData.playerPawn[0],
+            collector = economyData.collector[0],
+            total = economyData.total[0];
+            
+        var npcShopYesterday = economyData.npcShop[1] || 0,
+            playerShopYesterday = economyData.playerShop[1] || 0,
+            playerTradeYesterday = economyData.playerTrade[1] || 0,
+            playerSellYesterday = economyData.playerSell[1] || 0,
+            playerPawnYesterday = economyData.playerPawn[1] || 0,
+            collectorYesterday = economyData.collector[1] || 0,
+            totalYesterday = economyData.total[1] || 0; 
+
+        var introducedToday = playerSell + playerPawn + collector,
+            introducedYesterday = playerSellYesterday + playerPawnYesterday + collectorYesterday,
+            lostToday = npcShop,
+            lostYesterday = npcShopYesterday,
+            exchangedToday = playerShop + playerTrade,
+            exchangedYesterday = playerShopYesterday + playerTradeYesterday;
+
+        var unaccounted = (total - totalYesterday) - (introducedToday - lostToday); // true difference - accounted difference
+        var moneyColor = function(amount) {
+            return toColor(addComma(amt), amount <= 0 ? "red" : "green");
+        };
+        
+        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from yesterday)".format(moneyColor(npcShop), moneyColor(npShop - npcShopYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Earned from Pawning Valuables to the NPC: ${0} (${1} difference from yesterday)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Earned from the Collector: ${0} (${1} difference from yesterday)".format(moneyColor(collector), moneyColor(collector - collectorYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Lost by buying from the NPC Shop: ${0} (${1} difference from yesterday)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Exchanged Between Players via Shop Sales: ${0} (${1} difference from yesterday)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Exchanged Between Players via Trades: ${0} (${1} difference from yesterday)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradeYesterday)), safchan);
+        
+        sys.sendHtmlMessage(src, "", safchan);
+        
+        sys.sendHtmlMessage(src, "Total Amount of Money Introduced Into the Economy: ${0} (${1} difference from yesterday)".format(moneyColor(introducedToday), moneyColor(introducedToday - introducedYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money Removed From the Economy: ${0} (${1} difference from yesterday)".format(moneyColor(lostToday), moneyColor(lostYesterday - lostToday)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money Exchanged Between Players: ${0} (${1} difference from yesterday)".format(moneyColor(exchangedToday), moneyColor(exchangedToday - exchangedYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money From Unaccounted Sources: ${0}".format(moneyColor(unaccounted)), safchan);
+        
+        sys.sendHtmlMessage(src, "", safchan);
+        
+        sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: {0} (${1} difference from yesterday)".format(moneyColor(total), moneyColor(total - totalYesterday)), safchan);
+        
+        // earlier index is later date
+        safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex-1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex+1), "«Next Day»") : ""), safchan);
+    };
     this.showRecords = function (src, commandData) {
         if (!validPlayers("self", src)) {
             return;
@@ -48235,6 +48305,7 @@ function Safari() {
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/trials: Shows you your current trials missions. Only works while trials is in session.",
             "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time.",
+            "/economy: Shows recent Safari economy statistics, up to the last 14 days.",
             "*** Action Commands ***",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
@@ -49556,6 +49627,9 @@ function Safari() {
             if (command === "showmega" || command === "showmegas") {
                 safari.showMegaTimers(src);
                 return true;
+            }
+            if (["economy", "showeconomy", "economydata", "stonks"].contains(command)) {
+                safari.showEconomyData(src, commandData);
             }
             if (command === "vote") {
                 if (!contestVotes || !nextTheme) {
