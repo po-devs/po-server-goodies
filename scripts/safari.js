@@ -12857,10 +12857,10 @@ function Safari() {
             safaribot.sendMessage(src, "Hey! That's not nice. You shouldn't throw " + an(finishName(item)) + " at someone completing the tutorial!", safchan);
             return;
         }
-        if (countRepeated(player.rockTargets, id) >= 4) {
+        /*if (countRepeated(player.rockTargets, id) >= 4) {
             safaribot.sendMessage(src, "You have been throwing " + es(finishName(item)) + " at this person too often!", safchan);
             return;
-        }
+        }*/
         
         player.balls[item] -= 1;
         player.records.rocksThrown += 1;
@@ -47007,14 +47007,14 @@ function Safari() {
                     if (player.medalRecords[w]) {
                         if (pos === 1 && player.medalRecords[w].first && player.medalRecords[w].first > 1) {
                             n = {
-                                desc: ("#1 " + w + " for " + player.medalRecords[w].first + " consecutive months " + date ),
+                                desc: ("#1 " + w + " for " + player.medalRecords[w].first + " consecutive weeks " + date ),
                                 icon: 17
                             }
                             this.awardMedal(player, n);
                         }
                         if (pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
                             n = {
-                                "desc": ("Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive months " + date ),
+                                "desc": ("Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks " + date ),
                                 icon: 37
                             }
                             this.awardMedal(player, n);
@@ -47934,7 +47934,8 @@ function Safari() {
             }
             this.costumeEXP(player, "winmafia", amt);
             famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? amt * 1.5 : 1);
-            player.balls.shady += famt;
+            amt = Math.round(amt * famt);
+            player.balls.shady += amt;
             this.missionProgress(player, "cross", "mafia", 1, {});
             this.missionProgress(player, "shadyFromMafia", "mafia", amt, {});
             rew = plural(amt, "shady");
