@@ -11327,7 +11327,7 @@ function Safari() {
 
         var unaccounted = (total - totalPrevious) - (introduced - lost); // true difference - accounted difference
         var moneyColor = function(amount) {
-            return toColor(addComma(amt), amount <= 0 ? "red" : "green");
+            return toColor(addComma(amount), amount <= 0 ? "red" : "green");
         };
         
         if (dayIndex === 13)
@@ -46851,6 +46851,8 @@ function Safari() {
             
             var old = {}, e, lbInfo;
             this.updateLeaderboards();
+            this.awardMonthlyMedals(leaderboards);
+            
             for (e in monthlyLeaderboards) {
                 lbInfo = monthlyLeaderboardTypes[e];
                 if (lbInfo.reward) {
@@ -46880,7 +46882,6 @@ function Safari() {
     this.checkNewMonth = function() {
         var date = new Date().getUTCMonth();
         if (date != permObj.get("currentMonth")) {
-            this.awardMonthlyMedals(monthlyLeaderboards);
             this.resetCostumes();
             permObj.add("currentMonth", date);
             /*var old = {};
@@ -46915,11 +46916,14 @@ function Safari() {
             }
         }
     };
-    this.awardMonthlyMedals = function(data) {
+    this.awardMonthlyMedals = function(data) { // actually weekly, despite the name
         var p, lb, e, player, m, n, w = "", r = "", ic = -1;
-        var dateMonth = new Date().getUTCMonth();
-        var dateYear = 2021; // oh my god
-        var date = "(" + dateMonth + " " + dateYear + ")";
+        var d = new Date();
+        var dateWeek = Math.ceil(d.getDate() / 7);
+        var dateMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][d.getUTCMonth()];
+        var dateYear = d.getFullYear();
+        var date = "(Week {0} of {1} {2})".format(dateWeek, dateMonth, dateYear);
+
         for (var i in data) {
             lb = data[i];
             if (i == "pokesCaught") {
@@ -53161,7 +53165,7 @@ function Safari() {
                 safari.clearSpiritDuels();
                 return true;
             }
-            if (command === "monthlymedals") {
+            if (command === "monthlymedals" || command === "weeklymedals") {
                 safari.awardMonthlyMedals(monthlyLeaderboards);
                 return true;
             }
