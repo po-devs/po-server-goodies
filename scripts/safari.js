@@ -11300,7 +11300,7 @@ function Safari() {
         else if (dayIndex > 13)
             dayIndex = 13;
         
-        sys.sendMessage(src, "Showing Economy Data for {0}:".format(dayIndex === 0 ? "Today" : plural(dayIndex+1, "Day") + " Ago"), safchan);
+        sys.sendMessage(src, "Showing Economy Data for {0}:".format(dayIndex === 0 ? "Today" : plural(dayIndex, "Day") + " Ago"), safchan);
 
         var npcShop = economyData.npcShop[dayIndex],
             playerShop = economyData.playerShop[dayIndex],
@@ -11327,34 +11327,34 @@ function Safari() {
 
         var unaccounted = (total - totalPrevious) - (introduced - lost); // true difference - accounted difference
         var moneyColor = function(amount) {
-            return toColor(addComma(amount), amount <= 0 ? "red" : "green");
+            return "<b>$" + toColor(addComma(amount), amount <= 0 ? "red" : "green") + "</b>";
         };
         
         if (dayIndex === 13)
             sys.sendHtmlMessage(src, toColor("Note: ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
-        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Earned from Pawning Valuables to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Earned from the Collector: ${0} (${1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Lost by buying from the NPC Shop: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Exchanged Between Players via Shop Sales: ${0} (${1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Exchanged Between Players via Trades: ${0} (${1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from Selling Pokémon to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from Pawning Valuables to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from the Collector:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Lost by buying from the NPC Shop:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Exchanged Between Players via Shop Sales:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Exchanged Between Players via Trades: </b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, "Total Amount of Money Introduced Into the Economy: ${0} (${1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Total Amount of Money Removed From the Economy: ${0} (${1} difference from previous day)".format(moneyColor(lost), moneyColor(lostPrevious - lost)), safchan);
-        sys.sendHtmlMessage(src, "Total Amount of Money Exchanged Between Players: ${0} (${1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
-        sys.sendHtmlMessage(src, "Total Amount of Money From Unaccounted Sources: ${0}".format(moneyColor(unaccounted)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Introduced Into the Economy:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Removed From the Economy:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lostPrevious - lost)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Exchanged Between Players:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money From Unaccounted Sources:</b>", "#3daa68") + " {0}".format(moneyColor(unaccounted)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
         if (dayIndex === 0)
-            sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: (Unavailable, total money is only counted at the end of the day so please check back later!)", safchan);
+            sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Between All Safari Players:</b>", "#3daa68") + " (Unavailable, total money is only counted at the end of the day so please check back later!)", safchan);
         else
-            sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: ${0} (${1} difference from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious)), safchan);
+            sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Between All Safari Players:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious)), safchan);
         
         // earlier index is later date
-        safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex-1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex+1), "«Next Day»") : ""), safchan);
+        safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex+1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex-1), "«Next Day»") : ""), safchan);
     };
     this.showRecords = function (src, commandData) {
         if (!validPlayers("self", src)) {
@@ -48314,7 +48314,7 @@ function Safari() {
             "/leaderboard [type]: View the Safari Leaderboards. Type \"/leaderboard list\" to see all existing leaderboards.",
             "/trials: Shows you your current trials missions. Only works while trials is in session.",
             "/showmegas: Shows your currently Mega-Evolved Pokémon and their remaining Mega Evolution time.",
-            "/economy: Shows recent Safari economy statistics, up to the last 14 days.",
+            "/economy [days ago]: Shows recent Safari economy statistics, up to the last 14 days. Defaults to today.",
             "*** Action Commands ***",
             "/start: To pick a starter Pokémon and join the Safari game. Valid starters are Bulbasaur, Charmander, and Squirtle.",
             "/bait: To throw bait in the attempt to lure a Wild Pokémon. Specify a ball type to throw that first.",
@@ -49639,6 +49639,7 @@ function Safari() {
             }
             if (["economy", "showeconomy", "economydata", "stonks"].contains(command)) {
                 safari.showEconomyData(src, commandData);
+                return true;
             }
             if (command === "vote") {
                 if (!contestVotes || !nextTheme) {
