@@ -21515,7 +21515,7 @@ function Safari() {
                         }*/
                         q += (300 * Math.random());
                         if (npcFavorite) {
-                            if (npcFavorite.includes(id)) {
+                            if (npcFavorite.contains(id)) {
                                 q += 150;
                             }
                         }
