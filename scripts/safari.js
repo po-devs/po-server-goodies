@@ -11243,7 +11243,7 @@ function Safari() {
         for (var e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
                 data = JSON.parse(rawPlayers.hash[e]);
-                if (!data.excludeFromEconomy && )
+                if (!data.excludeFromEconomy)
                     economyData.total[0] += data.money;
             }
         }
