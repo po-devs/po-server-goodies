@@ -1065,7 +1065,7 @@ function Safari() {
             acqReq: 200, record: "collectorGiven", rate: 1.2,
             effect: "A master in Pokémon. Aficionados of Pokémon tend to stick together and help each other out, granting a bonus when finding Pokémon for the Collector's collection.", noAcq: "Turn in {0} more Pokémon to the Collector",
             effect2: "Pokémon with BST > 500 have their BST count as 500 while catching.",
-            expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch"],
+            expTypes: ["daycareplay", "catchlowbst", "wincontest", "catch", "wintrivia"],
             expItem: "eviolite",
             skills: {
                 botdboost: [2, 2],
@@ -1082,7 +1082,7 @@ function Safari() {
             effect: "A master in scavenging. Uses knowledge from past finds to slightly increase the likelihood of finding an item with Itemfinder. Rarely you can even find multiple items or exclusive items!",
             noAcq: "Find {0} more items",
             effect2: "Has slightly increased cooldown when throwing Pokéballs other than Safari or Heavy.",
-            expTypes: ["findrare", "wincontest", "catch"],
+            expTypes: ["findrare", "wincontest", "catch", "winmafia"],
             expItem: "crown",
             skills: {
                 finderBasedOnLead: [2, 3],
@@ -1098,7 +1098,7 @@ function Safari() {
             effect: "A master in cooking. After years of throwing bait that even a Garbodor wouldn't eat, all it took was simply adding a dash seasoning and some ketchup help to make the bait more irresistable to Pokémon with type disadvantages.",
             effect2: "Has slightly increased cooldown when sucessfully catching.",
             noAcq: "Fail to attract {0} more Pokémon with Bait",
-            expTypes: ["bait", "wincontest", "catch"],
+            expTypes: ["bait", "wincontest", "catch", "wintour"],
             expItem: "honey",
             skills: {
                 pokeblockBoost: [3, 3],
@@ -1131,7 +1131,7 @@ function Safari() {
             effect: "A master in genetics. Recent breakthroughs in science allows easier modification of DNA, granting an increases success rate of cloning, a small chance to clone muiltiple times in a single attempt, and the ability to clone very rare Pokémon!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Clone {0} more Pokémon and obtain {1} more Silver Coins from the Scientist Quest",
-            expTypes: ["soda", "clonepoke", "scientist", "catch"],
+            expTypes: ["soda", "clonepoke", "scientist", "catch", "wintrivia"],
             expItem: "battery",
             skills: {
                 extraScientistSilver: [5, 7],
@@ -1163,10 +1163,11 @@ function Safari() {
             effect: "A master in deception. Years of trickery have granted a small chance to keep a Pokémon given to NPCs!",
             effect2: "Has less success befriending Pokémon in the daycare.",
             noAcq: "Catch {0} Pokémon attracted by other players and earn ${1} more from selling Pokémon",
-            expTypes: ["stealpoke", "arenasilver", "wincontest", "catch"],
+            expTypes: ["stealpoke", "arenasilver", "wincontest", "catch", "winmafia"],
             expItem: "amulet",
             skills: {
                 extraScientistSilver: [2, 3],
+                extraMafiaShady: [5, 6],
                 spyBallBoost: [4, 5],
                 catchThief: [7, 9],
                 catchPoison: [9, 12],
@@ -15128,6 +15129,8 @@ function Safari() {
         "catchhighbst": "Catch Pokémon with BST 540 or higher",
         "catchlowbst": "Catch Pokémon with BST 270 or lower",
         "wintour": "Event Tournament",
+        "wintrivia": "Event Trivia",
+        "winmafia": "Event Mafia",
         "fighttower": "Fight the Battle Tower",
         "findrare": "Find Rare Items with Itemfinder",
         "bait": "Bait",
@@ -15214,6 +15217,7 @@ function Safari() {
         extraTourMega: "Earn an extra Mega Stone from winning a Tournament",
         extraScientistSilver: "Earn extra Silver from working as the Scientist's close personal aide",
         extraTriviaSoda: "Earn extra Soda Pop from Trivia",
+        extraMafiaShady: "Earn extra Shady Coins from Mafia",
         extraApricornsFromContest: "Win extra apricorns as a prize from contests"
     };
     this.showCostumeSkills = function(src, commandData) {
@@ -47713,6 +47717,7 @@ function Safari() {
         if (this.hasCostumeSkill(player, "extraTriviaSoda")) {
             amt = Math.round(amt * (1.2 + (this.getCostumeLevel(player)/16)));
         }
+		this.costumeEXP(player, "wintrivia", amt);
         player.balls.soda += amt;
         rew = plural(amt, "soda");
         
@@ -47729,14 +47734,16 @@ function Safari() {
         if (list.length === 0) {
             return;
         }
-        var player, name, received = [], rew;
+        var player, name, received = [], rew, famt;
         for (var p = 0; p < list.length; p++) {
             name = list[p];
             player = getAvatarOff(name);
             if (!player) {
                 continue;
             }
-            player.balls.shady += amt;
+			this.costumeEXP(player, "winmafia", amt);
+            famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? amt * 1.5 : 1);
+            player.balls.shady += famt;
             this.missionProgress(player, "cross", "mafia", 1, {});
             this.missionProgress(player, "shadyFromMafia", "mafia", amt, {});
             rew = plural(amt, "shady");
