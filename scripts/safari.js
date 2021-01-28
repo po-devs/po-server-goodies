@@ -28537,7 +28537,7 @@ function Safari() {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: Hello, my friend! I'm currently researching " + researching + ", so I would appreciate if you could bring one to me. If you do, I shall reward you with " + plural(quest.reward, "silver") + "!", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: I expect to finish this research in about " + timeLeftString(quest.expires) + ". If you wish to help, bring me " + an(poke(id)) + " before then and type " + link("/quest scientist:finish", null, true) + ".", safchan);
             safaribot.sendHtmlMessage(src, "Scientist: Or, you could help me by bringing a photo of that Pokémon! Pick a photo that has Great or better quality with " + link("/quest scientist:photo:", null, true) + ".", safchan);
-            safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + " or " + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
+            //safaribot.sendHtmlMessage(src, "Scientist: If you're wondering what else we do at my lab, we're also looking into some new technology! " + link("/quest scientist:moonshard", "Moon Shard") + " or " + link("/quest scientist:sunshard", "Sun Shard") + ".", safchan);
             sys.sendMessage(src, "", safchan);
             return;
         }
@@ -28631,9 +28631,9 @@ function Safari() {
             else {
                 safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that photo.", safchan);
             }
-        } else if (codeResearch.hasOwnProperty(data[0].toLowerCase())) {
+        }/* else if (codeResearch.hasOwnProperty(data[0].toLowerCase())) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: " + codeResearch[data[0].toLowerCase()], safchan);
-        }
+        }*/
         else {
             safaribot.sendHtmlMessage(src, trainerSprite + "Scientist: I don't think I can help you with that.", safchan);
         }
