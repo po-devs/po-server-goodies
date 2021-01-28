@@ -6921,7 +6921,7 @@ function Safari() {
             if (s[0] === "$") {
                 player.money += amt;
                 if (isTrade)
-                    safari.updateEconomyData(Math.abs(amount), "playerTrade");
+                    safari.updateEconomyData(Math.abs(amt), "playerTrade");
                 if (amt > 0) {
                     if (player.money > moneyCap) {
                         out.discarded.push("$" + (player.money - moneyCap));
