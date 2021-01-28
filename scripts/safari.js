@@ -11358,14 +11358,14 @@ function Safari() {
         sys.sendHtmlMessage(src, "", safchan);
         
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades/Auctions: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced Into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed From the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed from the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount From Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
@@ -27323,6 +27323,7 @@ function Safari() {
 
         winner.money -= this.currentOffer;
         host.money += this.currentOffer;
+        safari.updateEconomyData(this.currentOffer, "playerTrade");
 
         var hasRare = false, id;
         var info = toStuffObj(this.product);
