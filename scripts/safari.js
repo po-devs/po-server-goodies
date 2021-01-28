@@ -11269,7 +11269,7 @@ function Safari() {
         
         permObj.add("economicSummary", JSON.stringify(economyData));
     };
-    this.excludeFromEconomy(src, name) {
+    this.excludeFromEconomy = function(src, name) {
         var player = getAvatarOff(name);
         
         if (!player) {
