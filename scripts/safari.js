@@ -11319,6 +11319,7 @@ function Safari() {
             playerSell = economyData.playerSell[dayIndex],
             playerPawn = economyData.playerPawn[dayIndex],
             collector = economyData.collector[dayIndex],
+            questFee = economyData.questFee[dayIndex],
             total = economyData.total[dayIndex];
             
         var npcShopPrevious = economyData.npcShop[dayIndex+1] || 0,
@@ -11327,12 +11328,13 @@ function Safari() {
             playerSellPrevious = economyData.playerSell[dayIndex+1] || 0,
             playerPawnPrevious = economyData.playerPawn[dayIndex+1] || 0,
             collectorPrevious = economyData.collector[dayIndex+1] || 0,
+            questFeePrevious = economyData.questFee[dayIndex+1] || 0,
             totalPrevious = economyData.total[dayIndex+1] || 0; 
 
         var introduced = playerSell + playerPawn + collector,
             introducedPrevious = playerSellPrevious + playerPawnPrevious + collectorPrevious,
-            lost = npcShop,
-            lostPrevious = npcShopPrevious,
+            lost = npcShop - questFee,
+            lostPrevious = npcShopPrevious - questFeePrevious,
             exchanged = playerShop + playerTrade,
             exchangedPrevious = playerShopPrevious + playerTradePrevious;
 
@@ -11347,16 +11349,23 @@ function Safari() {
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Selling Pokémon to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning Valuables to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from the Collector:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost by buying from the NPC Shop:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
+        
+        sys.sendHtmlMessage(src, "", safchan);
+        
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost by Buying from the NPC Shop:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost from Quest Fees:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(questFee), moneyColor(questFee - questFeePrevious)), safchan);
+        
+        sys.sendHtmlMessage(src, "", safchan);
+        
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Introduced Into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Removed From the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Exchanged Between Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money From Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced Into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed From the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount From Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
