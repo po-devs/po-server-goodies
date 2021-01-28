@@ -737,7 +737,8 @@ function Safari() {
                     }
                 }
             */
-        ]
+        ],
+        excludeFromEconomy: false
     };
 
     /* Item Variables */
@@ -11239,7 +11240,8 @@ function Safari() {
         for (var e in rawPlayers.hash) {
             if (rawPlayers.hash.hasOwnProperty(e)) {
                 data = JSON.parse(rawPlayers.hash[e]);
-                economyData.total[0] += data.money; // this only tallies at the end of each day
+                if (!data.excludeFromEconomy)
+                    economyData.total[0] += data.money; // this only tallies at the end of each day
             }
         }
         
@@ -11266,6 +11268,18 @@ function Safari() {
         economyData[key][0] += amount;
         
         permObj.add("economicSummary", JSON.stringify(economyData));
+    };
+    this.excludeFromEconomy(src, name) {
+        var player = getAvatarOff(name);
+        
+        if (!player) {
+            safaribot.sendMessage(src, "Unable to find player \"" + name + "\".", safchan);
+            return;
+        }
+        
+        player.excludeFromEconomy = !player.excludeFromEconomy;
+        safari.saveGame(player);
+        safaribot.sendMessage(src, name.toCorrectCase() + " will now be " + (player.excludeFromEconomy ? "excluded from " : "included in ") + " economy statistics.", safchan);
     };
     this.showRecords = function (src, commandData) {
         if (!validPlayers("self", src)) {
@@ -48337,7 +48351,8 @@ function Safari() {
             "/releasetrial [player]:[id]: Removes target ID from player's trials listing if they have it, and prevents them from getting it again even if they don't.",
             "/trialspoints [player]:[number]: Set their points.",
             "/trialsbonus [player]: Gives the target player a bonus 10 points (can only be used once per session.",
-            "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards."
+            "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards.",
+            "/excludeeconomy [player]: Excludes/includes a player from/in economy statistics. Toggles against their current status."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -53133,6 +53148,10 @@ function Safari() {
             }
             if (command === "finishtrials") {
                 safari.endTrials();
+                return true;
+            }
+            if (command === "excludeeconomy") {
+                safari.excludeFromEconomy(src, commandData);
                 return true;
             }
             if (command === "startduels") {
