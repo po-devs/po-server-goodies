@@ -11332,12 +11332,12 @@ function Safari() {
         
         if (dayIndex === 13)
             sys.sendHtmlMessage(src, toColor("Note: ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from Selling Pokémon to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from Pawning Valuables to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Earned from the Collector:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Lost by buying from the NPC Shop:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Exchanged Between Players via Shop Sales:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Exchanged Between Players via Trades: </b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Selling Pokémon to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning Valuables to the NPC:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from the Collector:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost by buying from the NPC Shop:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "#3daa68") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
