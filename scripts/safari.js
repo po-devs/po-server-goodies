@@ -1462,6 +1462,7 @@ function Safari() {
         npcShop: [0, 0, 0], // placeholders, too lazy to copy 14 blank values in
         playerShop: [0, 0, 0],
         playerTrade: [0, 0, 0],
+        playerAuction: [0, 0, 0],
         playerSell: [0, 0, 0],
         playerPawn: [0, 0, 0],
         collector: [0, 0, 0],
@@ -11316,6 +11317,7 @@ function Safari() {
         var npcShop = economyData.npcShop[dayIndex],
             playerShop = economyData.playerShop[dayIndex],
             playerTrade = economyData.playerTrade[dayIndex],
+            playerAuction = economyData.playerAuction[dayIndex],
             playerSell = economyData.playerSell[dayIndex],
             playerPawn = economyData.playerPawn[dayIndex],
             collector = economyData.collector[dayIndex],
@@ -11325,6 +11327,7 @@ function Safari() {
         var npcShopPrevious = economyData.npcShop[dayIndex+1] || 0,
             playerShopPrevious = economyData.playerShop[dayIndex+1] || 0,
             playerTradePrevious = economyData.playerTrade[dayIndex+1] || 0,
+            playerAuctionPrevious = economyData.playerAuction[dayIndex+1] || 0,
             playerSellPrevious = economyData.playerSell[dayIndex+1] || 0,
             playerPawnPrevious = economyData.playerPawn[dayIndex+1] || 0,
             collectorPrevious = economyData.collector[dayIndex+1] || 0,
@@ -11335,8 +11338,8 @@ function Safari() {
             introducedPrevious = playerSellPrevious + playerPawnPrevious + collectorPrevious,
             lost = npcShop + questFee, // these are both negative and so should still be added together
             lostPrevious = npcShopPrevious + questFeePrevious,
-            exchanged = playerShop + playerTrade,
-            exchangedPrevious = playerShopPrevious + playerTradePrevious;
+            exchanged = playerShop + playerTrade + playerAuction,
+            exchangedPrevious = playerShopPrevious + playerTradePrevious + playerAuctionPrevious;
 
         var unaccounted = (total - totalPrevious) - (introduced - lost); // true difference - accounted difference
         var moneyColor = function(amount) {
@@ -11358,7 +11361,8 @@ function Safari() {
         sys.sendHtmlMessage(src, "", safchan);
         
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades/Auctions: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Auctions: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerAuction), moneyColor(playerAuction - playerAuctionPrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
@@ -27323,7 +27327,7 @@ function Safari() {
 
         winner.money -= this.currentOffer;
         host.money += this.currentOffer;
-        safari.updateEconomyData(this.currentOffer, "playerTrade");
+        safari.updateEconomyData(this.currentOffer, "playerAuction");
 
         var hasRare = false, id;
         var info = toStuffObj(this.product);
