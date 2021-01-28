@@ -11302,51 +11302,56 @@ function Safari() {
         
         sys.sendMessage(src, "Showing Economy Data for {0}:".format(dayIndex === 0 ? "Today" : plural(dayIndex+1, "Day") + " Ago"), safchan);
 
-        var npcShop = economyData.npcShop[0],
-            playerShop = economyData.playerShop[0],
-            playerTrade = economyData.playerTrade[0],
-            playerSell = economyData.playerSell[0],
-            playerPawn = economyData.playerPawn[0],
-            collector = economyData.collector[0],
-            total = economyData.total[0];
+        var npcShop = economyData.npcShop[dayIndex],
+            playerShop = economyData.playerShop[dayIndex],
+            playerTrade = economyData.playerTrade[dayIndex],
+            playerSell = economyData.playerSell[dayIndex],
+            playerPawn = economyData.playerPawn[dayIndex],
+            collector = economyData.collector[dayIndex],
+            total = economyData.total[dayIndex];
             
-        var npcShopYesterday = economyData.npcShop[1] || 0,
-            playerShopYesterday = economyData.playerShop[1] || 0,
-            playerTradeYesterday = economyData.playerTrade[1] || 0,
-            playerSellYesterday = economyData.playerSell[1] || 0,
-            playerPawnYesterday = economyData.playerPawn[1] || 0,
-            collectorYesterday = economyData.collector[1] || 0,
-            totalYesterday = economyData.total[1] || 0; 
+        var npcShopPrevious = economyData.npcShop[dayIndex+1] || 0,
+            playerShopPrevious = economyData.playerShop[dayIndex+1] || 0,
+            playerTradePrevious = economyData.playerTrade[dayIndex+1] || 0,
+            playerSellPrevious = economyData.playerSell[dayIndex+1] || 0,
+            playerPawnPrevious = economyData.playerPawn[dayIndex+1] || 0,
+            collectorPrevious = economyData.collector[dayIndex+1] || 0,
+            totalPrevious = economyData.total[dayIndex+1] || 0; 
 
-        var introducedToday = playerSell + playerPawn + collector,
-            introducedYesterday = playerSellYesterday + playerPawnYesterday + collectorYesterday,
-            lostToday = npcShop,
-            lostYesterday = npcShopYesterday,
-            exchangedToday = playerShop + playerTrade,
-            exchangedYesterday = playerShopYesterday + playerTradeYesterday;
+        var introduced = playerSell + playerPawn + collector,
+            introducedPrevious = playerSellPrevious + playerPawnPrevious + collectorPrevious,
+            lost = npcShop,
+            lostPrevious = npcShopPrevious,
+            exchanged = playerShop + playerTrade,
+            exchangedPrevious = playerShopPrevious + playerTradePrevious;
 
-        var unaccounted = (total - totalYesterday) - (introducedToday - lostToday); // true difference - accounted difference
+        var unaccounted = (total - totalPrevious) - (introduced - lost); // true difference - accounted difference
         var moneyColor = function(amount) {
             return toColor(addComma(amt), amount <= 0 ? "red" : "green");
         };
         
-        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from yesterday)".format(moneyColor(npcShop), moneyColor(npShop - npcShopYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Earned from Pawning Valuables to the NPC: ${0} (${1} difference from yesterday)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Earned from the Collector: ${0} (${1} difference from yesterday)".format(moneyColor(collector), moneyColor(collector - collectorYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Lost by buying from the NPC Shop: ${0} (${1} difference from yesterday)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Exchanged Between Players via Shop Sales: ${0} (${1} difference from yesterday)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Exchanged Between Players via Trades: ${0} (${1} difference from yesterday)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradeYesterday)), safchan);
+        if (dayIndex === 13)
+            sys.sendHtmlMessage(src, toColor("Note: ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
+        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Earned from Pawning Valuables to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Earned from the Collector: ${0} (${1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Lost by buying from the NPC Shop: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Exchanged Between Players via Shop Sales: ${0} (${1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Exchanged Between Players via Trades: ${0} (${1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, "Total Amount of Money Introduced Into the Economy: ${0} (${1} difference from yesterday)".format(moneyColor(introducedToday), moneyColor(introducedToday - introducedYesterday)), safchan);
-        sys.sendHtmlMessage(src, "Total Amount of Money Removed From the Economy: ${0} (${1} difference from yesterday)".format(moneyColor(lostToday), moneyColor(lostYesterday - lostToday)), safchan);
-        sys.sendHtmlMessage(src, "Total Amount of Money Exchanged Between Players: ${0} (${1} difference from yesterday)".format(moneyColor(exchangedToday), moneyColor(exchangedToday - exchangedYesterday)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money Introduced Into the Economy: ${0} (${1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money Removed From the Economy: ${0} (${1} difference from previous day)".format(moneyColor(lost), moneyColor(lostPrevious - lost)), safchan);
+        sys.sendHtmlMessage(src, "Total Amount of Money Exchanged Between Players: ${0} (${1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
         sys.sendHtmlMessage(src, "Total Amount of Money From Unaccounted Sources: ${0}".format(moneyColor(unaccounted)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: {0} (${1} difference from yesterday)".format(moneyColor(total), moneyColor(total - totalYesterday)), safchan);
+        if (dayIndex === 0)
+            sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: (Unavailable, total money is only counted at the end of the day so please check back later!)", safchan);
+        else
+            sys.sendHtmlMessage(src, "Total Amount of Money Between All Safari Players: ${0} (${1} difference from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious)), safchan);
         
         // earlier index is later date
         safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex-1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex+1), "«Next Day»") : ""), safchan);
