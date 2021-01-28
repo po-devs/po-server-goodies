@@ -11332,7 +11332,7 @@ function Safari() {
         
         if (dayIndex === 13)
             sys.sendHtmlMessage(src, toColor("Note: ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
-        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npShop - npcShopPrevious)), safchan);
+        sys.sendHtmlMessage(src, "Earned from Selling Pokémon to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
         sys.sendHtmlMessage(src, "Earned from Pawning Valuables to the NPC: ${0} (${1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
         sys.sendHtmlMessage(src, "Earned from the Collector: ${0} (${1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
         sys.sendHtmlMessage(src, "Lost by buying from the NPC Shop: ${0} (${1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
