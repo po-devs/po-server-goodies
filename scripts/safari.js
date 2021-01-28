@@ -21439,7 +21439,7 @@ function Safari() {
                             case "burnout": m = name + " favors high-risk moves."; break;
                             case "critical": m = name + " favors critical-hit moves."; break;
                             case "helpingHand": m = name + " likes to support their teammate."; break;
-							case "effectiveness": m = name + " aims for super-effective moves."; break;
+                            case "effectiveness": m = name + " aims for super-effective moves."; break;
                             case "reflect": m = name + " likes to set up Reflect."; break;
                             case "lightscreen": m = name + " likes to set up Light Screen."; break;
                             case "paralyze": m = name + " favors moves that Paralyze."; break;
@@ -21515,10 +21515,10 @@ function Safari() {
                         }*/
                         q += (300 * Math.random());
                         if (npcFavorite) {
-							if (npcFavorite.includes(id)) {
-								q += 150;
-							}
-						}
+                            if (npcFavorite.includes(id)) {
+                                q += 150;
+                            }
+                        }
                         options["" + a] = q;
                     }
                     var out2 = Object.keys(options).sort(function(a, b){
@@ -23572,11 +23572,11 @@ function Safari() {
             }
         }
         if (this.select) {
-        	if (this.select.weakSTAB) {
-        		stab = false;
-        	}
+            if (this.select.weakSTAB) {
+                stab = false;
+            }
             if (this.select.classicTypes && ["Fairy", "Steel", "Dark"].contains(move.type)) {
-            	stab = false;
+                stab = false;
             }
         }
         var helped = (user.helped ? 1.5 : 1);
@@ -25429,31 +25429,31 @@ function Safari() {
                                 move.power = (5 * Math.round(move.power * 1.1/5));
                             }
                         } else if (this.weather) {
-                        	if (this.weather == "Rain" && data.weather.thunder && move.type == "Electric" && move.power < 95) {
-                        		move.power += (5 * Math.round(Math.random() * 6));
-                        	}
-                        	if (this.weather == "Sun" && data.weather.solar && move.type == "Grass" && move.power < 95) {
-                        		move.power += (5 * Math.round(Math.random() * 6));
-                        	}
-                        	if (data.weather.weather && move.type == "Normal" && chance(0.08)) {
-                        		if (this.weather == "Rain") {
-                        			move.type = "Water";
-                        			move.power += (5 * Math.round(Math.random() * 6));
-                        		}
-                        		if (this.weather == "Sun") {
-                        			move.type = "Fire";
-                        			move.power += (5 * Math.round(Math.random() * 6));
-                        		}
-                        		if (this.weather == "Sand") {
-                        			move.type = "Sand";
-                        			move.power += (5 * Math.round(Math.random() * 6));
-                        		}
-                        		if (this.weather == "Hail") {
-                        			move.type = "Ice";
-                        			move.power += (5 * Math.round(Math.random() * 6));
-                        		}
-                        		move.power += (5 * Math.round(Math.random() * 6));
-                        	}
+                            if (this.weather == "Rain" && data.weather.thunder && move.type == "Electric" && move.power < 95) {
+                                move.power += (5 * Math.round(Math.random() * 6));
+                            }
+                            if (this.weather == "Sun" && data.weather.solar && move.type == "Grass" && move.power < 95) {
+                                move.power += (5 * Math.round(Math.random() * 6));
+                            }
+                            if (data.weather.weather && move.type == "Normal" && chance(0.08)) {
+                                if (this.weather == "Rain") {
+                                    move.type = "Water";
+                                    move.power += (5 * Math.round(Math.random() * 6));
+                                }
+                                if (this.weather == "Sun") {
+                                    move.type = "Fire";
+                                    move.power += (5 * Math.round(Math.random() * 6));
+                                }
+                                if (this.weather == "Sand") {
+                                    move.type = "Sand";
+                                    move.power += (5 * Math.round(Math.random() * 6));
+                                }
+                                if (this.weather == "Hail") {
+                                    move.type = "Ice";
+                                    move.power += (5 * Math.round(Math.random() * 6));
+                                }
+                                move.power += (5 * Math.round(Math.random() * 6));
+                            }
                         }
                         if (["helpingHand", "followMe"].contains(p)) {
                             if (move.priority < 6) {
@@ -26048,7 +26048,7 @@ function Safari() {
                         dmg = this.damageCalc(user, move, opp, eff, 1, isP1, isP2, isP3, isP4);
                         
                         if (eff > 1 && bias.effectiveness) {
-                        	c += 30;
+                            c += 30;
                         }
 
                         var diff = (opp.hp / dmg);
@@ -26538,17 +26538,17 @@ function Safari() {
         return out;
     };
     Battle2.prototype.getWeatherMoves = function(id) {
-		var num = parseInt(id, 10);	
-    	var out = {thunder: false, solar: false, weather: false};
-    	if (canLearnMove(pokeInfo.species(num), 87)) {
-    		out.thunder = true;
-    	}
-    	if (canLearnMove(pokeInfo.species(num), 76)) {
-    		out.solar = true;
-    	}
-    	if (canLearnMove(pokeInfo.species(num), 311)) {
-    		out.weather = true;
-    	}
+        var num = parseInt(id, 10);    
+        var out = {thunder: false, solar: false, weather: false};
+        if (canLearnMove(pokeInfo.species(num), 87)) {
+            out.thunder = true;
+        }
+        if (canLearnMove(pokeInfo.species(num), 76)) {
+            out.solar = true;
+        }
+        if (canLearnMove(pokeInfo.species(num), 311)) {
+            out.weather = true;
+        }
     };
     Battle2.prototype.getMoveSet = function(id, moves) {
         var num = parseInt(id, 10), m, out = 0.1, val = 0, set = [];
@@ -30340,7 +30340,7 @@ function Safari() {
         var trainerSprite = '<img src="' + base64trainers.alchemist + '">';
         
         var info = getInputPokemon(opt.replace("%25", "%")); // zygarde-10% gets html_escaped into -10%25
-		var eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 1, "forms": [550, 66086], "pebble": true }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 1, "forms": [745, 66281], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, form(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, form(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 4, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, form(77, 1)]}, "78": {"cost": 2, "forms": [78, form(78, 1)]}, "263": {"cost": 2, "forms": [263, form(263, 1)]}, "264": {"cost": 2, "forms": [264, form(264, 1)]}, "562": {"cost": 2, "forms": [562, form(562, 1)]}, "122": {"cost": 2, "forms": [122, form(122, 1)]}, "110": {"cost": 2, "forms": [110, form(110, 1)]}, "222": {"cost": 2, "forms": [222, form(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] } };
+        var eligible = { "201": { "cost": 1, "forms": [201, 65737, 131273, 196809, 262345, 327881, 393417, 458953, 524489, 590025, 655561, 721097, 786633, 852169, 917705, 983241, 1048777, 1114313, 1179849, 1245385, 1310921, 1376457, 1441993, 1507529, 1573065, 1638601, 1704137, 1769673], "pebble": true }, "412": { "cost": 1, "forms": [412, 65948, 131484], "pebble": true }, "422": { "cost": 1, "forms": [422, 65958], "pebble": true }, "423": { "cost": 1, "forms": [423, 65959], "pebble": true }, "550": { "cost": 1, "forms": [550, 66086], "pebble": true }, "585": { "cost": 1, "forms": [585, 66121, 131657, 197193], "pebble": true }, "586": { "cost": 1, "forms": [586, 66122, 131658, 197194], "pebble": true }, "666": { "cost": 1, "forms": [666, 66202, 131738, 197274, 262810, 328346, 393882, 459418, 524954, 590490, 656026, 721562, 787098, 852634, 918170, 983706, 1049242, 1114778, 1180314, 1245850], "pebble": true }, "669": { "cost": 1, "forms": [669, 66205, 131741, 197277, 262813], "pebble": true }, "671": { "cost": 1, "forms": [671, 66207, 131743, 197279, 262815], "pebble": true }, "710": { "cost": 1, "forms": [710, 66246, 131782, 197318], "pebble": true }, "711": { "cost": 1, "forms": [711, 66247, 131783, 197319], "pebble": true }, "741": { "cost": 1, "forms": [741, 66277, 131813, 197349], "pebble": true }, "745": { "cost": 1, "forms": [745, 66281], "pebble": true }, "351": { "cost": 15, "forms": [351, 65887, 131423, 262495], "pebble": true }, "413": { "cost": 1, "forms": [413, 65949, 131485], "pebble": true }, "421": { "cost": 10, "forms": [421, 65957], "pebble": true }, "676": { "cost": 15, "forms": [676, 66212, 131748, 197284, 262820, 328356, 393892, 459428, 524964, 590500], "pebble": true }, "19": { "cost": 2, "forms": [19, 65555] }, "20": { "cost": 2, "forms": [20, 65556] }, "25": { "cost": 20, "forms": [25, 65561, 131097, 196633, 262169, 327705, 458777, 524313, 589849, 655385, 720921, 786457, 851993], "pebble": true }, "26": { "cost": 2, "forms": [26, 65562] }, "27": { "cost": 2, "forms": [27, 65563] }, "28": { "cost": 2, "forms": [28, 65564] }, "37": { "cost": 2, "forms": [37, 65573] }, "38": { "cost": 2, "forms": [38, 65574] }, "50": { "cost": 2, "forms": [50, 65586] }, "51": { "cost": 2, "forms": [51, 65587] }, "52": { "cost": 2, "forms": [52, 65588, form(52, 2)] }, "53": { "cost": 2, "forms": [53, 65589] }, "74": { "cost": 2, "forms": [74, 65610] }, "75": { "cost": 2, "forms": [75, 65611] }, "76": { "cost": 2, "forms": [76, 65612] }, "88": { "cost": 2, "forms": [88, 65624] }, "89": { "cost": 2, "forms": [89, 65625] }, "103": { "cost": 2, "forms": [103, 65639] }, "105": { "cost": 2, "forms": [105, 65641] }, "670": { "cost": 6, "forms": [670, 66206, 131742, 197278, 262814, 328350] }, "678": { "cost": 2, "forms": [678, 66214], "pebble": true }, "681": { "cost": 1, "forms": [681, 66217] }, "658": { "cost": 4, "forms": [658, 131730] }, "746": { "cost": 2, "forms": [746, 66282] }, "774": { "cost": 20, "forms": [774, 66310, 131846, 197382, 262918, 328454, 393990, 459526], "pebble": true }, "801": { "cost": 4, "forms": [801, 66337] }, "386": { "cost": 5, "forms": [386, 65922, 131458, 196994] }, "487": { "cost": 5, "forms": [487, 66023] }, "641": { "cost": 5, "forms": [641, 66177] }, "642": { "cost": 5, "forms": [642, 66178] }, "645": { "cost": 5, "forms": [645, 66181] }, "647": { "cost": 5, "forms": [647, 66183] }, "649": { "cost": 5, "forms": [649, 66185, 131721, 197257, 262793] }, "479": { "cost": 3, "forms": [479, 66015, 131551, 197087, 262623, 328159] }, "492": { "cost": 4, "forms": [492, 66028] }, "555": { "cost": 3, "forms": [555, 66091, form(555, 2)] }, "648": { "cost": 4, "forms": [648, 66184] }, "773": { "cost": 4, "forms": [773, 66309, 131845, 197381, 262917, 328453, 393989, 459525, 525061, 590597, 656133, 721669, 787205, 852741, 918277, 983813, 1049349, 1114885] }, "493": { "cost": 10, "forms": [493, 66029, 131565, 197101, 262637, 328173, 393709, 459245, 524781, 590317, 655853, 721389, 786925, 852461, 917997, 983533, 1049069, 1114605] }, "646": { "cost": 10, "forms": [646, 66182, 131718] }, "718": { "cost": 15, "forms": [718, 66254, 131790] }, "720": { "cost": 10, "forms": [720, 66256] }, "77": {"cost": 2, "forms": [77, form(77, 1)]}, "78": {"cost": 2, "forms": [78, form(78, 1)]}, "263": {"cost": 2, "forms": [263, form(263, 1)]}, "264": {"cost": 2, "forms": [264, form(264, 1)]}, "562": {"cost": 2, "forms": [562, form(562, 1)]}, "122": {"cost": 2, "forms": [122, form(122, 1)]}, "110": {"cost": 2, "forms": [110, form(110, 1)]}, "222": {"cost": 2, "forms": [222, form(222, 1)]}, "83": { "cost": 2, "forms": [83, 65619] }, "554": { "cost": 3, "forms": [554, 66090] }, "618": { "cost": 2, "forms": [618, 66154] }, "79": { "cost": 2, "forms": [79, 65615] }, "80": { "cost": 2, "forms": [80, 131152] }, "199": { "cost": 2, "forms": [199, 65735] }, "845": { "cost": 1, "forms": [845, 66381, 131917] }, "875": { "cost": 20, "forms": [875, 66411], "pebble": true }, "877": { "cost": 20, "forms": [877, 66413], "pebble": true }, "893": { "cost": 4, "forms": [893, 66429] }, "144": { "cost": 5, "forms": [144, 65680] }, "145": { "cost": 5, "forms": [145, 65681] }, "146": { "cost": 5, "forms": [146, 65682] } };
         if (!info.num) {
             safaribot.sendHtmlMessage(src, trainerSprite + "Alchemist: Y'see, the " + finishName("philosopher") + " and " + finishName("philosopherpebble") + " are legendary artifacts with heavenly transmutation powers! They say it can even transform life itself!", safchan);
             safaribot.sendHtmlMessage(src, "Alchemist: So that's the thing, I'm eager to play around with those things. With those I believe I can completely reshape some Pokémon!", safchan);
@@ -30364,7 +30364,7 @@ function Safari() {
                         return link("/quest philosopher:" + pkName, pkName);
                     });
                     
-					if (page[pk] === "555") { // darmanitan
+                    if (page[pk] === "555") { // darmanitan
                         listForms.push(link("/quest philosopher:Galarian Darmanitan-Zen", "Galarian Darmanitan-Zen")); // g garm-zen is omitted from regular darm's form array, so manually push it in here
                     }
                     safaribot.sendHtmlMessage(src, readable(listForms), safchan);
