@@ -1465,6 +1465,7 @@ function Safari() {
         playerSell: [0, 0, 0],
         playerPawn: [0, 0, 0],
         collector: [0, 0, 0],
+        questFee: [0, 0, 0],
         total: [0, 0, 0]
     };
 
@@ -28738,6 +28739,7 @@ function Safari() {
                     rewname = "$" + addComma(args.moneyReward);
                     safaribot.sendMessage(id, "You received $" + addComma(args.moneyReward) + "!", safchan);
                     player.money += args.moneyReward;
+                    safari.updateEconomyData(args.moneyReward, "questFee");
                     if (player.money > moneyCap) {
                         player.money = moneyCap;
                     }
@@ -28864,7 +28866,7 @@ function Safari() {
 
         npc.postArgs.name = npc.name;
         player.money -= cost;
-
+        safari.updateEconomyData(-cost, "questFee");
         safaribot.sendHtmlMessage(src, trainerSprite + "Arena Clerk: I see you paid the $" + addComma(cost) + " Entry Fee, so you can now proceed to your challenge against " + npc.name + "!", safchan);
         var battle = new Battle(src, npc);
         currentBattles.push(battle);
@@ -28934,6 +28936,7 @@ function Safari() {
             return;
         }
         player.money -= cost;
+        safari.updateEconomyData(-cost, "questFee");
         this.saveGame(player);
 
         var skip = false;
@@ -29344,6 +29347,7 @@ function Safari() {
         this.removePokemon(src, id);
         player.pokemon.push(receivedId);
         player.money -= fee;
+        safari.updateEconomyData(-fee, "questFee");
         player.records.wonderTrades += 1;
 
         quest.cooldown = now() + Math.round(hours(cooldown) * (1 - safari.getFortune(player, "questcd", 0, "wonder")));
@@ -29573,6 +29577,7 @@ function Safari() {
                         p = getAvatarOff(players[e]);
                         var cost = Math.round(5000 * (1 - (safari.hasCostumeSkill(p, "bakingDiscount") ? 0.5 : 0)));
                         p.money -= cost;
+                        safari.updateEconomyData(-cost, "questFee");
                         p.quests.baking.cooldown = now() + Math.round(hours(0.5));
                         safaribot.sendHtmlMessage(sys.id(p.id), "Baking Administrator: You paid $" + addComma(cost) + " to enter the Kitchen!", safchan);
                         safari.toRecentQuests(p, "baking");
@@ -29857,6 +29862,7 @@ function Safari() {
                         this.updateShop(leaderPlayer, "fossil");
                     } else {
                         leaderPlayer.money -= cost;
+                        safari.updateEconomyData(-cost, "questFee");
                         if (this.getFortune(leaderPlayer, "pyrdiscount", 0, null, true)) {
                             this.useFortuneCharge(leaderPlayer, "pyrdiscount", 1);
                         }
@@ -30691,6 +30697,7 @@ function Safari() {
         if (payment === "buy") {
             player.money -= moneyCost;
             player.balls.silver -= silverCost;
+            safari.updateEconomyData(-moneyCost, "questFee");
             paymsg = "You paid $" + addComma(moneyCost) + " and " + plural(silverCost, "silver") + " and received {0}!";
             if (this.getFortune(player, "decordiscount", 0, null, true)) {
                 this.useFortuneCharge(player, "decordiscount", 1);
@@ -31577,6 +31584,7 @@ function Safari() {
             if (opt === "register") {
                 if (player.money >= cost) {
                     player.money -= cost;
+                    safari.updateEconomyData(-cost, "questFee");
                     quest.registered = true;
                     this.saveGame(player);
                     safaribot.sendHtmlMessage(src, trainerSprite + "League Guide: Great, you paid $" + addComma(cost) + ", so you are now registered! You can now use " + link("/quest league") + " to challenge the gyms until the end of the week, when your registration expires!", safchan);
@@ -31936,6 +31944,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, "Editor-in-chief: Type " + link("/quest journal") + " to see what kind of photos I need, and I will give you some rewards for them!", safchan);
                     safaribot.sendMessage(src, "You paid $" + addComma(cost) + " and bought 1 " + finishName("lens") + "!", safchan);
                     player.money -= cost;
+                    safari.updateEconomyData(-cost, "questFee");
                     player.balls.lens += 1;
                     this.saveGame(player);
                 } else {
