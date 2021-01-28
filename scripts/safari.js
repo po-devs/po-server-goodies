@@ -26018,10 +26018,15 @@ function Safari() {
         if (ind === 4) {
             isP4 = true;
         }
+        var self = this;
         var getBoostCount = function(user) {
             var c = 0, e;
             for (e in user.boosts) {
-                c += user.boosts[e];
+            	if (e == "spe" && self.select && self.select.trickRoom) {            	
+					c -= user.boosts[e];
+            	} else {
+					c += user.boosts[e];
+				}
             }
             return c;
         };
@@ -26159,7 +26164,11 @@ function Safari() {
                         if (user.boosts[eff.buffStat] === 6) {
                             continue;
                         }
-                        c += eff.buff * 80 * eff.buffChance;
+                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {                        	
+							c -= eff.buff * 80 * eff.buffChance;
+                        } else {
+							c += eff.buff * 80 * eff.buffChance;
+                        }
                         if (bias.stats) {
                             c += eff.buff * 40 * eff.buffChance;
                         }
@@ -26167,7 +26176,11 @@ function Safari() {
                         if (user.boosts[eff.buffStat] === -6) {
                             continue;
                         }
-                        c -= -eff.buff * 40 * eff.buffChance;
+                        if (this.select && this.select.trickRoom && eff.buffStat == "spe") {                        	
+							c += eff.buff * 40 * eff.buffChance;
+                        } else {
+							c -= eff.buff * 40 * eff.buffChance;
+                        }
                         if (bias.stats) {
                             c -= eff.buff * 20 * eff.buffChance;
                         }
