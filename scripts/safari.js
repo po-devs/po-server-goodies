@@ -10727,7 +10727,7 @@ function Safari() {
                 if (typeof p == "string") {
                     continue;
                 }
-                if (isLegendary(p)) {
+                if (isRare(p)) {
                     continue;
                 }
                 toTurbo.push(p+"");
