@@ -15328,6 +15328,12 @@ function Safari() {
                     exp = 100; 
                 }
                 break;
+            case "winmafia": 
+                exp = 60;
+                break;
+            case "wintrivia": 
+                exp = 15 * val;
+                break;
         }
         if (player.costume == "preschooler" && player.records.pokesCaught > 999) {
             exp *= 0.5;
