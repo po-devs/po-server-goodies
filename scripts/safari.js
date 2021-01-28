@@ -21557,6 +21557,7 @@ function Safari() {
                         case "recoil": m = name + " favors recoil moves."; break;
                         case "drain": m = name + " favors drain moves."; break;
                         case "burnout": m = name + " favors high-risk moves."; break;
+                        case "effectiveness": m = name + " aims for super-effective moves."; break;
                         case "critical": m = name + " favors critical-hit moves."; break;
                         case "helpingHand": m = name + " likes to support their teammate."; break;
                         case "reflect": m = name + " likes to set up Reflect."; break;
