@@ -47011,7 +47011,7 @@ function Safari() {
                         if (pos === 1 && player.medalRecords[w].first && player.medalRecords[w].first > 1) {
                             outDesc = "#1 " + w + " for " + player.medalRecords[w].first + " consecutive weeks";
                             n = {
-                                desc: (outDesc + " " date),
+                                desc: (outDesc + " " + date),
                                 icon: 17
                             }
                             this.awardMedal(player, n);
