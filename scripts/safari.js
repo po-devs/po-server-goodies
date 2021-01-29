@@ -30528,7 +30528,7 @@ function Safari() {
                     }
                 }
                 var n = now();
-                if (player.cooldowns.detective < n) {
+                if (player.cooldowns.detective > n) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait a while before guessing again!", safchan);
                     return;
                 }
