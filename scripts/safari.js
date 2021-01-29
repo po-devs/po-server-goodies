@@ -11358,39 +11358,41 @@ function Safari() {
             exchangedPrevious = playerShopPrevious + playerTradePrevious + playerAuctionPrevious;
 
         // unaccounted = misc stuff like luxury balls, bet races, money lost from exceeding cap, etc
-        var unaccounted = (introduced + lost) - (total - totalPrevious); // accounted difference - true difference
-        var moneyColor = function(amount) {
-            return "<b>" + toColor("$" + addComma(amount), amount <= 0 ? "red" : "green") + "</b>";
+        var unaccounted = (introduced + lost) - (total - totalPrevious),  // accounted difference - true difference
+            unaccountedPrevious = (introducedPrevious + lostPrevious) - (totalPrevious - (economyData.total[dayIndex+2] || 0));
+
+        var moneyColor = function(amount, showPlus) {
+            return "<b>" + toColor((showPlus && amount >= 0 ? "+" : (amount < 0 ? "-" : "")) + "$" + addComma(Math.abs(amount)), amount < 0 ? "red" : "green") + "</b>";
         };
         
         if (dayIndex === 13)
             sys.sendHtmlMessage(src, toColor("<b>Note:</b> ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
 
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Selling Pokémon to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning/Selling Items to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from the Collector:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Selling Pokémon to the NPC:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning/Selling Items to the NPC:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from the Collector:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious, true)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost by Buying from the NPC Shop:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost from Quest Fees:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(questFee), moneyColor(questFee - questFeePrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost by Buying from the NPC Shop:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(npcShop), moneyColor(npcShop - npcShopPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Lost from Quest Fees:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(questFee), moneyColor(questFee - questFeePrevious, true)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Auctions: </b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerAuction), moneyColor(playerAuction - playerAuctionPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Shop Sales:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(playerShop), moneyColor(playerShop - playerShopPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Trades: </b>", "black") + " {0} ({1} from previous day)".format(moneyColor(playerTrade), moneyColor(playerTrade - playerTradePrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Exchanged Between Players via Auctions: </b>", "black") + " {0} ({1} from previous day)".format(moneyColor(playerAuction), moneyColor(playerAuction - playerAuctionPrevious, true)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced into the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed from the Economy:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0}".format(moneyColor(unaccounted)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced into the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed from the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(unaccounted)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Between All Safari Players:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Between All Safari Players:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious, true)), safchan);
         // earlier index is later date
         safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex+1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex-1), "«Next Day»") : ""), safchan);
     };
@@ -29957,23 +29959,23 @@ function Safari() {
     };
     this.detectiveClue = function(uid, type, src) {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
-			for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
-				if (safari.detectiveData[uid+""].clues[i].unlock == type) {
-					safari.detectiveData[uid+""].clues[i].unlock = "free";
-					safaribot.sendHtmlMessage(src, toColor("You unlocked a Detective Clue!", "red"), safchan);
-				}
-			}
+            for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
+                if (safari.detectiveData[uid+""].clues[i].unlock == type) {
+                    safari.detectiveData[uid+""].clues[i].unlock = "free";
+                    safaribot.sendHtmlMessage(src, toColor("You unlocked a Detective Clue!", "red"), safchan);
+                }
+            }
         }
         return;
     };
     this.detectiveQuest = function(src, data) {
-        function createClue(answer, clues, ind, kind, minstrength, unlock) {    
+        function createClue(answer, clues, ind, kind, minstrength, unlock) {
             var out = {};
             var strength = 0;
             var value;
             var pk;
             if (ind === false && ind !== 0) {
-            	ind = Math.floor(Math.random() * 4);
+                ind = Math.floor(Math.random() * 4);
             }
             var kinds = {
                 "start": 20,
@@ -30115,7 +30117,7 @@ function Safari() {
                             return false;
                         }
                     }
-                	var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
+                    var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
                     var m = mvs[0];
                     var m2 = mvs.length > 1 ? mvs[1] : 0;
                     var k = 0;
@@ -30246,12 +30248,12 @@ function Safari() {
                     outText = "{0} has a " + value + " than {1}.";
                     break;
                 case "dualtypes":
-                	var amt = 0;
-                	for (var i = 0; i < answer.length; i++) {
-                		if (type2(answer[i]) !== "???") {
-                			amt++;
-                		}
-                	}
+                    var amt = 0;
+                    for (var i = 0; i < answer.length; i++) {
+                        if (type2(answer[i]) !== "???") {
+                            amt++;
+                        }
+                    }
                     value = "dual-type";
                     strength = 50;
                     outText = (amt == 0 ? "None of the Pokémon are dual-typed." : (amt == 1 ? "1 Pokémon is dual-typed." : (amt + " Pokémon are dual-typed.")));
@@ -30276,7 +30278,7 @@ function Safari() {
             var out = false;
             var i = 0;
             
-			var maxloop = 50000;
+            var maxloop = 50000;
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, i < 10000 ? maxstrength : 0, unlock);
                 i++;
@@ -30285,6 +30287,7 @@ function Safari() {
                     break;
                 }
             }
+            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): " + i, staffchannel);
             return out;
         };
         function assignClues() {
