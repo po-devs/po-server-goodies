@@ -30321,7 +30321,6 @@ function Safari() {
         var uid = player.idnum;
         
         var today = getDay(now());
-        
         if (safari.detectiveData.hasOwnProprty(uid+"")) {
         	if (today !== safari.detectiveData[uid+""].date) {
         		if (!(safari.detectiveData[uid+""].solved)) {
