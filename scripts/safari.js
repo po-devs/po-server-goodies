@@ -11358,8 +11358,8 @@ function Safari() {
             exchangedPrevious = playerShopPrevious + playerTradePrevious + playerAuctionPrevious;
 
         // unaccounted = misc stuff like luxury balls, bet races, money lost from exceeding cap, etc
-        var unaccounted = (introduced + lost) - (total - totalPrevious),  // accounted difference - true difference
-            unaccountedPrevious = (introducedPrevious + lostPrevious) - (totalPrevious - (economyData.total[dayIndex+2] || 0));
+        var unaccounted = (total - totalPrevious) - (introduced + lost),  //  true difference - accounted difference
+            unaccountedPrevious = (totalPrevious - (economyData.total[dayIndex+2] || 0)) - (introducedPrevious + lostPrevious);
 
         var moneyColor = function(amount, showPlus) {
             return "<b>" + toColor((showPlus && amount >= 0 ? "+" : (amount < 0 ? "-" : "")) + "$" + addComma(Math.abs(amount)), amount < 0 ? "red" : "green") + "</b>";
@@ -29968,6 +29968,15 @@ function Safari() {
         }
         return;
     };
+    var detectiveKindsTmp = {
+        "start": 20,
+        "contains": 20,
+        "evolved": 8,
+        "evolves": 6,
+        "canMega": 5,
+        "stat": 9,
+        "moves": 7
+    };
     this.detectiveQuest = function(src, data) {
         function createClue(answer, clues, ind, kind, minstrength, unlock) {
             var out = {};
@@ -29977,15 +29986,7 @@ function Safari() {
             if (ind === false && ind !== 0) {
                 ind = Math.floor(Math.random() * 4);
             }
-            var kinds = {
-                "start": 20,
-                "contains": 20,
-                "evolved": 8,
-                "evolves": 6,
-                "canMega": 5,
-                "stat": 9,
-                "moves": 7
-            };
+            var kinds = detectiveKindsTmp;
             var kindsinteract = {
                 "effective": 20,
                 "noletters": 22,
@@ -30120,7 +30121,6 @@ function Safari() {
                     var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
                     var m = mvs[0];
                     var m2 = mvs.length > 1 ? mvs[1] : 0;
-                    var k = 0;
                     var l3 = [];
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l3.push(e);
@@ -30274,14 +30274,14 @@ function Safari() {
                 seen: false
             }
         }
-        function getClue(answer, clues, ind, kind, maxstrength, unlock) {
+        function getClue(answer, clues, ind, kind, minstrength, unlock) {
             var out = false;
             var i = 0;
             
             var before = new Date().getTime();
             var maxloop = 50000;
             while (!(out)) {
-                out = createClue(answer, clues, ind, i < 160 ? kind : false, i < 10000 ? maxstrength : 0, unlock);
+                out = createClue(answer, clues, ind, i < 160 ? kind : false, i < 10000 ? minstrength : 0, unlock);
                 i++;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
@@ -30289,7 +30289,7 @@ function Safari() {
                 }
             }
             var after = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with time delta of {2} and intended strength of {3}".format(i, out.str, after - before, maxstrength.toFixed(2)), staffchannel);
+            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with intended strength of {3} and time delta of {2}".format(i, out.str, after - before, minstrength.toFixed(2)), staffchannel);
             return out;
         };
         function assignClues() {
@@ -30309,6 +30309,8 @@ function Safari() {
             var extraOrder = [0, 1, 2, 3].shuffle();
             var extraOrder2 = [0, 1, 2, 3].shuffle();
             
+            var before = new Date().getTime();
+            sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
             out.clues.push(getClue(out.answer, out.clues, 0, false, firstFourOrder[0]));
             out.clues.push(getClue(out.answer, out.clues, 1, false, firstFourOrder[1]));
             out.clues.push(getClue(out.answer, out.clues, 2, false, firstFourOrder[2]));
@@ -30338,6 +30340,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, 3, false, 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
+            var after = new Date().getTime();
+            sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + after - before, staffchannel);
+            sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
             return out;
         }
         var player = getAvatar(src);
@@ -30415,7 +30420,7 @@ function Safari() {
                     out3.push(req);
                 }
                 if (out.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>:", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>", safchan);
                     sys.sendMessage(src, "", safchan);
                     for (var i = 0; i < out.length; i++) {
                         safaribot.sendHtmlMessage(src, out[i], safchan);
@@ -30423,7 +30428,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                 }
                 if (out2.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>You found the following clues:</b>:", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>You found the following clues:</b>", safchan);
                     sys.sendMessage(src, "", safchan);
                     for (var i = 0; i < out2.length; i++) {
                         safaribot.sendHtmlMessage(src, toColor(out2[i], colorTranslations["orangered"]), safchan);
@@ -30431,7 +30436,7 @@ function Safari() {
                     sys.sendMessage(src, "", safchan);
                 }
                 if (out3.length > 0) {
-                    safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>:", safchan);
+                    safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>", safchan);
                     sys.sendMessage(src, "", safchan);
                     for (var i = 0; i < out3.length; i++) {
                         safaribot.sendHtmlMessage(src, toColor(out3[i], colorTranslations["darkgreen"]), safchan);
@@ -30476,8 +30481,8 @@ function Safari() {
                 }
                 if (passed) {
                     safari.detectiveData[uid+""].solved = true;
-                    give(player, "@prize"); //fix this later
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
+                    giveStuff(player, "@prize");
                     saveGame(player);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
