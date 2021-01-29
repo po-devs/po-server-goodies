@@ -30178,7 +30178,7 @@ function Safari() {
                     strength = 20;
                     outText = "{0} has " + value + " with {1}.";
                     break;
-                case "region":
+                case "sameregion":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "region" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
@@ -30194,7 +30194,7 @@ function Safari() {
                     strength = 16;
                     outText = "{0} is from the same region as {1}.";
                     break;
-                case "color":
+                case "samecolor":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "color" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
@@ -30289,7 +30289,7 @@ function Safari() {
                 }
             }
             var after = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with time delta of {2} and intended strength of {3}".format(i, out.str, before - after, maxstrength), staffchannel);
+            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with time delta of {2} and intended strength of {3}".format(i, out.str, after - before, maxstrength.toFixed(2)), staffchannel);
             return out;
         };
         function assignClues() {
