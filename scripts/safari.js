@@ -11388,7 +11388,7 @@ function Safari() {
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced into the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious, true)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed from the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious, true)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious, true)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(unaccounted)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(unaccounted), moneyColor(unaccountedPrevious - unaccounted, true)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
