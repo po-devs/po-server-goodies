@@ -30133,30 +30133,30 @@ function Safari() {
                     var m = mvs[0];
                     var m2 = mvs.length > 1 ? mvs[1] : 0;
                     function lookupMoveLearners(h) {
-                    	var outList = [];
-						if (safari.moveLearners.hasOwnProperty(h+"")) {
-							outList = safari.moveLearners[h+""];
-						} else {
-							for (var e = 1; e < highestDexNum - 1; e++) {
-								outList.push(e);
-							}
-							outList = outList.filter(function(x){
-								return (canLearnMove(x, h));
-							});
-							safari.moveLearners[h+""] = outList;
-						}
-						return outList;
+                        var outList = [];
+                        if (safari.moveLearners.hasOwnProperty(h+"")) {
+                            outList = safari.moveLearners[h+""];
+                        } else {
+                            for (var e = 1; e < highestDexNum - 1; e++) {
+                                outList.push(e);
+                            }
+                            outList = outList.filter(function(x){
+                                return (canLearnMove(x, h));
+                            });
+                            safari.moveLearners[h+""] = outList;
+                        }
+                        return outList;
                     }
                     function removeNonDuplicates(arr) {
-                    	//move this up to useful function later
-                    	var hit = [];
-                    	for (var j = arr.length; j--;) {
-                    		if (hit.contains(arr[j])) {
-                    			continue;
-                    		}
-                    		hit.push(arr.splice(j, 1)[0]);
-                    	}
-                    	return arr;
+                        //move this up to useful function later
+                        var hit = [];
+                        for (var j = arr.length; j--;) {
+                            if (hit.contains(arr[j])) {
+                                continue;
+                            }
+                            hit.push(arr.splice(j, 1)[0]);
+                        }
+                        return arr;
                     }
                     var l = lookupMoveLearners(m), l2 = lookupMoveLearners(m2);
                     if (l.length > 220 || l.length < 15) {
@@ -30171,7 +30171,7 @@ function Safari() {
                     }
                     if (l3.length > l.length - 7 || l3.length > l2.length - 7) { //make sure neither move is very insignificant
                         return false;
-					}
+                    }
                     strength = l3.length > 100 ? 2 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
                     //strength = 16;
                     value = [m, m2];
@@ -48622,7 +48622,7 @@ function Safari() {
             received.push(name.toCorrectCase());
             safari.detectiveClue(player.idnum, "mafia");
             if (amt >= 7) {
-				safari.detectiveClue(player.idnum, "mafia2");
+                safari.detectiveClue(player.idnum, "mafia2");
             }
             
             this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!", isPlaying(name));
