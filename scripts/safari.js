@@ -2197,7 +2197,7 @@ function Safari() {
         },
         lorekeeper: {
             name: "Trainer Lorekeeper",
-            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812],
+            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812,342,836],
             power: [125, 250],
             postArgs: {
                 rewardAmt: 7,
