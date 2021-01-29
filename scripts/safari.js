@@ -10059,7 +10059,12 @@ function Safari() {
             
             var before = id,
                 isLead = player.party.indexOf(before) === 0;
-
+                
+            var getItem = player.helds[player.party.length - 1]; // entire second half of the party shifts forward, so take the item back from the last slot if there is one
+            if (getItem > -1) {
+                safari.takeItem(player, player.party.length);
+            }
+            
             player.party.splice(player.party.indexOf(id), 1);
             
             if (isLead && player.party[0] !== before) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
