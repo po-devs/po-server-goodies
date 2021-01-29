@@ -29993,6 +29993,12 @@ function Safari() {
                     otherind++;
                 }
             }
+            if (generation(answer[ind]) !== generation(answer[otherind])) {
+            	kindsinteract["sameregion"] = 0;
+            }
+            if (getPokeColor(answer[ind]) !== getPokeColor(answer[otherind])) {
+            	kindsinteract["samecolor"] = 0;
+            }
             kind = kind == "interact" ? randomSample(kindsinteract) : (kind || randomSample(kinds));
             unlock = unlock || "free"; //what is required to access this clue
             var outText = ""; //what the text of this clue is
@@ -30013,7 +30019,8 @@ function Safari() {
                     break;
                 case "contains":
                     pk = poke(answer[ind]);
-                    value = pk.slice(Math.floor(Math.random() * pk.length), 1); //random letter from that pokemon's name
+                    var sl = Math.floor(Math.random() * pk.length);
+                    value = pk.slice(sl, sl + 1); //random letter from that pokemon's name
                     value = value.toUpperCase();
                     for (var i = 0; i < clues.length; i++) {
                         if (value == clues[i].value) {
@@ -30088,7 +30095,7 @@ function Safari() {
                         }
                     }
                     if (l.length == 1) {
-                        value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][j];
+                        value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][l[0]];
                         strength = 5;
                     } else {
                         value = ["two", "three", "four", "five", "six"][l.length - 2];
@@ -30117,22 +30124,6 @@ function Safari() {
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l.push(e);
                     }
-                    l = l.filter(function(x){
-                        return canLearnMove(x, m);
-                    });
-                    if (l.length > 200 || l.length < 10) {
-                        return false;
-                    }
-                    var l2 = [];
-                    for (var e = 1; e < highestDexNum - 1; e++) {
-                        l2.push(e);
-                    }
-                    l2 = l2.filter(function(x){
-                        return canLearnMove(x, m);
-                    });
-                    if (l2.length > 200 || l2.length < 10) {
-                        return false;
-                    }
                     var l3 = [];
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l3.push(e);
@@ -30140,7 +30131,7 @@ function Safari() {
                     l3 = l3.filter(function(x){
                         return (canLearnMove(x, m) && (canLearnMove(x, m2)));
                     });
-                    if (l3.length > 100 || l2.length < 6) {
+                    if (l3.length > 100 || l2.length < 7) {
                         return false;
                     }
                     strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
@@ -30257,7 +30248,7 @@ function Safari() {
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, maxstrength, unlock);
                 i++;
-                if (i > 2500) {
+                if (i > 7500) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
                     break;
                 }
@@ -30306,7 +30297,7 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
             out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 2 * Math.random(), "pyramid2"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
-            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 5 * Math.random(), "pyramid4"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
             return out;
@@ -30385,7 +30376,30 @@ function Safari() {
                     }
                     out3.push(req);
                 }
-                safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>\n\n" + out.join("\n") + (out2.length > 0 ? "\n\n<b>You found the following new clues:</b>\n\n" + toColor(out2.join("\n"), colorTranslations["orangered"]) : "") + (out3.length > 0 ? "\n\n<b>You can unlock new clues with the following requirements:</b>\n\n" + out3.join("\n") : "") + "", safchan);
+                if (out.length > 0) {
+					safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>:", safchan);
+					sys.sendMessage(src, "", safchan);
+					for (var i = 0; i < out.length; i++) {
+						safaribot.sendHtmlMessage(src, out[i], safchan);
+					}
+					sys.sendMessage(src, "", safchan);
+				}
+                if (out2.length > 0) {
+					safaribot.sendHtmlMessage(src, "<b>You found the following clues:</b>:", safchan);
+					sys.sendMessage(src, "", safchan);
+					for (var i = 0; i < out2.length; i++) {
+						safaribot.sendHtmlMessage(src, toColor(out2[i], colorTranslations["orangered"]), safchan);
+					}
+					sys.sendMessage(src, "", safchan);
+				}
+                if (out3.length > 0) {
+					safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>:", safchan);
+					sys.sendMessage(src, "", safchan);
+					for (var i = 0; i < out3.length; i++) {
+						safaribot.sendHtmlMessage(src, out3[i], safchan);
+					}
+					sys.sendMessage(src, "", safchan);
+				}
                 
                 if (safari.detectiveData[uid+""].solved) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!", safchan);
