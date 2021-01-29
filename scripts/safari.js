@@ -29972,14 +29972,14 @@ function Safari() {
     			"evolved": 4,
     			"evolves": 2,
     			"canMega": 7,
-    			"stat": 3,
+    			"stat": 4,
     			"moves": 10
 			};
     		var kindsinteract = {
     			"effective": 20,
-    			"noletters": 14,
-    			"sameregion": 32,
-    			"samecolor": 28,
+    			"noletters": 22,
+    			"sameregion": 56,
+    			"samecolor": 50,
     			"bsthigher": 16
 			};
 			var otherind = 0;
@@ -30077,16 +30077,15 @@ function Safari() {
     				for (var j = 0; j < st.length; j++) {
     					maxstat = Math.max(maxstat, st[j]);
     				}
-    				st = getStatsNamed(answer[id]);
     				var l = [];
-    				for (var x in st) {
-    					if (st[x] == maxstat) {
-    						l.push(x);
+    				for (var j = 0; j < st.length; j++) {
+    					if (st[j] == maxstat) {
+    						l.push(j);
     					}
     				}
     				if (l.length == 1) {
-    					value = l[0];
-    					strength = 7;
+    					value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][j];
+    					strength = 5;
     				} else {
     					value = ["two", "three", "four", "five", "six"][l.length - 2];
     					value = value + " stats tied";
@@ -30137,10 +30136,10 @@ function Safari() {
 					l3 = l3.filter(function(x){
 						return (canLearnMove(x, m) && (canLearnMove(x, m2)));
 					});
-					if (l3.length > 100 || l2.length < 9) {
+					if (l3.length > 100 || l2.length < 6) {
 						return false;
 					}
-					strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 20)));
+					strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
 					value = [m, m2];
 					outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
 					break;
@@ -30254,7 +30253,7 @@ function Safari() {
     		while (!(out)) {
     			out = createClue(answer, clues, ind, kind, maxstrength, unlock);
     			i++;
-    			if (i > 10000) {
+    			if (i > 2500) {
     				out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
     				break;
     			}
@@ -30287,18 +30286,18 @@ function Safari() {
     		out.clues.push(getClue(out.answer, out.clues, 1, "interact", nextThreeOrder[0]));
     		out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
     		
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 6 + Math.random() * 6, "journal"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 8 + Math.random() * 7, "battlearena"));
+    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 3 + Math.random() * 4, "journal"));
+    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 5 + Math.random() * 5, "battlearena"));
     		out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "pokefandaycare"));
     		out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "explorerfinder"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 3 + Math.random() * 6, "mafia"));
+    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + Math.random() * 4, "mafia"));
     		
     		out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
     		out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
     		
     		var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 278, 175, 656, 724];
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 14 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 14 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+    		out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+    		out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
     		
     		out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
     		out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 2 * Math.random(), "pyramid2"));
@@ -53081,6 +53080,7 @@ function Safari() {
                 var out, data;
                 if (safari.detectiveData.hasOwnProperty(commandData)) {
                     safari.detectiveData[commandData] = null;
+                    delete safari.detectiveData[commandData];
                     safaribot.sendMessage(src, "Reset detective data for player with UID " + commandData + ".", safchan);
                     return true;
                 }
