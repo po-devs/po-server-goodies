@@ -29971,7 +29971,7 @@ function Safari() {
             var strength = 0;
             var value;
             var pk;
-            if (ind == false) {
+            if (ind === false && ind !== 0) {
             	ind = Math.floor(Math.random() * 4);
             }
             var kinds = {
