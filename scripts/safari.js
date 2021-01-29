@@ -30280,7 +30280,7 @@ function Safari() {
             
             var maxloop = 50000;
             while (!(out)) {
-                out = createClue(answer, clues, ind, i < 1000 ? kind : false, i < 10000 ? maxstrength : 0, unlock);
+                out = createClue(answer, clues, ind, i < 160 ? kind : false, i < 10000 ? maxstrength : 0, unlock);
                 i++;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
