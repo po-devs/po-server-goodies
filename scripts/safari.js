@@ -30118,9 +30118,6 @@ function Safari() {
                     var m = mvs[0];
                     var m2 = mvs.length > 1 ? mvs[1] : 0;
                     var k = 0;
-                    for (var e = 1; e < highestDexNum - 1; e++) {
-                        l.push(e);
-                    }
                     var l3 = [];
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l3.push(e);
