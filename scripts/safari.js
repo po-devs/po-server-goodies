@@ -29971,13 +29971,13 @@ function Safari() {
             var pk;
             ind = ind || Math.floor(Math.random() * 4);
             var kinds = {
-                "start": 9,
+                "start": 20,
                 "contains": 20,
-                "evolved": 4,
-                "evolves": 2,
-                "canMega": 7,
-                "stat": 4,
-                "moves": 10
+                "evolved": 8,
+                "evolves": 6,
+                "canMega": 5,
+                "stat": 9,
+                "moves": 7
             };
             var kindsinteract = {
                 "effective": 20,
@@ -30248,7 +30248,7 @@ function Safari() {
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, maxstrength, unlock);
                 i++;
-                if (i > 7500) {
+                if (i > 15000) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
                     break;
                 }
@@ -30396,7 +30396,7 @@ function Safari() {
 					safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>:", safchan);
 					sys.sendMessage(src, "", safchan);
 					for (var i = 0; i < out3.length; i++) {
-						safaribot.sendHtmlMessage(src, out3[i], safchan);
+						safaribot.sendHtmlMessage(src, toColor(out3[i], colorTranslations["darkgreen"]), safchan);
 					}
 					sys.sendMessage(src, "", safchan);
 				}
