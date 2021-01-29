@@ -9886,7 +9886,7 @@ function Safari() {
         }
         
         this.heldItem(player, player.helds[slot], true, slot);
-        if (player.party[slot] || removeSlot)
+        if (player.party[slot] && !removeSlot)
             player.helds[slot] = -1;
         else
             player.helds.splice(slot, 1);
