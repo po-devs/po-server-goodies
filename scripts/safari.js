@@ -2195,7 +2195,7 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
-        crimson: {
+        lorekeeper: {
             name: "Trainer Lorekeeper",
             party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812],
             power: [125, 250],
