@@ -30369,7 +30369,7 @@ function Safari() {
                         "contest": "Win a contest.",
                     };
                     if (item.unlock.slice(0, 6) == "catch:") {
-                        var num = parseInt(item.unlock.slice(":")[1], 10);
+                        var num = parseInt(item.unlock.split(":")[1], 10);
                         req = "Catch a " + poke(num);
                     } else {
                         req = reqDesc[item.unlock];
