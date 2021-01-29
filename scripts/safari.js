@@ -13967,8 +13967,9 @@ function Safari() {
                     if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
                         for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                             if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                safari.detectiveClue(player.idnum, "explorerfinder", src);
                                 safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! Go to " + link("/quest detective") + " to see what it means!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                                safari.detectiveClue(player.idnum, "explorerfinder", src);
+                                hit = true;
                                 break;
                             }
                         }
@@ -29959,7 +29960,7 @@ function Safari() {
 			for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
 				if (safari.detectiveData[uid+""].clues[i].unlock == type) {
 					safari.detectiveData[uid+""].clues[i].unlock = "free";
-					safaribot.sendHtmlMessage(src, "You unlocked a Detective Clue!", safchan);
+					safaribot.sendHtmlMessage(src, toColor("You unlocked a Detective Clue!", "red"), safchan);
 				}
 			}
         }
@@ -30455,7 +30456,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(src, "Sorry, " + arr[i] + " is not a valid Pokémon!", safchan);
                         return;
                     }
-                    if (!(getInputPokemon(arr[i]).num > 65536)) {
+                    if ((getInputPokemon(arr[i]).num > 65536)) {
                         safaribot.sendHtmlMessage(src, "You cannot guess forms!", safchan);
                         return;
                     }
