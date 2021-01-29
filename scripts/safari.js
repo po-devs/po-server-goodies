@@ -30496,7 +30496,7 @@ function Safari() {
                             player.records.fastestCaseSolved = timeTaken;
                         }
                     }
-                    saveGame(player);
+                    safari.saveGame(player);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                 }
