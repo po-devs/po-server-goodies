@@ -30072,9 +30072,9 @@ function Safari() {
     						return false;
     					}
     				}
-    				var st = getStats(id);
+    				var st = getStats(answer[ind]);
     				var maxstat = 0;
-    				for (var j = 0; j < 6; j++) {
+    				for (var j = 0; j < st.length; j++) {
     					maxstat = Math.max(maxstat, st[j]);
     				}
     				st = getStatsNamed(id);
@@ -30150,7 +30150,7 @@ function Safari() {
     						return false;
     					}
     				}
-					var amt = safari.checkEffective(type1(answer[ind]), type1(answer2[ind]), type1(answer[otherind]), type2(answer[otherind]));
+					var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
 					if (amt > 1) {
 						value = "has a type advantage";
 						strength = 16;
