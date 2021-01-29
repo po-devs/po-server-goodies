@@ -8859,7 +8859,7 @@ function Safari() {
             if (parseInt(currentPokemon, 10) === 686) {
                 player.records.catchInkay += 1;
             }
-            safari.detectiveClue(player.idnum, "catch:" + parseInt(currentPokemon, 10));
+            safari.detectiveClue(player.idnum, "catch:" + parseInt(currentPokemon, 10), src);
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
                 player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
@@ -13967,7 +13967,7 @@ function Safari() {
                     if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
                         for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                             if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                safari.detectiveClue(player.idnum, "explorerfinder");
+                                safari.detectiveClue(player.idnum, "explorerfinder", src);
                                 safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! Go to " + link("/quest detective") + " to see what it means!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                                 break;
                             }
@@ -17050,7 +17050,7 @@ function Safari() {
                 player.records.missionCleared += 1;
                 clearedAny = true;
                 safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "mission point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
-                safari.detectiveClue(player.idnum, "mission");
+                safari.detectiveClue(player.idnum, "mission", src);
                 if (m.day !== today) {
                     player.missions.splice(player.missions.indexOf(m), 1);
                 } else {
@@ -28787,7 +28787,7 @@ function Safari() {
                     rewardCapCheck(player, rew, amt, true);
                     safari.costumeEXP(player, "arenasilver", amt);
                     if (args.name == "Trainer Lorekeeper" && player.costume == "battle") {
-                        safari.detectiveClue(player.idnum, "battlearena");
+                        safari.detectiveClue(player.idnum, "battlearena", id);
                     }
                 }
                 if (args.moneyReward) {
@@ -29954,14 +29954,14 @@ function Safari() {
                 sys.sendMessage(src, "", safchan);
         }
     };
-    this.detectiveClue = function(uid, type) {
-        if (!(safari.detectiveData.hasOwnProperty(uid+""))) {
-            return;
-        }
-        for (var i = 0; i < safari.detectiveData[uid+""].clues; i++) {
-            if (safari.detectiveData[uid+""].clues[i].unlock == type) {
-                safari.detectiveData[uid+""].clues[i].unlock = "free";
-            }
+    this.detectiveClue = function(uid, type, src) {
+        if (safari.detectiveData.hasOwnProperty(uid+"")) {
+			for (var i = 0; i < safari.detectiveData[uid+""].clues; i++) {
+				if (safari.detectiveData[uid+""].clues[i].unlock == type) {
+					safari.detectiveData[uid+""].clues[i].unlock = "free";
+					safaribot.sendHtmlMessage(src, "You unlocked a Detective Clue!", safchan);
+				}
+			}
         }
         return;
     };
@@ -30187,9 +30187,9 @@ function Safari() {
                     if (pk1 !== pk2) {
                         return false;
                     }
-                    value = "same region";
+                    value = "region";
                     strength = 16;
-                    outText = "{0} is from the " + value + " as {1}.";
+                    outText = "{0} is from the same region as {1}.";
                     break;
                 case "color":
                     for (var i = 0; i < clues.length; i++) {
@@ -30203,9 +30203,9 @@ function Safari() {
                     if (pk1 !== pk2) {
                         return false;
                     }
-                    value = "same color";
+                    value = "color";
                     strength = 16;
-                    outText = "{0} is the " + value + " as {1}.";
+                    outText = "{0} is the same color as {1}.";
                     break;
                 case "type":
                     for (var i = 0; i < clues.length; i++) {
@@ -30224,9 +30224,9 @@ function Safari() {
                     if (pk22 == pk12 && pk12 == "???") {
                         return false;
                     }
-                    value = "same type";
+                    value = "type";
                     strength = 40;
-                    outText = "{0} has a " + value + " as {1}.";
+                    outText = "{0} has a type in common with {1}.";
                     break;
                 case "bsthigher":
                     for (var i = 0; i < clues.length; i++) {
@@ -32681,7 +32681,7 @@ function Safari() {
         }
         
         if (score >= 50) {
-            safari.detectiveClue(player.idnum, "journal");
+            safari.detectiveClue(player.idnum, "journal", src);
         }
         
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
@@ -41054,7 +41054,7 @@ function Safari() {
             pokemon.canPlay = false;
             player.cooldowns.daycare = currentTime + (60 * 1000 * 0.75);
             if (isOwner && player.costume == "pokefan") {
-                safari.detectiveClue(player.idnum, "pokefandaycare");
+                safari.detectiveClue(player.idnum, "pokefandaycare", src);
             }
             safari.saveDaycare();
             return true;
@@ -54919,7 +54919,7 @@ function Safari() {
                             var c = currentTheme ? themeName(currentTheme) : "Default";
                             safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
                             safari.costumeEXP(player, "wincontest");
-                            safari.detectiveClue(player.idnum, "contest");
+                            safari.detectiveClue(player.idnum, "contest", playerId);
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
