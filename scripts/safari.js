@@ -495,7 +495,11 @@ function Safari() {
             celebrityScoreHard: 0,
             celebrityScoreExpert: 0,
             celebrityScoreSuperExpert: 0,
-            celebrityScoreAbyssal: 0
+            celebrityScoreAbyssal: 0,
+            idolUnlocked: 0,
+            idolActivated: 0,
+            casesSolved: 0,
+            fastestCaseSolved: 0
         },
         photos: [],
         hideLB: [],
@@ -29968,15 +29972,6 @@ function Safari() {
         }
         return;
     };
-    var detectiveKindsTmp = {
-        "start": 20,
-        "contains": 20,
-        "evolved": 8,
-        "evolves": 6,
-        "canMega": 5,
-        "stat": 9,
-        "moves": 7
-    };
     this.detectiveQuest = function(src, data) {
         function createClue(answer, clues, ind, kind, minstrength, unlock) {
             var out = {};
@@ -29986,7 +29981,15 @@ function Safari() {
             if (ind === false && ind !== 0) {
                 ind = Math.floor(Math.random() * 4);
             }
-            var kinds = detectiveKindsTmp;
+            var kinds = {
+                "start": 20,
+                "contains": 20,
+                "evolved": 8,
+                "evolves": 6,
+                "canMega": 5,
+                "stat": 9,
+                "moves": 0
+            };
             var kindsinteract = {
                 "effective": 20,
                 "noletters": 22,
@@ -30271,14 +30274,15 @@ function Safari() {
                 ind: ind,
                 otherind: otherind,
                 unlock: unlock,
-                seen: false
+                seen: false,
+                strength: strength
             }
         }
         function getClue(answer, clues, ind, kind, minstrength, unlock) {
             var out = false;
             var i = 0;
             
-            var before = new Date().getTime();
+            //var before = new Date().getTime();
             var maxloop = 10000;
             
             while (!(out)) {
@@ -30289,8 +30293,8 @@ function Safari() {
                     break;
                 }
             }
-            var after = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with intended strength of {3} and time delta of {2}".format(i, out.str, after - before, minstrength.toFixed(2)), staffchannel);
+            //var after = new Date().getTime();
+            //sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with intended strength of {3} and time delta of {2}".format(i, out.str, after - before, minstrength.toFixed(2)), staffchannel);
             return out;
         };
         function assignClues() {
@@ -30299,6 +30303,7 @@ function Safari() {
             out.clues = [];
             out.solved = false;
             out.date = getDay(now());
+            out.started = now();
             
             while (out.answer.length < 4) {
                 out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
@@ -30310,8 +30315,8 @@ function Safari() {
             var extraOrder = [0, 1, 2, 3].shuffle();
             var extraOrder2 = [0, 1, 2, 3].shuffle();
             
-            var before = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
+            //var before = new Date().getTime();
+            //sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
             out.clues.push(getClue(out.answer, out.clues, 0, false, firstFourOrder[0]));
             out.clues.push(getClue(out.answer, out.clues, 1, false, firstFourOrder[1]));
             out.clues.push(getClue(out.answer, out.clues, 2, false, firstFourOrder[2]));
@@ -30341,9 +30346,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, 3, false, 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
-            var after = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + (after - before), staffchannel);
-            sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
+            //var after = new Date().getTime();
+            //sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + (after - before), staffchannel);
+            //sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
             return out;
         }
         var player = getAvatar(src);
@@ -30484,6 +30489,13 @@ function Safari() {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
                     giveStuff(player, "@prize");
+                    player.records.casesSolved += 1;
+                    if (safari.detectiveData[uid+""].started) {
+                        var timeTaken = now() - safari.detectiveData[uid+""].started;
+                        if (player.records.fastestCaseSolved > timeTaken) {
+                            player.records.fastestCaseSolved = timeTaken;
+                        }
+                    }
                     saveGame(player);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
@@ -30693,6 +30705,7 @@ function Safari() {
                                     player.pokeskillsArr[toWrite][d3].level += 1;
                                     player.pokeskillsArr[toWrite][d3].val = info.val;
                                     player.pokeskillsArr[toWrite][d3].effect = sData[d3].effect;
+                                    player.records.idolUnlocked += 1;
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You unlocked the skill: " + sData[d3].effectHelp.format(info.nextVal) + "!", safchan);
                                     this.saveGame(player);
                                 } else if (d4 == "activate") {
@@ -30731,6 +30744,7 @@ function Safari() {
                                     player.balls.moonshard -= info.useCost;
                                     player.pokeskillsArr[toWrite][d3].active = true;
                                     player.pokeskillsArr[toWrite][d3].expiration = now() + (info.duration * 60 * 60 * 1000);
+                                    player.records.idolActivated += 1;
                                     safaribot.sendHtmlMessage(src, trainerSprite + "Idol: You activated the skill: " + sData[d3].effectHelp.format(info.val) + "!", safchan);
                                     this.saveGame(player);
                                 } else {
