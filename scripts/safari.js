@@ -29949,7 +29949,7 @@ function Safari() {
         }
     };
     this.detectiveClue = function(uid, type) {
-        if (!(safari.detectiveData.hasOwnProprty(uid+""))) {
+        if (!(safari.detectiveData.hasOwnProperty(uid+""))) {
         	return;
         }
         for (var i = 0; i < safari.detectiveData[uid+""].clues; i++) {
@@ -30321,7 +30321,7 @@ function Safari() {
         var uid = player.idnum;
         
         var today = getDay(now());
-        if (safari.detectiveData.hasOwnProprty(uid+"")) {
+        if (safari.detectiveData.hasOwnProperty(uid+"")) {
         	if (today !== safari.detectiveData[uid+""].date) {
         		if (!(safari.detectiveData[uid+""].solved)) {
 					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
@@ -30334,7 +30334,7 @@ function Safari() {
         	safari.detectiveData[uid+""] = assignClues();
         }
         
-        if (safari.detectiveData.hasOwnProprty(uid+"")) {
+        if (safari.detectiveData.hasOwnProperty(uid+"")) {
 			var d1 = (data.length > 0 ? data[0] : "*");
 			
 			var found = safari.detectiveData[uid+""].clues;
