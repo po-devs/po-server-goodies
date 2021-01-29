@@ -30218,7 +30218,7 @@ function Safari() {
                     var pk11 = type1(parseInt(answer[otherind], 10));
                     var pk22 = type2(parseInt(answer[otherind], 10));
                     
-                    if (!(pk11 == pk21 || pk12 == pk21 || pk11 == pk22 || pk12 == pk22) {
+                    if (!(pk11 == pk21 || pk12 == pk21 || pk11 == pk22 || pk12 == pk22)) {
                         return false;
                     }
                     if (pk22 == pk12 && pk12 == "???") {
