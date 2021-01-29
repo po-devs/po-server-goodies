@@ -9886,7 +9886,10 @@ function Safari() {
         }
         
         this.heldItem(player, player.helds[slot], true, slot);
-        player.helds[slot] = -1;
+        if (player.party[slot])
+            player.helds[slot] = -1;
+        else
+            player.helds.splice(slot, 1);
         safari.saveGame(player);
     };
     this.heldItem = function(player, item, taking, slot) {
@@ -10063,7 +10066,6 @@ function Safari() {
             var getItem = player.helds[player.party.length - 1]; // entire second half of the party shifts forward, so take the item back from the last slot if there is one
             if (getItem > -1) {
                 safari.takeItem(src, player.party.length);
-                player.helds = player.helds.slice(0, player.party.length - 2);
             }
             
             player.party.splice(player.party.indexOf(id), 1);
@@ -10108,7 +10110,6 @@ function Safari() {
                 if (player.party.length >= 6) {
                     if (player.helds[5]) { // last pokemon is removed, so take their held item back
                         safari.takeItem(src, 6); // place it into the bag
-                        player.helds.pop(); // remove the -1 from the end
                         player.helds.unshift(-1); // put it in front
                     }
                     var removedId = player.party.splice(5, 1)[0];
@@ -10210,9 +10211,8 @@ function Safari() {
             if (player.helds.length > newSize) { // if old party is larger than new party
                 for (var i = player.helds.length; i > newSize;  i--) {
                     if (player.helds[i-1] != -1)
-                        safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+                        safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag
                 }
-                player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
             }
             while (newSize > player.helds.length) { // if new party is larger than old party
                 player.helds.push(-1); // fill in the missing -1s to match new party size
@@ -10283,9 +10283,8 @@ function Safari() {
         if (player.helds.length > newSize) { // if old party is larger than new party
             for (var i = player.helds.length; i > newSize;  i--) {
                 if (player.helds[i-1] != -1)
-                    safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag; note that the removed items are replaced by -1 so the held array is still larger than party
+                    safari.takeItem(src, i); // prevent item loss, make sure to put the excess items back into the bag
             }
-            player.helds = player.helds.slice(0, newSize); // now slice off the trailing -1s to match new party size
         }
         while (newSize > player.helds.length) { // if new party is larger than old party
             player.helds.push(-1); // fill in the missing -1s to match new party size
