@@ -10056,15 +10056,16 @@ function Safari() {
                 safaribot.sendMessage(src, "You must have at least 1 Pokémon in your party!", safchan);
                 return;
             }
-            if (player.party.indexOf(id) == 0) {
-                player.berries.petayaCombo = 0;
-            }
-            var getItem = player.helds[player.party.indexOf(id)];
-            if (getItem > -1) {
-                safari.heldItem(player, getItem, true, player.party.indexOf(id));
-            }
+            
+            var before = id,
+                isLead = player.party.indexOf(before) === 0;
+
             player.helds.splice(player.party.indexOf(id), 1);
             player.party.splice(player.party.indexOf(id), 1);
+            
+            if (isLead && player.party[0] !== before) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
+                player.berries.petayaCombo = 0;
+            }
             safaribot.sendMessage(src, "You removed " + info.name + " from your party!", safchan);
             this.saveGame(player);
         } else if (action === "active") {
