@@ -30461,7 +30461,7 @@ function Safari() {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again?", safchan);
                     return;
                 }
-                var arr = d1.split(",");
+                var arr = d1.split(",").map(function(e) { return e.trim() });
                 if (arr.length !== 4) {
                     safaribot.sendHtmlMessage(src, "You must supply four Pokémon in a combination as your guess using the format " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
                     return;
