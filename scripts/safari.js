@@ -29956,7 +29956,7 @@ function Safari() {
     };
     this.detectiveClue = function(uid, type, src) {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
-			for (var i = 0; i < safari.detectiveData[uid+""].clues; i++) {
+			for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
 				if (safari.detectiveData[uid+""].clues[i].unlock == type) {
 					safari.detectiveData[uid+""].clues[i].unlock = "free";
 					safaribot.sendHtmlMessage(src, "You unlocked a Detective Clue!", safchan);
