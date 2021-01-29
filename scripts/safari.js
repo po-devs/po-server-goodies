@@ -30009,7 +30009,7 @@ function Safari() {
             
             switch (kind) {
                 case "start":
-                    value = poke(answer[ind])[0];
+                    value = poke(parseInt(answer[ind], 10))[0];
                     if (value == "X") {
                         return false;
                     }
@@ -30022,7 +30022,7 @@ function Safari() {
                     outText = "{0}'s name starts with " + value + ".";
                     break;
                 case "contains":
-                    pk = poke(answer[ind]);
+                    pk = poke(parseInt(answer[ind], 10));
                     var sl = Math.floor(Math.random() * pk.length);
                     value = pk.slice(sl, sl + 1); //random letter from that pokemon's name
                     value = value.toUpperCase();
@@ -30109,22 +30109,15 @@ function Safari() {
                     outText = "{0} has " + value + " for its highest stat.";
                     break;
                 case "moves":
-                    var m = fetchMoves(answer[ind]).random();
-                    var m2 = fetchMoves(answer[ind]).random();
-                    var k = 0;
-                    var l = [];
-                    while (m2 == m) {
-                        m2 = fetchMoves(answer[ind]).random();
-                        k++;
-                        if (k > 50) {
-                            break;
-                        }
-                    }
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "moves" && (clues[i].value.contains(m) || clues[i].value.contains(m2))) {
                             return false;
                         }
                     }
+                	var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
+                    var m = mvs[0];
+                    var m2 = mvs.length > 1 ? mvs[1] : 0;
+                    var k = 0;
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l.push(e);
                     }
@@ -30173,8 +30166,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = poke(answer[ind]);
-                    var pk2 = poke(answer[otherind]);
+                    var pk1 = poke(parseInt(answer[ind], 10));
+                    var pk2 = poke(parseInt(answer[otherind], 10));
                     
                     for (var i = 0; i < pk1.length; i++) {
                         if (pk2.indexOf(pk1[i]) > -1) {
@@ -30191,8 +30184,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = generation(answer[ind]);
-                    var pk2 = generation(answer[otherind]);
+                    var pk1 = generation(parseInt(answer[ind], 10));
+                    var pk2 = generation(parseInt(answer[otherind], 10));
                     
                     if (pk1 !== pk2) {
                         return false;
@@ -30207,8 +30200,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = getPokeColor(answer[ind]);
-                    var pk2 = getPokeColor(answer[otherind]);
+                    var pk1 = getPokeColor(parseInt(answer[ind], 10));
+                    var pk2 = getPokeColor(parseInt(answer[otherind], 10));
                     
                     if (pk1 !== pk2) {
                         return false;
