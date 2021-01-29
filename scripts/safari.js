@@ -30077,7 +30077,7 @@ function Safari() {
     				for (var j = 0; j < st.length; j++) {
     					maxstat = Math.max(maxstat, st[j]);
     				}
-    				st = getStatsNamed(id);
+    				st = getStatsNamed(answer[id]);
     				var l = [];
     				for (var x in st) {
     					if (st[x] == maxstat) {
