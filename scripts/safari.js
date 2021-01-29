@@ -30451,7 +30451,7 @@ function Safari() {
                 }
                 
                 if (safari.detectiveData[uid+""].solved) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)})) + "! Come back tomorrow to see if I have another case for you.", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "! Come back tomorrow to see if I have another case for you.", safchan);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
                 }
