@@ -6562,16 +6562,20 @@ function Safari() {
         return "";
     }
     function bagRow (player, arr, isAndroid, textOnly, first, title) {
-        var ret = [], item, item2;
+        var ret = "", item, item2;
         if (textOnly) {
             if (first) {
+                if (title) {
+                    ret += "<b>" + title + "</b><br />";
+                }
                 ret += "Money: $" + addComma(player.money) + " | ";
             } else {
                 ret += "<br />";
+                if (title) {
+                    ret += "<br /><b>" + title + "</b><br />";
+                }
             }
-            if (title) {
-                ret += "<br /><b>" + title + "</b><br />";
-            }
+
             for (var i = 0; i < arr.length; i++) {
                 item = itemData[arr[i]];
                 if (item.name === "itemfinder") {
@@ -10732,7 +10736,7 @@ function Safari() {
             sys.sendHtmlMessage(src, this.listPokemon(finalList, "Pokémon " + finalTitleMsg + " (" + finalList.length + ")", player.smallBox), safchan);
         }
         if (shopLink) {
-            safaribot.sendHtmlMessage(src, "Sell all of these Pokémon at once? (This command will not sell Shinies or Legendaries)", safchan);
+            safaribot.sendHtmlMessage(src, "Sell all of these Pokémon at once? (This command will not sell Shinies or Legendaries/Rare Formes)", safchan);
             var toTurbo = [], p;
             for (var i = 0; i < finalList.length; i++) {
                 p = finalList[i];
@@ -11353,7 +11357,7 @@ function Safari() {
             exchanged = playerShop + playerTrade + playerAuction,
             exchangedPrevious = playerShopPrevious + playerTradePrevious + playerAuctionPrevious;
 
-        var unaccounted = (total - totalPrevious) - (introduced - lost); // true difference - accounted difference
+        var unaccounted = (introduced + lost) - (total - totalPrevious); // accounted difference - true difference
         var moneyColor = function(amount) {
             return "<b>" + toColor("$" + addComma(amount), amount <= 0 ? "red" : "green") + "</b>";
         };
@@ -30110,7 +30114,7 @@ function Safari() {
     						return false;
     					}
     				}
-					for (var e = 1; e < 898; e++) {
+					for (var e = 1; e < highestDexNum - 1; e++) {
 						l.push(e);
 					}
 					l = l.filter(function(x){
@@ -30120,7 +30124,7 @@ function Safari() {
 						return false;
 					}
 					var l2 = [];
-					for (var e = 1; e < 898; e++) {
+					for (var e = 1; e < highestDexNum - 1; e++) {
 						l2.push(e);
 					}
 					l2 = l2.filter(function(x){
@@ -30130,7 +30134,7 @@ function Safari() {
 						return false;
 					}
 					var l3 = [];
-					for (var e = 1; e < 898; e++) {
+					for (var e = 1; e < highestDexNum - 1; e++) {
 						l3.push(e);
 					}
 					l3 = l3.filter(function(x){
@@ -30268,7 +30272,7 @@ function Safari() {
     		out.date = getDay(now());
     		
     		while (out.answer.length < 4) {
-    			out.answer.push(Math.ceil(Math.random() * 898));
+    			out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
     			out.answer = removeDuplicates(out.answer);
     		}
     		var firstFourOrder = [2 + 3 * Math.random(), 3 + 6 * Math.random(), 16 + 4 * Math.random(), 17 + 6 * Math.random()].shuffle(); //strength of first few clues
@@ -34757,7 +34761,7 @@ function Safari() {
             if (loop > 500) {
                 break;
             }
-            var get = sys.rand(1, 898);
+            var get = sys.rand(1, highestDexNum);
             bst = getBST(get);
             if (bst < 361 && (!(legendaries.contains(get)))) {
                 out.commons.list.push(get);
