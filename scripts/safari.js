@@ -30004,7 +30004,7 @@ function Safari() {
     						return false;
     					}
     				}
-    				strength = ["A", "B", "D", "G", "M", "P", "S", "T"].includes(value) ? 5 : (["C", "H", "L", "R", "W", "F"].includes(value) ? 9 : (["E", "K", "N", "V", "Z"].includes(value) ? 16 : 20));
+    				strength = ["A", "B", "D", "G", "M", "P", "S", "T"].contains(value) ? 5 : (["C", "H", "L", "R", "W", "F"].contains(value) ? 9 : (["E", "K", "N", "V", "Z"].contains(value) ? 16 : 20));
 					outText = "{0}'s name starts with " + value + ".";
     				break;
     			case "contains":
@@ -30016,10 +30016,10 @@ function Safari() {
     						return false;
     					}
     				}
-    				if ([" ", ".", "-", ":"].includes(value)) {
+    				if ([" ", ".", "-", ":"].contains(value)) {
     					return false;
     				}
-    				strength = ["A", "E", "I", "N", "O", "R", "S", "T"].includes(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].includes(value) ? 7 : (["K", "B", "W"].includes(value) ? 10 : 15));
+    				strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 7 : (["K", "B", "W"].contains(value) ? 10 : 15));
 					outText = "{0} has " + value + " in its name.";
     				break;
     			case "evolves":
