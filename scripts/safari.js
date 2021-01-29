@@ -13981,7 +13981,7 @@ function Safari() {
                     if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
                         for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
                             if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! Go to " + link("/quest detective") + " to see what it means!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
                                 safari.detectiveClue(player.idnum, "explorerfinder", src);
                                 hit = true;
                                 break;
@@ -29974,7 +29974,7 @@ function Safari() {
             for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
                 if (safari.detectiveData[uid+""].clues[i].unlock == type) {
                     safari.detectiveData[uid+""].clues[i].unlock = "free";
-                    safaribot.sendHtmlMessage(src, toColor("You unlocked a Detective Clue!", "red"), safchan);
+                    safaribot.sendHtmlMessage(src, toColor("You unlocked a clue!", "red") + " You should share your findings with the " + link("/quest detective", "Detective") + "!", safchan);
                 }
             }
         }
@@ -30370,19 +30370,21 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 1 + Math.random() * 3, "pokefandaycare"));
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 5 + Math.random() * 3, "explorerfinder"));
             out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 2 + Math.random() * 2, "mafia"));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 12 + Math.random() * 5, "mafia2"));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
             
-            var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 278, 175, 656, 724];
+            var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 175, 656, 722, 742, 163, 37];
             out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             
-            out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 12 + 5 * Math.random(), "pyramid1"));
-            out.clues.push(getClue(out.answer, out.clues, 0, false, 2 + 2 * Math.random(), "pyramid2"));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 6 + 7 * Math.random(), "pyramid3"));
-            out.clues.push(getClue(out.answer, out.clues, 3, false, 2 + 3 * Math.random(), "pyramid4"));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 0 + 5 * Math.random(), "pyramid1"));
+            out.clues.push(getClue(out.answer, out.clues, 0, false, 0 + 2 * Math.random(), "pyramid2"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 0 + 7 * Math.random(), "pyramid3"));
+            out.clues.push(getClue(out.answer, out.clues, 3, false, 0 + 3 * Math.random(), "pyramid4"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 0 + 12 * Math.random(), "pyramid5"));
             
             //var after = new Date().getTime();
             //sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + (after - before), staffchannel);
@@ -30443,6 +30445,7 @@ function Safari() {
                     }
                     var reqDesc = {
                         "mafia": "Win rewards from an Event Mafia game.",
+                        "mafia2": "Win rewards from an Event Mafia game with 7 or more players.",
                         "battlearena": "Defeat Trainer Lorekeeper while wearing the Battle Girl costume.",
                         "explorerfinder": "Discover a clue with the Itemfinder while wearing the Explorer costume.",
                         "pokefandaycare": "Interact with your Pokémon at the daycare while wearing the Pokéfan costume.",
@@ -48611,14 +48614,16 @@ function Safari() {
                 continue;
             }
             this.costumeEXP(player, "winmafia", amt);
-            famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? 1.5 : 1);
-            amt = Math.round(amt * famt);
-            player.balls.shady += amt;
+            famt = (this.hasCostumeSkill(player, "extraMafiaShady") ? 1.5 * amt : 1 * amt);
+            player.balls.shady += Math.floor(famt);
             this.missionProgress(player, "cross", "mafia", 1, {});
-            this.missionProgress(player, "shadyFromMafia", "mafia", amt, {});
+            this.missionProgress(player, "shadyFromMafia", "mafia", Math.floor(famt), {});
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
             safari.detectiveClue(player.idnum, "mafia");
+            if (amt >= 7) {
+				safari.detectiveClue(player.idnum, "mafia2");
+            }
             
             this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!", isPlaying(name));
             this.sanitize(player);
