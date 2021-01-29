@@ -556,7 +556,8 @@ function Safari() {
             burn: 0,
             price: 0,
             unsell: 0,
-            daycare: 0
+            daycare: 0,
+            detective: 0
         },
         cherished: [],
         freebaits: 0,
@@ -30526,6 +30527,11 @@ function Safari() {
                         break;
                     }
                 }
+                var n = now();
+                if (player.cooldowns.detective < n) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Please wait a while before guessing again!", safchan);
+                    return;
+                }
                 if (passed) {
                     safari.detectiveData[uid+""].solved = true;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
@@ -30539,6 +30545,7 @@ function Safari() {
                     }
                     safari.saveGame(player);
                 } else {
+                	player.cooldowns.detective = n + 4000;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                 }
             }
