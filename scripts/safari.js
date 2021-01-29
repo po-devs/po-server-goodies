@@ -10067,6 +10067,9 @@ function Safari() {
             if (getItem > -1) {
                 safari.takeItem(src, player.party.length, true);
             }
+            else {
+                player.helds.splice(player.party.length - 1, 1);
+            }
             
             player.party.splice(player.party.indexOf(id), 1);
             
