@@ -10060,7 +10060,6 @@ function Safari() {
             var before = id,
                 isLead = player.party.indexOf(before) === 0;
 
-            player.helds.splice(player.party.indexOf(id), 1);
             player.party.splice(player.party.indexOf(id), 1);
             
             if (isLead && player.party[0] !== before) { // if the Pokemon you removed was your lead, and the new Pokemon taking its place is a different species, reset petaya
