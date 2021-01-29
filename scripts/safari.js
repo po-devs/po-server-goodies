@@ -2179,6 +2179,16 @@ function Safari() {
             },
             desc: "Arena NPC"
         },
+        lorekeeper: {
+            name: "Trainer Lorekeeper",
+            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812,342,836],
+            power: [110, 150],
+            postArgs: {
+                rewardAmt: 3,
+                cooldown: 0.5
+            },
+            desc: "Arena NPC"
+        },
         cyan: {
             name: "Trainer Cyan",
             party: [448,202,539,476,635,593,376,"171",65959,445,66091,214,378,658,465],
@@ -2196,16 +2206,6 @@ function Safari() {
             postArgs: {
                 rewardAmt: 6,
                 cooldown: 2.75
-            },
-            desc: "Arena NPC"
-        },
-        lorekeeper: {
-            name: "Trainer Lorekeeper",
-            party: [65844,376,887,214,867,748,62,719,31,642,"776",702,812,342,836],
-            power: [125, 250],
-            postArgs: {
-                rewardAmt: 7,
-                cooldown: 2
             },
             desc: "Arena NPC"
         },
@@ -28835,9 +28835,9 @@ function Safari() {
             nub: 0,
             pink: 100,
             mustard: 200,
+            lorekeeper: 250,
             cyan: 300,
             crimson: 500,
-            lorekeeper: 750,
             rainbow: 1000,
             copycat: 400
         };
