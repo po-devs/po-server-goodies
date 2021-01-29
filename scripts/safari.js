@@ -1325,7 +1325,7 @@ function Safari() {
         monger: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAAEXRFWHRTb2Z0d2FyZQBKVEwtRGV2J4CxQ84AAAAJcEhZcwAAHsIAAB7CAW7QdT4AAAAnUExURQCAQIigcP///wAAACgwMEBQYFhgeGhwcHhAQICAgIiQkNiYcPjQuP/pZaEAAAADdFJOUwAAAPp2xN4AAAABYktHRAMRDEzyAAAA50lEQVQoz53RMW7CQBAFUJIq7bC5ALmBZaNYSWV59gTeDwS3xBcgyFI6RINETZEDIA5gCqRNSYHwHiominc3KVDEL59mNF+azsOfdP4FPSJmTohauCEuimKS0G0L98U5kwsgv+E1sdAfnAGBA+BjDQ8ivKxLqBZ6tGCUM5XOuz8TokJTTGaVhX0EQMUWKM7CJqPAgshzrfPMFRP6YA515YCejTF14EH0WZudB2LGeienDp4gtxs5ttXvTm8YQ70fLehFA9lqb1eWkRyC47m70lfM8M+GUiH14XHKaemDCIhCsnDFb3/lCyD4aJ/LXtT8AAAAAElFTkSuQmCC",
         baking: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAAEEfUpiAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSoghodkVUcERRUUEG8igiAOOjoCMFVEsDIoK2AfkIaKOg6OIisr74Xuja9a89+bN/rXXPues852zzwfACAyWSDNRNYAMqUIeEeCDx8TG4eQuQIEKJHAAEAizZCFz/SMBAPh+PDwrIsAHvgABeNMLCADATZvAMByH/w/qQplcAYCEAcB0kThLCIAUAEB6jkKmAEBGAYCdmCZTAKAEAGDLY2LjAFAtAGAnf+bTAICd+Jl7AQBblCEVAaCRACATZYhEAGg7AKzPVopFAFgwABRmS8Q5ANgtADBJV2ZIALC3AMDOEAuyAAgMADBRiIUpAAR7AGDIIyN4AISZABRG8lc88SuuEOcqAAB4mbI8uSQ5RYFbCC1xB1dXLh4ozkkXKxQ2YQJhmkAuwnmZGTKBNA/g88wAAKCRFRHgg/P9eM4Ors7ONo62Dl8t6r8G/yJiYuP+5c+rcEAAAOF0ftH+LC+zGoA7BoBt/qIl7gRoXgugdfeLZrIPQLUAoOnaV/Nw+H48PEWhkLnZ2eXk5NhKxEJbYcpXff5nwl/AV/1s+X48/Pf14L7iJIEyXYFHBPjgwsz0TKUcz5IJhGLc5o9H/LcL//wd0yLESWK5WCoU41EScY5EmozzMqUiiUKSKcUl0v9k4t8s+wM+3zUAsGo+AXuRLahdYwP2SycQWHTA4vcAAPK7b8HUKAgDgGiD4c93/+8//UegJQCAZkmScQAAXkQkLlTKsz/HCAAARKCBKrBBG/TBGCzABhzBBdzBC/xgNoRCJMTCQhBCCmSAHHJgKayCQiiGzbAdKmAv1EAdNMBRaIaTcA4uwlW4Dj1wD/phCJ7BKLyBCQRByAgTYSHaiAFiilgjjggXmYX4IcFIBBKLJCDJiBRRIkuRNUgxUopUIFVIHfI9cgI5h1xGupE7yAAygvyGvEcxlIGyUT3UDLVDuag3GoRGogvQZHQxmo8WoJvQcrQaPYw2oefQq2gP2o8+Q8cwwOgYBzPEbDAuxsNCsTgsCZNjy7EirAyrxhqwVqwDu4n1Y8+xdwQSgUXACTYEd0IgYR5BSFhMWE7YSKggHCQ0EdoJNwkDhFHCJyKTqEu0JroR+cQYYjIxh1hILCPWEo8TLxB7iEPENyQSiUMyJ7mQAkmxpFTSEtJG0m5SI+ksqZs0SBojk8naZGuyBzmULCAryIXkneTD5DPkG+Qh8lsKnWJAcaT4U+IoUspqShnlEOU05QZlmDJBVaOaUt2ooVQRNY9aQq2htlKvUYeoEzR1mjnNgxZJS6WtopXTGmgXaPdpr+h0uhHdlR5Ol9BX0svpR+iX6AP0dwwNhhWDx4hnKBmbGAcYZxl3GK+YTKYZ04sZx1QwNzHrmOeZD5lvVVgqtip8FZHKCpVKlSaVGyovVKmqpqreqgtV81XLVI+pXlN9rkZVM1PjqQnUlqtVqp1Q61MbU2epO6iHqmeob1Q/pH5Z/YkGWcNMw09DpFGgsV/jvMYgC2MZs3gsIWsNq4Z1gTXEJrHN2Xx2KruY/R27iz2qqaE5QzNKM1ezUvOUZj8H45hx+Jx0TgnnKKeX836K3hTvKeIpG6Y0TLkxZVxrqpaXllirSKtRq0frvTau7aedpr1Fu1n7gQ5Bx0onXCdHZ4/OBZ3nU9lT3acKpxZNPTr1ri6qa6UbobtEd79up+6Ynr5egJ5Mb6feeb3n+hx9L/1U/W36p/VHDFgGswwkBtsMzhg8xTVxbzwdL8fb8VFDXcNAQ6VhlWGX4YSRudE8o9VGjUYPjGnGXOMk423GbcajJgYmISZLTepN7ppSTbmmKaY7TDtMx83MzaLN1pk1mz0x1zLnm+eb15vft2BaeFostqi2uGVJsuRaplnutrxuhVo5WaVYVVpds0atna0l1rutu6cRp7lOk06rntZnw7Dxtsm2qbcZsOXYBtuutm22fWFnYhdnt8Wuw+6TvZN9un2N/T0HDYfZDqsdWh1+c7RyFDpWOt6azpzuP33F9JbpL2dYzxDP2DPjthPLKcRpnVOb00dnF2e5c4PziIuJS4LLLpc+Lpsbxt3IveRKdPVxXeF60vWdm7Obwu2o26/uNu5p7ofcn8w0nymeWTNz0MPIQ+BR5dE/C5+VMGvfrH5PQ0+BZ7XnIy9jL5FXrdewt6V3qvdh7xc+9j5yn+M+4zw33jLeWV/MN8C3yLfLT8Nvnl+F30N/I/9k/3r/0QCngCUBZwOJgUGBWwL7+Hp8Ib+OPzrbZfay2e1BjKC5QRVBj4KtguXBrSFoyOyQrSH355jOkc5pDoVQfujW0Adh5mGLw34MJ4WHhVeGP45wiFga0TGXNXfR3ENz30T6RJZE3ptnMU85ry1KNSo+qi5qPNo3ujS6P8YuZlnM1VidWElsSxw5LiquNm5svt/87fOH4p3iC+N7F5gvyF1weaHOwvSFpxapLhIsOpZATIhOOJTwQRAqqBaMJfITdyWOCnnCHcJnIi/RNtGI2ENcKh5O8kgqTXqS7JG8NXkkxTOlLOW5hCepkLxMDUzdmzqeFpp2IG0yPTq9MYOSkZBxQqohTZO2Z+pn5mZ2y6xlhbL+xW6Lty8elQfJa7OQrAVZLQq2QqboVFoo1yoHsmdlV2a/zYnKOZarnivN7cyzytuQN5zvn//tEsIS4ZK2pYZLVy0dWOa9rGo5sjxxedsK4xUFK4ZWBqw8uIq2Km3VT6vtV5eufr0mek1rgV7ByoLBtQFr6wtVCuWFfevc1+1dT1gvWd+1YfqGnRs+FYmKrhTbF5cVf9go3HjlG4dvyr+Z3JS0qavEuWTPZtJm6ebeLZ5bDpaql+aXDm4N2dq0Dd9WtO319kXbL5fNKNu7g7ZDuaO/PLi8ZafJzs07P1SkVPRU+lQ27tLdtWHX+G7R7ht7vPY07NXbW7z3/T7JvttVAVVN1WbVZftJ+7P3P66Jqun4lvttXa1ObXHtxwPSA/0HIw6217nU1R3SPVRSj9Yr60cOxx++/p3vdy0NNg1VjZzG4iNwRHnk6fcJ3/ceDTradox7rOEH0x92HWcdL2pCmvKaRptTmvtbYlu6T8w+0dbq3nr8R9sfD5w0PFl5SvNUyWna6YLTk2fyz4ydlZ19fi753GDborZ752PO32oPb++6EHTh0kX/i+c7vDvOXPK4dPKy2+UTV7hXmq86X23qdOo8/pPTT8e7nLuarrlca7nuer21e2b36RueN87d9L158Rb/1tWeOT3dvfN6b/fF9/XfFt1+cif9zsu72Xcn7q28T7xf9EDtQdlD3YfVP1v+3Njv3H9qwHeg89HcR/cGhYPP/pH1jw9DBY+Zj8uGDYbrnjg+OTniP3L96fynQ89kzyaeF/6i/suuFxYvfvjV69fO0ZjRoZfyl5O/bXyl/erA6xmv28bCxh6+yXgzMV70VvvtwXfcdx3vo98PT+R8IH8o/2j5sfVT0Kf7kxmTk/8EA5jz/GMzLdsAAAAgY0hSTQAAeiUAAICDAAD5/wAAgOkAAHUwAADqYAAAOpgAABdvkl/FRgAABB9JREFUeNpMyrENACAMxEA/Yv+ZGINRkspUIFyeHJW/AZDE7vaBGvYCYN6jqgA4AAAA//9ixGrGyZMnUc0w4PjA8GBFA0LFigsfGBbMgBgKAAAA//9i+P//PxxHBAT8//Hjx/+IgID/MDEmmOE3F1b+L6ioYLhw4QIDzCUoJjAwMPxfsGDF/woPg/8QYYg4ijNhuv7//88IEwMAAAD//5SPvRlAQBBE91ONkEwJZIRCHUhVoA2hDpwO5iLKmYtG5D5/iU1nd+e9l8dzIkPbNAohyHt/vzi7AIikSGqa5shwgwQgAOrL4r1QZ6m4O3F3/yySa0jSSNo6dPrUHKpcZmbjssUPBwAAAP//hJIhEoMwEEVfXCUSiUQiewQkcdThaiu5BZWVuOLAhRsQiYyM5AhxqeiUQkvLzsTsrMj/7/3t4SSlB7i3rfh5tIS5BLr1tNb+837zBycpfZrlxHEEgDGWvmtoum5VwKqEpTWhmyiKfN4VRY6zhiyJ3xZtRQD8JT16wJu6nLm4sZ8tW0Jc+friU6lBaK3RJIwuoC6vjC7AHp5xKjWsImx2IITwtzQFIEpCAOw4cVbqi8auznvzIK0KdRCGgegbX4HcJyBvDsnccMNNIsGNT8ENN0flJLKOOoqbRCJxRd3SdmWU0KRJc81d3vXee/27wGzqcrNeGyZTNJGYTLa+yqJwnMKZnB+wE/0dKjJqQet+hFIpBaUUWiG+P2KSJKYsCoSoHBLVzE/erQgAhmQ+t0LgfjqYr1PoH0+8eg0iGmJEBC4c1YJuaqSLpRMvqx3O19t0C/s8MwDQtJ2LSl0glMY+z8ykGm1VAhgUyD5ru+XHMfIUpJRIMYeUEvxr+WYSRNDVlamJHAI1TWsYVZSlHfPc2DIGgG3XIQoBb+7f/++iEPyy3tSXIXeDMBDH/9c3MRk5GXkyEjmJpI65zE1OMleJRFZGVlbSb0DdZCQfATmXCRpeoZSk7czyXt4LhMvdC//87vLwAo+21T1Gb+u1Ox6Pox7kzi08WuKTMburuPFzTdNc5VeQZyE4xvbYIKI0QETOmB2YJaxtwSyhlLpgpp+ztoXW+bzsbxWhR2RVN/BBzIH7/L3WObxNKIhVyLk1BQDgM02gdT44ZpajPnUOANYUl6XIpD0FBEpE5DLFkC8CmWLkSqD93oN1OU5lpkCuXrFXPOQF1mX4Nywq9MS/bZoO9dJc7WRNMdRNfuxtligWPAUAXKZ4WMSj0Tu3phiNz7E5tX0Ypf4kAMDPzqDtutG8FALPuQazRJIkUScgioRE5HzRX+/7ANRmAykEsqpCVlWQQkBt+gtZVfbaOHy9u5AAo3OBX2ibpmi7DlKIXminXTh/lkLgo64xvc78STIiIlcXevGbtDTR2393Npxe2OYucP8mHf8OAJMqvVE8gtrFAAAAAElFTkSuQmCC",
         idol: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QAIABgAFL1MG+DAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5AUBFwog6bVmlgAAACZpVFh0Q29tbWVudAAAAAAAQ3JlYXRlZCB3aXRoIEdJTVAgb24gYSBNYWOV5F9bAAADzklEQVRYw+2XX2hbdRTHP5mdZFGsoctY3Zx58GUxaR1JCaQ0TbaXOERKhJWwDbOtD1aWIWGla9gm64NF3epDxL4s0mn9E5A0lOEKHaSLLqWsZbaJrT6IoWwV22JapnfSrrs+9N5LsnYuN7aC6Hm5957zze+c3/d3ft/8fvC//ddNU8qPjH6vuJY/2x1TPV5ZKYnNxxofBhHVFqJRk1xvs+BxukgvzHB7bKIgvqPahKV8G/3JQXIj6aKLKFuP5MCKrxo8Thf9EhvFFLGpWAZ2VJvYCOymYmd/e2yC9MIMmUgUj9OFx+lSMPJ3JhJVGNLbLA9t1pKbMBOJ4gsGChLnmy8Y4PPOMHqbZX0YkGcPkBtJ4wsGqN26E4D0wgytZXdoLbtDemEGgNqtO/EFA+RG0vljmNalB+QEAP3JQXoqtij+noot9CcHCzDArPT85W8XIM8e4Eysh8Re6ypMYq+VM7EeZJ3IjaQNUkgoqYB8+mW7PncLgOlryVV42SdjZLHS2yz3jH7vEyU3Yf7s+5ODXD/aik6nY37CWYAzNZ9HEARqP3rnwW24DNwraQkkRSv4Btgden0VVvZZP/n0wTHuS0WoZyA/uWyL2asMHdq/yj90aD+L2asAWMq3KTtDUkONKgbyBaRtPAGg7O+TR4KM9V1R1l1e+7G+K5w8EmT08EFFM6SxtG3jCQ2gVcVAtjtWkBzg4vQS7DuA9dTbcKqLJvvzK/7m83IyfNL/hdSI2kwkutRR5Qa4X3QBEm1i/swvTi8p8dFQCIDfnsoB0LzvAABNz2wG4HJd4+zLX0cdwKLE8rLaJhTbxhN0VLnR2yyc/fKaEphKpTDY7RjsdmpOXKDmxAUMdjuvTn+Px+mio8rNaChkyESis8Cz2e7Ycik6oOmocrPng7fWDM4ODwMwNzDA3MAAzt5L+IIBOTkA72d/jV6ua5wq6UAiN6HeZuHm8XPMT/SReKOTXQ4HU6kUuxyOla13+jQAOp0OgF6XS8G4PwzytOmVRx56NI9SwJvHzwEw2dXC7ub3MIfbufTzH2sO9lqlls2aZT57TKCyvk59AWvJryw+2e4Y9d/0sl2r47uhYSr2WOj86gYA73rr+f3uvLL9zMcayX77A5nAWY3qJfiLEy9Gv5fnmg4rvu3aFep9t+4C0NDQgNHvBeBJ64tFFaDG9EANIE52tYiTXS2iOdwumsPtoiAIoiAIIiAa/V6bhMUcbi/fiLvEC3IBgBOojMfjYjweFyXt0G3YvUCyn14a/lF+TwGPvxn/OD8u/BM3qi9kpcy7kIj8G+1P0GOYn/wsWwkAAAAASUVORK5CYII=",
-    	detective: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAArCAYAAAAZvYo3AAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSoVBzuIKGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ/AFxc3NSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfF0CsCGEYI3RBkZhlzkpSEb33dUzfVXYxn+ff9Wb1qzmJAQCSeZYZpE28QT2/aBud94ggryirxOfGYSRckfuS64vEb54LLAs+MmOnUPHGEWCy0sdLGrGhqxFPEUVXTKV/IeKxy3uKslauseU/+wnBOX1nmOq0hJLCIJUgQoaCKEsqwEaNdJ8VCis7jPv5B1y+RSyFXCYwcC6hAg+z6wf/g92yt/OSElxSOA50vjvMxAoR2gUbNcb6PHadxAgSfgSu95a/UgZlP0mstLXoE9G0DF9ctTdkDLneAgSdDNmVXCtIS8nng/Yy+KQv03wI9a97cmuc4fQDSNKvkDXBwCIwWKHvd591d7XP7t6c5vx/k63JuaqyPYQAAAAZiS0dEAAAA/wAAR9uPkgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UBHQcJHjvMFswAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACfElEQVRYw92YTWgTQRTHf1NUFBTbSvxIUaEXtwdLEOlBD8aKkAqCN3vxJNUoKOqpx9wsguAHaGjxopd4FFEDgtGDHoqYj4ONgsUUUqqlNkVFvWQ9bJ50hs3HQiFT321mZ97u//fevJlZ5bou7TQ1EokEmjBZbfzFAx1KteJnPJsFoIM225qgisM9uxqPL8+4QYjYRyCoYtPM8UKkHgl7CIjyoIpbtYlczgUYiUSUnQQkRhKzlSLRzM//lwOz5RlNubTNXBgHZQeBesrrKWnWfnj+MACXH31q6QPaT8DMfjN7TWUn72R8269undMJ1vrFZLwTz9tFoO55QHJDlI0lUgAkkqMNHSbiYwCMJoYBOHTxLgBD3V3/3nk1k7F4NxTLF/RYiaL1TgyA38W09lz6Ky+Tvn6GolHLd8N6NlcsArDdcTwS0ahHYO6zTqjWb84TWx53u1eB1Orbpw4AcOHBGwCKyUuBHDvxG/j5cV1X2Umg/MerhHt29wDQG9qkDXz21ovp06lvDR0e6+v2sn6/o/VPz38H4EOpDMCT9wvKzlVw9sQRAJ6/ntSUCxmxM/fe6Ted0/u0cTJPSIjfKzfvW1oH+rf1aw+OHhwAIPtxWsuJ3pCnqHT9mjbejPnS4jrNT7332FcHtnR2aueCr7+8WG7uCmkkHuc2avOOR35o2b60OA/A1g2OWREtvReILVQqyq8umOv5i/pp9Fe1thArlAraul89u6FUvPLanQAMhqsNzwuD4b1a+8Wspy3fpHLafx7YEe4DYKrWTqdTvruaUsoFiMWGa/P8Sa0eAnKPn0inXL9+04SIkDD7rSWg5Eelau333nJlK/IBbSfwF++WDDjFt6YdAAAAAElFTkSuQmCC"
+        detective: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAArCAYAAAAZvYo3AAABhGlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw1AUhU9TpSoVBzuIKGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ/AFxc3NSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfF0CsCGEYI3RBkZhlzkpSEb33dUzfVXYxn+ff9Wb1qzmJAQCSeZYZpE28QT2/aBud94ggryirxOfGYSRckfuS64vEb54LLAs+MmOnUPHGEWCy0sdLGrGhqxFPEUVXTKV/IeKxy3uKslauseU/+wnBOX1nmOq0hJLCIJUgQoaCKEsqwEaNdJ8VCis7jPv5B1y+RSyFXCYwcC6hAg+z6wf/g92yt/OSElxSOA50vjvMxAoR2gUbNcb6PHadxAgSfgSu95a/UgZlP0mstLXoE9G0DF9ctTdkDLneAgSdDNmVXCtIS8nng/Yy+KQv03wI9a97cmuc4fQDSNKvkDXBwCIwWKHvd591d7XP7t6c5vx/k63JuaqyPYQAAAAZiS0dEAAAA/wAAR9uPkgAAAAlwSFlzAAALEwAACxMBAJqcGAAAAAd0SU1FB+UBHQcJHjvMFswAAAAZdEVYdENvbW1lbnQAQ3JlYXRlZCB3aXRoIEdJTVBXgQ4XAAACfElEQVRYw92YTWgTQRTHf1NUFBTbSvxIUaEXtwdLEOlBD8aKkAqCN3vxJNUoKOqpx9wsguAHaGjxopd4FFEDgtGDHoqYj4ONgsUUUqqlNkVFvWQ9bJ50hs3HQiFT321mZ97u//fevJlZ5bou7TQ1EokEmjBZbfzFAx1KteJnPJsFoIM225qgisM9uxqPL8+4QYjYRyCoYtPM8UKkHgl7CIjyoIpbtYlczgUYiUSUnQQkRhKzlSLRzM//lwOz5RlNubTNXBgHZQeBesrrKWnWfnj+MACXH31q6QPaT8DMfjN7TWUn72R8269undMJ1vrFZLwTz9tFoO55QHJDlI0lUgAkkqMNHSbiYwCMJoYBOHTxLgBD3V3/3nk1k7F4NxTLF/RYiaL1TgyA38W09lz6Ky+Tvn6GolHLd8N6NlcsArDdcTwS0ahHYO6zTqjWb84TWx53u1eB1Orbpw4AcOHBGwCKyUuBHDvxG/j5cV1X2Umg/MerhHt29wDQG9qkDXz21ovp06lvDR0e6+v2sn6/o/VPz38H4EOpDMCT9wvKzlVw9sQRAJ6/ntSUCxmxM/fe6Ted0/u0cTJPSIjfKzfvW1oH+rf1aw+OHhwAIPtxWsuJ3pCnqHT9mjbejPnS4jrNT7332FcHtnR2aueCr7+8WG7uCmkkHuc2avOOR35o2b60OA/A1g2OWREtvReILVQqyq8umOv5i/pp9Fe1thArlAraul89u6FUvPLanQAMhqsNzwuD4b1a+8Wspy3fpHLafx7YEe4DYKrWTqdTvruaUsoFiMWGa/P8Sa0eAnKPn0inXL9+04SIkDD7rSWg5Eelau333nJlK/IBbSfwF++WDDjFt6YdAAAAAElFTkSuQmCC"
     };
     var base64acetrainer = {
         "f": {
@@ -8859,7 +8859,7 @@ function Safari() {
             if (parseInt(currentPokemon, 10) === 686) {
                 player.records.catchInkay += 1;
             }
-			safari.detectiveClue(player.idnum, "catch:" + parseInt(currentPokemon, 10));
+            safari.detectiveClue(player.idnum, "catch:" + parseInt(currentPokemon, 10));
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
                 player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
@@ -13962,20 +13962,20 @@ function Safari() {
                     sys.sendHtmlMessage(src, "<font color='#3daa68'><timestamp/><b>±Hint:</font></b> "  + dynamicHints.random(), safchan);
                 }
                 else {
-                	var hit = false;
+                    var hit = false;
                     if (player.costume == "explorer" && chance(0.2) && safari.detectiveData.hasOwnProperty(player.idnum+"")) {
-                    	for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
-                    		if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
-								safari.detectiveClue(player.idnum, "explorerfinder");
-								safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! Go to " + link("/quest detective") + " to see what it means!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-								break;
-                    		}
-                    	}
-					}
-					if (!(hit)) {
-						safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
-					}
-				}
+                        for (var i = 0; i < safari.detectiveData[player.idnum+""].clues.length; i++) {
+                            if (safari.detectiveData[player.idnum+""].clues[i].unlock == "explorerfinder") {
+                                safari.detectiveClue(player.idnum, "explorerfinder");
+                                safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... What's this? It's a clue! Go to " + link("/quest detective") + " to see what it means!" +(freefinder ? "<i>Additionally, no charge was used this time! </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                                break;
+                            }
+                        }
+                    }
+                    if (!(hit)) {
+                        safaribot.sendHtmlMessage(src, "You pull out your Itemfinder ... ... ... But it did not detect anything. "+(freefinder ? "<i>At least no charge was used... </i>" : "") + "[Remaining charges: " + totalCharges + (permCharges > 0 ? " (Daily " + dailyCharges + " plus " + permCharges + " bonus)" : "") + "].", safchan);
+                    }
+                }
                 giveReward = false;
                 showMsg = false;
             break;
@@ -17049,7 +17049,7 @@ function Safari() {
                 player.records.missionCleared += 1;
                 clearedAny = true;
                 safaribot.sendHtmlMessage(src, toColor("You " + g + " + " + plural(m.points, "mission point") + " for clearing the following mission: " + m.desc, "blue"), safchan);
-				safari.detectiveClue(player.idnum, "mission");
+                safari.detectiveClue(player.idnum, "mission");
                 if (m.day !== today) {
                     player.missions.splice(player.missions.indexOf(m), 1);
                 } else {
@@ -28786,7 +28786,7 @@ function Safari() {
                     rewardCapCheck(player, rew, amt, true);
                     safari.costumeEXP(player, "arenasilver", amt);
                     if (args.name == "Trainer Lorekeeper" && player.costume == "battle") {
-                    	safari.detectiveClue(player.idnum, "battlearena");
+                        safari.detectiveClue(player.idnum, "battlearena");
                     }
                 }
                 if (args.moneyReward) {
@@ -29954,363 +29954,363 @@ function Safari() {
     };
     this.detectiveClue = function(uid, type) {
         if (!(safari.detectiveData.hasOwnProperty(uid+""))) {
-        	return;
+            return;
         }
         for (var i = 0; i < safari.detectiveData[uid+""].clues; i++) {
-        	if (safari.detectiveData[uid+""].clues[i].unlock == type) {
-        		safari.detectiveData[uid+""].clues[i].unlock = "free";
-        	}
+            if (safari.detectiveData[uid+""].clues[i].unlock == type) {
+                safari.detectiveData[uid+""].clues[i].unlock = "free";
+            }
         }
         return;
     };
     this.detectiveQuest = function(src, data) {
-    	function createClue(answer, clues, ind, kind, minstrength, unlock) {	
-    		var out = {};
-    		var strength = 0;
-    		var value;
-    		var pk;
-    		ind = ind || Math.floor(Math.random() * 4);
-    		var kinds = {
-    			"start": 9,
-    			"contains": 20,
-    			"evolved": 4,
-    			"evolves": 2,
-    			"canMega": 7,
-    			"stat": 4,
-    			"moves": 10
-			};
-    		var kindsinteract = {
-    			"effective": 20,
-    			"noletters": 22,
-    			"sameregion": 56,
-    			"samecolor": 50,
-    			"bsthigher": 16
-			};
-			var otherind = 0;
-			if (kind == "interact") {
-				otherind = Math.floor(Math.random() * 3);
-				if (otherind == ind) {
-					otherind++;
-				}
-			}
-    		kind = kind == "interact" ? randomSample(kindsinteract) : (kind || randomSample(kinds));
-    		unlock = unlock || "free"; //what is required to access this clue
-    		var outText = ""; //what the text of this clue is
-    		
-    		switch (kind) {
-    			case "start":
-    				value = poke(answer[ind])[0];
-    				if (value == "X") {
-    					return false;
-    				}
-    				for (var i = 0; i < clues.length; i++) {
-    					if (value == clues[i].value) {
-    						return false;
-    					}
-    				}
-    				strength = ["A", "B", "D", "G", "M", "P", "S", "T"].contains(value) ? 5 : (["C", "H", "L", "R", "W", "F"].contains(value) ? 9 : (["E", "K", "N", "V", "Z"].contains(value) ? 16 : 20));
-					outText = "{0}'s name starts with " + value + ".";
-    				break;
-    			case "contains":
-    				pk = poke(answer[ind]);
-    				value = pk.slice(Math.floor(Math.random() * pk.length), 1); //random letter from that pokemon's name
-    				value = value.toUpperCase();
-    				for (var i = 0; i < clues.length; i++) {
-    					if (value == clues[i].value) {
-    						return false;
-    					}
-    				}
-    				if ([" ", ".", "-", ":"].contains(value)) {
-    					return false;
-    				}
-    				strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 7 : (["K", "B", "W"].contains(value) ? 10 : 15));
-					outText = "{0} has " + value + " in its name.";
-    				break;
-    			case "evolves":
-    				if (answer[ind] in evolutions) {
-    					value = true;
-						outText = "{0} can evolve.";
-    				} else {
-    					value = false;
-						outText = "{0} cannot evolve.";
-    				}
-    				for (var i = 0; i < clues.length; i++) {
-    					if (ind == clues[i].ind && clues[i].kind == "evolves") {
-    						return false;
-    					}
-    				}
-    				strength = 3;
-    				break;
-    			case "evolved":
-    				if (answer[ind] in devolutions) {
-    					value = true;
-						outText = "{0} is evolved.";
-    				} else {
-    					value = false;
-						outText = "{0} is not evolved.";
-    				}
-    				for (var i = 0; i < clues.length; i++) {
-    					if (ind == clues[i].ind && clues[i].kind == "evolved") {
-    						return false;
-    					}
-    				}
-    				strength = 3;
-    				break;
-    			case "canMega":
-    				if (answer[ind] in megaEvolutions) {
-    					value = true;
-    				} else {
-    					return false; //do not supply "cannot mega" clue
-    				}
-    				for (var i = 0; i < clues.length; i++) {
-    					if (ind == clues[i].ind && clues[i].kind == "canMega") {
-    						return false;
-    					}
-    				}
-    				strength = 20;
-					outText = "{0} can Mega Evolve.";
-    				break;
-    			case "stat":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (ind == clues[i].ind && clues[i].kind == "stat") {
-    						return false;
-    					}
-    				}
-    				var st = getStats(answer[ind]);
-    				var maxstat = 0;
-    				for (var j = 0; j < st.length; j++) {
-    					maxstat = Math.max(maxstat, st[j]);
-    				}
-    				var l = [];
-    				for (var j = 0; j < st.length; j++) {
-    					if (st[j] == maxstat) {
-    						l.push(j);
-    					}
-    				}
-    				if (l.length == 1) {
-    					value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][j];
-    					strength = 5;
-    				} else {
-    					value = ["two", "three", "four", "five", "six"][l.length - 2];
-    					value = value + " stats tied";
-    					strength = [10, 25, 25, 35, 30][l.length - 2];
-    				}
-					outText = "{0} has " + value + " for its highest stat.";
-    				break;
-    			case "moves":
-					var m = fetchMoves(answer[ind]).random();
-					var m2 = fetchMoves(answer[ind]).random();
-					var k = 0;
-    				var l = [];
-					while (m2 == m) {
-						m2 = fetchMoves(answer[ind]).random();
-						k++;
-						if (k > 50) {
-							break;
-						}
-					}
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "moves" && (clues[i].value.contains(m) || clues[i].value.contains(m2))) {
-    						return false;
-    					}
-    				}
-					for (var e = 1; e < highestDexNum - 1; e++) {
-						l.push(e);
-					}
-					l = l.filter(function(x){
-						return canLearnMove(x, m);
-					});
-					if (l.length > 200 || l.length < 10) {
-						return false;
-					}
-					var l2 = [];
-					for (var e = 1; e < highestDexNum - 1; e++) {
-						l2.push(e);
-					}
-					l2 = l2.filter(function(x){
-						return canLearnMove(x, m);
-					});
-					if (l2.length > 200 || l2.length < 10) {
-						return false;
-					}
-					var l3 = [];
-					for (var e = 1; e < highestDexNum - 1; e++) {
-						l3.push(e);
-					}
-					l3 = l3.filter(function(x){
-						return (canLearnMove(x, m) && (canLearnMove(x, m2)));
-					});
-					if (l3.length > 100 || l2.length < 6) {
-						return false;
-					}
-					strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
-					value = [m, m2];
-					outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
-					break;
-				case "effective":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "effective" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
-    						return false;
-    					}
-    				}
-					var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
-					if (amt > 1) {
-						value = "has a type advantage";
-						strength = 16;
-					}
-					if (amt < 1 && amt > 0) {
-						value = "has a type disadvantage";
-						strength = 14;
-					}
-					if (amt <= 0) {
-						value = "faces an immunity";
-						strength = 30;
-					}
-					outText = "{0} " + value + " while attacking {1}.";
-					break;
-				case "noletters":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "noletters" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
-    						return false;
-    					}
-    				}
-    				var pk1 = poke(answer[ind]);
-    				var pk2 = poke(answer[otherind]);
-    				
-    				for (var i = 0; i < pk1.length; i++) {
-    					if (pk2.indexOf(pk1[i]) > -1) {
-    						return false;
-    					}
-    				}
-    				value = "no letters in common";
-    				strength = 20;
-					outText = "{0} has " + value + " with {1}.";
-					break;
-				case "region":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "region" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
-    						return false;
-    					}
-    				}
-    				var pk1 = generation(answer[ind]);
-    				var pk2 = generation(answer[otherind]);
-    				
-    				if (pk1 !== pk2) {
-    					return false;
-    				}
-    				value = "same region";
-    				strength = 16;
-					outText = "{0} is from the " + value + " as {1}.";
-					break;
-				case "color":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "color" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
-    						return false;
-    					}
-    				}
-    				var pk1 = getPokeColor(answer[ind]);
-    				var pk2 = getPokeColor(answer[otherind]);
-    				
-    				if (pk1 !== pk2) {
-    					return false;
-    				}
-    				value = "same color";
-    				strength = 16;
-					outText = "{0} is the " + value + " as {1}.";
-					break;
-				case "bsthigher":
-    				for (var i = 0; i < clues.length; i++) {
-    					if (clues[i].kind == "bsthigher" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
-    						return false;
-    					}
-    				}
-    				var pk1 = getBST(answer[ind]);
-    				var pk2 = getBST(answer[otherind]);
-    				
-    				if (pk1 < pk2) {
-    					return false;
-    				}
-    				value = "greater stat total";
-    				strength = 12;
-					outText = "{0} has a " + value + " than {1}.";
-					break;
-			}
-			if (strength < minstrength) {
-				return false;
-			}
-			var inds = ["The First Pokémon", "The Second Pokémon", "The Third Pokémon", "The Fourth Pokémon"];
-			outText = outText.format(inds[ind], inds[otherind]);
-			return {
-				kind: kind,
-				value: value,
-				str: outText,
-				ind: ind,
-				otherind: otherind,
-				unlock: unlock,
-				seen: false
-			}
-    	}
-    	function getClue(answer, clues, ind, kind, maxstrength, unlock) {
-    		var out = false;
-    		var i = 0;
-    		
-    		while (!(out)) {
-    			out = createClue(answer, clues, ind, kind, maxstrength, unlock);
-    			i++;
-    			if (i > 2500) {
-    				out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
-    				break;
-    			}
-    		}
-    		return out;
-    	};
-    	function assignClues() {
-    		var out = {};
-    		out.answer = [];
-    		out.clues = [];
-    		out.solved = false;
-    		out.date = getDay(now());
-    		
-    		while (out.answer.length < 4) {
-    			out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
-    			out.answer = removeDuplicates(out.answer);
-    		}
-    		var firstFourOrder = [2 + 3 * Math.random(), 3 + 6 * Math.random(), 16 + 4 * Math.random(), 17 + 6 * Math.random()].shuffle(); //strength of first few clues
-    		var nextThreeOrder = [2 + 4 * Math.random(), 6 + 6 * Math.random(), 12 + 8 * Math.random()].shuffle(); //strength of next few clues
-    		
-    		var extraOrder = [0, 1, 2, 3].shuffle();
-    		var extraOrder2 = [0, 1, 2, 3].shuffle();
-    		
-    		out.clues.push(getClue(out.answer, out.clues, 0, false, firstFourOrder[0]));
-    		out.clues.push(getClue(out.answer, out.clues, 1, false, firstFourOrder[1]));
-    		out.clues.push(getClue(out.answer, out.clues, 2, false, firstFourOrder[2]));
-    		out.clues.push(getClue(out.answer, out.clues, 3, false, firstFourOrder[3]));
-    		
-    		out.clues.push(getClue(out.answer, out.clues, 0, "interact", nextThreeOrder[0]));
-    		out.clues.push(getClue(out.answer, out.clues, 1, "interact", nextThreeOrder[0]));
-    		out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
-    		
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 3 + Math.random() * 4, "journal"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 5 + Math.random() * 5, "battlearena"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "pokefandaycare"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "explorerfinder"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + Math.random() * 4, "mafia"));
-    		
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
-    		
-    		var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 278, 175, 656, 724];
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
-    		
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 2 * Math.random(), "pyramid2"));
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
-    		out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 5 * Math.random(), "pyramid4"));
-    		out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
-    		
-    		return out;
-    	}
+        function createClue(answer, clues, ind, kind, minstrength, unlock) {    
+            var out = {};
+            var strength = 0;
+            var value;
+            var pk;
+            ind = ind || Math.floor(Math.random() * 4);
+            var kinds = {
+                "start": 9,
+                "contains": 20,
+                "evolved": 4,
+                "evolves": 2,
+                "canMega": 7,
+                "stat": 4,
+                "moves": 10
+            };
+            var kindsinteract = {
+                "effective": 20,
+                "noletters": 22,
+                "sameregion": 56,
+                "samecolor": 50,
+                "bsthigher": 16
+            };
+            var otherind = 0;
+            if (kind == "interact") {
+                otherind = Math.floor(Math.random() * 3);
+                if (otherind == ind) {
+                    otherind++;
+                }
+            }
+            kind = kind == "interact" ? randomSample(kindsinteract) : (kind || randomSample(kinds));
+            unlock = unlock || "free"; //what is required to access this clue
+            var outText = ""; //what the text of this clue is
+            
+            switch (kind) {
+                case "start":
+                    value = poke(answer[ind])[0];
+                    if (value == "X") {
+                        return false;
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (value == clues[i].value) {
+                            return false;
+                        }
+                    }
+                    strength = ["A", "B", "D", "G", "M", "P", "S", "T"].contains(value) ? 5 : (["C", "H", "L", "R", "W", "F"].contains(value) ? 9 : (["E", "K", "N", "V", "Z"].contains(value) ? 16 : 20));
+                    outText = "{0}'s name starts with " + value + ".";
+                    break;
+                case "contains":
+                    pk = poke(answer[ind]);
+                    value = pk.slice(Math.floor(Math.random() * pk.length), 1); //random letter from that pokemon's name
+                    value = value.toUpperCase();
+                    for (var i = 0; i < clues.length; i++) {
+                        if (value == clues[i].value) {
+                            return false;
+                        }
+                    }
+                    if ([" ", ".", "-", ":"].contains(value)) {
+                        return false;
+                    }
+                    strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 7 : (["K", "B", "W"].contains(value) ? 10 : 15));
+                    outText = "{0} has " + value + " in its name.";
+                    break;
+                case "evolves":
+                    if (answer[ind] in evolutions) {
+                        value = true;
+                        outText = "{0} can evolve.";
+                    } else {
+                        value = false;
+                        outText = "{0} cannot evolve.";
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && clues[i].kind == "evolves") {
+                            return false;
+                        }
+                    }
+                    strength = 3;
+                    break;
+                case "evolved":
+                    if (answer[ind] in devolutions) {
+                        value = true;
+                        outText = "{0} is evolved.";
+                    } else {
+                        value = false;
+                        outText = "{0} is not evolved.";
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && clues[i].kind == "evolved") {
+                            return false;
+                        }
+                    }
+                    strength = 3;
+                    break;
+                case "canMega":
+                    if (answer[ind] in megaEvolutions) {
+                        value = true;
+                    } else {
+                        return false; //do not supply "cannot mega" clue
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && clues[i].kind == "canMega") {
+                            return false;
+                        }
+                    }
+                    strength = 20;
+                    outText = "{0} can Mega Evolve.";
+                    break;
+                case "stat":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && clues[i].kind == "stat") {
+                            return false;
+                        }
+                    }
+                    var st = getStats(answer[ind]);
+                    var maxstat = 0;
+                    for (var j = 0; j < st.length; j++) {
+                        maxstat = Math.max(maxstat, st[j]);
+                    }
+                    var l = [];
+                    for (var j = 0; j < st.length; j++) {
+                        if (st[j] == maxstat) {
+                            l.push(j);
+                        }
+                    }
+                    if (l.length == 1) {
+                        value = ["HP","Attack","Defense","Special Attack","Special Defense","Speed"][j];
+                        strength = 5;
+                    } else {
+                        value = ["two", "three", "four", "five", "six"][l.length - 2];
+                        value = value + " stats tied";
+                        strength = [10, 25, 25, 35, 30][l.length - 2];
+                    }
+                    outText = "{0} has " + value + " for its highest stat.";
+                    break;
+                case "moves":
+                    var m = fetchMoves(answer[ind]).random();
+                    var m2 = fetchMoves(answer[ind]).random();
+                    var k = 0;
+                    var l = [];
+                    while (m2 == m) {
+                        m2 = fetchMoves(answer[ind]).random();
+                        k++;
+                        if (k > 50) {
+                            break;
+                        }
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "moves" && (clues[i].value.contains(m) || clues[i].value.contains(m2))) {
+                            return false;
+                        }
+                    }
+                    for (var e = 1; e < highestDexNum - 1; e++) {
+                        l.push(e);
+                    }
+                    l = l.filter(function(x){
+                        return canLearnMove(x, m);
+                    });
+                    if (l.length > 200 || l.length < 10) {
+                        return false;
+                    }
+                    var l2 = [];
+                    for (var e = 1; e < highestDexNum - 1; e++) {
+                        l2.push(e);
+                    }
+                    l2 = l2.filter(function(x){
+                        return canLearnMove(x, m);
+                    });
+                    if (l2.length > 200 || l2.length < 10) {
+                        return false;
+                    }
+                    var l3 = [];
+                    for (var e = 1; e < highestDexNum - 1; e++) {
+                        l3.push(e);
+                    }
+                    l3 = l3.filter(function(x){
+                        return (canLearnMove(x, m) && (canLearnMove(x, m2)));
+                    });
+                    if (l3.length > 100 || l2.length < 6) {
+                        return false;
+                    }
+                    strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
+                    value = [m, m2];
+                    outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
+                    break;
+                case "effective":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "effective" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
+                    if (amt > 1) {
+                        value = "has a type advantage";
+                        strength = 16;
+                    }
+                    if (amt < 1 && amt > 0) {
+                        value = "has a type disadvantage";
+                        strength = 14;
+                    }
+                    if (amt <= 0) {
+                        value = "faces an immunity";
+                        strength = 30;
+                    }
+                    outText = "{0} " + value + " while attacking {1}.";
+                    break;
+                case "noletters":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "noletters" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var pk1 = poke(answer[ind]);
+                    var pk2 = poke(answer[otherind]);
+                    
+                    for (var i = 0; i < pk1.length; i++) {
+                        if (pk2.indexOf(pk1[i]) > -1) {
+                            return false;
+                        }
+                    }
+                    value = "no letters in common";
+                    strength = 20;
+                    outText = "{0} has " + value + " with {1}.";
+                    break;
+                case "region":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "region" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var pk1 = generation(answer[ind]);
+                    var pk2 = generation(answer[otherind]);
+                    
+                    if (pk1 !== pk2) {
+                        return false;
+                    }
+                    value = "same region";
+                    strength = 16;
+                    outText = "{0} is from the " + value + " as {1}.";
+                    break;
+                case "color":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "color" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var pk1 = getPokeColor(answer[ind]);
+                    var pk2 = getPokeColor(answer[otherind]);
+                    
+                    if (pk1 !== pk2) {
+                        return false;
+                    }
+                    value = "same color";
+                    strength = 16;
+                    outText = "{0} is the " + value + " as {1}.";
+                    break;
+                case "bsthigher":
+                    for (var i = 0; i < clues.length; i++) {
+                        if (clues[i].kind == "bsthigher" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                            return false;
+                        }
+                    }
+                    var pk1 = getBST(answer[ind]);
+                    var pk2 = getBST(answer[otherind]);
+                    
+                    if (pk1 < pk2) {
+                        return false;
+                    }
+                    value = "greater stat total";
+                    strength = 12;
+                    outText = "{0} has a " + value + " than {1}.";
+                    break;
+            }
+            if (strength < minstrength) {
+                return false;
+            }
+            var inds = ["The First Pokémon", "The Second Pokémon", "The Third Pokémon", "The Fourth Pokémon"];
+            outText = outText.format(inds[ind], inds[otherind]);
+            return {
+                kind: kind,
+                value: value,
+                str: outText,
+                ind: ind,
+                otherind: otherind,
+                unlock: unlock,
+                seen: false
+            }
+        }
+        function getClue(answer, clues, ind, kind, maxstrength, unlock) {
+            var out = false;
+            var i = 0;
+            
+            while (!(out)) {
+                out = createClue(answer, clues, ind, kind, maxstrength, unlock);
+                i++;
+                if (i > 2500) {
+                    out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
+                    break;
+                }
+            }
+            return out;
+        };
+        function assignClues() {
+            var out = {};
+            out.answer = [];
+            out.clues = [];
+            out.solved = false;
+            out.date = getDay(now());
+            
+            while (out.answer.length < 4) {
+                out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
+                out.answer = removeDuplicates(out.answer);
+            }
+            var firstFourOrder = [2 + 3 * Math.random(), 3 + 6 * Math.random(), 16 + 4 * Math.random(), 17 + 6 * Math.random()].shuffle(); //strength of first few clues
+            var nextThreeOrder = [2 + 4 * Math.random(), 6 + 6 * Math.random(), 12 + 8 * Math.random()].shuffle(); //strength of next few clues
+            
+            var extraOrder = [0, 1, 2, 3].shuffle();
+            var extraOrder2 = [0, 1, 2, 3].shuffle();
+            
+            out.clues.push(getClue(out.answer, out.clues, 0, false, firstFourOrder[0]));
+            out.clues.push(getClue(out.answer, out.clues, 1, false, firstFourOrder[1]));
+            out.clues.push(getClue(out.answer, out.clues, 2, false, firstFourOrder[2]));
+            out.clues.push(getClue(out.answer, out.clues, 3, false, firstFourOrder[3]));
+            
+            out.clues.push(getClue(out.answer, out.clues, 0, "interact", nextThreeOrder[0]));
+            out.clues.push(getClue(out.answer, out.clues, 1, "interact", nextThreeOrder[0]));
+            out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
+            
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 3 + Math.random() * 4, "journal"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 5 + Math.random() * 5, "battlearena"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "pokefandaycare"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "explorerfinder"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + Math.random() * 4, "mafia"));
+            
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
+            
+            var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 278, 175, 656, 724];
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+            
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 2 * Math.random(), "pyramid2"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
+            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 5 * Math.random(), "pyramid4"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
+            
+            return out;
+        }
         var player = getAvatar(src);
         if (cantBecause(src, "start a quest", ["tutorial"])) {
             return;
@@ -30324,113 +30324,113 @@ function Safari() {
         
         var today = getDay(now());
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
-        	if (today !== safari.detectiveData[uid+""].date) {
-        		if (!(safari.detectiveData[uid+""].solved)) {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
-					return;
-        		}
-        		safari.detectiveData[uid+""] = null;
-        	}
+            if (today !== safari.detectiveData[uid+""].date) {
+                if (!(safari.detectiveData[uid+""].solved)) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
+                    return;
+                }
+                safari.detectiveData[uid+""] = null;
+            }
         }
         if (!(safari.detectiveData[uid+""])) {
-        	safari.detectiveData[uid+""] = assignClues();
+            safari.detectiveData[uid+""] = assignClues();
         }
         
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
-			var d1 = (data.length > 0 ? data[0] : "*");
-			
-			var found = safari.detectiveData[uid+""].clues;
-			var item, out = [], out2 = [], out3 = [], req;
-			if (d1 == "*") {
-				//show player's clues
-				for (var x in found) {
-					item = found[x];
-					if ((!item.seen) || (item.unlock !== "free")) {
-						continue;
-					}
-					out.push(item.str);
-				}
-				for (var x in found) {
-					item = found[x];
-					if ((item.seen) || (item.unlock !== "free")) {
-						continue;
-					}
-					item.seen = true;
-					out2.push(item.str);
-				}
-				for (var x in found) {
-					item = found[x];
-					if (item.unlock == "free") {
-						continue;
-					}
-					var reqDesc = {
-						"mafia": "Win rewards from an Event Mafia game.",
-						"battlearena": "Defeat Trainer Lorekeeper while wearing the Battle Girl costume.",
-						"explorerfinder": "Discover a clue with the Itemfinder while wearing the Explorer costume.",
-						"pokefandaycare": "Interact with your Pokémon at the daycare while wearing the Pokéfan costume.",
-						"mission": "Clear a mission.",
-						"journal": "Submit a photograph with a score of at least 50 in the journal quest.",
-						"pyramid1": "Clear the first floor of Pyramid.",
-						"pyramid2": "Clear the second floor of Pyramid.",
-						"pyramid3": "Clear the third floor of Pyramid.",
-						"pyramid4": "Clear the fourth floor of Pyramid.",
-						"pyramid5": "Clear the fifth floor of Pyramid.",
-						"contest": "Win a contest.",
-					};
-					if (item.unlock.slice(0, 6) == "catch:") {
-						var num = parseInt(item.unlock.slice(":")[1], 10);
-						req = "Catch a " + poke(num);
-					} else {
-						req = reqDesc[item.unlock];
-					}
-					out3.push(req);
-				}
-				safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>\n\n" + out.join("\n") + (out2.length > 0 ? "\n\n<b>You found the following new clues:</b>\n\n" + toColor(out2.join("\n"), colorTranslations["orangered"]) : "") + (out3.length > 0 ? "\n\n<b>You can unlock new clues with the following requirements:</b>\n\n" + out3.join("\n") : "") + "", safchan);
-				
-				if (safari.detectiveData[uid+""].solved) {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!", safchan);
-				} else {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
-				}
-			} else {
-				//if they supply a guess, make sure it's 4 valid guesses and then see if it's correct
-				if (safari.detectiveData[uid+""].solved) {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again?", safchan);
-					return;
-				}
-				var arr = d1.split(",");
-				if (arr.length !== 4) {
-					safaribot.sendHtmlMessage(src, "You must supply four Pokémon in a combination as your guess using the format " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
-					return;
-				}
-				var guesses = [];
-				for (var i = 0; i < arr.length; i++) {
-					if (!(getInputPokemon(arr[i]).num)) {
-						safaribot.sendHtmlMessage(src, "Sorry, " + arr[i] + " is not a valid Pokémon!", safchan);
-						return;
-					}
-					if (!(getInputPokemon(arr[i]).num > 65536)) {
-						safaribot.sendHtmlMessage(src, "You cannot guess forms!", safchan);
-						return;
-					}
-					guesses.push(getInputPokemon(arr[i]).num);
-				}
-				var passed = true;
-				for (var j = 0; j < guesses.length; j++) {
-					if (guesses[j] !== safari.detectiveData[uid+""].answer[j]) {
-						passed = false;
-						break;
-					}
-				}
-				if (passed) {
-					safari.detectiveData[uid+""].solved = true;
-					give(player, "@prize"); //fix this later
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
-					saveGame(player);
-				} else {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
-				}
-			}
+            var d1 = (data.length > 0 ? data[0] : "*");
+            
+            var found = safari.detectiveData[uid+""].clues;
+            var item, out = [], out2 = [], out3 = [], req;
+            if (d1 == "*") {
+                //show player's clues
+                for (var x in found) {
+                    item = found[x];
+                    if ((!item.seen) || (item.unlock !== "free")) {
+                        continue;
+                    }
+                    out.push(item.str);
+                }
+                for (var x in found) {
+                    item = found[x];
+                    if ((item.seen) || (item.unlock !== "free")) {
+                        continue;
+                    }
+                    item.seen = true;
+                    out2.push(item.str);
+                }
+                for (var x in found) {
+                    item = found[x];
+                    if (item.unlock == "free") {
+                        continue;
+                    }
+                    var reqDesc = {
+                        "mafia": "Win rewards from an Event Mafia game.",
+                        "battlearena": "Defeat Trainer Lorekeeper while wearing the Battle Girl costume.",
+                        "explorerfinder": "Discover a clue with the Itemfinder while wearing the Explorer costume.",
+                        "pokefandaycare": "Interact with your Pokémon at the daycare while wearing the Pokéfan costume.",
+                        "mission": "Clear a mission.",
+                        "journal": "Submit a photograph with a score of at least 50 in the journal quest.",
+                        "pyramid1": "Clear the first floor of Pyramid.",
+                        "pyramid2": "Clear the second floor of Pyramid.",
+                        "pyramid3": "Clear the third floor of Pyramid.",
+                        "pyramid4": "Clear the fourth floor of Pyramid.",
+                        "pyramid5": "Clear the fifth floor of Pyramid.",
+                        "contest": "Win a contest.",
+                    };
+                    if (item.unlock.slice(0, 6) == "catch:") {
+                        var num = parseInt(item.unlock.slice(":")[1], 10);
+                        req = "Catch a " + poke(num);
+                    } else {
+                        req = reqDesc[item.unlock];
+                    }
+                    out3.push(req);
+                }
+                safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>\n\n" + out.join("\n") + (out2.length > 0 ? "\n\n<b>You found the following new clues:</b>\n\n" + toColor(out2.join("\n"), colorTranslations["orangered"]) : "") + (out3.length > 0 ? "\n\n<b>You can unlock new clues with the following requirements:</b>\n\n" + out3.join("\n") : "") + "", safchan);
+                
+                if (safari.detectiveData[uid+""].solved) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!", safchan);
+                } else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
+                }
+            } else {
+                //if they supply a guess, make sure it's 4 valid guesses and then see if it's correct
+                if (safari.detectiveData[uid+""].solved) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again?", safchan);
+                    return;
+                }
+                var arr = d1.split(",");
+                if (arr.length !== 4) {
+                    safaribot.sendHtmlMessage(src, "You must supply four Pokémon in a combination as your guess using the format " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
+                    return;
+                }
+                var guesses = [];
+                for (var i = 0; i < arr.length; i++) {
+                    if (!(getInputPokemon(arr[i]).num)) {
+                        safaribot.sendHtmlMessage(src, "Sorry, " + arr[i] + " is not a valid Pokémon!", safchan);
+                        return;
+                    }
+                    if (!(getInputPokemon(arr[i]).num > 65536)) {
+                        safaribot.sendHtmlMessage(src, "You cannot guess forms!", safchan);
+                        return;
+                    }
+                    guesses.push(getInputPokemon(arr[i]).num);
+                }
+                var passed = true;
+                for (var j = 0; j < guesses.length; j++) {
+                    if (guesses[j] !== safari.detectiveData[uid+""].answer[j]) {
+                        passed = false;
+                        break;
+                    }
+                }
+                if (passed) {
+                    safari.detectiveData[uid+""].solved = true;
+                    give(player, "@prize"); //fix this later
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
+                    saveGame(player);
+                } else {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
+                }
+            }
         }
     };
     this.idolQuest = function(src, data) {
@@ -32635,8 +32635,8 @@ function Safari() {
         }
         
         if (score >= 50) {
-			safari.detectiveClue(player.idnum, "journal");
-		}
+            safari.detectiveClue(player.idnum, "journal");
+        }
         
         sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Journal|||Submitted photo of " + this.describePhoto(photo) + "|||Fulfilled request for " + this.translatePhotoRequest(req) + ", received " + rewardName + (rewards.length > 0 ? ", " + readable(rewards) : "") + " and " + plural(score, "Photo Point") + "\n");
         this.saveGame(player);
@@ -35283,19 +35283,19 @@ function Safari() {
                 }
             }
             if (this.level > 1) {
-				safari.detectiveClue(player.idnum, "pyramid1");
+                safari.detectiveClue(player.idnum, "pyramid1");
             }
             if (this.level > 2) {
-				safari.detectiveClue(player.idnum, "pyramid2");
+                safari.detectiveClue(player.idnum, "pyramid2");
             }
             if (this.level > 3) {
-				safari.detectiveClue(player.idnum, "pyramid3");
+                safari.detectiveClue(player.idnum, "pyramid3");
             }
             if (this.level > 4) {
-				safari.detectiveClue(player.idnum, "pyramid4");
+                safari.detectiveClue(player.idnum, "pyramid4");
             }
             if (this.level > 5) {
-				safari.detectiveClue(player.idnum, "pyramid5");
+                safari.detectiveClue(player.idnum, "pyramid5");
             }
             safari.missionProgress(player, "pyramid", this.level + "-" + this.room, 1, { points: this.points });
             player.records.pyramidTotalScore += this.points;
@@ -41008,7 +41008,7 @@ function Safari() {
             pokemon.canPlay = false;
             player.cooldowns.daycare = currentTime + (60 * 1000 * 0.75);
             if (isOwner && player.costume == "pokefan") {
-            	safari.detectiveClue(player.idnum, "pokefandaycare");
+                safari.detectiveClue(player.idnum, "pokefandaycare");
             }
             safari.saveDaycare();
             return true;
@@ -48508,7 +48508,7 @@ function Safari() {
             this.missionProgress(player, "shadyFromMafia", "mafia", amt, {});
             rew = plural(amt, "shady");
             received.push(name.toCorrectCase());
-			safari.detectiveClue(player.idnum, "mafia");
+            safari.detectiveClue(player.idnum, "mafia");
             
             this.inboxMessage(player, "You won " + rew + " from a Mafia Event Game!", isPlaying(name));
             this.sanitize(player);
@@ -53077,8 +53077,8 @@ function Safari() {
             }
             if (command === "showdetective") {
                 var out = JSON.stringify(safari.detectiveData);
-				safaribot.sendMessage(src, out, safchan);
-				return true;
+                safaribot.sendMessage(src, out, safchan);
+                return true;
             }
             if (command === "resetdetective") {
                 var out, data;
@@ -53089,7 +53089,7 @@ function Safari() {
                     return true;
                 }
                 safaribot.sendMessage(src, "No detective data for player with UID " + commandData + " found.", safchan);
-				return true;
+                return true;
             }
             if (command === "loaddatadump") {
                 var title = commandData;
