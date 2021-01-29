@@ -30341,7 +30341,7 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
             var after = new Date().getTime();
-            sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + after - before, staffchannel);
+            sys.sendMessage(sys.id("Ripper Roo"), "Final delta: " + (after - before), staffchannel);
             sys.sendMessage(sys.id("Ripper Roo"), "", staffchannel);
             return out;
         }
