@@ -11357,6 +11357,7 @@ function Safari() {
             exchanged = playerShop + playerTrade + playerAuction,
             exchangedPrevious = playerShopPrevious + playerTradePrevious + playerAuctionPrevious;
 
+        // unaccounted = misc stuff like luxury balls, bet races, money lost from exceeding cap, etc
         var unaccounted = (introduced + lost) - (total - totalPrevious); // accounted difference - true difference
         var moneyColor = function(amount) {
             return "<b>" + toColor("$" + addComma(amount), amount <= 0 ? "red" : "green") + "</b>";
@@ -11366,7 +11367,7 @@ function Safari() {
             sys.sendHtmlMessage(src, toColor("<b>Note:</b> ", "red") + "Economy data for days beyond this point have been deleted, so the values for the previous day are considered 0.", safchan);
 
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Selling Pokémon to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerSell), moneyColor(playerSell - playerSellPrevious)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning Valuables to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from Pawning/Selling Items to the NPC:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(playerPawn), moneyColor(playerPawn - playerPawnPrevious)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Money Earned from the Collector:</b>", "black") + " {0} ({1} difference from previous day)".format(moneyColor(collector), moneyColor(collector - collectorPrevious)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
@@ -29152,6 +29153,7 @@ function Safari() {
                     if (r == "money") {
                         player.money += args.reward[r];
                         player.records.towerEarnings += args.reward[r];
+                        safari.updateEconomyData(args.reward[r], "questFee");
                         if (player.money > moneyCap) {
                             player.money = moneyCap;
                         }
@@ -29994,10 +29996,10 @@ function Safari() {
                 }
             }
             if (generation(answer[ind]) !== generation(answer[otherind])) {
-            	kindsinteract["sameregion"] = 0;
+                kindsinteract["sameregion"] = 0;
             }
             if (getPokeColor(answer[ind]) !== getPokeColor(answer[otherind])) {
-            	kindsinteract["samecolor"] = 0;
+                kindsinteract["samecolor"] = 0;
             }
             kind = kind == "interact" ? randomSample(kindsinteract) : (kind || randomSample(kinds));
             unlock = unlock || "free"; //what is required to access this clue
@@ -30005,7 +30007,7 @@ function Safari() {
             
             switch (kind) {
                 case "start":
-                    value = poke(parseInt(answer[ind], 10))[0];
+                    value = poke(answer[ind])[0];
                     if (value == "X") {
                         return false;
                     }
@@ -30018,7 +30020,7 @@ function Safari() {
                     outText = "{0}'s name starts with " + value + ".";
                     break;
                 case "contains":
-                    pk = poke(parseInt(answer[ind], 10));
+                    pk = poke(answer[ind]);
                     var sl = Math.floor(Math.random() * pk.length);
                     value = pk.slice(sl, sl + 1); //random letter from that pokemon's name
                     value = value.toUpperCase();
@@ -30034,7 +30036,7 @@ function Safari() {
                     outText = "{0} has " + value + " in its name.";
                     break;
                 case "evolves":
-                    if ((answer[ind] + "") in evolutions) {
+                    if (answer[ind] in evolutions) {
                         value = true;
                         outText = "{0} can evolve.";
                     } else {
@@ -30049,7 +30051,7 @@ function Safari() {
                     strength = 3;
                     break;
                 case "evolved":
-                    if ((answer[ind] + "") in devolutions) {
+                    if (answer[ind] in devolutions) {
                         value = true;
                         outText = "{0} is evolved.";
                     } else {
@@ -30064,7 +30066,7 @@ function Safari() {
                     strength = 3;
                     break;
                 case "canMega":
-                    if ((answer[ind] + "") in megaEvolutions) {
+                    if (answer[ind] in megaEvolutions) {
                         value = true;
                     } else {
                         return false; //do not supply "cannot mega" clue
@@ -30083,7 +30085,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    var st = getStats(parseInt(answer[ind], 10));
+                    var st = getStats(answer[ind]);
                     var maxstat = 0;
                     for (var j = 0; j < st.length; j++) {
                         maxstat = Math.max(maxstat, st[j]);
@@ -30146,7 +30148,7 @@ function Safari() {
                     }
                     var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
                     if (amt == 1) {
-                    	return false;
+                        return false;
                     }
                     if (amt > 1) {
                         value = "has a type advantage";
@@ -30168,8 +30170,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = poke(parseInt(answer[ind], 10));
-                    var pk2 = poke(parseInt(answer[otherind], 10));
+                    var pk1 = poke(answer[ind]);
+                    var pk2 = poke(answer[otherind]);
                     
                     for (var i = 0; i < pk1.length; i++) {
                         if (pk2.indexOf(pk1[i]) > -1) {
@@ -30251,7 +30253,7 @@ function Safari() {
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, maxstrength, unlock);
                 i++;
-                var maxloop = 200000;
+                var maxloop = 50000;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
                     break;
@@ -30381,29 +30383,29 @@ function Safari() {
                     out3.push(req);
                 }
                 if (out.length > 0) {
-					safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>:", safchan);
-					sys.sendMessage(src, "", safchan);
-					for (var i = 0; i < out.length; i++) {
-						safaribot.sendHtmlMessage(src, out[i], safchan);
-					}
-					sys.sendMessage(src, "", safchan);
-				}
+                    safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>:", safchan);
+                    sys.sendMessage(src, "", safchan);
+                    for (var i = 0; i < out.length; i++) {
+                        safaribot.sendHtmlMessage(src, out[i], safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                }
                 if (out2.length > 0) {
-					safaribot.sendHtmlMessage(src, "<b>You found the following clues:</b>:", safchan);
-					sys.sendMessage(src, "", safchan);
-					for (var i = 0; i < out2.length; i++) {
-						safaribot.sendHtmlMessage(src, toColor(out2[i], colorTranslations["orangered"]), safchan);
-					}
-					sys.sendMessage(src, "", safchan);
-				}
+                    safaribot.sendHtmlMessage(src, "<b>You found the following clues:</b>:", safchan);
+                    sys.sendMessage(src, "", safchan);
+                    for (var i = 0; i < out2.length; i++) {
+                        safaribot.sendHtmlMessage(src, toColor(out2[i], colorTranslations["orangered"]), safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                }
                 if (out3.length > 0) {
-					safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>:", safchan);
-					sys.sendMessage(src, "", safchan);
-					for (var i = 0; i < out3.length; i++) {
-						safaribot.sendHtmlMessage(src, toColor(out3[i], colorTranslations["darkgreen"]), safchan);
-					}
-					sys.sendMessage(src, "", safchan);
-				}
+                    safaribot.sendHtmlMessage(src, "<b>You can unlock new clues with the following requirements:</b>:", safchan);
+                    sys.sendMessage(src, "", safchan);
+                    for (var i = 0; i < out3.length; i++) {
+                        safaribot.sendHtmlMessage(src, toColor(out3[i], colorTranslations["darkgreen"]), safchan);
+                    }
+                    sys.sendMessage(src, "", safchan);
+                }
                 
                 if (safari.detectiveData[uid+""].solved) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!", safchan);
@@ -49186,6 +49188,10 @@ function Safari() {
                 }
                 player.balls.deluxe = 0;
                 player.money += cost;
+                safari.updateEconomyData(cost, "playerPawn");
+                if (player.money > moneyCap) {
+                    player.money = moneyCap;
+                }
                 safaribot.sendHtmlMessage(src, "You sold your " + amt + " Deluxe Baits for a total of $" + cost + "! You now have $" + addComma(player.money) + "!", safchan);
                 safari.saveGame(player);
                 return true;
