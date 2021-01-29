@@ -11388,7 +11388,7 @@ function Safari() {
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Introduced into the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(introduced), moneyColor(introduced - introducedPrevious, true)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Removed from the Economy:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(lost), moneyColor(lost - lostPrevious, true)), safchan);
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount Exchanged Between Players:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(exchanged), moneyColor(exchanged - exchangedPrevious, true)), safchan);
-        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(unaccounted), moneyColor(unaccountedPrevious - unaccounted, true)), safchan);
+        sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount from Unaccounted Sources:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(unaccounted), moneyColor(unaccounted - unaccountedPrevious, true)), safchan);
         
         sys.sendHtmlMessage(src, "", safchan);
         
@@ -30279,9 +30279,10 @@ function Safari() {
             var i = 0;
             
             var before = new Date().getTime();
-            var maxloop = 50000;
+            var maxloop = 10000;
+            
             while (!(out)) {
-                out = createClue(answer, clues, ind, i < 160 ? kind : false, i < 10000 ? minstrength : 0, unlock);
+                out = createClue(answer, clues, ind, i < 160 ? kind : false, minstrength - (i/5), unlock);
                 i++;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
