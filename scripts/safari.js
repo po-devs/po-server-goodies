@@ -30280,7 +30280,7 @@ function Safari() {
             
             var maxloop = 50000;
             while (!(out)) {
-                out = createClue(answer, clues, ind, kind, i < 10000 ? maxstrength : 0, unlock);
+                out = createClue(answer, clues, ind, i < 1000 ? kind : false, i < 10000 ? maxstrength : 0, unlock);
                 i++;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
@@ -30302,7 +30302,7 @@ function Safari() {
                 out.answer = removeDuplicates(out.answer);
             }
             var firstFourOrder = [2 + 3 * Math.random(), 3 + 6 * Math.random(), 16 + 4 * Math.random(), 17 + 6 * Math.random()].shuffle(); //strength of first few clues
-            var nextThreeOrder = [2 + 4 * Math.random(), 6 + 6 * Math.random(), 12 + 8 * Math.random()].shuffle(); //strength of next few clues
+            var nextThreeOrder = [2 + 3 * Math.random(), 2 + 4 * Math.random(), 2 + 5 * Math.random()].shuffle(); //strength of next few clues
             
             var extraOrder = [0, 1, 2, 3].shuffle();
             var extraOrder2 = [0, 1, 2, 3].shuffle();
@@ -30317,8 +30317,8 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
             
             var specClueOrder = ["dualtypes", "interact", "interact", "interact", "interact"].shuffle();
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 3 + Math.random() * 4, "journal"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 5 + Math.random() * 5, "battlearena"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 3 + Math.random() * 1, "journal"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 5 + Math.random() * 1, "battlearena"));
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 1 + Math.random() * 3, "pokefandaycare"));
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 1 + Math.random() * 3, "explorerfinder"));
             out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 2 + Math.random() * 2, "mafia"));
