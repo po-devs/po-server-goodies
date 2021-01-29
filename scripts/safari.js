@@ -30005,7 +30005,7 @@ function Safari() {
             
             switch (kind) {
                 case "start":
-                    value = poke(answer[ind])[0];
+                    value = poke(parseInt(answer[ind], 10))[0];
                     if (value == "X") {
                         return false;
                     }
@@ -30018,7 +30018,7 @@ function Safari() {
                     outText = "{0}'s name starts with " + value + ".";
                     break;
                 case "contains":
-                    pk = poke(answer[ind]);
+                    pk = poke(parseInt(answer[ind], 10));
                     var sl = Math.floor(Math.random() * pk.length);
                     value = pk.slice(sl, sl + 1); //random letter from that pokemon's name
                     value = value.toUpperCase();
@@ -30034,7 +30034,7 @@ function Safari() {
                     outText = "{0} has " + value + " in its name.";
                     break;
                 case "evolves":
-                    if (answer[ind] in evolutions) {
+                    if ((answer[ind] + "") in evolutions) {
                         value = true;
                         outText = "{0} can evolve.";
                     } else {
@@ -30049,7 +30049,7 @@ function Safari() {
                     strength = 3;
                     break;
                 case "evolved":
-                    if (answer[ind] in devolutions) {
+                    if ((answer[ind] + "") in devolutions) {
                         value = true;
                         outText = "{0} is evolved.";
                     } else {
@@ -30064,7 +30064,7 @@ function Safari() {
                     strength = 3;
                     break;
                 case "canMega":
-                    if (answer[ind] in megaEvolutions) {
+                    if ((answer[ind] + "") in megaEvolutions) {
                         value = true;
                     } else {
                         return false; //do not supply "cannot mega" clue
@@ -30083,7 +30083,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    var st = getStats(answer[ind]);
+                    var st = getStats(parseInt(answer[ind], 10));
                     var maxstat = 0;
                     for (var j = 0; j < st.length; j++) {
                         maxstat = Math.max(maxstat, st[j]);
@@ -30168,8 +30168,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = poke(answer[ind]);
-                    var pk2 = poke(answer[otherind]);
+                    var pk1 = poke(parseInt(answer[ind], 10));
+                    var pk2 = poke(parseInt(answer[otherind], 10));
                     
                     for (var i = 0; i < pk1.length; i++) {
                         if (pk2.indexOf(pk1[i]) > -1) {
@@ -30251,7 +30251,7 @@ function Safari() {
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, maxstrength, unlock);
                 i++;
-                var maxloop = 50000;
+                var maxloop = 200000;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
                     break;
