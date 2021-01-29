@@ -29990,7 +29990,6 @@ function Safari() {
 				}
 			}
     		kind = kind == "interact" ? randomSample(kindsinteract) : (kind || randomSample(kinds));
-    		
     		unlock = unlock || "free"; //what is required to access this clue
     		var outText = ""; //what the text of this clue is
     		
