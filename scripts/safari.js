@@ -29984,7 +29984,7 @@ function Safari() {
                 "noletters": 22,
                 "sameregion": 56,
                 "samecolor": 50,
-                "bsthigher": 16
+                "bsthigher": 6
             };
             var otherind = 0;
             if (kind == "interact") {
@@ -30145,6 +30145,9 @@ function Safari() {
                         }
                     }
                     var amt = safari.checkEffective(type1(answer[ind]), type2(answer[ind]), type1(answer[otherind]), type2(answer[otherind]));
+                    if (amt == 1) {
+                    	return false;
+                    }
                     if (amt > 1) {
                         value = "has a type advantage";
                         strength = 16;
@@ -30248,7 +30251,8 @@ function Safari() {
             while (!(out)) {
                 out = createClue(answer, clues, ind, kind, maxstrength, unlock);
                 i++;
-                if (i > 15000) {
+                var maxloop = 50000;
+                if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
                     break;
                 }
@@ -30285,7 +30289,7 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, false, "interact", 5 + Math.random() * 5, "battlearena"));
             out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "pokefandaycare"));
             out.clues.push(getClue(out.answer, out.clues, false, "interact", 1 + Math.random() * 3, "explorerfinder"));
-            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + Math.random() * 4, "mafia"));
+            out.clues.push(getClue(out.answer, out.clues, 0, "interact", 2 + Math.random() * 2, "mafia"));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
@@ -30295,9 +30299,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
-            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 2 * Math.random(), "pyramid2"));
+            out.clues.push(getClue(out.answer, out.clues, 1, "interact", 2 + 2 * Math.random(), "pyramid2"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
-            out.clues.push(getClue(out.answer, out.clues, false, "interact", 2 + 3 * Math.random(), "pyramid4"));
+            out.clues.push(getClue(out.answer, out.clues, 2, "interact", 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
             return out;
