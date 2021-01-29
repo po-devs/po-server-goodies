@@ -29988,7 +29988,7 @@ function Safari() {
                 "evolves": 6,
                 "canMega": 5,
                 "stat": 9,
-                "moves": 0
+                "moves": 50
             };
             var kindsinteract = {
                 "effective": 20,
@@ -30124,17 +30124,47 @@ function Safari() {
                     var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
                     var m = mvs[0];
                     var m2 = mvs.length > 1 ? mvs[1] : 0;
-                    var l3 = [];
-                    for (var e = 1; e < highestDexNum - 1; e++) {
-                        l3.push(e);
+                    function lookupMoveLearners(h) {
+                    	var outList = [];
+						if (safari.moveLearners.hasOwnProperty(h+"")) {
+							outList = safari.moveLearners[h+""];
+						} else {
+							for (var e = 1; e < highestDexNum - 1; e++) {
+								outList.push(e);
+							}
+							outList = outList.filter(function(x){
+								return (canLearnMove(x, h));
+							});
+							safari.moveLearners[h+""] = outList;
+						}
+						return outList;
                     }
-                    l3 = l3.filter(function(x){
-                        return (canLearnMove(x, m) && (canLearnMove(x, m2)));
-                    });
-                    if (l3.length > 100 || l3.length < 7) {
+                    function removeNonDuplicates(arr) {
+                    	//move this up to useful function later
+                    	var hit = [];
+                    	for (var j = arr.length; j--;) {
+                    		if (hit.contains(arr[j])) {
+                    			continue;
+                    		}
+                    		hit.push(arr.splice(j, 1)[0]);
+                    	}
+                    	return arr;
+                    }
+                    var l = lookupMoveLearners(m), l2 = lookupMoveLearners(m2);
+                    if (l.length > 220 || l.length < 15) {
                         return false;
                     }
-                    strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
+                    if (l2.length > 220 || l2.length < 15) {
+                        return false;
+                    }
+                    var l3 = removeNonDuplicates(l.concat(l2));
+                    if (l3.length > 120 || l3.length < 8) {
+                        return false;
+                    }
+                    if (l3.length > l.length - 7 || l3.length > l2.length - 7) { //make sure neither move is very insignificant
+                        return false;
+					}
+                    strength = l3.length > 100 ? 2 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
                     //strength = 16;
                     value = [m, m2];
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
@@ -48730,6 +48760,7 @@ function Safari() {
         permObj.add("globalWildItems", JSON.stringify(globalWildItems));
         permObj.add("skillData", JSON.stringify(skillData));
         permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
+        permObj.add("moveLearners", JSON.stringify(safari.moveLearners));
         safari.saveDaycare();
         for (var i = 0; i < POglobal.plugins.length; ++i) {
             if ("safari.js" == POglobal.plugins[i].source) {
@@ -54328,6 +54359,7 @@ function Safari() {
         globalWildItems = parseFromPerm("globalWildItems", {});
         skillData = parseFromPerm("skillData", {});
         safari.detectiveData = parseFromPerm("detectiveData", {});
+        safari.moveLearners = parseFromPerm("moveLearners", {});
         
         // Not using parseFromPerm here because those are not stored as a JSON string
         if (permObj.hash.hasOwnProperty("ccatch")) {
