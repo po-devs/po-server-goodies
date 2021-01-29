@@ -30480,7 +30480,7 @@ function Safari() {
                 }
                 var passed = true;
                 for (var j = 0; j < guesses.length; j++) {
-                    if (guesses[j] !== safari.detectiveData[uid+""].answer[j]) {
+                    if (guesses[j] != safari.detectiveData[uid+""].answer[j]) {
                         passed = false;
                         break;
                     }
