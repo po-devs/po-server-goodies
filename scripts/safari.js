@@ -30362,10 +30362,10 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
             
             var specClueOrder = ["dualtypes", "interact", "interact", "interact", "interact"].shuffle();
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 3 + Math.random() * 1, "journal"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 5 + Math.random() * 1, "battlearena"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 4 + Math.random() * 6, "journal"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 8 + Math.random() * 15, "battlearena"));
             out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 1 + Math.random() * 3, "pokefandaycare"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 1 + Math.random() * 3, "explorerfinder"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 5 + Math.random() * 3, "explorerfinder"));
             out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 2 + Math.random() * 2, "mafia"));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
@@ -30375,9 +30375,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             
-            out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 12 + 5 * Math.random(), "pyramid1"));
             out.clues.push(getClue(out.answer, out.clues, 0, false, 2 + 2 * Math.random(), "pyramid2"));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 6 + 7 * Math.random(), "pyramid3"));
             out.clues.push(getClue(out.answer, out.clues, 3, false, 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
