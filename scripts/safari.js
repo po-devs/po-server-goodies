@@ -30131,7 +30131,7 @@ function Safari() {
                     l3 = l3.filter(function(x){
                         return (canLearnMove(x, m) && (canLearnMove(x, m2)));
                     });
-                    if (l3.length > 100 || l2.length < 7) {
+                    if (l3.length > 100 || l3.length < 7) {
                         return false;
                     }
                     strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
