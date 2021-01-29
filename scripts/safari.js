@@ -30325,7 +30325,7 @@ function Safari() {
         if (safari.deteciveData.hasOwnProprty(uid+"")) {
         	if (today !== safari.deteciveData[uid+""].date) {
         		if (!(safari.detectiveData[uid+""].solved)) {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.deteciveData[uid+""].answer.map(x => poke(x)) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
+					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.deteciveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
 					return;
         		}
         		safari.deteciveData[uid+""] = null;
@@ -30387,7 +30387,7 @@ function Safari() {
 				safaribot.sendHtmlMessage(src, "<b>You have the following clues:</b>\n\n" + out.join("\n") + (out2.length > 0 ? "\n\n<b>You found the following new clues:</b>\n\n" + toColor(out2.join("\n"), colorTranslations["orangered"]) : "") + (out3.length > 0 ? "\n\n<b>You can unlock new clues with the following requirements:</b>\n\n" + out3.join("\n") : "") + "", safchan);
 				
 				if (safari.deteciveData[uid+""].solved) {
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.deteciveData[uid+""].answer.map(x => poke(x)) + "!", safchan);
+					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + safari.deteciveData[uid+""].answer.map(function(x) {return poke(x)}) + "!", safchan);
 				} else {
 					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
 				}
@@ -30424,7 +30424,7 @@ function Safari() {
 				if (passed) {
 					safari.deteciveData[uid+""].solved = true;
 					give(player, "@prize"); //fix this later
-					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(x => poke(x)) + "! Here is your prize!", safchan);
+					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
 					saveGame(player);
 				} else {
 					safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
