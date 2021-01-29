@@ -10063,6 +10063,7 @@ function Safari() {
             var getItem = player.helds[player.party.length - 1]; // entire second half of the party shifts forward, so take the item back from the last slot if there is one
             if (getItem > -1) {
                 safari.takeItem(src, player.party.length);
+                player.helds = player.helds.slice(0, player.party.length - 2);
             }
             
             player.party.splice(player.party.indexOf(id), 1);
