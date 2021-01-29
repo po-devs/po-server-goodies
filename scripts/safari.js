@@ -29969,7 +29969,9 @@ function Safari() {
             var strength = 0;
             var value;
             var pk;
-            ind = ind || Math.floor(Math.random() * 4);
+            if (ind == false) {
+            	ind = Math.floor(Math.random() * 4);
+            }
             var kinds = {
                 "start": 20,
                 "contains": 20,
@@ -30123,7 +30125,7 @@ function Safari() {
                     }
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l.push(e);
-                    }
+                    }/*
                     var l3 = [];
                     for (var e = 1; e < highestDexNum - 1; e++) {
                         l3.push(e);
@@ -30133,8 +30135,9 @@ function Safari() {
                     });
                     if (l3.length > 100 || l3.length < 7) {
                         return false;
-                    }
-                    strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
+                    }*/
+                    //strength = l3.length > 100 ? 3 : (l3.length > 70 ? 5 : (l3.length > 50 ? 7 : (l3.length > 30 ? 10 : l3.length > 20 ? 15 : 25)));
+                    strength = 16;
                     value = [m, m2];
                     outText = "{0} can learn " + moveOff(m) + " and " + moveOff(m2) + ".";
                     break;
@@ -30214,7 +30217,7 @@ function Safari() {
                     break;
                 case "bsthigher":
                     for (var i = 0; i < clues.length; i++) {
-                        if (clues[i].kind == "bsthigher" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                        if (clues[i].kind == "bsthigher" && ((ind == clues[i].ind || otherind == clues[i].otherind) || (otherind == clues[i].ind || ind == clues[i].otherind))) {
                             return false;
                         }
                     }
@@ -30299,9 +30302,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 2 + 2 * Math.random(), "pyramid1"));
-            out.clues.push(getClue(out.answer, out.clues, 1, "interact", 2 + 2 * Math.random(), "pyramid2"));
+            out.clues.push(getClue(out.answer, out.clues, 0, false, 2 + 2 * Math.random(), "pyramid2"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[2], false, 2 + 2 * Math.random(), "pyramid3"));
-            out.clues.push(getClue(out.answer, out.clues, 2, "interact", 2 + 3 * Math.random(), "pyramid4"));
+            out.clues.push(getClue(out.answer, out.clues, 3, false, 2 + 3 * Math.random(), "pyramid4"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[1], false, 2 + 12 * Math.random(), "pyramid5"));
             
             return out;
