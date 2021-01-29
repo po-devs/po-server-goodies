@@ -30278,6 +30278,7 @@ function Safari() {
             var out = false;
             var i = 0;
             
+            var before = new Date().getTime();
             var maxloop = 50000;
             while (!(out)) {
                 out = createClue(answer, clues, ind, i < 1000 ? kind : false, i < 10000 ? maxstrength : 0, unlock);
@@ -30287,7 +30288,8 @@ function Safari() {
                     break;
                 }
             }
-            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): " + i, staffchannel);
+            var after = new Date().getTime();
+            sys.sendMessage(sys.id("Ripper Roo"), "Loops taken on getClue(): {0}, created the clue '{1}' with time delta of {2} and intended strength of {3}".format(i, out.str, before - after, maxstrength), staffchannel);
             return out;
         };
         function assignClues() {
