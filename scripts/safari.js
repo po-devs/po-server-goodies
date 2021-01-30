@@ -30377,9 +30377,9 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
             
             var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 175, 656, 722, 742, 163, 37];
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
-            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(clueMons.length * Math.random())));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 0 + 5 * Math.random(), "pyramid1"));
             out.clues.push(getClue(out.answer, out.clues, 0, false, 0 + 2 * Math.random(), "pyramid2"));
