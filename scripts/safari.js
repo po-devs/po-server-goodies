@@ -9876,8 +9876,9 @@ function Safari() {
             return false;
         }
         if (!slot || isNaN(slot)) {
-            safaribot.sendMessage(src, "Please enter a valid party slot number (1 to 6)!", safchan);
-            return;
+            //safaribot.sendMessage(src, "Please enter a valid party slot number (1 to 6)!", safchan);
+            //return;
+            slot = 0;
         }
         else
             slot = parseInt(slot) - 1; // assumption that most players will logically input 1~6 instead of proper array index of 0~5
