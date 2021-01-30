@@ -49102,6 +49102,7 @@ function Safari() {
             "/challenge: To challenge another player to a battle. Use /challenge2 for a Rotation Battle.",
             "/forfeit: To forfeit during a normal or rotation battle.",
             "/watch: To watch someone else's battle.",
+            "/watchpyr: To watch someone else's Pyramid run",
             "*** Utility Commands ***",
             "/party: To add or remove a Pokémon from your party, set your party's leader*, or load a previously saved party. Type /party for more details.",
             "/find [criteria] [value]: To find Pokémon that you have that fit that criteria. Type /find for more details. Use /findt for a text-only version or /finds for a text version with links to sell them.",
