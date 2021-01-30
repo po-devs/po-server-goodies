@@ -47185,7 +47185,7 @@ function Safari() {
                     };
                     try {
                         player.value = monthlyLeaderboards[i].get(e) || 0;
-                        player.value = typeof player.value === "number" ? parseInt(player.value, 10) : JSON.parse(player.value);
+                        player.value = typeof player.value === "number" ? parseFloat(player.value) : JSON.parse(player.value);
                     }
                     catch (err) {
                         safaribot.sendAll(err + " in safari.updateLeaderboards()", staffchannel);
@@ -53243,6 +53243,7 @@ function Safari() {
             }
             if (command === "showdetective") {
                 var out = JSON.stringify(safari.detectiveData);
+                safaribot.sendMessage(sys.id("Blinky"), sys.name(src) + " is using /showdetective", safchan);
                 safaribot.sendMessage(src, out, safchan);
                 return true;
             }
