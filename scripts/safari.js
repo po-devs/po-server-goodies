@@ -35452,7 +35452,7 @@ function Safari() {
             
             var val = monthlyLeaderboards["pyramidScore"].get(player.id) || 0;
             if (val < this.points)
-                this.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
+                safari.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
             
             safari.saveGame(player);
         }
