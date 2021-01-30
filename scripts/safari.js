@@ -29979,9 +29979,9 @@ function Safari() {
     };
     this.detectiveClue = function(uid, type, src) {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
-        	if (safari.detectiveData[uid+""].solved || safari.detectiveData[uid+""].date !== getDay(now())) {
-        		return;
-        	}
+            if (safari.detectiveData[uid+""].solved || safari.detectiveData[uid+""].date !== getDay(now())) {
+                return;
+            }
             for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
                 if (safari.detectiveData[uid+""].clues[i].unlock == type) {
                     safari.detectiveData[uid+""].clues[i].unlock = "free";
@@ -30561,20 +30561,20 @@ function Safari() {
                     }
                     var unlocked = 0;
                     for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
-                    	if (safari.detectiveData[uid+""].clues[i].unlock == "free") {
-                    		unlocked++;
-                    	}
+                        if (safari.detectiveData[uid+""].clues[i].unlock == "free") {
+                            unlocked++;
+                        }
                     }
-					sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues in " + timeString(timeTaken) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues in " + timeString(timeTaken) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
                 } else {
-                	safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
-                	if (safari.detectiveData[uid+""].wrongGuesses > 6) {
-						player.cooldowns.detective = n + ((30 + ((safari.detectiveData[uid+""].wrongGuesses - 6) * 5)) * 1000);
-                	} else {
-						player.cooldowns.detective = n + (30 * 1000);
-					}
-                	safari.detectiveData[uid+""].wrongGuesses++;
+                    safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
+                    if (safari.detectiveData[uid+""].wrongGuesses > 6) {
+                        player.cooldowns.detective = n + ((30 + ((safari.detectiveData[uid+""].wrongGuesses - 6) * 5)) * 1000);
+                    } else {
+                        player.cooldowns.detective = n + (30 * 1000);
+                    }
+                    safari.detectiveData[uid+""].wrongGuesses++;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                 }
             }
