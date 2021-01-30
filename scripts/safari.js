@@ -942,7 +942,7 @@ function Safari() {
             silver: {name: "silver", fullName: "Silver Coin", type: "items", icon: 273, price: 300, aliases: ["silver", "silver coin", "silvercoin"], tradable: false, cap: 9999},
             shady: {name: "shady", fullName: "Shady Coin", type: "items", icon: 300, price: 500, aliases: ["shady", "shady coin", "shadycoin"], tradable: false, cap: 9999},
 
-            entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false, cap: 1},
+            entry: {name: "entry", fullName: "Raffle Entry", type: "items", icon: 333, price: 300, aliases: ["entry", "raffle", "raffleentry", "raffle entry"], tradable: false, cap: 50},
             coupon: {name: "coupon", fullName: "Decor Coupon", type: "items", icon: 58, price: 15000, aliases: ["coupon", "decor coupon", "decorcoupon", "decoupon"], tradable: false},
             fossil: {name: "fossil", fullName: "Helix Fossil", type: "items", icon: 207, price: 5000, bonusRate: 0.1, aliases: ["fossil", "helixfossil", "helix fossil"], tradable: true},
             
@@ -9875,8 +9875,10 @@ function Safari() {
         if (cantBecause(src, "take an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
-        if (!slot || isNaN(slot))
-            slot = 0;
+        if (!slot || isNaN(slot)) {
+            safaribot.sendMessage(src, "Please enter a valid party slot number (1 to 6)!", safchan);
+            return;
+        }
         else
             slot = parseInt(slot) - 1; // assumption that most players will logically input 1~6 instead of proper array index of 0~5
         
