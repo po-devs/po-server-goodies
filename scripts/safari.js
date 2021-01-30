@@ -30407,10 +30407,10 @@ function Safari() {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
             if (today !== safari.detectiveData[uid+""].date) {
                 if (!(safari.detectiveData[uid+""].solved)) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
-                    return;
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x, 10))})) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
                 }
                 safari.detectiveData[uid+""] = null;
+                return;
             }
         }
         if (!(safari.detectiveData[uid+""])) {
@@ -30493,14 +30493,14 @@ function Safari() {
                 }
                 
                 if (safari.detectiveData[uid+""].solved) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "! Come back tomorrow to see if I have another case for you.", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Thank you for solving this mystery! The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x, 10))})) + "! Come back tomorrow to see if I have another case for you.", safchan);
                 } else {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: When you think you know which four Pokémon are, you can guess the combination with " + link("/quest detective:pokemon1,pokemon2,pokemon3,pokemon4", false, true) + ".", safchan);
                 }
             } else {
                 //if they supply a guess, make sure it's 4 valid guesses and then see if it's correct
                 if (safari.detectiveData[uid+""].solved) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again?  Come back tomorrow to see if I have another case for you.", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You already solved this mystery! Are you trying to solve it again? Come back tomorrow to see if I have another case for you.", safchan);
                     return;
                 }
                 var arr = d1.split(",").map(function(e) { return e.trim() });
