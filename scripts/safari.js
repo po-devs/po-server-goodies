@@ -11472,7 +11472,7 @@ function Safari() {
         else if (commandData === "2") {
             sys.sendMessage(src, "*** Player Records | Page 2***", safchan);
             
-            var captures = "Caught {0} Pokémon in {1}, {2} in {3}, {3} in {4}, {4} in {5}, {5} in {6}, {6} in {7}, {8} in {9}, {10} in {11}, {12} in {13}, {14}, in {15}, {16} in {17}, {18} in {19}, {20} in {21}, {22} in {23}, {24} in {25}, {26} in {27}, and {28} in {29}. Took {30} photos.".format(
+            var captures = "Caught {0} Pokémon in {1}, {2} in {3}, {4} in {5}, {6} in {7}, {8} in {9}, {10} in {11}, {12} in {13}, {14} in {15}, {16} in {17}, {18} in {19}, {20} in {21}, {22} in {23}, {24} in {25}, {26} in {27}, and {28} in {29}. Took {30} photos.".format(
                 addComma(rec.catchQuick),
                 es(finishName("quick")),
                 addComma(rec.catchClone),
