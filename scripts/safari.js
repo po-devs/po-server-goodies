@@ -9876,11 +9876,12 @@ function Safari() {
             safaribot.sendMessage(src, "Please enter a valid party position (1 to 6)!", safchan);
             return;
         }
-        
+
         if (slot >= player.party.length) {
             safaribot.sendMessage(src, "You don't have a " + getOrdinal(slot+1) + " Pokémon in your party!", safchan);
             return;
         }
+        
         if (player.helds[slot] == -1) {
             safaribot.sendMessage(src, "Your " + poke(player.party[slot]) + " at position " + (slot+1) + " is not holding an item!", safchan);
             return;
@@ -10218,6 +10219,7 @@ function Safari() {
                         safari.takeItem(src, i, true); // prevent item loss, make sure to put the excess items back into the bag
                 }
             }
+            player.helds = player.helds.slice(0, newSize);
             while (newSize > player.helds.length) { // if new party is larger than old party
                 player.helds.push(-1); // fill in the missing -1s to match new party size
             }
@@ -10286,10 +10288,12 @@ function Safari() {
         var newSize = toLoad.concat().length;
         if (player.helds.length > newSize) { // if old party is larger than new party
             for (var i = player.helds.length; i > newSize;  i--) {
-                if (player.helds[i-1] != -1)
+                if (player.helds[i-1] != -1) {
                     safari.takeItem(src, i, true); // prevent item loss, make sure to put the excess items back into the bag
+                }
             }
         }
+        player.helds = player.helds.slice(0, newSize);
         while (newSize > player.helds.length) { // if new party is larger than old party
             player.helds.push(-1); // fill in the missing -1s to match new party size
         }
@@ -30548,7 +30552,7 @@ function Safari() {
                     }
                     safari.saveGame(player);
                 } else {
-                	player.cooldowns.detective = n + (30 * 1000);
+                    player.cooldowns.detective = n + (30 * 1000);
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                 }
             }
@@ -48466,6 +48470,9 @@ function Safari() {
             }
             if (player.nameColor.length === 0) {
                 player.nameColor = script.getColor(sys.id(player.id));
+            }
+            if (player.helds.length > player.party.length) {
+                player.helds = player.helds.slice(0, player.party.length);
             }
 
             if (player.starter2 === null || !Array.isArray(player.starter2) || player.starter2.length === 0) {
