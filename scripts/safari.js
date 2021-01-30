@@ -30546,7 +30546,7 @@ function Safari() {
                     player.records.casesSolved += 1;
                     if (safari.detectiveData[uid+""].started) {
                         var timeTaken = now() - safari.detectiveData[uid+""].started;
-                        if (player.records.fastestCaseSolved > timeTaken) {
+                        if (player.records.fastestCaseSolved === 0 || player.records.fastestCaseSolved > timeTaken) {
                             player.records.fastestCaseSolved = timeTaken;
                         }
                     }
