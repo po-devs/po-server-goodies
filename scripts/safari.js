@@ -9872,7 +9872,7 @@ function Safari() {
     };
     this.takeItem = function(src, slot, removeSlot) {
         var player = getAvatar(src);
-        if (cantBecause(src, "give an item", ["tutorial", "contest", "auction", "pyramid", "battle", "baking"])) {
+        if (cantBecause(src, "take an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
         if (!slot || isNaN(slot))
