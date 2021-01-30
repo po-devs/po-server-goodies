@@ -12773,7 +12773,8 @@ function Safari() {
         var perkBonus = getPerkBonus(player, "honey");
         if (chance(itemData[item].successRate + perkBonus + this.getFortune(player, "honey", 0))) {
             if (!(deluxe)) {
-                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon!", safchan);
+                var showTheme = player.mushroomDeadline > now() ? " from the " + contestThemes[player.mushroomTheme].name + " theme" : "";
+                safaribot.sendAll((ballUsed == "spy" ? "Some stealthy person" : sys.name(src)) + " left some " + bName + " out. The " + bName + " attracted a wild Pokémon" + showTheme + "!", safchan);
             }
             if (golden) {
                 goldenBaitCooldown = itemData[item].successCD + sys.rand(0,9);
