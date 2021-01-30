@@ -55000,10 +55000,10 @@ function Safari() {
                             var c = currentTheme ? themeName(currentTheme) : "Default";
                             safari.missionProgress(player, "contest", "won", 1, { won: true, theme: c, lead: player.party[0] });
                             safari.costumeEXP(player, "wincontest");
-                            safari.detectiveClue(player.idnum, "contest", playerId);
                             safari.addToMonthlyLeaderboards(player.id, "contestsWon", 1);
                             safari.saveGame(player);
                             playerId = sys.id(winner);
+                            safari.detectiveClue(player.idnum, "contest", playerId);
                             if (playerId) {
                                 safaribot.sendMessage(playerId, "You received " + readable(rewardName, "and") + " for winning the contest!", safchan);
                             }
