@@ -35426,6 +35426,11 @@ function Safari() {
             }
             safari.missionProgress(player, "pyramid", this.level + "-" + this.room, 1, { points: this.points });
             player.records.pyramidTotalScore += this.points;
+            
+            var val = monthlyLeaderboards["pyramidScore"].get(player.id) || 0;
+            if (val < this.points)
+                this.addToMonthlyLeaderboards(player.id, "pyramidScore", this.points, true);
+            
             safari.saveGame(player);
         }
 
