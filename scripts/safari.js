@@ -30376,10 +30376,10 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
             
-            var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 175, 656, 722, 742, 163, 37];
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
-            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.splice(Math.floor(clueMons.length * Math.random()), 1)));
+            var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 175, 656, 722, 742, 163, 37].shuffle();
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 0 + 5 * Math.random(), "pyramid1"));
             out.clues.push(getClue(out.answer, out.clues, 0, false, 0 + 2 * Math.random(), "pyramid2"));
@@ -30534,8 +30534,11 @@ function Safari() {
                 }
                 if (passed) {
                     safari.detectiveData[uid+""].solved = true;
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + guesses.map(function(x) {return poke(x)}) + "! Here is your prize!", safchan);
-                    giveStuff(player, "@prize");
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Congratulations! The combination was " + readable(guesses.map(function(x) {return poke(parseInt(x, 10))})) + "! Here is your prize!", safchan);
+                    var today = getDay(now());
+                    var grandprize = today > 18657 ? "@entry,3@prize,50@hdew" : "@prize";
+                    var g = giveStuff(player, toStuffObj(grandprize));
+                    safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
                     if (safari.detectiveData[uid+""].started) {
                         var timeTaken = now() - safari.detectiveData[uid+""].started;
@@ -30545,7 +30548,7 @@ function Safari() {
                     }
                     safari.saveGame(player);
                 } else {
-                	player.cooldowns.detective = n + 4000;
+                	player.cooldowns.detective = n + (30 * 1000);
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                 }
             }
