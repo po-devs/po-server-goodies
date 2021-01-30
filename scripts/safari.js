@@ -11501,7 +11501,7 @@ function Safari() {
                 es(finishName("inver")),
                 addComma(rec.catchLevel),
                 es(finishName("level")),
-                addComma(ec.catchCherish),
+                addComma(rec.catchCherish),
                 es(finishName("cherish")),
                 addComma(rec.photosTaken)
                 
