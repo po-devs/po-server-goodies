@@ -2761,6 +2761,9 @@ function Safari() {
     function timeLeftString(time) {
         return utilities.getTimeString(timeLeft(time));
     }
+    function timeString(time) {
+        return utilities.getTimeString(time);
+    }
     function getDay(time) {
         return Math.floor(time / (1000 * 60 * 60 * 24));
     }
@@ -30544,12 +30547,20 @@ function Safari() {
                     var g = giveStuff(player, toStuffObj(grandprize));
                     safaribot.sendHtmlMessage(src, toColor("<b>You " + g + "!</b>", "orangered"), safchan);
                     player.records.casesSolved += 1;
+                    var timeTaken = 0;
                     if (safari.detectiveData[uid+""].started) {
                         var timeTaken = now() - safari.detectiveData[uid+""].started;
                         if (player.records.fastestCaseSolved === 0 || player.records.fastestCaseSolved > timeTaken) {
                             player.records.fastestCaseSolved = timeTaken;
                         }
                     }
+                    var unlocked = 0;
+                    for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
+                    	if (safari.detectiveData[uid+""].clues[i].unlock == "free") {
+                    		unlocked++;
+                    	}
+                    }
+					sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues in " + timeString(timeTaken) + "|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
                 } else {
                     player.cooldowns.detective = n + (30 * 1000);
