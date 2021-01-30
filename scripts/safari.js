@@ -30407,7 +30407,7 @@ function Safari() {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
             if (today !== safari.detectiveData[uid+""].date) {
                 if (!(safari.detectiveData[uid+""].solved)) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + safari.detectiveData[uid+""].answer.map(function(x) {return poke(x)}) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
                     return;
                 }
                 safari.detectiveData[uid+""] = null;
