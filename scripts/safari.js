@@ -30408,6 +30408,10 @@ function Safari() {
             if (today !== safari.detectiveData[uid+""].date) {
                 if (!(safari.detectiveData[uid+""].solved)) {
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
+<<<<<<< HEAD
+=======
+                    return;
+>>>>>>> 55f2129340199433c799e7ef2421d7c2e827d23d
                 }
                 safari.detectiveData[uid+""] = null;
                 return;
