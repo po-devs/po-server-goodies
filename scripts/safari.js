@@ -1186,7 +1186,7 @@ function Safari() {
             icon: 439, name: "flower", fullName: "Flower Girl", aliases: ["flower", "flowergirl", "flower girl"], acqReq: 25, record: "catchMono", acqReq2: 15, record2: "mushroomsEaten", rate: 20, rate2: 0.05,
             effect: "A master in simplicity. Understanding Pokémon is the key to making them stronger. Single-type Pokémon perform better for this trainer! Also reduces cooldown while using Mono Balls.",
             noAcq: "Catch {0} Pokémon with Mono Balls and consume {1} Mushrooms",
-            effect2: "Has higher cooldown using the itemfinder.",
+            effect2: "Has higher cooldown using the Itemfinder.",
             expTypes: ["daycareplay", "bait", "wincontest", "catch"],
             expItem: "eviolite",
             skills: {
@@ -1204,7 +1204,7 @@ function Safari() {
         fisherman: {
             icon: 359, name: "fisherman", fullName: "Fisherman", aliases: ["fisher", "fisherman", "fisher man"], acqReq: 80, record: "baitWater", rate: 0.2,
             effect: "A master in angling. Superb technique at handling fishing rods allow to pull back Poké Balls that failed to catch a Pokémon!",
-            effect2: "Has higher cooldown using the itemfinder.",
+            effect2: "Has higher cooldown using the Itemfinder.",
             noAcq: "Bait {0} more pure Water-type Pokémon",
             expTypes: ["bait", "catchwater", "wincontest", "catch"],
             expItem: "soothe",
@@ -13801,7 +13801,7 @@ function Safari() {
             }
             break;
             case "crystal": {
-                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their itemfinder!</b>", safchan);
+                safaribot.sendHtmlAll("<b>Beeeeeeep! Oh my, a Crystal! " + sys.name(src) + " has found " + an(finishName(reward)) + " with their Itemfinder!</b>", safchan);
                 this.costumeEXP(player, "findrare");
             }
             break;
@@ -13809,7 +13809,7 @@ function Safari() {
                 reward = "permfinder";
                 amount = 10 + this.getFortune(player, "findershock", 0);
                 showMsg = false;
-                safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
+                safaribot.sendHtmlMessage(src, "<b>Rai-ai-ai-... CHHUUUUUUUUU!</b> You were shocked by a wild Raichu while looking for items! You're too frazzled to use the Itemfinder for a while, but to put things into perspective, your Itemfinder recharged a bit recharged from the shock.", safchan);
                 safaribot.sendHtmlMessage(src, "Your Itemfinder gained " + plural(amount, "charge") + ". " + freemsg + " [Remaining charges: " + (totalCharges + amount) + " (Daily " + dailyCharges + " plus " + Math.min(permCharges + amount, getCap("permfinder")) + " bonus)].", safchan);
                 safari.missionProgress(player,"getShocked",0,1,{});
                 cd *= 10;
@@ -15401,7 +15401,7 @@ function Safari() {
         catchSplash: "Increased chance to catch Pokémon that can Splash",
         extraLoveBall: "Bonus from catching a Pokémon with a Love Ball with the same Egg Group as a Daycare Pokémon increased",
         betterPyrItems: "Better luck finding items in the Pyramid",
-        betterFinder: "Advanced techniques using the itemfinder to avoid misses",
+        betterFinder: "Advanced techniques using the Itemfinder to avoid misses",
         betterGacha: "Rigging the game allows for better gacha results",
         pyrStaminaBoost: "Preparation for the task ahead grants +10 stamina when starting Pyramid",
         kiai: "Fierce bonds with your Pokémon grant them an increased chance to survive KO moves in Rotation Battles against NPC",
