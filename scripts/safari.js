@@ -30222,7 +30222,7 @@ function Safari() {
                     break;
                 case "sameregion":
                     for (var i = 0; i < clues.length; i++) {
-                        if (clues[i].kind == "region" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                        if (clues[i].kind == "sameregion" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
                         }
                     }
@@ -30238,7 +30238,7 @@ function Safari() {
                     break;
                 case "samecolor":
                     for (var i = 0; i < clues.length; i++) {
-                        if (clues[i].kind == "color" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                        if (clues[i].kind == "samecolor" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
                         }
                     }
@@ -30254,7 +30254,7 @@ function Safari() {
                     break;
                 case "type":
                     for (var i = 0; i < clues.length; i++) {
-                        if (clues[i].kind == "type" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
+                        if (clues[i].kind == "sametype" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
                         }
                     }
