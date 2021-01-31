@@ -30616,13 +30616,15 @@ function Safari() {
                             player.records.fastestCaseSolved = timeTaken;
                         }
                     }
-                    var unlocked = 0;
+                    var unlocked = 0, strengthtotal = 0;
                     for (var i = 0; i < safari.detectiveData[uid+""].clues.length; i++) {
                         if (safari.detectiveData[uid+""].clues[i].unlock == "free") {
                             unlocked++;
+                            strengthtotal += safari.detectiveData[uid+""].clues[i].strength;
                         }
                     }
-                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    strengthtotal = Math.floor(strengthtotal);
+                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + "strength in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
                 } else {
                     safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
