@@ -47812,6 +47812,7 @@ function Safari() {
                         case 1: ic = 301; break; case 2: ic = 280; break; case 3: ic = 303; break; 
                     }
                 }
+                m.ic = ic;
                 this.awardMedal(player, m);
                 awarded.push("<b>" + outDesc + "</b>");
                 
