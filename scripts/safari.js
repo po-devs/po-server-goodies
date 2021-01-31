@@ -30211,14 +30211,14 @@ function Safari() {
                     outText = "{0} has " + value + " for its highest stat.";
                     break;
                 case "moves":
+                    var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
+                    var m = mvs[0];
+                    var m2 = mvs.length > 1 ? mvs[1] : 0;
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "moves" && (clues[i].value.contains(m) || clues[i].value.contains(m2))) {
                             return false;
                         }
                     }
-                    var mvs = fetchMoves(parseInt(answer[ind], 10)).shuffle();
-                    var m = mvs[0];
-                    var m2 = mvs.length > 1 ? mvs[1] : 0;
                     function lookupMoveLearners(h) {
                         var outList = [];
                         if (safari.moveLearners.hasOwnProperty(h+"")) {
