@@ -47624,10 +47624,13 @@ function Safari() {
         }
         permObj.add("pyrBonusMons", JSON.stringify(pyrBonusMons));
     };
-    this.checkNewWeek = function() {
+    this.checkNewWeek = function(forced) {
         var currentTime = now();
         var today = getDay(currentTime) - 3;
         var week = Math.floor(today/7);
+        if (forced) {
+        	week = permObj.get("currentWeek") - 1;
+        }
         currentDay = ((today - 1) % 7) + 1;
         if (week != permObj.get("currentWeek")) {
             this.renewLeague();
@@ -52951,6 +52954,11 @@ function Safari() {
                 safaribot.sendMessage(src, "Checking if current month changed!", safchan);
                 safari.checkNewWeek();
                 safari.checkNewMonth();
+                return true;
+            }
+            if (command === "forcenewweek") {
+                safaribot.sendMessage(src, "Checking if current month changed!", safchan);
+                safari.checkNewWeek(true);
                 return true;
             }
             if (command === "addraffle") {
