@@ -11532,7 +11532,7 @@ function Safari() {
             var given = rec.collectorGiven + rec.scientistGiven;
             sys.sendMessage(src, "±Quests: Turned in {0} Pokémon (Collector: {1}, Scientist: {2}).".format(addComma(given), addComma(rec.collectorGiven), addComma(rec.scientistGiven)), safchan);
             sys.sendMessage(src, "±Quests: Arena Record: {0}-{1} ({2}, {3}). Performed {4}, {5} and {6}.".format(addComma(rec.arenaWon), addComma(rec.arenaLost), percentage(rec.arenaWon, rec.arenaWon + rec.arenaLost), plural(rec.arenaPoints, "point"), plural(rec.wonderTrades, "Wonder Trade"), plural(rec.transmutations + rec.transmutationsMade, "Transmutation"), plural(rec.philosopherTransmutations, "Philosopher Transmutations")), safchan);
-            sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(rec.pyramidLeaderScore, rec.pyramidHelperScore, plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
+            sys.sendMessage(src, "±Quests: Lead a {0} point Pyramid Run. Participated in a {1} point Pyramid Run. Cleared the Pyramid {2} as Leader and {3} as Helper. Reached the {4} Floor of Battle Tower.".format(addComma(rec.pyramidLeaderScore), addComma(rec.pyramidHelperScore), plural(rec.pyramidLeaderClears, "time"), plural(rec.pyramidHelperClears, "time"), getOrdinal(rec.towerHighest)), safchan);
             sys.sendMessage(src, "±Quests: Turned in {0} to Journal for a total of {1}. ".format(plural(rec.journalSubmitted, "phоto"), plural(rec.journalPoints, "Photo Point")), safchan);
             sys.sendMessage(src, "±Quests: Cleared {0} and lost {1}. Cleared all of the Gyms {2}, all of the Elite Four {3}, and lost to the Elite Four {4}.".format(plural(rec.gymsCleared, "Gym Battle"), plural(rec.gymsLost, "Gym Battle"), plural(rec.allGymsCleared, "time"), plural(rec.eliteCleared, "time"), plural(rec.eliteLost, "time")), safchan);
             sys.sendMessage(src, "±Quests: Obtained a Celebrity score of {0} on Easy, {1} on Normal, {2} on Hard, {3} on Expert, {4} on Super Expert, and {5} on Abyssal.".format(rec.celebrityScoreEasy, rec.celebrityScore, rec.celebrityScoreHard, rec.celebrityScoreExpert, rec.celebrityScoreSuperExpert, rec.celebrityScoreAbyssal), safchan);
@@ -11855,7 +11855,7 @@ function Safari() {
         }
         player.inbox.push(msg + " --- [" + d + "]");
         player.unreadInbox.push(asRead ? false : true);
-        while (player.inbox.length > 20) {
+        while (player.inbox.length > 30) {
             player.inbox.shift();
             player.unreadInbox.shift();
         }
@@ -47820,7 +47820,7 @@ function Safari() {
                                 icon: 17
                             }
                             this.awardMedal(player, n);
-                            awarded.push("<b>" + outDesc + "</b>");
+                            awarded.push(outDesc);
                         }
                         if (p.pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
                             outDesc = "Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
@@ -47829,7 +47829,7 @@ function Safari() {
                                 icon: 37
                             }
                             this.awardMedal(player, n);
-                            awarded.push("<b>" + outDesc + "</b>");
+                            awarded.push(outDesc);
                         }
                     }
                 }
@@ -47847,12 +47847,20 @@ function Safari() {
                         case 1: ic = 301; break; case 2: ic = 280; break; case 3: ic = 303; break; 
                     }
                 }
+                
                 m.icon = ic;
                 this.awardMedal(player, m);
-                awarded.push("<b>" + outDesc + "</b>");
+                awarded.push(outDesc);
                 
-                safaribot.sendHtmlAll("<b>{0}</b> was awarded the following medals: {1}! Congratulations!".format(p.name.toCorrectCase(), readable(awarded.reverse())), safchan);
+                safaribot.sendHtmlAll("<b>{0}</b> was awarded the following medals: {1}! Congratulations!".format(p.name.toCorrectCase(), readable(awarded.reverse().map(function(m) { return "<b>" + m + "</b>" }))), safchan);
                 sys.appendToFile(crossLog, now() + "|||" + w + " Weekly Leaderboard Category|||" + p.name.toCorrectCase() + "|||" + readable(awarded) + "\n");
+                
+                if (isPlaying(p.name)) {
+                    safaribot.sendMessage(sys.id(p.name), "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", safchan);
+                }
+                else {
+                    safari.inboxMessage(player, "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", isPlaying(p.name));
+                }
             }
         }
         for (var e in rawPlayers.hash) {
@@ -47881,7 +47889,7 @@ function Safari() {
         if (!player.medals) {
             player.medals = [];
         }
-        if (player.medals.length >= 25) {
+        if (player.medals.length >= 40) {
             player.medals = player.medals.slice(0, 25);
         }
         player.medals.push(medal);
