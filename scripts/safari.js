@@ -47714,15 +47714,29 @@ function Safari() {
 
         for (var i in data) {
             lb = data[i];
-            if (i == "pokesCaughtWeekly" || (retroactive && i == "pokesCaughtLast")) {
-                w = "Best Catcher";
-            } else if (i == "contestsWonWeekly" || (retroactive && i == "contestsWonLast")) {
-                w = "Contest Champion";
-            } else if (i == "journalPointsWeekly" || (retroactive && i == "journalPointsLast")) {
-                w = "Photographer";
-            } else {
-                continue;
+            if (retroactive) {
+                if (i == "pokesCaughtLast") {
+                    w = "Best Catcher";
+                } else if (i == "contestsWonLast") {
+                    w = "Contest Champion";
+                } else if (i == "journalPointsLast") {
+                    w = "Photographer";
+                } else {
+                    continue;
+                }
             }
+            else {
+               if (i == "pokesCaughtWeekly") {
+                    w = "Best Catcher";
+                } else if (i == "contestsWonWeekly") {
+                    w = "Contest Champion";
+                } else if (i == "journalPointsWeekly") {
+                    w = "Photographer";
+                } else {
+                    continue;
+                } 
+            }
+            
             for (e = 0; e < lb.length; e++) {
                 p = lb[e];
                 m = {
@@ -47812,7 +47826,7 @@ function Safari() {
                         case 1: ic = 301; break; case 2: ic = 280; break; case 3: ic = 303; break; 
                     }
                 }
-                m.ic = ic;
+                m.icon = ic;
                 this.awardMedal(player, m);
                 awarded.push("<b>" + outDesc + "</b>");
                 
