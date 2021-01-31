@@ -30624,7 +30624,7 @@ function Safari() {
                         }
                     }
                     strengthtotal = Math.floor(strengthtotal);
-                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + "strength in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
+                    sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
                 } else {
                     safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
