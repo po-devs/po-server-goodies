@@ -49257,6 +49257,7 @@ function Safari() {
             "/cancelraffle: Clears the current raffle prize. To completely cancel a raffle use /cancelraffle clearfile:[amount], where an optional refund amount can be specified to credit back raffle ticket holders.",
             "/checkraffle: To see the Raffle Tickets sold so far.",
             "/drawraffle confirm: Draws the current raffle.",
+            "/setraffledate [string]: Set the estimated raffle draw date.",
             "/dqraffle [player]։[refund]: Disqualifies a person from the current raffle by removing their name from the raffle players hash and by removing all their current entries. Refund is optional and will refund at the specified rate (Defaults to 0, or no refund).",
             "/disablequest [quest/all/long]: Disables specified quest, or all of them, or just long ones (Pyramid/Tower). Use /enablequest to re-enable. Updating the script will re-enable all quests.",
             "/updateafter [abort/cancel/stop]: Updates Safari at next available opportunity. Use any of the command data listed to cancel the pending update.",
@@ -49269,7 +49270,9 @@ function Safari() {
             "/trialspoints [player]:[number]: Set their points.",
             "/trialsbonus [player]: Gives the target player a bonus 10 points (can only be used once per session.",
             "/finishtrials: Ends trials and immediately gives out prizes. Don't forget to /disabletrials afterwards.",
-            "/excludeeconomy [player]: Excludes/includes a player from/in economy statistics. Toggles against their current status."
+            "/excludeeconomy [player]: Excludes/includes a player from/in economy statistics. Toggles against their current status.",
+            "/showdetective: Prints the current safari.detectiveData object.",
+            "/resetdetective [player's idnum]: Resets the detective data of the user with the provided idnum."
             //"/tourgift [1st], [2nd], [3rd]: Distributes current prize grid for Tournaments promotion to event winners. Please check save files and spelling before distributing prizes as undoing this takes a bit of effort!",
             //"/preptour [number, optional]: Checks the saves of the past number of event tours and provides an easy gifting link. If a name is not a valid save, it will be bolded and \"/tourgift\" will print to make substituting easy!"
         ];
@@ -53041,6 +53044,16 @@ function Safari() {
                 }
                 rafflePrizeObj = null;
                 permObj.add("rafflePrize", JSON.stringify(rafflePrizeObj));
+                return true;
+            }
+            if (command === "setraffledate") {
+                if (!rafflePrizeObj) {
+                    safaribot.sendMessage(src, "There is no ongoing raffle!", safchan);
+                    return true;
+                }
+                rafflePrizeObj.drawDate = commandData;
+                permObj.add("rafflePrize", JSON.stringify(rafflePrizeObj));
+                safaribot.sendMessage(src, "Set the estimated raffle draw date to " + commandData, safchan);
                 return true;
             }
             if (command === "checkraffle") {
