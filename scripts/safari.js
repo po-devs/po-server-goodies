@@ -47787,7 +47787,7 @@ function Safari() {
                             this.awardMedal(player, n);
                             awarded.push("<b>" + outDesc + "</b>");
                         }
-                        if (p,pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                        if (p.pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
                             outDesc = "Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
                             n = {
                                 "desc": (outDesc + " " + date),
