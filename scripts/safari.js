@@ -30090,6 +30090,7 @@ function Safari() {
                 "noletters": 22,
                 "sameregion": 56,
                 "samecolor": 50,
+                "sametype": 18,
                 "bsthigher": 6
             };
             var otherind = 0;
@@ -30133,7 +30134,7 @@ function Safari() {
                             return false;
                         }
                     }
-                    if ([" ", ".", "-", ":"].contains(value)) {
+                    if ([" ", ".", "-", ":", "'"].contains(value)) {
                         return false;
                     }
                     strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 7 : (["K", "B", "W"].contains(value) ? 10 : 15));
@@ -30338,7 +30339,7 @@ function Safari() {
                     strength = 16;
                     outText = "{0} is the same color as {1}.";
                     break;
-                case "type":
+                case "sametype":
                     for (var i = 0; i < clues.length; i++) {
                         if (clues[i].kind == "sametype" && ((ind == clues[i].ind  && otherind == clues[i].otherind) || (otherind == clues[i].ind  && ind == clues[i].otherind))) {
                             return false;
@@ -30346,17 +30347,14 @@ function Safari() {
                     }
                     var pk11 = type1(parseInt(answer[ind], 10));
                     var pk12 = type2(parseInt(answer[ind], 10));
-                    var pk11 = type1(parseInt(answer[otherind], 10));
+                    var pk21 = type1(parseInt(answer[otherind], 10));
                     var pk22 = type2(parseInt(answer[otherind], 10));
                     
-                    if (!(pk11 == pk21 || pk12 == pk21 || pk11 == pk22 || pk12 == pk22)) {
-                        return false;
-                    }
-                    if (pk22 == pk12 && pk12 == "???") {
+                    if (!(pk11 == pk21 || pk12 == pk21 || pk11 == pk22 || (pk12 == pk22 && (pk12 !== "???")))) {
                         return false;
                     }
                     value = "type";
-                    strength = 40;
+                    strength = 30;
                     outText = "{0} has a type in common with {1}.";
                     break;
                 case "bsthigher":
