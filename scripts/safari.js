@@ -47714,11 +47714,11 @@ function Safari() {
 
         for (var i in data) {
             lb = data[i];
-            if (i == "pokesCaught" || (retroactive && i == "pokesCaughtLast")) {
+            if (i == "pokesCaughtWeekly" || (retroactive && i == "pokesCaughtLast")) {
                 w = "Best Catcher";
-            } else if (i == "contestsWon" || (retroactive && i == "contestsWonLast")) {
+            } else if (i == "contestsWonWeekly" || (retroactive && i == "contestsWonLast")) {
                 w = "Contest Champion";
-            } else if (i == "journalPoints" || (retroactive && i == "journalPointsLast")) {
+            } else if (i == "journalPointsWeekly" || (retroactive && i == "journalPointsLast")) {
                 w = "Photographer";
             } else {
                 continue;
