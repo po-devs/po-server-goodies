@@ -47704,7 +47704,7 @@ function Safari() {
             }
         }
     };
-    this.awardMonthlyMedals = function(data) { // actually weekly, despite the name
+    this.awardMonthlyMedals = function(data, retroactive) { // actually weekly, despite the name
         var p, lb, e, player, m, n, w = "", r = "", ic = -1;
         var d = new Date();
         var dateWeek = Math.ceil(d.getDate() / 7);
@@ -47714,11 +47714,11 @@ function Safari() {
 
         for (var i in data) {
             lb = data[i];
-            if (i == "pokesCaught") {
+            if (i == "pokesCaught" || (retroactive && i == "pokesCaughtLast")) {
                 w = "Best Catcher";
-            } else if (i == "contestsWon") {
+            } else if (i == "contestsWon" || (retroactive && i == "contestsWonLast")) {
                 w = "Contest Champion";
-            } else if (i == "journalPoints") {
+            } else if (i == "journalPoints" || (retroactive && i == "journalPointsLast")) {
                 w = "Photographer";
             } else {
                 continue;
