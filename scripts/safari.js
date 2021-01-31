@@ -10329,7 +10329,21 @@ function Safari() {
             costumed = (player.costume !== "none");
         
         if (textOnly) {
-            return "<br /><b>" + sys.name(id) + "'s Party: </b>" + player.party.map(function(x) { return "#"+ pokeInfo.readableNum(x) + " " + pokePlain(x) + (typeof x === "string" ? "*" : ""); } ).join(", ") + "<br />" + (costumed ? "<b>Costume: </b>" + costumeAlias(player.costume, false, true) + "<br />" : "" );
+            var ret = [""];
+            var partyText = [];
+            for (var i = 0; i < player.party.length; i++) {
+                var pNum = player.party[i];
+                partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) +")" : ""));
+            }
+            ret.push("<b>" + sys.name(id) + "'s Party: </b>" + partyText.join(", "));
+            if (costumed)
+                ret.push("<b>Costume: </b>" + costumeAlias(player.costume, false, true) + " (Level: " + safari.getCostumeLevel(player) + ")");
+            if (player.medals.length > 0)
+                ret.push(readable(player.medals.slice(0, 6).map(function(m) { return m.desc })));
+            
+            ret.push("");
+            
+            return ret.join("<br />");
         }
         var out = "<table border = 1 cellpadding = 3><tr><th colspan=" + (party.length + (costumed ? 1 : 0)) + ">" + (ownParty ? "Current" : sys.name(id) + "'s" ) + " Party</th></tr><tr>";
         if (!ownParty) {
