@@ -9747,6 +9747,9 @@ function Safari() {
         out += this.showBox(player, 1, isAndroid, textOnly);
 
         //Money/Balls table
+        if (textOnly) {
+            out += "<br />";
+        }
         out += this.showBag(player, isAndroid, textOnly);
         if (textOnly) {
             out += "<br />";
@@ -10333,13 +10336,13 @@ function Safari() {
             var partyText = [];
             for (var i = 0; i < player.party.length; i++) {
                 var pNum = player.party[i];
-                partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) +")" : ""));
+                partyText.push("#" + pokeInfo.readableNum(pNum) + " " + pokePlain(pNum) + (typeof pNum === "string" ? "*" : "") + (player.helds[i] && player.helds[i] > -1 ? " (" + finishName(heldCodes[player.helds[i]]) + ")" : ""));
             }
             ret.push("<b>" + sys.name(id) + "'s Party: </b>" + partyText.join(", "));
             if (costumed)
                 ret.push("<b>Costume: </b>" + costumeAlias(player.costume, false, true) + " (Level: " + safari.getCostumeLevel(player) + ")");
             if (player.medals.length > 0)
-                ret.push(readable(player.medals.slice(0, 6).map(function(m) { return m.desc })));
+                ret.push("<b>Medals: </b>" + readable(player.medals.slice(0, 6).map(function(m) { return m.desc })));
             
             ret.push("");
             
@@ -11435,6 +11438,8 @@ function Safari() {
         sys.sendHtmlMessage(src, "", safchan);
         
         sys.sendHtmlMessage(src, toColor("<timestamp/><b>Total Amount of Money Between All Safari Players:</b>", "black") + " {0} ({1} from previous day)".format(moneyColor(total), moneyColor(total - totalPrevious, true)), safchan);
+        
+        sys.sendHtmlMessage(src, "", safchan);
         // earlier index is later date
         safaribot.sendHtmlMessage(src, (dayIndex < 13 ? link("/stonks " + (dayIndex+1), "«Previous Day» ") : "") + (dayIndex > 0 ? link("/stonks " + (dayIndex-1), "«Next Day»") : ""), safchan);
     };
