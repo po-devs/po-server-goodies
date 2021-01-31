@@ -47775,7 +47775,7 @@ function Safari() {
                 var outDesc = "";
                 if (player.medalRecords) {
                     if (player.medalRecords[w]) {
-                        if (pos === 1 && player.medalRecords[w].first && player.medalRecords[w].first > 1) {
+                        if (p.pos === 1 && player.medalRecords[w].first && player.medalRecords[w].first > 1) {
                             outDesc = "#1 " + w + " for " + player.medalRecords[w].first + " consecutive weeks";
                             n = {
                                 desc: (outDesc + " " + date),
@@ -47784,7 +47784,7 @@ function Safari() {
                             this.awardMedal(player, n);
                             awarded.push("<b>" + outDesc + "</b>");
                         }
-                        if (pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                        if (p,pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
                             outDesc = "Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
                             n = {
                                 "desc": (outDesc + " " + date),
