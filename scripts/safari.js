@@ -17168,7 +17168,7 @@ function Safari() {
         } else {
             player = getAvatarOff(sys.name(src));
             out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
-            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");  
+            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
         }
         if (!player) {
             safaribot.sendMessage(src, "Player not found!", safchan);
@@ -48020,9 +48020,9 @@ function Safari() {
         if (player.medals.length >= medalCap) {
             player.medals.length = player.medals.length.slice(0, medalCap);
             if (isPlaying(player.id))
-                safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc " as your medal collection was full!", safchan);
+                safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", safchan);
             else
-                safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc " as your medal collection was full!", isPlaying(player.id));
+                safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc + " as your medal collection was full!", isPlaying(player.id));
             return false;
         }
         player.medals.push(medal);
