@@ -8921,7 +8921,7 @@ function Safari() {
             }
             if (safari.validDailyBoost(player)) {
                 var drop = [], gained = [], discarded = [];
-                var bonusDrops = [ {"item":"30@dust", "perc":0.15}, {"item":"5@gacha","perc":0.1}, {"item":"@silver","perc":0.05}, {"item":"@pack","perc":0.01} ];
+                var bonusDrops = [ {"item":"30@dust", "perc":0.1}, {"item":"3@gacha","perc":0.07}, {"item":"@silver","perc":0.04}, {"item":"@pack","perc":0.01} ];
                 
                 for (var i = 0; i < bonusDrops.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
                     var itemObj = bonusDrops[i];
@@ -17167,6 +17167,7 @@ function Safari() {
             out.push("<b>" + player.id + "'s Medals: </b>");
         } else {
             player = getAvatarOff(sys.name(src));
+            out.push("");
             out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
             out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
         }
@@ -17183,6 +17184,7 @@ function Safari() {
             m = player.medals[i];
             out.push("#" + (i + 1) + ": <img src ='" + (medalIcons.hasOwnProperty(m.icon + "") ? medalIcons[m.icon+""] : "item:" + m.icon) + "'> "  + m.desc + " [" + link("/featuremedal " + (i + 1), "Feature") + "] [" + link("/removemedal " + (i + 1) + ":", "Permanently Discard", true) + "]");
         }
+        out.push("");
         for (var o in out) {
             safaribot.sendHtmlMessage(src, out[o], safchan);
         }
@@ -31854,7 +31856,7 @@ function Safari() {
                     safaribot.sendHtmlAll("<b>Announcer: " + name + " has defeated all 13 Celebrity Trainers (Difficulty: " + level + ")! Please congratulate our champion!</b>", safchan);
                     sys.sendAll("", safchan);
                     sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Celebrity|||Difficulty: " + level + "|||Challenged with " + readable(player.party.map(poke)) + "|||Received " + plural(reward[1], reward[0]) + " by defeating " + next + " Trainers\n");
-                    var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + "(" + new Date(now()).toUTCString() + ")";
+                    var description = "Cleared " + player.celebrityRegion.toUpperCase() + " Celebrities on " + level.toUpperCase() + " (" + new Date(now()).toUTCString() + ")";
                     var ic = [253, 252, 251, 249, 258, 255][args.difficulty+1];
                     safari.awardMedal(
                         player,
