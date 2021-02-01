@@ -9879,8 +9879,10 @@ function Safari() {
         if (typeof player !== "object") {
             return;
         }
-        if (cantBecause(src, "take an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
-            return false;
+        if (isPlaying(player.id)) {
+            if (cantBecause(sys.id(player.id), "take an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
+                return false;
+            }
         }
         if (!slot || isNaN(slot)) {
             //safaribot.sendMessage(src, "Please enter a valid party slot number (1 to 6)!", safchan);
