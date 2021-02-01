@@ -7981,12 +7981,30 @@ function Safari() {
         if ("rewards" in rules) {
             var rew = getRule("rewards");
             
-            var set;
-            do {
-                set = randomSample(rew.chance);
-            } while ((currentDay !== 1 && set === "moonshard") || (currentDay !== 7 && set === "sunshard")); // custom reward set for Sun and Moon Festival
+            var set = randomSample(rew.chance);
             if (set in rew.sets) {
-                out.rewards = rew.sets[set];
+                out.rewards = JSON.parse(JSON.stringify(rew.sets[set]));
+            }
+            if (theme == "festival") {
+            	var festivalItem = [
+            		"moonshard",
+            		"fortune",
+            		"hdew",
+            		"mushroom",
+            		"cashbonus",
+            		"starpiece",
+            		"sunshard"
+            	][currentDay - 1];
+            	var festivalAmt = [
+            		1,
+            		1,
+            		10,
+            		1,
+            		0,
+            		1,
+            		1
+            	][currentDay - 1];
+            	out.rewards[festivalItem] = festivalAmt;
             }
         }
         out.berries = [].concat(["oran", "pecha", "bluk", "razz", "leppa"].random());
