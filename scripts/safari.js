@@ -10685,7 +10685,7 @@ function Safari() {
 
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
-                safari.takeItem(src, player.party.lastIndexOf(pokeNum), true);
+                safari.takeItem(src, player.party.lastIndexOf(pokeNum) + 1, true);
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
@@ -10696,7 +10696,7 @@ function Safari() {
         }
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
-                safari.takeItem(player, player.party.lastIndexOf(pokeNum), true);
+                safari.takeItem(player, player.party.lastIndexOf(pokeNum) + 1, true);
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
