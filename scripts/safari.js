@@ -30299,8 +30299,8 @@ function Safari() {
                             return false;
                         }
                     }
-                    var pk1 = poke(parseInt(answer[ind], 10));
-                    var pk2 = poke(parseInt(answer[otherind], 10));
+                    var pk1 = poke(parseInt(answer[ind], 10)).toUpperCase();
+                    var pk2 = poke(parseInt(answer[otherind], 10)).toUpperCase();
                     
                     for (var i = 0; i < pk1.length; i++) {
                         if (pk2.indexOf(pk1[i]) > -1) {
