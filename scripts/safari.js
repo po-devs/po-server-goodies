@@ -17167,8 +17167,8 @@ function Safari() {
             out.push("<b>" + player.id + "'s Medals: </b>");
         } else {
             player = getAvatarOff(sys.name(src));
-            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you exceed " + medalCap + " medals, medals from the 7th position onwards will start to be deleted to make room. If there are any medals you want to protect from this, place them in your top 6 by featuring them.");
-            out.push("<b>Your Medals: </b>");
+            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
+            out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
         }
         if (!player) {
             safaribot.sendMessage(src, "Player not found!", safchan);
@@ -47929,6 +47929,7 @@ function Safari() {
                 }
                 
                 var awarded = [];
+                var toAward = [];
                 var outDesc = "";
                 if (player.medalRecords) {
                     if (player.medalRecords[w]) {
@@ -47938,7 +47939,7 @@ function Safari() {
                                 desc: (outDesc + " " + date),
                                 icon: 17
                             }
-                            this.awardMedal(player, n);
+                            toAward.push(n);
                             awarded.push(outDesc);
                         }
                         else if ([2, 3].contains(p.pos) && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
@@ -47947,7 +47948,7 @@ function Safari() {
                                 "desc": (outDesc + " " + date),
                                 icon: 37
                             }
-                            this.awardMedal(player, n);
+                            toAward.push(n);
                             awarded.push(outDesc);
                         }
                     }
@@ -47971,7 +47972,7 @@ function Safari() {
                 }
                 
                 m.icon = ic;
-                this.awardMedal(player, m);
+                toAward.push(m);
                 awarded.push(outDesc);
                 
                 safaribot.sendHtmlAll("<b>{0}</b> was awarded the following medals: {1}! Congratulations!".format(p.name.toCorrectCase(), readable(awarded.reverse().map(function(m) { return "<b>" + m + "</b>" }))), safchan);
@@ -47982,6 +47983,9 @@ function Safari() {
                 }
                 else {
                     safari.inboxMessage(player, "You were awarded the following medals from the " + w + " Weekly Leaderboard Category: " + readable(awarded) + "!", isPlaying(p.name));
+                }
+                for (var medal = 0; medal < toAward.length; medal++) {
+                    safari.awardMedal(player, toAward[medal]);
                 }
             }
         }
@@ -48012,13 +48016,17 @@ function Safari() {
             player.medals = [];
         }
         if (player.medals.length >= medalCap) {
-            var lost = player.medals.splice(5, 1); // top 6 medals are "featured" and are protected, so remove the 7th medal
-            if (sys.id(player.id))
-                safaribot.sendMessage(sys.id(player.id), "You had too many medals and had to discard " + lost.desc + "!", safchan);
+            player.medals.length = player.medals.length.slice(0, medalCap);
+            if (isPlaying(player.id))
+                safaribot.sendMessage(sys.id(player.id), "You were unable to receive the medal " + medal.desc " as your medal collection was full!", safchan);
+            else
+                safari.inboxMessage(player, "You were unable to receive the medal " + medal.desc " as your medal collection was full!", isPlaying(player.id));
+            return false;
         }
         player.medals.push(medal);
         player.records.medalsWon += 1;
         this.saveGame(player);
+        return true;
     };
     this.giftMedal = function(src, commandData) {
         var cd = commandData.split(":");
@@ -48046,11 +48054,14 @@ function Safari() {
             desc: description,
             icon: icon
         }
-        this.awardMedal(player, m);
-        safaribot.sendMessage(src, "You awarded " + player.id + " the medal: " + description + "!", safchan);
-        if (sys.id(cd[0]))
-            safaribot.sendMessage(sys.id(cd[0]), sys.name(src) + " awarded you with the medal: " + description + "!", safchan);
-        return true;
+        if (this.awardMedal(player, m)) {
+            safaribot.sendMessage(src, "You awarded " + player.id + " the medal: " + description + "!", safchan);
+            if (sys.id(cd[0]))
+                safaribot.sendMessage(sys.id(cd[0]), sys.name(src) + " awarded you with the medal: " + description + "!", safchan);
+        }
+        else {
+            safaribot.sendMessage(src, player.id + "'s medal collection was full, so they could not accept the medal!", safchan);
+        }
     };
     this.changeDailyBoost = function(data) {
         var randomNum, bst;
