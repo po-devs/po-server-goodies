@@ -1208,6 +1208,7 @@ function Safari() {
                 quickBallBoost: [5, 9],
                 battleBoost: [8, 13],
                 extraTourMega: [10, 10],
+                fasterArena: [11, 14],
                 catchFighting: [12, 17],
                 lightningBallBoost: [15, 18],
                 kiai: [20, 20]
@@ -2247,7 +2248,7 @@ function Safari() {
             power: [60, 130],
             postArgs: {
                 rewardAmt: 1,
-                cooldown: 0.75
+                cooldown: 1
             },
             desc: "Arena NPC"
         },
@@ -2267,7 +2268,7 @@ function Safari() {
             power: [110, 150],
             postArgs: {
                 rewardAmt: 3,
-                cooldown: 0.5
+                cooldown: 1.5
             },
             desc: "Arena NPC"
         },
@@ -2287,7 +2288,7 @@ function Safari() {
             power: [150, 300],
             postArgs: {
                 rewardAmt: 6,
-                cooldown: 2.75
+                cooldown: 2.5
             },
             desc: "Arena NPC"
         },
@@ -2297,7 +2298,7 @@ function Safari() {
             power: [200, 380],
             postArgs: {
                 rewardAmt: 10,
-                cooldown: 4
+                cooldown: 5
             },
             desc: "Arena NPC"
         }
@@ -29038,7 +29039,8 @@ function Safari() {
                 }
                 safaribot.sendHtmlMessage(id, "<b>" + args.name + ":</b> Haha, seems like I won this time! Try harder next time!", safchan);
             }
-            player.quests.arena.cooldown = now() + Math.round(hours(args.cooldown) * (1 - safari.getFortune(player, "questcd", 0, "arena")));
+            var cdamt = (args.cooldown * (isWinner ? 1 : 0.5)) * (safari.hasCostumeSkill(player, "fasterArena") ? 0.85 : 1);
+            player.quests.arena.cooldown = now() + Math.round(hours(cdamt) * (1 - safari.getFortune(player, "questcd", 0, "arena")));
             sys.appendToFile(questLog, now() + "|||" + player.id.toCorrectCase() + "|||Arena|||Fought " + args.name + " using " + readable(player.party.map(poke)) +  " team|||" + (isWinner ? "Won" : "Lost") + " "+ playerScore + "x" + npcScore + (rewname ? ", received " + rewname : "") + "\n");
             safari.saveGame(player);
         };
