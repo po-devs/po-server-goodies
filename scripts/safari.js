@@ -10131,10 +10131,6 @@ function Safari() {
             }
             if (player.party.indexOf(id) === -1) {
                 if (player.party.length >= 6) {
-                    if (player.helds[5]) { // last pokemon is removed, so take their held item back
-                        safari.takeItem(src, 6, true); // place it into the bag
-                        player.helds.unshift(-1); // put it in front
-                    }
                     var removedId = player.party.splice(5, 1)[0];
                     safaribot.sendMessage(src, poke(removedId) + " was removed from your party!", safchan);
                 }
@@ -10689,8 +10685,8 @@ function Safari() {
 
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
-                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
                 safari.takeItem(src, player.party.lastIndexOf(pokeNum), true);
+                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
@@ -10700,8 +10696,8 @@ function Safari() {
         }
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
-                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
                 safari.takeItem(player, player.party.lastIndexOf(pokeNum), true);
+                player.party.splice(player.party.lastIndexOf(pokeNum), 1);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
