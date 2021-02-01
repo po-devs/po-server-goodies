@@ -47851,7 +47851,7 @@ function Safari() {
                     w = "Arena Tycoon";
                     break;
                 case "pyramidScoreLast":
-                case "pyramidScoreWeekly"":
+                case "pyramidScoreWeekly":
                     w = "Pyramid Adventurer";
                     break;
                 default:
