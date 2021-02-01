@@ -8156,7 +8156,11 @@ function Safari() {
         if ("rewards" in rules) {
             list = [];
             for (var e in rules.rewards) {
-                list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+            	if (e == "cashbonus") {
+            		list.push("Cash Money");
+            	} else {
+					list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+				}
             }
             if (list.length > 1 || list[0] !== "10 Gachapon Tickets") {
                 out.push(optionalColor("Reward: " + readable(list, "and"), colored, "darkgreen"));
