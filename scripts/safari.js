@@ -17167,8 +17167,8 @@ function Safari() {
             out.push("<b>" + player.id + "'s Medals: </b>");
         } else {
             player = getAvatarOff(sys.name(src));
-            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");
             out.push("<b>Your Medals: </b>(" + player.medals.length + "/" + medalCap + ")");
+            out.push("<b>" + toColor("Note:", "red") + "</b> Your top 6 medals are featured in your party. Once you reach " + medalCap + " medals, you cannot receive any more until you discard some.");  
         }
         if (!player) {
             safaribot.sendMessage(src, "Player not found!", safchan);
