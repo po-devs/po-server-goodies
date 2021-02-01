@@ -7281,7 +7281,8 @@ function Safari() {
         var num,
             pokeId,
             goldenBonus = goldenBait && player.records.goldenBaitUsed >= player.records.goldenBaitWeak,
-            shiny = sys.rand(0, shinyChance - (goldenBonus ? itemData.golden.shinyBonus : 0)) < 1,
+            shinyRand = sys.rand(0, shinyChance - (goldenBonus ? itemData.golden.shinyBonus : 0)),
+            shiny = shinyRand < 1,
             statCap,
             amount = amt || 1,
             ignoreForms = false;
@@ -7487,6 +7488,9 @@ function Safari() {
             if (!ignoreForms && !dexNum && num in wildForms) {
                 var pickedForm = sys.rand(0, wildForms[num] + 1);
                 num = pokeInfo.calcForme(num, pickedForm);
+            }
+            if (amount === 1 && dailyBoost && dailyBoost.pokemon === pokeInfo.species(num) && shinyRand < 2 && !noDailyBonusForms.contains(num)) {
+                shiny = true; // wild botd mon has 2x chance to be shiny
             }
             if (noShinySprite.indexOf(num) !== -1) {
                 shiny = false;
@@ -8593,7 +8597,7 @@ function Safari() {
         
         var leader = parseInt(player.party[0], 10);
         var species = pokeInfo.species(leader);
-        var dailyBonus = dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader, 10)) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
+        var dailyBonus = safari.validDailyBoost(player) ? (dailyBoost.bonus * this.hasCostumeSkill(player, "botdboost") ? 1.1 : 1) : 1;
         var rulesMod = currentRules ? this.getRulesMod(player, player.party[0], currentRules, scaleColor) : 1;
         var costumeMod = 1;
         if (story) {
@@ -8876,9 +8880,10 @@ function Safari() {
             } else if (ball !== "spirit") {
                 player.pokemon.push(currentPokemon);
             }
+            
             if (globalWildItems && globalWildItems.hasOwnProperty(currentPokemon+"")) {
                 var wildItemHeldList = globalWildItems[currentPokemon+""];
-                var drop = "", gained = [], discarded = [], lost = [];
+                var drop = [], gained = [], discarded = [], lost = [];
                 var customItems = {
                     "@moneyset": ["$" + (Math.max(10, sys.rand(1, 11) * sys.rand(1, 11)))],
                     "@moneyset2": ["$" + (sys.rand(10, 21) * sys.rand(10, 26))],
@@ -8894,20 +8899,51 @@ function Safari() {
                     }
                     if (chance(perc)) {
                         var stuff = giveStuff(player, item, true);
-                        drop = translateStuff(item);
+                        drop.push(translateStuff(item));
                         gained = gained.concat(stuff.gained);
                         lost = lost.concat(stuff.lost);
                         discarded = discarded.concat(stuff.discarded);
                     }
                 }
                 if (drop && gained.length > 0) { // check that there's actually an item gained so it doesn't display "x was holding -1 Item!" if the held item is negative
-                    sendAll("The {0} was holding {1}!".format(pokeName, drop));
+                    sendAll("The {0} was holding {1}!".format(pokeName, readable(drop)));
                 }
                 if (lost.length > 0) {
-                    sendAll("The {0} removed {1} from {2}!".format(pokeName, readable(lost), ball === "spy" ? "the stealthy person" : sys.name(src)));
+                    sendAll("The {0} removed {1} from {2}!".format(pokeName, readable(lost), ball === "spy" ? "the stealthy person" : name));
                 }
                 if (discarded.length > 0) {
-                    sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(ball === "spy" ? "the stealthy person" : sys.name(src), readable(discarded)));
+                    if (ball === "spy")
+                        safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
+                    else
+                        sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(name, readable(discarded)));
+                }
+            }
+            if (safari.validDailyBoost(player)) {
+                var drop = [], gained = [], discarded = [];
+                var bonusDrops = [ {"item":"30@dust", "perc":0.15}, {"item":"5@gacha","perc":0.1}, {"item":"@silver","perc":0.05}, {"item":"@pack","perc":0.01} ];
+                
+                for (var i = 0; i < bonusDrops.length; i++) { // sample data - {"1": [ {"item":"bait","perc":0.5}, {"item":"golden","perc":0.1} ]};
+                    var itemObj = bonusDrops[i];
+                    var item = itemObj.item, perc = itemObj.perc;
+
+                    if (chance(perc)) {
+                        var stuff = giveStuff(player, item, true);
+                        drop.push(translateStuff(item));
+                        gained = gained.concat(stuff.gained);
+                        discarded = discarded.concat(stuff.discarded);
+                    }
+                }
+                if (drop && gained.length > 0) {
+                    if (ball === "spy")
+                        safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(player.party[0]), readable(drop)), safchan);
+                    else
+                        sendAll("The power of {0}'s {1} made {2} appear out of thin air!".format(name, poke(player.party[0]), readable(drop)));
+                }
+                if (discarded.length > 0) {
+                    if (ball === "spy")
+                        safaribot.sendMessage(src, "Unfortunately, you had to discard {0} as your bag was full!".format(readable(discarded)), safchan);
+                    else
+                        sendAll("Unfortunately, {0} had to discard {1} as their bag was full!".format(ball === "spy" ? "the stealthy person" : name, readable(discarded)));
                 }
             }
             if (currentRules && currentRules.berries) {
@@ -8933,7 +8969,7 @@ function Safari() {
                         }
                         var g = giveStuff(player, "@" + berry, true);
                         g = readable(g.gained);
-                        sendAll("The " + pokeName + " was holding " + g + "!");
+                        sendAll("The " + pokeName + " was holding " + g + " from the Contest!");
                     }
                 }
             }
@@ -10039,6 +10075,9 @@ function Safari() {
             sys.sendHtmlMessage(src, this.showParty(src, true), safchan);
             var n = now();
             safaribot.sendMessage(src, "To modify your party, type /add [pokémon] or /remove [pokémon]. Use /active [pokémon] to set your party leader. You can also manage saved parties with /party save:[slot], /party delete:[slot] or /party load:[slot], or quickly change your party with /qload Pokémon1,Pokémon2,Pokémon3,etc.", safchan);
+            if (safari.validDailyBoost(player)) {
+                safaribot.sendHtmlMessage(src, "<b>Your lead Pokémon is the current Pokémon-of-the-Day!</b>", safchan);
+            }
             if (player.helds[0] == "9") {
                 safaribot.sendHtmlMessage(src, "<b>Current Petaya Combo:</b> " + player.berries.petayaCombo, safchan);
             }
@@ -10456,7 +10495,7 @@ function Safari() {
                         if (i >= medals.length) {
                             break;
                         }
-                        out += "<img src = 'item:" + medals[i].icon + "' title='" + medals[i].desc + "'>";
+                        out += "<img src = '" + (medalIcons.hasOwnProperty(medals[i].icon + "") ? medalIcons[medals[i].icon + ""] : "item:" + medals[i].icon) + "' title='" + medals[i].desc + "'>";
                     }
                     out += "</p>"
                 }
@@ -13001,7 +13040,7 @@ function Safari() {
             if (hasType(currentPokemon, "Water") && hasType(currentPokemon, "???")) {
                 player.records.baitWater += 1;
             }
-            var botd = dailyBoost.pokemon == pokeInfo.species(parseInt(player.party[0], 10)) ? true : false;
+            var botd = safari.validDailyBoost(player);
             this.costumeEXP(player, "bait");
             this.missionProgress(player, "bait", currentPokemon, 1, { botd: botd, bait: (golden ? "golden" : "bait") });
 
@@ -15505,7 +15544,7 @@ function Safari() {
         "stealpoke": "Snag Pokes from NPCs"
     };
     var costumeSkillInfo = {
-        botdboost: "Catch rate increased when using the Boost-of-the-Day",
+        botdboost: "Catch rate increased when using the Pokémon-of-the-Day",
         lowPhotoCD: "Faster at taking Photos",
         finderBasedOnLead: "Can use the lead Pokémon to influence the Itemfinder",
         pokefanPack: "Received an egg for completing your training",
@@ -48038,8 +48077,16 @@ function Safari() {
         permObj.remove("nextDailyBoost");
         permObj.save();
         sys.sendAll(separator, safchan);
-        safaribot.sendAll("The Boost-of-the-Day is now " + pokePlain(randomNum) + ", who will give a bonus catch rate of " + bonus.toFixed(2) + "x if used as your active Pokémon!", safchan);
+        safaribot.sendAll("The Pokémon-of-the-Day is now " + pokePlain(randomNum) + ", who will give a bonus catch rate of " + bonus.toFixed(2) + "x if used as your active Pokémon! Additionally, wild " + pokePlain(randomNum) + " have double the chance to be Shiny!", safchan);
         sys.sendAll(separator, safchan);
+    };
+    this.validDailyBoost = function(player) {
+        if (!dailyBoost)
+            return false;
+        
+        var leader = player.party[0]
+        var species = pokeInfo.species(leader);
+        return dailyBoost.pokemon == species && !isMega(leader) && !noDailyBonusForms.contains(parseInt(leader));
     };
     this.changeAlt = function(src, data) {
         if (!validPlayers("self", src)) {
@@ -50303,7 +50350,7 @@ function Safari() {
                 sys.sendMessage(src, separator, safchan);
                 safaribot.sendMessage(src, "Current Time: " + time + " (" + period + ")", safchan);
                 safari.showNextContest(src);
-                safaribot.sendHtmlMessage(src, "Boost-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active).", safchan);
+                safaribot.sendHtmlMessage(src, "Pokémon-of-the-Day: " + link("/active " + pokePlain(dailyBoost.pokemon), pokePlain(dailyBoost.pokemon)) + " (" + dailyBoost.bonus.toFixed(2) + "x catch rate if used as active, and wild " + pokePlain(dailyBoost.pokemon) + " have double the chance to be Shiny).", safchan);
                 safaribot.sendMessage(src, "Current Gachapon Jackpot: " + Math.floor(gachaJackpot/10) + " Tickets.", safchan);
                 if (rafflePrizeObj) {
                     var total = 0;
