@@ -1738,7 +1738,7 @@ function Safari() {
         collectorEarnings: { desc: "by money received from the Collector during this week", alts: ["collector weekly", "collector money weekly", "collectormoney weekly", "collector $ weekly"], alias: "collector weekly",  lastAlias: "collector last",isMoney: true, file: "scriptdata/safari/weeklyCollectorEarnings.txt", lastDesc: "by money received from the Collector during the last week", reward: true },
         arenaPoints: { desc: "by Arena points won this week", alts: ["arena weekly"], alias: "arena weekly",  lastAlias: "arena last", file: "scriptdata/safari/weeklyArenaPoints.txt", lastDesc: "by Arena points won during the last week", reward: true },
         journalPoints: { desc: "by Photo points won this week", alts: ["photo weekly", "journal weekly"], alias: "photo weekly",  lastAlias: "photo last", file: "scriptdata/safari/weeklyPhotoPoints.txt", lastDesc: "by Photo points won during the last week", reward: true },
-        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: false },
+        pyramidScore: { desc: "by Pyramid score this week", alts: ["pyramid weekly", "pyr weekly"], alias: "pyramid weekly",  lastAlias: "pyr last", file: "scriptdata/safari/weeklyPyramidScore.txt", lastDesc: "by Pyramid points won during the last week", reward: true },
         celebrityScore: { desc: "by best Normal Celebrity score this week", alts: ["celebrity weekly", "celebrityscore weekly", "celebrity score weekly", "celeb weekly", "celebrity normal weekly", "celebrityscore normal weekly", "celebrity score normal weekly", "celeb normal weekly"], alias: "celebrity weekly", lastAlias: "celebrity normal last", file: "scriptdata/safari/weeklyCelebrityScore.txt", lastDesc: "by best Normal Celebrity score during the last week", reward: true },
         celebrityScoreEasy: { desc: "by best Easy Celebrity score this week", alts: ["celebrity easy weekly", "celebrityscore easy weekly", "celebrity score easy weekly", "celeb easy weekly"], alias: "celebrity easy weekly", lastAlias: "celebrity easy last", file: "scriptdata/safari/weeklyCelebrityScoreEasy.txt", lastDesc: "by best Easy Celebrity score during the last week", reward: false },
         celebrityScoreHard: { desc: "by best Hard Celebrity score this week", alts: ["celebrity hard weekly", "celebrityscore hard weekly", "celebrity score hard weekly", "celeb hard weekly"], alias: "celebrity hard weekly", lastAlias: "celebrity hard last", file: "scriptdata/safari/weeklyCelebrityScoreHard.txt", lastDesc: "by best Hard Celebrity score during the last week", reward: true },
@@ -9874,7 +9874,11 @@ function Safari() {
         this.heldItem(player, hit, false, slot);
     };
     this.takeItem = function(src, slot, removeSlot) {
-        var player = getAvatar(src);
+        var player = typeof src === "number" ? getAvatar(src) : src;
+        
+        if (typeof player !== "object") {
+            return;
+        }
         if (cantBecause(src, "take an item", ["tutorial", "auction", "pyramid", "battle", "baking"])) {
             return false;
         }
@@ -10686,6 +10690,7 @@ function Safari() {
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
+                safari.takeItem(src, player.party.lastIndexOf(pokeNum), true);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
@@ -10696,6 +10701,7 @@ function Safari() {
         if (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum)) {
             do {
                 player.party.splice(player.party.lastIndexOf(pokeNum), 1);
+                safari.takeItem(player, player.party.lastIndexOf(pokeNum), true);
             } while (countRepeated(player.party, pokeNum) > countRepeated(player.pokemon, pokeNum));
         }
     };
@@ -47822,7 +47828,7 @@ function Safari() {
                             this.awardMedal(player, n);
                             awarded.push(outDesc);
                         }
-                        if (p.pos >= 3 && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
+                        else if ([2, 3].contains(p.pos) && player.medalRecords[w].topthree && player.medalRecords[w].topthree > 1) {
                             outDesc = "Top three " + w + " for " + player.medalRecords[w].topthree + " consecutive weeks";
                             n = {
                                 "desc": (outDesc + " " + date),
