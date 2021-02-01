@@ -48015,6 +48015,8 @@ function Safari() {
         if (!player.medals) {
             player.medals = [];
         }
+        
+        player.records.medalsWon += 1;
         if (player.medals.length >= medalCap) {
             player.medals.length = player.medals.length.slice(0, medalCap);
             if (isPlaying(player.id))
@@ -48024,7 +48026,6 @@ function Safari() {
             return false;
         }
         player.medals.push(medal);
-        player.records.medalsWon += 1;
         this.saveGame(player);
         return true;
     };
