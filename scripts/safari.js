@@ -8905,7 +8905,7 @@ function Safari() {
                         discarded = discarded.concat(stuff.discarded);
                     }
                 }
-                if (drop && gained.length > 0) { // check that there's actually an item gained so it doesn't display "x was holding -1 Item!" if the held item is negative
+                if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) { // check that there's actually an item gained/discarded so it doesn't display "x was holding -1 Item!" if the held item is negative
                     sendAll("The {0} was holding {1}!".format(pokeName, readable(drop)));
                 }
                 if (lost.length > 0) {
@@ -8933,7 +8933,7 @@ function Safari() {
                         discarded = discarded.concat(stuff.discarded);
                     }
                 }
-                if (drop && gained.length > 0) {
+                if (drop.length > 0 && (gained.length > 0 || discarded.length > 0)) {
                     if (ball === "spy")
                         safaribot.sendMessage(src, "The power of your {0} made {1} stealthily appear out of thin air!".format(poke(player.party[0]), readable(drop)), safchan);
                     else
