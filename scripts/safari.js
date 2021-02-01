@@ -55292,7 +55292,16 @@ function Safari() {
                                 if (["redapricorn", "grnapricorn", "bluapricorn", "whtapricorn", "blkapricorn", "pnkapricorn", "ylwapricorn"].contains(r) && safari.hasCostumeSkill(player, "extraApricornsFromContest")) {
                                     amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                 }
-                                if (amt > 0) {
+                                if (r == "cashbonus") {
+                                	var val = 1000;
+                                	if (catchersBST.hasOwnProperty(winner)) {
+                                		val = catchersBST[winner];
+                                	}
+                                	if (val > 0) {
+                                		player.money += val;
+                                    	rewardName.push("$" + val);
+                                	}
+                                } else if (amt > 0) {
                                     player.balls[r] += amt;
                                     if (player.balls[r] > getCap(r)) {
                                         player.balls[r] = getCap(r);
