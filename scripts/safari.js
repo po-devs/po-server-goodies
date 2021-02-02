@@ -30183,7 +30183,7 @@ function Safari() {
                         safaribot.sendHtmlMessage(sys.id(leader), trainerSprite + "Pyramid Guide: You paid $" + addComma(cost) + " to enter the Pyramid!", safchan);
                     }
                     currentPyramids.push(new Pyramid(players[0], players[1], players[2], req.usingVoucher));
-
+                    safaribot.sendHtmlAll("A Pyramid expedition hosted by {0} has started! [{1}]".format(leader.toCorrectCase(), link("/watchpyr " + leader, "Watch")), safchan);
                     delete pyramidRequests[leader];
                 }
             break;
@@ -30687,14 +30687,14 @@ function Safari() {
                         "battlearena": "Defeat Trainer Lorekeeper while wearing the Battle Girl costume.",
                         "explorerfinder": "Discover a clue with the Itemfinder while wearing the Explorer costume.",
                         "pokefandaycare": "Interact with your Pokémon at the daycare while wearing the Pokéfan costume.",
-                        "mission": "Clear a mission.",
-                        "journal": "Submit a photograph with a score of at least 50 in the journal quest.",
+                        "mission": "Clear a Mission.",
+                        "journal": "Submit a photograph with a score of at least 50 in the Journal quest.",
                         "pyramid1": "Clear the first floor of Pyramid.",
                         "pyramid2": "Clear the second floor of Pyramid.",
                         "pyramid3": "Clear the third floor of Pyramid.",
                         "pyramid4": "Clear the fourth floor of Pyramid.",
                         "pyramid5": "Clear the fifth floor of Pyramid.",
-                        "contest": "Win a contest.",
+                        "contest": "Win a Contest.",
                     };
                     if (item.unlock.slice(0, 6) == "catch:") {
                         var num = parseInt(item.unlock.split(":")[1], 10);
@@ -47881,7 +47881,7 @@ function Safari() {
         var dateMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][d.getUTCMonth()];
         var dateYear = d.getFullYear();
         var date = "(Week {0} of {1} {2})".format(dateWeek, dateMonth, dateYear);
-        
+
         for (var i in data) {
             lb = data[i];
             if (retroactive) {
@@ -49898,7 +49898,7 @@ function Safari() {
             }
             if (command === "watchpyr") {
                 if (commandData === "*") {
-                    safaribot.sendMessage(src, "Type which player's pyramid to watch or unwatch with /watchpyr [name]!", safchan);
+                    safaribot.sendMessage(src, "Type which player's Pyramid run to watch or unwatch with /watchpyr [name]!", safchan);
                 } else {
                     var user = getAvatar(src);
                     var player = getAvatarOff(commandData);
@@ -49913,20 +49913,22 @@ function Safari() {
                         }
                     }
                     if (!(getPyramid)) {
-                        safaribot.sendMessage(src, player.id + " is not in the pyramid!", safchan);
+                        safaribot.sendMessage(src, player.id + " is not in the Pyramid!", safchan);
                         return true;
                     }
                     if (getPyramid.isInPyramid(user.id)) {
-                        safaribot.sendMessage(src, "You can't watch this pyramid because you are in it!", safchan);
+                        safaribot.sendMessage(src, "You can't watch this Pyramid run because you are in it!", safchan);
                         return true;
                     }
                     if (!(getPyramid.viewers.contains(user.id))) {
-                        safaribot.sendMessage(src, "You are now watching " + player.id + "'s pyramid run!", safchan);
+                        //safaribot.sendMessage(src, "You are now watching " + player.id + "'s Pyramid run!", safchan);
                         getPyramid.viewers.push(user.id);
+                        getPyramid.sendToViewers(sys.name(src) + " is watching this Pyramid run!");
                         return true;
                     }
                     else {
-                        safaribot.sendMessage(src, "You are no longer watching " + player.id + "'s pyramid run!", safchan);
+                        //safaribot.sendMessage(src, "You are no longer watching " + player.id + "'s Pyramid run!", safchan);
+                        getPyramid.sendToViewers(sys.name(src) + " stopped watching this Pyramid run!");
                         getPyramid.viewers.splice(getPyramid.viewers.indexOf(user.id), 1);
                         return true;
                     }
