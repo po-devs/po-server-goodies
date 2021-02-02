@@ -30219,7 +30219,7 @@ function Safari() {
         return;
     };
     this.detectiveQuest = function(src, data) {
-        function createClue(answer, clues, ind, kind, minstrength, unlock) {
+        function createClue(answer, clues, ind, kind, minstrength, maxstrength, unlock) {
             var out = {};
             var strength = 0;
             var value;
@@ -30533,13 +30533,13 @@ function Safari() {
                     }
                     value = "dual-type";
                     strength = 50;
-                    outText = (amt == 0 ? "None of the Pokémon are dual-typed." : (amt == 1 ? "1 Pokémon is dual-typed." : (amt + " Pokémon are dual-typed.")));
+                    outText = (amt == 0 ? "None of the Pokémon are dual-typed." : (amt == 1 ? "1 of the Pokémon is dual-typed." : (amt + " of the Pokémon are dual-typed.")));
                     break;
             }
-            if (strength < minstrength) {
+            if (strength < minstrength || strength > maxstrength) {
                 return false;
             }
-            var inds = ["The First Pokémon", "The Second Pokémon", "The Third Pokémon", "The Fourth Pokémon"];
+            var inds = ["Pokémon #1", "Pokémon #2", "Pokémon #3", "Pokémon #4"];
             outText = outText.format(inds[ind], inds[otherind]);
             return {
                 kind: kind,
@@ -30558,9 +30558,10 @@ function Safari() {
             
             //var before = new Date().getTime();
             var maxloop = 10000;
+            var maxstrength = minstrength + 10;
             
             while (!(out)) {
-                out = createClue(answer, clues, ind, i < 160 ? kind : false, minstrength - (i/5), unlock);
+                out = createClue(answer, clues, ind, i < 160 ? kind : false, minstrength - (i > 25 ? ((i - 25) * 0.1) : 0), maxstrength + (i > 10 ? ((i - 10) * 0.1) : 0), unlock);
                 i++;
                 if (i > maxloop) {
                     out = {kind:"broke",value:"",str:"This clue was glitched, please contact a Safari Admin",ind:ind,unlock:"free",seen:false};
@@ -30643,11 +30644,11 @@ function Safari() {
         var today = getDay(now());
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
             if (today !== safari.detectiveData[uid+""].date) {
-                if (!(safari.detectiveData[uid+""].solved)) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "!\nCome back when you're ready for another try at the grand prize!", safchan);
-                }
                 delete safari.detectiveData[uid+""];
-                return;
+                if (!(safari.detectiveData[uid+""].solved)) {
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))})) + "!\nCome back when you're ready for another try at the grand prize!", safchan);                    
+					return;
+                }
             }
         }
         if (!(safari.detectiveData[uid+""])) {
