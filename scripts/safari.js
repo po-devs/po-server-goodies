@@ -7985,7 +7985,7 @@ function Safari() {
             if (set in rew.sets) {
                 out.rewards = JSON.parse(JSON.stringify(rew.sets[set]));
             }
-            if (theme == "festival") {
+            if (theme == "asia") {
             	var festivalItem = [
             		"moonshard",
             		"fortune",
