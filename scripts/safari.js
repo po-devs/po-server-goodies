@@ -3004,6 +3004,17 @@ function Safari() {
             return Object.keys(result);
         }
     }
+	function removeNonDuplicates(arr) {
+		//move this up to useful function later
+		var hit = [];
+		for (var j = arr.length; j--;) {
+			if (hit.contains(arr[j])) {
+				continue;
+			}
+			hit.push(arr.splice(j, 1)[0]);
+		}
+		return arr;
+	}
     function compare(a,b) {
         if (a.sort < b.sort) {
             return -1;
@@ -30495,17 +30506,6 @@ function Safari() {
                             safari.moveLearners[h+""] = outList;
                         }
                         return outList;
-                    }
-                    function removeNonDuplicates(arr) {
-                        //move this up to useful function later
-                        var hit = [];
-                        for (var j = arr.length; j--;) {
-                            if (hit.contains(arr[j])) {
-                                continue;
-                            }
-                            hit.push(arr.splice(j, 1)[0]);
-                        }
-                        return arr;
                     }
                     var l = lookupMoveLearners(m), l2 = lookupMoveLearners(m2);
                     if (l.length > 220 || l.length < 15) {
