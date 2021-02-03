@@ -4088,8 +4088,8 @@ function Safari() {
         "769": {
             "name": "Misty Explosion",
             "learned": [],
-            "type": "Steel",
-            "power": 130
+            "type": "Fairy",
+            "power": 100
         }
         /* template
         "": {
