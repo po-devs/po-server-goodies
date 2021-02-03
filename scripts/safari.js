@@ -17342,6 +17342,7 @@ function Safari() {
         ls.splice(index - 1, 1);
         ls.unshift(m);
         safaribot.sendMessage(src, "You featured your medal: " + m.desc + "! It will now appear on your trainer screen!", safchan);
+        this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
@@ -17377,6 +17378,7 @@ function Safari() {
         
         //band-aid fix since im not sure what causes this yet, but it just happened and i can't replicate it
         player.medals = player.medals.filter(function(e) { return e !== null });
+        this.viewMedals(src);
         this.saveGame(player);
         return true;
     };
@@ -48751,6 +48753,20 @@ function Safari() {
         backupPlayers4 = new MemoryHash(saveBackupFile4);
         backupPlayers5 = new MemoryHash(saveBackupFile5);
     };
+    this.lockInactiveSaves = function() {
+        var today = getDay(now());
+        for (var e in rawPlayers.hash) {
+            if (rawPlayers.hash.hasOwnProperty(e)) {
+                data = JSON.parse(rawPlayers.hash[e]);
+                if (today - data.lastLogin > (30 * 5)) { // approx. 5 months
+                    var player = getAvatarOff(data.id);
+                    player.locked = true;
+                    safari.saveGame(player);
+                    sys.appendToFile(miscLog, now() + "|||" + data.id.toCorrectCase() + "|||was locked after 5 months of inactivity. Last login: " + data.lastLogin + ", current day: " + today + "\n");
+                }
+            }
+        }
+    };
     this.sanitize = function(player) {
         if (player) {
             var clean, i;
@@ -55515,6 +55531,7 @@ function Safari() {
                     safari.checkNewWeek();
                     safari.dayCareStep(2);
                     safari.checkNewMonth();
+                    safari.lockInactiveSaves();
                     safari.backupSaves();
                     safari.flipEconomyDay();
                     var mercy = parseInt(permObj.get("loginDaysDown"), 10);
