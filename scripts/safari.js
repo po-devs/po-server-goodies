@@ -30645,10 +30645,12 @@ function Safari() {
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
             if (today !== safari.detectiveData[uid+""].date) {
             	var answers = readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))}));
-                delete safari.detectiveData[uid+""];
                 if (!(safari.detectiveData[uid+""].solved)) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + answers + "!\nCome back when you're ready for another try at the grand prize!", safchan);                    
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + answers + "!\nCome back when you're ready for another try at the grand prize!", safchan);                    					
+					delete safari.detectiveData[uid+""];
 					return;
+                } else {
+                	delete safari.detectiveData[uid+""];
                 }
             }
         }
