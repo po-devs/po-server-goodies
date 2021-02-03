@@ -9126,7 +9126,7 @@ function Safari() {
             if (parseInt(currentPokemon, 10) === 686) {
                 player.records.catchInkay += 1;
             }
-            safari.detectiveClue(player.idnum, "catch:" + parseInt(currentPokemon, 10), src);
+            safari.detectiveClue(player.idnum, "catch:" + (parseInt(currentPokemon, 10) % 65536), src);
             if (ball === "cherish") {
                 player.records.catchCherish += 1;
                 player.cherished.push(pokeInfo.species(getInputPokemon(poke(currentPokemon)).num));
@@ -30410,7 +30410,7 @@ function Safari() {
                     if ([" ", ".", "-", ":", "'"].contains(value)) {
                         return false;
                     }
-                    strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 3 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 7 : (["K", "B", "W"].contains(value) ? 10 : 15));
+                    strength = ["A", "E", "I", "N", "O", "R", "S", "T"].contains(value) ? 2 : (["C", "D", "F", "L", "P", "U", "Y"].contains(value) ? 5 : (["K", "B", "W"].contains(value) ? 8 : 13));
                     outText = "{0} has " + value + " in its name.";
                     break;
                 case "evolves":
@@ -30616,7 +30616,7 @@ function Safari() {
                         return false;
                     }
                     value = "type";
-                    strength = 30;
+                    strength = 26;
                     outText = "{0} has a type in common with {1}.";
                     break;
                 case "bsthigher":
@@ -30643,7 +30643,7 @@ function Safari() {
                         }
                     }
                     value = "dual-type";
-                    strength = 50;
+                    strength = 25;
                     outText = (amt == 0 ? "None of the Pokémon are dual-typed." : (amt == 1 ? "1 of the Pokémon is dual-typed." : (amt + " of the Pokémon are dual-typed.")));
                     break;
             }
@@ -30697,8 +30697,8 @@ function Safari() {
                 out.answer.push(Math.ceil(Math.random() * highestDexNum - 1));
                 out.answer = removeDuplicates(out.answer);
             }
-            var firstFourOrder = [2 + 3 * Math.random(), 3 + 6 * Math.random(), 16 + 4 * Math.random(), 17 + 6 * Math.random()].shuffle(); //strength of first few clues
-            var nextThreeOrder = [2 + 3 * Math.random(), 2 + 4 * Math.random(), 2 + 5 * Math.random()].shuffle(); //strength of next few clues
+            var firstFourOrder = [2 + 3 * Math.random(), 5 + 6 * Math.random(), 16 + 4 * Math.random(), 19 + 6 * Math.random()].shuffle(); //strength of first few clues
+            var nextThreeOrder = [4 + 8 * Math.random(), 1 + 2 * Math.random(), 10 + 10 * Math.random()].shuffle(); //strength of next few clues
             
             var extraOrder = [0, 1, 2, 3].shuffle();
             var extraOrder2 = [0, 1, 2, 3].shuffle();
@@ -30715,20 +30715,20 @@ function Safari() {
             out.clues.push(getClue(out.answer, out.clues, 2, "interact", nextThreeOrder[0]));
             
             var specClueOrder = ["dualtypes", "interact", "interact", "interact", "interact"].shuffle();
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 4 + Math.random() * 6, "journal"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 8 + Math.random() * 15, "battlearena"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 1 + Math.random() * 3, "pokefandaycare"));
-            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 5 + Math.random() * 3, "explorerfinder"));
-            out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 2 + Math.random() * 2, "mafia"));
-            out.clues.push(getClue(out.answer, out.clues, false, false, 12 + Math.random() * 5, "mafia2"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[0], 5 + Math.random() * 15, "journal"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[1], 5 + Math.random() * 15, "battlearena"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[2], 5 + Math.random() * 15, "pokefandaycare"));
+            out.clues.push(getClue(out.answer, out.clues, false, specClueOrder[3], 5 + Math.random() * 15, "explorerfinder"));
+            out.clues.push(getClue(out.answer, out.clues, 0, specClueOrder[4], 5 + Math.random() * 15, "mafia"));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 10 + Math.random() * 15, "mafia2"));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder[0], false, 2 + 2 * Math.random(), "mission"));
             out.clues.push(getClue(out.answer, out.clues, extraOrder[1], false, 2 + 6 * Math.random(), "contest"));
             
             var clueMons = [835, 885, 374, 562, 201, 307, 810, 624, 175, 656, 722, 742, 163, 37].shuffle();
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
-            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
-            out.clues.push(getClue(out.answer, out.clues, false, false, 6 + 5 * Math.random(), "catch:" + clueMons.shift()));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[2], false, 10 + 5 * Math.random(), "catch:" + clueMons.shift()));
+            out.clues.push(getClue(out.answer, out.clues, extraOrder[3], false, 10 + 5 * Math.random(), "catch:" + clueMons.shift()));
+            out.clues.push(getClue(out.answer, out.clues, false, false, 10 + 5 * Math.random(), "catch:" + clueMons.shift()));
             
             out.clues.push(getClue(out.answer, out.clues, extraOrder2[0], false, 0 + 5 * Math.random(), "pyramid1"));
             out.clues.push(getClue(out.answer, out.clues, 0, false, 0 + 2 * Math.random(), "pyramid2"));
