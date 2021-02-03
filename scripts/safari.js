@@ -3004,17 +3004,17 @@ function Safari() {
             return Object.keys(result);
         }
     }
-	function removeNonDuplicates(arr) {
-		//move this up to useful function later
-		var hit = [];
-		for (var j = arr.length; j--;) {
-			if (hit.contains(arr[j])) {
-				continue;
-			}
-			hit.push(arr.splice(j, 1)[0]);
-		}
-		return arr;
-	}
+    function removeNonDuplicates(arr) {
+        //move this up to useful function later
+        var hit = [];
+        for (var j = arr.length; j--;) {
+            if (hit.contains(arr[j])) {
+                continue;
+            }
+            hit.push(arr.splice(j, 1)[0]);
+        }
+        return arr;
+    }
     function compare(a,b) {
         if (a.sort < b.sort) {
             return -1;
@@ -7643,6 +7643,8 @@ function Safari() {
             currentDisplay = (disguise ? appearance : num) + (shiny ? "" : 0);
             var currentPokemonDisplay = shiny ? "" + currentDisplay : currentDisplay;
             var currentId = poke(currentPokemonDisplay);
+            var displayId = currentId.split("");
+            displayId.splice(sys.rand(1, displayId.length - 1), 0, permObj.get("widthJoiner") || "");          
 
             if (currentDisplay === currentPokemon) {
                 disguise = false;
@@ -7653,14 +7655,13 @@ function Safari() {
             currentPokemonMoodRate = sys.rand(1, 31);
             var mood = ["Negative", "Neutral", "Positive"][Math.ceil(currentPokemonMoodRate/10)-1];
             currentPokemonMood = photoMood[mood].random();
-            wildPokemonMessage = "A {2}wild {0} appeared! <i>(BST: {1})</i>";
 
             var bst = getBST(currentDisplay) + (disguise && !isLegendary(num) ? [-5, -4, -3, 3, 4, 5].random() * multiplier : 0);
             var term = amount >= 4 ? "horde of " : ["", "pair of ", "group of "][amount-1];
             if (spiritMon) {
                 term = "Spirit Realm "
             }
-            var appmsg = wildPokemonMessage.format(currentId, bst, term);
+            var appmsg = wildPokemonMessage.format(displayId.join(""), bst, term, poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), poke(legendaries.random()), sys.rand(300, 700), sys.rand(300, 700), poke(legendaries.random()), sys.rand(300, 700));
             var sprite = (cageMode ? cage : pokeInfo.sprite(currentPokemonDisplay));
 
             var cTheme = currentTheme;
@@ -7670,7 +7671,7 @@ function Safari() {
                 if (theme.disguises && theme.notDisguised && (!(theme.notDisguised.contains(currentPokemon)))) {
                     isGhost = true;
                     wildEvent = false;
-                    wildPokemonMessage = "A {1}wild Trick-or-treater appeared!: <i>(BST: {0}) (Types: {2}{3}) ({4}: {5})";
+                    var wildPokemonMessage2 = "A {1}wild Trick-or-treater appeared!: <i>(BST: {0}) (Types: {2}{3}) ({4}: {5})";
                     var type_1 = (chance(0.5) ? type1(currentPokemon) : Object.keys(effectiveness).random());
                     var type_2 = (chance(0.5) ? type2(currentPokemon) : (chance(0.7) ? (Object.keys(effectiveness).random()) : "???"));
                     if (chance(0.4) && (type_2 !== "???")) {
@@ -7699,7 +7700,7 @@ function Safari() {
                     } else if (chance(0.6)) {
                         bst = Math.round(bst + (5 * Math.random()) - (5 * Math.random()));
                     }
-                    appmsg = wildPokemonMessage.format(bst, term, type_1, type_2, statName, statVal);
+                    appmsg = wildPokemonMessage2.format(bst, term, type_1, type_2, statName, statVal);
                     sprite = "<img src='" + ghostSprite + "'>";
                 }
             }
@@ -8105,25 +8106,25 @@ function Safari() {
                 out.rewards = JSON.parse(JSON.stringify(rew.sets[set]));
             }
             if (theme == "asia") {
-            	var festivalItem = [
-            		"moonshard",
-            		"fortune",
-            		"hdew",
-            		"mushroom",
-            		"cashbonus",
-            		"starpiece",
-            		"sunshard"
-            	][currentDay - 1];
-            	var festivalAmt = [
-            		1,
-            		1,
-            		10,
-            		1,
-            		0,
-            		1,
-            		1
-            	][currentDay - 1];
-            	out.rewards[festivalItem] = festivalAmt;
+                var festivalItem = [
+                    "moonshard",
+                    "fortune",
+                    "hdew",
+                    "mushroom",
+                    "cashbonus",
+                    "starpiece",
+                    "sunshard"
+                ][currentDay - 1];
+                var festivalAmt = [
+                    1,
+                    1,
+                    10,
+                    1,
+                    0,
+                    1,
+                    1
+                ][currentDay - 1];
+                out.rewards[festivalItem] = festivalAmt;
             }
         }
         out.berries = [].concat(["oran", "pecha", "bluk", "razz", "leppa"].random());
@@ -8275,11 +8276,11 @@ function Safari() {
         if ("rewards" in rules) {
             list = [];
             for (var e in rules.rewards) {
-            	if (e == "cashbonus") {
-            		list.push("Cash Money");
-            	} else {
-					list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
-				}
+                if (e == "cashbonus") {
+                    list.push("Cash Money");
+                } else {
+                    list.push(rules.rewards[e] + " " + itemAlias(e, false, true) + (rules.rewards[e] === 1 ? "" : "s"));
+                }
             }
             if (list.length > 1 || list[0] !== "10 Gachapon Tickets") {
                 out.push(optionalColor("Reward: " + readable(list, "and"), colored, "darkgreen"));
@@ -10879,7 +10880,7 @@ function Safari() {
         if (cos === "none") {
             safaribot.sendMessage(src, "You removed your costume! You can put on a new costume in " + timeLeftString(player.cooldowns.costume) + ".", safchan);
         } else {
-            player.cooldowns.costume = currentTime + hours(4);
+            player.cooldowns.costume = currentTime + hours(3);
             safaribot.sendMessage(src, "You changed into your " + costumeName + " costume! [Effect: " + costumeData[cos].effect + "]", safchan);
             if (player.tutorial.inTutorial && player.tutorial.step === 4 && costumeName === costumeData.preschooler.fullName) {
                 advanceTutorial(src, 5);
@@ -26474,7 +26475,7 @@ function Safari() {
                 }
                 val = parseInt(val, 10);
                 if (this.select && this.select.psychicterrain && hasType(user.id, "Psychic") && val > 0) {
-                    val = Math.min(Math.floor(val * (1.75 * (0.5 + Math.random()))), 3);
+                    val = Math.max(1, Math.min(Math.floor(val * (1.75 * (0.5 + Math.random()))), 3));
                 }
                 if (buffValues[buff.buffStat] > 0 && val > 0) {
                     if (chance(buffValues[buff.buffStat] * 0.15)) {
@@ -30754,13 +30755,13 @@ function Safari() {
         var today = getDay(now());
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
             if (today !== safari.detectiveData[uid+""].date) {
-            	var answers = readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))}));
+                var answers = readable(safari.detectiveData[uid+""].answer.map(function(x) {return poke(parseInt(x))}));
                 if (!(safari.detectiveData[uid+""].solved)) {
-                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + answers + "!\nCome back when you're ready for another try at the grand prize!", safchan);                    					
-					delete safari.detectiveData[uid+""];
-					return;
+                    safaribot.sendHtmlMessage(src, trainerSprite + "Detective: You weren't able to solve our last mystery, were you? The answer was " + answers + "!\nCome back when you're ready for another try at the grand prize!", safchan);                                        
+                    delete safari.detectiveData[uid+""];
+                    return;
                 } else {
-                	delete safari.detectiveData[uid+""];
+                    delete safari.detectiveData[uid+""];
                 }
             }
         }
@@ -47913,7 +47914,7 @@ function Safari() {
         var today = getDay(currentTime) - 3;
         var week = Math.floor(today/7);
         if (forced) {
-        	week = permObj.get("currentWeek") - 1;
+            week = permObj.get("currentWeek") - 1;
         }
         currentDay = ((today - 1) % 7) + 1;
         if (week != permObj.get("currentWeek")) {
@@ -55447,14 +55448,14 @@ function Safari() {
                                     amt = Math.floor(amt * (1 + (safari.getCostumeLevel(player) + 10)/30));
                                 }
                                 if (r == "cashbonus") {
-                                	var val = 1000;
-                                	if (catchersBST.hasOwnProperty(winner)) {
-                                		val = catchersBST[winner];
-                                	}
-                                	if (val > 0) {
-                                		player.money += val;
-                                    	rewardName.push("$" + val);
-                                	}
+                                    var val = 1000;
+                                    if (catchersBST.hasOwnProperty(winner)) {
+                                        val = catchersBST[winner];
+                                    }
+                                    if (val > 0) {
+                                        player.money += val;
+                                        rewardName.push("$" + val);
+                                    }
                                 } else if (amt > 0) {
                                     player.balls[r] += amt;
                                     if (player.balls[r] > getCap(r)) {
