@@ -3982,6 +3982,114 @@ function Safari() {
             "learned": [65735],
             "type": "Psychic",
             "power": 80
+        },
+        "752": {
+            "name": "Terrain Pulse",
+            "learned": [],
+            "type": "Normal",
+            "power": 50
+        },
+        "753": {
+            "name": "Burning Jealousy",
+            "learned": [],
+            "type": "Fire",
+            "power": 70
+        },
+        "754": {
+            "name": "Flip Turn",
+            "learned": [],
+            "type": "Water",
+            "power": 60
+        },
+        "755": {
+            "name": "Grassy Glide",
+            "learned": [],
+            "type": "Grass",
+            "power": 70
+        },
+        "756": {
+            "name": "Rising Voltage",
+            "learned": [],
+            "type": "Electric",
+            "power": 70
+        },
+        "757": {
+            "name": "Coaching",
+            "learned": [],
+            "type": "Fighting",
+            "power": "---"
+        },
+        "758": {
+            "name": "Scorched Sands",
+            "learned": [],
+            "type": "Ground",
+            "power": 70
+        },
+        "759": {
+            "name": "Dual Wingbeat",
+            "learned": [],
+            "type": "Flying",
+            "power": 40
+        },
+        "760": {
+            "name": "Meteor Beam",
+            "learned": [],
+            "type": "Rock",
+            "power": 120
+        },
+        "761": {
+            "name": "Skitter Smack",
+            "learned": [],
+            "type": "Bug",
+            "power": 70
+        },
+        "762": {
+            "name": "Triple Axel",
+            "learned": [],
+            "type": "Ice",
+            "power": 10
+        },
+        "763": {
+            "name": "Corrosive Gas",
+            "learned": [],
+            "type": "Poison",
+            "power": "---"
+        },
+        "764": {
+            "name": "Expanding Force",
+            "learned": [],
+            "type": "Psychic",
+            "power": 80
+        },
+        "765": {
+            "name": "Poltergeist",
+            "learned": [],
+            "type": "Ghost",
+            "power": 110
+        },
+        "766": {
+            "name": "Scale Shot",
+            "learned": [],
+            "type": "Dragon",
+            "power": 25
+        },
+        "767": {
+            "name": "Lash Out",
+            "learned": [],
+            "type": "Dark",
+            "power": 75
+        },
+        "768": {
+            "name": "Steel Roller",
+            "learned": [],
+            "type": "Steel",
+            "power": 130
+        },
+        "769": {
+            "name": "Misty Explosion",
+            "learned": [],
+            "type": "Steel",
+            "power": 130
         }
         /* template
         "": {
