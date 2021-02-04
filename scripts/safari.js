@@ -30767,6 +30767,7 @@ function Safari() {
         }
         if (!(safari.detectiveData[uid+""])) {
             safari.detectiveData[uid+""] = assignClues();
+            permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
         }
         
         if (safari.detectiveData.hasOwnProperty(uid+"")) {
@@ -30909,6 +30910,7 @@ function Safari() {
                     strengthtotal = Math.floor(strengthtotal);
                     sys.appendToFile(questLog, n + "|||" + player.id.toCorrectCase() + "|||Detective|||Guessed the answer with " + unlocked + " clues totaling " + strengthtotal + " strength in " + timeString(timeTaken/1000) + " after " + (safari.detectiveData[uid+""].wrongGuesses) + " wrong guess(es)|||Received " + readable(grandprize) + "\n");
                     safari.saveGame(player);
+                    permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
                 } else {
                     safari.detectiveData[uid+""].wrongGuesses = safari.detectiveData[uid+""].wrongGuesses || 0;
                     if (safari.detectiveData[uid+""].wrongGuesses > 6) {
@@ -30918,7 +30920,8 @@ function Safari() {
                     }
                     safari.detectiveData[uid+""].wrongGuesses++;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
-                }
+                    permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
+                
             }
         }
     };
