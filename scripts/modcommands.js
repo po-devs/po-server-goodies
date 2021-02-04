@@ -493,30 +493,7 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
         if (ipBanned) bans.push("ip ban");
         if (isSmuted) bans.push("smuted");
 
-        if (isbot) {
-            var teams = [];
-            for (var t = 0; t < sys.teamCount(tar); t++) {
-                teams.push(sys.md5(script.importable(tar, t, true)));
-            }
-            var userJson = {
-                'type': 'UserInfo',
-                'id': tar ? tar : -1,
-                'username': name,
-                'auth': authLevel,
-                'contributor': contribution,
-                'ip': ip.replace("::ffff:", "") + (tar ? " (" + SESSION.users(tar).hostname.replace("::ffff:", "") + ")" : ""),
-                'online': online,
-                'registered': registered,
-                'lastlogin': lastLogin,
-                'channels' : channels,
-                'bans' : bans,
-                'client' : tar ? sys.os(tar) : "Unknown",
-                'version' : tar ? sys.version(tar) : "Unknown",
-                'teams' : tar && (sys.auth(src) > 1) ? teams : "Unknown",
-                'uniqueid' : tar && (sys.auth(src) > 1) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
-            };
-            sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
-        } else if (command == "userinfo") {
+        if (command == "userinfo") {
             querybot.sendMessage(src, "Username: " + name + " ~ auth: " + authLevel + " ~ contributor: " + contribution + " ~ ip: " + ip.replace("::ffff:", "") + " ~ online: " + (online ? "yes" : "no") + " ~ registered: " + (registered ? "yes" : "no") + " ~ last login: " + lastLogin + " ~ banned: " + (isBanned ? "yes" : "no"), channel);
         } else if (command == "whois" || command == "whereis") {
             var whois = function(resp) {
@@ -599,7 +576,32 @@ exports.handleCommand = function (src, command, commandData, tar, channel) {
                         }
                     }
                 }
-                if (sys.isInChannel(src, bindChannel)) {
+                if (isbot) {
+                    var teams = [];
+                    for (var t = 0; t < sys.teamCount(tar); t++) {
+                        teams.push(sys.md5(script.importable(tar, t, true)));
+                    }
+                    var userJson = {
+                        'type': 'UserInfo',
+                        'id': tar ? tar : -1,
+                        'username': name,
+                        'auth': authLevel,
+                        'contributor': contribution,
+                        'ip': ip.replace("::ffff:", "") + (tar ? " (" + SESSION.users(tar).hostname.replace("::ffff:", "") + ")" : ""),
+                        'ipdetails': ipInfo,
+                        'online': online,
+                        'registered': registered,
+                        'lastlogin': lastLogin,
+                        'channels' : channels,
+                        'bans' : bans,
+                        'client' : tar ? sys.os(tar) : "Unknown",
+                        'version' : tar ? sys.version(tar) : "Unknown",
+                        'teams' : tar && (sys.auth(src) > 1) ? teams : "Unknown",
+                        'uniqueid' : tar && (sys.auth(src) > 1) && sys.uniqueId(tar) ? sys.uniqueId(tar).id : "Unknown"
+                    };
+                    sys.sendMessage(src, "+UserInfo: "+JSON.stringify(userJson), channel);
+                }
+                else if (sys.isInChannel(src, bindChannel)) {
                     for (var j = 0; j < data.length; ++j) {
                         sys.sendMessage(src, data[j], bindChannel);
                     }
