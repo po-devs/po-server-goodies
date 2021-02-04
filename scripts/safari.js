@@ -30921,7 +30921,7 @@ function Safari() {
                     safari.detectiveData[uid+""].wrongGuesses++;
                     safaribot.sendHtmlMessage(src, trainerSprite + "Detective: Nope! That is not the right solution! Try getting more clues, or else getting more clever!", safchan);
                     permObj.add("detectiveData", JSON.stringify(safari.detectiveData));
-                
+                }
             }
         }
     };
