@@ -30360,6 +30360,7 @@ function Safari() {
                 "contains": 20,
                 "evolved": 8,
                 "evolves": 6,
+                "evolveNewType": 16,
                 "canMega": 5,
                 "stat": 9,
                 "moves": 50
@@ -30428,11 +30429,40 @@ function Safari() {
                         outText = "{0} cannot evolve.";
                     }
                     for (var i = 0; i < clues.length; i++) {
-                        if (ind == clues[i].ind && clues[i].kind == "evolves") {
+                        if (ind == clues[i].ind && (clues[i].kind == "evolves" || clues[i].kind == "evolveNewType")) {
                             return false;
                         }
                     }
                     strength = 3;
+                    break;
+                case "evolveNewType":
+                    if (!(answer[ind] in evolutions)) {
+                    	return false;
+                    }
+                    var evolvePoke, hit = false, hold;
+                    var evo = evolutions[answer[ind]].evo;
+                    if (Array.isArray(evo)) {
+                    	evolvePoke = evo;
+                    } else {
+                    	evolvePoke = [evo];
+                    }
+                    for (var i = 0; i < evolvePoke.length; i++) {
+                    	hold = evolvePoke[i];
+                    	if (type1(hold) == type1(answer[ind]) && type2(hold) == type2(answer[ind])) {
+                    		continue;
+                    	}
+                    	hit = true;
+                    }
+                    if (!hit) {
+                    	return false;
+                    }
+                    for (var i = 0; i < clues.length; i++) {
+                        if (ind == clues[i].ind && (clues[i].kind == "evolves" || clues[i].kind == "evolveNewType")) {
+                            return false;
+                        }
+                    }
+                    strength = 20;
+                    outText = "{0} can evolve into a Pokémon with a different type combination.";
                     break;
                 case "evolved":
                     if (answer[ind] in devolutions) {
