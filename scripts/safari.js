@@ -36211,7 +36211,7 @@ function Safari() {
         }
         var diffMsg = "Basic";
         var opponents = [149, 248, 289, 373, 376, 445, 571, 635, 681, 706, 773, 784].concat(legendaries);
-        var potentialForms = [getForm(38), getForm(103), getForm(53), getForm(53, 2), getForm(110), getForm(76), getForm(89), getForm(26), getForm(105), getForm(20), getForm(51), 862, 863, 864, 865, 866, 867, 66256, 66184, 66028, 66336, 131872, 197408, 393695];
+        var potentialForms = [getForm(38), getForm(103), getForm(53), 863, getForm(110), getForm(76), getForm(89), getForm(26), getForm(105), getForm(20), getForm(51), 862, 863, 864, 865, 866, 867, 66256, 66184, 66028, 66336, 131872, 197408, 393695];
         if (difficulty == 2) {
             if (chance(0.5)) {
                 opponents = opponents.concat(megaPokemon);
